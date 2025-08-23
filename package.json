@@ -1,10 +1,10 @@
 {
-  "name": "mass_queue_card",
-  "description": "Custom Music Assistant Queue Card for Home Assistant",
-  "repository": "https://github.com/droans/mass_card",
+  "name": "mass-player-card",
+  "description": "Custom Music Assistant Player Card for Home Assistant",
+  "repository": "https://github.com/droans/mass-player-card",
   "author": "Michael Carroll",
-  "version": "0.8.0-collapse",
-  "module": "mass-card.js",
+  "version": "0.1.0-dev",
+  "module": "mass-player-card.js",
   "keywords": [
     "home-assistant",
     "homeassistant",
@@ -15,6 +15,8 @@
     "music-assistant",
     "mass",
     "music",
+    "media",
+    "player",
     "assistant"
   ],
   "license": "MIT",
