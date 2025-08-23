@@ -12,7 +12,7 @@ export default css`
   .button-active {
     margin: 0.15rem;
     border-radius: 0.7rem;
-    background-color: var(--media-row-background-color-active)
+    background-color: var(--media-row-background-color-active);
     height: var(--media-row-height);
     --font-color: var(--mdc-theme-primary);
     padding-inline-start: 0px;

@@ -14,62 +14,65 @@ class QueueCard extends LitElement {
   // @property({ attribute: false}) public hass!: HomeAssistant;
   private _active_player_entity!: string;
   @property({ attribute: false }) public _config!: QueueConfig;
+  @property({ attribute: false}) public hass!: HomeAssistant;
   @state() private queue: QueueItem[] = [];
-  @state() private content_id!: string;
-
-  private _hass!: HomeAssistant
+  protected shouldUpdate(_changedProperties: PropertyValues): boolean {
+    if (
+      _changedProperties.has('_config')
+      || _changedProperties.has('queue')
+    ) {
+      return true;
+    }
+    if (_changedProperties.has('hass')) {
+      const cur_id = this.newId;
+      const new_id = this.hass.states[this._active_player_entity].attributes.media_content_id;
+      this.newId = new_id;
+      return cur_id !== new_id;
+    }
+    return super.shouldUpdate(_changedProperties);
+  }
   private _listening = false;
   /* eslint-disable-next-line @typescript-eslint/no-explicit-any */
   private _unsubscribe: any;
   private queueID = '';
   private newId = '';
   private actions!: QueueActions;
+
   @property({ attribute: false})
   set active_player_entity(active_player_entity: string) {
-    console.log(`Received active player ${active_player_entity}`)
     this._active_player_entity = active_player_entity;
     this.getQueueIfReady();
   }
   set config(config: QueueConfig) {
-    console.log(`Received config ${config}`);
     this._config = config;
     this.getQueueIfReady();
   }
-  set hass(hass: HomeAssistant) {
-    if (!hass) {
+  // set hass(hass: HomeAssistant) {
+  //   if (!hass) {
+  //     return
+  //   }
+  //   if (!this._hass) {
+  //   }
+  //   this._hass = hass;
+  //   if (!this.actions) {
+  //     this.getQueueIfReady();
+  //   }
+  //   if (!this._listening) {
+  //     this.subscribeUpdates();
+  //   }
+  //   const newContentId = hass.states[this._active_player_entity]?.attributes?.media_content_id;
+  //   if (newContentId !== this.content_id && newContentId) {
+  //     this.content_id = newContentId;
+  //   }
+  // }
+  private getQueueIfReady() {
+    if (!this.hass || !this._config || !this._active_player_entity) {
       return
     }
-    if (!this._hass) {
-      console.log(`Received first good hass`);
-      console.log(hass);
-    }
-    this._hass = hass;
-    if (!this.actions) {
-      this.getQueueIfReady();
-    }
+    this.getQueue(true);
     if (!this._listening) {
       this.subscribeUpdates();
-    }
-    const newContentId = hass.states[this._active_player_entity]?.attributes?.media_content_id;
-    console.log(`New content ID for ${this._active_player_entity}: ${newContentId}, old content ID: ${this.content_id}`);
-    console.log(`Config:`);
-    console.log(this._config);
-    if (newContentId !== this.content_id && newContentId) {
-      this.content_id = newContentId;
-    }
   }
-  private getQueueIfReady() {
-    if (!this._hass || !this._config || !this._active_player_entity) {
-      return
-    }
-    if (!this.queue) {
-      console.log(`Getting initial queue...`);
-      console.log(`Config:`);
-      console.log(this._config)
-      console.log(`Entity: ${this._active_player_entity}`)
-    }
-    this.getQueue();
-    console.log(this.queue.length);
   }
     /* eslint-disable-next-line @typescript-eslint/no-explicit-any */
   private eventListener = (event: any) => {
@@ -77,13 +80,11 @@ class QueueCard extends LitElement {
     if (event_data.type == 'queue_updated') {
       const updated_queue_id = event_data.data.queue_id;
       if (updated_queue_id == this.queueID) {
-        this.getQueue();
+        this.getQueue(true);
     }}
   }
   private subscribeUpdates() {
-    console.log(`Listening for events`);
-    console.log(this._hass);
-    this._unsubscribe = this._hass.connection.subscribeEvents(
+    this._unsubscribe = this.hass.connection.subscribeEvents(
       this.eventListener, 
       "mass_queue"
     );
@@ -99,15 +100,18 @@ class QueueCard extends LitElement {
     /* eslint-disable-next-line @typescript-eslint/no-unsafe-argument */
     this.queue.splice(new_index, 0, this.queue.splice(old_index, 1)[0]);
   }
-  private getQueue() {
-    console.log(`Getting queue...`);
-    console.log(this._config);
-    console.log(this._active_player_entity);
+  private getQueue(forced_id: boolean = false) {
     if (
       !this.actions 
       || this.actions.player_entity !== this._active_player_entity
     ) {
-      this.actions = new QueueActions(this._hass, this._config, this._active_player_entity)
+      this.actions = new QueueActions(this.hass, this._config, this._active_player_entity)
+    }
+    if (forced_id) {
+      const new_id = this.hass.states[this._active_player_entity]?.attributes?.media_content_id;
+      if (new_id) {
+        this.newId = new_id;
+      }
     }
     try {
       /* eslint-disable-next-line @typescript-eslint/no-floating-promises */
@@ -116,7 +120,7 @@ class QueueCard extends LitElement {
           this.queue = this.updateActiveTrack(queue);
         }
       );
-      this.actions = this._hass.states[this._active_player_entity].attributes.active_queue;
+      this.queueID = this.hass.states[this._active_player_entity].attributes.active_queue;
     } catch {
       this.queue = []
     }
@@ -124,7 +128,7 @@ class QueueCard extends LitElement {
   private updateActiveTrack(queue: QueueItem[]): QueueItem[] {
     let content_id = this.newId;
     if (!content_id.length) {
-      content_id = this._hass.states[this._active_player_entity].attributes.media_content_id;
+      content_id = this.hass.states[this._active_player_entity].attributes.media_content_id;
     }
     const activeIndex = queue.findIndex(item => item.media_content_id === content_id);
     return queue.map( (element, index) => ({
@@ -187,9 +191,6 @@ class QueueCard extends LitElement {
     );
   }
   protected render() {
-    console.log(`Rendering...`)
-    console.log(this._config)
-    console.log(this._active_player_entity)
     return html`
       <ha-card>
         <ha-md-list class="list">

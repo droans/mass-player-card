@@ -1,15 +1,12 @@
 import { LitElement, html, type TemplateResult, type CSSResultGroup, PropertyValues } from 'lit';
-// import { LitElement, html, type TemplateResult, type CSSResultGroup, PropertyValues } from 'lit';
-// import { keyed } from 'lit/directives/keyed.js';
+import { cache } from 'lit/directives/cache.js';
 import { customElement, property, state } from 'lit/decorators.js';
 import { type HomeAssistant } from 'custom-card-helpers';
 
 import { Config, QueueSection } from './types'
 import styles from './styles/main';
 import { DEFAULT_CONFIG, Sections, DEFAULT_CARD } from './const'
-// import '../components/media-row'
 import { version } from '../package.json';
-// import QueueActions from './actions/queue-actions';
 import './sections/player-queue';
 
 const DEV = false;
@@ -47,25 +44,15 @@ console.info(
 
 @customElement(`${cardId}${DEV ? '-dev' : ''}`)
 export class MusicAssistantPlayerCard extends LitElement {
-  // @property({attribute: false}) public hass!: HomeAssistant;
+  @property({attribute: false}) public hass!: HomeAssistant;
   @state() private config!: Config;
   @state() private error?: TemplateResult;
   @state() private queue_store?: QueueSection;
   @state() private active_player_entity?: string;
   @state() private current_section: Sections = DEFAULT_CARD;
   @state() private first_update = false;
-  private _hass!: HomeAssistant;
-  public set hass(hass: HomeAssistant) {
-    if (!hass) {
-      return;
-    }
-    this._hass = hass;
-    if (!this.first_update) {
-      console.log(`Received first update for hass`)
-      this.first_update = true;
-      console.log(hass);
-    }
-  }
+  // private _hass!: HomeAssistant;
+  
   // public hass!: HomeAssistant;
 
   
@@ -101,7 +88,6 @@ export class MusicAssistantPlayerCard extends LitElement {
       ...config
     }
     this.active_player_entity = this.config.entities[0];
-    console.log(`Set active player to ${this.active_player_entity}`);
   }
   public setActivePlayer(player_entity: string) {
     this.active_player_entity = player_entity;
@@ -149,22 +135,28 @@ export class MusicAssistantPlayerCard extends LitElement {
       if (!oldHass) {
         return true;
       }
+      const oldStates = oldHass.states;
+      const newStates = this.hass.states;
+      var result = false;
+      this.config.entities.forEach( (element) => {
+          if (oldStates[element] !== newStates[element]) {
+            result = true;
+          }
+        }
+      )
+      return result;
     }
     return super.shouldUpdate(_changedProperties);
   }
   protected renderPlayerQueue() {
-    console.log(`Rendering queue...`)
-    console.log(`Active entity: ${this.active_player_entity}`);
-    console.log(`Queue config:`);
-    console.log(this.config.queue);
     if (this.current_section === Sections.QUEUE) {
-      return html`
+      return cache(html`
         <mass-player-queue-card
-          .hass=${this._hass}
+          .hass=${this.hass}
           .active_player_entity=${this.active_player_entity}
           .config=${this.config.queue}
         ></mass-player-queue-card>
-      `
+      `)
     }
     return html``
   }
