@@ -1,4 +1,4 @@
-import { css, html, type CSSResultGroup, LitElement, PropertyValues } from 'lit';
+import { html, type CSSResultGroup, LitElement, PropertyValues } from 'lit';
 import { property } from 'lit/decorators.js'
 import {
   mdiClose,
