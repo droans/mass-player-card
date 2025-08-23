@@ -11,12 +11,6 @@ export default css`
     background: unset;
     box-shadow: unset;
   }
-  .mass-panel {
-    --expansion-panel-content-padding: 0px;
-    --md-list-container-color: rgba(0,0,0,0) !important;
-    --md-list-item-leading-space: 0px;
-    --md-list-item-two-line-container-height: 48px;
-  }
   .main {
     display: flex;
     height: 100%;

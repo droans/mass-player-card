@@ -1,12 +1,21 @@
+import { HomeAssistant } from "custom-card-helpers";
+
 export interface Config {
-  entity: string;
-  title: string;
-  expanded: boolean;
+  entities: Array<string>;
+  queue: QueueConfig;
+  player: PlayerConfig;
+}
+
+export interface QueueConfig {
+  enabled: boolean;
   limit_before: number;
   limit_after: number;
   show_album_covers: boolean;
   show_artist_names: boolean;
-  allow_collapsing: boolean;
+}
+
+export interface PlayerConfig {
+  enabled: boolean;
 }
 
 export interface QueueItem {
@@ -20,6 +29,12 @@ export interface QueueItem {
   show_action_buttons: boolean;
   show_artist_name: boolean
   show_move_up_next: boolean;
+}
+
+export interface QueueSection {
+  active_player_entity: string;
+  config: QueueConfig;
+  hass: HomeAssistant;
 }
 
 export type QueueService = (

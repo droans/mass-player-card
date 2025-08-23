@@ -9,9 +9,9 @@ import gzipPlugin from 'rollup-plugin-gzip';
 
 export default [
   {
-    input: 'src/index.ts',
+    input: 'src/main.ts',
     output: {
-      file: './dist/mass-card.js',
+      file: './dist/mass-player-card.js',
       format: 'es',
     },
     plugins: [

@@ -2471,9 +2471,9 @@ __metadata:
   languageName: node
   linkType: hard
 
-"mass_queue_card@workspace:.":
+"mass-player-card@workspace:.":
   version: 0.0.0-use.local
-  resolution: "mass_queue_card@workspace:."
+  resolution: "mass-player-card@workspace:."
   dependencies:
     "@babel/core": "npm:^7.15.0"
     "@babel/plugin-proposal-class-properties": "npm:^7.14.5"

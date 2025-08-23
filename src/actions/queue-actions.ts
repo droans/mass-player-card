@@ -1,13 +1,16 @@
 import { HomeAssistant } from "custom-card-helpers";
-import { Config, QueueItem } from "./types";
+import { QueueConfig, QueueItem } from "../types";
 
-export default class HassService {
+export default class QueueActions {
   private hass: HomeAssistant;
-  private config: Config
+  private config: QueueConfig;
+  public player_entity: string;
 
-  constructor(hass: HomeAssistant, config: Config) {
+  constructor(hass: HomeAssistant, config: QueueConfig, player_entity: string) {
     this.hass = hass;
     this.config = config;
+    this.player_entity = player_entity;
+    
   }
 
   async getQueue(limit_before: number, limit_after: number): Promise<QueueItem[]> {
@@ -20,13 +23,13 @@ export default class HassService {
         domain: 'mass_queue',
         service: 'get_queue_items',
         service_data: {
-          entity: this.config.entity,
+          entity: this.player_entity,
           limit_before: limit_before,
           limit_after: limit_after,
         },
         return_response: true
       });
-      const result: QueueItem[] = ret.response[this.config.entity];
+      const result: QueueItem[] = ret.response[this.player_entity];
       return result;
       /* eslint-enable */
     } catch (e) {
@@ -40,7 +43,7 @@ export default class HassService {
       await this.hass.callService(
         'mass_queue', 'play_queue_item',
         {
-          entity: this.config.entity,
+          entity: this.player_entity,
           queue_item_id: queue_item_id
         }
       )
@@ -54,7 +57,7 @@ export default class HassService {
       await this.hass.callService(
         'mass_queue', 'remove_queue_item',
         {
-          entity: this.config.entity,
+          entity: this.player_entity,
           queue_item_id: queue_item_id
         }
       )
@@ -68,7 +71,7 @@ export default class HassService {
       await this.hass.callService(
         'mass_queue', 'move_queue_item_next',
         {
-          entity: this.config.entity,
+          entity: this.player_entity,
           queue_item_id: queue_item_id
         }
       )
@@ -82,7 +85,7 @@ export default class HassService {
       await this.hass.callService(
         'mass_queue', 'move_queue_item_up',
         {
-          entity: this.config.entity,
+          entity: this.player_entity,
           queue_item_id: queue_item_id
         }
       )
@@ -96,7 +99,7 @@ export default class HassService {
       await this.hass.callService(
         'mass_queue', 'move_queue_item_down',
         {
-          entity: this.config.entity,
+          entity: this.player_entity,
           queue_item_id: queue_item_id
         }
       )

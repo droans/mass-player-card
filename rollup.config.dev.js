@@ -7,9 +7,9 @@ import json from '@rollup/plugin-json';
 import image from '@rollup/plugin-image';
 
 export default {
-  input: ['src/index.ts'],
+  input: ['src/main.ts'],
   output: {
-    file: '../www/mass-card.js',
+    file: '../www/mass-player-card.js',
     format: 'es',
   },
   plugins: [

@@ -173,4 +173,4 @@ class MediaRow extends LitElement {
     }
 }
 
-customElements.define('mass-media-row', MediaRow);
+customElements.define('mass-player-media-row', MediaRow);

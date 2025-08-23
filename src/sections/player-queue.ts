@@ -1,68 +1,75 @@
 import { LitElement, html, type TemplateResult, type CSSResultGroup, PropertyValues } from 'lit';
 import { keyed } from 'lit/directives/keyed.js';
-import { customElement, property, state } from 'lit/decorators.js';
+import { property, state } from 'lit/decorators.js';
 import {
   type HomeAssistant,
 } from 'custom-card-helpers';
 
-import { QueueItem, Config } from '../types'
-import HassService from '../services'
+import { QueueItem, QueueConfig } from '../types'
+import QueueActions from '../actions/queue-actions';
 import styles from '../styles/player-queue';
-import { DEFAULT_CONFIG } from '../const'
 import '../components/media-row'
-import { version } from '../../package.json';
 
-const DEV = false;
-
-const cardId = 'mass-card';
-const cardName = 'Music Assistant Queue Card';
-const cardDescription = 'Music Assistant Queue Card for Home Assistant';
-const cardUrl = 'https://github.com/droans/mass_card';
-
-declare global {
-  interface Window {
-    /* eslint-disable @typescript-eslint/no-explicit-any */
-    loadCardHelpers?: () => Promise<any>;
-  }
-}
-
-      /* eslint-disable-next-line 
-        no-console, 
-      */
-console.info(
-  `%c ${cardName}${DEV ? ' DEV' : ''} \n%c Version v${version}`,
-  'color: teal; font-weight: bold; background: lightgray',
-  'color: darkblue; font-weight: bold; background: white',
-);
-/* eslint-disable @typescript-eslint/no-explicit-any */
-(window as any).customCards = (window as any).customCards || [];
-(window as any).customCards.push({
-  /* eslint-enable */
-  type: `${cardId}${DEV ? '-dev' : ''}`,
-  name: `${cardName}${DEV ? ' DEV' : ''}`,
-  preview: false,
-  description: cardDescription,
-  documentationURL: cardUrl,
-});
-
-@customElement(`${cardId}${DEV ? '-dev' : ''}`)
-export class MusicAssistantCard extends LitElement {
-  @property({attribute: false}) public hass!: HomeAssistant;
-
+class QueueCard extends LitElement {
+  // @property({ attribute: false}) public hass!: HomeAssistant;
+  private _active_player_entity!: string;
+  @property({ attribute: false }) public _config!: QueueConfig;
   @state() private queue: QueueItem[] = [];
-  @state() private config!: Config;
-  @state() private error?: TemplateResult;
+  @state() private content_id!: string;
 
-  private newId = '';
-  private services!: HassService;
+  private _hass!: HomeAssistant
   private _listening = false;
   /* eslint-disable-next-line @typescript-eslint/no-explicit-any */
   private _unsubscribe: any;
   private queueID = '';
-
-  constructor() {
-    super();
-    this.queue = [];
+  private newId = '';
+  private actions!: QueueActions;
+  @property({ attribute: false})
+  set active_player_entity(active_player_entity: string) {
+    console.log(`Received active player ${active_player_entity}`)
+    this._active_player_entity = active_player_entity;
+    this.getQueueIfReady();
+  }
+  set config(config: QueueConfig) {
+    console.log(`Received config ${config}`);
+    this._config = config;
+    this.getQueueIfReady();
+  }
+  set hass(hass: HomeAssistant) {
+    if (!hass) {
+      return
+    }
+    if (!this._hass) {
+      console.log(`Received first good hass`);
+      console.log(hass);
+    }
+    this._hass = hass;
+    if (!this.actions) {
+      this.getQueueIfReady();
+    }
+    if (!this._listening) {
+      this.subscribeUpdates();
+    }
+    const newContentId = hass.states[this._active_player_entity]?.attributes?.media_content_id;
+    console.log(`New content ID for ${this._active_player_entity}: ${newContentId}, old content ID: ${this.content_id}`);
+    console.log(`Config:`);
+    console.log(this._config);
+    if (newContentId !== this.content_id && newContentId) {
+      this.content_id = newContentId;
+    }
+  }
+  private getQueueIfReady() {
+    if (!this._hass || !this._config || !this._active_player_entity) {
+      return
+    }
+    if (!this.queue) {
+      console.log(`Getting initial queue...`);
+      console.log(`Config:`);
+      console.log(this._config)
+      console.log(`Entity: ${this._active_player_entity}`)
+    }
+    this.getQueue();
+    console.log(this.queue.length);
   }
     /* eslint-disable-next-line @typescript-eslint/no-explicit-any */
   private eventListener = (event: any) => {
@@ -74,35 +81,13 @@ export class MusicAssistantCard extends LitElement {
     }}
   }
   private subscribeUpdates() {
-    this._unsubscribe = this.hass.connection.subscribeEvents(
+    console.log(`Listening for events`);
+    console.log(this._hass);
+    this._unsubscribe = this._hass.connection.subscribeEvents(
       this.eventListener, 
       "mass_queue"
     );
     this._listening = true;
-  }
-  static getConfigElement() {
-    return document.createElement(`${cardId}-editor${DEV ? '-dev' : ''}`);
-  }
-
-  static getStubConfig() {
-    return {
-      entity: [],
-      title: "Player Queue",
-      expanded: false
-     };
-  }
-
-  public setConfig(config?: Config) {
-    if (!config) {
-      throw this.createError('Invalid configuration')
-    }
-    if (!config.entity) {
-      throw this.createError('You need to define entitiy.');
-    };
-    this.config = {
-      ...DEFAULT_CONFIG,
-      ...config
-    }
   }
   private getQueueItemIndex(queue_item_id: string, queue: QueueItem[] = []): number {
     if (!queue.length) {
@@ -115,17 +100,23 @@ export class MusicAssistantCard extends LitElement {
     this.queue.splice(new_index, 0, this.queue.splice(old_index, 1)[0]);
   }
   private getQueue() {
-    if (!this.services) {
-      return;
+    console.log(`Getting queue...`);
+    console.log(this._config);
+    console.log(this._active_player_entity);
+    if (
+      !this.actions 
+      || this.actions.player_entity !== this._active_player_entity
+    ) {
+      this.actions = new QueueActions(this._hass, this._config, this._active_player_entity)
     }
     try {
       /* eslint-disable-next-line @typescript-eslint/no-floating-promises */
-      this.services.getQueue(this.config.limit_before, this.config.limit_after).then(
+      this.actions.getQueue(this._config.limit_before, this._config.limit_after).then(
         (queue) => {
           this.queue = this.updateActiveTrack(queue);
         }
       );
-      this.queueID = this.hass.states[this.config.entity].attributes.active_queue;
+      this.actions = this._hass.states[this._active_player_entity].attributes.active_queue;
     } catch {
       this.queue = []
     }
@@ -133,7 +124,7 @@ export class MusicAssistantCard extends LitElement {
   private updateActiveTrack(queue: QueueItem[]): QueueItem[] {
     let content_id = this.newId;
     if (!content_id.length) {
-      content_id = this.hass.states[this.config.entity].attributes.media_content_id;
+      content_id = this._hass.states[this._active_player_entity].attributes.media_content_id;
     }
     const activeIndex = queue.findIndex(item => item.media_content_id === content_id);
     return queue.map( (element, index) => ({
@@ -141,91 +132,44 @@ export class MusicAssistantCard extends LitElement {
       playing: index === activeIndex,
       show_action_buttons: index > activeIndex,
       show_move_up_next: index > activeIndex + 1,
-      show_artist_name: this.config.show_artist_names
+      show_artist_name: this._config.show_artist_names
     }));
   }
-
   private onQueueItemSelected = async (queue_item_id: string, content_id: string) => {
     this.newId = content_id
-    await this.services.playQueueItem(queue_item_id);
+    await this.actions.playQueueItem(queue_item_id);
     this.getQueue();
   }
   private onQueueItemRemoved = async (queue_item_id: string) => {
-    await this.services.removeQueueItem(queue_item_id);
+    await this.actions.removeQueueItem(queue_item_id);
     this.queue = this.queue.filter( (item) => item.queue_item_id !== queue_item_id);
   }
   private onQueueItemMoveNext = async (queue_item_id: string) => {
     const cur_idx = this.getQueueItemIndex(queue_item_id) ;
     const new_idx = this.queue.findIndex(item => item.playing) + 1;
     this.moveQueueItem(cur_idx, new_idx);
-    await this.services.MoveQueueItemNext(queue_item_id);
+    await this.actions.MoveQueueItemNext(queue_item_id);
   }
   private onQueueItemMoveUp = async (queue_item_id: string) => {
     const cur_idx = this.getQueueItemIndex(queue_item_id);
     const new_idx = cur_idx - 1;
     this.moveQueueItem(cur_idx, new_idx);
-    await this.services.MoveQueueItemUp(queue_item_id);
+    await this.actions.MoveQueueItemUp(queue_item_id);
   }
   private onQueueItemMoveDown = async (queue_item_id: string) => {
     const cur_idx = this.getQueueItemIndex(queue_item_id);
     const new_idx = cur_idx + 1;
     this.moveQueueItem(cur_idx, new_idx);
-    await this.services.MoveQueueItemDown(queue_item_id);
+    await this.actions.MoveQueueItemDown(queue_item_id);
   }
-
-  protected willUpdate(_changedProperties: PropertyValues): void {
-    if (_changedProperties.has('hass') || _changedProperties.has('config')) {
-      if (this.hass && this.config) {
-        this.services = new HassService(this.hass, this.config);
-      }
-      if (!this._listening) {
-        this.subscribeUpdates();
-      }
-    }
-  }
-  protected updated(_changedProperties: PropertyValues) {
-    super.updated(_changedProperties);
-    if (!this.queue.length && this.hass) {
-      this.getQueue();
-    }
-    if (_changedProperties.has('hass')) {
-      const oldHass = _changedProperties.get('hass') as HomeAssistant;
-      if (!oldHass) {
-        this.getQueue();
-      } else {
-        const newHass = this.hass
-        const oldEnt = oldHass.states[this.config.entity];
-        const newEnt = newHass.states[this.config.entity];
-        const oldContentId = oldEnt.attributes.media_content_id;
-        const newContentId = newEnt.attributes.media_content_id;
-        if (newContentId != oldContentId) {
-          this.getQueue();
-        }
-      }
-    }
-  }
-
-  protected shouldUpdate(_changedProperties: PropertyValues): boolean {
-    if (_changedProperties.has('queue')) {
-      return true;
-    }
-    if (_changedProperties.has('hass')) {
-      const oldHass = _changedProperties.get('hass')! as HomeAssistant;
-      if (!oldHass) {
-        return true;
-      }
-    }
-    return super.shouldUpdate(_changedProperties);
-  }
-
   private renderQueueItems() {
-    const show_album_covers = this.config.show_album_covers;
+    const show_album_covers = this._config.show_album_covers;
     return this.queue.map(
       (item) => {
         return keyed(
           item.queue_item_id, 
           html`
-            <mass-media-row
+            <mass-player-media-row
               .media_item=${item}
               .selected=${item.playing}
               .showAlbumCovers=${show_album_covers}
@@ -237,49 +181,27 @@ export class MusicAssistantCard extends LitElement {
               .moveQueueItemUpService=${this.onQueueItemMoveUp}
               .moveQueueItemDownService=${this.onQueueItemMoveDown}
             >
-            </mass-media-row>`
+            </mass-player-media-row>`
         )
       }
     );
   }
-
   protected render() {
+    console.log(`Rendering...`)
+    console.log(this._config)
+    console.log(this._active_player_entity)
     return html`
       <ha-card>
-        <ha-expansion-panel
-          class="mass-panel"
-          header=${this.config.title}
-          .expanded=${this.config.expanded || !this.config.allow_collapsing}
-          ${this.config.allow_collapsing ? '': 'no-collapse'}
-        >
-          <ha-md-list class="list">
-            ${this.renderQueueItems()}
-          </ha-md-list>
-        </ha-expansion-panel>
+        <ha-md-list class="list">
+          ${this.renderQueueItems()}
+        </ha-md-list>
       </ha-card>
     `
   }
+  
   static get styles(): CSSResultGroup {
     return styles;
   }
-
-  public getCardSize() {
-    return 3;
-  }
-
-  private createError(errorString: string): Error {
-    const error = new Error(errorString);
-    /* eslint-disable-next-line
-      @typescript-eslint/no-explicit-any,
-    */
-    const errorCard = document.createElement('hui-error-card') as any;
-    errorCard.setConfig({
-      type: 'error',
-      error,
-      origConfig: this.config,
-    });
-    this.error = html`${errorCard}`;
-    return error;
-  }
-
 }
+// customElements.define('mass-player-queue-card', QueueCardShell);
+customElements.define('mass-player-queue-card', QueueCard);
