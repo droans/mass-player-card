@@ -15,6 +15,7 @@ import styles from './styles/main';
 import { DEFAULT_CONFIG, Sections, DEFAULT_CARD } from './const'
 import { version } from '../package.json';
 import './sections/player-queue';
+import './sections/players';
 
 const DEV = false;
 
@@ -139,6 +140,21 @@ export class MusicAssistantPlayerCard extends LitElement {
     console.log(ev);
     this.active_section = newTab;
   }
+  protected renderPlayers() {
+    if (this.active_section === Sections.PLAYERS) {
+      return cache(html`
+        <sl-tab-panel name="players">
+          <mass-player-players-card
+            .selectedPlayerService=${this.setActivePlayer}
+            .activePlayerEntity=${this.active_player_entity}
+            .config=${this.config}
+            .hass=${this.hass}
+          ></mass-player-queue-card>
+        </sl-tab-panel>
+      `);
+    }
+    return html``
+  }
   protected renderPlayerQueue() {
     if (this.active_section === Sections.QUEUE) {
       return cache(html`
@@ -213,6 +229,7 @@ export class MusicAssistantPlayerCard extends LitElement {
   protected renderSections() {
     return html`
       ${this.renderPlayerQueue()}
+      ${this.renderPlayers()}
     `
   }
   protected render() {

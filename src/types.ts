@@ -44,3 +44,7 @@ export type ItemSelectedService = (
   queue_item_id: string, 
   media_content_id: string
 ) => void;
+
+export type PlayerSelectedService = (
+  player_entity: string
+) => void
