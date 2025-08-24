@@ -55,15 +55,13 @@ export class MusicAssistantPlayerCard extends LitElement {
   @property({attribute: false}) public hass!: HomeAssistant;
   @state() private config!: Config;
   @state() private error?: TemplateResult;
-  @state() private queue_store?: QueueSection;
-  @state() private active_player_entity?: string;
+  @state() private active_player_entity!: string;
   @state() private active_section: string = DEFAULT_CARD;
-  @state() private first_update = false;
   /* eslint-disable-next-line @typescript-eslint/no-explicit-any */
 
   constructor() {
     super();
-    if (this.config) {
+    if (this.config && !this.active_player_entity) {
       this.active_player_entity = this.config.entities[0];
     }
   }
@@ -88,11 +86,12 @@ export class MusicAssistantPlayerCard extends LitElement {
       ...DEFAULT_CONFIG,
       ...config
     }
-    this.active_player_entity = this.config.entities[0];
+    if (!this.active_player_entity) {
+      this.active_player_entity = this.config.entities[0];
+    }
   }
-  public setActivePlayer(player_entity: string) {
+  private setActivePlayer = (player_entity: string) => {
     this.active_player_entity = player_entity;
-
   }
   protected willUpdate(_changedProperties: PropertyValues): void {
     

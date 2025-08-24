@@ -53,7 +53,6 @@ class PlayersCard extends LitElement {
     )
     this.entities = entities;
   }
-  
   protected renderPlayerRows() {
     return this.entities.map(
       (item) => {
