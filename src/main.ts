@@ -210,10 +210,15 @@ export class MusicAssistantPlayerCard extends LitElement {
       </sl-tab-group>
     `
   }
+  protected renderSections() {
+    return html`
+      ${this.renderPlayerQueue()}
+    `
+  }
   protected render() {
     return html`
       <ha-card>
-      ${this.renderPlayerQueue()}
+      ${this.renderSections()}
       ${this.renderTabs()}
       </ha-card>
     `
