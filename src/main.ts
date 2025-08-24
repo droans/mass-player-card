@@ -59,13 +59,6 @@ export class MusicAssistantPlayerCard extends LitElement {
   @state() private active_player_entity?: string;
   @state() private active_section: string = DEFAULT_CARD;
   @state() private first_update = false;
-  // private _hass!: HomeAssistant;
-  
-  // public hass!: HomeAssistant;
-
-  
-  
-  // private services!: QueueActions;
   /* eslint-disable-next-line @typescript-eslint/no-explicit-any */
 
   constructor() {
