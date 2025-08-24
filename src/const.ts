@@ -16,8 +16,8 @@ export const DEFAULT_CONFIG = {
 }
 
 export enum Sections {
-  QUEUE = 1,
-  MEDIA_PLAYER = 2,
-  PLAYERS = 3,
+  QUEUE = "queue",
+  MEDIA_PLAYER = "player",
+  PLAYERS = "players",
 }
-export const DEFAULT_CARD: number = Sections.QUEUE
+export const DEFAULT_CARD: string = Sections.QUEUE

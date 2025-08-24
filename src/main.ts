@@ -49,7 +49,7 @@ export class MusicAssistantPlayerCard extends LitElement {
   @state() private error?: TemplateResult;
   @state() private queue_store?: QueueSection;
   @state() private active_player_entity?: string;
-  @state() private current_section: Sections = DEFAULT_CARD;
+  @state() private active_section: string = DEFAULT_CARD;
   @state() private first_update = false;
   // private _hass!: HomeAssistant;
   
