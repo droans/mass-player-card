@@ -136,8 +136,6 @@ export class MusicAssistantPlayerCard extends LitElement {
   }
   private _handleTabChanged(ev: CustomEvent) {
     const newTab = ev.detail.name;
-    console.log(`New tab: ${newTab}`);
-    console.log(ev);
     this.active_section = newTab;
   }
   protected renderPlayers() {
