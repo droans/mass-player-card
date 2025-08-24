@@ -98,31 +98,9 @@ export class MusicAssistantPlayerCard extends LitElement {
     if (_changedProperties.has('hass') || _changedProperties.has('config')) {
       if (this.hass && this.config) {
         
-        // this.services = new HassService(this.hass, this.config);
       }
     }
   }
-  // protected updated(_changedProperties: PropertyValues) {
-  //   super.updated(_changedProperties);
-  //   if (!this.queue.length && this.hass) {
-  //     this.getQueue();
-  //   }
-  //   if (_changedProperties.has('hass')) {
-  //     const oldHass = _changedProperties.get('hass') as HomeAssistant;
-  //     if (!oldHass) {
-  //       this.getQueue();
-  //     } else {
-  //       const newHass = this.hass
-  //       const oldEnt = oldHass.states[this.config.entity];
-  //       const newEnt = newHass.states[this.config.entity];
-  //       const oldContentId = oldEnt.attributes.media_content_id;
-  //       const newContentId = newEnt.attributes.media_content_id;
-  //       if (newContentId != oldContentId) {
-  //         this.getQueue();
-  //       }
-  //     }
-  //   }
-  // }
 
   protected shouldUpdate(_changedProperties: PropertyValues): boolean {
     if (_changedProperties.has('active_player')
