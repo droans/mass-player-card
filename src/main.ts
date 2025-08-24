@@ -1,6 +1,13 @@
 import { LitElement, html, type TemplateResult, type CSSResultGroup, PropertyValues } from 'lit';
 import { cache } from 'lit/directives/cache.js';
 import { customElement, property, state } from 'lit/decorators.js';
+
+import {
+  mdiMusic,
+  mdiPlaylistMusic,
+  mdiSpeakerMultiple
+} from '@mdi/js';
+
 import { type HomeAssistant } from 'custom-card-helpers';
 
 import { Config, QueueSection } from './types'
@@ -126,22 +133,88 @@ export class MusicAssistantPlayerCard extends LitElement {
     }
     return super.shouldUpdate(_changedProperties);
   }
+  private _handleTabChanged(ev: CustomEvent) {
+    const newTab = ev.detail.name;
+    console.log(`New tab: ${newTab}`);
+    console.log(ev);
+    this.active_section = newTab;
+  }
   protected renderPlayerQueue() {
-    if (this.current_section === Sections.QUEUE) {
+    if (this.active_section === Sections.QUEUE) {
       return cache(html`
-        <mass-player-queue-card
-          .hass=${this.hass}
-          .active_player_entity=${this.active_player_entity}
-          .config=${this.config.queue}
-        ></mass-player-queue-card>
+        <sl-tab-panel name="queue">
+          <mass-player-queue-card
+            .hass=${this.hass}
+            .active_player_entity=${this.active_player_entity}
+            .config=${this.config.queue}
+          ></mass-player-queue-card>
+        </sl-tab-panel>
       `)
     }
     return html``
+  }
+  protected renderMediaPlayerTab() {
+    if (this.config.player.enabled){
+      return html`
+        <sl-tab 
+          slot="nav"
+          .active=${this.active_section==Sections.MEDIA_PLAYER}
+          panel="player"
+        >
+          <ha-icon-button 
+            class="action-button"
+            .path=${mdiMusic}
+          </ha-icon-button>
+        </sl-tab>
+      `
+    }
+    return html``
+  }
+  protected renderQueueTab() {
+    if (this.config.queue.enabled){
+      return html`
+        <sl-tab 
+          slot="nav"
+          .active=${this.active_section==Sections.QUEUE}
+          panel="queue"
+        >
+          <ha-icon-button 
+            class="action-button"
+            .path=${mdiPlaylistMusic}
+          </ha-icon-button>
+        </sl-tab>
+      `
+    }
+    return html``
+  }
+  protected renderPlayersTab() {
+    return html`
+      <sl-tab 
+        slot="nav"
+        .active=${this.active_section==Sections.PLAYERS}
+        panel="players"
+      >
+        <ha-icon-button 
+          class="action-button"
+          .path=${mdiSpeakerMultiple}
+        </ha-icon-button>
+      </sl-tab>
+    `
+  }
+  protected renderTabs() {
+    return html`
+      <sl-tab-group @sl-tab-show=${this._handleTabChanged}>
+        ${this.renderMediaPlayerTab()}
+        ${this.renderQueueTab()}
+        ${this.renderPlayersTab()}
+      </sl-tab-group>
+    `
   }
   protected render() {
     return html`
       <ha-card>
       ${this.renderPlayerQueue()}
+      ${this.renderTabs()}
       </ha-card>
     `
   }
