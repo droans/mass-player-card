@@ -104,7 +104,7 @@ export class MusicAssistantPlayerCard extends LitElement {
   }
 
   protected shouldUpdate(_changedProperties: PropertyValues): boolean {
-    if (_changedProperties.has('active_player')
+    if (_changedProperties.has('active_player_entity')
        || _changedProperties.has('active_section')
     ) {
       return true;
