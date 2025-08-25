@@ -61,6 +61,12 @@ export default css`
     align-items: center;
     justify-content: space-evenly;
   }
+  .volume {
+    display: flex;
+    flex-direction: row;
+    align-items: center;
+    justify-content: space-evenly;
+  }
   .player-controls {
     width: var(--player-control-icon-width);
     height: var(--player-control-icon-width);

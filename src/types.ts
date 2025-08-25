@@ -48,6 +48,7 @@ export interface PlayerData {
   shuffle: boolean;
   repeat: RepeatMode;
   player_name: string;
+  volume: number;
   
 }
 

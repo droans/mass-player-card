@@ -85,4 +85,18 @@ export default class PlayerActions {
       console.error(`Error calling repeat`, e)
     }
   }
+  async actionSetVolume(entity: HassEntity, volume: number) {
+    try {
+      await this.hass.callService(
+        'media_player', 'volume_set',
+        {
+          'entity_id': entity.entity_id,
+          'volume_level': volume
+        }
+      )
+    } catch (e) {
+      console.error(`Error calling repeat`, e)
+    }
+
+  }
 }

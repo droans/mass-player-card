@@ -6,7 +6,19 @@ import { HomeAssistant } from "custom-card-helpers";
 import PlayerActions from "../actions/player-actions";
 import styles from '../styles/music-player';
 import { PlayerConfig, PlayerData } from "../types";
-import { mdiPause, mdiPlay, mdiRepeat, mdiRepeatOff, mdiRepeatOnce, mdiShuffle, mdiShuffleDisabled, mdiSkipNext, mdiSkipPrevious } from "@mdi/js";
+import { 
+  mdiPause, 
+  mdiPlay, 
+  mdiRepeat, 
+  mdiRepeatOff, 
+  mdiRepeatOnce, 
+  mdiShuffle, 
+  mdiShuffleDisabled, 
+  mdiSkipNext, 
+  mdiSkipPrevious, 
+  mdiVolumeHigh, 
+  mdiVolumeMute 
+} from "@mdi/js";
 import { RepeatMode } from "../const";
 
 class MusicPlayerCard extends LitElement {
@@ -48,11 +60,21 @@ class MusicPlayerCard extends LitElement {
       track_artwork: this._player.attributes.entity_picture_local,
       track_title: this._player.attributes.media_title,
       muted: this._player.attributes.is_volume_muted,
+      volume: Math.floor(this._player.attributes.volume_level * 100),
       player_name: this._player.attributes.friendly_name ? this._player.attributes.friendly_name : ''
     }
     if (this.player_data !== new_player_data) {
       this.player_data = new_player_data;
     }
+  }
+  private async onVolumeChange(ev: CustomEvent) {
+    console.log(`Received volume change ${ev.detail.value}`);
+    var volume = (ev.detail as any).value;
+    if (isNaN(volume)) return;
+    this.player_data.volume = volume;
+    volume = volume / 100;
+    console.log(`Using volume ${volume}`);
+    await this.actions.actionSetVolume(this._player, volume);
   }
   private async onPlayPause() {
     await this.actions.actionPlayPause(this._player);
@@ -151,7 +173,18 @@ class MusicPlayerCard extends LitElement {
     `
   }
   protected renderVolume() {
-
+    return html`
+      <ha-control-slider
+        .disabled=${this.player_data.muted}
+        .unit="%"
+        .value=${this.player_data.volume}
+        @value-changed=${this.onVolumeChange}
+      ></ha-control-slider>
+      <ha-icon-button
+        .path=${this.player_data.muted ? mdiVolumeMute : mdiVolumeHigh}
+        @click=${this.onVolumeMuteToggle}
+      ></ha-icon-button>
+    `
   }
   protected renderControls() {
     return html`
