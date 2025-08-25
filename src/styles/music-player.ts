@@ -32,8 +32,10 @@ export default css`
     padding: 0.5rem;
   }
   .player-name {
+    color: var(--player-name-color);
   }
   .player-track-title {
+    color: var(--player-track-color);
   }
   .player-track-artist {
   }

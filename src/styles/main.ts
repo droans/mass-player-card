@@ -21,4 +21,6 @@ export default css`
    --player-control-icon-width: 30px;
    --player-play-pause-color: var(--secondary-background-color);
    --player-play-pause-icon-size: 5rem;
+   --player-track-color: var(--ha-color-text-link);
+   --player-name-color: var(--ha-color-text-secondary);
  }`
