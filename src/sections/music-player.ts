@@ -73,6 +73,7 @@ class MusicPlayerCard extends LitElement {
     await this.actions.actionSetVolume(this._player, volume);
   }
   private async onPlayPause() {
+    this.player_data.playing = !this.player_data.playing;
     await this.actions.actionPlayPause(this._player);
   }
   private async onNext() {
@@ -84,10 +85,12 @@ class MusicPlayerCard extends LitElement {
     
   }
   private async onVolumeMuteToggle() {
+    this.player_data.muted = !this.player_data.muted;
     await this.actions.actionMuteToggle(this._player);
     
   }
   private async onShuffleToggle() {
+    this.player_data.shuffle = !this.player_data.shuffle;
     await this.actions.actionShuffleToggle(this._player);
     
   }
@@ -100,6 +103,7 @@ class MusicPlayerCard extends LitElement {
     if (cur_repeat === RepeatMode.ONCE) {
       repeat = RepeatMode.OFF;
     }
+    this.player_data.repeat = repeat;
     await this.actions.actionRepeatSet(this._player, repeat);
     
   }
