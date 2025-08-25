@@ -159,12 +159,12 @@ export class MusicAssistantPlayerCard extends LitElement {
     }
     return html``
   }
-  protected renderMediaPlayerTab() {
+  protected renderMusicPlayerTab() {
     if (this.config.player.enabled){
       return html`
         <sl-tab 
           slot="nav"
-          .active=${this.active_section==Sections.MEDIA_PLAYER}
+          .active=${this.active_section==Sections.MUSIC_PLAYER}
           panel="player"
         >
           <ha-icon-button 
@@ -210,7 +210,7 @@ export class MusicAssistantPlayerCard extends LitElement {
   protected renderTabs() {
     return html`
       <sl-tab-group @sl-tab-show=${this._handleTabChanged}>
-        ${this.renderMediaPlayerTab()}
+        ${this.renderMusicPlayerTab()}
         ${this.renderQueueTab()}
         ${this.renderPlayersTab()}
       </sl-tab-group>
