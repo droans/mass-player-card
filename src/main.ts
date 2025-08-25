@@ -133,7 +133,7 @@ export class MusicAssistantPlayerCard extends LitElement {
   protected renderPlayers() {
     if (this.active_section === Sections.PLAYERS) {
       return cache(html`
-        <sl-tab-panel name="players">
+        <sl-tab-panel name="${Sections.PLAYERS}">
           <mass-player-players-card
             .selectedPlayerService=${this.setActivePlayer}
             .activePlayerEntity=${this.active_player_entity}
@@ -148,7 +148,7 @@ export class MusicAssistantPlayerCard extends LitElement {
   protected renderPlayerQueue() {
     if (this.active_section === Sections.QUEUE) {
       return cache(html`
-        <sl-tab-panel name="queue">
+        <sl-tab-panel name="${Sections.QUEUE}">
           <mass-player-queue-card
             .hass=${this.hass}
             .active_player_entity=${this.active_player_entity}
@@ -165,7 +165,7 @@ export class MusicAssistantPlayerCard extends LitElement {
         <sl-tab 
           slot="nav"
           .active=${this.active_section==Sections.MUSIC_PLAYER}
-          panel="player"
+          panel="${Sections.MUSIC_PLAYER}"
         >
           <ha-icon-button 
             class="action-button"
@@ -182,7 +182,7 @@ export class MusicAssistantPlayerCard extends LitElement {
         <sl-tab 
           slot="nav"
           .active=${this.active_section==Sections.QUEUE}
-          panel="queue"
+          panel="${Sections.QUEUE}"
         >
           <ha-icon-button 
             class="action-button"
@@ -198,7 +198,7 @@ export class MusicAssistantPlayerCard extends LitElement {
       <sl-tab 
         slot="nav"
         .active=${this.active_section==Sections.PLAYERS}
-        panel="players"
+        panel="${Sections.PLAYERS}"
       >
         <ha-icon-button 
           class="action-button"
