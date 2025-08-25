@@ -65,10 +65,11 @@ export default css`
   .play-pause {
     width: var(--play-pause-icon-width);
     height: var(--play-pause-icon-width);
-    transform: scale(1.5);
     border-radius: 50%;
     background: var(--player-play-pause-color);
     box-shadow: var(--ha-card-box-shadow,none);
+    --mdc-icon-size: var(--player-play-pause-icon-size);
+    --mdc-icon-button-size: var(--player-play-pause-icon-size);
   }
   .artwork {
     grid-area: artwork;

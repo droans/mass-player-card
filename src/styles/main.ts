@@ -20,4 +20,5 @@ export default css`
    // Music Player Variables
    --player-control-icon-width: 30px;
    --player-play-pause-color: var(--secondary-background-color);
+   --player-play-pause-icon-size: 5rem;
  }`
