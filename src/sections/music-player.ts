@@ -149,10 +149,17 @@ class MusicPlayerCard extends LitElement {
   }
   protected renderShuffle() {
     return html`
-      <ha-icon-button
-        .path=${this.player_data.shuffle ? mdiShuffle : mdiShuffleDisabled}
+      <ha-button
+        appearance="${this.player_data.shuffle ? "filled" : "plain"}"
+        variant="neutral"
         @click=${this.onShuffleToggle}
-      ></ha-icon-button>
+      >
+        <ha-svg-icon
+          slot="start"
+          .path=${this.player_data.shuffle ? mdiShuffle : mdiShuffleDisabled}
+        ></ha-svg-icon>
+        Shuffle
+      </ha-button>
     `
   }
   protected renderRepeat() {
@@ -165,10 +172,17 @@ class MusicPlayerCard extends LitElement {
       icon = mdiRepeatOff;
     }
     return html`
-      <ha-icon-button
-        .path=${icon}
+      <ha-button
+        appearance="${this.player_data.repeat == RepeatMode.OFF ? "plain" : "filled"}"
+        variant="neutral"
         @click=${this.onRepeatToggle}
-      ></ha-icon-button>
+      >
+        <ha-svg-icon
+          slot="start"
+          .path=${icon}
+        ></ha-svg-icon>
+        Repeat
+      </ha-button>
     `
   }
   protected renderVolume() {
