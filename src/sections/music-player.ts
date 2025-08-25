@@ -49,7 +49,7 @@ class MusicPlayerCard extends LitElement {
     if (!this._player) {
       return
     }
-    var new_player_data: PlayerData = {
+    const new_player_data: PlayerData = {
       playing: this._player.state == 'playing',
       repeat: this._player.attributes.repeat,
       shuffle: this._player.attributes.shuffle,
@@ -59,14 +59,14 @@ class MusicPlayerCard extends LitElement {
       track_title: this._player.attributes.media_title,
       muted: this._player.attributes.is_volume_muted,
       volume: Math.floor(this._player.attributes.volume_level * 100),
-      player_name: this._player.attributes.friendly_name ? this._player.attributes.friendly_name : ''
+      player_name: this._player.attributes.friendly_name ??  ''
     }
     if (JSON.stringify(this.player_data) !== JSON.stringify(new_player_data)) {
       this.player_data = new_player_data;
     }
   }
   private async onVolumeChange(ev: CustomEvent) {
-    var volume = (ev.detail as any).value;
+    let volume: number = ev.detail.value;
     if (isNaN(volume)) return;
     this.player_data.volume = volume;
     volume = volume / 100;
@@ -95,8 +95,8 @@ class MusicPlayerCard extends LitElement {
     
   }
   private async onRepeatToggle() {
-    var cur_repeat = this.player_data.repeat;
-    var repeat = RepeatMode.ALL;
+    const cur_repeat = this.player_data.repeat;
+    let repeat = RepeatMode.ALL;
     if (cur_repeat === RepeatMode.ALL) {
       repeat = RepeatMode.ONCE;
     }
@@ -124,6 +124,7 @@ class MusicPlayerCard extends LitElement {
       <div class="artwork" style="${this.artworkStyle()}"></div>
     `
   }
+  /* eslint-disable @typescript-eslint/unbound-method */
   protected renderTrackPrevious() {
     return html`
       <ha-icon-button
@@ -157,12 +158,12 @@ class MusicPlayerCard extends LitElement {
     `
   }
   protected renderRepeat() {
-    var icon = mdiRepeat;
-    var repeat = this.player_data.repeat;
-    if (repeat == 'one') {
+    let icon = mdiRepeat;
+    const repeat = this.player_data.repeat;
+    if (repeat == RepeatMode.ONCE) {
       icon = mdiRepeatOnce;
     }
-    if (repeat == 'off') {
+    if (repeat == RepeatMode.OFF) {
       icon = mdiRepeatOff;
     }
     return html`
@@ -186,6 +187,7 @@ class MusicPlayerCard extends LitElement {
       ></ha-icon-button>
     `
   }
+  /* eslint-enable @typescript-eslint/unbound-method */
   protected renderControls() {
     return html`
     <div class="controls">

@@ -1,4 +1,4 @@
-import { LitElement, html, type TemplateResult, type CSSResultGroup, PropertyValues } from 'lit';
+import { LitElement, html, type CSSResultGroup, PropertyValues } from 'lit';
 import { keyed } from 'lit/directives/keyed.js';
 import { property, state } from 'lit/decorators.js';
 import {
@@ -82,7 +82,7 @@ class QueueCard extends LitElement {
     /* eslint-disable-next-line @typescript-eslint/no-unsafe-argument */
     this.queue.splice(new_index, 0, this.queue.splice(old_index, 1)[0]);
   }
-  private getQueue(forced_id: boolean = false) {
+  private getQueue(forced_id = false) {
     if (
       !this.actions 
       || this.actions.player_entity !== this._active_player_entity

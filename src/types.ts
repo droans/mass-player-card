@@ -2,7 +2,7 @@ import { HomeAssistant } from "custom-card-helpers";
 import { RepeatMode } from "./const";
 
 export interface Config {
-  entities: Array<string>;
+  entities: string[];
   queue: QueueConfig;
   player: PlayerConfig;
 }

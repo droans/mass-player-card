@@ -25,4 +25,4 @@ export enum RepeatMode {
   ONCE = 'one',
   ALL = 'all'
 }
-export const DEFAULT_CARD: string = Sections.MUSIC_PLAYER
+export const DEFAULT_CARD: Sections = Sections.MUSIC_PLAYER

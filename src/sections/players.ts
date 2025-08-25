@@ -9,7 +9,7 @@ import styles from '../styles/player-queue';
 
 class PlayersCard extends LitElement {
   @property({ attribute: false }) public activePlayerEntity!: string;
-  @property({ attribute: false }) private entities: Array<HassEntity> = [];
+  @property({ attribute: false }) private entities: HassEntity[] = [];
   public selectedPlayerService!: PlayerSelectedService;
   private _config!: Config
   
@@ -28,10 +28,10 @@ class PlayersCard extends LitElement {
       this.setEntities(hass);
       return;
     }
-    var update_entities = false;
+    let update_entities = false;
     this.entities.forEach(
       (item) => {
-        var new_state = hass.states[item.entity_id];
+        const new_state = hass.states[item.entity_id];
         if (new_state !== item) {
           update_entities = true;
         }
@@ -46,7 +46,7 @@ class PlayersCard extends LitElement {
     if (!this._config) {
       return;
     }
-    var entities: Array<HassEntity> = [];
+    const entities: HassEntity[] = [];
     this._config.entities.forEach(
       (item) => {
         entities.push(hass.states[item]);

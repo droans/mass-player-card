@@ -10,7 +10,7 @@ import {
 
 import { type HomeAssistant } from 'custom-card-helpers';
 
-import { Config, QueueSection } from './types'
+import { Config } from './types'
 import styles from './styles/main';
 import { DEFAULT_CONFIG, Sections, DEFAULT_CARD } from './const'
 import { version } from '../package.json';
@@ -57,8 +57,7 @@ export class MusicAssistantPlayerCard extends LitElement {
   @state() private config!: Config;
   @state() private error?: TemplateResult;
   @state() private active_player_entity!: string;
-  @state() private active_section: string = DEFAULT_CARD;
-  /* eslint-disable-next-line @typescript-eslint/no-explicit-any */
+  @state() private active_section: Sections = DEFAULT_CARD;
 
   constructor() {
     super();
@@ -116,7 +115,7 @@ export class MusicAssistantPlayerCard extends LitElement {
       }
       const oldStates = oldHass.states;
       const newStates = this.hass.states;
-      var result = false;
+      let result = false;
       this.config.entities.forEach( (element) => {
           if (oldStates[element] !== newStates[element]) {
             result = true;
@@ -128,7 +127,7 @@ export class MusicAssistantPlayerCard extends LitElement {
     return super.shouldUpdate(_changedProperties);
   }
   private _handleTabChanged(ev: CustomEvent) {
-    const newTab = ev.detail.name;
+    const newTab: Sections = ev.detail.name;
     this.active_section = newTab;
   }
   protected renderPlayers() {
@@ -148,7 +147,6 @@ export class MusicAssistantPlayerCard extends LitElement {
   }
   protected renderMusicPlayer() {
     if (this.active_section === Sections.MUSIC_PLAYER) {
-      console.log(`Rendering Music Player`);
       return cache(html`
         <sl-tab-panel name="${Sections.MUSIC_PLAYER}">
           <mass-music-player-card
@@ -223,6 +221,7 @@ export class MusicAssistantPlayerCard extends LitElement {
       </sl-tab>
     `
   }
+  /* eslint-disable @typescript-eslint/unbound-method */
   protected renderTabs() {
     return html`
       <sl-tab-group @sl-tab-show=${this._handleTabChanged}>
@@ -232,6 +231,7 @@ export class MusicAssistantPlayerCard extends LitElement {
       </sl-tab-group>
     `
   }
+  /* eslint-enable @typescript-eslint/unbound-method */
   protected renderSections() {
     return html`
       ${this.renderMusicPlayer()}

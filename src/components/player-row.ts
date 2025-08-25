@@ -44,6 +44,7 @@ class PlayerRow extends LitElement {
       </span>
     `
   }
+  /* eslint-disable @typescript-eslint/unbound-method */
   render() {
     return html`
       <ha-md-list-item 
@@ -56,6 +57,7 @@ class PlayerRow extends LitElement {
       </ha-md-list-item>
     `
   }
+  /* eslint-enable @typescript-eslint/unbound-method */
     static get styles(): CSSResultGroup {
       return styles;
     }

@@ -2,6 +2,7 @@ import { HomeAssistant } from "custom-card-helpers";
 import { HassEntity } from "home-assistant-js-websocket";
 import { RepeatMode } from "../const";
 
+/* eslint-disable no-console */
 export default class PlayerActions {
   private hass: HomeAssistant;
   constructor(hass: HomeAssistant) {
@@ -20,7 +21,7 @@ export default class PlayerActions {
     }
   }
   async actionMuteToggle(entity: HassEntity) {
-    var mute = !entity.attributes.is_volume_muted;
+    const mute = !entity.attributes.is_volume_muted;
     try {
       await this.hass.callService(
         'media_player', 'volume_mute',
@@ -58,7 +59,7 @@ export default class PlayerActions {
     } 
   }
   async actionShuffleToggle(entity: HassEntity) {
-    var shuffle = !entity.attributes.shuffle;
+    const shuffle = !entity.attributes.shuffle;
     try {
       await this.hass.callService(
         'media_player', 'shuffle_set',
@@ -97,6 +98,6 @@ export default class PlayerActions {
     } catch (e) {
       console.error(`Error calling repeat`, e)
     }
-
   }
 }
+/* eslint-enable no-console */
