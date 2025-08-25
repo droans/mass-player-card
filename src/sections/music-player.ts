@@ -33,8 +33,6 @@ class MusicPlayerCard extends LitElement {
     this._config = config;
   }
   public set activeMediaPlayer(player: HassEntity) {
-    console.log(`Setting player:`);
-    console.log(player);
     this._player = player;
     this.updatePlayerData();
   }
@@ -68,12 +66,10 @@ class MusicPlayerCard extends LitElement {
     }
   }
   private async onVolumeChange(ev: CustomEvent) {
-    console.log(`Received volume change ${ev.detail.value}`);
     var volume = (ev.detail as any).value;
     if (isNaN(volume)) return;
     this.player_data.volume = volume;
     volume = volume / 100;
-    console.log(`Using volume ${volume}`);
     await this.actions.actionSetVolume(this._player, volume);
   }
   private async onPlayPause() {
