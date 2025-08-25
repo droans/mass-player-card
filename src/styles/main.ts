@@ -16,4 +16,8 @@ export default css`
     --media-row-icon-width: 30px;
     --media-row-background-color-active: rgba(from var(--accent-color) r g b / 0.2);
     --media-row-thumbnail-height: var(--media-row-height);
+
+   // Music Player Variables
+   --player-control-icon-width: 30px;
+   --player-play-pause-color: var(--secondary-background-color);
  }`

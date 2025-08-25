@@ -14,6 +14,7 @@ import { Config, QueueSection } from './types'
 import styles from './styles/main';
 import { DEFAULT_CONFIG, Sections, DEFAULT_CARD } from './const'
 import { version } from '../package.json';
+import './sections/music-player';
 import './sections/player-queue';
 import './sections/players';
 
@@ -145,6 +146,21 @@ export class MusicAssistantPlayerCard extends LitElement {
     }
     return html``
   }
+  protected renderMusicPlayer() {
+    if (this.active_section === Sections.MUSIC_PLAYER) {
+      console.log(`Rendering Music Player`);
+      return cache(html`
+        <sl-tab-panel name="${Sections.MUSIC_PLAYER}">
+          <mass-music-player-card
+            .config=${this.config.player}
+            .activeMediaPlayer=${this.hass.states[this.active_player_entity]}
+            .hass=${this.hass}
+          ></mass-music-player-card>
+        </sl-tab-panel>
+      `);
+    }
+    return html``
+  }
   protected renderPlayerQueue() {
     if (this.active_section === Sections.QUEUE) {
       return cache(html`
@@ -218,6 +234,7 @@ export class MusicAssistantPlayerCard extends LitElement {
   }
   protected renderSections() {
     return html`
+      ${this.renderMusicPlayer()}
       ${this.renderPlayerQueue()}
       ${this.renderPlayers()}
     `

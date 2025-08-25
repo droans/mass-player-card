@@ -1,4 +1,5 @@
 import { HomeAssistant } from "custom-card-helpers";
+import { RepeatMode } from "./const";
 
 export interface Config {
   entities: Array<string>;
@@ -35,6 +36,19 @@ export interface QueueSection {
   active_player_entity: string;
   config: QueueConfig;
   hass: HomeAssistant;
+}
+
+export interface PlayerData {
+  playing: boolean;
+  muted: boolean;
+  track_title: string;
+  track_artist: string;
+  track_album: string;
+  track_artwork: string;
+  shuffle: boolean;
+  repeat: RepeatMode;
+  player_name: string;
+  
 }
 
 export type QueueService = (

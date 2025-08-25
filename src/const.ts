@@ -20,4 +20,9 @@ export enum Sections {
   MUSIC_PLAYER = "music-player",
   PLAYERS = "players",
 }
+export enum RepeatMode {
+  OFF = 'off',
+  ONCE = 'one',
+  ALL = 'all'
+}
 export const DEFAULT_CARD: string = Sections.QUEUE
