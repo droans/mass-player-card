@@ -47,24 +47,6 @@ class QueueCard extends LitElement {
     this._config = config;
     this.getQueueIfReady();
   }
-  // set hass(hass: HomeAssistant) {
-  //   if (!hass) {
-  //     return
-  //   }
-  //   if (!this._hass) {
-  //   }
-  //   this._hass = hass;
-  //   if (!this.actions) {
-  //     this.getQueueIfReady();
-  //   }
-  //   if (!this._listening) {
-  //     this.subscribeUpdates();
-  //   }
-  //   const newContentId = hass.states[this._active_player_entity]?.attributes?.media_content_id;
-  //   if (newContentId !== this.content_id && newContentId) {
-  //     this.content_id = newContentId;
-  //   }
-  // }
   private getQueueIfReady() {
     if (!this.hass || !this._config || !this._active_player_entity) {
       return
