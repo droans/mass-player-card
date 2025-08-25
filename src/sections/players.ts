@@ -1,10 +1,11 @@
-import { html, LitElement } from "lit";
+import { CSSResultGroup, html, LitElement } from "lit";
 import { property } from "lit/decorators.js";
 import { Config, PlayerSelectedService } from "../types";
 import { HomeAssistant } from "custom-card-helpers";
 import { HassEntity } from "home-assistant-js-websocket";
 import { keyed } from "lit/directives/keyed.js";
 import '../components/player-row'
+import styles from '../styles/player-queue';
 
 class PlayersCard extends LitElement {
   @property({ attribute: false }) public activePlayerEntity!: string;
@@ -76,6 +77,9 @@ class PlayersCard extends LitElement {
       ${this.renderPlayerRows()}
       </ha-card>
     `
+  }
+  static get styles(): CSSResultGroup {
+    return styles;
   }
 }
 customElements.define('mass-player-players-card', PlayersCard);
