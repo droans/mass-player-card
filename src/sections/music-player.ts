@@ -61,9 +61,7 @@ class MusicPlayerCard extends LitElement {
       volume: Math.floor(this._player.attributes.volume_level * 100),
       player_name: this._player.attributes.friendly_name ??  ''
     }
-    if (JSON.stringify(this.player_data) !== JSON.stringify(new_player_data)) {
-      this.player_data = new_player_data;
-    }
+    this.player_data = new_player_data;
   }
   private async onVolumeChange(ev: CustomEvent) {
     let volume: number = ev.detail.value;
