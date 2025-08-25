@@ -61,7 +61,7 @@ export default class PlayerActions {
     var shuffle = !entity.attributes.shuffle;
     try {
       await this.hass.callService(
-        'media_player', 'volume_mute',
+        'media_player', 'shuffle_set',
         {
           'entity_id': entity.entity_id,
           'shuffle': shuffle
