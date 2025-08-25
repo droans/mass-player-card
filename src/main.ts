@@ -166,11 +166,12 @@ export class MusicAssistantPlayerCard extends LitElement {
     return html``
   }
   protected renderMusicPlayerTab() {
+    const active = this.active_section == Sections.MUSIC_PLAYER;
     if (this.config.player.enabled){
       return html`
         <sl-tab 
           slot="nav"
-          .active=${this.active_section==Sections.MUSIC_PLAYER}
+          .active=${active}
           panel="${Sections.MUSIC_PLAYER}"
         >
           <ha-icon-button 
@@ -184,11 +185,12 @@ export class MusicAssistantPlayerCard extends LitElement {
     return html``
   }
   protected renderQueueTab() {
+    const active = this.active_section == Sections.QUEUE;
     if (this.config.queue.enabled){
       return html`
         <sl-tab 
           slot="nav"
-          .active=${this.active_section==Sections.QUEUE}
+          .active=${active}
           panel="${Sections.QUEUE}"
         >
           <ha-icon-button 
@@ -202,10 +204,11 @@ export class MusicAssistantPlayerCard extends LitElement {
     return html``
   }
   protected renderPlayersTab() {
+    const active = this.active_section == Sections.PLAYERS;
     return html`
       <sl-tab 
         slot="nav"
-        .active=${this.active_section==Sections.PLAYERS}
+        .active=${active}
         panel="${Sections.PLAYERS}"
       >
         <ha-icon-button 
