@@ -150,7 +150,7 @@ class MusicPlayerCard extends LitElement {
   protected renderShuffle() {
     return html`
       <ha-button
-        appearance="${this.player_data.shuffle ? "filled" : "plain"}"
+        appearance="${this.player_data.shuffle ? "accent" : "plain"}"
         variant="neutral"
         @click=${this.onShuffleToggle}
       >
@@ -173,7 +173,7 @@ class MusicPlayerCard extends LitElement {
     }
     return html`
       <ha-button
-        appearance="${this.player_data.repeat == RepeatMode.OFF ? "plain" : "filled"}"
+        appearance="${this.player_data.repeat == RepeatMode.OFF ? "plain" : "accent"}"
         variant="neutral"
         @click=${this.onRepeatToggle}
       >
