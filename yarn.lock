@@ -577,6 +577,16 @@ __metadata:
   languageName: node
   linkType: hard
 
+"@material/web@npm:2.4.0":
+  version: 2.4.0
+  resolution: "@material/web@npm:2.4.0"
+  dependencies:
+    lit: "npm:^2.8.0 || ^3.0.0"
+    tslib: "npm:^2.4.0"
+  checksum: 10c0/f4257e3bb15b60470b57d24a314fc3627b2e5880be763ec3b167948772fc56c2c4790dcfaaebb970ccb6a8eaa82ab5ad7918d02cbbcd45891a2e9132b89882e3
+  languageName: node
+  linkType: hard
+
 "@mdi/js@npm:7.4.47":
   version: 7.4.47
   resolution: "@mdi/js@npm:7.4.47"
@@ -2350,7 +2360,7 @@ __metadata:
   languageName: node
   linkType: hard
 
-"lit@npm:3.3.1":
+"lit@npm:3.3.1, lit@npm:^2.8.0 || ^3.0.0":
   version: 3.3.1
   resolution: "lit@npm:3.3.1"
   dependencies:
@@ -2469,6 +2479,7 @@ __metadata:
     "@babel/plugin-proposal-class-properties": "npm:^7.14.5"
     "@babel/plugin-proposal-decorators": "npm:^7.14.5"
     "@eslint/js": "npm:9.21.0"
+    "@material/web": "npm:2.4.0"
     "@mdi/js": "npm:7.4.47"
     "@mdi/react": "npm:1.6.1"
     "@rollup/plugin-babel": "npm:^6.0.0"
@@ -3398,7 +3409,7 @@ __metadata:
   languageName: node
   linkType: hard
 
-"tslib@npm:^2.1.0, tslib@npm:^2.6.2":
+"tslib@npm:^2.1.0, tslib@npm:^2.4.0, tslib@npm:^2.6.2":
   version: 2.8.1
   resolution: "tslib@npm:2.8.1"
   checksum: 10c0/9c4759110a19c53f992d9aae23aac5ced636e99887b51b9e61def52611732872ff7668757d4e4c61f19691e36f4da981cd9485e869b4a7408d689f6bf1f14e62
