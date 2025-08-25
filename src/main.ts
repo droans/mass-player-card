@@ -176,6 +176,7 @@ export class MusicAssistantPlayerCard extends LitElement {
           <ha-icon-button 
             class="action-button"
             .path=${mdiMusic}
+          >
           </ha-icon-button>
         </sl-tab>
       `
@@ -193,6 +194,7 @@ export class MusicAssistantPlayerCard extends LitElement {
           <ha-icon-button 
             class="action-button"
             .path=${mdiPlaylistMusic}
+          >
           </ha-icon-button>
         </sl-tab>
       `
@@ -209,6 +211,7 @@ export class MusicAssistantPlayerCard extends LitElement {
         <ha-icon-button 
           class="action-button"
           .path=${mdiSpeakerMultiple}
+        >
         </ha-icon-button>
       </sl-tab>
     `
