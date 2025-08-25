@@ -216,7 +216,10 @@ export class MusicAssistantPlayerCard extends LitElement {
   /* eslint-disable @typescript-eslint/unbound-method */
   protected renderTabs() {
     return html`
-      <sl-tab-group @sl-tab-show=${this._handleTabChanged}>
+      <sl-tab-group
+        @sl-tab-show=${this._handleTabChanged}
+        style="--track-width: 0px;"
+      >
         ${this.renderMusicPlayerTab()}
         ${this.renderQueueTab()}
         ${this.renderPlayersTab()}
