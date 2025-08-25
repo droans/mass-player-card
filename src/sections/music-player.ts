@@ -95,7 +95,7 @@ class MusicPlayerCard extends LitElement {
     `
   }
   private artworkStyle() {
-    return `background-image: url(${this.player_data.track_artwork});`
+    return `background-image: url(${this.player_data.track_artwork}); height: 300px`
   }
   protected renderArtwork() {
     return html`
