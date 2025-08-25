@@ -23,4 +23,10 @@ export default css`
    --player-play-pause-icon-size: 5rem;
    --player-track-color: var(--ha-color-text-link);
    --player-name-color: var(--ha-color-text-secondary);
- }`
+ }
+  sl-tab-group {
+    --track-width: 0px;
+    display: flex;
+    justify-content: center;
+  }
+`
