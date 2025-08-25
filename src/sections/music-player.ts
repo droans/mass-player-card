@@ -89,8 +89,7 @@ class MusicPlayerCard extends LitElement {
     return html`
       <div class="header">
         <div class="player-name"> ${this.player_data.player_name} </div>
-        <div class="player-track-title"> ${this.player_data.track_title} </div>
-        <div class="player-track-album"> ${this.player_data.track_album} </div>
+        <div class="player-track-title"> ${this.player_data.track_title} - ${this.player_data.track_album} </div>
         <div class="player-track-artist"> ${this.player_data.track_artist} </div>
       </div>
     `

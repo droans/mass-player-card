@@ -35,8 +35,6 @@ export default css`
   }
   .player-track-title {
   }
-  .player-track-album {
-  }
   .player-track-artist {
   }
 
