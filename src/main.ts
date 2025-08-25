@@ -93,14 +93,6 @@ export class MusicAssistantPlayerCard extends LitElement {
   private setActivePlayer = (player_entity: string) => {
     this.active_player_entity = player_entity;
   }
-  protected willUpdate(_changedProperties: PropertyValues): void {
-    
-    if (_changedProperties.has('hass') || _changedProperties.has('config')) {
-      if (this.hass && this.config) {
-        
-      }
-    }
-  }
 
   protected shouldUpdate(_changedProperties: PropertyValues): boolean {
     if (_changedProperties.has('active_player_entity')
