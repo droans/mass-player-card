@@ -30,6 +30,7 @@ export default css`
     grid-area: header;
     margin: 0.75rem 3.25rem;
     padding: 0.5rem;
+    text-align: center;
   }
   .player-name {
     color: var(--player-name-color);
