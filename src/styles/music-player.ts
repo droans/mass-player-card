@@ -33,9 +33,11 @@ export default css`
     text-align: center;
   }
   .player-name {
+    font-size: 0.8rem;
     color: var(--player-name-color);
   }
   .player-track-title {
+    font-size: 1.5rem;
     color: var(--player-track-color);
   }
   .player-track-artist {
