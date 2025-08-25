@@ -24,9 +24,9 @@ export default css`
    --player-track-color: var(--ha-color-text-link);
    --player-name-color: var(--ha-color-text-secondary);
  }
-  sl-tab-group {
-    --track-width: 0px;
-    display: flex;
-    justify-content: center;
-  }
+sl-tab-group {
+  --track-width: 0px;
+  display: flex;
+  justify-content: center;
+}
 `
