@@ -175,7 +175,7 @@ export class MusicAssistantPlayerCard extends LitElement {
           panel="${Sections.MUSIC_PLAYER}"
         >
           <ha-icon-button 
-            class="action-button"
+            class="action-button${active ? "-active" : ""}"
             .path=${mdiMusic}
           >
           </ha-icon-button>
@@ -193,8 +193,8 @@ export class MusicAssistantPlayerCard extends LitElement {
           .active=${active}
           panel="${Sections.QUEUE}"
         >
-          <ha-icon-button 
-            class="action-button"
+          <ha-icon-button
+            class="action-button${active ? "-active" : ""}"
             .path=${mdiPlaylistMusic}
           >
           </ha-icon-button>
@@ -212,7 +212,7 @@ export class MusicAssistantPlayerCard extends LitElement {
         panel="${Sections.PLAYERS}"
       >
         <ha-icon-button 
-          class="action-button"
+          class="action-button${active ? "-active" : ""}"
           .path=${mdiSpeakerMultiple}
         >
         </ha-icon-button>

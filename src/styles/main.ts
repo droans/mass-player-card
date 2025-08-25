@@ -29,4 +29,8 @@ sl-tab-group {
   display: flex;
   justify-content: center;
 }
+.action-button-active {
+  background: rgba(from var(--md-ripple-color) r g b / 0.2);
+  border-radius: 50%;
+}
 `
