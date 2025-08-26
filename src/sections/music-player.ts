@@ -125,26 +125,47 @@ class MusicPlayerCard extends LitElement {
   /* eslint-disable @typescript-eslint/unbound-method */
   protected renderTrackPrevious() {
     return html`
-      <ha-icon-button
-        .path=${mdiSkipPrevious}
+      <ha-button
+        appearance="outlined"
+        variant="brand"
         @click=${this.onPrevious}
-      ></ha-icon-button>
+        size="small"
+        style="display: block;"
+      >
+        <ha-svg-icon
+          .path=${mdiSkipPrevious}
+        ></ha-svg-icon>
+      </ha-button>
     `
   }
   protected renderTrackNext() {
     return html`
-      <ha-icon-button
-        .path=${mdiSkipNext}
+      <ha-button
+        appearance="outlined"
+        variant="brand"
         @click=${this.onNext}
-      ></ha-icon-button>
+        size="small"
+        style="display: block;"
+      >
+        <ha-svg-icon
+          .path=${mdiSkipNext}
+        ></ha-svg-icon>
+      </ha-button>
     `
   }
   protected renderPlayPause() {
     return html`
-      <ha-icon-button
-        .path=${this.player_data.playing ?  mdiPause : mdiPlay }
+      <ha-button
+        appearance="${this.player_data.playing ? "filled" : "outlined"}"
+        variant="brand"
+        size="medium"
         @click=${this.onPlayPause}
-      ></ha-icon-button>
+      >
+        <ha-svg-icon
+          .path=${this.player_data.playing ?  mdiPause : mdiPlay}
+          style="height: 4rem; width: 4rem;"
+        ></ha-svg-icon>
+      </ha-button>
     `
   }
   protected renderShuffle() {
