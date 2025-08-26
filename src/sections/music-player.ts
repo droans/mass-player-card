@@ -172,8 +172,9 @@ class MusicPlayerCard extends LitElement {
     return html`
       <ha-button
         appearance="${this.player_data.shuffle ? "accent" : "plain"}"
-        variant="neutral"
+        variant="brand"
         @click=${this.onShuffleToggle}
+        size="small"
       >
         <ha-svg-icon
           slot="start"
@@ -195,7 +196,8 @@ class MusicPlayerCard extends LitElement {
     return html`
       <ha-button
         appearance="${this.player_data.repeat == RepeatMode.OFF ? "plain" : "accent"}"
-        variant="neutral"
+        variant="brand"
+        size="small"
         @click=${this.onRepeatToggle}
       >
         <ha-svg-icon
