@@ -15,9 +15,10 @@ export default css`
   .container {
     display: grid;
     grid-template-columns: 100%;
-    grid-template-rows: min-content auto min-content;
+    grid-template-rows: 'min-content' 'min-content' 'auto' 'min-content';
     grid-template-areas:
       'header'
+      'progress'
       'artwork'
       'controls';
     min-height: 100%;
@@ -42,7 +43,15 @@ export default css`
   }
   .player-track-artist {
   }
-
+  .progress {
+    padding-left: 36px;
+    padding-right: 36px;
+    padding-bottom: 8px;
+  }
+  .time {
+    justify-self: center;
+    padding-bottom: 4px;
+  }
   .controls {
     grid-area: controls;
     overflow-y: auto;

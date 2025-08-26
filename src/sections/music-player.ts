@@ -1,3 +1,4 @@
+import "@material/mwc-linear-progress/mwc-linear-progress";
 import { CSSResultGroup, html, LitElement } from "lit";
 import { property } from "lit/decorators.js";
 import { HassEntity } from "home-assistant-js-websocket";
@@ -24,10 +25,14 @@ import { RepeatMode } from "../const";
 class MusicPlayerCard extends LitElement {
   @property({ attribute: false }) private player_data!: PlayerData;
   @property({ attribute: false }) private _config!: PlayerConfig;
+  @property({ attribute: false}) private media_position = 0;
+  @property({ attribute: false}) private media_duration = 1;
   private _player!: HassEntity;
-
+  private _listener: number|undefined;
   private _hass!: HomeAssistant;
   private actions!: PlayerActions;
+  private entity_pos = 0;
+  private entity_dur = 1;
   
   public set config(config: PlayerConfig) {
     this._config = config;
@@ -62,6 +67,21 @@ class MusicPlayerCard extends LitElement {
       player_name: this._player.attributes.friendly_name ??  ''
     }
     this.player_data = new_player_data;
+    const old_pos = this.entity_pos;
+    const old_dur = this.entity_dur;
+    const new_pos = this._player.attributes.media_position;
+    const new_dur = this._player.attributes.media_duration;
+    if (old_pos !== new_pos || old_dur !== new_dur) {
+      this.media_duration = new_dur;
+      this.entity_dur = new_dur;
+      this.media_position = new_pos;
+      this.entity_pos = new_pos;
+    }
+    if (this._listener) {
+      clearInterval(this._listener)
+    };
+    this._listener = undefined;
+    this.tickProgress();
   }
   private async onVolumeChange(ev: CustomEvent) {
     let volume: number = ev.detail.value;
@@ -76,11 +96,13 @@ class MusicPlayerCard extends LitElement {
   }
   private async onNext() {
     await this.actions.actionNext(this._player);
-
+    this.media_position = 0;
+    this.entity_dur = 0;
   }
   private async onPrevious() {
     await this.actions.actionPrevious(this._player);
-    
+    this.media_position = 0;
+    this.entity_dur = 0;
   }
   private async onVolumeMuteToggle() {
     this.player_data.muted = !this.player_data.muted;
@@ -105,12 +127,58 @@ class MusicPlayerCard extends LitElement {
     await this.actions.actionRepeatSet(this._player, repeat);
     
   }
+  private toTime(seconds: number) {
+    const mins = Math.floor(seconds / 60);
+    const secs = seconds % 60
+    return `${mins.toString()}:${secs < 10 ? "0" : ""}${secs.toString()}`
+  }
+  private tickProgress = () => {
+    const playing = this.player_data.playing;
+    if (playing) {
+      if (this._listener) {
+        this.media_position += 1;
+      } else {
+      this._listener = setInterval(this.tickProgress, 1000);
+      }
+    } else {
+      clearInterval(this._listener);
+    }
+  }
+  private onSeek = async (e: MouseEvent) => {
+    const progress_element = this.shadowRoot?.getElementById('progress');
+    const prog_width = progress_element?.offsetWidth ?? 1;
+    const seek = e.offsetX / prog_width;
+    const pos = Math.floor(seek * this.media_duration);
+    this.media_position = pos;
+    await this.actions.actionSeek(this._player, pos);
+  }
+  
   protected renderHeader() {
     return html`
       <div class="header">
         <div class="player-name"> ${this.player_data.player_name} </div>
         <div class="player-track-title"> ${this.player_data.track_title} - ${this.player_data.track_album} </div>
         <div class="player-track-artist"> ${this.player_data.track_artist} </div>
+      </div>
+    `
+  }
+  protected renderTime() {
+    const pos = this.toTime(this.media_position);
+    const dur = this.toTime(this.media_duration);
+    return `${pos} - ${dur}`
+  }
+  protected renderProgress() {
+    return html`
+      <div class="progress">
+        <div class="time">
+          ${this.renderTime()}
+        </div>
+        <mwc-linear-progress
+          id="progress"
+          .progress=${this.media_position / this.media_duration}
+          @click=${this.onSeek}
+        >
+        </mwc-linear-progress>
       </div>
     `
   }
@@ -243,6 +311,7 @@ class MusicPlayerCard extends LitElement {
     return html`
       <div class="container">
         ${this.renderHeader()}
+        ${this.renderProgress()}
         ${this.renderArtwork()}
         ${this.renderControls()}
       </div>

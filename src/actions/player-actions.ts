@@ -99,5 +99,18 @@ export default class PlayerActions {
       console.error(`Error calling repeat`, e)
     }
   }
+  async actionSeek(entity: HassEntity, position: number) {
+    try {
+      await this.hass.callService(
+        'media_player', 'media_seek',
+        {
+          'entity_id': entity.entity_id,
+          'seek_position': position
+        }
+      )
+    } catch (e) {
+      console.error(`Error calling repeat`, e)
+    }
+  }
 }
 /* eslint-enable no-console */
