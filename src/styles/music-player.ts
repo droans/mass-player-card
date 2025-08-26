@@ -48,18 +48,22 @@ export default css`
     overflow-y: auto;
     margin: 0.25rem;
     padding: 0.5rem;
-  }
-  .primary-controls {
     display: flex;
     flex-direction: row;
     align-items: center;
-    justify-content: space-evenly;
+    justify-content: center;
   }
-  .secondary-controls {
+  .controls-left {
     display: flex;
-    flex-direction: row;
-    align-items: center;
-    justify-content: space-evenly;
+    flex-direction: column;
+    align-items: end;
+    justify-content: center;
+  }
+  .controls-right {
+    display: flex;
+    flex-direction: column;
+    align-items: start;
+    justify-content: center;
   }
   .volume {
     display: flex;
@@ -71,14 +75,22 @@ export default css`
     width: var(--player-control-icon-width);
     height: var(--player-control-icon-width);
   }
+  .track-previous {
+    margin: 0px 0px 4px 0px;
+    width: 100%;
+  }
+  .track-next {
+    margin: 0px 0px 4px 0px;
+    width: 100%;
+  }
   .play-pause {
-    width: var(--play-pause-icon-width);
-    height: var(--play-pause-icon-width);
-    border-radius: 50%;
-    background: var(--player-play-pause-color);
-    box-shadow: var(--ha-card-box-shadow,none);
-    --mdc-icon-size: var(--player-play-pause-icon-size);
-    --mdc-icon-button-size: var(--player-play-pause-icon-size);
+    --ha-button-height: var(--player-play-pause-icon-size);
+    margin: 0px 6px 0px 6px;
+    --ha-button-border-radius: 50%;
+  }
+  .shuffle {
+  }
+  .repeat {
   }
   .artwork {
     grid-area: artwork;

@@ -225,18 +225,18 @@ class MusicPlayerCard extends LitElement {
   /* eslint-enable @typescript-eslint/unbound-method */
   protected renderControls() {
     return html`
-    <div class="controls">
-      <div class="primary-controls">
-        <div class="track-previous">${this.renderTrackPrevious()}</div>
+      <div class="controls">
+        <div class="controls-left">
+          <div class="track-previous">${this.renderTrackPrevious()}</div>
+          <div class="shuffle">${this.renderShuffle()}</div>
+        </div>
         <div class="play-pause">${this.renderPlayPause()}</div>
-        <div class="track-next"> ${this.renderTrackNext()} </div>
-      </div>
-      <div class="secondary-controls">
-        <div class="shuffle">${this.renderShuffle()}</div>
-        <div class="repeat">${this.renderRepeat()}</div>
+        <div class="controls-right">
+          <div class="track-next"> ${this.renderTrackNext()} </div>
+          <div class="repeat">${this.renderRepeat()}</div>
+        </div>
       </div>
       <div class="volume">${this.renderVolume()}</div>
-    </div>
     `
   }
   protected render() {
