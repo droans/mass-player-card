@@ -183,7 +183,7 @@ class MusicPlayerCard extends LitElement {
     `
   }
   private artworkStyle() {
-    return `background-image: url(${this.player_data.track_artwork}); height: 300px`
+    return `background-image: url(${this.player_data.track_artwork})`
   }
   protected renderArtwork() {
     return html`

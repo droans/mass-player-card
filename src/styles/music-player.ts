@@ -102,18 +102,12 @@ export default css`
   .repeat {
   }
   .artwork {
-    grid-area: artwork;
-    align-self: center;
-    flex-grow: 1;
-    flex-shrink: 0;
-    width: 100%;
-    height: 100%;
-    min-height: 5rem;
-    background-position: center;
-    background-repeat: no-repeat;
     background-size: contain;
+    height: 300px;
+    width: 300px;
+    justify-self: center;
+    border-radius: 36px;
   }
-
   *[hide] {
     display: none;
   }
