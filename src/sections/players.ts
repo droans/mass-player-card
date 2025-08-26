@@ -6,12 +6,15 @@ import { HassEntity } from "home-assistant-js-websocket";
 import { keyed } from "lit/directives/keyed.js";
 import '../components/player-row'
 import styles from '../styles/player-queue';
+import PlayersActions from "../actions/players-actions";
 
 class PlayersCard extends LitElement {
   @property({ attribute: false }) public activePlayerEntity!: string;
   @property({ attribute: false }) private entities: HassEntity[] = [];
   public selectedPlayerService!: PlayerSelectedService;
-  private _config!: Config
+  private _config!: Config;
+  private actions!: PlayersActions;
+  private _hass!: HomeAssistant;
   
   @property( {attribute: false } )
   public set config(config: Config) {
@@ -23,6 +26,10 @@ class PlayersCard extends LitElement {
   public set hass(hass: HomeAssistant) {
     if (!hass) {
       return;
+    }
+    this._hass = hass;
+    if (!this.actions) {
+      this.actions = new PlayersActions(hass);
     }
     if (!this.entities.length) {
       this.setEntities(hass);
@@ -41,7 +48,16 @@ class PlayersCard extends LitElement {
       this.setEntities(hass);
     }
   }
-  
+  private joinPlayers =  async (group_member: string) => {
+    await this.actions.actionJoinPlayers(this.activePlayerEntity, group_member);
+  }
+  private unjoinPlayers = async (player_entity: string) => {
+    await this.actions.actionUnjoinPlayers(player_entity);
+  }
+  private transferQueue = async (target_player: string) => {
+    await this.actions.actionTransferQueue(this.activePlayerEntity, target_player);
+    this.activePlayerEntity = target_player;
+  }
   private setEntities(hass: HomeAssistant) {
     if (!this._config) {
       return;
@@ -55,6 +71,7 @@ class PlayersCard extends LitElement {
     this.entities = entities;
   }
   protected renderPlayerRows() {
+    const group_members: string[] = this._hass.states[this.activePlayerEntity].attributes?.group_members;
     return this.entities.map(
       (item) => {
         return keyed(
@@ -64,6 +81,10 @@ class PlayersCard extends LitElement {
               .player_entity=${item}
               .selected=${this.activePlayerEntity==item.entity_id}
               .selectedService=${this.selectedPlayerService}
+              .joinService=${this.joinPlayers}
+              .unjoinService=${this.unjoinPlayers}
+              .transferService=${this.transferQueue}
+              .joined=${group_members.includes(item.entity_id)}
             >
             </mass-player-player-row>
           `
