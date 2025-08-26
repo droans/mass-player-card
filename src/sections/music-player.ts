@@ -64,7 +64,7 @@ class MusicPlayerCard extends LitElement {
       track_title: this._player.attributes.media_title,
       muted: this._player.attributes.is_volume_muted,
       volume: Math.floor(this._player.attributes.volume_level * 100),
-      player_name: this._player.attributes.friendly_name ??  ''
+      player_name: this._player.attributes.friendly_name ??  '',
     }
     this.player_data = new_player_data;
     const old_pos = this.entity_pos;
