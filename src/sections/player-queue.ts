@@ -186,5 +186,4 @@ class QueueCard extends LitElement {
     return styles;
   }
 }
-// customElements.define('mass-player-queue-card', QueueCardShell);
 customElements.define('mass-player-queue-card', QueueCard);
