@@ -57,12 +57,13 @@ class PlayerRow extends LitElement {
     return html``
   }
   private renderTitle() {
+    let title = this.player_entity.attributes?.friendly_name ?? "Media Player";
     return html`
       <span 
         slot="headline" 
         class="title"
       >
-        ${this.player_entity.attributes?.friendly_name}
+        ${title}
       </span>
     `
   }
