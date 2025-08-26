@@ -18,8 +18,8 @@ class PlayersCard extends LitElement {
   
   @property( {attribute: false } )
   public set config(config: Config) {
-    if(this.hass && config) {
-      this.setEntities(this.hass)
+    if(this._hass && config) {
+      this.setEntities(this._hass)
     }
     this._config = config;
   }
