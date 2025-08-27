@@ -20,7 +20,7 @@ import {
   mdiVolumeHigh, 
   mdiVolumeMute 
 } from "@mdi/js";
-import { RepeatMode } from "../const";
+import { DEFAULT_PLAYER_CONFIG, RepeatMode } from "../const";
 
 class MusicPlayerCard extends LitElement {
   @property({ attribute: false }) private player_data!: PlayerData;
@@ -35,7 +35,10 @@ class MusicPlayerCard extends LitElement {
   private entity_dur = 1;
   
   public set config(config: PlayerConfig) {
-    this._config = config;
+    this._config = {
+      ...DEFAULT_PLAYER_CONFIG,
+      ...config
+    };
   }
   public set activeMediaPlayer(player: HassEntity) {
     this._player = player;

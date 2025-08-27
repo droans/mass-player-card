@@ -7,6 +7,7 @@ import { keyed } from "lit/directives/keyed.js";
 import '../components/player-row'
 import styles from '../styles/player-queue';
 import PlayersActions from "../actions/players-actions";
+import { DEFAULT_PLAYERS_CONFIG } from "../const";
 
 class PlayersCard extends LitElement {
   @property({ attribute: false }) public activePlayerEntity!: string;
@@ -21,7 +22,10 @@ class PlayersCard extends LitElement {
     if(this._hass && config) {
       this.setEntities(this._hass)
     }
-    this._config = config;
+    this._config = {
+      ...DEFAULT_PLAYERS_CONFIG,
+      ...config
+    };
   }
   public set hass(hass: HomeAssistant) {
     if (!hass) {

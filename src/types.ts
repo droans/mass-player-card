@@ -5,6 +5,8 @@ export interface Config {
   entities: string[];
   queue: QueueConfig;
   player: PlayerConfig;
+  media_browser: MediaBrowserConfig;
+  players: PlayersConfig;
 }
 
 export interface QueueConfig {
@@ -14,6 +16,10 @@ export interface QueueConfig {
   show_album_covers: boolean;
   show_artist_names: boolean;
 }
+export interface PlayersConfig {
+  enabled: boolean,
+}
+
 
 export interface PlayerConfig {
   enabled: boolean;

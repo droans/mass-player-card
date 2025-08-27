@@ -9,6 +9,7 @@ import { QueueItem, QueueConfig } from '../types'
 import QueueActions from '../actions/queue-actions';
 import styles from '../styles/player-queue';
 import '../components/media-row'
+import { DEFAULT_QUEUE_CONFIG } from '../const';
 
 class QueueCard extends LitElement {
   // @property({ attribute: false}) public hass!: HomeAssistant;
@@ -44,7 +45,10 @@ class QueueCard extends LitElement {
     this.getQueueIfReady();
   }
   set config(config: QueueConfig) {
-    this._config = config;
+    this._config = {
+      ...DEFAULT_QUEUE_CONFIG,
+      ...config
+    };
     this.getQueueIfReady();
   }
   private getQueueIfReady() {

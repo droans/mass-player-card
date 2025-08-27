@@ -1,18 +1,23 @@
-import { PlayerConfig, QueueConfig } from "./types"
+import { PlayerConfig, PlayersConfig, QueueConfig } from "./types"
 
-const DEFAULT_QUEUE_CONFIG: QueueConfig = {
+export const DEFAULT_QUEUE_CONFIG: QueueConfig = {
   enabled: true,
   limit_before: 5,
   limit_after: 100,
   show_album_covers: true,
   show_artist_names: true
 }
-const DEFAULT_PLAYER_CONFIG: PlayerConfig = {
+export const DEFAULT_PLAYER_CONFIG: PlayerConfig = {
+  enabled: true
+}
+
+export const DEFAULT_PLAYERS_CONFIG: PlayersConfig = {
   enabled: true
 }
 export const DEFAULT_CONFIG = {
   queue: DEFAULT_QUEUE_CONFIG,
   player: DEFAULT_PLAYER_CONFIG,
+  players: DEFAULT_PLAYERS_CONFIG,
 }
 
 export enum Sections {
