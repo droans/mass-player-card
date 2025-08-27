@@ -55,7 +55,7 @@ export interface PlayerData {
 export type QueueService = (
   queue_item_id: string
 ) => void;
-export type ItemSelectedService = (
+export type QueueItemSelectedService = (
   queue_item_id: string, 
   media_content_id: string
 ) => void;

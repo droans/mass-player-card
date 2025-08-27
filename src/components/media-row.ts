@@ -9,7 +9,7 @@ import {
 import { 
   QueueItem,
   QueueService,
-  ItemSelectedService
+  QueueItemSelectedService
 } from '../types';
 import styles from '../styles/media-row';
 
@@ -20,7 +20,7 @@ class MediaRow extends LitElement {
   public moveQueueItemNextService!: QueueService;
   public moveQueueItemUpService!: QueueService;
   public moveQueueItemDownService!: QueueService;
-  public selectedService!: ItemSelectedService;
+  public selectedService!: QueueItemSelectedService;
   public showAlbumCovers = true;
   
   private callMoveItemUpService(e: Event) {
