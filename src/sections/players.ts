@@ -101,7 +101,9 @@ class PlayersCard extends LitElement {
   protected render() {
     return html`
       <ha-card>
-      ${this.renderPlayerRows()}
+        <ha-md-list class="list">
+          ${this.renderPlayerRows()}
+        </ha-md-list>
       </ha-card>
     `
   }
