@@ -118,6 +118,10 @@ export class MusicAssistantPlayerCard extends LitElement {
     }
     return super.shouldUpdate(_changedProperties);
   }
+  private playerSelected = (entity_id: string) => {
+    this.setActivePlayer(entity_id);
+    this.active_section = Sections.MUSIC_PLAYER;
+  }
   private _handleTabChanged(ev: CustomEvent) {
     const newTab: Sections = ev.detail.name;
     this.active_section = newTab;
@@ -127,7 +131,7 @@ export class MusicAssistantPlayerCard extends LitElement {
       return cache(html`
         <sl-tab-panel name="${Sections.PLAYERS}">
           <mass-player-players-card
-            .selectedPlayerService=${this.setActivePlayer}
+            .selectedPlayerService=${this.playerSelected}
             .activePlayerEntity=${this.active_player_entity}
             .config=${this.config}
             .hass=${this.hass}
