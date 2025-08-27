@@ -1,4 +1,3 @@
-import { HassEntity } from "home-assistant-js-websocket";
 import { HomeAssistant } from "custom-card-helpers";
 import { MediaTypes } from "../const";
 
@@ -19,8 +18,9 @@ export default class BrowserActions {
         }
       )
     }
-    async actionGetFavorites(player_entity_id: string, media_type: MediaTypes, limit: number = 25) {
+    async actionGetFavorites(player_entity_id: string, media_type: MediaTypes, limit = 25) {
       const config_id = await this.getPlayerConfigEntry(player_entity_id);
+      /* eslint-disable-next-line @typescript-eslint/no-explicit-any, */
       const response = await this.hass.callWS<any>( 
         {
             type: 'call_service', 
@@ -35,16 +35,20 @@ export default class BrowserActions {
             return_response: true
         }
       )
+      /* eslint-disable-next-line @typescript-eslint/no-unsafe-return, */
       return response.response.items;
     }
     private async getPlayerConfigEntry(entity_id: string) {
+      /* eslint-disable-next-line @typescript-eslint/no-explicit-any, */
       const entry = await this.hass.callWS<any>(
         {
           type: 'config/entity_registry/get',
           entity_id: entity_id
         }
       );
+      /* eslint-disable-next-line @typescript-eslint/no-explicit-any, */
       const result: any = entry.config_entry_id;
+      /* eslint-disable-next-line @typescript-eslint/no-unsafe-return, */
       return result;
     }
 

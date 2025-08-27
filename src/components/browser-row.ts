@@ -14,7 +14,7 @@ class MediaBrowserRow extends LitElement {
     }
   }
 
-  private onItemSelected() {
+  private onItemSelected = () => {
     this.onSelectAction(this._media_item.uri, this._media_item.media_type);
   }
   protected renderThumbnail() {

@@ -56,13 +56,15 @@ class MediaBrowserCard extends LitElement {
         this.actions = new BrowserActions(this._hass);
       }
       if (ready !== 'hass' || !this._favorites) {
-        this.updateItems()
+        this.updateItems().catch( () => {return})
       }
     }
   }
   private async updateItems() {
-    this.getAllFavorites();
+    await this.getAllFavorites();
   }
+  
+  /* eslint-disable-next-line @typescript-eslint/no-explicit-any, */
   private formatMediaBrowserItems(media_browser_items: any[]) {
     return media_browser_items.map( (item) => {
       const r: MediaBrowserItem = {
@@ -75,7 +77,8 @@ class MediaBrowserCard extends LitElement {
     })
   }
   private async getFavorites(media_type: MediaTypes) {
-    const response = await this.actions.actionGetFavorites(this._player_entity, media_type);
+    /* eslint-disable-next-line @typescript-eslint/no-explicit-any, */
+    const response: any[] = await this.actions.actionGetFavorites(this._player_entity, media_type);
     const result = this.formatMediaBrowserItems(response);
     return result;
   }
