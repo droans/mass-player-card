@@ -44,17 +44,14 @@ class PlayerRow extends LitElement {
   }
   private renderThumbnail() {
     const thumbnail=this.player_entity?.attributes?.entity_picture;
-    if (thumbnail) {
-      return html`
-        <img
-          class="thumbnail"
-          slot="start"
-          src=${thumbnail}
-        >
-        </img>
-      `
-    }
-    return html``
+    return html`
+      <span 
+        class="thumbnail" 
+        slot="start" 
+        style="background-image: url(${thumbnail})"
+      >
+      </span>
+    `
   }
   private renderTitle() {
     const title = this.player_entity.attributes?.friendly_name ?? "Media Player";

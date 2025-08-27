@@ -61,12 +61,12 @@ class MediaRow extends LitElement {
     const played = !this.media_item.show_action_buttons  && !this.media_item.playing;
     if (this.media_item.media_image && this.showAlbumCovers) {
       return html`
-        <img 
-          class="thumbnail${played ? '-disabled' : ''}"
-          slot="start"
-          src="${this.media_item.media_image}"
+        <span 
+          class="thumbnail${played ? '-disabled' : ''}" 
+          slot="start" 
+          style="background-image: url(${this.media_item.media_image})"
         >
-        </img>
+        </span>
       `
     }
     return html``
