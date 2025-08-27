@@ -131,6 +131,9 @@ class MusicPlayerCard extends LitElement {
     
   }
   private toTime(seconds: number) {
+    if (isNaN(seconds)) {
+      return '0:00';
+    }
     const mins = Math.floor(seconds / 60);
     const secs = seconds % 60
     return `${mins.toString()}:${secs < 10 ? "0" : ""}${secs.toString()}`
