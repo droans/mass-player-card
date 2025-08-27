@@ -75,7 +75,8 @@ class PlayersCard extends LitElement {
     this.entities = entities;
   }
   protected renderPlayerRows() {
-    const group_members: string[] = this._hass.states[this.activePlayerEntity].attributes?.group_members;
+    const attrs = this._hass.states[this.activePlayerEntity].attributes;
+    const group_members: string[] = attrs?.group_members ?? [];
     return this.entities.map(
       (item) => {
         return keyed(
@@ -89,6 +90,7 @@ class PlayersCard extends LitElement {
               .unjoinService=${this.unjoinPlayers}
               .transferService=${this.transferQueue}
               .joined=${group_members.includes(item.entity_id)}
+              .allowJoin=${attrs.group_members !== undefined}
             >
             </mass-player-player-row>
           `

@@ -19,7 +19,7 @@ class PlayerRow extends LitElement {
   public joinService!: PlayerJoinService;
   public unjoinService!: PlayerUnjoinService;
   public transferService!: PlayerTransferService;
-  
+  public allowJoin = true;
   private callOnPlayerSelectedService() {
     this.selectedService(this.player_entity.entity_id);
   }
@@ -77,6 +77,9 @@ class PlayerRow extends LitElement {
     `
   }
   protected renderJoinButon() {
+    if (!this.player_entity.attributes?.group_members || !this.allowJoin) {
+      return;
+    }
     return html`
       <ha-icon-button
         class="action-button"
