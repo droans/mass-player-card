@@ -6,7 +6,7 @@ import {
   PlayerTransferService,
   PlayerUnjoinService
 } from '../types';
-import styles from '../styles/media-row';
+import styles from '../styles/player-row';
 import { HassEntity } from 'home-assistant-js-websocket';
 import { mdiLink, mdiLinkOff, mdiSwapHorizontal } from '@mdi/js';
 
