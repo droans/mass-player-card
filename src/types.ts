@@ -1,5 +1,5 @@
 import { HomeAssistant } from "custom-card-helpers";
-import { RepeatMode } from "./const";
+import { MediaTypes, RepeatMode } from "./const";
 
 export interface Config {
   entities: string[];
@@ -16,10 +16,47 @@ export interface QueueConfig {
   show_album_covers: boolean;
   show_artist_names: boolean;
 }
+
+export interface MediaBrowserConfig {
+  enabled: boolean,
+  favorites: FavoritesConfig;
+}
+
 export interface PlayersConfig {
   enabled: boolean,
 }
 
+interface FavoritesConfig {
+  enabled: boolean,
+  albums: FavoriteItemConfig,
+  artists: FavoriteItemConfig,
+  audiobooks: FavoriteItemConfig,
+  playlists: FavoriteItemConfig,
+  podcasts: FavoriteItemConfig,
+  radios: FavoriteItemConfig
+  tracks: FavoriteItemConfig,
+}
+
+interface FavoriteItemConfig {
+  enabled: boolean
+}
+
+export interface MediaBrowserItem {
+  name: string,
+  uri: string,
+  media_type: MediaTypes,
+  image: string
+}
+
+export interface FavoriteItems {
+  albums: MediaBrowserItem[],
+  artists: MediaBrowserItem[],
+  audiobooks: MediaBrowserItem[],
+  playlists: MediaBrowserItem[],
+  podcasts: MediaBrowserItem[],
+  radios: MediaBrowserItem[],
+  tracks: MediaBrowserItem[],
+}
 
 export interface PlayerConfig {
   enabled: boolean;
@@ -80,4 +117,9 @@ export type PlayerUnjoinService = (
 
 export type PlayerTransferService = (
   target_player: string
+) => void
+
+export type BrowserItemSelectedService = (
+  content_id: string,
+  content_type: string
 ) => void

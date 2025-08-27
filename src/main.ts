@@ -3,6 +3,7 @@ import { cache } from 'lit/directives/cache.js';
 import { customElement, property, state } from 'lit/decorators.js';
 
 import {
+  mdiAlbum,
   mdiMusic,
   mdiPlaylistMusic,
   mdiSpeakerMultiple
@@ -14,6 +15,7 @@ import { Config } from './types'
 import styles from './styles/main';
 import { DEFAULT_CONFIG, Sections, DEFAULT_CARD } from './const'
 import { version } from '../package.json';
+import './sections/media-browser';
 import './sections/music-player';
 import './sections/player-queue';
 import './sections/players';
@@ -118,6 +120,9 @@ export class MusicAssistantPlayerCard extends LitElement {
     }
     return super.shouldUpdate(_changedProperties);
   }
+  private browserItemSelected = () => {
+    this.active_section = Sections.MUSIC_PLAYER;
+  }
   private playerSelected = (entity_id: string) => {
     this.setActivePlayer(entity_id);
     this.active_section = Sections.MUSIC_PLAYER;
@@ -169,6 +174,21 @@ export class MusicAssistantPlayerCard extends LitElement {
     }
     return html``
   }
+  protected renderMediaBrowser() {
+    if (this.active_section === Sections.MEDIA_BROWSER) {
+      return cache(html`
+        <sl-tab-panel name="${Sections.MEDIA_BROWSER}">
+          <mass-browser-card
+            .config=${this.config.media_browser}
+            .hass=${this.hass}
+            .player_entity=${this.active_player_entity}
+            .onMediaSelectedAction=${this.browserItemSelected}
+          >
+        </sl-tab-panel>
+      `) 
+    }
+    return html``
+  }
   protected renderMusicPlayerTab() {
     const active = this.active_section == Sections.MUSIC_PLAYER;
     if (this.config.player.enabled){
@@ -207,6 +227,22 @@ export class MusicAssistantPlayerCard extends LitElement {
     }
     return html``
   }
+  protected renderMediaBrowserTab() {
+    const active = this.active_section == Sections.MEDIA_BROWSER;
+    return html`
+      <sl-tab 
+        slot="nav"
+        .active=${active}
+        panel="${Sections.MEDIA_BROWSER}"
+      >
+        <ha-icon-button 
+          class="action-button${active ? "-active" : ""}"
+          .path=${mdiAlbum}
+        >
+        </ha-icon-button>
+      </sl-tab>
+    `
+  }
   protected renderPlayersTab() {
     const active = this.active_section == Sections.PLAYERS;
     return html`
@@ -231,6 +267,7 @@ export class MusicAssistantPlayerCard extends LitElement {
       >
         ${this.renderMusicPlayerTab()}
         ${this.renderQueueTab()}
+        ${this.renderMediaBrowserTab()}
         ${this.renderPlayersTab()}
       </sl-tab-group>
     `
@@ -240,6 +277,7 @@ export class MusicAssistantPlayerCard extends LitElement {
     return html`
       ${this.renderMusicPlayer()}
       ${this.renderPlayerQueue()}
+      ${this.renderMediaBrowser()}
       ${this.renderPlayers()}
     `
   }
