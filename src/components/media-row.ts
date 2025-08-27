@@ -168,9 +168,9 @@ class MediaRow extends LitElement {
       </ha-md-list-item>
     `
   }
-    static get styles(): CSSResultGroup {
-      return styles;
-    }
+  static get styles(): CSSResultGroup {
+    return styles;
+  }
 }
 
 customElements.define('mass-player-media-row', MediaRow);
