@@ -70,10 +70,10 @@ expanded: false
 |---------------|-----------------------------------------------|----------|--------------|----------------------------------------------------|
 | type          | str                                           | Yes      | n/a          | Use `custom:mass-player-card`                      |
 | entities      | list                                          | Yes      | n/a          | The Music Assistant `media_player` entities to use |
-| player        | [PlayerConfig](#-player-config)               | No       | 5            | See Below                                          |
-| queue         | [QueueConfig](#-queue-config)                 | No       | 5            | See Below                                          |
-| media_browser | [MediaBrowserConfig](#-media-browser-config)  | No       | 5            | See Below                                          |
-| players       | [PlayersConfig](#-players-config)             | No       | 5            | See Below                                          |
+| player        | [PlayerConfig](#player-config)               | No       | 5            | See Below                                          |
+| queue         | [QueueConfig](#queue-config)                 | No       | 5            | See Below                                          |
+| media_browser | [MediaBrowserConfig](#media-browser-config)  | No       | 5            | See Below                                          |
+| players       | [PlayersConfig](#players-config)             | No       | 5            | See Below                                          |
 
 ## Player Config
 | Parameter | Type | Required | Default | Description                     |
@@ -99,19 +99,19 @@ Display and interact with the player's queue.
 | Parameter | Type                                  | Required | Default | Description                      |
 |-----------|---------------------------------------|----------|---------|----------------------------------|
 | enabled   | bool                                  | No       | true    | Enable/disable media browser tab |
-| favorites | [FavoritesConfig](#-favorites-config) | No       | -       | See below                        |
+| favorites | [FavoritesConfig](#favorites-config) | No       | -       | See below                        |
 
 ## Favorites Config
 | Parameter  | Type                             | Required | Default | Description                     |
 |------------|----------------------------------|----------|---------|---------------------------------|
 | enabled    | bool                             | No       | true    | Enable/disable music player tab |
-| albums     | [FavoriteItem](#-favorite-items) | No       | true    | See below                       |
-| artists    | [FavoriteItem](#-favorite-items) | No       | true    | See below                       |
-| audiobooks | [FavoriteItem](#-favorite-items) | No       | true    | See below                       |
-| playlists  | [FavoriteItem](#-favorite-items) | No       | true    | See below                       |
-| podcasts   | [FavoriteItem](#-favorite-items) | No       | true    | See below                       |
-| radios     | [FavoriteItem](#-favorite-items) | No       | true    | See below                       |
-| tracks     | [FavoriteItem](#-favorite-items) | No       | true    | See below                       |
+| albums     | [FavoriteItem](#favorite-items) | No       | true    | See below                       |
+| artists    | [FavoriteItem](#favorite-items) | No       | true    | See below                       |
+| audiobooks | [FavoriteItem](#favorite-items) | No       | true    | See below                       |
+| playlists  | [FavoriteItem](#favorite-items) | No       | true    | See below                       |
+| podcasts   | [FavoriteItem](#favorite-items) | No       | true    | See below                       |
+| radios     | [FavoriteItem](#favorite-items) | No       | true    | See below                       |
+| tracks     | [FavoriteItem](#favorite-items) | No       | true    | See below                       |
 
 ### Favorite Items
 You can select which favorite items you'd like to display in the media browser. Use the example below to help set it up. By default, all favorites are enabled. If no favorites exist for a category, the section will not be displayed.
