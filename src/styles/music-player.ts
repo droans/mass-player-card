@@ -75,6 +75,11 @@ export default css`
     flex-direction: row;
     align-items: center;
     justify-content: space-evenly;
+    padding-left: 2em;
+    padding-right: 2em;
+  }
+  ha-control-slider {
+    --control-slider-thickness: 1.75em;
   }
   .player-controls {
     width: var(--player-control-icon-width);
