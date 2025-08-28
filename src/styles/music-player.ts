@@ -15,7 +15,6 @@ export default css`
   .container {
     height: 42em;
     display: grid;
-    grid-template-columns: 100%;
     grid-template-rows: 'min-content' 'min-content' 'auto' 'min-content';
     grid-template-areas:
       'header'
@@ -23,9 +22,6 @@ export default css`
       'artwork'
       'controls';
     min-height: 100%;
-    background-position: center;
-    background-repeat: no-repeat;
-    background-size: cover;
   }
 
   .header {
