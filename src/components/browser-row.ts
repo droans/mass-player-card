@@ -49,6 +49,7 @@ class MediaBrowserRow extends LitElement {
         ${this.renderThumbnail()}
         ${this.renderTitle()}
       </ha-md-list-item>
+      <div class="divider"</div>
     `
   }
   static get styles(): CSSResultGroup {

@@ -166,6 +166,7 @@ class MediaRow extends LitElement {
         ${this.renderArtist()}
         ${this.renderActionButtons()}
       </ha-md-list-item>
+      <div class="divider"</div>
     `
   }
   static get styles(): CSSResultGroup {

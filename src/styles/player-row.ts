@@ -55,4 +55,12 @@ export default css`
     min-width: 0;
     color: var(--font-color);
   }
+  .divider::before {
+    content: " ";
+    display: block;
+    height: 1px;
+    background-color: var(--divider-color);
+    margin-left: 8px;
+    margin-right: 8px;
+  }
 `;
