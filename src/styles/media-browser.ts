@@ -10,6 +10,7 @@ export default css`
     justify-content: center;
     background: unset;
     box-shadow: unset;
+    border-radius: unset;
   }
   .main {
     display: flex;
