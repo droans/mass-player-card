@@ -30,7 +30,7 @@ A Home Assistant media player card built for Music Assistant players.
 
 ## Install with HACS:
 
-[![My Home Assistant](https://my.home-assistant.io/badges/hacs_repository.svg)](https://my.home-assistant.io/redirect/hacs_repository/?repository=mass_card&owner=droans&category=Plugin)
+<!-- [![My Home Assistant](https://my.home-assistant.io/badges/hacs_repository.svg)](https://my.home-assistant.io/redirect/hacs_repository/?repository=mass-player-card&owner=droans&category=Plugin) -->
 
 ## Installation
 
@@ -41,7 +41,9 @@ In addition to the Music Assistant integration, this card depends on the custom 
 <img src="https://github.com/droans/mass-player-card/blob/main/static/music_player/desktop.png" alt="Player Card Example" width=60%> <img src="https://github.com/droans/mass-player-card/blob/main/static/music_player/mobile.png" alt="Player Card Mobile Example" width=35%>
 
 ### HACS Installation
-1. Use button above to add to your Home Assistant instance.
+1. Add this repository to your HACS custom repositories.
+2. Find and install "Music Assistant Player Card".
+<!-- 1. Use button above to add to your Home Assistant instance. -->
 
 ### Manual Installation
 1. Download the card.
