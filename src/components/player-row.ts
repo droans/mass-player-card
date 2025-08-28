@@ -62,6 +62,8 @@ class PlayerRow extends LitElement {
       >
         ${title}
       </span>
+      <span slot="supporting-text">
+      </span>
     `
   }
 

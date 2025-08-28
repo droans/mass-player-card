@@ -35,6 +35,8 @@ class MediaBrowserRow extends LitElement {
       >
         ${this._media_item.name}
       </span>
+      <span slot="supporting-text">
+      </span>
     `
   }
   protected render() {
