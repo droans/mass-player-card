@@ -26,7 +26,7 @@ export default css`
 
   .header {
     grid-area: header;
-    margin: 0.75rem;
+    margin: 0.75rem 0.75rem 0rem 0.75rem;
     text-align: center;
   }
   .player-name {
