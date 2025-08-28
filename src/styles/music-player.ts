@@ -13,6 +13,7 @@ export default css`
   }
 
   .container {
+    height: 42em;
     display: grid;
     grid-template-columns: 100%;
     grid-template-rows: 'min-content' 'min-content' 'auto' 'min-content';
