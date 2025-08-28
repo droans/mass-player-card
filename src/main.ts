@@ -19,6 +19,7 @@ import './sections/media-browser';
 import './sections/music-player';
 import './sections/player-queue';
 import './sections/players';
+import { HassEntity } from 'home-assistant-js-websocket';
 
 const DEV = false;
 
@@ -55,17 +56,46 @@ console.info(
 
 @customElement(`${cardId}${DEV ? '-dev' : ''}`)
 export class MusicAssistantPlayerCard extends LitElement {
-  @property({attribute: false}) public hass!: HomeAssistant;
   @state() private config!: Config;
   @state() private error?: TemplateResult;
   @state() private active_player_entity!: string;
   @state() private active_section: Sections = DEFAULT_CARD;
+  @state() private entities!: HassEntity[];
+  private _hass!: HomeAssistant;
 
   constructor() {
     super();
     if (this.config && !this.active_player_entity) {
       this.active_player_entity = this.config.entities[0];
     }
+  }
+  public set hass(hass: HomeAssistant) {
+    if (!hass) {
+      return;
+    }
+    const ents = this.config.entities;
+    let should_update = false;
+    if (!this._hass) {
+      this._hass = hass;
+    }
+    let new_ents: HassEntity[] = [];
+    ents.forEach(
+      (entity) => {
+        let old_state = JSON.stringify(this._hass.states[entity]);
+        let new_state = JSON.stringify(hass.states[entity]);
+        new_ents.push(hass.states[entity]);
+        if (old_state !== new_state) {
+          should_update = true;
+        }
+      }
+    )
+    if (should_update) {
+      this._hass = hass;
+      this.entities = new_ents;
+    }
+  }
+  public get hass() {
+    return this._hass;
   }
   static getConfigElement() {
     return document.createElement(`${cardId}-editor${DEV ? '-dev' : ''}`);
