@@ -60,6 +60,7 @@ export class MusicAssistantPlayerCard extends LitElement {
   @state() private error?: TemplateResult;
   @state() private active_player_entity!: string;
   @state() private active_section: Sections = DEFAULT_CARD;
+  @state() private first_hass_update = false;
   @state() private entities!: HassEntity[];
   private _hass!: HomeAssistant;
 
@@ -67,6 +68,9 @@ export class MusicAssistantPlayerCard extends LitElement {
     super();
     if (this.config && !this.active_player_entity) {
       this.active_player_entity = this.config.entities[0];
+    }
+    if (!this.active_player_entity) {
+      this.setDefaultActivePlayer();
     }
   }
   public set hass(hass: HomeAssistant) {
@@ -77,6 +81,8 @@ export class MusicAssistantPlayerCard extends LitElement {
     let should_update = false;
     if (!this._hass) {
       this._hass = hass;
+      this.setDefaultActivePlayer();
+      this.first_hass_update = true;
     }
     let new_ents: HassEntity[] = [];
     ents.forEach(
@@ -92,6 +98,7 @@ export class MusicAssistantPlayerCard extends LitElement {
     if (should_update) {
       this._hass = hass;
       this.entities = new_ents;
+      this.first_hass_update = true;
     }
   }
   public get hass() {
@@ -119,7 +126,26 @@ export class MusicAssistantPlayerCard extends LitElement {
       ...config
     }
     if (!this.active_player_entity) {
-      this.active_player_entity = this.config.entities[0];
+      this.setDefaultActivePlayer();
+    }
+  }
+  private setDefaultActivePlayer() {
+    if (!this.config) {
+      return;
+    }
+    const players = this.config.entities;
+    if (!this.hass) {
+      this.active_player_entity = players[0];
+    } else {
+      const states = this.hass.states;
+      const active_players = players.filter(
+        (entity) => ["playing", "paused"].includes(states[entity].state) && states[entity].attributes.app_id == 'music_assistant' 
+      )
+      if (active_players.length) {
+        this.active_player_entity = active_players[0];
+      } else {
+        this.active_player_entity = players[0];
+      }
     }
   }
   private setActivePlayer = (player_entity: string) => {
