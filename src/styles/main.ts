@@ -1,6 +1,7 @@
 import { css } from 'lit';
 export default css`
  ha-card {
+    --mass-player-card-height: 40em;
     --expansion-panel-content-padding: 0px;
     --md-list-container-color: rgba(0,0,0,0) !important;
     --md-list-item-leading-space: 0px;
@@ -32,5 +33,9 @@ sl-tab-group {
 .action-button-active {
   background: rgba(from var(--md-ripple-color) r g b / 0.2);
   border-radius: 50%;
+}
+sl-tab-panel {
+  height: var(--mass-player-card-height);
+  display: block;
 }
 `

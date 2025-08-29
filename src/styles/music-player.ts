@@ -13,7 +13,6 @@ export default css`
   }
 
   .container {
-    height: 42em;
     display: grid;
     grid-template-rows: 'min-content' 'min-content' 'auto' 'min-content';
     grid-template-areas:
@@ -21,9 +20,7 @@ export default css`
       'progress'
       'artwork'
       'controls';
-    min-height: 100%;
   }
-
   .header {
     grid-area: header;
     margin: 0.75em 1.75em 0em 1.75em;
