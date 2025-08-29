@@ -2,6 +2,7 @@ import { CSSResultGroup, html, LitElement } from "lit";
 import { property } from "lit/decorators.js";
 import { BrowserItemSelectedService, MediaBrowserItem } from "../types";
 import styles from '../styles/browser-row';
+import { backgroundImageFallback, Icons } from "../utils/icons";
 
 class MediaBrowserRow extends LitElement {
   private _media_item!: MediaBrowserItem
@@ -22,7 +23,7 @@ class MediaBrowserRow extends LitElement {
       <span 
         class="thumbnail" 
         slot="start" 
-        style="background-image: url(${this._media_item.image})"
+        style="${backgroundImageFallback(this._media_item.image, Icons.DISC)}"
       >
       </span>
     `

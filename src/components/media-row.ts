@@ -12,6 +12,7 @@ import {
   QueueItemSelectedService
 } from '../types';
 import styles from '../styles/media-row';
+import { backgroundImageFallback, Icons } from '../utils/icons';
 
 class MediaRow extends LitElement {
   @property({ attribute: false }) media_item!: QueueItem;
@@ -64,7 +65,7 @@ class MediaRow extends LitElement {
         <span 
           class="thumbnail${played ? '-disabled' : ''}" 
           slot="start" 
-          style="background-image: url(${this.media_item.media_image})"
+          style=${backgroundImageFallback(this.media_item.media_image, Icons.CLEFT)}
         >
         </span>
       `
