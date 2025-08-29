@@ -1,6 +1,6 @@
 import "@material/mwc-linear-progress/mwc-linear-progress";
 import { CSSResultGroup, html, LitElement } from "lit";
-import { property } from "lit/decorators.js";
+import { property, query, state } from "lit/decorators.js";
 import { HassEntity } from "home-assistant-js-websocket";
 import { HomeAssistant } from "custom-card-helpers";
 
@@ -28,12 +28,15 @@ class MusicPlayerCard extends LitElement {
   @property({ attribute: false }) private _config!: PlayerConfig;
   @property({ attribute: false}) private media_position = 0;
   @property({ attribute: false}) private media_duration = 1;
+  @state() private shouldMarqueeTitle = false;
+  @query('.player-track-title') _track_title;
   private _player!: HassEntity;
   private _listener: number|undefined;
   private _hass!: HomeAssistant;
   private actions!: PlayerActions;
   private entity_pos = 0;
   private entity_dur = 1;
+  private marquee_x_dist = 0;
   
   public set config(config: PlayerConfig) {
     this._config = {
@@ -158,6 +161,37 @@ class MusicPlayerCard extends LitElement {
     const pos = Math.floor(seek * this.media_duration);
     this.media_position = pos;
     await this.actions.actionSeek(this._player, pos);
+  }
+  protected updated() {
+    const title = this._track_title;
+    const offset = title.offsetWidth;
+    const scroll = title.scrollWidth;
+    if (offset < scroll) {
+      this.shouldMarqueeTitle = true;
+      this.marquee_x_dist = offset - scroll;
+    } else {
+      if (this.shouldMarqueeTitle) {
+        this.shouldMarqueeTitle = false;
+      }
+    }
+    
+  }
+  protected wrapTitleMarquee() {
+    const title = `${this.player_data.track_title} - ${this.player_data.track_album}`
+    if (!this.shouldMarqueeTitle) {
+      return html`<div class="player-track-title">${title}</div>`
+    }
+    const marqueeTime = `${(1 - (this.marquee_x_dist / 20)).toString()}s`;   
+    return html`
+      <div
+        class="player-track-title marquee"
+        style="
+          --marquee-left-offset: ${this.marquee_x_dist}px; 
+          --marquee-time: ${marqueeTime};"
+      >
+      ${title}
+      </div>
+    `
   }
   protected renderTitle() {
     if(!this.player_data.track_title) {

@@ -26,8 +26,10 @@ export default css`
 
   .header {
     grid-area: header;
-    margin: 0.75rem 0.75rem 0rem 0.75rem;
+    margin: 0.75em 1.75em 0em 1.75em;
     text-align: center;
+    overflow: hidden;
+    height: 5.25em;
   }
   .player-name {
     font-size: 0.8rem;
@@ -36,6 +38,8 @@ export default css`
   .player-track-title {
     font-size: 1.5rem;
     color: var(--player-track-color);
+    white-space: nowrap;
+    text-overflow: clip;
   }
   .player-track-artist {
   }
@@ -116,5 +120,23 @@ export default css`
   *[background] {
     background-color: rgba(var(--rgb-card-background-color), 0.9);
     border-radius: 10px;
+  }
+  .marquee {
+    animation: marquee var(--marquee-time) linear infinite;
+    position: relative;
+  }
+  @keyframes marquee {
+    0% {
+      left: 0px;
+    }
+    25% {
+      left: 0px;
+    }
+    75% {
+      left: var(--marquee-left-offset);
+    }
+    100% {
+      left: var(--marquee-left-offset);
+    }
   }
 `;
