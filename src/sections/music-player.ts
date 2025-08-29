@@ -21,6 +21,7 @@ import {
   mdiVolumeMute 
 } from "@mdi/js";
 import { DEFAULT_PLAYER_CONFIG, RepeatMode } from "../const";
+import { backgroundImageFallback, Icons } from "../utils/icons";
 
 class MusicPlayerCard extends LitElement {
   @property({ attribute: false }) private player_data!: PlayerData;
@@ -189,7 +190,7 @@ class MusicPlayerCard extends LitElement {
     `
   }
   private artworkStyle() {
-    return `background-image: url(${this.player_data.track_artwork})`
+    return backgroundImageFallback(this.player_data.track_artwork, Icons.CLEFT);
   }
   protected renderArtwork() {
     return html`

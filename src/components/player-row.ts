@@ -9,6 +9,7 @@ import {
 import styles from '../styles/player-row';
 import { HassEntity } from 'home-assistant-js-websocket';
 import { mdiLink, mdiLinkOff, mdiSwapHorizontal } from '@mdi/js';
+import { backgroundImageFallback, Icons } from '../utils/icons';
 
 class PlayerRow extends LitElement {
   @property({ type: Boolean }) player_entity!: HassEntity;
@@ -43,12 +44,12 @@ class PlayerRow extends LitElement {
     this.transferService(this.player_entity.entity_id);
   }
   private renderThumbnail() {
-    const thumbnail=this.player_entity?.attributes?.entity_picture;
+    const thumbnail=this.player_entity?.attributes?.entity_picture ?? "";
     return html`
       <span 
         class="thumbnail" 
         slot="start" 
-        style="background-image: url(${thumbnail})"
+        style="${backgroundImageFallback(thumbnail, Icons.HEADPHONES)}"
       >
       </span>
     `
