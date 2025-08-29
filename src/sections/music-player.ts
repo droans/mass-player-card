@@ -159,17 +159,31 @@ class MusicPlayerCard extends LitElement {
     this.media_position = pos;
     await this.actions.actionSeek(this._player, pos);
   }
-  
+  protected renderTitle() {
+    if(!this.player_data.track_title) {
+      return html``
+    } 
+    return this.wrapTitleMarquee();
+  }
+  protected renderArtist() {
+    if (!this.player_data.track_artist) {
+      return html``
+    }
+    return html`<div class="player-track-artist"> ${this.player_data.track_artist} </div>`; 
+  }
   protected renderHeader() {
     return html`
       <div class="header">
         <div class="player-name"> ${this.player_data.player_name} </div>
-        <div class="player-track-title"> ${this.player_data.track_title} - ${this.player_data.track_album} </div>
-        <div class="player-track-artist"> ${this.player_data.track_artist} </div>
+        ${this.renderTitle()}
+        ${this.renderArtist()}
       </div>
     `
   }
   protected renderTime() {
+    if (!this.media_position) {
+      return html``
+    }
     const pos = this.toTime(this.media_position);
     const dur = this.toTime(this.media_duration);
     return `${pos} - ${dur}`
@@ -193,6 +207,9 @@ class MusicPlayerCard extends LitElement {
     return backgroundImageFallback(this.player_data.track_artwork, Icons.CLEFT);
   }
   protected renderArtwork() {
+    if (!this.player_data.playing) { 
+      return html``;
+    }
     return html`
       <div class="artwork" style="${this.artworkStyle()}"></div>
     `
