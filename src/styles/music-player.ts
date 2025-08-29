@@ -98,6 +98,8 @@ export default css`
     --ha-button-height: var(--player-play-pause-icon-size);
     margin: 0px 6px 0px 6px;
     --ha-button-border-radius: 50%;
+    border-radius: 50%;
+    box-shadow: 0px 2px 4px 0px rgba(0,0,0,0.16);
   }
   .shuffle {
   }
