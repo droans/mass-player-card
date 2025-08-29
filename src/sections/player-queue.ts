@@ -14,8 +14,16 @@ import { QueueConfigErrors, DEFAULT_QUEUE_CONFIG } from '../const';
 class QueueCard extends LitElement {
   private _active_player_entity!: string;
   @property({ attribute: false }) public _config!: QueueConfig;
-  @property({ attribute: false}) public hass!: HomeAssistant;
+  private _hass!: HomeAssistant;
   @state() private queue: QueueItem[] = [];
+  public set hass(hass: HomeAssistant) {
+    if (!hass) {
+      return;
+    this._hass = hass;
+  }
+  public get hass() {
+    return this._hass;
+  }
   private testConfig(config: QueueConfig) {
     if (!config) {
       return QueueConfigErrors.CONFIG_MISSING;
