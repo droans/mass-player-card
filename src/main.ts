@@ -196,7 +196,7 @@ export class MusicAssistantPlayerCard extends LitElement {
             .activePlayerEntity=${this.active_player_entity}
             .config=${this.config}
             .hass=${this.hass}
-          ></mass-player-queue-card>
+          ></mass-player-players-card>
         </sl-tab-panel>
       `);
     }
