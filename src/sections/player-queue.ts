@@ -12,6 +12,7 @@ import '../components/media-row'
 import { QueueConfigErrors, DEFAULT_QUEUE_CONFIG } from '../const';
 
 class QueueCard extends LitElement {
+  @state() private lastUpdated = '';
   private _active_player_entity!: string;
   @property({ attribute: false }) public _config!: QueueConfig;
   private _hass!: HomeAssistant;
@@ -19,6 +20,13 @@ class QueueCard extends LitElement {
   public set hass(hass: HomeAssistant) {
     if (!hass) {
       return;
+    }
+    if (this._active_player_entity) {
+      const lastUpdated = hass.states[this._active_player_entity].last_updated;
+      if (lastUpdated !== this.lastUpdated) {
+        this.lastUpdated = lastUpdated;
+      }
+    }
     this._hass = hass;
   }
   public get hass() {
