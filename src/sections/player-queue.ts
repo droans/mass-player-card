@@ -1,4 +1,4 @@
-import { LitElement, html, type CSSResultGroup, PropertyValues } from 'lit';
+import { LitElement, html, type CSSResultGroup, PropertyValues, TemplateResult } from 'lit';
 import { keyed } from 'lit/directives/keyed.js';
 import { property, state } from 'lit/decorators.js';
 import {
@@ -9,14 +9,47 @@ import { QueueItem, QueueConfig } from '../types'
 import QueueActions from '../actions/queue-actions';
 import styles from '../styles/player-queue';
 import '../components/media-row'
-import { DEFAULT_QUEUE_CONFIG } from '../const';
+import { QueueConfigErrors, DEFAULT_QUEUE_CONFIG } from '../const';
 
 class QueueCard extends LitElement {
-  // @property({ attribute: false}) public hass!: HomeAssistant;
+  @state() private lastUpdated = '';
   private _active_player_entity!: string;
   @property({ attribute: false }) public _config!: QueueConfig;
-  @property({ attribute: false}) public hass!: HomeAssistant;
+  private _hass!: HomeAssistant;
   @state() private queue: QueueItem[] = [];
+  private error?: TemplateResult;
+  public set hass(hass: HomeAssistant) {
+    if (!hass) {
+      return;
+    }
+    if (this._active_player_entity) {
+      const lastUpdated = hass.states[this._active_player_entity].last_updated;
+      if (lastUpdated !== this.lastUpdated) {
+        this.lastUpdated = lastUpdated;
+      }
+    }
+    this._hass = hass;
+  }
+  public get hass() {
+    return this._hass;
+  }
+  private testConfig(config: QueueConfig) {
+    if (!config) {
+      return QueueConfigErrors.CONFIG_MISSING;
+    }
+    if (!this._active_player_entity) {
+      return QueueConfigErrors.NO_ENTITY;
+    };
+    if (typeof(this._active_player_entity) !== "string") {
+      return QueueConfigErrors.ENTITY_TYPE;
+    }
+    if (this.hass) {
+      if (!this.hass.states[this._active_player_entity]) {
+        return QueueConfigErrors.MISSING_ENTITY;
+      }
+    }
+    return QueueConfigErrors.OK;
+  }
   protected shouldUpdate(_changedProperties: PropertyValues): boolean {
     if (
       _changedProperties.has('_config')
@@ -44,12 +77,20 @@ class QueueCard extends LitElement {
     this._active_player_entity = active_player_entity;
     this.getQueueIfReady();
   }
-  set config(config: QueueConfig) {
+  public set config(config: QueueConfig) {
+   
+    const status = this.testConfig(config);
+    if (status !== QueueConfigErrors.OK) {
+      throw this.createError(status);
+    }
     this._config = {
       ...DEFAULT_QUEUE_CONFIG,
       ...config
     };
     this.getQueueIfReady();
+  }
+  public get config() {
+    return this._config;
   }
   private getQueueIfReady() {
     if (!this.hass || !this._config || !this._active_player_entity) {
@@ -92,6 +133,9 @@ class QueueCard extends LitElement {
       || this.actions.player_entity !== this._active_player_entity
     ) {
       this.actions = new QueueActions(this.hass, this._config, this._active_player_entity)
+    }
+    if (this.testConfig(this._config) !== QueueConfigErrors.OK) {
+      return;
     }
     if (forced_id) {
       const new_id = this.hass.states[this._active_player_entity]?.attributes?.media_content_id;
@@ -189,5 +233,20 @@ class QueueCard extends LitElement {
   static get styles(): CSSResultGroup {
     return styles;
   }
+  private createError(errorString: string): Error {
+    const error = new Error(errorString);
+    /* eslint-disable-next-line
+      @typescript-eslint/no-explicit-any,
+    */
+    const errorCard = document.createElement('hui-error-card') as any;
+    errorCard.setConfig({
+      type: 'error',
+      error,
+      origConfig: this._config,
+    });
+    this.error = html`${errorCard}`;
+    return error;
+  }
+
 }
 customElements.define('mass-player-queue-card', QueueCard);

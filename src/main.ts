@@ -1,6 +1,6 @@
 import { LitElement, html, type TemplateResult, type CSSResultGroup, PropertyValues } from 'lit';
 import { cache } from 'lit/directives/cache.js';
-import { customElement, property, state } from 'lit/decorators.js';
+import { customElement, state } from 'lit/decorators.js';
 
 import {
   mdiAlbum,
@@ -84,11 +84,11 @@ export class MusicAssistantPlayerCard extends LitElement {
       this.setDefaultActivePlayer();
       this.first_hass_update = true;
     }
-    let new_ents: HassEntity[] = [];
+    const new_ents: HassEntity[] = [];
     ents.forEach(
       (entity) => {
-        let old_state = JSON.stringify(this._hass.states[entity]);
-        let new_state = JSON.stringify(hass.states[entity]);
+        const old_state = JSON.stringify(this._hass.states[entity]);
+        const new_state = JSON.stringify(hass.states[entity]);
         new_ents.push(hass.states[entity]);
         if (old_state !== new_state) {
           should_update = true;
@@ -196,7 +196,7 @@ export class MusicAssistantPlayerCard extends LitElement {
             .activePlayerEntity=${this.active_player_entity}
             .config=${this.config}
             .hass=${this.hass}
-          ></mass-player-queue-card>
+          ></mass-player-players-card>
         </sl-tab-panel>
       `);
     }
