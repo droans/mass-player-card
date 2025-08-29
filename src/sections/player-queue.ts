@@ -12,7 +12,6 @@ import '../components/media-row'
 import { QueueConfigErrors, DEFAULT_QUEUE_CONFIG } from '../const';
 
 class QueueCard extends LitElement {
-  // @property({ attribute: false}) public hass!: HomeAssistant;
   private _active_player_entity!: string;
   @property({ attribute: false }) public _config!: QueueConfig;
   @property({ attribute: false}) public hass!: HomeAssistant;
