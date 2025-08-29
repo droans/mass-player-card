@@ -68,7 +68,12 @@ class QueueCard extends LitElement {
     this._active_player_entity = active_player_entity;
     this.getQueueIfReady();
   }
-  set config(config: QueueConfig) {
+  public set config(config: QueueConfig) {
+   
+    const status = this.testConfig(config);
+    if (status !== QueueConfigErrors.OK) {
+      throw this.createError(status);
+    }
     this._config = {
       ...DEFAULT_QUEUE_CONFIG,
       ...config
