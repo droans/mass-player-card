@@ -125,6 +125,9 @@ class QueueCard extends LitElement {
     ) {
       this.actions = new QueueActions(this.hass, this._config, this._active_player_entity)
     }
+    if (this.testConfig(this._config) !== QueueConfigErrors.OK) {
+      return;
+    }
     if (forced_id) {
       const new_id = this.hass.states[this._active_player_entity]?.attributes?.media_content_id;
       if (new_id) {
