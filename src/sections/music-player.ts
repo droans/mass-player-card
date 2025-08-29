@@ -215,9 +215,6 @@ class MusicPlayerCard extends LitElement {
     `
   }
   protected renderTime() {
-    if (!this.media_position) {
-      return html``
-    }
     const pos = this.toTime(this.media_position);
     const dur = this.toTime(this.media_duration);
     return `${pos} - ${dur}`
