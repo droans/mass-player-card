@@ -1,4 +1,4 @@
-import { LitElement, html, type CSSResultGroup, PropertyValues } from 'lit';
+import { LitElement, html, type CSSResultGroup, PropertyValues, TemplateResult } from 'lit';
 import { keyed } from 'lit/directives/keyed.js';
 import { property, state } from 'lit/decorators.js';
 import {
@@ -17,6 +17,7 @@ class QueueCard extends LitElement {
   @property({ attribute: false }) public _config!: QueueConfig;
   private _hass!: HomeAssistant;
   @state() private queue: QueueItem[] = [];
+  private error?: TemplateResult;
   public set hass(hass: HomeAssistant) {
     if (!hass) {
       return;
@@ -232,5 +233,20 @@ class QueueCard extends LitElement {
   static get styles(): CSSResultGroup {
     return styles;
   }
+  private createError(errorString: string): Error {
+    const error = new Error(errorString);
+    /* eslint-disable-next-line
+      @typescript-eslint/no-explicit-any,
+    */
+    const errorCard = document.createElement('hui-error-card') as any;
+    errorCard.setConfig({
+      type: 'error',
+      error,
+      origConfig: this._config,
+    });
+    this.error = html`${errorCard}`;
+    return error;
+  }
+
 }
 customElements.define('mass-player-queue-card', QueueCard);
