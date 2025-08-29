@@ -6,7 +6,6 @@ export default css`
   ha-card {
     overflow: hidden;
     width: 100%;
-    height: 42em;
     justify-content: center;
     background: unset;
     box-shadow: unset;
@@ -43,7 +42,7 @@ export default css`
     padding: 0.5rem;
   }
   .list {
-    height: 42em;
+    height: var(--mass-player-card-height);
     overflow-y: scroll;
     -ms-overflow-style: none;
     scrollbar-width: none;
