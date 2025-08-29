@@ -80,6 +80,9 @@ class QueueCard extends LitElement {
     };
     this.getQueueIfReady();
   }
+  public get config() {
+    return this._config;
+  }
   private getQueueIfReady() {
     if (!this.hass || !this._config || !this._active_player_entity) {
       return
