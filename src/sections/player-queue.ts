@@ -9,7 +9,7 @@ import { QueueItem, QueueConfig } from '../types'
 import QueueActions from '../actions/queue-actions';
 import styles from '../styles/player-queue';
 import '../components/media-row'
-import { DEFAULT_QUEUE_CONFIG } from '../const';
+import { QueueConfigErrors, DEFAULT_QUEUE_CONFIG } from '../const';
 
 class QueueCard extends LitElement {
   // @property({ attribute: false}) public hass!: HomeAssistant;
