@@ -16,6 +16,23 @@ class QueueCard extends LitElement {
   @property({ attribute: false }) public _config!: QueueConfig;
   @property({ attribute: false}) public hass!: HomeAssistant;
   @state() private queue: QueueItem[] = [];
+  private testConfig(config: QueueConfig) {
+    if (!config) {
+      return QueueConfigErrors.CONFIG_MISSING;
+    }
+    if (!this._active_player_entity) {
+      return QueueConfigErrors.NO_ENTITY;
+    };
+    if (typeof(this._active_player_entity) !== "string") {
+      return QueueConfigErrors.ENTITY_TYPE;
+    }
+    if (this.hass) {
+      if (!this.hass.states[this._active_player_entity]) {
+        return QueueConfigErrors.MISSING_ENTITY;
+      }
+    }
+    return QueueConfigErrors.OK;
+  }
   protected shouldUpdate(_changedProperties: PropertyValues): boolean {
     if (
       _changedProperties.has('_config')
