@@ -1,7 +1,7 @@
 import { HomeAssistant } from "custom-card-helpers";
 import { MediaTypes } from "../const";
 
-export default class BrowserActions {
+export default class MediaBrowserActions {
     private hass: HomeAssistant;
 
     constructor(hass: HomeAssistant) {

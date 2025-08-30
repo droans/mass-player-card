@@ -2,7 +2,7 @@ import { CSSResultGroup, html, LitElement, TemplateResult } from "lit";
 import { property, state } from "lit/decorators.js";
 import { FavoriteItems, MediaBrowserConfig, MediaBrowserItem } from "../types";
 import { HomeAssistant } from "custom-card-helpers";
-import BrowserActions from "../actions/browser-actions";
+import MediaBrowserActions from "../actions/browser-actions";
 import { MediaTypes, DEFAULT_MEDIA_BROWSER_CONFIG } from "../const";
 import { keyed } from "lit/directives/keyed.js";
 
@@ -13,7 +13,7 @@ class MediaBrowserCard extends LitElement {
   private _favorites!: FavoriteItems;
   private _hass!: HomeAssistant;
   private _player_entity!: string;
-  private actions!: BrowserActions;
+  private actions!: MediaBrowserActions;
   private _config!: MediaBrowserConfig;
   public onMediaSelectedAction!: () => void;
   @state() private favoritesCode!: TemplateResult;
@@ -53,7 +53,7 @@ class MediaBrowserCard extends LitElement {
   private setupIfReady(ready: string) {
     if (this._hass && this._player_entity) {
       if (!this.actions) {
-        this.actions = new BrowserActions(this._hass);
+        this.actions = new MediaBrowserActions(this._hass);
       }
       if (ready !== 'hass' || !this._favorites) {
         this.updateItems().catch( () => {return})

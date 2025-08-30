@@ -15,7 +15,8 @@ import { Config } from './types'
 import styles from './styles/main';
 import { DEFAULT_CONFIG, Sections, DEFAULT_CARD } from './const'
 import { version } from '../package.json';
-import './sections/media-browser';
+// import './sections/media-browser';
+import './sections/media-browser-favorites-items';
 import './sections/music-player';
 import './sections/player-queue';
 import './sections/players';
