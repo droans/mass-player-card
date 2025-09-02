@@ -167,27 +167,20 @@ class MusicPlayerCard extends LitElement {
     await this.actions.actionSeek(this._player, pos);
   }
   private onSwipeStart = (e: TouchEvent) => {
-    console.log(`Touch Start`);
-    console.log(e);
     const touches = e.changedTouches[0];
     this.touchStartX = touches.screenX;
     this.touchStartY = touches.screenY;
   }
   private onSwipeEnd = (e: TouchEvent) => {
-    console.log(`Touch End`);
-    console.log(e);
     const touches = e.changedTouches[0];
     this.touchEndX = touches.screenX;
     this.touchEndY = touches.screenY;
     const x_swipe = this.touchEndX - this.touchStartX;
     const y_swipe = this.touchEndY - this.touchStartY;
     if (Math.abs(x_swipe) > Math.abs(y_swipe)) {
-      console.log(`Swipe X greater than Swipe Y`);
       if (x_swipe < 0) {
-        console.log(`${x_swipe} below 0; switch to previous song`);
         this.onPrevious();
       } else {
-        console.log(`${x_swipe} greater than 0; switch to next song`);
         this.onNext();
       }
     }
