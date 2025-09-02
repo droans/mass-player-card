@@ -71,6 +71,9 @@ class QueueCard extends LitElement {
   private queueID = '';
   private newId = '';
   private actions!: QueueActions;
+  private failCt = 0;
+  private maxFailCt = 5;
+  private hasFailed = false;
 
   @property({ attribute: false})
   set active_player_entity(active_player_entity: string) {
@@ -134,8 +137,13 @@ class QueueCard extends LitElement {
     ) {
       this.actions = new QueueActions(this.hass, this._config, this._active_player_entity)
     }
-    if (this.testConfig(this._config) !== QueueConfigErrors.OK) {
+    if (this.testConfig(this._config) !== QueueConfigErrors.OK || this.hasFailed) {
       return;
+    }
+    if (this.failCt >= this.maxFailCt) {
+      this.hasFailed = true;
+      throw this.createError(`Failed to get queue ${this.failCt.toString()} times! Please check card config and that the services are working properly.`)
+      return
     }
     if (forced_id) {
       const new_id = this.hass.states[this._active_player_entity]?.attributes?.media_content_id;
@@ -147,6 +155,10 @@ class QueueCard extends LitElement {
       /* eslint-disable-next-line @typescript-eslint/no-floating-promises */
       this.actions.getQueue(this._config.limit_before, this._config.limit_after).then(
         (queue) => {
+          if (queue == null) {
+            this.failCt ++;
+            return
+          }
           this.queue = this.updateActiveTrack(queue);
         }
       );
