@@ -178,11 +178,13 @@ class MusicPlayerCard extends LitElement {
     const x_swipe = this.touchEndX - this.touchStartX;
     const y_swipe = this.touchEndY - this.touchStartY;
     if (Math.abs(x_swipe) > Math.abs(y_swipe)) {
+      /* eslint-disable @typescript-eslint/no-floating-promises */
       if (x_swipe > 0) {
         this.onPrevious();
       } else {
         this.onNext();
       }
+      /* eslint-enable @typescript-eslint/no-floating-promises */
     }
   }
   protected updated() {
