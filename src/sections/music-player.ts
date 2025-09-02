@@ -37,6 +37,10 @@ class MusicPlayerCard extends LitElement {
   private entity_pos = 0;
   private entity_dur = 1;
   private marquee_x_dist = 0;
+  private touchStartX = 0;
+  private touchEndX = 0;
+  private touchStartY = 0;
+  private touchEndY = 0;
   
   public set config(config: PlayerConfig) {
     this._config = {
@@ -101,12 +105,12 @@ class MusicPlayerCard extends LitElement {
     this.player_data.playing = !this.player_data.playing;
     await this.actions.actionPlayPause(this._player);
   }
-  private async onNext() {
+  private onNext = async () => {
     await this.actions.actionNext(this._player);
     this.media_position = 0;
     this.entity_dur = 0;
   }
-  private async onPrevious() {
+  private onPrevious = async () => {
     await this.actions.actionPrevious(this._player);
     this.media_position = 0;
     this.entity_dur = 0;
@@ -162,6 +166,25 @@ class MusicPlayerCard extends LitElement {
     this.media_position = pos;
     await this.actions.actionSeek(this._player, pos);
   }
+  private onSwipeStart = (e: TouchEvent) => {
+    const touches = e.changedTouches[0];
+    this.touchStartX = touches.screenX;
+    this.touchStartY = touches.screenY;
+  }
+  private onSwipeEnd = (e: TouchEvent) => {
+    const touches = e.changedTouches[0];
+    this.touchEndX = touches.screenX;
+    this.touchEndY = touches.screenY;
+    const x_swipe = this.touchEndX - this.touchStartX;
+    const y_swipe = this.touchEndY - this.touchStartY;
+    if (Math.abs(x_swipe) > Math.abs(y_swipe)) {
+      if (x_swipe < 0) {
+        this.onPrevious();
+      } else {
+        this.onNext();
+      }
+    }
+  }
   protected updated() {
     const title = this._track_title;
     const offset = title.offsetWidth;
@@ -174,7 +197,9 @@ class MusicPlayerCard extends LitElement {
         this.shouldMarqueeTitle = false;
       }
     }
-    
+    const element = this.shadowRoot?.getElementById('artwork');
+    element?.addEventListener('touchstart', this.onSwipeStart);
+    element?.addEventListener('touchend', this.onSwipeEnd);
   }
   protected wrapTitleMarquee() {
     const title = `${this.player_data.track_title} - ${this.player_data.track_album}`
@@ -242,7 +267,12 @@ class MusicPlayerCard extends LitElement {
   }
   protected renderArtwork() {
     return html`
-      <div class="artwork" style="${this.artworkStyle()}"></div>
+      <div 
+        class="artwork"
+        id="artwork"
+        style="${this.artworkStyle()}"
+      >
+      </div>
     `
   }
   /* eslint-disable @typescript-eslint/unbound-method */
