@@ -106,11 +106,12 @@ export default css`
   .repeat {
   }
   .artwork {
-    background-size: contain;
+    background-size: 100%;
     height: 300px;
     width: 300px;
     justify-self: center;
     border-radius: 36px;
+    background-repeat: no-repeat;
   }
   *[hide] {
     display: none;
