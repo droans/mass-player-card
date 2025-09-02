@@ -166,14 +166,14 @@ class MusicPlayerCard extends LitElement {
     this.media_position = pos;
     await this.actions.actionSeek(this._player, pos);
   }
-  private onSwipeStart(e: TouchEvent) {
+  private onSwipeStart = (e: TouchEvent) => {
     console.log(`Touch Start`);
     console.log(e);
     const touches = e.changedTouches[0];
     this.touchStartX = touches.screenX;
     this.touchStartY = touches.screenY;
   }
-  private onSwipeEnd(e: TouchEvent) {
+  private onSwipeEnd = (e: TouchEvent) => {
     console.log(`Touch End`);
     console.log(e);
     const touches = e.changedTouches[0];
