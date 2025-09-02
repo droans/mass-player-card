@@ -235,7 +235,7 @@ class MusicPlayerCard extends LitElement {
     `
   }
   private artworkStyle() {
-    if (!this.player_data.playing) { 
+    if (!this.player_data.track_artist) { 
       return getFallbackImage(Icons.CLEFT);
     }
     return backgroundImageFallback(this.player_data.track_artwork, Icons.CLEFT);
