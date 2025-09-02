@@ -178,17 +178,19 @@ class MusicPlayerCard extends LitElement {
     const x_swipe = this.touchEndX - this.touchStartX;
     const y_swipe = this.touchEndY - this.touchStartY;
     if (Math.abs(x_swipe) > Math.abs(y_swipe)) {
-      if (x_swipe < 0) {
+      /* eslint-disable @typescript-eslint/no-floating-promises */
+      if (x_swipe > 0) {
         this.onPrevious();
       } else {
         this.onNext();
       }
+      /* eslint-enable @typescript-eslint/no-floating-promises */
     }
   }
   protected updated() {
     const title = this._track_title;
-    const offset = title.offsetWidth;
-    const scroll = title.scrollWidth;
+    const offset = title.offsetWidth ?? 0;
+    const scroll = title.scrollWidth ?? 0;
     if (offset < scroll) {
       this.shouldMarqueeTitle = true;
       this.marquee_x_dist = offset - scroll;
