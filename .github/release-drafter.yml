@@ -50,6 +50,8 @@ version-resolver:
       - "performance"
       - "refactor"
   default: patch
+exclude-labels:
+  - "no-changelog"
 
 template: |
   # Music Assistant Queue Actions v$RESOLVED_VERSION
