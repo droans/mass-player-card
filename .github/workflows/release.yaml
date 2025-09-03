@@ -1,11 +1,9 @@
 name: Release
 on:
-  workflow_run:
-    workflows: 
-      - "Release Drafter"
-    types:
-      - completed
   workflow_dispatch:
+  release:
+    types:
+      - published
 permissions:
   contents: write
 
