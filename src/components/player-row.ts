@@ -44,7 +44,7 @@ class PlayerRow extends LitElement {
     this.transferService(this.player_entity.entity_id);
   }
   private renderThumbnail() {
-    const thumbnail=this.player_entity?.attributes?.entity_picture ?? "";
+    const thumbnail=this.player_entity?.attributes?.entity_picture_local ?? "";
     return html`
       <span 
         class="thumbnail" 
