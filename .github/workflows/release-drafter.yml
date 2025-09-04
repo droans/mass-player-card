@@ -18,7 +18,16 @@ jobs:
       contents: write
       pull-requests: write
     steps:
+      - name: Checkout Repo
+        uses: actions/checkout@v3
+      - name: Get Version
+        id: version
+        run: |
+          echo "pkg_version=$(jq -r '.version' package.json)" >> "${GITHUB_OUTPUT}"
       - name: Run Release Drafter
         uses: release-drafter/release-drafter@v6.1.0
+        with:
+          tag: ${{ steps.version.outputs.pkg_version }}
+          version: ${{ steps.version.outputs.pkg_version }}
         env:
           GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
