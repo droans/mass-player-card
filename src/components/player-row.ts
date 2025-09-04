@@ -1,15 +1,15 @@
 import { html, type CSSResultGroup, LitElement, PropertyValues } from 'lit';
 import { property } from 'lit/decorators.js'
-import { 
-  PlayerJoinService,
-  PlayerSelectedService,
-  PlayerTransferService,
-  PlayerUnjoinService
-} from '../types';
 import styles from '../styles/player-row';
 import { HassEntity } from 'home-assistant-js-websocket';
 import { mdiLink, mdiLinkOff, mdiSwapHorizontal } from '@mdi/js';
 import { backgroundImageFallback, Icons } from '../utils/icons';
+import { 
+  PlayerJoinService, 
+  PlayerSelectedService, 
+  PlayerTransferService, 
+  PlayerUnjoinService 
+} from '../const/actions';
 
 class PlayerRow extends LitElement {
   @property({ type: Boolean }) player_entity!: HassEntity;

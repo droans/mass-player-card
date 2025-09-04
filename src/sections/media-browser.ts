@@ -1,13 +1,13 @@
 import { CSSResultGroup, html, LitElement, TemplateResult } from "lit";
 import { property, state } from "lit/decorators.js";
-import { FavoriteItems, MediaBrowserConfig, MediaBrowserItem } from "../types";
 import { HomeAssistant } from "custom-card-helpers";
 import BrowserActions from "../actions/browser-actions";
-import { MediaTypes, DEFAULT_MEDIA_BROWSER_CONFIG } from "../const";
 import { keyed } from "lit/directives/keyed.js";
 
 import '../components/browser-row'
 import styles from '../styles/media-browser';
+import { DEFAULT_MEDIA_BROWSER_CONFIG, FavoriteItems, MediaBrowserConfig, MediaBrowserItem } from "../const/media-browser";
+import { MediaTypes } from "../const/common";
 
 class MediaBrowserCard extends LitElement {
   private _favorites!: FavoriteItems;

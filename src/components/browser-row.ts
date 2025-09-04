@@ -1,8 +1,9 @@
 import { CSSResultGroup, html, LitElement } from "lit";
 import { property } from "lit/decorators.js";
-import { BrowserItemSelectedService, MediaBrowserItem } from "../types";
 import styles from '../styles/browser-row';
 import { backgroundImageFallback, Icons } from "../utils/icons";
+import { MediaBrowserItem } from "../const/media-browser";
+import { BrowserItemSelectedService } from "../const/actions";
 
 class MediaBrowserRow extends LitElement {
   private _media_item!: MediaBrowserItem
