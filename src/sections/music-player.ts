@@ -189,8 +189,8 @@ class MusicPlayerCard extends LitElement {
   }
   protected updated() {
     const title = this._track_title;
-    const offset = title.offsetWidth ?? 0;
-    const scroll = title.scrollWidth ?? 0;
+    const offset = title?.offsetWidth ?? 0;
+    const scroll = title?.scrollWidth ?? 0;
     if (offset < scroll) {
       this.shouldMarqueeTitle = true;
       this.marquee_x_dist = offset - scroll;
