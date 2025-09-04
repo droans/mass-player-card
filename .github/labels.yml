@@ -83,6 +83,9 @@
 - name: "minor"
   color: 0e8a16
   description: "This PR causes a minor version bump in the version number."
+- name: "patch"
+  color: e2bc85
+  description: "This PR causes a patch version bump in the version number."
 
 - name: no-changelog
   description: Don't add to release changelog

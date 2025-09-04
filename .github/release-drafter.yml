@@ -47,6 +47,7 @@ version-resolver:
       - "dependencies"
       - "documentation"
       - "enhancement"
+      - "patch"
       - "performance"
       - "refactor"
   default: patch
