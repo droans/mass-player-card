@@ -19,7 +19,8 @@ import {
   mdiVolumeHigh, 
   mdiVolumeMute 
 } from "@mdi/js";
-import { backgroundImageFallback, getFallbackImage, Icons } from "../utils/icons";
+import { backgroundImageFallback, getFallbackImage } from "../utils/icons";
+import { Icons } from '../const/common';
 import { DEFAULT_PLAYER_CONFIG, PlayerConfig, PlayerData } from "../const/music-player";
 import { RepeatMode } from "../const/common";
 

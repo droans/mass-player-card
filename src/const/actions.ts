@@ -26,3 +26,8 @@ export type BrowserItemSelectedService = (
   content_id: string,
   content_type: string
 ) => void
+
+export type CardSelectedService = (
+  /* eslint-disable-next-line @typescript-eslint/no-explicit-any */
+  data: any[] | Record<string, any>
+) => void

@@ -1,4 +1,4 @@
-import { MediaTypes } from "./common";
+import {  Icons, MediaTypes } from "./common";
 
 export interface MediaBrowserConfig {
   enabled: boolean,
@@ -16,7 +16,7 @@ interface FavoritesConfig {
   tracks: FavoriteItemConfig,
 }
 
-interface FavoriteItemConfig {
+export interface FavoriteItemConfig {
   enabled: boolean
 }
 
@@ -62,4 +62,16 @@ export interface FavoriteItems {
   podcasts: MediaBrowserItem[],
   radios: MediaBrowserItem[],
   tracks: MediaBrowserItem[],
+}
+/* eslint-disable-next-line @typescript-eslint/no-explicit-any */
+export type MediaCardData = Record<string, any>
+export interface MediaCardItem {
+  title: string,
+  icon: string,
+  fallback: Icons,
+  data: MediaCardData
+}
+export interface MediaBrowserItemsConfig {
+  main: MediaCardItem[],
+  [str: string]: MediaCardItem[]
 }

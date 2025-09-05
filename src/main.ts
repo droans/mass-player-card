@@ -233,10 +233,10 @@ export class MusicAssistantPlayerCard extends LitElement {
     if (this.active_section === Sections.MEDIA_BROWSER) {
       return cache(html`
         <sl-tab-panel name="${Sections.MEDIA_BROWSER}">
-          <mass-browser-card
+          <mass-media-browser
+            .activePlayer=${this.active_player_entity}
             .config=${this.config.media_browser}
             .hass=${this.hass}
-            .player_entity=${this.active_player_entity}
             .onMediaSelectedAction=${this.browserItemSelected}
           >
         </sl-tab-panel>

@@ -3,7 +3,8 @@ import { property } from 'lit/decorators.js'
 import styles from '../styles/player-row';
 import { HassEntity } from 'home-assistant-js-websocket';
 import { mdiLink, mdiLinkOff, mdiSwapHorizontal } from '@mdi/js';
-import { backgroundImageFallback, Icons } from '../utils/icons';
+import { backgroundImageFallback } from '../utils/icons';
+import { Icons } from '../const/common';
 import { 
   PlayerJoinService, 
   PlayerSelectedService, 
@@ -44,7 +45,7 @@ class PlayerRow extends LitElement {
     this.transferService(this.player_entity.entity_id);
   }
   private renderThumbnail() {
-    const thumbnail=this.player_entity?.attributes?.entity_picture_local ?? "";
+    const thumbnail: string = this.player_entity?.attributes?.entity_picture_local ?? "";
     return html`
       <span 
         class="thumbnail" 
