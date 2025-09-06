@@ -36,9 +36,11 @@ class MediaBrowserCards extends LitElement {
       }
     )
     this.code = html`
-      <div class="icons">
-        ${result}
-      </div>
+      <ha-card>
+        <div class="icons">
+          ${result}
+        </div>
+      </ha-card>
     `
   }
 
