@@ -4,6 +4,8 @@ import { css } from 'lit';
 // https://lit.dev/docs/components/styles/
 export default css`
   ha-control-button {
+    --section-thumbnail-size: calc(var(--mass-player-card-height) / 5);
+    --thumbnail-size: calc(var(--mass-player-card-height) / 2.5);
     width: 98%;
     height: 98%;
     margin: 1%;
@@ -13,9 +15,14 @@ export default css`
     background-repeat: no-repeat;
     background-position: center;
     margin: 0 6%;
-    width: 50%;
-    height: 50%;
-    padding-bottom: 60%
+    height: var(--thumbnail-size);
+    width: var(--thumbnail-size);
+  }
+  .thumbnail-section {
+    background-repeat: no-repeat;
+    background-size: contain;
+    height: var(--section-thumbnail-size);
+    width: var(--section-thumbnail-size);
   }
   .title {
     font-size: 1.2rem;

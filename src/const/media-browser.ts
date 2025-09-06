@@ -1,3 +1,4 @@
+import { TemplateResult } from "lit";
 import {  Icons, MediaTypes } from "./common";
 
 export interface MediaBrowserConfig {
@@ -69,7 +70,8 @@ export interface MediaCardItem {
   title: string,
   icon: string,
   fallback: Icons,
-  data: MediaCardData
+  data: MediaCardData,
+  background?: TemplateResult
 }
 export interface MediaBrowserItemsConfig {
   main: MediaCardItem[],

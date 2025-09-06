@@ -31,7 +31,12 @@ class MediaCard extends LitElement {
   private onItemSelected = () => {
     this.onSelectAction(this.config.data);
   }
-  protected renderThumbnail() {
+  protected renderThumbnailFromBackground() {
+    return html`
+      ${this.config.background}
+    `
+  }
+  protected renderThumbnailFromIcon() {
     const thumbnail = backgroundImageFallback(this.config.icon, this.config.fallback);
     return html`
       <div 
@@ -40,6 +45,13 @@ class MediaCard extends LitElement {
       >
       </div>
     `
+    
+  }
+  protected renderThumbnail() {
+    if (this.config.background) {
+      return this.renderThumbnailFromBackground();
+    }
+    return this.renderThumbnailFromIcon();
   }
   protected renderTitle() {
     return html`
