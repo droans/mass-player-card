@@ -11,7 +11,7 @@ class MediaBrowserCards extends LitElement {
   @state() private code!: TemplateResult;
 
   public set items(items: MediaCardItem[]) {
-    if (!items) {
+    if (!items || !items.length) {
       return;
     }
     this._items = items;
