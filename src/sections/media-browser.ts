@@ -3,25 +3,26 @@ import { FavoriteItemConfig, MediaBrowserConfig, MediaBrowserItemsConfig, MediaC
 import { HomeAssistant } from "custom-card-helpers";
 import BrowserActions from "../actions/browser-actions";
 import { Icons, MediaTypes } from "../const/common";
-import { state } from "lit/decorators.js";
+import { property, state } from "lit/decorators.js";
 import '../components/media-browser-cards'
 import styles from '../styles/media-browser';
+import { backgroundImageFallback } from "../utils/icons";
 
 class MediaBrowser extends LitElement {
   public activePlayer!: string;
   private _config!: MediaBrowserConfig;
   private _hass!: HomeAssistant;
-  private _cards!: MediaBrowserItemsConfig;
+  @state() private cards: MediaBrowserItemsConfig = {main: []};
   private _activeSection = 'main';
   private actions!: BrowserActions;
   private _activeCards: MediaCardItem[] = [];
   public onMediaSelectedAction!: () => void;
-  @state() private code!: TemplateResult;
   /*
     TODO:
     * Generate main browser section
     * Create secondary sections on-demand
   */
+ @property({attribute: false})
   public set config(config: MediaBrowserConfig) {
     if (!config) {
       return;
@@ -36,8 +37,11 @@ class MediaBrowser extends LitElement {
     if (!hass) {
       return;
     }
+    const hassUnset = !this._hass
     this._hass = hass;
-    this.setupIfReady();
+    if (hassUnset) {
+      this.setupIfReady();
+    }
   }
   public get hass() {
     return this._hass;
@@ -47,18 +51,19 @@ class MediaBrowser extends LitElement {
       return;
     }
     this._activeSection = section;
-    this.activeCards = this._cards[section];
+    this.activeCards = this.cards[section];
     this.setupIfReady();
   }
   public get activeSection() {
     return this._activeSection;
   }
   private set activeCards(activeCards: MediaCardItem[]) {
-    if (!activeCards) {
+    if (!activeCards || !activeCards.length) {
       return;
     }
     this._activeCards = activeCards;
-    this.generateCode();
+    console.log(`Set active cards.`);
+    this.requestUpdate();
   }
   public get activeCards() {
     return this._activeCards;
@@ -71,12 +76,17 @@ class MediaBrowser extends LitElement {
     ) {
       return;
     }
-    this.actions = new BrowserActions(this.hass);
-    if (!this._cards || regenerate) {
-      this.generateCards();
+    if (!this.actions){
+      this.actions = new BrowserActions(this.hass)
+    };
+    if (!this.cards.main.length) {
+      this.generateCards().catch( () => {return});
+      this.requestUpdate();
     }
-    if (!this.activeCards.length) {
-      this.activeCards = this._cards[this.activeSection];
+    if (regenerate) {
+      this.generateCards();
+      this.activeCards = this.cards[this.activeSection]
+      this.requestUpdate();
     }
   }
   private onFavoriteItemSelected = (data: MediaCardData) => {
@@ -96,9 +106,41 @@ class MediaBrowser extends LitElement {
     const func = funcs[data.type];
     func(data);
   }
-  private generateFavoriteCard(media_type: MediaTypes): MediaCardItem {
-    return {
+  private _generateSectionBackgroundPart(icon: string, fallback: Icons = Icons.DISC) {
+    const image = backgroundImageFallback(icon, fallback)
+    return html`
+      <div class="thumbnail-section" style="${image};"></div>
+    `
+  }
+  private generateSectionBackground(cards: MediaCardItem[]) {
+    const rng = [...Array(4).keys()];
+    let icons: TemplateResult[] = []
+    rng.forEach(
+      (i) => {
+        let idx = i % rng.length;
+        icons.push(this._generateSectionBackgroundPart(cards[idx]?.icon ?? Icons.DISC, Icons.DISC));
+      }
+    )
+    let icons_html = html``;
+    icons.forEach( 
+      (icon) => {
+        icons_html = html`
+          ${icons_html}
+          ${icon}
+        `
+      }
+    );
+    return html`
+      <div class="thumbnail" style="display: grid; grid-template-areas: 'bg-1 bg-2' 'bg-3 bg-4'; padding-bottom: 0%; height: unset; width: unset">
+        ${icons_html}
+      </div>
+    `
+  }
+  private generateFavoriteCard(media_type: MediaTypes, cards: MediaCardItem[]): MediaCardItem {
+    
+    return {  
       title: media_type,
+      background: this.generateSectionBackground(cards),
       icon: Icons.CLEFT,
       fallback: Icons.CLEFT,
       data: {
@@ -107,29 +149,30 @@ class MediaBrowser extends LitElement {
       }
     }
   }
-  private generateFavoriteData(config: FavoriteItemConfig, media_type: MediaTypes) {
+  private generateFavoriteData = async (config: FavoriteItemConfig, media_type: MediaTypes) => {
     if (config.enabled) {
-      this._cards.main.push(this.generateFavoriteCard(media_type));
-      this.getFavoriteSection(media_type).then(
-        (result) => {
-          this._cards[media_type] = result
-        }
-      ).catch( () => {return});
+      const result = await this.getFavoriteSection(media_type);
+      this.cards[media_type] = result;
+      const card = this.generateFavoriteCard(media_type, result);
+      this.cards.main.push(card);
+      console.log(this.cards);
     }
   }
-  private generateCards(){
-    this._cards = {main: []};
+  private generateCards = async () => {
     const favorites = this.config.favorites;
-    this.generateFavoriteData(favorites.albums, MediaTypes.ALBUM);
-    this.generateFavoriteData(favorites.artists, MediaTypes.ARTIST);
-    this.generateFavoriteData(favorites.audiobooks, MediaTypes.AUDIOBOOK);
-    this.generateFavoriteData(favorites.playlists, MediaTypes.PLAYLIST);
-    this.generateFavoriteData(favorites.podcasts, MediaTypes.PODCAST);
-    this.generateFavoriteData(favorites.radios, MediaTypes.RADIO);
-    this.generateFavoriteData(favorites.tracks, MediaTypes.TRACK);
-    this.generateCode();
+    await this.generateFavoriteData(favorites.albums, MediaTypes.ALBUM);
+    await this.generateFavoriteData(favorites.artists, MediaTypes.ARTIST);
+    await this.generateFavoriteData(favorites.audiobooks, MediaTypes.AUDIOBOOK);
+    await this.generateFavoriteData(favorites.playlists, MediaTypes.PLAYLIST);
+    await this.generateFavoriteData(favorites.podcasts, MediaTypes.PODCAST);
+    await this.generateFavoriteData(favorites.radios, MediaTypes.RADIO);
+    await this.generateFavoriteData(favorites.tracks, MediaTypes.TRACK);
+    this.activeCards = this.cards[this.activeSection];
+    console.log(this.cards);
+    console.log(`Generated cards.`);
+    this.requestUpdate();
   }
-  private async getFavoriteSection(media_type: MediaTypes) {
+  private getFavoriteSection = async (media_type: MediaTypes) => {
     /* eslint-disable-next-line @typescript-eslint/no-explicit-any */
     const response: any[] = await this.actions.actionGetFavorites(this.activePlayer, media_type);
     return response.map(
@@ -148,20 +191,34 @@ class MediaBrowser extends LitElement {
       }
     )
   }
-  private generateCode() {
-    const cards = this._activeCards;
-    this.code = html`
+  // private generateCode() {
+  //   if (!this.activeCards.length) {
+  //     this.activeCards = this.cards[this.activeSection];
+  //   }
+  //   this.code = html`
+  //     <div class="mass-browser">
+  //       <mass-browser-cards
+  //         .items=${this.activeCards}
+  //         .onSelectAction=${this.onSelect}
+  //       >
+  //       </mass-browser-cards>
+  //     </div>
+  //   `
+  // }
+  protected render() {
+    if (!this.cards) {
+      return;
+    }
+    const activeCards = this.cards[this.activeSection];
+    return html`
       <div class="mass-browser">
         <mass-browser-cards
-          .items=${cards}
+          .items=${activeCards}
           .onSelectAction=${this.onSelect}
         >
         </mass-browser-cards>
       </div>
-    `
-  }
-  protected render() {
-    return this.code;
+    `;
   }
   static get styles(): CSSResultGroup {
     return styles;
