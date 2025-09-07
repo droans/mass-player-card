@@ -71,6 +71,10 @@ export default css`
     align-items: start;
     justify-content: center;
   }
+  .controls-previous-next::part(base) {
+    height: 30px;
+    width: 60px;
+  }
   .volume {
     display: flex;
     flex-direction: row;
@@ -88,11 +92,9 @@ export default css`
   }
   .track-previous {
     margin: 0px 0px 4px 0px;
-    width: 100%;
   }
   .track-next {
     margin: 0px 0px 4px 0px;
-    width: 100%;
   }
   .play-pause {
     --ha-button-height: var(--player-play-pause-icon-size);
