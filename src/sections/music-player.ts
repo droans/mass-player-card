@@ -289,6 +289,7 @@ class MusicPlayerCard extends LitElement {
   protected renderTrackPrevious() {
     return html`
       <ha-button
+        class="controls-previous-next"
         appearance="outlined"
         variant="brand"
         @click=${this.onPrevious}
@@ -304,6 +305,7 @@ class MusicPlayerCard extends LitElement {
   protected renderTrackNext() {
     return html`
       <ha-button
+        class="controls-previous-next"
         appearance="outlined"
         variant="brand"
         @click=${this.onNext}
