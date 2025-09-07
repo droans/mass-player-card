@@ -59,7 +59,7 @@ class MediaBrowser extends LitElement {
     return this._activeSection;
   }
   private set activeCards(activeCards: MediaCardItem[]) {
-    if (!activeCards || !activeCards.length) {
+    if (!activeCards?.length) {
       return;
     }
     this._activeCards = activeCards;
@@ -84,7 +84,7 @@ class MediaBrowser extends LitElement {
       this.requestUpdate();
     }
     if (regenerate) {
-      this.generateCards();
+      this.generateCards().catch( () => {return});
       this.activeCards = this.cards[this.activeSection]
       this.requestUpdate();
     }
@@ -114,7 +114,7 @@ class MediaBrowser extends LitElement {
   }
   private generateSectionBackground(cards: MediaCardItem[]) {
     const rng = [...Array(4).keys()];
-    let icons: TemplateResult[] = []
+    const icons: TemplateResult[] = []
     const filteredCards = cards.filter(
       (item) =>{
         if (item.icon) {
@@ -125,7 +125,7 @@ class MediaBrowser extends LitElement {
     )
     rng.forEach(
       (i) => {
-        let idx = i % filteredCards.length;
+        const idx = i % filteredCards.length;
         icons.push(this._generateSectionBackgroundPart(filteredCards[idx]?.icon ?? Icons.DISC, Icons.DISC));
       }
     )
