@@ -85,7 +85,10 @@ expanded: false
 ## Queue Config
 Display and interact with the player's queue.
 
+<details>
+    <summary>Queue Example</summary>
 <img src="https://github.com/droans/mass-player-card/blob/main/static/queue/desktop.png" alt="Player Card Queue Section Example">
+</details>
 
 | Parameter         | Type | Required | Default | Description                                          |
 |-------------------|------|----------|---------|------------------------------------------------------|
@@ -97,7 +100,10 @@ Display and interact with the player's queue.
 
 ## Media Browser Config
 
+<details>
+    <summary>Media Browser Example</summary>
 <img src="https://github.com/droans/mass-player-card/blob/main/static/media_browser/desktop.png" alt="Player Card Media Browser Section Example">
+</details>
 
 | Parameter | Type                                 | Required | Default | Description                      |
 |-----------|--------------------------------------|----------|---------|----------------------------------|
@@ -139,7 +145,10 @@ media_browser:
 
 ## Players Config
 
+<details>
+    <summary>Media Player Example</summary>
 <img src="https://github.com/droans/mass-player-card/blob/main/static/players/desktop.png" alt="Player Card Players Section Example">
+</details>
 
 | Parameter | Type | Required | Default | Description                     |
 |-----------|------|----------|---------|---------------------------------|
