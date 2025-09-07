@@ -7,6 +7,7 @@ import { property, state } from "lit/decorators.js";
 import '../components/media-browser-cards'
 import styles from '../styles/media-browser';
 import { backgroundImageFallback } from "../utils/icons";
+import { testMixedContent } from "../utils/util";
 
 class MediaBrowser extends LitElement {
   public activePlayer!: string;
@@ -115,10 +116,18 @@ class MediaBrowser extends LitElement {
   private generateSectionBackground(cards: MediaCardItem[]) {
     const rng = [...Array(4).keys()];
     let icons: TemplateResult[] = []
+    const filteredCards = cards.filter(
+      (item) =>{
+        if (item.icon) {
+          return testMixedContent(item.icon)
+        }
+        return false;
+      }
+    )
     rng.forEach(
       (i) => {
         let idx = i % rng.length;
-        icons.push(this._generateSectionBackgroundPart(cards[idx]?.icon ?? Icons.DISC, Icons.DISC));
+        icons.push(this._generateSectionBackgroundPart(filteredCards[idx]?.icon ?? Icons.DISC, Icons.DISC));
       }
     )
     let icons_html = html``;
