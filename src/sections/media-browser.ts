@@ -9,7 +9,7 @@ import styles from '../styles/media-browser';
 import { backgroundImageFallback } from "../utils/icons";
 import { testMixedContent } from "../utils/util";
 
-class MediaBrowser extends LitElement {
+export class MediaBrowser extends LitElement {
   public activePlayer!: string;
   private _config!: MediaBrowserConfig;
   private _hass!: HomeAssistant;

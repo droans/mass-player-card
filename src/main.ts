@@ -19,6 +19,7 @@ import './sections/player-queue';
 import './sections/players';
 import { HassEntity } from 'home-assistant-js-websocket';
 import { Config, DEFAULT_CARD, DEFAULT_CONFIG, Sections } from './const/card';
+import { MediaBrowser } from './sections/media-browser';
 
 const DEV = false;
 
@@ -186,6 +187,15 @@ export class MusicAssistantPlayerCard extends LitElement {
     const newTab: Sections = ev.detail.name;
     this.active_section = newTab;
   }
+  private returnMediaBrowserToHome() {
+    if (this.active_section == Sections.MEDIA_BROWSER) {
+      const el: MediaBrowser | null | undefined = this.shadowRoot?.querySelector('mass-media-browser');
+      if (!el) {
+        return;
+      }
+      el.activeSection = 'main';
+    }
+  }
   protected renderPlayers() {
     if (this.active_section === Sections.PLAYERS) {
       return cache(html`
@@ -289,6 +299,7 @@ export class MusicAssistantPlayerCard extends LitElement {
         slot="nav"
         .active=${active}
         panel="${Sections.MEDIA_BROWSER}"
+        @click=${this.returnMediaBrowserToHome}
       >
         <ha-icon-button 
           class="action-button${active ? "-active" : ""}"
