@@ -38,7 +38,7 @@ A Home Assistant media player card built for Music Assistant players.
 
 In addition to the Music Assistant integration, this card depends on the custom integration `mass_queue` for all the actions. Follow all instructions [in the repository](https://github.com/droans/mass_queue) to install first.
 
-<img src="https://github.com/droans/mass-player-card/blob/dev/static/music_player/desktop.png" alt="Player Card Example" width=68%> <img src="https://github.com/droans/mass-player-card/blob/dev/static/music_player/mobile.png" alt="Player Card Mobile Example" width=31%>
+<img src="https://github.com/droans/mass-player-card/blob/main/static/music_player/desktop.png" alt="Player Card Example" width=68%> <img src="https://github.com/droans/mass-player-card/blob/main/static/music_player/mobile.png" alt="Player Card Mobile Example" width=31%>
 
 ### HACS Installation
 1. Add this repository to your HACS custom repositories.
@@ -85,7 +85,7 @@ expanded: false
 ## Queue Config
 Display and interact with the player's queue.
 
-<img src="https://github.com/droans/mass-player-card/blob/dev/static/queue/desktop.png" alt="Player Card Queue Section Example" width=68%> <img src="https://github.com/droans/mass-player-card/blob/dev/static/queue/mobile.png" alt="Player Card Queue Section Mobile Example" width=31%>
+<img src="https://github.com/droans/mass-player-card/blob/main/static/queue/desktop.png" alt="Player Card Queue Section Example" width=68%> <img src="https://github.com/droans/mass-player-card/blob/main/static/queue/mobile.png" alt="Player Card Queue Section Mobile Example" width=31%>
 
 | Parameter         | Type | Required | Default | Description                                          |
 |-------------------|------|----------|---------|------------------------------------------------------|
@@ -97,7 +97,7 @@ Display and interact with the player's queue.
 
 ## Media Browser Config
 
-<img src="https://github.com/droans/mass-player-card/blob/dev/static/media_browser/desktop.png" alt="Player Card Media Browser Section Example" width=68%> <img src="https://github.com/droans/mass-player-card/blob/dev/static/media_browser/mobile.png" alt="Player Card Media Browser Mobile Section Example" width=31%>
+<img src="https://github.com/droans/mass-player-card/blob/main/static/media_browser/desktop.png" alt="Player Card Media Browser Section Example" width=68%> <img src="https://github.com/droans/mass-player-card/blob/main/static/media_browser/mobile.png" alt="Player Card Media Browser Mobile Section Example" width=31%>
 | Parameter | Type                                 | Required | Default | Description                      |
 |-----------|--------------------------------------|----------|---------|----------------------------------|
 | enabled   | bool                                 | No       | true    | Enable/disable media browser tab |
@@ -138,7 +138,7 @@ media_browser:
 
 ## Players Config
 
-<img src="https://github.com/droans/mass-player-card/blob/dev/static/players/desktop.png" alt="Player Card Players Section Example" width=68%> <img src="https://github.com/droans/mass-player-card/blob/dev/static/players/mobile.png" alt="Player Card Players Section Mobile Example" width=31%>
+<img src="https://github.com/droans/mass-player-card/blob/main/static/players/desktop.png" alt="Player Card Players Section Example" width=68%> <img src="https://github.com/droans/mass-player-card/blob/main/static/players/mobile.png" alt="Player Card Players Section Mobile Example" width=31%>
 | Parameter | Type | Required | Default | Description                     |
 |-----------|------|----------|---------|---------------------------------|
 | enabled   | bool | No       | true    | Enable/disable music player tab |
