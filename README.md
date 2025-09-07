@@ -140,6 +140,7 @@ media_browser:
 ## Players Config
 
 <img src="https://github.com/droans/mass-player-card/blob/main/static/players/desktop.png" alt="Player Card Players Section Example">
+
 | Parameter | Type | Required | Default | Description                     |
 |-----------|------|----------|---------|---------------------------------|
 | enabled   | bool | No       | true    | Enable/disable music player tab |
