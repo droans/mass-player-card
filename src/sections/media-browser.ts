@@ -126,7 +126,7 @@ class MediaBrowser extends LitElement {
     )
     rng.forEach(
       (i) => {
-        let idx = i % rng.length;
+        let idx = i % filteredCards.length;
         icons.push(this._generateSectionBackgroundPart(filteredCards[idx]?.icon ?? Icons.DISC, Icons.DISC));
       }
     )
