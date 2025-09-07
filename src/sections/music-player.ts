@@ -21,7 +21,11 @@ import {
 } from "@mdi/js";
 import { backgroundImageFallback, getFallbackImage } from "../utils/icons";
 import { Icons } from '../const/common';
-import { DEFAULT_PLAYER_CONFIG, PlayerConfig, PlayerData } from "../const/music-player";
+import { 
+  DEFAULT_PLAYER_CONFIG, 
+  PlayerConfig, 
+  PlayerData, SWIPE_MIN_X
+} from "../const/music-player";
 import { RepeatMode } from "../const/common";
 
 class MusicPlayerCard extends LitElement {
@@ -179,6 +183,9 @@ class MusicPlayerCard extends LitElement {
     const x_swipe = this.touchEndX - this.touchStartX;
     const y_swipe = this.touchEndY - this.touchStartY;
     if (Math.abs(x_swipe) > Math.abs(y_swipe)) {
+      if (Math.abs(x_swipe) < SWIPE_MIN_X) {
+        return;
+      }
       /* eslint-disable @typescript-eslint/no-floating-promises */
       if (x_swipe > 0) {
         this.onPrevious();

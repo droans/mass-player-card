@@ -19,3 +19,5 @@ export interface PlayerData {
   player_name: string;
   volume: number;
 }
+
+export const SWIPE_MIN_X = 200;
