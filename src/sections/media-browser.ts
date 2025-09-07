@@ -63,7 +63,6 @@ class MediaBrowser extends LitElement {
       return;
     }
     this._activeCards = activeCards;
-    console.log(`Set active cards.`);
     this.requestUpdate();
   }
   public get activeCards() {
@@ -167,7 +166,6 @@ class MediaBrowser extends LitElement {
       this.cards[media_type] = result;
       const card = this.generateFavoriteCard(media_type, result);
       this.cards.main.push(card);
-      console.log(this.cards);
     }
   }
   private generateCards = async () => {
@@ -180,8 +178,6 @@ class MediaBrowser extends LitElement {
     await this.generateFavoriteData(favorites.radios, MediaTypes.RADIO);
     await this.generateFavoriteData(favorites.tracks, MediaTypes.TRACK);
     this.activeCards = this.cards[this.activeSection];
-    console.log(this.cards);
-    console.log(`Generated cards.`);
     this.requestUpdate();
   }
   private getFavoriteSection = async (media_type: MediaTypes) => {
