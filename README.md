@@ -98,6 +98,7 @@ Display and interact with the player's queue.
 ## Media Browser Config
 
 <img src="https://github.com/droans/mass-player-card/blob/main/static/media_browser/desktop.png" alt="Player Card Media Browser Section Example">
+
 | Parameter | Type                                 | Required | Default | Description                      |
 |-----------|--------------------------------------|----------|---------|----------------------------------|
 | enabled   | bool                                 | No       | true    | Enable/disable media browser tab |
