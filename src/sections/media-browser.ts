@@ -161,6 +161,9 @@ class MediaBrowser extends LitElement {
   private generateFavoriteData = async (config: FavoriteItemConfig, media_type: MediaTypes) => {
     if (config.enabled) {
       const result = await this.getFavoriteSection(media_type);
+      if (!result.length) {
+        return;
+      }
       this.cards[media_type] = result;
       const card = this.generateFavoriteCard(media_type, result);
       this.cards.main.push(card);
