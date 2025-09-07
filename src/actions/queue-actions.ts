@@ -1,5 +1,5 @@
 import { HomeAssistant } from "custom-card-helpers";
-import { QueueConfig, QueueItem } from "../types";
+import { QueueConfig, QueueItem } from "../const/player-queue";
 
 export default class QueueActions {
   private hass: HomeAssistant;

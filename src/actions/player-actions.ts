@@ -1,6 +1,6 @@
 import { HomeAssistant } from "custom-card-helpers";
 import { HassEntity } from "home-assistant-js-websocket";
-import { RepeatMode } from "../const";
+import { RepeatMode } from "../const/common";
 
 /* eslint-disable no-console */
 export default class PlayerActions {

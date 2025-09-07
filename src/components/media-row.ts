@@ -6,13 +6,11 @@ import {
   mdiArrowUp,
   mdiArrowDown
 } from '@mdi/js';
-import { 
-  QueueItem,
-  QueueService,
-  QueueItemSelectedService
-} from '../types';
 import styles from '../styles/media-row';
-import { backgroundImageFallback, Icons } from '../utils/icons';
+import { QueueItem } from '../const/player-queue';
+import { QueueItemSelectedService, QueueService } from '../const/actions';
+import { backgroundImageFallback } from '../utils/icons';
+import { Icons } from '../const/common';
 
 class MediaRow extends LitElement {
   @property({ attribute: false }) media_item!: QueueItem;

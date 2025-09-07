@@ -6,7 +6,6 @@ import { HomeAssistant } from "custom-card-helpers";
 
 import PlayerActions from "../actions/player-actions";
 import styles from '../styles/music-player';
-import { PlayerConfig, PlayerData } from "../types";
 import { 
   mdiPause, 
   mdiPlay, 
@@ -20,8 +19,10 @@ import {
   mdiVolumeHigh, 
   mdiVolumeMute 
 } from "@mdi/js";
-import { DEFAULT_PLAYER_CONFIG, RepeatMode } from "../const";
-import { backgroundImageFallback, getFallbackImage, Icons } from "../utils/icons";
+import { backgroundImageFallback, getFallbackImage } from "../utils/icons";
+import { Icons } from '../const/common';
+import { DEFAULT_PLAYER_CONFIG, PlayerConfig, PlayerData } from "../const/music-player";
+import { RepeatMode } from "../const/common";
 
 class MusicPlayerCard extends LitElement {
   @property({ attribute: false }) private player_data!: PlayerData;
