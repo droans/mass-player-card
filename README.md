@@ -86,7 +86,7 @@ expanded: false
 Display and interact with the player's queue.
 
 <details>
-    <summary>Queue Example</summary>
+    <summary>📷 Queue Example</summary>
 <img src="https://github.com/droans/mass-player-card/blob/main/static/queue/desktop.png" alt="Player Card Queue Section Example">
 </details>
 
@@ -101,7 +101,7 @@ Display and interact with the player's queue.
 ## Media Browser Config
 
 <details>
-    <summary>Media Browser Example</summary>
+    <summary>📷 Media Browser Example</summary>
 <img src="https://github.com/droans/mass-player-card/blob/main/static/media_browser/desktop.png" alt="Player Card Media Browser Section Example">
 </details>
 
@@ -146,7 +146,7 @@ media_browser:
 ## Players Config
 
 <details>
-    <summary>Media Player Example</summary>
+    <summary>📷 Media Player Example</summary>
 <img src="https://github.com/droans/mass-player-card/blob/main/static/players/desktop.png" alt="Player Card Players Section Example">
 </details>
 
