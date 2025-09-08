@@ -3,7 +3,7 @@ import { property } from 'lit/decorators.js'
 import styles from '../styles/player-row';
 import { HassEntity } from 'home-assistant-js-websocket';
 import { mdiLink, mdiLinkOff, mdiSwapHorizontal } from '@mdi/js';
-import { backgroundImageFallback } from '../utils/icons';
+import { backgroundImageFallback, getFallbackImage } from '../utils/icons';
 import { Icons } from '../const/common';
 import { 
   PlayerJoinService, 
@@ -11,6 +11,7 @@ import {
   PlayerTransferService, 
   PlayerUnjoinService 
 } from '../const/actions';
+import { testMixedContent } from '../utils/util';
 
 class PlayerRow extends LitElement {
   @property({ type: Boolean }) player_entity!: HassEntity;
@@ -44,13 +45,19 @@ class PlayerRow extends LitElement {
     e.stopPropagation()
     this.transferService(this.player_entity.entity_id);
   }
+  private artworkStyle() {
+    const img: string = this.player_entity?.attributes?.entity_picture_local ?? "";
+    if (!testMixedContent(img)) {
+      return getFallbackImage(Icons.HEADPHONES);
+    }
+    return backgroundImageFallback(img, Icons.HEADPHONES);
+  }
   private renderThumbnail() {
-    const thumbnail: string = this.player_entity?.attributes?.entity_picture_local ?? "";
     return html`
       <span 
         class="thumbnail" 
         slot="start" 
-        style="${backgroundImageFallback(thumbnail, Icons.HEADPHONES)}"
+        style="${this.artworkStyle()}"
       >
       </span>
     `

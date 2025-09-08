@@ -2,8 +2,9 @@ import { CSSResultGroup, html, LitElement, TemplateResult } from "lit";
 import { state } from "lit/decorators.js";
 import { CardSelectedService } from "../const/actions";
 import { MediaCardItem } from "../const/media-browser";
-import { backgroundImageFallback } from "../utils/icons";
+import { backgroundImageFallback, getFallbackImage } from "../utils/icons";
 import styles from '../styles/media-card';
+import { testMixedContent } from "../utils/util";
 
 class MediaCard extends LitElement {
   private _config!: MediaCardItem;
@@ -36,8 +37,15 @@ class MediaCard extends LitElement {
       ${this.config.background}
     `
   }
+  private artworkStyle() {
+    const img = this.config.icon;
+    if (!testMixedContent(img)) {
+      return getFallbackImage(this.config.fallback);
+    }
+    return backgroundImageFallback(img, this.config.fallback);
+  }
   protected renderThumbnailFromIcon() {
-    const thumbnail = backgroundImageFallback(this.config.icon, this.config.fallback);
+    const thumbnail = this.artworkStyle();
     return html`
       <div 
         class="thumbnail" 
