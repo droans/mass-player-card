@@ -27,6 +27,7 @@ import {
   PlayerData, SWIPE_MIN_X
 } from "../const/music-player";
 import { RepeatMode } from "../const/common";
+import { testMixedContent } from "../utils/util";
 
 class MusicPlayerCard extends LitElement {
   @property({ attribute: false }) private player_data!: PlayerData;
@@ -270,10 +271,11 @@ class MusicPlayerCard extends LitElement {
     `
   }
   private artworkStyle() {
-    if (!this.player_data.track_artist) { 
+    const img = this.player_data.track_artwork;
+    if (!this.player_data.track_artist || !testMixedContent(img)) { 
       return getFallbackImage(Icons.CLEFT);
     }
-    return backgroundImageFallback(this.player_data.track_artwork, Icons.CLEFT);
+      return backgroundImageFallback(img, Icons.CLEFT);
   }
   protected renderArtwork() {
     return html`
