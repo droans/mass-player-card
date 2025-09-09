@@ -6,7 +6,6 @@ import { HomeAssistant } from "custom-card-helpers";
 
 import PlayerActions from "../actions/player-actions";
 import styles from '../styles/music-player';
-import { PlayerConfig, PlayerData } from "../types";
 import { 
   mdiPause, 
   mdiPlay, 
@@ -20,8 +19,15 @@ import {
   mdiVolumeHigh, 
   mdiVolumeMute 
 } from "@mdi/js";
-import { DEFAULT_PLAYER_CONFIG, RepeatMode } from "../const";
-import { backgroundImageFallback, getFallbackImage, Icons } from "../utils/icons";
+import { backgroundImageFallback, getFallbackImage } from "../utils/icons";
+import { Icons } from '../const/common';
+import { 
+  DEFAULT_PLAYER_CONFIG, 
+  PlayerConfig, 
+  PlayerData, SWIPE_MIN_X
+} from "../const/music-player";
+import { RepeatMode } from "../const/common";
+import { testMixedContent } from "../utils/util";
 
 class MusicPlayerCard extends LitElement {
   @property({ attribute: false }) private player_data!: PlayerData;
@@ -178,6 +184,9 @@ class MusicPlayerCard extends LitElement {
     const x_swipe = this.touchEndX - this.touchStartX;
     const y_swipe = this.touchEndY - this.touchStartY;
     if (Math.abs(x_swipe) > Math.abs(y_swipe)) {
+      if (Math.abs(x_swipe) < SWIPE_MIN_X) {
+        return;
+      }
       /* eslint-disable @typescript-eslint/no-floating-promises */
       if (x_swipe > 0) {
         this.onPrevious();
@@ -262,10 +271,11 @@ class MusicPlayerCard extends LitElement {
     `
   }
   private artworkStyle() {
-    if (!this.player_data.track_artist) { 
+    const img = this.player_data.track_artwork;
+    if (!this.player_data.track_artist || !testMixedContent(img)) { 
       return getFallbackImage(Icons.CLEFT);
     }
-    return backgroundImageFallback(this.player_data.track_artwork, Icons.CLEFT);
+      return backgroundImageFallback(img, Icons.CLEFT);
   }
   protected renderArtwork() {
     return html`
@@ -281,6 +291,7 @@ class MusicPlayerCard extends LitElement {
   protected renderTrackPrevious() {
     return html`
       <ha-button
+        class="controls-previous-next"
         appearance="outlined"
         variant="brand"
         @click=${this.onPrevious}
@@ -296,6 +307,7 @@ class MusicPlayerCard extends LitElement {
   protected renderTrackNext() {
     return html`
       <ha-button
+        class="controls-previous-next"
         appearance="outlined"
         variant="brand"
         @click=${this.onNext}

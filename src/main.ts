@@ -11,15 +11,15 @@ import {
 
 import { type HomeAssistant } from 'custom-card-helpers';
 
-import { Config } from './types'
 import styles from './styles/main';
-import { DEFAULT_CONFIG, Sections, DEFAULT_CARD } from './const'
 import { version } from '../package.json';
 import './sections/media-browser';
 import './sections/music-player';
 import './sections/player-queue';
 import './sections/players';
 import { HassEntity } from 'home-assistant-js-websocket';
+import { Config, DEFAULT_CARD, DEFAULT_CONFIG, Sections } from './const/card';
+import { MediaBrowser } from './sections/media-browser';
 
 const DEV = false;
 
@@ -187,6 +187,15 @@ export class MusicAssistantPlayerCard extends LitElement {
     const newTab: Sections = ev.detail.name;
     this.active_section = newTab;
   }
+  private returnMediaBrowserToHome = () => {
+    if (this.active_section == Sections.MEDIA_BROWSER) {
+      const el: MediaBrowser | null | undefined = this.shadowRoot?.querySelector('mass-media-browser');
+      if (!el) {
+        return;
+      }
+      el.activeSection = 'main';
+    }
+  }
   protected renderPlayers() {
     if (this.active_section === Sections.PLAYERS) {
       return cache(html`
@@ -234,10 +243,10 @@ export class MusicAssistantPlayerCard extends LitElement {
     if (this.active_section === Sections.MEDIA_BROWSER) {
       return cache(html`
         <sl-tab-panel name="${Sections.MEDIA_BROWSER}">
-          <mass-browser-card
+          <mass-media-browser
+            .activePlayer=${this.active_player_entity}
             .config=${this.config.media_browser}
             .hass=${this.hass}
-            .player_entity=${this.active_player_entity}
             .onMediaSelectedAction=${this.browserItemSelected}
           >
         </sl-tab-panel>
@@ -290,6 +299,7 @@ export class MusicAssistantPlayerCard extends LitElement {
         slot="nav"
         .active=${active}
         panel="${Sections.MEDIA_BROWSER}"
+        @click=${this.returnMediaBrowserToHome}
       >
         <ha-icon-button 
           class="action-button${active ? "-active" : ""}"

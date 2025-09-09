@@ -6,13 +6,12 @@ import {
   mdiArrowUp,
   mdiArrowDown
 } from '@mdi/js';
-import { 
-  QueueItem,
-  QueueService,
-  QueueItemSelectedService
-} from '../types';
 import styles from '../styles/media-row';
-import { backgroundImageFallback, Icons } from '../utils/icons';
+import { QueueItem } from '../const/player-queue';
+import { QueueItemSelectedService, QueueService } from '../const/actions';
+import { backgroundImageFallback, getFallbackImage } from '../utils/icons';
+import { Icons } from '../const/common';
+import { testMixedContent } from '../utils/util';
 
 class MediaRow extends LitElement {
   @property({ attribute: false }) media_item!: QueueItem;
@@ -58,6 +57,13 @@ class MediaRow extends LitElement {
     }
     return true;
   }
+  private artworkStyle() {
+    const img = this.media_item.media_image;
+    if (!testMixedContent(img)) {
+      return getFallbackImage(Icons.CLEFT);
+    }
+    return backgroundImageFallback(img, Icons.CLEFT);
+  }
   private renderThumbnail() {
     const played = !this.media_item.show_action_buttons  && !this.media_item.playing;
     if (this.media_item.media_image && this.showAlbumCovers) {
@@ -65,7 +71,7 @@ class MediaRow extends LitElement {
         <span 
           class="thumbnail${played ? '-disabled' : ''}" 
           slot="start" 
-          style=${backgroundImageFallback(this.media_item.media_image, Icons.CLEFT)}
+          style="${this.artworkStyle()}"
         >
         </span>
       `

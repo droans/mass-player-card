@@ -1,13 +1,14 @@
 import { CSSResultGroup, html, LitElement } from "lit";
 import { property } from "lit/decorators.js";
-import { Config, PlayerSelectedService } from "../types";
 import { HomeAssistant } from "custom-card-helpers";
 import { HassEntity } from "home-assistant-js-websocket";
 import { keyed } from "lit/directives/keyed.js";
 import '../components/player-row'
 import styles from '../styles/player-queue';
 import PlayersActions from "../actions/players-actions";
-import { DEFAULT_PLAYERS_CONFIG } from "../const";
+import { PlayerSelectedService } from "../const/actions";
+import { Config } from "../const/card";
+import { DEFAULT_PLAYERS_CONFIG } from "../const/players";
 
 class PlayersCard extends LitElement {
   @property({ attribute: false }) public activePlayerEntity!: string;

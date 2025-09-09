@@ -1,212 +1,236 @@
 import { CSSResultGroup, html, LitElement, TemplateResult } from "lit";
-import { property, state } from "lit/decorators.js";
-import { FavoriteItems, MediaBrowserConfig, MediaBrowserItem } from "../types";
+import { FavoriteItemConfig, MediaBrowserConfig, MediaBrowserItemsConfig, MediaCardData, MediaCardItem, MediaTypeIcons } from "../const/media-browser";
 import { HomeAssistant } from "custom-card-helpers";
 import BrowserActions from "../actions/browser-actions";
-import { MediaTypes, DEFAULT_MEDIA_BROWSER_CONFIG } from "../const";
-import { keyed } from "lit/directives/keyed.js";
-
-import '../components/browser-row'
+import { Icons, MediaTypes } from "../const/common";
+import { property, state } from "lit/decorators.js";
+import '../components/media-browser-cards'
 import styles from '../styles/media-browser';
+import { backgroundImageFallback } from "../utils/icons";
+import { testMixedContent } from "../utils/util";
 
-class MediaBrowserCard extends LitElement {
-  private _favorites!: FavoriteItems;
-  private _hass!: HomeAssistant;
-  private _player_entity!: string;
-  private actions!: BrowserActions;
+export class MediaBrowser extends LitElement {
+  public activePlayer!: string;
   private _config!: MediaBrowserConfig;
+  private _hass!: HomeAssistant;
+  @state() private cards: MediaBrowserItemsConfig = {main: []};
+  private _activeSection = 'main';
+  private actions!: BrowserActions;
+  private _activeCards: MediaCardItem[] = [];
   public onMediaSelectedAction!: () => void;
-  @state() private favoritesCode!: TemplateResult;
-  
-  private set favorites (favorites: FavoriteItems) {
-    if (favorites) {
-      this._favorites = favorites;
-      this.favoritesCode = this.renderFavorites()
+  /*
+    TODO:
+    * Generate main browser section
+    * Create secondary sections on-demand
+  */
+ @property({attribute: false})
+  public set config(config: MediaBrowserConfig) {
+    if (!config) {
+      return;
     }
+    this._config = config;
+    this.setupIfReady();
   }
-  @property({ attribute: false })
-  public set config (config: MediaBrowserConfig) {
-    if (config) {
-      this._config = {
-        ...DEFAULT_MEDIA_BROWSER_CONFIG,
-        ...config
-      };
-    } else {
-      this._config = DEFAULT_MEDIA_BROWSER_CONFIG;
-    }
-    this.setupIfReady('config');
+  public get config() {
+    return this._config;
   }
-
   public set hass(hass: HomeAssistant) {
-    if (hass) {
-      this._hass = hass;
-      this.setupIfReady('hass');
+    if (!hass) {
+      return;
+    }
+    const hassUnset = !this._hass
+    this._hass = hass;
+    if (hassUnset) {
+      this.setupIfReady();
     }
   }
-  
-  public set player_entity(player_entity: string) {
-    if (player_entity) {
-      this._player_entity = player_entity;
-      this.setupIfReady('player_entity');
+  public get hass() {
+    return this._hass;
+  }
+  public set activeSection(section: string) {
+    if (!section) {
+      return;
     }
+    this._activeSection = section;
+    this.activeCards = this.cards[section];
+    this.setupIfReady();
   }
-  private setupIfReady(ready: string) {
-    if (this._hass && this._player_entity) {
-      if (!this.actions) {
-        this.actions = new BrowserActions(this._hass);
-      }
-      if (ready !== 'hass' || !this._favorites) {
-        this.updateItems().catch( () => {return})
-      }
+  public get activeSection() {
+    return this._activeSection;
+  }
+  private set activeCards(activeCards: MediaCardItem[]) {
+    if (!activeCards?.length) {
+      return;
     }
+    this._activeCards = activeCards;
+    this.requestUpdate();
   }
-  private async updateItems() {
-    await this.getAllFavorites();
+  public get activeCards() {
+    return this._activeCards;
   }
-  
-  /* eslint-disable-next-line @typescript-eslint/no-explicit-any, */
-  private formatMediaBrowserItems(media_browser_items: any[]) {
-    return media_browser_items.map( (item) => {
-      const r: MediaBrowserItem = {
-        name: item.name,
-        uri: item.uri,
-        image: item.image,
-        media_type: item.media_type
-      };
-      return r;
-    })
-  }
-  private async getFavorites(media_type: MediaTypes) {
-    /* eslint-disable-next-line @typescript-eslint/no-explicit-any, */
-    const response: any[] = await this.actions.actionGetFavorites(this._player_entity, media_type);
-    const result = this.formatMediaBrowserItems(response);
-    return result;
-  }
-  private async getAllFavorites() {
-    this.favorites = {
-      albums: await this.getFavorites(MediaTypes.ALBUM),
-      artists: await this.getFavorites(MediaTypes.ARTIST),
-      audiobooks: await this.getFavorites(MediaTypes.AUDIOBOOK),
-      playlists: await this.getFavorites(MediaTypes.PLAYLIST),
-      podcasts: await this.getFavorites(MediaTypes.PODCAST),
-      radios: await this.getFavorites(MediaTypes.RADIO),
-      tracks: await this.getFavorites(MediaTypes.TRACK), 
-    }
-  }
-  private onItemSelectedAction = async (content_id: string, content_type: string) => {
-    await this.actions.actionPlayMedia(this._player_entity, content_id, content_type);
-    this.onMediaSelectedAction();
 
-  }
-  protected renderFavoriteItems(favorites: MediaBrowserItem[], section_name: string) {
-    if (!favorites.length) {
-      return html``
+  private setupIfReady(regenerate=false) {
+    if (
+      !this.config
+      || !this.hass
+    ) {
+      return;
     }
-    const result = favorites.map(
-      (item) => {
-        return keyed(
-          item.uri,
-          html`
-            <mass-track-row
-              .mediaItem=${item}
-              .onSelectAction=${this.onItemSelectedAction}
-            >
-            </mass-track-row>
-          `
-        )
+    if (!this.actions){
+      this.actions = new BrowserActions(this.hass)
+    };
+    if (!this.cards.main.length) {
+      this.generateCards().catch( () => {return});
+      this.requestUpdate();
+    }
+    if (regenerate) {
+      this.generateCards().catch( () => {return});
+      this.activeCards = this.cards[this.activeSection]
+      this.requestUpdate();
+    }
+  }
+  private onFavoriteItemSelected = (data: MediaCardData) => {
+    const content_id: string = data.uri;
+    const content_type: string = data.media_type;
+    void this.actions.actionPlayMedia(this.activePlayer, content_id, content_type);
+    this.onMediaSelectedAction();
+  }
+  private onSectionSelect = (data: MediaCardData) => {
+    this.activeSection = data.section;
+  }
+  private onSelect = (data: MediaCardData) => {
+    const funcs = {
+      section: this.onSectionSelect,
+      favorites: this.onFavoriteItemSelected
+    }
+    const func = funcs[data.type];
+    func(data);
+  }
+  private _generateSectionBackgroundPart(icon: string, fallback: Icons = Icons.DISC) {
+    const image = backgroundImageFallback(icon, fallback)
+    return html`
+      <div class="thumbnail-section" style="${image};"></div>
+    `
+  }
+  private generateSectionBackground(cards: MediaCardItem[], fallback: Icons) {
+    const rng = [...Array(4).keys()];
+    const icons: TemplateResult[] = []
+    const filteredCards = cards.filter(
+      (item) =>{
+        if (item.icon) {
+          return testMixedContent(item.icon)
+        }
+        return false;
       }
     )
+    rng.forEach(
+      (i) => {
+        const idx = i % filteredCards.length;
+        icons.push(this._generateSectionBackgroundPart(filteredCards[idx]?.icon ?? fallback, fallback));
+      }
+    )
+    let icons_html = html``;
+    icons.forEach( 
+      (icon) => {
+        icons_html = html`
+          ${icons_html}
+          ${icon}
+        `
+      }
+    );
     return html`
-      <ha-expansion-panel
-        class="mass-panel"
-        header=${section_name}
-      >
-      ${result}
-      </ha-expansion-panel>
-    `;
-  }
-  protected renderFavoriteAlbums() {
-    if (this._config.favorites.albums.enabled) {
-      return html` 
-        ${this.renderFavoriteItems(this._favorites.albums, 'Albums')}
-      `;
-    }
-    return html``;
-  }
-  protected renderFavoriteArtists() {
-    if (this._config.favorites.artists.enabled) {
-      return html` 
-        ${this.renderFavoriteItems(this._favorites.artists, 'Artists')}
-      `;
-    }
-    return html``;
-  }
-  protected renderFavoriteAudiobooks() {
-    if (this._config.favorites.audiobooks.enabled) {
-      return html` 
-        ${this.renderFavoriteItems(this._favorites.audiobooks, 'Audiobooks')}
-      `;
-    }
-    return html``;
-  }
-  protected renderFavoritePlaylists() {
-    if (this._config.favorites.playlists.enabled) {
-      return html` 
-        ${this.renderFavoriteItems(this._favorites.playlists, 'Playlists')}
-      `;
-    }
-    return html``;
-  }
-  protected renderFavoritePodcasts() {
-    if (this._config.favorites.podcasts.enabled) {
-      return html` 
-        ${this.renderFavoriteItems(this._favorites.podcasts, 'Podcasts')}
-      `;
-    }
-    return html``;
-  }
-  protected renderFavoriteRadios() {
-    if (this._config.favorites.radios.enabled) {
-      return html` 
-        ${this.renderFavoriteItems(this._favorites.radios, 'Radios')}
-      `;
-    }
-    return html``;
-  }
-  protected renderFavoriteTracks() {
-    if (this._config.favorites.tracks.enabled) {
-      return html` 
-        ${this.renderFavoriteItems(this._favorites.tracks, 'Tracks')}
-      `;
-    }
-    return html``;
-  }
-  protected renderFavorites() {
-    if (this._config.favorites.enabled) {
-      return html`
-        ${this.renderFavoriteAlbums()}
-        ${this.renderFavoriteArtists()}
-        ${this.renderFavoriteAudiobooks()}
-        ${this.renderFavoritePlaylists()}
-        ${this.renderFavoritePodcasts()}
-        ${this.renderFavoriteRadios()}
-        ${this.renderFavoriteTracks()}
-      `
-    }
-    return html``
-  }
-  protected render() {
-    return html`
-      <ha-card>
-        <ha-md-list class="list">
-          ${this.favoritesCode}
-        </ha-md-list>
-      </ha-card>
+      <div class="thumbnail" style="display: grid; grid-template-areas: 'bg-1 bg-2' 'bg-3 bg-4'; padding-bottom: 0%; height: unset; width: unset">
+        ${icons_html}
+      </div>
     `
+  }
+  private generateFavoriteCard(media_type: MediaTypes, cards: MediaCardItem[]): MediaCardItem {
+    const icon: Icons = MediaTypeIcons[media_type];
+    return {  
+      title: media_type,
+      background: this.generateSectionBackground(cards, icon),
+      icon: icon,
+      fallback: icon,
+      data: {
+        type: 'section',
+        section: media_type
+      }
+    }
+  }
+  private generateFavoriteData = async (config: FavoriteItemConfig, media_type: MediaTypes) => {
+    if (config.enabled) {
+      const result = await this.getFavoriteSection(media_type);
+      if (!result.length) {
+        return;
+      }
+      this.cards[media_type] = result;
+      const card = this.generateFavoriteCard(media_type, result);
+      this.cards.main.push(card);
+    }
+  }
+  private generateCards = async () => {
+    const favorites = this.config.favorites;
+    await this.generateFavoriteData(favorites.albums, MediaTypes.ALBUM);
+    await this.generateFavoriteData(favorites.artists, MediaTypes.ARTIST);
+    await this.generateFavoriteData(favorites.audiobooks, MediaTypes.AUDIOBOOK);
+    await this.generateFavoriteData(favorites.playlists, MediaTypes.PLAYLIST);
+    await this.generateFavoriteData(favorites.podcasts, MediaTypes.PODCAST);
+    await this.generateFavoriteData(favorites.radios, MediaTypes.RADIO);
+    await this.generateFavoriteData(favorites.tracks, MediaTypes.TRACK);
+    this.activeCards = this.cards[this.activeSection];
+    this.requestUpdate();
+  }
+  private getFavoriteSection = async (media_type: MediaTypes) => {
+    /* eslint-disable-next-line @typescript-eslint/no-explicit-any */
+    const response: any[] = await this.actions.actionGetFavorites(this.activePlayer, media_type);
+    const icon: Icons = MediaTypeIcons[media_type];
+    return response.map(
+      (item) => {
+        const r: MediaCardItem = {
+          title: item.name,
+          icon: item.image,
+          fallback: icon,
+          data: {
+            type: 'favorites',
+            uri: item.uri,
+            media_type: item.media_type
+          }
+        }
+        return r;
+      }
+    )
+  }
+  // private generateCode() {
+  //   if (!this.activeCards.length) {
+  //     this.activeCards = this.cards[this.activeSection];
+  //   }
+  //   this.code = html`
+  //     <div class="mass-browser">
+  //       <mass-browser-cards
+  //         .items=${this.activeCards}
+  //         .onSelectAction=${this.onSelect}
+  //       >
+  //       </mass-browser-cards>
+  //     </div>
+  //   `
+  // }
+  protected render() {
+    if (!this.cards) {
+      return;
+    }
+    const activeCards = this.cards[this.activeSection];
+    return html`
+      <div class="mass-browser">
+        <mass-browser-cards
+          .items=${activeCards}
+          .onSelectAction=${this.onSelect}
+        >
+        </mass-browser-cards>
+      </div>
+    `;
   }
   static get styles(): CSSResultGroup {
     return styles;
   }
 }
-
-customElements.define('mass-browser-card', MediaBrowserCard);
+customElements.define('mass-media-browser', MediaBrowser);
