@@ -1,5 +1,5 @@
 import { CSSResultGroup, html, LitElement, TemplateResult } from "lit";
-import { FavoriteItemConfig, MediaBrowserConfig, MediaBrowserItemsConfig, MediaCardData, MediaCardItem } from "../const/media-browser";
+import { FavoriteItemConfig, MediaBrowserConfig, MediaBrowserItemsConfig, MediaCardData, MediaCardItem, MediaTypeIcons } from "../const/media-browser";
 import { HomeAssistant } from "custom-card-helpers";
 import BrowserActions from "../actions/browser-actions";
 import { Icons, MediaTypes } from "../const/common";
@@ -112,7 +112,7 @@ export class MediaBrowser extends LitElement {
       <div class="thumbnail-section" style="${image};"></div>
     `
   }
-  private generateSectionBackground(cards: MediaCardItem[]) {
+  private generateSectionBackground(cards: MediaCardItem[], fallback: Icons) {
     const rng = [...Array(4).keys()];
     const icons: TemplateResult[] = []
     const filteredCards = cards.filter(
@@ -126,7 +126,7 @@ export class MediaBrowser extends LitElement {
     rng.forEach(
       (i) => {
         const idx = i % filteredCards.length;
-        icons.push(this._generateSectionBackgroundPart(filteredCards[idx]?.icon ?? Icons.DISC, Icons.DISC));
+        icons.push(this._generateSectionBackgroundPart(filteredCards[idx]?.icon ?? fallback, fallback));
       }
     )
     let icons_html = html``;
@@ -145,12 +145,12 @@ export class MediaBrowser extends LitElement {
     `
   }
   private generateFavoriteCard(media_type: MediaTypes, cards: MediaCardItem[]): MediaCardItem {
-    
+    const icon: Icons = MediaTypeIcons[media_type];
     return {  
       title: media_type,
-      background: this.generateSectionBackground(cards),
-      icon: Icons.CLEFT,
-      fallback: Icons.CLEFT,
+      background: this.generateSectionBackground(cards, icon),
+      icon: icon,
+      fallback: icon,
       data: {
         type: 'section',
         section: media_type
@@ -183,12 +183,13 @@ export class MediaBrowser extends LitElement {
   private getFavoriteSection = async (media_type: MediaTypes) => {
     /* eslint-disable-next-line @typescript-eslint/no-explicit-any */
     const response: any[] = await this.actions.actionGetFavorites(this.activePlayer, media_type);
+    const icon: Icons = MediaTypeIcons[media_type];
     return response.map(
       (item) => {
         const r: MediaCardItem = {
           title: item.name,
           icon: item.image,
-          fallback: Icons.DISC,
+          fallback: icon,
           data: {
             type: 'favorites',
             uri: item.uri,

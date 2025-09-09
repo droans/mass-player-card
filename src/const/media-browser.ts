@@ -77,3 +77,13 @@ export interface MediaBrowserItemsConfig {
   main: MediaCardItem[],
   [str: string]: MediaCardItem[]
 }
+
+export const MediaTypeIcons = {
+  'album': Icons.DISC,
+  'artist': Icons.MICROPHONE,
+  'audiobook': Icons.BOOK,
+  'playlist': Icons.PLAYLIST,
+  'podcast': Icons.MICROPHONE_MAGIC,
+  'track': Icons.CLEFT,
+  'radio': Icons.RADIO,
+}
