@@ -58,7 +58,7 @@ class MediaRow extends LitElement {
     return true;
   }
   private artworkStyle() {
-    const img = this.media_item.media_image;
+    const img = this.media_item.media_image || "";
     if (!testMixedContent(img)) {
       return getFallbackImage(Icons.CLEFT);
     }

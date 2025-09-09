@@ -45,7 +45,7 @@ class MediaCard extends LitElement {
     return backgroundImageFallback(img, this.config.fallback);
   }
   protected renderThumbnailFromIcon() {
-    const thumbnail = this.artworkStyle();
+    const thumbnail = this.artworkStyle() || "";
     return html`
       <div 
         class="thumbnail" 

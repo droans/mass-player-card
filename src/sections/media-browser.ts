@@ -118,7 +118,7 @@ export class MediaBrowser extends LitElement {
     const filteredCards = cards.filter(
       (item) =>{
         if (item.icon) {
-          return testMixedContent(item.icon)
+          return testMixedContent(item.icon || "")
         }
         return false;
       }
