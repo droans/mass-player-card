@@ -271,7 +271,7 @@ class MusicPlayerCard extends LitElement {
     `
   }
   private artworkStyle() {
-    const img = this.player_data.track_artwork;
+    const img = this.player_data.track_artwork || "";
     if (!this.player_data.track_artist || !testMixedContent(img)) { 
       return getFallbackImage(Icons.CLEFT);
     }
