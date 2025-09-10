@@ -326,6 +326,7 @@ class MusicPlayerCard extends LitElement {
         appearance="${this.player_data.playing ? "filled" : "outlined"}"
         variant="brand"
         size="medium"
+        class="button-play-pause"
         @click=${this.onPlayPause}
       >
         <ha-svg-icon
