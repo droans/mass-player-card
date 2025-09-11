@@ -35,7 +35,7 @@ export interface FavoriteItemConfig {
 }
 export const DEFAULT_FAVORITE_ITEM_CONFIG: FavoriteItemConfig = {
   enabled: true,
-  limit: 1
+  limit: 25
 }
 
 const DEFAULT_FAVORITES_CONFIG: FavoritesConfig = {
