@@ -20,27 +20,38 @@ export interface FavoriteItemConfig {
 }
 export const DEFAULT_FAVORITE_ITEM_CONFIG: FavoriteItemConfig = {
   enabled: true,
+  limit: 1
 }
 
+const DEFAULT_FAVORITES_CONFIG: FavoritesConfig = {
+  enabled: true,
+  albums: DEFAULT_FAVORITE_ITEM_CONFIG,
+  artists: DEFAULT_FAVORITE_ITEM_CONFIG,
+  audiobooks: DEFAULT_FAVORITE_ITEM_CONFIG,
+  playlists: DEFAULT_FAVORITE_ITEM_CONFIG,
+  podcasts: DEFAULT_FAVORITE_ITEM_CONFIG,
+  radios: DEFAULT_FAVORITE_ITEM_CONFIG,
+  tracks: DEFAULT_FAVORITE_ITEM_CONFIG,
+}
 export const DEFAULT_MEDIA_BROWSER_CONFIG: MediaBrowserConfig = {
   enabled: true,
-  favorites: {
-    enabled: true,
-    albums: DEFAULT_FAVORITE_ITEM_CONFIG,
-    artists: DEFAULT_FAVORITE_ITEM_CONFIG,
-    audiobooks: DEFAULT_FAVORITE_ITEM_CONFIG,
-    playlists: DEFAULT_FAVORITE_ITEM_CONFIG,
-    podcasts: DEFAULT_FAVORITE_ITEM_CONFIG,
-    radios: DEFAULT_FAVORITE_ITEM_CONFIG,
-    tracks: DEFAULT_FAVORITE_ITEM_CONFIG,
-  }
+  favorites: DEFAULT_FAVORITES_CONFIG,
 }
 
 function favoritesConfigForm(section: string) {
   return {
     name: section,
     type: "expandable",
-    schema: [ { name: "enabled", description: { suffix: section}, selector: { boolean: {} }, default: true } ]
+    schema: [ 
+      { 
+        name: "",
+        type: "grid",
+        schema: [
+          { name: "enabled", selector: { boolean: {} }, default: true },
+          { name: "limit", selector: { number: { min: 0, max: 500, mode: "box" } } },
+        ]
+      }
+    ]
   }
 }
 export function mediaBrowserConfigForm() {
@@ -66,6 +77,10 @@ function processFavoriteItemConfig(config: FavoriteItemConfig) {
 }
 
 function processFavorites(config: FavoritesConfig) {
+  config = {
+    ...DEFAULT_FAVORITES_CONFIG,
+    ...config
+  };
   const result: FavoritesConfig = {
     enabled: config?.enabled ?? true,
     albums: processFavoriteItemConfig(config.albums),
