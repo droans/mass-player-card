@@ -1,5 +1,15 @@
-import { CSSResultGroup, html, LitElement, TemplateResult } from "lit";
-import { FavoriteItemConfig, MediaBrowserConfig, MediaBrowserItemsConfig, MediaCardData, MediaCardItem, MediaTypeIcons } from "../const/media-browser";
+import { 
+  CSSResultGroup, 
+  html, 
+  LitElement, 
+  TemplateResult 
+} from "lit";
+import { 
+  MediaBrowserItemsConfig, 
+  MediaCardData, 
+  MediaCardItem, 
+  MediaTypeIcons 
+} from "../const/media-browser";
 import { HomeAssistant } from "custom-card-helpers";
 import BrowserActions from "../actions/browser-actions";
 import { Icons, MediaTypes } from "../const/common";
@@ -8,6 +18,7 @@ import '../components/media-browser-cards'
 import styles from '../styles/media-browser';
 import { backgroundImageFallback } from "../utils/icons";
 import { testMixedContent } from "../utils/util";
+import { FavoriteItemConfig, MediaBrowserConfig, processMediaBrowserConfig } from "../config/media-browser";
 
 export class MediaBrowser extends LitElement {
   public activePlayer!: string;
