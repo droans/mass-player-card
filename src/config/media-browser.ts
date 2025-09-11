@@ -56,3 +56,32 @@ export function mediaBrowserConfigForm() {
 
   ]
 }
+
+function processFavoriteItemConfig(config: FavoriteItemConfig) {
+  const default_favorites_config = DEFAULT_FAVORITE_ITEM_CONFIG;
+  return {
+    ...default_favorites_config,
+    ...config
+  };
+}
+
+function processFavorites(config: FavoritesConfig) {
+  const result: FavoritesConfig = {
+    enabled: config?.enabled ?? true,
+    albums: processFavoriteItemConfig(config.albums),
+    artists: processFavoriteItemConfig(config.artists),
+    audiobooks: processFavoriteItemConfig(config.audiobooks),
+    playlists: processFavoriteItemConfig(config.playlists),
+    podcasts: processFavoriteItemConfig(config.podcasts),
+    radios: processFavoriteItemConfig(config.radios),
+    tracks: processFavoriteItemConfig(config.tracks)
+  }
+  return result;
+}
+export function processMediaBrowserConfig(config: MediaBrowserConfig) {
+  const result: MediaBrowserConfig = {
+    enabled: config?.enabled ?? true,
+    favorites: processFavorites(config.favorites)
+  }
+  return result;
+}

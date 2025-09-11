@@ -39,7 +39,7 @@ export class MediaBrowser extends LitElement {
     if (!config) {
       return;
     }
-    this._config = config;
+    this._config = processMediaBrowserConfig(config);
     this.setupIfReady();
   }
   public get config() {
