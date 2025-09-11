@@ -29,12 +29,6 @@ export class MediaBrowser extends LitElement {
   private actions!: BrowserActions;
   private _activeCards: MediaCardItem[] = [];
   public onMediaSelectedAction!: () => void;
-  /*
-    TODO:
-    * Generate main browser section
-    * Create secondary sections on-demand
-  */
- @property({attribute: false})
   public set config(config: MediaBrowserConfig) {
     if (!config) {
       return;
