@@ -1,4 +1,4 @@
-import { DEFAULT_MEDIA_BROWSER_CONFIG, MediaBrowserConfig } from "./media-browser";
+import { DEFAULT_MEDIA_BROWSER_CONFIG, MediaBrowserConfig } from "../config/media-browser";
 import { DEFAULT_PLAYER_CONFIG, PlayerConfig } from "./music-player";
 import { DEFAULT_QUEUE_CONFIG, QueueConfig } from "./player-queue";
 import { DEFAULT_PLAYERS_CONFIG, PlayersConfig } from "./players";

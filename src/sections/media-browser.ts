@@ -1,5 +1,15 @@
-import { CSSResultGroup, html, LitElement, TemplateResult } from "lit";
-import { FavoriteItemConfig, MediaBrowserConfig, MediaBrowserItemsConfig, MediaCardData, MediaCardItem, MediaTypeIcons } from "../const/media-browser";
+import { 
+  CSSResultGroup, 
+  html, 
+  LitElement, 
+  TemplateResult 
+} from "lit";
+import { 
+  MediaBrowserItemsConfig, 
+  MediaCardData, 
+  MediaCardItem, 
+  MediaTypeIcons 
+} from "../const/media-browser";
 import { HomeAssistant } from "custom-card-helpers";
 import BrowserActions from "../actions/browser-actions";
 import { Icons, MediaTypes } from "../const/common";
@@ -8,6 +18,7 @@ import '../components/media-browser-cards'
 import styles from '../styles/media-browser';
 import { backgroundImageFallback } from "../utils/icons";
 import { testMixedContent } from "../utils/util";
+import { FavoriteItemConfig, MediaBrowserConfig, processMediaBrowserConfig } from "../config/media-browser";
 
 export class MediaBrowser extends LitElement {
   public activePlayer!: string;
@@ -28,7 +39,7 @@ export class MediaBrowser extends LitElement {
     if (!config) {
       return;
     }
-    this._config = config;
+    this._config = processMediaBrowserConfig(config);
     this.setupIfReady();
   }
   public get config() {
@@ -159,7 +170,7 @@ export class MediaBrowser extends LitElement {
   }
   private generateFavoriteData = async (config: FavoriteItemConfig, media_type: MediaTypes) => {
     if (config.enabled) {
-      const result = await this.getFavoriteSection(media_type);
+      const result = await this.getFavoriteSection(media_type, config.limit);
       if (!result.length) {
         return;
       }
@@ -180,9 +191,9 @@ export class MediaBrowser extends LitElement {
     this.activeCards = this.cards[this.activeSection];
     this.requestUpdate();
   }
-  private getFavoriteSection = async (media_type: MediaTypes) => {
+  private getFavoriteSection = async (media_type: MediaTypes, limit: number) => {
     /* eslint-disable-next-line @typescript-eslint/no-explicit-any */
-    const response: any[] = await this.actions.actionGetFavorites(this.activePlayer, media_type);
+    const response: any[] = await this.actions.actionGetFavorites(this.activePlayer, media_type, limit);
     const icon: Icons = MediaTypeIcons[media_type];
     return response.map(
       (item) => {
