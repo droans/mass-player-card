@@ -2,6 +2,20 @@ import { mdiHeart } from "@mdi/js";
 export interface MediaBrowserConfig {
   enabled: boolean,
   favorites: FavoritesConfig;
+  sections: customSection[];
+}
+
+export interface customSection {
+  name: string,
+  image: string,
+  items: customItem[]
+}
+export interface customItem {
+  name: string,
+  image: string,
+  media_content_id: never,
+  media_content_type: never,
+  service: never
 }
 
 export interface FavoritesConfig {
@@ -34,9 +48,12 @@ const DEFAULT_FAVORITES_CONFIG: FavoritesConfig = {
   radios: DEFAULT_FAVORITE_ITEM_CONFIG,
   tracks: DEFAULT_FAVORITE_ITEM_CONFIG,
 }
+const DEFAULT_CUSTOM_SECTION_CONFIG = []
+
 export const DEFAULT_MEDIA_BROWSER_CONFIG: MediaBrowserConfig = {
   enabled: true,
   favorites: DEFAULT_FAVORITES_CONFIG,
+  sections: DEFAULT_CUSTOM_SECTION_CONFIG
 }
 
 function favoritesConfigForm(section: string) {
@@ -100,6 +117,12 @@ function processFavorites(config: FavoritesConfig) {
   }
   return result;
 }
+function processSections(config: customSection[]) {
+  return [
+    ...DEFAULT_CUSTOM_SECTION_CONFIG,
+    ...config
+  ];
+}
 export function processMediaBrowserConfig(config: MediaBrowserConfig) {
   config = {
     ...DEFAULT_MEDIA_BROWSER_CONFIG,
@@ -107,7 +130,8 @@ export function processMediaBrowserConfig(config: MediaBrowserConfig) {
   }
   const result: MediaBrowserConfig = {
     enabled: config?.enabled ?? true,
-    favorites: processFavorites(config.favorites)
+    favorites: processFavorites(config.favorites),
+    sections: processSections(config.sections)
   }
   return result;
 }

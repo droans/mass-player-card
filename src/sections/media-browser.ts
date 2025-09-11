@@ -18,7 +18,13 @@ import '../components/media-browser-cards'
 import styles from '../styles/media-browser';
 import { backgroundImageFallback } from "../utils/icons";
 import { testMixedContent } from "../utils/util";
-import { FavoriteItemConfig, MediaBrowserConfig, processMediaBrowserConfig } from "../config/media-browser";
+import { 
+  customItem, 
+  customSection, 
+  FavoriteItemConfig, 
+  MediaBrowserConfig, 
+  processMediaBrowserConfig 
+} from "../config/media-browser";
 
 export class MediaBrowser extends LitElement {
   public activePlayer!: string;
@@ -103,10 +109,22 @@ export class MediaBrowser extends LitElement {
   private onSectionSelect = (data: MediaCardData) => {
     this.activeSection = data.section;
   }
+  private onServiceSelect = (data: MediaCardData) => {
+    console.log(`Got data:`);
+    console.log(data);
+    if (data.service) {
+    /* eslint-disable @typescript-eslint/no-unsafe-argument */
+      void this.actions.actionPlayMediaFromService(data.service, this.activePlayer);
+    } else {
+      void this.actions.actionPlayMedia(this.activePlayer, data.media_content_id, data.media_content_type);
+    /* eslint-enable @typescript-eslint/no-unsafe-argument */
+    }
+  }
   private onSelect = (data: MediaCardData) => {
     const funcs = {
       section: this.onSectionSelect,
-      favorites: this.onFavoriteItemSelected
+      favorites: this.onFavoriteItemSelected,
+      service: this.onServiceSelect,
     }
     const func = funcs[data.type];
     func(data);
@@ -173,6 +191,27 @@ export class MediaBrowser extends LitElement {
       this.cards.main.push(card);
     }
   }
+  private generateCustomSectionData = (config: customSection) => {
+    const section_card = {
+      title: config.name,
+      icon: config.image,
+      fallback: Icons.CLEFT,
+      data: {
+        type: 'section',
+        section: config.name
+      }
+    };
+    const cards = this.generateCustomSectionCards(config.items);
+    this.cards[config.name] = cards;
+    this.cards.main.push(section_card);
+  }
+  private generateCustomSectionsData = (config: customSection[]) => {
+    config.forEach(
+      (item) => {
+        this.generateCustomSectionData(item);
+      }
+    )
+  }
   private generateCards = async () => {
     const favorites = this.config.favorites;
     const promises = Promise.all( [
@@ -186,8 +225,27 @@ export class MediaBrowser extends LitElement {
         
     ]);
     await promises;
+    this.generateCustomSectionsData(this.config.sections);
     this.activeCards = this.cards[this.activeSection];
     this.requestUpdate();
+  }
+  private generateCustomSectionCards = (config: customItem[])  => {
+    return config.map( 
+      (item) => {
+        const r: MediaCardItem = {
+          title: item.name,
+          icon: item.image,
+          fallback: Icons.CLEFT,
+          data: {
+            type: 'service',
+            media_content_id: item.media_content_id,
+            media_type: item.media_content_type,
+            service: item.service
+          }
+        };
+        return r;
+      }
+    )
   }
   private getFavoriteSection = async (media_type: MediaTypes, limit: number) => {
     /* eslint-disable-next-line @typescript-eslint/no-explicit-any */
