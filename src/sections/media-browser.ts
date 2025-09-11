@@ -22,7 +22,7 @@ import { FavoriteItemConfig, MediaBrowserConfig, processMediaBrowserConfig } fro
 
 export class MediaBrowser extends LitElement {
   public activePlayer!: string;
-  private _config!: MediaBrowserConfig;
+  @property({attribute: false}) private _config!: MediaBrowserConfig;
   private _hass!: HomeAssistant;
   @state() private cards: MediaBrowserItemsConfig = {main: []};
   private _activeSection = 'main';
