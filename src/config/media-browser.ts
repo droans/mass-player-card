@@ -1,3 +1,4 @@
+import { mdiHeart } from "@mdi/js";
 export interface MediaBrowserConfig {
   enabled: boolean,
   favorites: FavoritesConfig;
@@ -57,14 +58,20 @@ function favoritesConfigForm(section: string) {
 export function mediaBrowserConfigForm() {
   return [
     { name: "enabled", selector: { boolean: {} } },
-    favoritesConfigForm("album"),
-    favoritesConfigForm("artists"),
-    favoritesConfigForm("audiobooks"),
-    favoritesConfigForm("playlists"),
-    favoritesConfigForm("podcasts"),
-    favoritesConfigForm("radios"),
-    favoritesConfigForm("tracks"),
-
+    {
+      name: "favorites",
+      type: "expandable",
+      iconPath: mdiHeart,
+      schema: [
+        favoritesConfigForm("album"),
+        favoritesConfigForm("artists"),
+        favoritesConfigForm("audiobooks"),
+        favoritesConfigForm("playlists"),
+        favoritesConfigForm("podcasts"),
+        favoritesConfigForm("radios"),
+        favoritesConfigForm("tracks"),
+      ]
+    }
   ]
 }
 
