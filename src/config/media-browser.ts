@@ -101,6 +101,10 @@ function processFavorites(config: FavoritesConfig) {
   return result;
 }
 export function processMediaBrowserConfig(config: MediaBrowserConfig) {
+  config = {
+    ...DEFAULT_MEDIA_BROWSER_CONFIG,
+    ...config
+  }
   const result: MediaBrowserConfig = {
     enabled: config?.enabled ?? true,
     favorites: processFavorites(config.favorites)
