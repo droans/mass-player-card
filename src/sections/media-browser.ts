@@ -110,8 +110,6 @@ export class MediaBrowser extends LitElement {
     this.activeSection = data.section;
   }
   private onServiceSelect = (data: MediaCardData) => {
-    console.log(`Got data:`);
-    console.log(data);
     if (data.service) {
     /* eslint-disable @typescript-eslint/no-unsafe-argument */
       void this.actions.actionPlayMediaFromService(data.service, this.activePlayer);
