@@ -130,6 +130,7 @@ export class MusicAssistantPlayerCard extends LitElement {
     if (!this.active_player_entity) {
       this.setDefaultActivePlayer();
     }
+    this.requestUpdate();
   }
   private setDefaultActivePlayer() {
     if (!this.config) {

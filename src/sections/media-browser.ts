@@ -22,19 +22,13 @@ import { FavoriteItemConfig, MediaBrowserConfig, processMediaBrowserConfig } fro
 
 export class MediaBrowser extends LitElement {
   public activePlayer!: string;
-  private _config!: MediaBrowserConfig;
+  @property({attribute: false}) private _config!: MediaBrowserConfig;
   private _hass!: HomeAssistant;
   @state() private cards: MediaBrowserItemsConfig = {main: []};
   private _activeSection = 'main';
   private actions!: BrowserActions;
   private _activeCards: MediaCardItem[] = [];
   public onMediaSelectedAction!: () => void;
-  /*
-    TODO:
-    * Generate main browser section
-    * Create secondary sections on-demand
-  */
- @property({attribute: false})
   public set config(config: MediaBrowserConfig) {
     if (!config) {
       return;
@@ -181,13 +175,17 @@ export class MediaBrowser extends LitElement {
   }
   private generateCards = async () => {
     const favorites = this.config.favorites;
-    await this.generateFavoriteData(favorites.albums, MediaTypes.ALBUM);
-    await this.generateFavoriteData(favorites.artists, MediaTypes.ARTIST);
-    await this.generateFavoriteData(favorites.audiobooks, MediaTypes.AUDIOBOOK);
-    await this.generateFavoriteData(favorites.playlists, MediaTypes.PLAYLIST);
-    await this.generateFavoriteData(favorites.podcasts, MediaTypes.PODCAST);
-    await this.generateFavoriteData(favorites.radios, MediaTypes.RADIO);
-    await this.generateFavoriteData(favorites.tracks, MediaTypes.TRACK);
+    const promises = Promise.all( [
+        this.generateFavoriteData(favorites.albums, MediaTypes.ALBUM),
+        this.generateFavoriteData(favorites.artists, MediaTypes.ARTIST),
+        this.generateFavoriteData(favorites.audiobooks, MediaTypes.AUDIOBOOK),
+        this.generateFavoriteData(favorites.playlists, MediaTypes.PLAYLIST),
+        this.generateFavoriteData(favorites.podcasts, MediaTypes.PODCAST),
+        this.generateFavoriteData(favorites.radios, MediaTypes.RADIO),
+        this.generateFavoriteData(favorites.tracks, MediaTypes.TRACK),
+        
+    ]);
+    await promises;
     this.activeCards = this.cards[this.activeSection];
     this.requestUpdate();
   }
