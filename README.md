@@ -105,10 +105,11 @@ Display and interact with the player's queue.
 <img src="https://github.com/droans/mass-player-card/blob/main/static/media_browser/desktop.png" alt="Player Card Media Browser Section Example">
 </details>
 
-| Parameter | Type                                 | Required | Default | Description                      |
-|-----------|--------------------------------------|----------|---------|----------------------------------|
-| enabled   | bool                                 | No       | true    | Enable/disable media browser tab |
-| favorites | [FavoritesConfig](#favorites-config) | No       | -       | See below                        |
+| Parameter | Type                                      | Required | Default | Description                      |
+|-----------|-------------------------------------------|----------|---------|----------------------------------|
+| enabled   | bool                                      | No       | true    | Enable/disable media browser tab |
+| favorites | [FavoritesConfig](#favorites-config)      | No       | -       | See below                        |
+| sections | list of [SectionsConfig](#sections-config) | No       | -       | See below                        |
 
 ## Favorites Config
 | Parameter  | Type                            | Required | Default | Description                     |
@@ -141,7 +142,25 @@ media_browser:
 | Parameter  | Type | Required | Default | Description                                 |
 |------------|------|----------|---------|---------------------------------------------|
 | enabled    | bool | No       | true    | Enable/disable favorites for the media type |
+| limit      | int  | No       | 25      | Maximum number of favorite items to return  |
 
+## Sections Config
+Sections lets you add your own sections to the browser with your own items. These can either be media items (by providing `media_content_id` and `media_type`) or they can be a script (by providing `service`). If the item is a script, the current media player will be passed to it with the `entity_id` parameter.
+| Parameter  | Type                                      | Required | Default | Description                                        |
+|------------|-------------------------------------------|----------|---------|----------------------------------------------------|
+| name       | str                                       | Yes      | N/A     | The name for the custom section                    |
+| image      | str                                       | Yes      | N/A     | The URL of the image to use for the custom section |
+| items      | [SectionItemConfig](#section-item-config) | Yes      | true    | See below   |                                      |
+
+## Section Item Config
+These will be for each item inside of that section. Either `service` must be provided or `media_content_id` and `media_content_type`.
+| Parameter          | Type  | Required | Default | Description                                        |
+|--------------------|-------|----------|---------|----------------------------------------------------|
+| name               | str   | Yes      | N/A     | The name for the custom section                    |
+| image              | str   | Yes      | N/A     | The URL of the image to use for the custom section |
+| media_content_id   | str   | No       | true    | Media Content ID of the item to be played          |                                      
+| media_content_type | str   | No       | true    | Media Content type of the item to be played        |
+| service            | str   | No       | true    | Service to be called when selected                 |          
 
 ## Players Config
 

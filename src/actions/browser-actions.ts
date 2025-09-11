@@ -18,6 +18,13 @@ export default class BrowserActions {
         }
       )
     }
+    async actionPlayMediaFromService(service: string, player_entity_id: string) {
+      const action = service.split('.');
+      await this.hass.callService(
+        action[0], action[1],
+        { entity_id: player_entity_id }
+      )
+    }
     async actionGetFavorites(player_entity_id: string, media_type: MediaTypes, limit = 25) {
       const config_id = await this.getPlayerConfigEntry(player_entity_id);
       /* eslint-disable-next-line @typescript-eslint/no-explicit-any, */
