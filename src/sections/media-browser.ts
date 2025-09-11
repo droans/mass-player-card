@@ -220,10 +220,8 @@ export class MediaBrowser extends LitElement {
         this.generateFavoriteData(favorites.podcasts, MediaTypes.PODCAST),
         this.generateFavoriteData(favorites.radios, MediaTypes.RADIO),
         this.generateFavoriteData(favorites.tracks, MediaTypes.TRACK),
-        
     ]);
     await promises;
-    this.generateCustomSectionsData(this.config.sections);
     this.activeCards = this.cards[this.activeSection];
     this.requestUpdate();
   }
