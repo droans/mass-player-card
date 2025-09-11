@@ -75,6 +75,9 @@ export default css`
     height: 30px;
     width: 60px;
   }
+  .button-play-pause::part(base) {
+    box-shadow: rgba(0, 0, 0, 0.16) 0px 2px 4px 0px;
+  }
   .volume {
     display: flex;
     flex-direction: row;
@@ -101,7 +104,6 @@ export default css`
     margin: 0px 6px 0px 6px;
     --ha-button-border-radius: 50%;
     border-radius: 50%;
-    box-shadow: 0px 2px 4px 0px rgba(0,0,0,0.16);
   }
   .shuffle {
   }

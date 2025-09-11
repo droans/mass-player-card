@@ -20,6 +20,10 @@ import './sections/players';
 import { HassEntity } from 'home-assistant-js-websocket';
 import { Config, DEFAULT_CARD, DEFAULT_CONFIG, Sections } from './const/card';
 import { MediaBrowser } from './sections/media-browser';
+import { 
+  createConfigForm, 
+  createStubConfig 
+} from './config/config';
 
 const DEV = false;
 
@@ -104,15 +108,13 @@ export class MusicAssistantPlayerCard extends LitElement {
   public get hass() {
     return this._hass;
   }
-  static getConfigElement() {
-    return document.createElement(`${cardId}-editor${DEV ? '-dev' : ''}`);
+
+  static getConfigForm() {
+    return createConfigForm();
   }
 
-  static getStubConfig() {
-    return {
-      ...DEFAULT_CONFIG,
-      entities: [],
-     };
+  static getStubConfig(hass: HomeAssistant, entities: string[]) {
+    return createStubConfig(hass, entities);
   }
   public setConfig(config?: Config) {
     if (!config) {

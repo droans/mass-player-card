@@ -1,4 +1,4 @@
-import "@material/mwc-linear-progress/mwc-linear-progress";
+import "@material/web/progress/linear-progress.js"
 import { CSSResultGroup, html, LitElement } from "lit";
 import { property, query, state } from "lit/decorators.js";
 import { HassEntity } from "home-assistant-js-websocket";
@@ -261,12 +261,12 @@ class MusicPlayerCard extends LitElement {
         <div class="time">
           ${this.renderTime()}
         </div>
-        <mwc-linear-progress
+        <md-linear-progress
           id="progress"
-          .progress=${this.media_position / this.media_duration}
+          value="${this.media_position / this.media_duration}"
           @click=${this.onSeek}
         >
-        </mwc-linear-progress>
+        </md-linear-progress>
       </div>
     `
   }
@@ -326,6 +326,7 @@ class MusicPlayerCard extends LitElement {
         appearance="${this.player_data.playing ? "filled" : "outlined"}"
         variant="brand"
         size="medium"
+        class="button-play-pause"
         @click=${this.onPlayPause}
       >
         <ha-svg-icon
