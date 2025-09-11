@@ -116,7 +116,7 @@ export class MediaBrowser extends LitElement {
     /* eslint-disable @typescript-eslint/no-unsafe-argument */
       void this.actions.actionPlayMediaFromService(data.service, this.activePlayer);
     } else {
-      void this.actions.actionPlayMedia(this.activePlayer, data.media_content_id, data.media_content_type);
+      void this.actions.actionPlayMedia(this.activePlayer, data.media_content_id, data.media_type);
     /* eslint-enable @typescript-eslint/no-unsafe-argument */
     }
   }
