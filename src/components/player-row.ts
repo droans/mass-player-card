@@ -4,7 +4,7 @@ import styles from '../styles/player-row';
 import { HassEntity } from 'home-assistant-js-websocket';
 import { mdiLink, mdiLinkOff, mdiSwapHorizontal } from '@mdi/js';
 import { backgroundImageFallback, getFallbackImage } from '../utils/icons';
-import { Icons } from '../const/common';
+import { Icon } from '../const/common';
 import { 
   PlayerJoinService, 
   PlayerSelectedService, 
@@ -12,11 +12,13 @@ import {
   PlayerUnjoinService 
 } from '../const/actions';
 import { testMixedContent } from '../utils/util';
+import { HomeAssistant } from 'custom-card-helpers';
 
 class PlayerRow extends LitElement {
   @property({ type: Boolean }) player_entity!: HassEntity;
   @property({ type: Boolean }) selected = false;
   @property({ type: Boolean }) joined = false;
+  public hass!: HomeAssistant;
 
   public selectedService!: PlayerSelectedService;
   public joinService!: PlayerJoinService;
@@ -48,9 +50,9 @@ class PlayerRow extends LitElement {
   private artworkStyle() {
     const img: string = this.player_entity?.attributes?.entity_picture_local ?? "";
     if (!testMixedContent(img)) {
-      return getFallbackImage(Icons.HEADPHONES);
+      return getFallbackImage(this.hass, Icon.HEADPHONES);
     }
-    return backgroundImageFallback(img, Icons.HEADPHONES);
+    return backgroundImageFallback(this.hass, img, Icon.HEADPHONES);
   }
   private renderThumbnail() {
     return html`

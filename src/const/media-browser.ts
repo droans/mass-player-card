@@ -1,5 +1,5 @@
 import { TemplateResult } from "lit";
-import {  Icons, MediaTypes } from "./common";
+import {  Icon, MediaTypes } from "./common";
 
 
 export interface MediaBrowserItem {
@@ -22,7 +22,7 @@ export type MediaCardData = Record<string, any>
 export interface MediaCardItem {
   title: string,
   icon: string,
-  fallback: Icons,
+  fallback: Icon,
   data: MediaCardData,
   background?: TemplateResult
 }
@@ -32,11 +32,11 @@ export interface MediaBrowserItemsConfig {
 }
 
 export const MediaTypeIcons = {
-  'album': Icons.DISC,
-  'artist': Icons.MICROPHONE,
-  'audiobook': Icons.BOOK,
-  'playlist': Icons.PLAYLIST,
-  'podcast': Icons.MICROPHONE_MAGIC,
-  'track': Icons.CLEFT,
-  'radio': Icons.RADIO,
+  'album': Icon.DISC,
+  'artist': Icon.PERSON,
+  'audiobook': Icon.BOOK,
+  'playlist': Icon.PLAYLIST,
+  'podcast': Icon.MICROPHONE_MAGIC,
+  'track': Icon.CLEFT,
+  'radio': Icon.RADIO,
 }

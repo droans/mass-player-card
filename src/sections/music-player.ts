@@ -20,7 +20,7 @@ import {
   mdiVolumeMute 
 } from "@mdi/js";
 import { backgroundImageFallback, getFallbackImage } from "../utils/icons";
-import { Icons } from '../const/common';
+import { Icon } from '../const/common';
 import { 
   DEFAULT_PLAYER_CONFIG, 
   PlayerConfig, 
@@ -66,6 +66,9 @@ class MusicPlayerCard extends LitElement {
       this._hass = hass;
     }
     this.updatePlayerData();
+  }
+  public get hass() {
+    return this._hass;
   }
   private updatePlayerData() {
     if (!this._player) {
@@ -273,9 +276,9 @@ class MusicPlayerCard extends LitElement {
   private artworkStyle() {
     const img = this.player_data.track_artwork || "";
     if (!this.player_data.track_artist || !testMixedContent(img)) { 
-      return getFallbackImage(Icons.CLEFT);
+      return getFallbackImage(this.hass, Icon.CLEFT);
     }
-      return backgroundImageFallback(img, Icons.CLEFT);
+      return backgroundImageFallback(this.hass, img, Icon.CLEFT);
   }
   protected renderArtwork() {
     return html`
