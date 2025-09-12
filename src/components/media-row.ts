@@ -123,7 +123,7 @@ class MediaRow extends LitElement {
   private renderMoveNextButton() {
     if (this.media_item.show_move_up_next) {
       return html`
-        <ha-icon-button 
+        <ha-icon-button
           class="action-button"
           .path=${mdiArrowCollapseUp}
           @click=${this.callMoveItemNextService}>

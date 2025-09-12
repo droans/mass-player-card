@@ -403,10 +403,18 @@ class MusicPlayerCard extends LitElement {
         .value=${this.player_data.volume}
         @value-changed=${this.onVolumeChange}
       ></ha-control-slider>
-      <ha-icon-button
-        .path=${this.player_data.muted ? mdiVolumeMute : mdiVolumeHigh}
+      <ha-button
+        appearance="plain"
+        variant="brand"
+        size="medium"
+        class="button-mute"
         @click=${this.onVolumeMuteToggle}
-      ></ha-icon-button>
+      >
+        <ha-svg-icon
+          .path=${this.player_data.muted ? mdiVolumeMute : mdiVolumeHigh}
+          style="height: 3rem; width: 3rem;"
+        ></ha-svg-icon>
+      </ha-button>
     `
   }
   /* eslint-enable @typescript-eslint/unbound-method */
