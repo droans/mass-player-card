@@ -123,11 +123,18 @@ class MediaRow extends LitElement {
   private renderMoveNextButton() {
     if (this.media_item.show_move_up_next) {
       return html`
-        <ha-icon-button
+        <ha-button
+          appearance="plain"
+          variant="brand"
+          size="medium"
           class="action-button"
-          .path=${mdiArrowCollapseUp}
-          @click=${this.callMoveItemNextService}>
-        </ha-icon-button>
+          @click=${this.callMoveItemNextService}
+        >
+          <ha-svg-icon
+            .path=${mdiArrowCollapseUp}
+            style="height: 1.5rem; width: 1.5rem;"
+          ></ha-svg-icon>
+        </ha-button>
       `
     }
     return html``
@@ -135,31 +142,52 @@ class MediaRow extends LitElement {
   private renderMoveUpButton() {
     if (this.media_item.show_move_up_next) {
       return html`
-        <ha-icon-button 
+        <ha-button
+          appearance="plain"
+          variant="brand"
+          size="medium"
           class="action-button"
-          .path=${mdiArrowUp}
-          @click=${this.callMoveItemUpService}>
-        </ha-icon-button>
+          @click=${this.callMoveItemUpService}
+        >
+          <ha-svg-icon
+            .path=${mdiArrowUp}
+            style="height: 1.5rem; width: 1.5rem;"
+          ></ha-svg-icon>
+        </ha-button>
       `
     }
     return html``
   }
   private renderMoveDownButton() {
     return html`
-      <ha-icon-button 
-        class="action-button"
-        .path=${mdiArrowDown}
-        @click=${this.callMoveItemDownService}>
-      </ha-icon-button>
+        <ha-button
+          appearance="plain"
+          variant="brand"
+          size="medium"
+          class="action-button"
+          @click=${this.callMoveItemDownService}
+        >
+          <ha-svg-icon
+            .path=${mdiArrowDown}
+            style="height: 1.5rem; width: 1.5rem;"
+          ></ha-svg-icon>
+        </ha-button>
     `    
   }
   private renderRemoveButton() {
     return html`
-      <ha-icon-button 
-        class="action-button"
-        .path=${mdiClose}
-        @click=${this.callRemoveItemService}>
-      </ha-icon-button>
+        <ha-button
+          appearance="plain"
+          variant="brand"
+          size="medium"
+          class="action-button"
+          @click=${this.callRemoveItemService}
+        >
+          <ha-svg-icon
+            .path=${mdiClose}
+            style="height: 1.5rem; width: 1.5rem;"
+          ></ha-svg-icon>
+        </ha-button>
     `
   }
 

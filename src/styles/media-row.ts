@@ -47,6 +47,10 @@ export default css`
     transform: scale(1);
     align-content: center;
   }
+  .action-button::part(base) {
+    height: 30px;
+    width: 30px;
+  }
   .title {
     font-size: 1.1rem;
     overflow: hidden;
