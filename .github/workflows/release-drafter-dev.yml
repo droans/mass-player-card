@@ -1,0 +1,26 @@
+---
+name: Pre-Release Drafter
+
+on:
+  push:
+    branches:
+      - dev
+  workflow_dispatch:
+
+permissions:
+  contents: read
+
+jobs:
+  update_release_draft:
+    name: Draft pre-release
+    runs-on: ubuntu-latest
+    permissions:
+      contents: write
+      pull-requests: write
+    steps:
+      - name: Run Release Drafter
+        uses: release-drafter/release-drafter@v6.1.0
+        with:
+          config-name: release-drafter-dev.yml
+        env:
+          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
