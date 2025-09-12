@@ -9,6 +9,7 @@ import styles from '../styles/music-player';
 import { 
   mdiPause, 
   mdiPlay, 
+  mdiPower, 
   mdiRepeat, 
   mdiRepeatOff, 
   mdiRepeatOnce, 
@@ -146,6 +147,9 @@ class MusicPlayerCard extends LitElement {
     this.player_data.repeat = repeat;
     await this.actions.actionRepeatSet(this._player, repeat);
     
+  }
+  private onToggle = async () => {
+    await this.actions.actionTogglePlayer(this._player);
   }
   private toTime(seconds: number) {
     if (isNaN(seconds)) {
@@ -381,6 +385,18 @@ class MusicPlayerCard extends LitElement {
   }
   protected renderVolume() {
     return html`
+      <ha-button
+        appearance="plain"
+        variant="brand"
+        size="medium"
+        class="button-power"
+        @click=${this.onToggle}
+      >
+        <ha-svg-icon
+          .path=${mdiPower}
+          style="height: 3rem; width: 3rem;"
+        ></ha-svg-icon>
+      </ha-button>
       <ha-control-slider
         .disabled=${this.player_data.muted}
         .unit="%"
