@@ -86,6 +86,12 @@ export default css`
     padding-left: 2em;
     padding-right: 2em;
   }
+  .button-power {
+    margin-right: 1em;
+  }
+  .button-mute {
+    margin-left: 1em;
+  }
   ha-control-slider {
     --control-slider-thickness: 1.75em;
   }
