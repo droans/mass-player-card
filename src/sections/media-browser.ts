@@ -12,7 +12,7 @@ import {
 } from "../const/media-browser";
 import { HomeAssistant } from "custom-card-helpers";
 import BrowserActions from "../actions/browser-actions";
-import { Icons, MediaTypes } from "../const/common";
+import { Icon, MediaTypes } from "../const/common";
 import { property, state } from "lit/decorators.js";
 import '../components/media-browser-cards'
 import styles from '../styles/media-browser';
@@ -127,13 +127,13 @@ export class MediaBrowser extends LitElement {
     const func = funcs[data.type];
     func(data);
   }
-  private _generateSectionBackgroundPart(icon: string, fallback: Icons = Icons.DISC) {
-    const image = backgroundImageFallback(icon, fallback)
+  private _generateSectionBackgroundPart(icon: string, fallback: Icon = Icon.DISC) {
+    const image = backgroundImageFallback(this.hass, icon, fallback)
     return html`
       <div class="thumbnail-section" style="${image};"></div>
     `
   }
-  private generateSectionBackground(cards: MediaCardItem[], fallback: Icons) {
+  private generateSectionBackground(cards: MediaCardItem[], fallback: Icon) {
     const rng = [...Array(4).keys()];
     const icons: TemplateResult[] = []
     const filteredCards = cards.filter(
@@ -166,7 +166,7 @@ export class MediaBrowser extends LitElement {
     `
   }
   private generateFavoriteCard(media_type: MediaTypes, cards: MediaCardItem[]): MediaCardItem {
-    const icon: Icons = MediaTypeIcons[media_type];
+    const icon: Icon = MediaTypeIcons[media_type];
     return {  
       title: media_type,
       background: this.generateSectionBackground(cards, icon),
@@ -193,7 +193,7 @@ export class MediaBrowser extends LitElement {
     const section_card = {
       title: config.name,
       icon: config.image,
-      fallback: Icons.CLEFT,
+      fallback: Icon.CLEFT,
       data: {
         type: 'section',
         section: config.name
@@ -233,7 +233,7 @@ export class MediaBrowser extends LitElement {
         const r: MediaCardItem = {
           title: item.name,
           icon: item.image,
-          fallback: Icons.CLEFT,
+          fallback: Icon.CLEFT,
           data: {
             type: 'service',
             media_content_id: item.media_content_id,
@@ -248,7 +248,7 @@ export class MediaBrowser extends LitElement {
   private getFavoriteSection = async (media_type: MediaTypes, limit: number) => {
     /* eslint-disable-next-line @typescript-eslint/no-explicit-any */
     const response: any[] = await this.actions.actionGetFavorites(this.activePlayer, media_type, limit);
-    const icon: Icons = MediaTypeIcons[media_type];
+    const icon: Icon = MediaTypeIcons[media_type];
     return response.map(
       (item) => {
         const r: MediaCardItem = {

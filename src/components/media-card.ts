@@ -42,9 +42,9 @@ class MediaCard extends LitElement {
   private artworkStyle() {
     const img = this.config.icon;
     if (!testMixedContent(img)) {
-      return getFallbackImage(this.config.fallback);
+      return getFallbackImage(this.hass, this.config.fallback);
     }
-    return backgroundImageFallback(img, this.config.fallback);
+    return backgroundImageFallback(this.hass, img, this.config.fallback);
   }
   protected renderThumbnailFromIcon() {
     const thumbnail = this.artworkStyle() || "";

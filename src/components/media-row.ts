@@ -10,7 +10,7 @@ import styles from '../styles/media-row';
 import { QueueItem } from '../const/player-queue';
 import { QueueItemSelectedService, QueueService } from '../const/actions';
 import { backgroundImageFallback, getFallbackImage } from '../utils/icons';
-import { Icons } from '../const/common';
+import { Icon } from '../const/common';
 import { testMixedContent } from '../utils/util';
 import { HomeAssistant } from 'custom-card-helpers';
 
@@ -62,9 +62,9 @@ class MediaRow extends LitElement {
   private artworkStyle() {
     const img = this.media_item.media_image || "";
     if (!testMixedContent(img)) {
-      return getFallbackImage(Icons.CLEFT);
+      return getFallbackImage(this.hass, Icon.CLEFT);
     }
-    return backgroundImageFallback(img, Icons.CLEFT);
+    return backgroundImageFallback(this.hass, img, Icon.CLEFT);
   }
   private renderThumbnail() {
     const played = !this.media_item.show_action_buttons  && !this.media_item.playing;
