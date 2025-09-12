@@ -226,6 +226,7 @@ class QueueCard extends LitElement {
               .moveQueueItemNextService=${this.onQueueItemMoveNext}
               .moveQueueItemUpService=${this.onQueueItemMoveUp}
               .moveQueueItemDownService=${this.onQueueItemMoveDown}
+              .hass=${this.hass}
             >
             </mass-player-media-row>`
         )

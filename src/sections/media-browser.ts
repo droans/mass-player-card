@@ -289,6 +289,7 @@ export class MediaBrowser extends LitElement {
         <mass-browser-cards
           .items=${activeCards}
           .onSelectAction=${this.onSelect}
+          .hass=${this.hass}
         >
         </mass-browser-cards>
       </div>

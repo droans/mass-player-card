@@ -12,10 +12,12 @@ import { QueueItemSelectedService, QueueService } from '../const/actions';
 import { backgroundImageFallback, getFallbackImage } from '../utils/icons';
 import { Icons } from '../const/common';
 import { testMixedContent } from '../utils/util';
+import { HomeAssistant } from 'custom-card-helpers';
 
 class MediaRow extends LitElement {
   @property({ attribute: false }) media_item!: QueueItem;
   @property({ type: Boolean }) selected = false;
+  public hass!: HomeAssistant;
   public removeService!: QueueService;
   public moveQueueItemNextService!: QueueService;
   public moveQueueItemUpService!: QueueService;

@@ -12,11 +12,13 @@ import {
   PlayerUnjoinService 
 } from '../const/actions';
 import { testMixedContent } from '../utils/util';
+import { HomeAssistant } from 'custom-card-helpers';
 
 class PlayerRow extends LitElement {
   @property({ type: Boolean }) player_entity!: HassEntity;
   @property({ type: Boolean }) selected = false;
   @property({ type: Boolean }) joined = false;
+  public hass!: HomeAssistant;
 
   public selectedService!: PlayerSelectedService;
   public joinService!: PlayerJoinService;

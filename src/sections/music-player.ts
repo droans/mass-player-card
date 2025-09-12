@@ -67,6 +67,9 @@ class MusicPlayerCard extends LitElement {
     }
     this.updatePlayerData();
   }
+  public get hass() {
+    return this._hass;
+  }
   private updatePlayerData() {
     if (!this._player) {
       return

@@ -53,6 +53,9 @@ class PlayersCard extends LitElement {
       this.setEntities(hass);
     }
   }
+  public get hass() {
+    return this._hass;
+  }
   private joinPlayers =  async (group_member: string) => {
     await this.actions.actionJoinPlayers(this.activePlayerEntity, group_member);
   }
@@ -92,6 +95,7 @@ class PlayersCard extends LitElement {
               .transferService=${this.transferQueue}
               .joined=${group_members.includes(item.entity_id)}
               .allowJoin=${attrs.group_members !== undefined}
+              .hass=${this.hass}
             >
             </mass-player-player-row>
           `
