@@ -81,12 +81,17 @@ class PlayerRow extends LitElement {
   /* eslint-disable @typescript-eslint/unbound-method */
   protected renderTransferButton() {
     return html`
-      <ha-icon-button
+      <ha-button
+        appearance="plain"
+        variant="brand"
+        size="medium"
         class="action-button"
-        .path=${mdiSwapHorizontal}
         @click=${this.onTransferPressed}
       >
-      </ha-icon-button>
+        <ha-svg-icon
+          .path=${mdiSwapHorizontal}
+          style="height: 1.5rem; width: 1.5rem;"
+        ></ha-svg-icon>
     `
   }
   protected renderJoinButon() {
@@ -94,12 +99,17 @@ class PlayerRow extends LitElement {
       return;
     }
     return html`
-      <ha-icon-button
+      <ha-button
+        appearance="plain"
+        variant="brand"
+        size="medium"
         class="action-button"
-        .path=${this.joined ? mdiLinkOff : mdiLink}
         @click=${this.onJoinPressed}
       >
-      </ha-icon-button>
+        <ha-svg-icon
+          .path=${this.joined ? mdiLinkOff : mdiLink}
+          style="height: 1.5rem; width: 1.5rem;"
+        ></ha-svg-icon>
     `
   }
   protected renderActionButtons() {

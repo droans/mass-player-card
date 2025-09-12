@@ -266,11 +266,17 @@ export class MusicAssistantPlayerCard extends LitElement {
           .active=${active}
           panel="${Sections.MUSIC_PLAYER}"
         >
-          <ha-icon-button 
+          <ha-button
+            appearance="plain"
+            variant="brand"
+            size="medium"
             class="action-button${active ? "-active" : ""}"
-            .path=${mdiMusic}
           >
-          </ha-icon-button>
+            <ha-svg-icon
+              .path=${mdiMusic}
+              style="height: 24px; width: 24px;${active ? "" : "fill: unset;"}"
+            ></ha-svg-icon>
+          </ha-button>
         </sl-tab>
       `
     }
@@ -285,12 +291,17 @@ export class MusicAssistantPlayerCard extends LitElement {
           .active=${active}
           panel="${Sections.QUEUE}"
         >
-          <ha-icon-button
+          <ha-button
+            appearance="plain"
+            variant="brand"
+            size="medium"
             class="action-button${active ? "-active" : ""}"
-            .path=${mdiPlaylistMusic}
           >
-          </ha-icon-button>
-        </sl-tab>
+            <ha-svg-icon
+              .path=${mdiPlaylistMusic}
+              style="height: 24px; width: 24px;${active ? "" : "fill: unset;"}"
+            ></ha-svg-icon>
+          </ha-button>
       `
     }
     return html``
@@ -304,11 +315,17 @@ export class MusicAssistantPlayerCard extends LitElement {
         panel="${Sections.MEDIA_BROWSER}"
         @click=${this.returnMediaBrowserToHome}
       >
-        <ha-icon-button 
-          class="action-button${active ? "-active" : ""}"
-          .path=${mdiAlbum}
-        >
-        </ha-icon-button>
+          <ha-button
+            appearance="plain"
+            variant="brand"
+            size="medium"
+            class="action-button${active ? "-active" : ""}"
+          >
+            <ha-svg-icon
+              .path=${mdiAlbum}
+              style="height: 24px; width: 24px;${active ? "" : "fill: unset;"}"
+            ></ha-svg-icon>
+          </ha-button>
       </sl-tab>
     `
   }
@@ -320,11 +337,17 @@ export class MusicAssistantPlayerCard extends LitElement {
         .active=${active}
         panel="${Sections.PLAYERS}"
       >
-        <ha-icon-button 
-          class="action-button${active ? "-active" : ""}"
-          .path=${mdiSpeakerMultiple}
-        >
-        </ha-icon-button>
+          <ha-button
+            appearance="plain"
+            variant="brand"
+            size="medium"
+            class="action-button${active ? "-active" : ""}"
+          >
+            <ha-svg-icon
+              .path=${mdiSpeakerMultiple}
+              style="height: 24px; width: 24px;${active ? "" : "fill: unset;"}"
+            ></ha-svg-icon>
+          </ha-button>
       </sl-tab>
     `
   }
