@@ -112,5 +112,17 @@ export default class PlayerActions {
       console.error(`Error calling repeat`, e)
     }
   }
+  async actionTogglePlayer(entity: HassEntity) {
+    
+    try {
+      await this.hass.callService(
+        'media_player', 'toggle',
+        {
+          'entity_id': entity.entity_id
+        }
+      )
+    } catch (e) {
+      console.error(`Error calling repeat`, e)
+    }  }
 }
 /* eslint-enable no-console */
