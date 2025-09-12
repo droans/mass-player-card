@@ -265,20 +265,6 @@ export class MediaBrowser extends LitElement {
       }
     )
   }
-  // private generateCode() {
-  //   if (!this.activeCards.length) {
-  //     this.activeCards = this.cards[this.activeSection];
-  //   }
-  //   this.code = html`
-  //     <div class="mass-browser">
-  //       <mass-browser-cards
-  //         .items=${this.activeCards}
-  //         .onSelectAction=${this.onSelect}
-  //       >
-  //       </mass-browser-cards>
-  //     </div>
-  //   `
-  // }
   protected render() {
     if (!this.cards) {
       return;
