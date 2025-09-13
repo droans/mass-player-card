@@ -4,6 +4,19 @@ import { queueConfigForm } from "./player-queue";
 import { mediaBrowserConfigForm } from "./media-browser";
 import { playersConfigForm } from "./players";
 import { playerConfigForm } from "./player";
+export interface EntityConfig {
+  entity_id: string;
+  volume_entity_id: string;
+  name: string;
+}
+
+export interface Config {
+  entities: EntityConfig[];
+  queue: QueueConfig;
+  player: PlayerConfig;
+  media_browser: MediaBrowserConfig;
+  players: PlayersConfig;
+}
 
 export function createStubConfig(hass: HomeAssistant, entities: string[]) {
   const media_players = entities.filter( 
@@ -61,4 +74,33 @@ export function createConfigForm() {
       },
     ]
   }
+}
+
+function entityConfigFromEntityID(entity_id: string): EntityConfig {
+  return {
+    entity_id: entity_id,
+    volume_entity_id: entity_id,
+    name: "",
+  }
+}
+
+function processEntityConfig(config: string|EntityConfig): EntityConfig {
+  if (typeof(config) == "string") {
+    return entityConfigFromEntityID(config)
+  }
+  return {
+    entity_id: config.entity_id,
+    volume_entity_id: config?.volume_entity_id ?? config.entity_id,
+    name: config?.name ?? "",
+  }
+}
+
+export function processEntitiesConfig(config: string[]|EntityConfig[]): EntityConfig[] {
+  const result: EntityConfig[] = [];
+  config.forEach(
+    (entity: string|EntityConfig) => {
+        result.push(processEntityConfig(entity))
+    }
+  )
+  return result;
 }
