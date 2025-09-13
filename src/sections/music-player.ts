@@ -29,6 +29,7 @@ import {
 } from "../const/music-player";
 import { RepeatMode } from "../const/common";
 import { testMixedContent } from "../utils/util";
+import { EntityConfig } from "../config/config";
 
 class MusicPlayerCard extends LitElement {
   @property({ attribute: false }) private player_data!: PlayerData;
@@ -37,6 +38,8 @@ class MusicPlayerCard extends LitElement {
   @property({ attribute: false}) private media_duration = 1;
   @state() private shouldMarqueeTitle = false;
   @query('.player-track-title') _track_title;
+  public volumeMediaPlayer!: HassEntity;
+  public mediaPlayerName!: string; 
   private _player!: HassEntity;
   private _listener: number|undefined;
   private _hass!: HomeAssistant;
@@ -75,6 +78,10 @@ class MusicPlayerCard extends LitElement {
     if (!this._player) {
       return
     }
+    let player_name = this.mediaPlayerName;
+    if (!player_name.length) {
+      player_name = this._player.attributes?.friendly_name ?? "Media Player";
+    }
     const new_player_data: PlayerData = {
       playing: this._player.state == 'playing',
       repeat: this._player.attributes.repeat,
@@ -83,9 +90,9 @@ class MusicPlayerCard extends LitElement {
       track_artist: this._player.attributes.media_artist,
       track_artwork: this._player.attributes.entity_picture_local,
       track_title: this._player.attributes.media_title,
-      muted: this._player.attributes.is_volume_muted,
-      volume: Math.floor(this._player.attributes.volume_level * 100),
-      player_name: this._player.attributes.friendly_name ??  '',
+      muted: this.volumeMediaPlayer.attributes.is_volume_muted,
+      volume: Math.floor(this.volumeMediaPlayer.attributes.volume_level * 100),
+      player_name: player_name,
     }
     this.player_data = new_player_data;
     const old_pos = this.entity_pos;
@@ -109,7 +116,7 @@ class MusicPlayerCard extends LitElement {
     if (isNaN(volume)) return;
     this.player_data.volume = volume;
     volume = volume / 100;
-    await this.actions.actionSetVolume(this._player, volume);
+    await this.actions.actionSetVolume(this.volumeMediaPlayer, volume);
   }
   private async onPlayPause() {
     this.player_data.playing = !this.player_data.playing;
@@ -127,7 +134,7 @@ class MusicPlayerCard extends LitElement {
   }
   private async onVolumeMuteToggle() {
     this.player_data.muted = !this.player_data.muted;
-    await this.actions.actionMuteToggle(this._player);
+    await this.actions.actionMuteToggle(this.volumeMediaPlayer);
     
   }
   private async onShuffleToggle() {

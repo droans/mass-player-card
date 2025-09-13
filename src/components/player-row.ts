@@ -19,7 +19,7 @@ class PlayerRow extends LitElement {
   @property({ type: Boolean }) selected = false;
   @property({ type: Boolean }) joined = false;
   public hass!: HomeAssistant;
-
+  public playerName!: string;
   public selectedService!: PlayerSelectedService;
   public joinService!: PlayerJoinService;
   public unjoinService!: PlayerUnjoinService;
@@ -65,7 +65,10 @@ class PlayerRow extends LitElement {
     `
   }
   private renderTitle() {
-    const title = this.player_entity.attributes?.friendly_name ?? "Media Player";
+    let title = this.playerName;
+    if (!title.length) {
+      title = this.player_entity.attributes?.friendly_name ?? "Media Player"
+    };
     return html`
       <span 
         slot="headline" 

@@ -9,7 +9,7 @@ import QueueActions from '../actions/queue-actions';
 import styles from '../styles/player-queue';
 import '../components/media-row'
 import { DEFAULT_QUEUE_CONFIG, QueueConfig, QueueItem } from '../const/player-queue';
-import { QueueConfigErrors } from '../const/card';
+import { QueueConfigErrors } from '../config/player-queue';
 
 class QueueCard extends LitElement {
   @state() private lastUpdated = '';

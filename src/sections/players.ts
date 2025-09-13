@@ -7,11 +7,11 @@ import '../components/player-row'
 import styles from '../styles/player-queue';
 import PlayersActions from "../actions/players-actions";
 import { PlayerSelectedService } from "../const/actions";
-import { Config } from "../const/card";
 import { DEFAULT_PLAYERS_CONFIG } from "../const/players";
+import { Config, EntityConfig } from "../config/config";
 
 class PlayersCard extends LitElement {
-  @property({ attribute: false }) public activePlayerEntity!: string;
+  @property({ attribute: false }) public activePlayerEntity!: EntityConfig;
   @property({ attribute: false }) private entities: HassEntity[] = [];
   public selectedPlayerService!: PlayerSelectedService;
   private _config!: Config;
@@ -27,6 +27,9 @@ class PlayersCard extends LitElement {
       ...DEFAULT_PLAYERS_CONFIG,
       ...config
     };
+  }
+  public get config() {
+    return this._config;
   }
   public set hass(hass: HomeAssistant) {
     if (!hass) {
@@ -57,14 +60,17 @@ class PlayersCard extends LitElement {
     return this._hass;
   }
   private joinPlayers =  async (group_member: string) => {
-    await this.actions.actionJoinPlayers(this.activePlayerEntity, group_member);
+    await this.actions.actionJoinPlayers(this.activePlayerEntity.entity_id, group_member);
   }
   private unjoinPlayers = async (player_entity: string) => {
     await this.actions.actionUnjoinPlayers(player_entity);
   }
   private transferQueue = async (target_player: string) => {
-    await this.actions.actionTransferQueue(this.activePlayerEntity, target_player);
-    this.activePlayerEntity = target_player;
+    await this.actions.actionTransferQueue(this.activePlayerEntity.entity_id, target_player);
+    const players = this.config.entities.filter(
+      (entity) => entity.entity_id == target_player
+    )
+    this.activePlayerEntity = players[0];
   }
   private setEntities(hass: HomeAssistant) {
     if (!this._config) {
@@ -73,22 +79,26 @@ class PlayersCard extends LitElement {
     const entities: HassEntity[] = [];
     this._config.entities.forEach(
       (item) => {
-        entities.push(hass.states[item]);
+        entities.push(hass.states[item.entity_id]);
       }
     )
     this.entities = entities;
   }
   protected renderPlayerRows() {
-    const attrs = this._hass.states[this.activePlayerEntity].attributes;
+    const attrs = this._hass.states[this.activePlayerEntity.entity_id].attributes;
     const group_members: string[] = attrs?.group_members ?? [];
     return this.entities.map(
       (item) => {
+        const player = this.config.entities.filter(
+          (entity) => entity.entity_id == item.entity_id
+        )[0]
         return keyed(
           item.entity_id,
           html`
             <mass-player-player-row
               .player_entity=${item}
-              .selected=${this.activePlayerEntity==item.entity_id}
+              .playerName=${player.name}
+              .selected=${this.activePlayerEntity.entity_id==item.entity_id}
               .selectedService=${this.selectedPlayerService}
               .joinService=${this.joinPlayers}
               .unjoinService=${this.unjoinPlayers}
