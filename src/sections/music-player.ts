@@ -29,7 +29,6 @@ import {
 } from "../const/music-player";
 import { RepeatMode } from "../const/common";
 import { testMixedContent } from "../utils/util";
-import { EntityConfig } from "../config/config";
 
 class MusicPlayerCard extends LitElement {
   @property({ attribute: false }) private player_data!: PlayerData;

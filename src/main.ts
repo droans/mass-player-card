@@ -158,10 +158,10 @@ export class MusicAssistantPlayerCard extends LitElement {
     }
   }
   private setActivePlayer = (player_entity: string) => {
-    const players = this.config.entities.filter(
+    const player = this.config.entities.find(
       (entity) => entity.entity_id == player_entity
     )
-    this.active_player_entity = players[0];
+    this.active_player_entity = player ?? this.active_player_entity;
   }
 
   protected shouldUpdate(_changedProperties: PropertyValues): boolean {

@@ -67,10 +67,10 @@ class PlayersCard extends LitElement {
   }
   private transferQueue = async (target_player: string) => {
     await this.actions.actionTransferQueue(this.activePlayerEntity.entity_id, target_player);
-    const players = this.config.entities.filter(
+    const player = this.config.entities.find(
       (entity) => entity.entity_id == target_player
-    )
-    this.activePlayerEntity = players[0];
+    )!
+    this.activePlayerEntity = player;
   }
   private setEntities(hass: HomeAssistant) {
     if (!this._config) {
@@ -89,9 +89,9 @@ class PlayersCard extends LitElement {
     const group_members: string[] = attrs?.group_members ?? [];
     return this.entities.map(
       (item) => {
-        const player = this.config.entities.filter(
+        const player = this.config.entities.find(
           (entity) => entity.entity_id == item.entity_id
-        )[0]
+        )!
         return keyed(
           item.entity_id,
           html`
