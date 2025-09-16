@@ -76,6 +76,9 @@ class MusicPlayerCard extends LitElement {
     return this._hass;
   }
   private updatePlayerData() {
+    this._updatePlayerData().catch( () => {return});
+  }
+  private async _updatePlayerData() {
     if (!this._player) {
       return
     }
