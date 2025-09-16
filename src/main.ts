@@ -18,11 +18,15 @@ import './sections/music-player';
 import './sections/player-queue';
 import './sections/players';
 import { HassEntity } from 'home-assistant-js-websocket';
-import { Config, DEFAULT_CARD, DEFAULT_CONFIG, Sections } from './const/card';
+import { DEFAULT_CARD, Sections } from './const/card';
 import { MediaBrowser } from './sections/media-browser';
 import { 
+  Config,
   createConfigForm, 
-  createStubConfig 
+  createStubConfig, 
+  DEFAULT_CONFIG,
+  EntityConfig,
+  processEntitiesConfig
 } from './config/config';
 
 const DEV = false;
@@ -62,7 +66,7 @@ console.info(
 export class MusicAssistantPlayerCard extends LitElement {
   @state() private config!: Config;
   @state() private error?: TemplateResult;
-  @state() private active_player_entity!: string;
+  @state() private active_player_entity!: EntityConfig;
   @state() private active_section: Sections = DEFAULT_CARD;
   @state() private first_hass_update = false;
   @state() private entities!: HassEntity[];
@@ -91,9 +95,9 @@ export class MusicAssistantPlayerCard extends LitElement {
     const new_ents: HassEntity[] = [];
     ents.forEach(
       (entity) => {
-        const old_state = JSON.stringify(this._hass.states[entity]);
-        const new_state = JSON.stringify(hass.states[entity]);
-        new_ents.push(hass.states[entity]);
+        const old_state = JSON.stringify(this._hass.states[entity.entity_id]);
+        const new_state = JSON.stringify(hass.states[entity.entity_id]);
+        new_ents.push(hass.states[entity.entity_id]);
         if (old_state !== new_state) {
           should_update = true;
         }
@@ -123,9 +127,11 @@ export class MusicAssistantPlayerCard extends LitElement {
     if (!config.entities) {
       throw this.createError('You need to define entities.');
     };
+    const ent_config = processEntitiesConfig(config.entities);
     this.config = {
       ...DEFAULT_CONFIG,
-      ...config
+      ...config,
+      entities: ent_config
     }
     if (!this.active_player_entity) {
       this.setDefaultActivePlayer();
@@ -142,17 +148,20 @@ export class MusicAssistantPlayerCard extends LitElement {
     } else {
       const states = this.hass.states;
       const active_players = players.filter(
-        (entity) => ["playing", "paused"].includes(states[entity].state) && states[entity].attributes.app_id == 'music_assistant' 
+        (entity) => ["playing", "paused"].includes(states[entity.entity_id].state) && states[entity.entity_id].attributes.app_id == 'music_assistant' 
       )
       if (active_players.length) {
         this.active_player_entity = active_players[0];
-      } else {
+      } else {  
         this.active_player_entity = players[0];
       }
     }
   }
   private setActivePlayer = (player_entity: string) => {
-    this.active_player_entity = player_entity;
+    const player = this.config.entities.find(
+      (entity) => entity.entity_id == player_entity
+    )
+    this.active_player_entity = player ?? this.active_player_entity;
   }
 
   protected shouldUpdate(_changedProperties: PropertyValues): boolean {
@@ -170,7 +179,7 @@ export class MusicAssistantPlayerCard extends LitElement {
       const newStates = this.hass.states;
       let result = false;
       this.config.entities.forEach( (element) => {
-          if (oldStates[element] !== newStates[element]) {
+          if (oldStates[element.entity_id] !== newStates[element.entity_id]) {
             result = true;
           }
         }
@@ -220,7 +229,9 @@ export class MusicAssistantPlayerCard extends LitElement {
         <sl-tab-panel name="${Sections.MUSIC_PLAYER}">
           <mass-music-player-card
             .config=${this.config.player}
-            .activeMediaPlayer=${this.hass.states[this.active_player_entity]}
+            .volumeMediaPlayer=${this.hass.states[this.active_player_entity.volume_entity_id]}
+            .mediaPlayerName=${this.active_player_entity.name}
+            .activeMediaPlayer=${this.hass.states[this.active_player_entity.entity_id]}
             .hass=${this.hass}
           ></mass-music-player-card>
         </sl-tab-panel>
@@ -234,7 +245,7 @@ export class MusicAssistantPlayerCard extends LitElement {
         <sl-tab-panel name="${Sections.QUEUE}">
           <mass-player-queue-card
             .hass=${this.hass}
-            .active_player_entity=${this.active_player_entity}
+            .active_player_entity=${this.active_player_entity.entity_id}
             .config=${this.config.queue}
           ></mass-player-queue-card>
         </sl-tab-panel>
@@ -247,7 +258,7 @@ export class MusicAssistantPlayerCard extends LitElement {
       return cache(html`
         <sl-tab-panel name="${Sections.MEDIA_BROWSER}">
           <mass-media-browser
-            .activePlayer=${this.active_player_entity}
+            .activePlayer=${this.active_player_entity.entity_id}
             .config=${this.config.media_browser}
             .hass=${this.hass}
             .onMediaSelectedAction=${this.browserItemSelected}

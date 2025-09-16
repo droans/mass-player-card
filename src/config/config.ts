@@ -1,9 +1,43 @@
 import { HomeAssistant } from "custom-card-helpers";
-import { mdiAlbum, mdiMusic, mdiPlaylistMusic, mdiSpeakerMultiple } from "@mdi/js";
+import { 
+  mdiAlbum, 
+  mdiMusic, 
+  mdiPlaylistMusic, 
+  mdiSpeakerMultiple 
+} from "@mdi/js";
 import { queueConfigForm } from "./player-queue";
-import { mediaBrowserConfigForm } from "./media-browser";
+import { 
+  DEFAULT_MEDIA_BROWSER_CONFIG, 
+  MediaBrowserConfig, 
+  mediaBrowserConfigForm 
+} from "./media-browser";
 import { playersConfigForm } from "./players";
 import { playerConfigForm } from "./player";
+import { DEFAULT_QUEUE_CONFIG, QueueConfig } from "../const/player-queue";
+import { DEFAULT_PLAYER_CONFIG, PlayerConfig } from "../const/music-player";
+import { DEFAULT_PLAYERS_CONFIG, PlayersConfig } from "../const/players";
+
+export interface EntityConfig {
+  entity_id: string;
+  volume_entity_id: string;
+  name: string;
+}
+
+export interface Config {
+  entities: EntityConfig[];
+  queue: QueueConfig;
+  player: PlayerConfig;
+  media_browser: MediaBrowserConfig;
+  players: PlayersConfig;
+}
+
+export const DEFAULT_CONFIG = {
+  queue: DEFAULT_QUEUE_CONFIG,
+  player: DEFAULT_PLAYER_CONFIG,
+  players: DEFAULT_PLAYERS_CONFIG,
+  media_browser: DEFAULT_MEDIA_BROWSER_CONFIG
+}
+
 
 export function createStubConfig(hass: HomeAssistant, entities: string[]) {
   const media_players = entities.filter( 
@@ -61,4 +95,33 @@ export function createConfigForm() {
       },
     ]
   }
+}
+
+function entityConfigFromEntityID(entity_id: string): EntityConfig {
+  return {
+    entity_id: entity_id,
+    volume_entity_id: entity_id,
+    name: "",
+  }
+}
+
+function processEntityConfig(config: string|EntityConfig): EntityConfig {
+  if (typeof(config) == "string") {
+    return entityConfigFromEntityID(config)
+  }
+  return {
+    entity_id: config.entity_id,
+    volume_entity_id: config?.volume_entity_id ?? config.entity_id,
+    name: config?.name ?? "",
+  }
+}
+
+export function processEntitiesConfig(config: string[]|EntityConfig[]): EntityConfig[] {
+  const result: EntityConfig[] = [];
+  config.forEach(
+    (entity: string|EntityConfig) => {
+        result.push(processEntityConfig(entity))
+    }
+  )
+  return result;
 }
