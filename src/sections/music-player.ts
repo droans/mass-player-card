@@ -1,5 +1,5 @@
 import "@material/web/progress/linear-progress.js"
-import { CSSResultGroup, html, LitElement } from "lit";
+import { CSSResultGroup, html, LitElement, PropertyValues } from "lit";
 import { property, query, state } from "lit/decorators.js";
 import { HassEntity } from "home-assistant-js-websocket";
 
@@ -260,13 +260,13 @@ class MusicPlayerCard extends LitElement {
     `
   }
   protected renderTitle() {
-    if(!this.player_data.track_title) {
+    if(!this.player_data?.track_title) {
       return html``
     } 
     return this.wrapTitleMarquee();
   }
   protected renderArtist() {
-    if (!this.player_data.track_artist) {
+    if (!this.player_data?.track_artist) {
       return html``
     }
     return html`<div class="player-track-artist"> ${this.player_data.track_artist} </div>`; 
@@ -274,7 +274,7 @@ class MusicPlayerCard extends LitElement {
   protected renderHeader() {
     return html`
       <div class="header">
-        <div class="player-name"> ${this.player_data.player_name} </div>
+        <div class="player-name"> ${this.player_data?.player_name ?? this.mediaPlayerName} </div>
         ${this.renderTitle()}
         ${this.renderArtist()}
       </div>
@@ -301,8 +301,8 @@ class MusicPlayerCard extends LitElement {
     `
   }
   private artworkStyle() {
-    const img = this.player_data.track_artwork || "";
-    if (!this.player_data.track_artist || !testMixedContent(img)) { 
+    const img = this.player_data?.track_artwork || "";
+    if (!this.player_data?.track_artist || !testMixedContent(img)) { 
       return getFallbackImage(this.hass, Icon.CLEFT);
     }
       return backgroundImageFallback(this.hass, img, Icon.CLEFT);
@@ -469,6 +469,12 @@ class MusicPlayerCard extends LitElement {
       </div>
       <div class="volume">${this.renderVolume()}</div>
     `
+  }
+  protected shouldUpdate(_changedProperties: PropertyValues): boolean {
+    if (!this.player_data) {
+      return false
+    }
+    return super.shouldUpdate(_changedProperties);
   }
   protected render() {
     return html`
