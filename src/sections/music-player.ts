@@ -6,6 +6,8 @@ import { HassEntity } from "home-assistant-js-websocket";
 import PlayerActions from "../actions/player-actions";
 import styles from '../styles/music-player';
 import { 
+  mdiHeart,
+  mdiHeartPlusOutline,
   mdiPause, 
   mdiPlay, 
   mdiPower, 
@@ -24,7 +26,8 @@ import { ExtendedHass, Icon } from '../const/common';
 import { 
   DEFAULT_PLAYER_CONFIG, 
   PlayerConfig, 
-  PlayerData, SWIPE_MIN_X
+  PlayerData, 
+  SWIPE_MIN_X,
 } from "../const/music-player";
 import { RepeatMode } from "../const/common";
 import { testMixedContent } from "../utils/util";
@@ -137,6 +140,15 @@ class MusicPlayerCard extends LitElement {
     this.player_data.muted = !this.player_data.muted;
     await this.actions.actionMuteToggle(this.volumeMediaPlayer);
     
+  }
+  private onFavorite = async () => {
+    if (this.player_data.favorite) {
+      await this.actions.actionRemoveFavorite(this._player);
+      this.player_data.favorite = false;
+    } else {
+      await this.actions.actionAddFavorite(this._player);
+      this.player_data.favorite = true;
+    }
   }
   private async onShuffleToggle() {
     this.player_data.shuffle = !this.player_data.shuffle;
@@ -420,6 +432,19 @@ class MusicPlayerCard extends LitElement {
       >
         <ha-svg-icon
           .path=${this.player_data.muted ? mdiVolumeMute : mdiVolumeHigh}
+          style="height: 3rem; width: 3rem;"
+        ></ha-svg-icon>
+      </ha-button>
+      
+      <ha-button
+        appearance="plain"
+        variant="brand"
+        size="medium"
+        class="button-favorite"
+        @click=${this.onFavorite}
+      >
+        <ha-svg-icon
+          .path=${this.player_data.favorite ? mdiHeart : mdiHeartPlusOutline}
           style="height: 3rem; width: 3rem;"
         ></ha-svg-icon>
       </ha-button>
