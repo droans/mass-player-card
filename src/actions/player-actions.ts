@@ -158,3 +158,31 @@ export default class PlayerActions {
       return null;
     }
   }
+  async actionAddFavorite(entity: HassEntity) {
+    const dev_id = this.hass.entities[entity.entity_id].device_id;
+    try {
+      await this.hass.callService(
+        'button', 'press',
+        {
+          'device_id': dev_id
+        }
+      )
+    } catch (e) {
+      /* eslint-disable-next-line no-console */
+      console.error(`Error setting favorite`, e)
+    }
+  }
+  async actionRemoveFavorite(entity: HassEntity) {
+    try {
+      await this.hass.callService(
+        'mass_queue', 'unfavorite_current_item',
+        {
+          'entity': entity.entity_id
+        }
+      )
+    } catch (e) {
+      /* eslint-disable-next-line no-console */
+      console.error(`Error unfavoriting item for entity.`, e)
+    }
+  }
+}
