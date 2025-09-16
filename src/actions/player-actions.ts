@@ -1,6 +1,6 @@
 import { HassEntity } from "home-assistant-js-websocket";
 import { ExtendedHass, RepeatMode } from "../const/common";
-import { RepeatMode } from "../const/common";
+import { QueueItem } from "../const/player-queue";
 
 export default class PlayerActions {
   private hass: ExtendedHass;
@@ -131,6 +131,30 @@ export default class PlayerActions {
     } catch (e) {
       /* eslint-disable-next-line no-console */
       console.error(`Error calling repeat`, e)
-    }  }
-}
-/* eslint-enable no-console */
+    }
+  }
+  async actionGetCurrentItem(entity: HassEntity): Promise<QueueItem|null> {
+    try {
+      /* eslint-disable 
+        @typescript-eslint/no-explicit-any
+      */
+      const ret = await this.hass.callWS<any>({
+        type: 'call_service',
+        domain: 'mass_queue',
+        service: 'get_queue_items',
+        service_data: {
+          entity: entity.entity_id,
+          limit_before: 1,
+          limit_after: 1,
+        },
+        return_response: true
+      });
+      const result: QueueItem = ret.response[entity.entity_id][1];
+      return result;
+      /* eslint-enable */
+    } catch (e) {
+      /* eslint-disable-next-line no-console */
+      console.error('Error getting queue', e);
+      return null;
+    }
+  }
