@@ -93,7 +93,7 @@ export default css`
     margin-left: 1em;
   }
   ha-control-slider {
-    --control-slider-thickness: 1.75em;
+    --control-slider-thickness: 2.25em;
   }
   .player-controls {
     width: var(--player-control-icon-width);
