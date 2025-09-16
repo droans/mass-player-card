@@ -51,7 +51,7 @@ class MediaCard extends LitElement {
     return html`
       <div 
         class="thumbnail" 
-        style=${thumbnail}
+        style="${thumbnail};padding-bottom: 2em;"
       >
       </div>
     `
