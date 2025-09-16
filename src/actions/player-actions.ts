@@ -2,7 +2,6 @@ import { HassEntity } from "home-assistant-js-websocket";
 import { ExtendedHass, RepeatMode } from "../const/common";
 import { RepeatMode } from "../const/common";
 
-/* eslint-disable no-console */
 export default class PlayerActions {
   private hass: ExtendedHass;
   constructor(hass: ExtendedHass) {
@@ -17,6 +16,7 @@ export default class PlayerActions {
         }
       )
     } catch (e) {
+      /* eslint-disable-next-line no-console */
       console.error(`Error calling play/pause`, e)
     }
   }
@@ -31,6 +31,7 @@ export default class PlayerActions {
         }
       )
     } catch (e) {
+      /* eslint-disable-next-line no-console */
       console.error(`Error calling mute`, e)
     }
   }
@@ -43,6 +44,7 @@ export default class PlayerActions {
         }
       )
     } catch (e) {
+      /* eslint-disable-next-line no-console */
       console.error(`Error calling play next`, e)
     }
   }
@@ -55,6 +57,7 @@ export default class PlayerActions {
         }
       )
     } catch (e) {
+      /* eslint-disable-next-line no-console */
       console.error(`Error calling play previous`, e)
     } 
   }
@@ -69,6 +72,7 @@ export default class PlayerActions {
         }
       )
     } catch (e) {
+      /* eslint-disable-next-line no-console */
       console.error(`Error calling shuffle`, e)
     }
   }
@@ -83,6 +87,7 @@ export default class PlayerActions {
         }
       )
     } catch (e) {
+      /* eslint-disable-next-line no-console */
       console.error(`Error calling repeat`, e)
     }
   }
@@ -96,6 +101,7 @@ export default class PlayerActions {
         }
       )
     } catch (e) {
+      /* eslint-disable-next-line no-console */
       console.error(`Error calling repeat`, e)
     }
   }
@@ -109,6 +115,7 @@ export default class PlayerActions {
         }
       )
     } catch (e) {
+      /* eslint-disable-next-line no-console */
       console.error(`Error calling repeat`, e)
     }
   }
@@ -122,6 +129,7 @@ export default class PlayerActions {
         }
       )
     } catch (e) {
+      /* eslint-disable-next-line no-console */
       console.error(`Error calling repeat`, e)
     }  }
 }
