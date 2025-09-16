@@ -80,17 +80,20 @@ class MusicPlayerCard extends LitElement {
     if (!player_name.length) {
       player_name = this._player.attributes?.friendly_name ?? "Media Player";
     }
-    const new_player_data: PlayerData = {
+    const current_item = (await this.actions.actionGetCurrentItem(this._player))!;
+    
+    let new_player_data: PlayerData = {
       playing: this._player.state == 'playing',
-      repeat: this._player.attributes.repeat,
-      shuffle: this._player.attributes.shuffle,
-      track_album: this._player.attributes.media_album_name,
-      track_artist: this._player.attributes.media_artist,
-      track_artwork: this._player.attributes.entity_picture_local,
-      track_title: this._player.attributes.media_title,
+      repeat: this._player.attributes.repeat ?? false,
+      shuffle: this._player.attributes.shuffle ?? false,
+      track_album: current_item?.media_album_name ?? this._player.attributes.media_album_name,
+      track_artist: current_item?.media_artist ?? this._player.attributes.media_artist,
+      track_artwork: this._player.attributes.entity_picture_local ?? this._player.attributes.entity_picture ?? current_item?.media_image,
+      track_title: current_item?.media_title ?? this._player.attributes.media_title,
       muted: this.volumeMediaPlayer.attributes.is_volume_muted,
       volume: Math.floor(this.volumeMediaPlayer.attributes.volume_level * 100),
       player_name: player_name,
+      favorite: current_item?.favorite ?? false,
     }
     this.player_data = new_player_data;
     const old_pos = this.entity_pos;

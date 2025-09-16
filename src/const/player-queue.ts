@@ -25,6 +25,7 @@ export interface QueueItem {
   show_action_buttons: boolean;
   show_artist_name: boolean
   show_move_up_next: boolean;
+  favorite: boolean;
 }
 export interface QueueSection {
   active_player_entity: string;

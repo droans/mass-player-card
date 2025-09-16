@@ -18,6 +18,7 @@ export interface PlayerData {
   repeat: RepeatMode;
   player_name: string;
   volume: number;
+  favorite: boolean;
 }
 
 export const SWIPE_MIN_X = 200;
