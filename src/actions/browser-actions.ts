@@ -1,10 +1,9 @@
-import { HomeAssistant } from "custom-card-helpers";
-import { MediaTypes } from "../const/common";
+import { ExtendedHass, MediaTypes } from "../const/common";
 
 export default class BrowserActions {
-    private hass: HomeAssistant;
+    private hass: ExtendedHass;
 
-    constructor(hass: HomeAssistant) {
+    constructor(hass: ExtendedHass) {
       this.hass = hass;
     }
     

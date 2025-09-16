@@ -10,14 +10,13 @@ import styles from '../styles/media-row';
 import { QueueItem } from '../const/player-queue';
 import { QueueItemSelectedService, QueueService } from '../const/actions';
 import { backgroundImageFallback, getFallbackImage } from '../utils/icons';
-import { Icon } from '../const/common';
+import { ExtendedHass, Icon } from '../const/common';
 import { testMixedContent } from '../utils/util';
-import { HomeAssistant } from 'custom-card-helpers';
 
 class MediaRow extends LitElement {
   @property({ attribute: false }) media_item!: QueueItem;
   @property({ type: Boolean }) selected = false;
-  public hass!: HomeAssistant;
+  public hass!: ExtendedHass;
   public removeService!: QueueService;
   public moveQueueItemNextService!: QueueService;
   public moveQueueItemUpService!: QueueService;

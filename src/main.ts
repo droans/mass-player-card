@@ -9,7 +9,6 @@ import {
   mdiSpeakerMultiple
 } from '@mdi/js';
 
-import { type HomeAssistant } from 'custom-card-helpers';
 
 import styles from './styles/main';
 import { version } from '../package.json';
@@ -28,6 +27,7 @@ import {
   EntityConfig,
   processEntitiesConfig
 } from './config/config';
+import { ExtendedHass } from './const/common';
 
 const DEV = false;
 
@@ -70,7 +70,7 @@ export class MusicAssistantPlayerCard extends LitElement {
   @state() private active_section: Sections = DEFAULT_CARD;
   @state() private first_hass_update = false;
   @state() private entities!: HassEntity[];
-  private _hass!: HomeAssistant;
+  private _hass!: ExtendedHass;
 
   constructor() {
     super();
@@ -81,7 +81,7 @@ export class MusicAssistantPlayerCard extends LitElement {
       this.setDefaultActivePlayer();
     }
   }
-  public set hass(hass: HomeAssistant) {
+  public set hass(hass: ExtendedHass) {
     if (!hass) {
       return;
     }
@@ -117,7 +117,7 @@ export class MusicAssistantPlayerCard extends LitElement {
     return createConfigForm();
   }
 
-  static getStubConfig(hass: HomeAssistant, entities: string[]) {
+  static getStubConfig(hass: ExtendedHass, entities: string[]) {
     return createStubConfig(hass, entities);
   }
   public setConfig(config?: Config) {
@@ -171,7 +171,7 @@ export class MusicAssistantPlayerCard extends LitElement {
       return true;
     }
     if (_changedProperties.has('hass')) {
-      const oldHass = _changedProperties.get('hass')! as HomeAssistant;
+      const oldHass = _changedProperties.get('hass')! as ExtendedHass;
       if (!oldHass) {
         return true;
       }

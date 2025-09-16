@@ -1,11 +1,11 @@
-import { HomeAssistant } from "custom-card-helpers";
 import { HassEntity } from "home-assistant-js-websocket";
+import { ExtendedHass, RepeatMode } from "../const/common";
 import { RepeatMode } from "../const/common";
 
 /* eslint-disable no-console */
 export default class PlayerActions {
-  private hass: HomeAssistant;
-  constructor(hass: HomeAssistant) {
+  private hass: ExtendedHass;
+  constructor(hass: ExtendedHass) {
     this.hass = hass;
   }
   async actionPlayPause(entity: HassEntity) {

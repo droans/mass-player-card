@@ -1,12 +1,12 @@
-import { HomeAssistant } from "custom-card-helpers";
 import { QueueConfig, QueueItem } from "../const/player-queue";
+import { ExtendedHass } from "../const/common";
 
 export default class QueueActions {
-  private hass: HomeAssistant;
+  private hass: ExtendedHass;
   private config: QueueConfig;
   public player_entity: string;
 
-  constructor(hass: HomeAssistant, config: QueueConfig, player_entity: string) {
+  constructor(hass: ExtendedHass, config: QueueConfig, player_entity: string) {
     this.hass = hass;
     this.config = config;
     this.player_entity = player_entity;

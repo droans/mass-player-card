@@ -1,24 +1,22 @@
 import { LitElement, html, type CSSResultGroup, PropertyValues, TemplateResult } from 'lit';
 import { keyed } from 'lit/directives/keyed.js';
 import { property, state } from 'lit/decorators.js';
-import {
-  type HomeAssistant,
-} from 'custom-card-helpers';
 
 import QueueActions from '../actions/queue-actions';
 import styles from '../styles/player-queue';
 import '../components/media-row'
 import { DEFAULT_QUEUE_CONFIG, QueueConfig, QueueItem } from '../const/player-queue';
 import { QueueConfigErrors } from '../config/player-queue';
+import { ExtendedHass } from '../const/common';
 
 class QueueCard extends LitElement {
   @state() private lastUpdated = '';
   private _active_player_entity!: string;
   @property({ attribute: false }) public _config!: QueueConfig;
-  private _hass!: HomeAssistant;
+  private _hass!: ExtendedHass;
   @state() private queue: QueueItem[] = [];
   private error?: TemplateResult;
-  public set hass(hass: HomeAssistant) {
+  public set hass(hass: ExtendedHass) {
     if (!hass) {
       return;
     }

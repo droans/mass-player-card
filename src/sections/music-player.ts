@@ -2,7 +2,6 @@ import "@material/web/progress/linear-progress.js"
 import { CSSResultGroup, html, LitElement } from "lit";
 import { property, query, state } from "lit/decorators.js";
 import { HassEntity } from "home-assistant-js-websocket";
-import { HomeAssistant } from "custom-card-helpers";
 
 import PlayerActions from "../actions/player-actions";
 import styles from '../styles/music-player';
@@ -21,7 +20,7 @@ import {
   mdiVolumeMute 
 } from "@mdi/js";
 import { backgroundImageFallback, getFallbackImage } from "../utils/icons";
-import { Icon } from '../const/common';
+import { ExtendedHass, Icon } from '../const/common';
 import { 
   DEFAULT_PLAYER_CONFIG, 
   PlayerConfig, 
@@ -41,7 +40,7 @@ class MusicPlayerCard extends LitElement {
   public mediaPlayerName!: string; 
   private _player!: HassEntity;
   private _listener: number|undefined;
-  private _hass!: HomeAssistant;
+  private _hass!: ExtendedHass;
   private actions!: PlayerActions;
   private entity_pos = 0;
   private entity_dur = 1;
@@ -61,7 +60,7 @@ class MusicPlayerCard extends LitElement {
     this._player = player;
     this.updatePlayerData();
   }
-  public set hass(hass: HomeAssistant) {
+  public set hass(hass: ExtendedHass) {
     if (hass) {
       this.actions = new PlayerActions(hass);
     }

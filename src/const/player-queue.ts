@@ -1,4 +1,4 @@
-import { HomeAssistant } from "custom-card-helpers";
+import { ExtendedHass } from "./common";
 
 export interface QueueConfig {
   enabled: boolean;
@@ -29,5 +29,5 @@ export interface QueueItem {
 export interface QueueSection {
   active_player_entity: string;
   config: QueueConfig;
-  hass: HomeAssistant;
+  hass: ExtendedHass;
 }

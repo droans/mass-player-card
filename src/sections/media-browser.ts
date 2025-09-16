@@ -10,9 +10,8 @@ import {
   MediaCardItem, 
   MediaTypeIcons 
 } from "../const/media-browser";
-import { HomeAssistant } from "custom-card-helpers";
 import BrowserActions from "../actions/browser-actions";
-import { Icon, MediaTypes } from "../const/common";
+import { ExtendedHass, Icon, MediaTypes } from "../const/common";
 import { property, state } from "lit/decorators.js";
 import '../components/media-browser-cards'
 import styles from '../styles/media-browser';
@@ -29,7 +28,7 @@ import {
 export class MediaBrowser extends LitElement {
   public activePlayer!: string;
   @property({attribute: false}) private _config!: MediaBrowserConfig;
-  private _hass!: HomeAssistant;
+  private _hass!: ExtendedHass;
   @state() private cards: MediaBrowserItemsConfig = {main: []};
   private _activeSection = 'main';
   private actions!: BrowserActions;
@@ -45,7 +44,7 @@ export class MediaBrowser extends LitElement {
   public get config() {
     return this._config;
   }
-  public set hass(hass: HomeAssistant) {
+  public set hass(hass: ExtendedHass) {
     if (!hass) {
       return;
     }

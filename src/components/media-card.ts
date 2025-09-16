@@ -5,11 +5,11 @@ import { MediaCardItem } from "../const/media-browser";
 import { backgroundImageFallback, getFallbackImage } from "../utils/icons";
 import styles from '../styles/media-card';
 import { testMixedContent } from "../utils/util";
-import { HomeAssistant } from "custom-card-helpers";
+import { ExtendedHass } from "../const/common";
 
 class MediaCard extends LitElement {
   private _config!: MediaCardItem;
-  public hass!: HomeAssistant;
+  public hass!: ExtendedHass;
   public onSelectAction!: CardSelectedService;
   @state() code!: TemplateResult;
 
