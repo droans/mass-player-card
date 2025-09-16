@@ -4,7 +4,7 @@ import styles from '../styles/player-row';
 import { HassEntity } from 'home-assistant-js-websocket';
 import { mdiLink, mdiLinkOff, mdiSwapHorizontal } from '@mdi/js';
 import { backgroundImageFallback, getFallbackImage } from '../utils/icons';
-import { Icon } from '../const/common';
+import { ExtendedHass, Icon } from '../const/common';
 import { 
   PlayerJoinService, 
   PlayerSelectedService, 
@@ -12,13 +12,12 @@ import {
   PlayerUnjoinService 
 } from '../const/actions';
 import { testMixedContent } from '../utils/util';
-import { HomeAssistant } from 'custom-card-helpers';
 
 class PlayerRow extends LitElement {
   @property({ type: Boolean }) player_entity!: HassEntity;
   @property({ type: Boolean }) selected = false;
   @property({ type: Boolean }) joined = false;
-  public hass!: HomeAssistant;
+  public hass!: ExtendedHass;
   public playerName!: string;
   public selectedService!: PlayerSelectedService;
   public joinService!: PlayerJoinService;

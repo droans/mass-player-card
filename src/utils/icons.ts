@@ -1,17 +1,16 @@
-import { HomeAssistant } from "custom-card-helpers"
-import { DarkModeIcons, Icon, LightModeIcons } from "../const/common"
+import { DarkModeIcons, ExtendedHass, Icon, LightModeIcons } from "../const/common"
 
-export function backgroundImageFallback(hass: HomeAssistant, image_url: string, fallback: Icon) {
+export function backgroundImageFallback(hass: ExtendedHass, image_url: string, fallback: Icon) {
   const _fallback: string = getIcon(hass, fallback);
   return `background-image: url(${image_url}), url(${_fallback})`
 }
 
-export function getFallbackImage(hass: HomeAssistant, fallback: Icon) {
+export function getFallbackImage(hass: ExtendedHass, fallback: Icon) {
   const _fallback: string = getIcon(hass, fallback);
   return `background-image: url(${_fallback})`
 }
 
-export function getIcon(hass: HomeAssistant, icon: Icon): string {
+export function getIcon(hass: ExtendedHass, icon: Icon): string {
   if (!hass) {
     return LightModeIcons[icon];
   }

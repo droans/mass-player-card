@@ -92,6 +92,9 @@ export default css`
   .button-mute {
     margin-left: 1em;
   }
+  .button-favorite {
+    margin-left: 1em;
+  }
   ha-control-slider {
     --control-slider-thickness: 2.25em;
   }

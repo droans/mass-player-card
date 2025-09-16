@@ -1,4 +1,3 @@
-import { HomeAssistant } from "custom-card-helpers";
 import { 
   mdiAlbum, 
   mdiMusic, 
@@ -16,6 +15,7 @@ import { playerConfigForm } from "./player";
 import { DEFAULT_QUEUE_CONFIG, QueueConfig } from "../const/player-queue";
 import { DEFAULT_PLAYER_CONFIG, PlayerConfig } from "../const/music-player";
 import { DEFAULT_PLAYERS_CONFIG, PlayersConfig } from "../const/players";
+import { ExtendedHass } from "../const/common";
 
 export interface EntityConfig {
   entity_id: string;
@@ -39,7 +39,7 @@ export const DEFAULT_CONFIG = {
 }
 
 
-export function createStubConfig(hass: HomeAssistant, entities: string[]) {
+export function createStubConfig(hass: ExtendedHass, entities: string[]) {
   const media_players = entities.filter( 
     (ent) => {
       return ent.split(".")[0] == "media_player";

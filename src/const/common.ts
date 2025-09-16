@@ -1,3 +1,5 @@
+import { HomeAssistant } from "custom-card-helpers"
+
 export enum RepeatMode {
   OFF = 'off',
   ONCE = 'one',
@@ -23,6 +25,17 @@ export enum Icon {
   PERSON = "person",
   PLAYLIST = "play;ist",
   RADIO = "radio"
+}
+
+ interface EntityBase {
+  entity_id: string,
+  device_id: string
+}
+
+type EntitiesBase = Record<string, EntityBase>;
+
+export interface ExtendedHass extends HomeAssistant {
+  entities: EntitiesBase
 }
 
 export const DarkModeIcons: Record<string, string> = {

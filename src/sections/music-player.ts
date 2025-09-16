@@ -1,12 +1,13 @@
 import "@material/web/progress/linear-progress.js"
-import { CSSResultGroup, html, LitElement } from "lit";
+import { CSSResultGroup, html, LitElement, PropertyValues } from "lit";
 import { property, query, state } from "lit/decorators.js";
 import { HassEntity } from "home-assistant-js-websocket";
-import { HomeAssistant } from "custom-card-helpers";
 
 import PlayerActions from "../actions/player-actions";
 import styles from '../styles/music-player';
 import { 
+  mdiHeart,
+  mdiHeartPlusOutline,
   mdiPause, 
   mdiPlay, 
   mdiPower, 
@@ -21,11 +22,12 @@ import {
   mdiVolumeMute 
 } from "@mdi/js";
 import { backgroundImageFallback, getFallbackImage } from "../utils/icons";
-import { Icon } from '../const/common';
+import { ExtendedHass, Icon } from '../const/common';
 import { 
   DEFAULT_PLAYER_CONFIG, 
   PlayerConfig, 
-  PlayerData, SWIPE_MIN_X
+  PlayerData, 
+  SWIPE_MIN_X,
 } from "../const/music-player";
 import { RepeatMode } from "../const/common";
 import { testMixedContent } from "../utils/util";
@@ -41,7 +43,7 @@ class MusicPlayerCard extends LitElement {
   public mediaPlayerName!: string; 
   private _player!: HassEntity;
   private _listener: number|undefined;
-  private _hass!: HomeAssistant;
+  private _hass!: ExtendedHass;
   private actions!: PlayerActions;
   private entity_pos = 0;
   private entity_dur = 1;
@@ -61,7 +63,7 @@ class MusicPlayerCard extends LitElement {
     this._player = player;
     this.updatePlayerData();
   }
-  public set hass(hass: HomeAssistant) {
+  public set hass(hass: ExtendedHass) {
     if (hass) {
       this.actions = new PlayerActions(hass);
     }
@@ -74,6 +76,9 @@ class MusicPlayerCard extends LitElement {
     return this._hass;
   }
   private updatePlayerData() {
+    this._updatePlayerData().catch( () => {return});
+  }
+  private async _updatePlayerData() {
     if (!this._player) {
       return
     }
@@ -81,17 +86,20 @@ class MusicPlayerCard extends LitElement {
     if (!player_name.length) {
       player_name = this._player.attributes?.friendly_name ?? "Media Player";
     }
-    const new_player_data: PlayerData = {
+    const current_item = (await this.actions.actionGetCurrentItem(this._player))!;
+    
+    let new_player_data: PlayerData = {
       playing: this._player.state == 'playing',
-      repeat: this._player.attributes.repeat,
-      shuffle: this._player.attributes.shuffle,
-      track_album: this._player.attributes.media_album_name,
-      track_artist: this._player.attributes.media_artist,
-      track_artwork: this._player.attributes.entity_picture_local,
-      track_title: this._player.attributes.media_title,
+      repeat: this._player.attributes.repeat ?? false,
+      shuffle: this._player.attributes.shuffle ?? false,
+      track_album: current_item?.media_album_name ?? this._player.attributes.media_album_name,
+      track_artist: current_item?.media_artist ?? this._player.attributes.media_artist,
+      track_artwork: this._player.attributes.entity_picture_local ?? this._player.attributes.entity_picture ?? current_item?.media_image,
+      track_title: current_item?.media_title ?? this._player.attributes.media_title,
       muted: this.volumeMediaPlayer.attributes.is_volume_muted,
       volume: Math.floor(this.volumeMediaPlayer.attributes.volume_level * 100),
       player_name: player_name,
+      favorite: current_item?.favorite ?? false,
     }
     this.player_data = new_player_data;
     const old_pos = this.entity_pos;
@@ -135,6 +143,15 @@ class MusicPlayerCard extends LitElement {
     this.player_data.muted = !this.player_data.muted;
     await this.actions.actionMuteToggle(this.volumeMediaPlayer);
     
+  }
+  private onFavorite = async () => {
+    if (this.player_data.favorite) {
+      await this.actions.actionRemoveFavorite(this._player);
+      this.player_data.favorite = false;
+    } else {
+      await this.actions.actionAddFavorite(this._player);
+      this.player_data.favorite = true;
+    }
   }
   private async onShuffleToggle() {
     this.player_data.shuffle = !this.player_data.shuffle;
@@ -243,13 +260,13 @@ class MusicPlayerCard extends LitElement {
     `
   }
   protected renderTitle() {
-    if(!this.player_data.track_title) {
+    if(!this.player_data?.track_title) {
       return html``
     } 
     return this.wrapTitleMarquee();
   }
   protected renderArtist() {
-    if (!this.player_data.track_artist) {
+    if (!this.player_data?.track_artist) {
       return html``
     }
     return html`<div class="player-track-artist"> ${this.player_data.track_artist} </div>`; 
@@ -257,7 +274,7 @@ class MusicPlayerCard extends LitElement {
   protected renderHeader() {
     return html`
       <div class="header">
-        <div class="player-name"> ${this.player_data.player_name} </div>
+        <div class="player-name"> ${this.player_data?.player_name ?? this.mediaPlayerName} </div>
         ${this.renderTitle()}
         ${this.renderArtist()}
       </div>
@@ -284,8 +301,8 @@ class MusicPlayerCard extends LitElement {
     `
   }
   private artworkStyle() {
-    const img = this.player_data.track_artwork || "";
-    if (!this.player_data.track_artist || !testMixedContent(img)) { 
+    const img = this.player_data?.track_artwork || "";
+    if (!this.player_data?.track_artist || !testMixedContent(img)) { 
       return getFallbackImage(this.hass, Icon.CLEFT);
     }
       return backgroundImageFallback(this.hass, img, Icon.CLEFT);
@@ -421,6 +438,19 @@ class MusicPlayerCard extends LitElement {
           style="height: 3rem; width: 3rem;"
         ></ha-svg-icon>
       </ha-button>
+      
+      <ha-button
+        appearance="plain"
+        variant="brand"
+        size="medium"
+        class="button-favorite"
+        @click=${this.onFavorite}
+      >
+        <ha-svg-icon
+          .path=${this.player_data.favorite ? mdiHeart : mdiHeartPlusOutline}
+          style="height: 3rem; width: 3rem;"
+        ></ha-svg-icon>
+      </ha-button>
     `
   }
   /* eslint-enable @typescript-eslint/unbound-method */
@@ -439,6 +469,12 @@ class MusicPlayerCard extends LitElement {
       </div>
       <div class="volume">${this.renderVolume()}</div>
     `
+  }
+  protected shouldUpdate(_changedProperties: PropertyValues): boolean {
+    if (!this.player_data) {
+      return false
+    }
+    return super.shouldUpdate(_changedProperties);
   }
   protected render() {
     return html`

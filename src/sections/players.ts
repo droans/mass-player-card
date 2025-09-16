@@ -1,6 +1,5 @@
 import { CSSResultGroup, html, LitElement } from "lit";
 import { property } from "lit/decorators.js";
-import { HomeAssistant } from "custom-card-helpers";
 import { HassEntity } from "home-assistant-js-websocket";
 import { keyed } from "lit/directives/keyed.js";
 import '../components/player-row'
@@ -9,6 +8,7 @@ import PlayersActions from "../actions/players-actions";
 import { PlayerSelectedService } from "../const/actions";
 import { DEFAULT_PLAYERS_CONFIG } from "../const/players";
 import { Config, EntityConfig } from "../config/config";
+import { ExtendedHass } from "../const/common";
 
 class PlayersCard extends LitElement {
   @property({ attribute: false }) public activePlayerEntity!: EntityConfig;
@@ -16,7 +16,7 @@ class PlayersCard extends LitElement {
   public selectedPlayerService!: PlayerSelectedService;
   private _config!: Config;
   private actions!: PlayersActions;
-  private _hass!: HomeAssistant;
+  private _hass!: ExtendedHass;
   
   @property( {attribute: false } )
   public set config(config: Config) {
@@ -31,7 +31,7 @@ class PlayersCard extends LitElement {
   public get config() {
     return this._config;
   }
-  public set hass(hass: HomeAssistant) {
+  public set hass(hass: ExtendedHass) {
     if (!hass) {
       return;
     }
@@ -72,7 +72,7 @@ class PlayersCard extends LitElement {
     )!
     this.activePlayerEntity = player;
   }
-  private setEntities(hass: HomeAssistant) {
+  private setEntities(hass: ExtendedHass) {
     if (!this._config) {
       return;
     }
