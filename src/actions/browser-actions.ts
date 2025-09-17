@@ -1,4 +1,5 @@
 import { ExtendedHass, MediaTypes } from "../const/common";
+import { MediaLibraryItem } from "../const/media-browser";
 
 export default class BrowserActions {
     private hass: ExtendedHass;
@@ -24,7 +25,7 @@ export default class BrowserActions {
         { entity_id: player_entity_id }
       )
     }
-    async actionGetFavorites(player_entity_id: string, media_type: MediaTypes, limit = 25) {
+    async actionGetFavorites(player_entity_id: string, media_type: MediaTypes, limit = 25): Promise<MediaLibraryItem[]> {
       const config_id = await this.getPlayerConfigEntry(player_entity_id);
       /* eslint-disable-next-line @typescript-eslint/no-explicit-any, */
       const response = await this.hass.callWS<any>( 
