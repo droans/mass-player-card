@@ -77,7 +77,7 @@ class MusicPlayerCard extends LitElement {
     if (!player_name.length) {
       player_name = this._player.attributes?.friendly_name ?? "Media Player";
     }
-    const current_item = (await this.actions.actionGetCurrentItem(this._player))!;
+    const current_item = (await this.actions.actionGetCurrentItem(this._player));
     
     const new_player_data: PlayerData = {
       playing: this._player.state == 'playing',
