@@ -22,7 +22,6 @@ import {
   customSection, 
   FavoriteItemConfig, 
   MediaBrowserConfig, 
-  processMediaBrowserConfig 
 } from "../config/media-browser";
 
 export class MediaBrowser extends LitElement {
@@ -38,7 +37,7 @@ export class MediaBrowser extends LitElement {
     if (!config) {
       return;
     }
-    this._config = processMediaBrowserConfig(config);
+    this._config = config;
     this.setupIfReady();
   }
   public get config() {
