@@ -88,7 +88,7 @@ class MusicPlayerCard extends LitElement {
     }
     const current_item = (await this.actions.actionGetCurrentItem(this._player))!;
     
-    let new_player_data: PlayerData = {
+    const new_player_data: PlayerData = {
       playing: this._player.state == 'playing',
       repeat: this._player.attributes.repeat ?? false,
       shuffle: this._player.attributes.shuffle ?? false,
