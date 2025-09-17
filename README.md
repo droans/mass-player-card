@@ -80,11 +80,12 @@ expanded: false
 ## Entity Config
 For each entity, you can either provide the Entity ID by itself or you can provide the Music Assistant media player Entity ID, the media player Entity ID for volume control, and/or the name of the player. Below is the config if you would like to provide the additional details.
 
-| Parameter        | Type | Required | Default     | Description                         |
-|------------------|------|----------|-------------|-------------------------------------|
-| entity_id        | str  | Yes      | N/A         | The Music Assistant entity          |
-| volume_entity_id | str  | No       | `entity_id` | The media player for volume control |
-| name             | str  | No       | N/A         | The name of the media player        |
+| Parameter        | Type | Required | Default     | Description                              |
+|------------------|------|----------|-------------|------------------------------------------|
+| entity_id        | str  | Yes      | N/A         | The Music Assistant entity               |
+| volume_entity_id | str  | No       | `entity_id` | The media player for volume control      |
+| name             | str  | No       | N/A         | The name of the media player             |
+| max_volume       | int  | No       | N/A         | Max volume for the volume slider (0-100) |
 
 ## Player Config
 | Parameter | Type | Required | Default | Description                     |
