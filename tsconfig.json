@@ -5,7 +5,6 @@
     "moduleResolution": "node",
     "lib": ["es2021", "dom", "dom.iterable"],
     "noEmit": true,
-    "noUnusedLocals": true,
     "noUnusedParameters": true,
     "noImplicitReturns": true,
     "noFallthroughCasesInSwitch": true,
