@@ -225,6 +225,7 @@ export class MusicAssistantPlayerCard extends LitElement {
             .config=${this.config.player}
             .volumeMediaPlayer=${this.hass.states[this.active_player_entity.volume_entity_id]}
             .mediaPlayerName=${this.active_player_entity.name}
+            .maxVolume=${this.active_player_entity.max_volume}
             .activeMediaPlayer=${this.hass.states[this.active_player_entity.entity_id]}
             .hass=${this.hass}
           ></mass-music-player-card>

@@ -41,6 +41,7 @@ class MusicPlayerCard extends LitElement {
   @query('.player-track-title') _track_title;
   public volumeMediaPlayer!: HassEntity;
   public mediaPlayerName!: string; 
+  public maxVolume!: number;
   private _player!: HassEntity;
   private _listener: number|undefined;
   private _hass!: ExtendedHass;
@@ -424,6 +425,8 @@ class MusicPlayerCard extends LitElement {
         .disabled=${this.player_data.muted}
         .unit="%"
         .value=${this.player_data.volume}
+        .min=0
+        .max=${this.maxVolume}
         @value-changed=${this.onVolumeChange}
       ></ha-control-slider>
       <ha-button
