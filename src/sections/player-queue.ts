@@ -105,7 +105,7 @@ class QueueCard extends LitElement {
     }
     this.getQueue(true);
     if (!this._listening) {
-      this.subscribeUpdates();
+      void this.subscribeUpdates();
   }
   }
   private eventListener = (event: MassQueueEvent) => {

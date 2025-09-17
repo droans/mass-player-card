@@ -72,6 +72,7 @@ export class MusicAssistantPlayerCard extends LitElement {
   @state() private error?: TemplateResult;
   @state() private active_player_entity!: EntityConfig;
   @state() private active_section: Sections = DEFAULT_CARD;
+  @state() private entities!: HassEntity[];
   private _hass!: ExtendedHass;
 
   constructor() {
@@ -106,6 +107,7 @@ export class MusicAssistantPlayerCard extends LitElement {
     )
     if (should_update) {
       this._hass = hass;
+      this.entities = new_ents;
     }
   }
   public get hass() {
