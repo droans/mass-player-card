@@ -382,6 +382,9 @@ export class MusicAssistantPlayerCard extends LitElement {
     `
   }
   protected render() {
+    if (this.error) {
+      return this.error;
+    }
     return html`
       <ha-card>
       ${this.renderSections()}
