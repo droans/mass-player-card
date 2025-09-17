@@ -46,4 +46,7 @@ sl-tab-panel {
   height: var(--mass-player-card-height);
   display: block;
 }
+.section-hidden {
+  display: none;
+}
 `
