@@ -116,8 +116,8 @@ class QueueCard extends LitElement {
         this.getQueue(true);
     }}
   }
-  private subscribeUpdates() {
-    this._unsubscribe = this.hass.connection.subscribeEvents(
+  private async subscribeUpdates() {
+    this._unsubscribe = await this.hass.connection.subscribeEvents(
       this.eventListener, 
       "mass_queue"
     );
