@@ -155,6 +155,7 @@ export default class PlayerActions {
         },
         return_response: true
       });
+      /* eslint-disable-next-line @typescript-eslint/no-unsafe-call */
       const result: QueueItem = ret.response[entity.entity_id].find(
         (item: QueueItem) => {
           return item.media_content_id == entity.attributes.media_content_id;
