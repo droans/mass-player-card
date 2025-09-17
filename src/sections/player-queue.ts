@@ -242,10 +242,7 @@ class QueueCard extends LitElement {
     );
   }
   protected render() {
-    if (this.error) {
-      return this.error;
-    }
-    return html`
+    return this.error ?? html`
       <ha-card>
         <ha-md-list class="list">
           ${this.renderQueueItems()}
