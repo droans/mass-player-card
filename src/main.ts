@@ -23,9 +23,8 @@ import {
   Config,
   createConfigForm, 
   createStubConfig, 
-  DEFAULT_CONFIG,
   EntityConfig,
-  processEntitiesConfig
+  processConfig,
 } from './config/config';
 import { ExtendedHass } from './const/common';
 
@@ -127,12 +126,7 @@ export class MusicAssistantPlayerCard extends LitElement {
     if (!config.entities) {
       throw this.createError('You need to define entities.');
     };
-    const ent_config = processEntitiesConfig(config.entities);
-    this.config = {
-      ...DEFAULT_CONFIG,
-      ...config,
-      entities: ent_config
-    }
+    this.config = processConfig(config);
     if (!this.active_player_entity) {
       this.setDefaultActivePlayer();
     }

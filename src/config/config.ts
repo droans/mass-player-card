@@ -8,7 +8,8 @@ import { queueConfigForm } from "./player-queue";
 import { 
   DEFAULT_MEDIA_BROWSER_CONFIG, 
   MediaBrowserConfig, 
-  mediaBrowserConfigForm 
+  mediaBrowserConfigForm, 
+  processMediaBrowserConfig
 } from "./media-browser";
 import { playersConfigForm } from "./players";
 import { playerConfigForm } from "./player";
@@ -116,12 +117,30 @@ function processEntityConfig(config: string|EntityConfig): EntityConfig {
   }
 }
 
-export function processEntitiesConfig(config: string[]|EntityConfig[]): EntityConfig[] {
+function mergeDefaultConfig(config: Config): Config {
+  return {
+    ...DEFAULT_CONFIG,
+    ...config
+  }
+}
+
+function processEntitiesConfig(config: Config): Config {
+  const entity_config = config.entities;
   const result: EntityConfig[] = [];
-  config.forEach(
+  entity_config.forEach(
     (entity: string|EntityConfig) => {
-        result.push(processEntityConfig(entity))
+      result.push(processEntityConfig(entity))
     }
   )
-  return result;
+  return {
+    ...config,
+    entities: result
+  }
+}
+
+export function processConfig(config: Config): Config {
+  config = mergeDefaultConfig(config);
+  config = processEntitiesConfig(config);
+  config = processMediaBrowserConfig(config);
+  return config;
 }

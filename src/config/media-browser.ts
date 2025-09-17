@@ -1,4 +1,5 @@
 import { mdiHeart } from "@mdi/js";
+import { Config } from "./config";
 export interface MediaBrowserConfig {
   enabled: boolean,
   favorites: FavoritesConfig;
@@ -100,38 +101,57 @@ function processFavoriteItemConfig(config: FavoriteItemConfig) {
   };
 }
 
-function processFavorites(config: FavoritesConfig) {
-  config = {
+function processFavorites(config: MediaBrowserConfig): MediaBrowserConfig {
+  let favorites_config = config.favorites;
+  favorites_config = {
     ...DEFAULT_FAVORITES_CONFIG,
-    ...config
+    ...favorites_config
   };
-  const result: FavoritesConfig = {
-    enabled: config?.enabled ?? true,
-    albums: processFavoriteItemConfig(config.albums),
-    artists: processFavoriteItemConfig(config.artists),
-    audiobooks: processFavoriteItemConfig(config.audiobooks),
-    playlists: processFavoriteItemConfig(config.playlists),
-    podcasts: processFavoriteItemConfig(config.podcasts),
-    radios: processFavoriteItemConfig(config.radios),
-    tracks: processFavoriteItemConfig(config.tracks)
+  favorites_config = {
+    ...favorites_config,
+    albums: processFavoriteItemConfig(favorites_config.albums),
+    artists: processFavoriteItemConfig(favorites_config.artists),
+    audiobooks: processFavoriteItemConfig(favorites_config.audiobooks),
+    playlists: processFavoriteItemConfig(favorites_config.playlists),
+    podcasts: processFavoriteItemConfig(favorites_config.podcasts),
+    radios: processFavoriteItemConfig(favorites_config.radios),
+    tracks: processFavoriteItemConfig(favorites_config.tracks)
   }
-  return result;
+  return {
+    ...config,
+    favorites: favorites_config
+  }
 }
-function processSections(config: customSection[]) {
+function _processSections(config: customSection[]) {
   return [
     ...DEFAULT_CUSTOM_SECTION_CONFIG,
     ...config
   ];
 }
-export function processMediaBrowserConfig(config: MediaBrowserConfig) {
-  config = {
+function processSections(config: MediaBrowserConfig): MediaBrowserConfig {
+  let section_config = config.sections;
+  section_config = [
+    ...DEFAULT_CUSTOM_SECTION_CONFIG,
+    ...section_config
+  ]
+  return {
+    ...config,
+    sections: section_config
+  }
+}
+function processDefaults(config: MediaBrowserConfig) {
+  return {
     ...DEFAULT_MEDIA_BROWSER_CONFIG,
     ...config
   }
-  const result: MediaBrowserConfig = {
-    enabled: config?.enabled ?? true,
-    favorites: processFavorites(config.favorites),
-    sections: processSections(config.sections)
+}
+export function processMediaBrowserConfig(config: Config): Config {
+  let browser_config = config.media_browser;
+  browser_config = processDefaults(browser_config);
+  browser_config = processFavorites(browser_config);
+  browser_config = processSections(browser_config);
+  return {
+    ...config,
+    media_browser: browser_config
   }
-  return result;
 }
