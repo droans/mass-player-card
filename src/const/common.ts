@@ -1,4 +1,5 @@
 import { HomeAssistant } from "custom-card-helpers"
+import { HassEntity, HassEntityAttributeBase } from "home-assistant-js-websocket";
 
 export enum RepeatMode {
   OFF = 'off',
@@ -27,15 +28,40 @@ export enum Icon {
   RADIO = "radio"
 }
 
+interface ExtendedHassEntityAttributes extends HassEntityAttributeBase {
+  app_id: string,
+  active_queue: string,
+  entity_picture_local: string,
+  group_members: string[],
+  is_volume_muted: boolean,
+  mass_player_type: string,
+  media_album_name: string,
+  media_artist: string,
+  media_title: string,
+  media_content_id: string,
+  media_content_type: string,
+  media_duration: number,
+  media_position: number,
+  repeat: RepeatMode,
+  shuffle: boolean,
+  volume_level: number,
+  // [key:string]: any
+}
+
+export interface ExtendedHassEntity extends HassEntity {
+  attributes: ExtendedHassEntityAttributes,
+}
+
 interface ExtendedEntityBase {
   entity_id: string,
   device_id: string
 }
 
 type ExtendedEntitiesBase = Record<string, ExtendedEntityBase>;
-
+type ExtendedHassEntities = Record<string, ExtendedHassEntity>;
 export interface ExtendedHass extends HomeAssistant {
   entities: ExtendedEntitiesBase
+  states: ExtendedHassEntities
 }
 
 export const DarkModeIcons: Record<string, string> = {

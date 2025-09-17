@@ -1,10 +1,9 @@
 import { html, type CSSResultGroup, LitElement, PropertyValues } from 'lit';
 import { property } from 'lit/decorators.js'
 import styles from '../styles/player-row';
-import { HassEntity } from 'home-assistant-js-websocket';
 import { mdiLink, mdiLinkOff, mdiSwapHorizontal } from '@mdi/js';
 import { backgroundImageFallback, getFallbackImage } from '../utils/icons';
-import { ExtendedHass, Icon } from '../const/common';
+import { ExtendedHass, ExtendedHassEntity, Icon } from '../const/common';
 import { 
   PlayerJoinService, 
   PlayerSelectedService, 
@@ -14,7 +13,7 @@ import {
 import { testMixedContent } from '../utils/util';
 
 class PlayerRow extends LitElement {
-  @property({ type: Boolean }) player_entity!: HassEntity;
+  @property({ type: Boolean }) player_entity!: ExtendedHassEntity;
   @property({ type: Boolean }) selected = false;
   @property({ type: Boolean }) joined = false;
   public hass!: ExtendedHass;
