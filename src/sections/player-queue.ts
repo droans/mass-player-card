@@ -123,6 +123,14 @@ class QueueCard extends LitElement {
     );
     this._listening = true;
   }
+  public connectedCallback(): void {
+    this.subscribeUpdates();
+  }
+  public disconnectedCallback(): void {
+    super.disconnectedCallback();
+    /* eslint-disable-next-line @typescript-eslint/no-unsafe-call */
+    this._unsubscribe();
+  }
   private getQueueItemIndex(queue_item_id: string, queue: QueueItem[] = []): number {
     if (!queue.length) {
       queue = this.queue;
