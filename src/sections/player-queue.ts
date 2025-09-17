@@ -123,9 +123,6 @@ class QueueCard extends LitElement {
     );
     this._listening = true;
   }
-  public connectedCallback(): void {
-    this.subscribeUpdates();
-  }
   public disconnectedCallback(): void {
     super.disconnectedCallback();
     /* eslint-disable-next-line @typescript-eslint/no-unsafe-call */
