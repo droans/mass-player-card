@@ -5,7 +5,12 @@ import { property, state } from 'lit/decorators.js';
 import QueueActions from '../actions/queue-actions';
 import styles from '../styles/player-queue';
 import '../components/media-row'
-import { DEFAULT_QUEUE_CONFIG, QueueConfig, QueueItem } from '../const/player-queue';
+import { 
+  DEFAULT_QUEUE_CONFIG,
+  MassQueueEvent,
+  QueueConfig,
+  QueueItem,
+} from '../const/player-queue';
 import { QueueConfigErrors } from '../config/player-queue';
 import { ExtendedHass } from '../const/common';
 
@@ -102,8 +107,7 @@ class QueueCard extends LitElement {
       this.subscribeUpdates();
   }
   }
-    /* eslint-disable-next-line @typescript-eslint/no-explicit-any */
-  private eventListener = (event: any) => {
+  private eventListener = (event: MassQueueEvent) => {
     const event_data = event.data;
     if (event_data.type == 'queue_updated') {
       const updated_queue_id = event_data.data.queue_id;

@@ -32,3 +32,12 @@ export interface QueueSection {
   config: QueueConfig;
   hass: ExtendedHass;
 }
+
+export interface MassQueueEvent {
+  data: {
+    type: string,
+    data: {
+      queue_id: string
+    }
+  }
+}
