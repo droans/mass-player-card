@@ -1,5 +1,9 @@
 import { HassEntity } from "home-assistant-js-websocket";
-import { ExtendedHass, RepeatMode } from "../const/common";
+import { 
+  ExtendedHass, 
+  ExtendedHassEntity, 
+  RepeatMode 
+} from "../const/common";
 import { QueueItem } from "../const/player-queue";
 
 export default class PlayerActions {
@@ -133,7 +137,7 @@ export default class PlayerActions {
       console.error(`Error calling repeat`, e)
     }
   }
-  async actionGetCurrentItem(entity: HassEntity): Promise<QueueItem|null> {
+  async actionGetCurrentItem(entity: ExtendedHassEntity): Promise<QueueItem|null> {
     try {
       /* eslint-disable 
         @typescript-eslint/no-explicit-any,
@@ -151,7 +155,11 @@ export default class PlayerActions {
         },
         return_response: true
       });
-      const result: QueueItem = ret.response[entity.entity_id][1];
+      const result: QueueItem = ret.response[entity.entity_id].find(
+        (item: QueueItem) => {
+          return item.media_content_id == entity.attributes.media_content_id;
+        }
+      )
       return result;
       /* eslint-enable */
     } catch (e) {
