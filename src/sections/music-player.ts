@@ -34,7 +34,7 @@ class MusicPlayerCard extends LitElement {
   @property({ attribute: false}) private media_position = 0;
   @property({ attribute: false}) private media_duration = 1;
   @state() private shouldMarqueeTitle = false;
-  @query('.player-track-title') _track_title;
+  @query('.player-track-title') _track_title!: LitElement;
   public volumeMediaPlayer!: ExtendedHassEntity;
   public mediaPlayerName!: string; 
   public maxVolume!: number;

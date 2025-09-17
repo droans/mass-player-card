@@ -13,6 +13,7 @@ import {
 } from '../const/player-queue';
 import { QueueConfigErrors } from '../config/player-queue';
 import { ExtendedHass } from '../const/common';
+import { LovelaceCard } from 'custom-card-helpers';
 
 class QueueCard extends LitElement {
   @state() private lastUpdated = '';
@@ -250,7 +251,7 @@ class QueueCard extends LitElement {
   }
   private createError(errorString: string): Error {
     const error = new Error(errorString);
-    const errorCard = document.createElement('hui-error-card') as any;
+    const errorCard = document.createElement('hui-error-card') as LovelaceCard;
     errorCard.setConfig({
       type: 'error',
       error,

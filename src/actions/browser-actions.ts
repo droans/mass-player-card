@@ -51,7 +51,7 @@ export default class BrowserActions {
       */
       return response.response.items;
     }
-    private async getPlayerConfigEntry(entity_id: string) {
+    private async getPlayerConfigEntry(entity_id: string): Promise<string> {
       /* eslint-disable
         @typescript-eslint/no-explicit-any, 
         @typescript-eslint/no-unsafe-assignment, 
