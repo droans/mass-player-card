@@ -122,12 +122,6 @@ function processFavorites(config: MediaBrowserConfig): MediaBrowserConfig {
     favorites: favorites_config
   }
 }
-function _processSections(config: customSection[]) {
-  return [
-    ...DEFAULT_CUSTOM_SECTION_CONFIG,
-    ...config
-  ];
-}
 function processSections(config: MediaBrowserConfig): MediaBrowserConfig {
   let section_config = config.sections;
   section_config = [
