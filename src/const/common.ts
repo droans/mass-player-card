@@ -27,15 +27,15 @@ export enum Icon {
   RADIO = "radio"
 }
 
- interface EntityBase {
+interface ExtendedEntityBase {
   entity_id: string,
   device_id: string
 }
 
-type EntitiesBase = Record<string, EntityBase>;
+type ExtendedEntitiesBase = Record<string, ExtendedEntityBase>;
 
 export interface ExtendedHass extends HomeAssistant {
-  entities: EntitiesBase
+  entities: ExtendedEntitiesBase
 }
 
 export const DarkModeIcons: Record<string, string> = {
