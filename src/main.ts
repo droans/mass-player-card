@@ -67,8 +67,6 @@ export class MusicAssistantPlayerCard extends LitElement {
   @state() private error?: TemplateResult;
   @state() private active_player_entity!: EntityConfig;
   @state() private active_section: Sections = DEFAULT_CARD;
-  @state() private first_hass_update = false;
-  @state() private entities!: HassEntity[];
   private _hass!: ExtendedHass;
 
   constructor() {
@@ -89,7 +87,6 @@ export class MusicAssistantPlayerCard extends LitElement {
     if (!this._hass) {
       this._hass = hass;
       this.setDefaultActivePlayer();
-      this.first_hass_update = true;
     }
     const new_ents: HassEntity[] = [];
     ents.forEach(
@@ -104,8 +101,6 @@ export class MusicAssistantPlayerCard extends LitElement {
     )
     if (should_update) {
       this._hass = hass;
-      this.entities = new_ents;
-      this.first_hass_update = true;
     }
   }
   public get hass() {

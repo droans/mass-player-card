@@ -23,8 +23,6 @@ import {
 import { backgroundImageFallback, getFallbackImage } from "../utils/icons";
 import { ExtendedHass, ExtendedHassEntity, Icon } from '../const/common';
 import { 
-  DEFAULT_PLAYER_CONFIG, 
-  PlayerConfig, 
   PlayerData, 
   SWIPE_MIN_X,
 } from "../const/music-player";
@@ -33,7 +31,6 @@ import { testMixedContent } from "../utils/util";
 
 class MusicPlayerCard extends LitElement {
   @property({ attribute: false }) private player_data!: PlayerData;
-  @property({ attribute: false }) private _config!: PlayerConfig;
   @property({ attribute: false}) private media_position = 0;
   @property({ attribute: false}) private media_duration = 1;
   @state() private shouldMarqueeTitle = false;
@@ -53,12 +50,6 @@ class MusicPlayerCard extends LitElement {
   private touchStartY = 0;
   private touchEndY = 0;
   
-  public set config(config: PlayerConfig) {
-    this._config = {
-      ...DEFAULT_PLAYER_CONFIG,
-      ...config
-    };
-  }
   public set activeMediaPlayer(player: ExtendedHassEntity) {
     this._player = player;
     this.updatePlayerData();
