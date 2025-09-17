@@ -137,7 +137,7 @@ class QueueCard extends LitElement {
       !this.actions 
       || this.actions.player_entity !== this._active_player_entity
     ) {
-      this.actions = new QueueActions(this.hass, this._config, this._active_player_entity)
+      this.actions = new QueueActions(this.hass, this._active_player_entity)
     }
     if (this.testConfig(this._config) !== QueueConfigErrors.OK || this.hasFailed) {
       return;
