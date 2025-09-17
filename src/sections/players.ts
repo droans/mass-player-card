@@ -67,6 +67,7 @@ class PlayersCard extends LitElement {
   }
   private transferQueue = async (target_player: string) => {
     await this.actions.actionTransferQueue(this.activePlayerEntity.entity_id, target_player);
+    // eslint-disable-next-line @typescript-eslint/no-non-null-assertion
     const player = this.config.entities.find(
       (entity) => entity.entity_id == target_player
     )!
@@ -89,6 +90,7 @@ class PlayersCard extends LitElement {
     const group_members: string[] = attrs?.group_members ?? [];
     return this.entities.map(
       (item) => {
+        // eslint-disable-next-line @typescript-eslint/no-non-null-assertion
         const player = this.config.entities.find(
           (entity) => entity.entity_id == item.entity_id
         )!

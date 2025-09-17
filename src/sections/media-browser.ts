@@ -99,6 +99,7 @@ export class MediaBrowser extends LitElement {
       this.requestUpdate();
     }
   }
+  /* eslint-disable @typescript-eslint/no-unsafe-assignment */
   private onFavoriteItemSelected = (data: MediaCardData) => {
     const content_id: string = data.uri;
     const content_type: string = data.media_type;
@@ -123,9 +124,12 @@ export class MediaBrowser extends LitElement {
       favorites: this.onFavoriteItemSelected,
       service: this.onServiceSelect,
     }
+  /* eslint-disable-next-line @typescript-eslint/no-unsafe-member-access */
     const func = funcs[data.type];
+  /* eslint-disable-next-line @typescript-eslint/no-unsafe-call */
     func(data);
   }
+  /* eslint-enable @typescript-eslint/no-unsafe-assignment */
   private _generateSectionBackgroundPart(icon: string, fallback: Icon = Icon.DISC) {
     const image = backgroundImageFallback(this.hass, icon, fallback)
     return html`

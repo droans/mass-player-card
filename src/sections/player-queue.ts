@@ -250,9 +250,6 @@ class QueueCard extends LitElement {
   }
   private createError(errorString: string): Error {
     const error = new Error(errorString);
-    /* eslint-disable-next-line
-      @typescript-eslint/no-explicit-any,
-    */
     const errorCard = document.createElement('hui-error-card') as any;
     errorCard.setConfig({
       type: 'error',

@@ -50,7 +50,12 @@ console.info(
   'color: teal; font-weight: bold; background: lightgray',
   'color: darkblue; font-weight: bold; background: white',
 );
-/* eslint-disable @typescript-eslint/no-explicit-any */
+/* eslint-disable 
+  @typescript-eslint/no-explicit-any, 
+  @typescript-eslint/no-unsafe-assignment, 
+  @typescript-eslint/no-unsafe-member-access,
+  @typescript-eslint/no-unsafe-call 
+*/
 (window as any).customCards = (window as any).customCards || [];
 (window as any).customCards.push({
   /* eslint-enable */
@@ -160,6 +165,7 @@ export class MusicAssistantPlayerCard extends LitElement {
       return true;
     }
     if (_changedProperties.has('hass')) {
+      // eslint-disable-next-line @typescript-eslint/no-non-null-assertion
       const oldHass = _changedProperties.get('hass')! as ExtendedHass;
       if (!oldHass) {
         return true;
@@ -185,6 +191,7 @@ export class MusicAssistantPlayerCard extends LitElement {
     this.active_section = Sections.MUSIC_PLAYER;
   }
   private _handleTabChanged(ev: CustomEvent) {
+    // eslint-disable-next-line @typescript-eslint/no-unsafe-assignment, @typescript-eslint/no-unsafe-member-access
     const newTab: Sections = ev.detail.name;
     this.active_section = newTab;
   }
@@ -394,8 +401,13 @@ export class MusicAssistantPlayerCard extends LitElement {
     const error = new Error(errorString);
     /* eslint-disable-next-line
       @typescript-eslint/no-explicit-any,
+      @typescript-eslint/no-unsafe-assignment
     */
     const errorCard = document.createElement('hui-error-card') as any;
+    /* eslint-disable-next-line
+      @typescript-eslint/no-unsafe-call,
+      @typescript-eslint/no-unsafe-member-access
+    */
     errorCard.setConfig({
       type: 'error',
       error,

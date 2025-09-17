@@ -110,6 +110,7 @@ class MusicPlayerCard extends LitElement {
     this.tickProgress();
   }
   private async onVolumeChange(ev: CustomEvent) {
+    // eslint-disable-next-line @typescript-eslint/no-unsafe-assignment, @typescript-eslint/no-unsafe-member-access
     let volume: number = ev.detail.value;
     if (isNaN(volume)) return;
     this.player_data.volume = volume;
