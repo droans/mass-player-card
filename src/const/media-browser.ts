@@ -30,6 +30,12 @@ export interface MediaBrowserItemsConfig {
   main: MediaCardItem[],
   [str: string]: MediaCardItem[]
 }
+export interface MediaLibraryItem {
+  name: string,
+  image: string,
+  uri: string,
+  media_type: string
+}
 
 export const MediaTypeIcons = {
   'album': Icon.DISC,

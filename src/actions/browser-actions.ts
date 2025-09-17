@@ -1,4 +1,5 @@
 import { ExtendedHass, MediaTypes } from "../const/common";
+import { MediaLibraryItem } from "../const/media-browser";
 
 export default class BrowserActions {
     private hass: ExtendedHass;
@@ -24,9 +25,12 @@ export default class BrowserActions {
         { entity_id: player_entity_id }
       )
     }
-    async actionGetFavorites(player_entity_id: string, media_type: MediaTypes, limit = 25) {
+    async actionGetFavorites(player_entity_id: string, media_type: MediaTypes, limit = 25): Promise<MediaLibraryItem[]> {
       const config_id = await this.getPlayerConfigEntry(player_entity_id);
-      /* eslint-disable-next-line @typescript-eslint/no-explicit-any, */
+      /* eslint-disable-next-line 
+        @typescript-eslint/no-explicit-any, 
+        @typescript-eslint/no-unsafe-assignment, 
+      */
       const response = await this.hass.callWS<any>( 
         {
             type: 'call_service', 
@@ -41,19 +45,26 @@ export default class BrowserActions {
             return_response: true
         }
       )
-      /* eslint-disable-next-line @typescript-eslint/no-unsafe-return, */
+      /* eslint-disable-next-line 
+        @typescript-eslint/no-unsafe-return, 
+        @typescript-eslint/no-unsafe-member-access
+      */
       return response.response.items;
     }
-    private async getPlayerConfigEntry(entity_id: string) {
-      /* eslint-disable-next-line @typescript-eslint/no-explicit-any, */
+    private async getPlayerConfigEntry(entity_id: string): Promise<string> {
+      /* eslint-disable
+        @typescript-eslint/no-explicit-any, 
+        @typescript-eslint/no-unsafe-assignment, 
+        @typescript-eslint/no-unsafe-member-access 
+      */
       const entry = await this.hass.callWS<any>(
         {
           type: 'config/entity_registry/get',
           entity_id: entity_id
         }
       );
-      /* eslint-disable-next-line @typescript-eslint/no-explicit-any, */
       const result: any = entry.config_entry_id;
+      /* eslint-enable */
       /* eslint-disable-next-line @typescript-eslint/no-unsafe-return, */
       return result;
     }

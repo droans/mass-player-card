@@ -1,7 +1,6 @@
 import "@material/web/progress/linear-progress.js"
 import { CSSResultGroup, html, LitElement, PropertyValues } from "lit";
 import { property, query, state } from "lit/decorators.js";
-import { HassEntity } from "home-assistant-js-websocket";
 
 import PlayerActions from "../actions/player-actions";
 import styles from '../styles/music-player';
@@ -22,10 +21,8 @@ import {
   mdiVolumeMute 
 } from "@mdi/js";
 import { backgroundImageFallback, getFallbackImage } from "../utils/icons";
-import { ExtendedHass, Icon } from '../const/common';
+import { ExtendedHass, ExtendedHassEntity, Icon } from '../const/common';
 import { 
-  DEFAULT_PLAYER_CONFIG, 
-  PlayerConfig, 
   PlayerData, 
   SWIPE_MIN_X,
 } from "../const/music-player";
@@ -34,15 +31,14 @@ import { testMixedContent } from "../utils/util";
 
 class MusicPlayerCard extends LitElement {
   @property({ attribute: false }) private player_data!: PlayerData;
-  @property({ attribute: false }) private _config!: PlayerConfig;
   @property({ attribute: false}) private media_position = 0;
   @property({ attribute: false}) private media_duration = 1;
   @state() private shouldMarqueeTitle = false;
-  @query('.player-track-title') _track_title;
-  public volumeMediaPlayer!: HassEntity;
+  @query('.player-track-title') _track_title!: LitElement;
+  public volumeMediaPlayer!: ExtendedHassEntity;
   public mediaPlayerName!: string; 
   public maxVolume!: number;
-  private _player!: HassEntity;
+  private _player!: ExtendedHassEntity;
   private _listener: number|undefined;
   private _hass!: ExtendedHass;
   private actions!: PlayerActions;
@@ -54,13 +50,7 @@ class MusicPlayerCard extends LitElement {
   private touchStartY = 0;
   private touchEndY = 0;
   
-  public set config(config: PlayerConfig) {
-    this._config = {
-      ...DEFAULT_PLAYER_CONFIG,
-      ...config
-    };
-  }
-  public set activeMediaPlayer(player: HassEntity) {
+  public set activeMediaPlayer(player: ExtendedHassEntity) {
     this._player = player;
     this.updatePlayerData();
   }
@@ -87,7 +77,7 @@ class MusicPlayerCard extends LitElement {
     if (!player_name.length) {
       player_name = this._player.attributes?.friendly_name ?? "Media Player";
     }
-    const current_item = (await this.actions.actionGetCurrentItem(this._player))!;
+    const current_item = (await this.actions.actionGetCurrentItem(this._player));
     
     const new_player_data: PlayerData = {
       playing: this._player.state == 'playing',
@@ -120,6 +110,7 @@ class MusicPlayerCard extends LitElement {
     this.tickProgress();
   }
   private async onVolumeChange(ev: CustomEvent) {
+    // eslint-disable-next-line @typescript-eslint/no-unsafe-assignment, @typescript-eslint/no-unsafe-member-access
     let volume: number = ev.detail.value;
     if (isNaN(volume)) return;
     this.player_data.volume = volume;

@@ -136,7 +136,9 @@ export default class PlayerActions {
   async actionGetCurrentItem(entity: HassEntity): Promise<QueueItem|null> {
     try {
       /* eslint-disable 
-        @typescript-eslint/no-explicit-any
+        @typescript-eslint/no-explicit-any,
+        @typescript-eslint/no-unsafe-assignment,
+        @typescript-eslint/no-unsafe-member-access
       */
       const ret = await this.hass.callWS<any>({
         type: 'call_service',

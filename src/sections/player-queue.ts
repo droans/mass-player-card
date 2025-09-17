@@ -5,9 +5,15 @@ import { property, state } from 'lit/decorators.js';
 import QueueActions from '../actions/queue-actions';
 import styles from '../styles/player-queue';
 import '../components/media-row'
-import { DEFAULT_QUEUE_CONFIG, QueueConfig, QueueItem } from '../const/player-queue';
+import { 
+  DEFAULT_QUEUE_CONFIG,
+  MassQueueEvent,
+  QueueConfig,
+  QueueItem,
+} from '../const/player-queue';
 import { QueueConfigErrors } from '../config/player-queue';
 import { ExtendedHass } from '../const/common';
+import { LovelaceCard } from 'custom-card-helpers';
 
 class QueueCard extends LitElement {
   @state() private lastUpdated = '';
@@ -102,8 +108,7 @@ class QueueCard extends LitElement {
       this.subscribeUpdates();
   }
   }
-    /* eslint-disable-next-line @typescript-eslint/no-explicit-any */
-  private eventListener = (event: any) => {
+  private eventListener = (event: MassQueueEvent) => {
     const event_data = event.data;
     if (event_data.type == 'queue_updated') {
       const updated_queue_id = event_data.data.queue_id;
@@ -111,12 +116,17 @@ class QueueCard extends LitElement {
         this.getQueue(true);
     }}
   }
-  private subscribeUpdates() {
-    this._unsubscribe = this.hass.connection.subscribeEvents(
+  private async subscribeUpdates() {
+    this._unsubscribe = await this.hass.connection.subscribeEvents(
       this.eventListener, 
       "mass_queue"
     );
     this._listening = true;
+  }
+  public disconnectedCallback(): void {
+    super.disconnectedCallback();
+    /* eslint-disable-next-line @typescript-eslint/no-unsafe-call */
+    this._unsubscribe();
   }
   private getQueueItemIndex(queue_item_id: string, queue: QueueItem[] = []): number {
     if (!queue.length) {
@@ -133,7 +143,7 @@ class QueueCard extends LitElement {
       !this.actions 
       || this.actions.player_entity !== this._active_player_entity
     ) {
-      this.actions = new QueueActions(this.hass, this._config, this._active_player_entity)
+      this.actions = new QueueActions(this.hass, this._active_player_entity)
     }
     if (this.testConfig(this._config) !== QueueConfigErrors.OK || this.hasFailed) {
       return;
@@ -232,7 +242,7 @@ class QueueCard extends LitElement {
     );
   }
   protected render() {
-    return html`
+    return this.error ?? html`
       <ha-card>
         <ha-md-list class="list">
           ${this.renderQueueItems()}
@@ -246,10 +256,7 @@ class QueueCard extends LitElement {
   }
   private createError(errorString: string): Error {
     const error = new Error(errorString);
-    /* eslint-disable-next-line
-      @typescript-eslint/no-explicit-any,
-    */
-    const errorCard = document.createElement('hui-error-card') as any;
+    const errorCard = document.createElement('hui-error-card') as LovelaceCard;
     errorCard.setConfig({
       type: 'error',
       error,

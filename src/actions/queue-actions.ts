@@ -1,14 +1,12 @@
-import { QueueConfig, QueueItem } from "../const/player-queue";
+import { QueueItem } from "../const/player-queue";
 import { ExtendedHass } from "../const/common";
 
 export default class QueueActions {
   private hass: ExtendedHass;
-  private config: QueueConfig;
   public player_entity: string;
 
-  constructor(hass: ExtendedHass, config: QueueConfig, player_entity: string) {
+  constructor(hass: ExtendedHass, player_entity: string) {
     this.hass = hass;
-    this.config = config;
     this.player_entity = player_entity;
     
   }
@@ -16,7 +14,8 @@ export default class QueueActions {
   async getQueue(limit_before: number, limit_after: number): Promise<QueueItem[]|null> {
     try {
       /* eslint-disable 
-        @typescript-eslint/no-explicit-any
+        @typescript-eslint/no-explicit-any,
+        @typescript-eslint/no-unsafe-assignment,
       */
       const ret = await this.hass.callWS<any>({
         type: 'call_service',
@@ -29,6 +28,7 @@ export default class QueueActions {
         },
         return_response: true
       });
+      /* eslint-disable-next-line @typescript-eslint/no-unsafe-member-access */
       const result: QueueItem[] = ret.response[this.player_entity];
       return result;
       /* eslint-enable */

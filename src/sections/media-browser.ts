@@ -8,6 +8,7 @@ import {
   MediaBrowserItemsConfig, 
   MediaCardData, 
   MediaCardItem, 
+  MediaLibraryItem, 
   MediaTypeIcons 
 } from "../const/media-browser";
 import BrowserActions from "../actions/browser-actions";
@@ -98,6 +99,7 @@ export class MediaBrowser extends LitElement {
       this.requestUpdate();
     }
   }
+  /* eslint-disable @typescript-eslint/no-unsafe-assignment */
   private onFavoriteItemSelected = (data: MediaCardData) => {
     const content_id: string = data.uri;
     const content_type: string = data.media_type;
@@ -122,9 +124,12 @@ export class MediaBrowser extends LitElement {
       favorites: this.onFavoriteItemSelected,
       service: this.onServiceSelect,
     }
+  /* eslint-disable-next-line @typescript-eslint/no-unsafe-member-access */
     const func = funcs[data.type];
+  /* eslint-disable-next-line @typescript-eslint/no-unsafe-call */
     func(data);
   }
+  /* eslint-enable @typescript-eslint/no-unsafe-assignment */
   private _generateSectionBackgroundPart(icon: string, fallback: Icon = Icon.DISC) {
     const image = backgroundImageFallback(this.hass, icon, fallback)
     return html`
@@ -244,8 +249,7 @@ export class MediaBrowser extends LitElement {
     )
   }
   private getFavoriteSection = async (media_type: MediaTypes, limit: number) => {
-    /* eslint-disable-next-line @typescript-eslint/no-explicit-any */
-    const response: any[] = await this.actions.actionGetFavorites(this.activePlayer, media_type, limit);
+    const response: MediaLibraryItem[] = await this.actions.actionGetFavorites(this.activePlayer, media_type, limit);
     const icon: Icon = MediaTypeIcons[media_type];
     return response.map(
       (item) => {

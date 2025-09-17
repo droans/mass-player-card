@@ -48,6 +48,7 @@ class MediaRow extends LitElement {
       return true;
     }
     if (_changedProperties.has('media_item')) {
+      // eslint-disable-next-line @typescript-eslint/no-non-null-assertion
       const oldItem: QueueItem = _changedProperties.get('media_item')!;
       return oldItem.media_title !== this.media_item.media_title
         || oldItem.media_artist !== this.media_item.media_artist
