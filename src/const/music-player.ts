@@ -22,3 +22,4 @@ export interface PlayerData {
 }
 
 export const SWIPE_MIN_X = 200;
+export const DEFAULT_MAX_VOLUME = 100;

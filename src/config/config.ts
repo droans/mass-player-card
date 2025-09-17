@@ -14,13 +14,14 @@ import {
 import { playersConfigForm } from "./players";
 import { playerConfigForm } from "./player";
 import { DEFAULT_QUEUE_CONFIG, QueueConfig } from "../const/player-queue";
-import { DEFAULT_PLAYER_CONFIG, PlayerConfig } from "../const/music-player";
+import { DEFAULT_MAX_VOLUME, DEFAULT_PLAYER_CONFIG, PlayerConfig } from "../const/music-player";
 import { DEFAULT_PLAYERS_CONFIG, PlayersConfig } from "../const/players";
 import { ExtendedHass } from "../const/common";
 
 export interface EntityConfig {
   entity_id: string;
   volume_entity_id: string;
+  max_volume: number;
   name: string;
 }
 
@@ -103,6 +104,7 @@ function entityConfigFromEntityID(entity_id: string): EntityConfig {
     entity_id: entity_id,
     volume_entity_id: entity_id,
     name: "",
+    max_volume: DEFAULT_MAX_VOLUME,
   }
 }
 
@@ -114,6 +116,7 @@ function processEntityConfig(config: string|EntityConfig): EntityConfig {
     entity_id: config.entity_id,
     volume_entity_id: config?.volume_entity_id ?? config.entity_id,
     name: config?.name ?? "",
+    max_volume: config?.max_volume ?? DEFAULT_MAX_VOLUME,
   }
 }
 
