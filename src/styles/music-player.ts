@@ -39,6 +39,7 @@ export default css`
     text-overflow: clip;
   }
   .player-track-artist {
+    font-size: 1em;
   }
   .progress {
     padding-left: 36px;
