@@ -207,9 +207,11 @@ export class MusicAssistantPlayerCard extends LitElement {
     }
   }
   protected renderPlayers() {
-    if (this.active_section === Sections.PLAYERS) {
       return cache(html`
-        <sl-tab-panel name="${Sections.PLAYERS}">
+        <sl-tab-panel 
+          name="${Sections.PLAYERS}" 
+          class="section${this.active_section==Sections.PLAYERS ? "" : "-hidden"}"
+        >
           <mass-player-players-card
             .selectedPlayerService=${this.playerSelected}
             .activePlayerEntity=${this.active_player_entity}
@@ -218,13 +220,13 @@ export class MusicAssistantPlayerCard extends LitElement {
           ></mass-player-players-card>
         </sl-tab-panel>
       `);
-    }
-    return html``
   }
   protected renderMusicPlayer() {
-    if (this.active_section === Sections.MUSIC_PLAYER) {
       return cache(html`
-        <sl-tab-panel name="${Sections.MUSIC_PLAYER}">
+        <sl-tab-panel 
+          name="${Sections.MUSIC_PLAYER}" 
+          class="section${this.active_section==Sections.MUSIC_PLAYER ? "" : "-hidden"}"
+        >
           <mass-music-player-card
             .config=${this.config.player}
             .volumeMediaPlayer=${this.hass.states[this.active_player_entity.volume_entity_id]}
@@ -235,13 +237,13 @@ export class MusicAssistantPlayerCard extends LitElement {
           ></mass-music-player-card>
         </sl-tab-panel>
       `);
-    }
-    return html``
   }
   protected renderPlayerQueue() {
-    if (this.active_section === Sections.QUEUE) {
       return cache(html`
-        <sl-tab-panel name="${Sections.QUEUE}">
+        <sl-tab-panel 
+          name="${Sections.QUEUE}" 
+          class="section${this.active_section==Sections.QUEUE ? "" : "-hidden"}"
+        >
           <mass-player-queue-card
             .hass=${this.hass}
             .active_player_entity=${this.active_player_entity.entity_id}
@@ -249,13 +251,13 @@ export class MusicAssistantPlayerCard extends LitElement {
           ></mass-player-queue-card>
         </sl-tab-panel>
       `)
-    }
-    return html``
   }
   protected renderMediaBrowser() {
-    if (this.active_section === Sections.MEDIA_BROWSER) {
       return cache(html`
-        <sl-tab-panel name="${Sections.MEDIA_BROWSER}">
+        <sl-tab-panel 
+          name="${Sections.MEDIA_BROWSER}" 
+          class="section${this.active_section==Sections.MEDIA_BROWSER ? "" : "-hidden"}"
+        >
           <mass-media-browser
             .activePlayer=${this.active_player_entity.entity_id}
             .config=${this.config.media_browser}
@@ -264,8 +266,6 @@ export class MusicAssistantPlayerCard extends LitElement {
           >
         </sl-tab-panel>
       `) 
-    }
-    return html``
   }
   protected renderMusicPlayerTab() {
     const active = this.active_section == Sections.MUSIC_PLAYER;
