@@ -18,7 +18,7 @@ export default css`
     display: grid;
     grid-template-columns: 50% 50%;
     overflow-y: scroll;
-    height: 100%;
+    height: calc(var(--mass-player-card-height) - 4em);
     width: 100%;
     -ms-overflow-style: none; /* IE and Edge */
     scrollbar-width: none; /* Firefox */

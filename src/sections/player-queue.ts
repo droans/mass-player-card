@@ -126,6 +126,9 @@ class QueueCard extends LitElement {
   public disconnectedCallback(): void {
     super.disconnectedCallback();
     /* eslint-disable-next-line @typescript-eslint/no-unsafe-call */
+    if (!this._unsubscribe) {
+      return;
+    }
     this._unsubscribe();
   }
   private getQueueItemIndex(queue_item_id: string, queue: QueueItem[] = []): number {
@@ -244,6 +247,9 @@ class QueueCard extends LitElement {
   protected render() {
     return this.error ?? html`
       <ha-card>
+        <div class="header">
+          Queue
+        </div>
         <ha-md-list class="list">
           ${this.renderQueueItems()}
         </ha-md-list>
