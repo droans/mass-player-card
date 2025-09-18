@@ -10,6 +10,7 @@ export default css`
     background: unset;
     box-shadow: unset;
     border-radius: unset;
+    height: var(--mass-player-card-height);
   }
   .main {
     display: flex;
@@ -42,7 +43,7 @@ export default css`
     padding: 0.5rem;
   }
   .list {
-    height: var(--mass-player-card-height);
+    height: calc(var(--mass-player-card-height) - 4em);
     overflow-y: scroll;
     -ms-overflow-style: none;
     scrollbar-width: none;
