@@ -198,13 +198,11 @@ export class MusicAssistantPlayerCard extends LitElement {
     this.active_section = newTab;
   }
   private returnMediaBrowserToHome = () => {
-    if (this.active_section == Sections.MEDIA_BROWSER) {
-      const el: MediaBrowser | null | undefined = this.shadowRoot?.querySelector('mass-media-browser');
-      if (!el) {
-        return;
-      }
-      el.activeSection = 'main';
+    const el: MediaBrowser | null | undefined = this.shadowRoot?.querySelector('mass-media-browser');
+    if (!el) {
+      return;
     }
+    el.activeSection = 'main';
   }
   protected renderPlayers() {
       return cache(html`

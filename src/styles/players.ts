@@ -54,7 +54,7 @@ export default css`
   display: none;
   }
 .header {
-  font-size: 1.5em;
+  font-size: 1.5rem;
   text-align: center;
   font-weight: 600;
   padding-top: 12px;
