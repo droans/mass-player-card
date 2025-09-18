@@ -32,11 +32,13 @@ export interface FavoritesConfig {
 
 export interface FavoriteItemConfig {
   enabled: boolean,
-  limit: number
+  limit: number,
+  items: customItem[],
 }
 export const DEFAULT_FAVORITE_ITEM_CONFIG: FavoriteItemConfig = {
   enabled: true,
-  limit: 25
+  limit: 25,
+  items: []
 }
 
 const DEFAULT_FAVORITES_CONFIG: FavoritesConfig = {

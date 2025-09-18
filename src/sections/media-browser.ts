@@ -187,7 +187,7 @@ export class MediaBrowser extends LitElement {
   }
   private generateFavoriteData = async (config: FavoriteItemConfig, media_type: MediaTypes) => {
     if (config.enabled) {
-      const result = await this.getFavoriteSection(media_type, config.limit);
+      const result = await this.getFavoriteSection(media_type, config.limit, config.items);
       if (!result.length) {
         return;
       }
@@ -252,10 +252,10 @@ export class MediaBrowser extends LitElement {
       }
     )
   }
-  private getFavoriteSection = async (media_type: MediaTypes, limit: number) => {
+  private getFavoriteSection = async (media_type: MediaTypes, limit: number, custom_items: customItem[]) => {
     const response: MediaLibraryItem[] = await this.actions.actionGetFavorites(this.activePlayer, media_type, limit);
     const icon: Icon = MediaTypeIcons[media_type];
-    return response.map(
+    const items = response.map(
       (item) => {
         const r: MediaCardItem = {
           title: item.name,
@@ -270,6 +270,23 @@ export class MediaBrowser extends LitElement {
         return r;
       }
     )
+    const customs = custom_items.map( 
+      (item) => {
+        const r: MediaCardItem = {
+          title: item.name,
+          icon: item.image,
+          fallback: Icon.CLEFT,
+          data: {
+            type: 'service',
+            media_content_id: item.media_content_id,
+            media_type: item.media_content_type,
+            service: item.service
+          }
+        };
+        return r;
+      }
+    )
+    return [...items, ...customs];
   }
   protected renderSubSectionHeader() {
     return html`
