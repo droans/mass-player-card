@@ -11,6 +11,7 @@ export default css`
   font-size: 1.5em;
   text-align: center;
   font-weight: 600;
-  padding-top: 12px
+  padding-top: 12px;
+  height: auto;
 }
 `;
