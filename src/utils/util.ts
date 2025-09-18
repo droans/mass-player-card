@@ -1,10 +1,18 @@
 export function testMixedContent(url: string) {
-  if (window.location.protocol == 'http') {
-    return true;
+  try {
+    if (window.location.protocol == 'http') {
+      return true;
+    }
+    return isHttpsOrRelative(url);
+  } catch {
+    return false;
   }
-  return isHttpsOrRelative(url);
 }
 
 export function isHttpsOrRelative(url: string) {
-  return !url.startsWith('http:');
+  try {
+    return !url.startsWith('http:');
+  } catch {
+    return false;
+  }
 }

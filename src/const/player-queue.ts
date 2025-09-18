@@ -1,4 +1,4 @@
-import { HomeAssistant } from "custom-card-helpers";
+import { ExtendedHass } from "./common";
 
 export interface QueueConfig {
   enabled: boolean;
@@ -25,9 +25,19 @@ export interface QueueItem {
   show_action_buttons: boolean;
   show_artist_name: boolean
   show_move_up_next: boolean;
+  favorite: boolean;
 }
 export interface QueueSection {
   active_player_entity: string;
   config: QueueConfig;
-  hass: HomeAssistant;
+  hass: ExtendedHass;
+}
+
+export interface MassQueueEvent {
+  data: {
+    type: string,
+    data: {
+      queue_id: string
+    }
+  }
 }

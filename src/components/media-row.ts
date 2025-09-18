@@ -10,12 +10,13 @@ import styles from '../styles/media-row';
 import { QueueItem } from '../const/player-queue';
 import { QueueItemSelectedService, QueueService } from '../const/actions';
 import { backgroundImageFallback, getFallbackImage } from '../utils/icons';
-import { Icons } from '../const/common';
+import { ExtendedHass, Icon } from '../const/common';
 import { testMixedContent } from '../utils/util';
 
 class MediaRow extends LitElement {
   @property({ attribute: false }) media_item!: QueueItem;
   @property({ type: Boolean }) selected = false;
+  public hass!: ExtendedHass;
   public removeService!: QueueService;
   public moveQueueItemNextService!: QueueService;
   public moveQueueItemUpService!: QueueService;
@@ -47,6 +48,7 @@ class MediaRow extends LitElement {
       return true;
     }
     if (_changedProperties.has('media_item')) {
+      // eslint-disable-next-line @typescript-eslint/no-non-null-assertion
       const oldItem: QueueItem = _changedProperties.get('media_item')!;
       return oldItem.media_title !== this.media_item.media_title
         || oldItem.media_artist !== this.media_item.media_artist
@@ -60,9 +62,9 @@ class MediaRow extends LitElement {
   private artworkStyle() {
     const img = this.media_item.media_image || "";
     if (!testMixedContent(img)) {
-      return getFallbackImage(Icons.CLEFT);
+      return getFallbackImage(this.hass, Icon.CLEFT);
     }
-    return backgroundImageFallback(img, Icons.CLEFT);
+    return backgroundImageFallback(this.hass, img, Icon.CLEFT);
   }
   private renderThumbnail() {
     const played = !this.media_item.show_action_buttons  && !this.media_item.playing;
@@ -121,11 +123,18 @@ class MediaRow extends LitElement {
   private renderMoveNextButton() {
     if (this.media_item.show_move_up_next) {
       return html`
-        <ha-icon-button 
+        <ha-button
+          appearance="plain"
+          variant="brand"
+          size="medium"
           class="action-button"
-          .path=${mdiArrowCollapseUp}
-          @click=${this.callMoveItemNextService}>
-        </ha-icon-button>
+          @click=${this.callMoveItemNextService}
+        >
+          <ha-svg-icon
+            .path=${mdiArrowCollapseUp}
+            style="height: 1.5rem; width: 1.5rem;"
+          ></ha-svg-icon>
+        </ha-button>
       `
     }
     return html``
@@ -133,31 +142,52 @@ class MediaRow extends LitElement {
   private renderMoveUpButton() {
     if (this.media_item.show_move_up_next) {
       return html`
-        <ha-icon-button 
+        <ha-button
+          appearance="plain"
+          variant="brand"
+          size="medium"
           class="action-button"
-          .path=${mdiArrowUp}
-          @click=${this.callMoveItemUpService}>
-        </ha-icon-button>
+          @click=${this.callMoveItemUpService}
+        >
+          <ha-svg-icon
+            .path=${mdiArrowUp}
+            style="height: 1.5rem; width: 1.5rem;"
+          ></ha-svg-icon>
+        </ha-button>
       `
     }
     return html``
   }
   private renderMoveDownButton() {
     return html`
-      <ha-icon-button 
-        class="action-button"
-        .path=${mdiArrowDown}
-        @click=${this.callMoveItemDownService}>
-      </ha-icon-button>
+        <ha-button
+          appearance="plain"
+          variant="brand"
+          size="medium"
+          class="action-button"
+          @click=${this.callMoveItemDownService}
+        >
+          <ha-svg-icon
+            .path=${mdiArrowDown}
+            style="height: 1.5rem; width: 1.5rem;"
+          ></ha-svg-icon>
+        </ha-button>
     `    
   }
   private renderRemoveButton() {
     return html`
-      <ha-icon-button 
-        class="action-button"
-        .path=${mdiClose}
-        @click=${this.callRemoveItemService}>
-      </ha-icon-button>
+        <ha-button
+          appearance="plain"
+          variant="brand"
+          size="medium"
+          class="action-button"
+          @click=${this.callRemoveItemService}
+        >
+          <ha-svg-icon
+            .path=${mdiClose}
+            style="height: 1.5rem; width: 1.5rem;"
+          ></ha-svg-icon>
+        </ha-button>
     `
   }
 

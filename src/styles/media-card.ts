@@ -31,6 +31,6 @@ export default css`
     width: 100%;
     line-height: 160%;
     bottom: 0;
-    background-color: rgba(var(--rgb-card-background-color), 0.733);
+    background-color: rgba(from var(--ha-card-background) r g b / 0.9);
   }
 `;

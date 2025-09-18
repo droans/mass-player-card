@@ -4,9 +4,11 @@ import { MediaCardData, MediaCardItem } from "../const/media-browser";
 import { CardSelectedService } from "../const/actions";
 import { state } from "lit/decorators.js";
 import styles from '../styles/media-browser-cards';
+import { ExtendedHass } from "../const/common";
 
 class MediaBrowserCards extends LitElement {
   public onSelectAction!: CardSelectedService;
+  public hass!: ExtendedHass;
   private _items!: MediaCardItem[];
   @state() private code!: TemplateResult;
 
@@ -30,6 +32,7 @@ class MediaBrowserCards extends LitElement {
           <mass-media-card
             .config=${item}
             .onSelectAction=${this.onItemSelected}
+            .hass=${this.hass}
           >
           </mass-media-card>
         `

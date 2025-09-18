@@ -5,9 +5,11 @@ import { MediaCardItem } from "../const/media-browser";
 import { backgroundImageFallback, getFallbackImage } from "../utils/icons";
 import styles from '../styles/media-card';
 import { testMixedContent } from "../utils/util";
+import { ExtendedHass } from "../const/common";
 
 class MediaCard extends LitElement {
   private _config!: MediaCardItem;
+  public hass!: ExtendedHass;
   public onSelectAction!: CardSelectedService;
   @state() code!: TemplateResult;
 
@@ -40,16 +42,16 @@ class MediaCard extends LitElement {
   private artworkStyle() {
     const img = this.config.icon;
     if (!testMixedContent(img)) {
-      return getFallbackImage(this.config.fallback);
+      return getFallbackImage(this.hass, this.config.fallback);
     }
-    return backgroundImageFallback(img, this.config.fallback);
+    return backgroundImageFallback(this.hass, img, this.config.fallback);
   }
   protected renderThumbnailFromIcon() {
     const thumbnail = this.artworkStyle() || "";
     return html`
       <div 
         class="thumbnail" 
-        style=${thumbnail}
+        style="${thumbnail};padding-bottom: 2em;"
       >
       </div>
     `

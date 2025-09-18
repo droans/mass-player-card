@@ -1,8 +1,8 @@
-import { HomeAssistant } from "custom-card-helpers";
+import { ExtendedHass } from "../const/common";
 
 export default class PlayersActions {
-  private hass: HomeAssistant;
-  constructor(hass: HomeAssistant) {
+  private hass: ExtendedHass;
+  constructor(hass: ExtendedHass) {
     this.hass = hass;
   }
 

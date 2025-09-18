@@ -39,6 +39,7 @@ export default css`
     text-overflow: clip;
   }
   .player-track-artist {
+    font-size: 1em;
   }
   .progress {
     padding-left: 36px;
@@ -86,8 +87,17 @@ export default css`
     padding-left: 2em;
     padding-right: 2em;
   }
+  .button-power {
+    margin-right: 1em;
+  }
+  .button-mute {
+    margin-left: 1em;
+  }
+  .button-favorite {
+    margin-left: 1em;
+  }
   ha-control-slider {
-    --control-slider-thickness: 1.75em;
+    --control-slider-thickness: 2.25em;
   }
   .player-controls {
     width: var(--player-control-icon-width);

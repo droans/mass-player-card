@@ -9,7 +9,6 @@ import {
   mdiSpeakerMultiple
 } from '@mdi/js';
 
-import { type HomeAssistant } from 'custom-card-helpers';
 
 import styles from './styles/main';
 import { version } from '../package.json';
@@ -18,12 +17,16 @@ import './sections/music-player';
 import './sections/player-queue';
 import './sections/players';
 import { HassEntity } from 'home-assistant-js-websocket';
-import { Config, DEFAULT_CARD, DEFAULT_CONFIG, Sections } from './const/card';
+import { DEFAULT_CARD, Sections } from './const/card';
 import { MediaBrowser } from './sections/media-browser';
 import { 
+  Config,
   createConfigForm, 
-  createStubConfig 
+  createStubConfig, 
+  EntityConfig,
+  processConfig,
 } from './config/config';
+import { ExtendedHass } from './const/common';
 
 const DEV = false;
 
@@ -47,7 +50,12 @@ console.info(
   'color: teal; font-weight: bold; background: lightgray',
   'color: darkblue; font-weight: bold; background: white',
 );
-/* eslint-disable @typescript-eslint/no-explicit-any */
+/* eslint-disable 
+  @typescript-eslint/no-explicit-any, 
+  @typescript-eslint/no-unsafe-assignment, 
+  @typescript-eslint/no-unsafe-member-access,
+  @typescript-eslint/no-unsafe-call 
+*/
 (window as any).customCards = (window as any).customCards || [];
 (window as any).customCards.push({
   /* eslint-enable */
@@ -62,11 +70,10 @@ console.info(
 export class MusicAssistantPlayerCard extends LitElement {
   @state() private config!: Config;
   @state() private error?: TemplateResult;
-  @state() private active_player_entity!: string;
+  @state() private active_player_entity!: EntityConfig;
   @state() private active_section: Sections = DEFAULT_CARD;
-  @state() private first_hass_update = false;
   @state() private entities!: HassEntity[];
-  private _hass!: HomeAssistant;
+  private _hass!: ExtendedHass;
 
   constructor() {
     super();
@@ -77,7 +84,7 @@ export class MusicAssistantPlayerCard extends LitElement {
       this.setDefaultActivePlayer();
     }
   }
-  public set hass(hass: HomeAssistant) {
+  public set hass(hass: ExtendedHass) {
     if (!hass) {
       return;
     }
@@ -86,14 +93,13 @@ export class MusicAssistantPlayerCard extends LitElement {
     if (!this._hass) {
       this._hass = hass;
       this.setDefaultActivePlayer();
-      this.first_hass_update = true;
     }
     const new_ents: HassEntity[] = [];
     ents.forEach(
       (entity) => {
-        const old_state = JSON.stringify(this._hass.states[entity]);
-        const new_state = JSON.stringify(hass.states[entity]);
-        new_ents.push(hass.states[entity]);
+        const old_state = JSON.stringify(this._hass.states[entity.entity_id]);
+        const new_state = JSON.stringify(hass.states[entity.entity_id]);
+        new_ents.push(hass.states[entity.entity_id]);
         if (old_state !== new_state) {
           should_update = true;
         }
@@ -102,7 +108,6 @@ export class MusicAssistantPlayerCard extends LitElement {
     if (should_update) {
       this._hass = hass;
       this.entities = new_ents;
-      this.first_hass_update = true;
     }
   }
   public get hass() {
@@ -113,7 +118,7 @@ export class MusicAssistantPlayerCard extends LitElement {
     return createConfigForm();
   }
 
-  static getStubConfig(hass: HomeAssistant, entities: string[]) {
+  static getStubConfig(hass: ExtendedHass, entities: string[]) {
     return createStubConfig(hass, entities);
   }
   public setConfig(config?: Config) {
@@ -123,13 +128,11 @@ export class MusicAssistantPlayerCard extends LitElement {
     if (!config.entities) {
       throw this.createError('You need to define entities.');
     };
-    this.config = {
-      ...DEFAULT_CONFIG,
-      ...config
-    }
+    this.config = processConfig(config);
     if (!this.active_player_entity) {
       this.setDefaultActivePlayer();
     }
+    this.requestUpdate();
   }
   private setDefaultActivePlayer() {
     if (!this.config) {
@@ -141,17 +144,20 @@ export class MusicAssistantPlayerCard extends LitElement {
     } else {
       const states = this.hass.states;
       const active_players = players.filter(
-        (entity) => ["playing", "paused"].includes(states[entity].state) && states[entity].attributes.app_id == 'music_assistant' 
+        (entity) => ["playing", "paused"].includes(states[entity.entity_id].state) && states[entity.entity_id].attributes.app_id == 'music_assistant' 
       )
       if (active_players.length) {
         this.active_player_entity = active_players[0];
-      } else {
+      } else {  
         this.active_player_entity = players[0];
       }
     }
   }
   private setActivePlayer = (player_entity: string) => {
-    this.active_player_entity = player_entity;
+    const player = this.config.entities.find(
+      (entity) => entity.entity_id == player_entity
+    )
+    this.active_player_entity = player ?? this.active_player_entity;
   }
 
   protected shouldUpdate(_changedProperties: PropertyValues): boolean {
@@ -161,7 +167,8 @@ export class MusicAssistantPlayerCard extends LitElement {
       return true;
     }
     if (_changedProperties.has('hass')) {
-      const oldHass = _changedProperties.get('hass')! as HomeAssistant;
+      // eslint-disable-next-line @typescript-eslint/no-non-null-assertion
+      const oldHass = _changedProperties.get('hass')! as ExtendedHass;
       if (!oldHass) {
         return true;
       }
@@ -169,7 +176,7 @@ export class MusicAssistantPlayerCard extends LitElement {
       const newStates = this.hass.states;
       let result = false;
       this.config.entities.forEach( (element) => {
-          if (oldStates[element] !== newStates[element]) {
+          if (oldStates[element.entity_id] !== newStates[element.entity_id]) {
             result = true;
           }
         }
@@ -186,22 +193,23 @@ export class MusicAssistantPlayerCard extends LitElement {
     this.active_section = Sections.MUSIC_PLAYER;
   }
   private _handleTabChanged(ev: CustomEvent) {
+    // eslint-disable-next-line @typescript-eslint/no-unsafe-assignment, @typescript-eslint/no-unsafe-member-access
     const newTab: Sections = ev.detail.name;
     this.active_section = newTab;
   }
   private returnMediaBrowserToHome = () => {
-    if (this.active_section == Sections.MEDIA_BROWSER) {
-      const el: MediaBrowser | null | undefined = this.shadowRoot?.querySelector('mass-media-browser');
-      if (!el) {
-        return;
-      }
-      el.activeSection = 'main';
+    const el: MediaBrowser | null | undefined = this.shadowRoot?.querySelector('mass-media-browser');
+    if (!el) {
+      return;
     }
+    el.activeSection = 'main';
   }
   protected renderPlayers() {
-    if (this.active_section === Sections.PLAYERS) {
       return cache(html`
-        <sl-tab-panel name="${Sections.PLAYERS}">
+        <sl-tab-panel 
+          name="${Sections.PLAYERS}" 
+          class="section${this.active_section==Sections.PLAYERS ? "" : "-hidden"}"
+        >
           <mass-player-players-card
             .selectedPlayerService=${this.playerSelected}
             .activePlayerEntity=${this.active_player_entity}
@@ -210,51 +218,52 @@ export class MusicAssistantPlayerCard extends LitElement {
           ></mass-player-players-card>
         </sl-tab-panel>
       `);
-    }
-    return html``
   }
   protected renderMusicPlayer() {
-    if (this.active_section === Sections.MUSIC_PLAYER) {
       return cache(html`
-        <sl-tab-panel name="${Sections.MUSIC_PLAYER}">
+        <sl-tab-panel 
+          name="${Sections.MUSIC_PLAYER}" 
+          class="section${this.active_section==Sections.MUSIC_PLAYER ? "" : "-hidden"}"
+        >
           <mass-music-player-card
             .config=${this.config.player}
-            .activeMediaPlayer=${this.hass.states[this.active_player_entity]}
+            .volumeMediaPlayer=${this.hass.states[this.active_player_entity.volume_entity_id]}
+            .mediaPlayerName=${this.active_player_entity.name}
+            .maxVolume=${this.active_player_entity.max_volume}
+            .activeMediaPlayer=${this.hass.states[this.active_player_entity.entity_id]}
             .hass=${this.hass}
           ></mass-music-player-card>
         </sl-tab-panel>
       `);
-    }
-    return html``
   }
   protected renderPlayerQueue() {
-    if (this.active_section === Sections.QUEUE) {
       return cache(html`
-        <sl-tab-panel name="${Sections.QUEUE}">
+        <sl-tab-panel 
+          name="${Sections.QUEUE}" 
+          class="section${this.active_section==Sections.QUEUE ? "" : "-hidden"}"
+        >
           <mass-player-queue-card
             .hass=${this.hass}
-            .active_player_entity=${this.active_player_entity}
+            .active_player_entity=${this.active_player_entity.entity_id}
             .config=${this.config.queue}
           ></mass-player-queue-card>
         </sl-tab-panel>
       `)
-    }
-    return html``
   }
   protected renderMediaBrowser() {
-    if (this.active_section === Sections.MEDIA_BROWSER) {
       return cache(html`
-        <sl-tab-panel name="${Sections.MEDIA_BROWSER}">
+        <sl-tab-panel 
+          name="${Sections.MEDIA_BROWSER}" 
+          class="section${this.active_section==Sections.MEDIA_BROWSER ? "" : "-hidden"}"
+        >
           <mass-media-browser
-            .activePlayer=${this.active_player_entity}
+            .activePlayer=${this.active_player_entity.entity_id}
             .config=${this.config.media_browser}
             .hass=${this.hass}
             .onMediaSelectedAction=${this.browserItemSelected}
           >
         </sl-tab-panel>
       `) 
-    }
-    return html``
   }
   protected renderMusicPlayerTab() {
     const active = this.active_section == Sections.MUSIC_PLAYER;
@@ -265,11 +274,17 @@ export class MusicAssistantPlayerCard extends LitElement {
           .active=${active}
           panel="${Sections.MUSIC_PLAYER}"
         >
-          <ha-icon-button 
+          <ha-button
+            appearance="plain"
+            variant="brand"
+            size="medium"
             class="action-button${active ? "-active" : ""}"
-            .path=${mdiMusic}
           >
-          </ha-icon-button>
+            <ha-svg-icon
+              .path=${mdiMusic}
+              style="height: 24px; width: 24px;${active ? "" : "fill: unset;"}"
+            ></ha-svg-icon>
+          </ha-button>
         </sl-tab>
       `
     }
@@ -284,12 +299,17 @@ export class MusicAssistantPlayerCard extends LitElement {
           .active=${active}
           panel="${Sections.QUEUE}"
         >
-          <ha-icon-button
+          <ha-button
+            appearance="plain"
+            variant="brand"
+            size="medium"
             class="action-button${active ? "-active" : ""}"
-            .path=${mdiPlaylistMusic}
           >
-          </ha-icon-button>
-        </sl-tab>
+            <ha-svg-icon
+              .path=${mdiPlaylistMusic}
+              style="height: 24px; width: 24px;${active ? "" : "fill: unset;"}"
+            ></ha-svg-icon>
+          </ha-button>
       `
     }
     return html``
@@ -303,11 +323,17 @@ export class MusicAssistantPlayerCard extends LitElement {
         panel="${Sections.MEDIA_BROWSER}"
         @click=${this.returnMediaBrowserToHome}
       >
-        <ha-icon-button 
-          class="action-button${active ? "-active" : ""}"
-          .path=${mdiAlbum}
-        >
-        </ha-icon-button>
+          <ha-button
+            appearance="plain"
+            variant="brand"
+            size="medium"
+            class="action-button${active ? "-active" : ""}"
+          >
+            <ha-svg-icon
+              .path=${mdiAlbum}
+              style="height: 24px; width: 24px;${active ? "" : "fill: unset;"}"
+            ></ha-svg-icon>
+          </ha-button>
       </sl-tab>
     `
   }
@@ -319,11 +345,17 @@ export class MusicAssistantPlayerCard extends LitElement {
         .active=${active}
         panel="${Sections.PLAYERS}"
       >
-        <ha-icon-button 
-          class="action-button${active ? "-active" : ""}"
-          .path=${mdiSpeakerMultiple}
-        >
-        </ha-icon-button>
+          <ha-button
+            appearance="plain"
+            variant="brand"
+            size="medium"
+            class="action-button${active ? "-active" : ""}"
+          >
+            <ha-svg-icon
+              .path=${mdiSpeakerMultiple}
+              style="height: 24px; width: 24px;${active ? "" : "fill: unset;"}"
+            ></ha-svg-icon>
+          </ha-button>
       </sl-tab>
     `
   }
@@ -350,7 +382,7 @@ export class MusicAssistantPlayerCard extends LitElement {
     `
   }
   protected render() {
-    return html`
+    return this.error ?? html`
       <ha-card>
       ${this.renderSections()}
       ${this.renderTabs()}
@@ -369,8 +401,13 @@ export class MusicAssistantPlayerCard extends LitElement {
     const error = new Error(errorString);
     /* eslint-disable-next-line
       @typescript-eslint/no-explicit-any,
+      @typescript-eslint/no-unsafe-assignment
     */
     const errorCard = document.createElement('hui-error-card') as any;
+    /* eslint-disable-next-line
+      @typescript-eslint/no-unsafe-call,
+      @typescript-eslint/no-unsafe-member-access
+    */
     errorCard.setConfig({
       type: 'error',
       error,

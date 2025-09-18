@@ -1,14 +1,15 @@
 import "@material/web/progress/linear-progress.js"
-import { CSSResultGroup, html, LitElement } from "lit";
+import { CSSResultGroup, html, LitElement, PropertyValues } from "lit";
 import { property, query, state } from "lit/decorators.js";
-import { HassEntity } from "home-assistant-js-websocket";
-import { HomeAssistant } from "custom-card-helpers";
 
 import PlayerActions from "../actions/player-actions";
 import styles from '../styles/music-player';
 import { 
+  mdiHeart,
+  mdiHeartPlusOutline,
   mdiPause, 
   mdiPlay, 
+  mdiPower, 
   mdiRepeat, 
   mdiRepeatOff, 
   mdiRepeatOnce, 
@@ -20,25 +21,26 @@ import {
   mdiVolumeMute 
 } from "@mdi/js";
 import { backgroundImageFallback, getFallbackImage } from "../utils/icons";
-import { Icons } from '../const/common';
+import { ExtendedHass, ExtendedHassEntity, Icon } from '../const/common';
 import { 
-  DEFAULT_PLAYER_CONFIG, 
-  PlayerConfig, 
-  PlayerData, SWIPE_MIN_X
+  PlayerData, 
+  SWIPE_MIN_X,
 } from "../const/music-player";
 import { RepeatMode } from "../const/common";
 import { testMixedContent } from "../utils/util";
 
 class MusicPlayerCard extends LitElement {
   @property({ attribute: false }) private player_data!: PlayerData;
-  @property({ attribute: false }) private _config!: PlayerConfig;
   @property({ attribute: false}) private media_position = 0;
   @property({ attribute: false}) private media_duration = 1;
   @state() private shouldMarqueeTitle = false;
-  @query('.player-track-title') _track_title;
-  private _player!: HassEntity;
+  @query('.player-track-title') _track_title!: LitElement;
+  public volumeMediaPlayer!: ExtendedHassEntity;
+  public mediaPlayerName!: string; 
+  public maxVolume!: number;
+  private _player!: ExtendedHassEntity;
   private _listener: number|undefined;
-  private _hass!: HomeAssistant;
+  private _hass!: ExtendedHass;
   private actions!: PlayerActions;
   private entity_pos = 0;
   private entity_dur = 1;
@@ -48,17 +50,11 @@ class MusicPlayerCard extends LitElement {
   private touchStartY = 0;
   private touchEndY = 0;
   
-  public set config(config: PlayerConfig) {
-    this._config = {
-      ...DEFAULT_PLAYER_CONFIG,
-      ...config
-    };
-  }
-  public set activeMediaPlayer(player: HassEntity) {
+  public set activeMediaPlayer(player: ExtendedHassEntity) {
     this._player = player;
     this.updatePlayerData();
   }
-  public set hass(hass: HomeAssistant) {
+  public set hass(hass: ExtendedHass) {
     if (hass) {
       this.actions = new PlayerActions(hass);
     }
@@ -67,21 +63,34 @@ class MusicPlayerCard extends LitElement {
     }
     this.updatePlayerData();
   }
+  public get hass() {
+    return this._hass;
+  }
   private updatePlayerData() {
+    this._updatePlayerData().catch( () => {return});
+  }
+  private async _updatePlayerData() {
     if (!this._player) {
       return
     }
+    let player_name = this.mediaPlayerName;
+    if (!player_name.length) {
+      player_name = this._player.attributes?.friendly_name ?? "Media Player";
+    }
+    const current_item = (await this.actions.actionGetCurrentItem(this._player));
+    
     const new_player_data: PlayerData = {
       playing: this._player.state == 'playing',
-      repeat: this._player.attributes.repeat,
-      shuffle: this._player.attributes.shuffle,
+      repeat: this._player.attributes.repeat ?? false,
+      shuffle: this._player.attributes.shuffle ?? false,
       track_album: this._player.attributes.media_album_name,
       track_artist: this._player.attributes.media_artist,
-      track_artwork: this._player.attributes.entity_picture_local,
+      track_artwork: this._player.attributes.entity_picture_local ?? this._player.attributes.entity_picture,
       track_title: this._player.attributes.media_title,
-      muted: this._player.attributes.is_volume_muted,
-      volume: Math.floor(this._player.attributes.volume_level * 100),
-      player_name: this._player.attributes.friendly_name ??  '',
+      muted: this.volumeMediaPlayer.attributes.is_volume_muted,
+      volume: Math.floor(this.volumeMediaPlayer.attributes.volume_level * 100),
+      player_name: player_name,
+      favorite: current_item?.favorite ?? false,
     }
     this.player_data = new_player_data;
     const old_pos = this.entity_pos;
@@ -101,11 +110,12 @@ class MusicPlayerCard extends LitElement {
     this.tickProgress();
   }
   private async onVolumeChange(ev: CustomEvent) {
+    // eslint-disable-next-line @typescript-eslint/no-unsafe-assignment, @typescript-eslint/no-unsafe-member-access
     let volume: number = ev.detail.value;
     if (isNaN(volume)) return;
     this.player_data.volume = volume;
     volume = volume / 100;
-    await this.actions.actionSetVolume(this._player, volume);
+    await this.actions.actionSetVolume(this.volumeMediaPlayer, volume);
   }
   private async onPlayPause() {
     this.player_data.playing = !this.player_data.playing;
@@ -123,8 +133,17 @@ class MusicPlayerCard extends LitElement {
   }
   private async onVolumeMuteToggle() {
     this.player_data.muted = !this.player_data.muted;
-    await this.actions.actionMuteToggle(this._player);
+    await this.actions.actionMuteToggle(this.volumeMediaPlayer);
     
+  }
+  private onFavorite = async () => {
+    if (this.player_data.favorite) {
+      await this.actions.actionRemoveFavorite(this._player);
+      this.player_data.favorite = false;
+    } else {
+      await this.actions.actionAddFavorite(this._player);
+      this.player_data.favorite = true;
+    }
   }
   private async onShuffleToggle() {
     this.player_data.shuffle = !this.player_data.shuffle;
@@ -143,6 +162,9 @@ class MusicPlayerCard extends LitElement {
     this.player_data.repeat = repeat;
     await this.actions.actionRepeatSet(this._player, repeat);
     
+  }
+  private onToggle = async () => {
+    await this.actions.actionTogglePlayer(this._player);
   }
   private toTime(seconds: number) {
     if (isNaN(seconds)) {
@@ -230,13 +252,13 @@ class MusicPlayerCard extends LitElement {
     `
   }
   protected renderTitle() {
-    if(!this.player_data.track_title) {
+    if(!this.player_data?.track_title) {
       return html``
     } 
     return this.wrapTitleMarquee();
   }
   protected renderArtist() {
-    if (!this.player_data.track_artist) {
+    if (!this.player_data?.track_artist) {
       return html``
     }
     return html`<div class="player-track-artist"> ${this.player_data.track_artist} </div>`; 
@@ -244,7 +266,7 @@ class MusicPlayerCard extends LitElement {
   protected renderHeader() {
     return html`
       <div class="header">
-        <div class="player-name"> ${this.player_data.player_name} </div>
+        <div class="player-name"> ${this.player_data?.player_name ?? this.mediaPlayerName} </div>
         ${this.renderTitle()}
         ${this.renderArtist()}
       </div>
@@ -271,11 +293,11 @@ class MusicPlayerCard extends LitElement {
     `
   }
   private artworkStyle() {
-    const img = this.player_data.track_artwork || "";
-    if (!this.player_data.track_artist || !testMixedContent(img)) { 
-      return getFallbackImage(Icons.CLEFT);
+    const img = this.player_data?.track_artwork || "";
+    if (!this.player_data?.track_artist || !testMixedContent(img)) { 
+      return getFallbackImage(this.hass, Icon.CLEFT);
     }
-      return backgroundImageFallback(img, Icons.CLEFT);
+      return backgroundImageFallback(this.hass, img, Icon.CLEFT);
   }
   protected renderArtwork() {
     return html`
@@ -378,16 +400,51 @@ class MusicPlayerCard extends LitElement {
   }
   protected renderVolume() {
     return html`
+      <ha-button
+        appearance="plain"
+        variant="brand"
+        size="medium"
+        class="button-power"
+        @click=${this.onToggle}
+      >
+        <ha-svg-icon
+          .path=${mdiPower}
+          style="height: 3rem; width: 3rem;"
+        ></ha-svg-icon>
+      </ha-button>
       <ha-control-slider
         .disabled=${this.player_data.muted}
         .unit="%"
         .value=${this.player_data.volume}
+        .min=0
+        .max=${this.maxVolume}
         @value-changed=${this.onVolumeChange}
       ></ha-control-slider>
-      <ha-icon-button
-        .path=${this.player_data.muted ? mdiVolumeMute : mdiVolumeHigh}
+      <ha-button
+        appearance="plain"
+        variant="brand"
+        size="medium"
+        class="button-mute"
         @click=${this.onVolumeMuteToggle}
-      ></ha-icon-button>
+      >
+        <ha-svg-icon
+          .path=${this.player_data.muted ? mdiVolumeMute : mdiVolumeHigh}
+          style="height: 3rem; width: 3rem;"
+        ></ha-svg-icon>
+      </ha-button>
+      
+      <ha-button
+        appearance="plain"
+        variant="brand"
+        size="medium"
+        class="button-favorite"
+        @click=${this.onFavorite}
+      >
+        <ha-svg-icon
+          .path=${this.player_data.favorite ? mdiHeart : mdiHeartPlusOutline}
+          style="height: 3rem; width: 3rem;"
+        ></ha-svg-icon>
+      </ha-button>
     `
   }
   /* eslint-enable @typescript-eslint/unbound-method */
@@ -406,6 +463,12 @@ class MusicPlayerCard extends LitElement {
       </div>
       <div class="volume">${this.renderVolume()}</div>
     `
+  }
+  protected shouldUpdate(_changedProperties: PropertyValues): boolean {
+    if (!this.player_data) {
+      return false
+    }
+    return super.shouldUpdate(_changedProperties);
   }
   protected render() {
     return html`

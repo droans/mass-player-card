@@ -66,14 +66,24 @@ expanded: false
 ```
 
 ## Base Config
-| Parameter     | Type                                        | Required | Default | Description                                        |
-|---------------|---------------------------------------------|----------|---------|----------------------------------------------------|
-| type          | str                                         | Yes      | n/a     | Use `custom:mass-player-card`                      |
-| entities      | list                                        | Yes      | n/a     | The Music Assistant `media_player` entities to use |
-| player        | [PlayerConfig](#player-config)              | No       | 5       | See Below                                          |
-| queue         | [QueueConfig](#queue-config)                | No       | 5       | See Below                                          |
-| media_browser | [MediaBrowserConfig](#media-browser-config) | No       | 5       | See Below                                          |
-| players       | [PlayersConfig](#players-config)            | No       | 5       | See Below                                          |
+| Parameter     | Type                                             | Required | Default | Description                                        |
+|---------------|--------------------------------------------------|----------|---------|----------------------------------------------------|
+| type          | str                                              | Yes      | n/a     | Use `custom:mass-player-card`                      |
+| entities      | list of string or [EntityConfig](#entity-config) | Yes      | n/a     | The Music Assistant `media_player` entities to use |
+| player        | [PlayerConfig](#player-config)                   | No       | 5       | See Below                                          |
+| queue         | [QueueConfig](#queue-config)                     | No       | 5       | See Below                                          |
+| media_browser | [MediaBrowserConfig](#media-browser-config)      | No       | 5       | See Below                                          |
+| players       | [PlayersConfig](#players-config)                 | No       | 5       | See Below                                          |
+
+## Entity Config
+For each entity, you can either provide the Entity ID by itself or you can provide the Music Assistant media player Entity ID, the media player Entity ID for volume control, and/or the name of the player. Below is the config if you would like to provide the additional details.
+
+| Parameter        | Type | Required | Default     | Description                              |
+|------------------|------|----------|-------------|------------------------------------------|
+| entity_id        | str  | Yes      | N/A         | The Music Assistant entity               |
+| volume_entity_id | str  | No       | `entity_id` | The media player for volume control      |
+| name             | str  | No       | N/A         | The name of the media player             |
+| max_volume       | int  | No       | N/A         | Max volume for the volume slider (0-100) |
 
 ## Player Config
 | Parameter | Type | Required | Default | Description                     |
@@ -103,10 +113,11 @@ Display and interact with the player's queue.
 <img src="https://github.com/droans/mass-player-card/blob/main/static/media_browser/desktop.png" alt="Player Card Media Browser Section Example">
 </details>
 
-| Parameter | Type                                 | Required | Default | Description                      |
-|-----------|--------------------------------------|----------|---------|----------------------------------|
-| enabled   | bool                                 | No       | true    | Enable/disable media browser tab |
-| favorites | [FavoritesConfig](#favorites-config) | No       | -       | See below                        |
+| Parameter | Type                                      | Required | Default | Description                      |
+|-----------|-------------------------------------------|----------|---------|----------------------------------|
+| enabled   | bool                                      | No       | true    | Enable/disable media browser tab |
+| favorites | [FavoritesConfig](#favorites-config)      | No       | -       | See below                        |
+| sections | list of [SectionsConfig](#sections-config) | No       | -       | See below                        |
 
 ## Favorites Config
 | Parameter  | Type                            | Required | Default | Description                     |
@@ -121,7 +132,7 @@ Display and interact with the player's queue.
 | tracks     | [FavoriteItem](#favorite-items) | No       | true    | See below                       |
 
 ### Favorite Items
-You can select which favorite items you'd like to display in the media browser. Use the example below to help set it up. By default, all favorites are enabled. If no favorites exist for a category, the section will not be displayed.
+You can select which favorite items you'd like to display in the media browser. Use the example below to help set it up. By default, all favorites are enabled. If no favorites exist for a category, the section will not be displayed. You can also add your own custom items to the favorite section by specifying it under `items`.
 
 ```yaml
 type: custom:mass-player-card
@@ -136,10 +147,29 @@ media_browser:
     ...
 ```
 
-| Parameter  | Type | Required | Default | Description                                 |
-|------------|------|----------|---------|---------------------------------------------|
-| enabled    | bool | No       | true    | Enable/disable favorites for the media type |
+| Parameter | Type                                      | Required | Default | Description                                 |
+|-----------|-------------------------------------------|----------|---------|---------------------------------------------|
+| enabled   | bool                                      | No       | true    | Enable/disable favorites for the media type |
+| limit     | int                                       | No       | 25      | Maximum number of favorite items to return  |
+| items     | [SectionItemConfig](#section-item-config) | No       | N/A     | See below                                   |
 
+## Sections Config
+Sections lets you add your own sections to the browser with your own items. These can either be media items (by providing `media_content_id` and `media_type`) or they can be a script (by providing `service`). If the item is a script, the current media player will be passed to it with the `entity_id` parameter.
+| Parameter  | Type                                      | Required | Default | Description                                        |
+|------------|-------------------------------------------|----------|---------|----------------------------------------------------|
+| name       | str                                       | Yes      | N/A     | The name for the custom section                    |
+| image      | str                                       | Yes      | N/A     | The URL of the image to use for the custom section |
+| items      | [SectionItemConfig](#section-item-config) | Yes      | true    | See below                                          |
+
+## Section Item Config
+These will be for each item inside of that section. Either `service` must be provided or `media_content_id` and `media_content_type`.
+| Parameter          | Type  | Required | Default | Description                                        |
+|--------------------|-------|----------|---------|----------------------------------------------------|
+| name               | str   | Yes      | N/A     | The name for the custom section                    |
+| image              | str   | Yes      | N/A     | The URL of the image to use for the custom section |
+| media_content_id   | str   | No       | true    | Media Content ID of the item to be played          |                                      
+| media_content_type | str   | No       | true    | Media Content type of the item to be played        |
+| service            | str   | No       | true    | Service to be called when selected                 |          
 
 ## Players Config
 

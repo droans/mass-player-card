@@ -25,11 +25,19 @@ export default css`
    --player-track-color: var(--ha-color-text-link);
    --player-name-color: var(--ha-color-text-secondary);
  }
-sl-tab-group {
-  --track-width: 0px;
-  display: flex;
-  justify-content: center;
-}
+  sl-tab-group {
+    --track-width: 0px;
+    display: flex;
+    justify-content: center;
+  }
+  .action-button::part(base) {
+    height: 48px;
+    width: 48px;
+  }
+  .action-button-active::part(base) {
+    height: 48px;
+    width: 48px;
+  }
 .action-button-active {
   background: rgba(from var(--md-ripple-color) r g b / 0.2);
   border-radius: 50%;
@@ -37,5 +45,8 @@ sl-tab-group {
 sl-tab-panel {
   height: var(--mass-player-card-height);
   display: block;
+}
+.section-hidden {
+  display: none;
 }
 `

@@ -1,24 +1,28 @@
 import { LitElement, html, type CSSResultGroup, PropertyValues, TemplateResult } from 'lit';
 import { keyed } from 'lit/directives/keyed.js';
 import { property, state } from 'lit/decorators.js';
-import {
-  type HomeAssistant,
-} from 'custom-card-helpers';
 
 import QueueActions from '../actions/queue-actions';
 import styles from '../styles/player-queue';
 import '../components/media-row'
-import { DEFAULT_QUEUE_CONFIG, QueueConfig, QueueItem } from '../const/player-queue';
-import { QueueConfigErrors } from '../const/card';
+import { 
+  DEFAULT_QUEUE_CONFIG,
+  MassQueueEvent,
+  QueueConfig,
+  QueueItem,
+} from '../const/player-queue';
+import { QueueConfigErrors } from '../config/player-queue';
+import { ExtendedHass } from '../const/common';
+import { LovelaceCard } from 'custom-card-helpers';
 
 class QueueCard extends LitElement {
   @state() private lastUpdated = '';
   private _active_player_entity!: string;
   @property({ attribute: false }) public _config!: QueueConfig;
-  private _hass!: HomeAssistant;
+  private _hass!: ExtendedHass;
   @state() private queue: QueueItem[] = [];
   private error?: TemplateResult;
-  public set hass(hass: HomeAssistant) {
+  public set hass(hass: ExtendedHass) {
     if (!hass) {
       return;
     }
@@ -101,11 +105,10 @@ class QueueCard extends LitElement {
     }
     this.getQueue(true);
     if (!this._listening) {
-      this.subscribeUpdates();
+      void this.subscribeUpdates();
   }
   }
-    /* eslint-disable-next-line @typescript-eslint/no-explicit-any */
-  private eventListener = (event: any) => {
+  private eventListener = (event: MassQueueEvent) => {
     const event_data = event.data;
     if (event_data.type == 'queue_updated') {
       const updated_queue_id = event_data.data.queue_id;
@@ -113,12 +116,20 @@ class QueueCard extends LitElement {
         this.getQueue(true);
     }}
   }
-  private subscribeUpdates() {
-    this._unsubscribe = this.hass.connection.subscribeEvents(
+  private async subscribeUpdates() {
+    this._unsubscribe = await this.hass.connection.subscribeEvents(
       this.eventListener, 
       "mass_queue"
     );
     this._listening = true;
+  }
+  public disconnectedCallback(): void {
+    super.disconnectedCallback();
+    if (!this._unsubscribe) {
+      return;
+    }
+    /* eslint-disable-next-line @typescript-eslint/no-unsafe-call */
+    this._unsubscribe();
   }
   private getQueueItemIndex(queue_item_id: string, queue: QueueItem[] = []): number {
     if (!queue.length) {
@@ -135,7 +146,7 @@ class QueueCard extends LitElement {
       !this.actions 
       || this.actions.player_entity !== this._active_player_entity
     ) {
-      this.actions = new QueueActions(this.hass, this._config, this._active_player_entity)
+      this.actions = new QueueActions(this.hass, this._active_player_entity)
     }
     if (this.testConfig(this._config) !== QueueConfigErrors.OK || this.hasFailed) {
       return;
@@ -226,6 +237,7 @@ class QueueCard extends LitElement {
               .moveQueueItemNextService=${this.onQueueItemMoveNext}
               .moveQueueItemUpService=${this.onQueueItemMoveUp}
               .moveQueueItemDownService=${this.onQueueItemMoveDown}
+              .hass=${this.hass}
             >
             </mass-player-media-row>`
         )
@@ -233,8 +245,11 @@ class QueueCard extends LitElement {
     );
   }
   protected render() {
-    return html`
+    return this.error ?? html`
       <ha-card>
+        <div class="header">
+          Queue
+        </div>
         <ha-md-list class="list">
           ${this.renderQueueItems()}
         </ha-md-list>
@@ -247,10 +262,7 @@ class QueueCard extends LitElement {
   }
   private createError(errorString: string): Error {
     const error = new Error(errorString);
-    /* eslint-disable-next-line
-      @typescript-eslint/no-explicit-any,
-    */
-    const errorCard = document.createElement('hui-error-card') as any;
+    const errorCard = document.createElement('hui-error-card') as LovelaceCard;
     errorCard.setConfig({
       type: 'error',
       error,

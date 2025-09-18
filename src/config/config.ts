@@ -1,11 +1,47 @@
-import { HomeAssistant } from "custom-card-helpers";
-import { mdiAlbum, mdiMusic, mdiPlaylistMusic, mdiSpeakerMultiple } from "@mdi/js";
+import { 
+  mdiAlbum, 
+  mdiMusic, 
+  mdiPlaylistMusic, 
+  mdiSpeakerMultiple 
+} from "@mdi/js";
 import { queueConfigForm } from "./player-queue";
-import { mediaBrowserConfigForm } from "./media-browser";
+import { 
+  DEFAULT_MEDIA_BROWSER_CONFIG, 
+  MediaBrowserConfig, 
+  mediaBrowserConfigForm, 
+  processMediaBrowserConfig
+} from "./media-browser";
 import { playersConfigForm } from "./players";
 import { playerConfigForm } from "./player";
+import { DEFAULT_QUEUE_CONFIG, QueueConfig } from "../const/player-queue";
+import { DEFAULT_MAX_VOLUME, DEFAULT_PLAYER_CONFIG, PlayerConfig } from "../const/music-player";
+import { DEFAULT_PLAYERS_CONFIG, PlayersConfig } from "../const/players";
+import { ExtendedHass } from "../const/common";
 
-export function createStubConfig(hass: HomeAssistant, entities: string[]) {
+export interface EntityConfig {
+  entity_id: string;
+  volume_entity_id: string;
+  max_volume: number;
+  name: string;
+}
+
+export interface Config {
+  entities: EntityConfig[];
+  queue: QueueConfig;
+  player: PlayerConfig;
+  media_browser: MediaBrowserConfig;
+  players: PlayersConfig;
+}
+
+export const DEFAULT_CONFIG = {
+  queue: DEFAULT_QUEUE_CONFIG,
+  player: DEFAULT_PLAYER_CONFIG,
+  players: DEFAULT_PLAYERS_CONFIG,
+  media_browser: DEFAULT_MEDIA_BROWSER_CONFIG
+}
+
+
+export function createStubConfig(hass: ExtendedHass, entities: string[]) {
   const media_players = entities.filter( 
     (ent) => {
       return ent.split(".")[0] == "media_player";
@@ -61,4 +97,53 @@ export function createConfigForm() {
       },
     ]
   }
+}
+
+function entityConfigFromEntityID(entity_id: string): EntityConfig {
+  return {
+    entity_id: entity_id,
+    volume_entity_id: entity_id,
+    name: "",
+    max_volume: DEFAULT_MAX_VOLUME,
+  }
+}
+
+function processEntityConfig(config: string|EntityConfig): EntityConfig {
+  if (typeof(config) == "string") {
+    return entityConfigFromEntityID(config)
+  }
+  return {
+    entity_id: config.entity_id,
+    volume_entity_id: config?.volume_entity_id ?? config.entity_id,
+    name: config?.name ?? "",
+    max_volume: config?.max_volume ?? DEFAULT_MAX_VOLUME,
+  }
+}
+
+function mergeDefaultConfig(config: Config): Config {
+  return {
+    ...DEFAULT_CONFIG,
+    ...config
+  }
+}
+
+function processEntitiesConfig(config: Config): Config {
+  const entity_config = config.entities;
+  const result: EntityConfig[] = [];
+  entity_config.forEach(
+    (entity: string|EntityConfig) => {
+      result.push(processEntityConfig(entity))
+    }
+  )
+  return {
+    ...config,
+    entities: result
+  }
+}
+
+export function processConfig(config: Config): Config {
+  config = mergeDefaultConfig(config);
+  config = processEntitiesConfig(config);
+  config = processMediaBrowserConfig(config);
+  return config;
 }

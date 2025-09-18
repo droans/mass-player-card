@@ -1,11 +1,14 @@
-import { HomeAssistant } from "custom-card-helpers";
 import { HassEntity } from "home-assistant-js-websocket";
-import { RepeatMode } from "../const/common";
+import { 
+  ExtendedHass, 
+  ExtendedHassEntity, 
+  RepeatMode 
+} from "../const/common";
+import { QueueItem } from "../const/player-queue";
 
-/* eslint-disable no-console */
 export default class PlayerActions {
-  private hass: HomeAssistant;
-  constructor(hass: HomeAssistant) {
+  private hass: ExtendedHass;
+  constructor(hass: ExtendedHass) {
     this.hass = hass;
   }
   async actionPlayPause(entity: HassEntity) {
@@ -17,6 +20,7 @@ export default class PlayerActions {
         }
       )
     } catch (e) {
+      /* eslint-disable-next-line no-console */
       console.error(`Error calling play/pause`, e)
     }
   }
@@ -31,6 +35,7 @@ export default class PlayerActions {
         }
       )
     } catch (e) {
+      /* eslint-disable-next-line no-console */
       console.error(`Error calling mute`, e)
     }
   }
@@ -43,6 +48,7 @@ export default class PlayerActions {
         }
       )
     } catch (e) {
+      /* eslint-disable-next-line no-console */
       console.error(`Error calling play next`, e)
     }
   }
@@ -55,6 +61,7 @@ export default class PlayerActions {
         }
       )
     } catch (e) {
+      /* eslint-disable-next-line no-console */
       console.error(`Error calling play previous`, e)
     } 
   }
@@ -69,6 +76,7 @@ export default class PlayerActions {
         }
       )
     } catch (e) {
+      /* eslint-disable-next-line no-console */
       console.error(`Error calling shuffle`, e)
     }
   }
@@ -83,6 +91,7 @@ export default class PlayerActions {
         }
       )
     } catch (e) {
+      /* eslint-disable-next-line no-console */
       console.error(`Error calling repeat`, e)
     }
   }
@@ -96,6 +105,7 @@ export default class PlayerActions {
         }
       )
     } catch (e) {
+      /* eslint-disable-next-line no-console */
       console.error(`Error calling repeat`, e)
     }
   }
@@ -109,8 +119,81 @@ export default class PlayerActions {
         }
       )
     } catch (e) {
+      /* eslint-disable-next-line no-console */
       console.error(`Error calling repeat`, e)
     }
   }
+  async actionTogglePlayer(entity: HassEntity) {
+    
+    try {
+      await this.hass.callService(
+        'media_player', 'toggle',
+        {
+          'entity_id': entity.entity_id
+        }
+      )
+    } catch (e) {
+      /* eslint-disable-next-line no-console */
+      console.error(`Error calling repeat`, e)
+    }
+  }
+  async actionGetCurrentItem(entity: ExtendedHassEntity): Promise<QueueItem|null> {
+    try {
+      /* eslint-disable 
+        @typescript-eslint/no-explicit-any,
+        @typescript-eslint/no-unsafe-assignment,
+        @typescript-eslint/no-unsafe-member-access
+      */
+      const ret = await this.hass.callWS<any>({
+        type: 'call_service',
+        domain: 'mass_queue',
+        service: 'get_queue_items',
+        service_data: {
+          entity: entity.entity_id,
+          limit_before: 1,
+          limit_after: 1,
+        },
+        return_response: true
+      });
+      /* eslint-disable-next-line @typescript-eslint/no-unsafe-call */
+      const result: QueueItem = ret.response[entity.entity_id].find(
+        (item: QueueItem) => {
+          return item.media_content_id == entity.attributes.media_content_id;
+        }
+      )
+      return result;
+      /* eslint-enable */
+    } catch (e) {
+      /* eslint-disable-next-line no-console */
+      console.error('Error getting queue', e);
+      return null;
+    }
+  }
+  async actionAddFavorite(entity: HassEntity) {
+    const dev_id = this.hass.entities[entity.entity_id].device_id;
+    try {
+      await this.hass.callService(
+        'button', 'press',
+        {
+          'device_id': dev_id
+        }
+      )
+    } catch (e) {
+      /* eslint-disable-next-line no-console */
+      console.error(`Error setting favorite`, e)
+    }
+  }
+  async actionRemoveFavorite(entity: HassEntity) {
+    try {
+      await this.hass.callService(
+        'mass_queue', 'unfavorite_current_item',
+        {
+          'entity': entity.entity_id
+        }
+      )
+    } catch (e) {
+      /* eslint-disable-next-line no-console */
+      console.error(`Error unfavoriting item for entity.`, e)
+    }
+  }
 }
-/* eslint-enable no-console */

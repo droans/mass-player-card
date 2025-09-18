@@ -1,10 +1,9 @@
 import { html, type CSSResultGroup, LitElement, PropertyValues } from 'lit';
 import { property } from 'lit/decorators.js'
 import styles from '../styles/player-row';
-import { HassEntity } from 'home-assistant-js-websocket';
 import { mdiLink, mdiLinkOff, mdiSwapHorizontal } from '@mdi/js';
 import { backgroundImageFallback, getFallbackImage } from '../utils/icons';
-import { Icons } from '../const/common';
+import { ExtendedHass, ExtendedHassEntity, Icon } from '../const/common';
 import { 
   PlayerJoinService, 
   PlayerSelectedService, 
@@ -14,10 +13,11 @@ import {
 import { testMixedContent } from '../utils/util';
 
 class PlayerRow extends LitElement {
-  @property({ type: Boolean }) player_entity!: HassEntity;
+  @property({ type: Boolean }) player_entity!: ExtendedHassEntity;
   @property({ type: Boolean }) selected = false;
   @property({ type: Boolean }) joined = false;
-
+  public hass!: ExtendedHass;
+  public playerName!: string;
   public selectedService!: PlayerSelectedService;
   public joinService!: PlayerJoinService;
   public unjoinService!: PlayerUnjoinService;
@@ -48,9 +48,9 @@ class PlayerRow extends LitElement {
   private artworkStyle() {
     const img: string = this.player_entity?.attributes?.entity_picture_local ?? "";
     if (!testMixedContent(img)) {
-      return getFallbackImage(Icons.HEADPHONES);
+      return getFallbackImage(this.hass, Icon.HEADPHONES);
     }
-    return backgroundImageFallback(img, Icons.HEADPHONES);
+    return backgroundImageFallback(this.hass, img, Icon.HEADPHONES);
   }
   private renderThumbnail() {
     return html`
@@ -63,7 +63,10 @@ class PlayerRow extends LitElement {
     `
   }
   private renderTitle() {
-    const title = this.player_entity.attributes?.friendly_name ?? "Media Player";
+    let title = this.playerName;
+    if (!title.length) {
+      title = this.player_entity.attributes?.friendly_name ?? "Media Player"
+    };
     return html`
       <span 
         slot="headline" 
@@ -79,12 +82,17 @@ class PlayerRow extends LitElement {
   /* eslint-disable @typescript-eslint/unbound-method */
   protected renderTransferButton() {
     return html`
-      <ha-icon-button
+      <ha-button
+        appearance="plain"
+        variant="brand"
+        size="medium"
         class="action-button"
-        .path=${mdiSwapHorizontal}
         @click=${this.onTransferPressed}
       >
-      </ha-icon-button>
+        <ha-svg-icon
+          .path=${mdiSwapHorizontal}
+          style="height: 1.5rem; width: 1.5rem;"
+        ></ha-svg-icon>
     `
   }
   protected renderJoinButon() {
@@ -92,12 +100,17 @@ class PlayerRow extends LitElement {
       return;
     }
     return html`
-      <ha-icon-button
+      <ha-button
+        appearance="plain"
+        variant="brand"
+        size="medium"
         class="action-button"
-        .path=${this.joined ? mdiLinkOff : mdiLink}
         @click=${this.onJoinPressed}
       >
-      </ha-icon-button>
+        <ha-svg-icon
+          .path=${this.joined ? mdiLinkOff : mdiLink}
+          style="height: 1.5rem; width: 1.5rem;"
+        ></ha-svg-icon>
     `
   }
   protected renderActionButtons() {
