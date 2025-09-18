@@ -126,6 +126,9 @@ class QueueCard extends LitElement {
   public disconnectedCallback(): void {
     super.disconnectedCallback();
     /* eslint-disable-next-line @typescript-eslint/no-unsafe-call */
+    if (!this._unsubscribe) {
+      return;
+    }
     this._unsubscribe();
   }
   private getQueueItemIndex(queue_item_id: string, queue: QueueItem[] = []): number {
