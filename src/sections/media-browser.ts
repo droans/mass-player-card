@@ -312,7 +312,7 @@ export class MediaBrowser extends LitElement {
   protected renderSectionHeader() {
     return html`
       <div id="title">
-        ${this.activeSection}
+        Media Browser
       </div>
     `    
   }
