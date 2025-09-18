@@ -273,6 +273,9 @@ export class MediaBrowser extends LitElement {
     }
     const activeCards = this.cards[this.activeSection];
     return html`
+      <div class="header">
+        Media Browser
+      </div>
       <div class="mass-browser">
         <mass-browser-cards
           .items=${activeCards}

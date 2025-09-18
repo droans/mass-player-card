@@ -7,4 +7,10 @@ export default css`
     display: flex;
     height: var(--mass-player-card-height);
   }
+.header {
+  font-size: 1.5em;
+  text-align: center;
+  font-weight: 600;
+  padding-top: 12px
+}
 `;

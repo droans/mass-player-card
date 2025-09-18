@@ -244,6 +244,9 @@ class QueueCard extends LitElement {
   protected render() {
     return this.error ?? html`
       <ha-card>
+        <div class="header">
+          Queue
+        </div>
         <ha-md-list class="list">
           ${this.renderQueueItems()}
         </ha-md-list>

@@ -53,4 +53,10 @@ export default css`
   *[hide] {
   display: none;
   }
+.header {
+  font-size: 1.5em;
+  text-align: center;
+  font-weight: 600;
+  padding-top: 12px
+}
 `;

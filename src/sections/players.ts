@@ -118,6 +118,9 @@ class PlayersCard extends LitElement {
   protected render() {
     return html`
       <ha-card>
+        <div class="header">
+          Players
+        </div>
         <ha-md-list class="list">
           ${this.renderPlayerRows()}
         </ha-md-list>
