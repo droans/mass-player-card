@@ -24,6 +24,7 @@ import {
   FavoriteItemConfig, 
   MediaBrowserConfig, 
 } from "../config/media-browser";
+import { mdiArrowLeft } from "@mdi/js";
 
 export class MediaBrowser extends LitElement {
   public activePlayer!: string;
@@ -128,6 +129,9 @@ export class MediaBrowser extends LitElement {
     const func = funcs[data.type];
   /* eslint-disable-next-line @typescript-eslint/no-unsafe-call */
     func(data);
+  }
+  private onBack = () => {
+    this.activeSection = 'main';
   }
   /* eslint-enable @typescript-eslint/no-unsafe-assignment */
   private _generateSectionBackgroundPart(icon: string, fallback: Icon = Icon.DISC) {
@@ -267,6 +271,34 @@ export class MediaBrowser extends LitElement {
       }
     )
   }
+  protected renderSubSectionHeader() {
+    return html`
+      <div id="back-button">
+        <ha-button
+          appearance="plain"
+          variant="brand"
+          size="medium"
+          class="button-back"
+          @click=${this.onBack}
+        >
+          <ha-svg-icon
+            .path=${mdiArrowLeft}
+            style="height: 2rem; width: 2rem;"
+          ></ha-svg-icon>
+        </ha-button>
+      </div>
+      <div id="title" style="padding-right: 2.5em;">
+        ${this.activeSection}
+      </div>
+    `
+  }
+  protected renderSectionHeader() {
+    return html`
+      <div id="title">
+        ${this.activeSection}
+      </div>
+    `    
+  }
   protected render() {
     if (!this.cards) {
       return;
@@ -275,7 +307,7 @@ export class MediaBrowser extends LitElement {
     return html`
       <ha-card>
         <div class="header">
-          Media Browser
+          ${this.activeSection == 'main' ? this.renderSectionHeader() : this.renderSubSectionHeader()}
         </div>
         <div class="mass-browser">
           <mass-browser-cards

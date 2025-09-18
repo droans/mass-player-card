@@ -8,10 +8,21 @@ export default css`
     height: var(--mass-player-card-height);
   }
 .header {
-  font-size: 1.5em;
-  text-align: center;
-  font-weight: 600;
   padding-top: 12px;
   height: auto;
+  display: flex;
 }
+  #title {
+    width: 100%;
+    text-transform: capitalize;
+    font-size: 1.5rem;
+    text-align: center;
+    font-weight: 600;
+  }
+  #back-button {
+    margin-left: 1em;
+    height: 1em;
+    width: 1em;
+    margin-top: -2px
+  }
 `;
