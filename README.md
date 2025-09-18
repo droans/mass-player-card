@@ -134,7 +134,7 @@ Display and interact with the player's queue.
 | tracks     | [FavoriteItem](#favorite-items) | No       | true    | See below                       |
 
 ### Favorite Items
-You can select which favorite items you'd like to display in the media browser. Use the example below to help set it up. By default, all favorites are enabled. If no favorites exist for a category, the section will not be displayed.
+You can select which favorite items you'd like to display in the media browser. Use the example below to help set it up. By default, all favorites are enabled. If no favorites exist for a category, the section will not be displayed. You can also add your own custom items to the favorite section by specifying it under `items`.
 
 ```yaml
 type: custom:mass-player-card
@@ -149,10 +149,11 @@ media_browser:
     ...
 ```
 
-| Parameter  | Type | Required | Default | Description                                 |
-|------------|------|----------|---------|---------------------------------------------|
-| enabled    | bool | No       | true    | Enable/disable favorites for the media type |
-| limit      | int  | No       | 25      | Maximum number of favorite items to return  |
+| Parameter | Type                                      | Required | Default | Description                                 |
+|-----------|-------------------------------------------|----------|---------|---------------------------------------------|
+| enabled   | bool                                      | No       | true    | Enable/disable favorites for the media type |
+| limit     | int                                       | No       | 25      | Maximum number of favorite items to return  |
+| items     | [SectionItemConfig](#section-item-config) | No       | N/A     | See below                                   |
 
 ## Sections Config
 Sections lets you add your own sections to the browser with your own items. These can either be media items (by providing `media_content_id` and `media_type`) or they can be a script (by providing `service`). If the item is a script, the current media player will be passed to it with the `entity_id` parameter.
@@ -160,7 +161,7 @@ Sections lets you add your own sections to the browser with your own items. Thes
 |------------|-------------------------------------------|----------|---------|----------------------------------------------------|
 | name       | str                                       | Yes      | N/A     | The name for the custom section                    |
 | image      | str                                       | Yes      | N/A     | The URL of the image to use for the custom section |
-| items      | [SectionItemConfig](#section-item-config) | Yes      | true    | See below   |                                      |
+| items      | [SectionItemConfig](#section-item-config) | Yes      | true    | See below                                          |
 
 ## Section Item Config
 These will be for each item inside of that section. Either `service` must be provided or `media_content_id` and `media_content_type`.
