@@ -5,4 +5,11 @@ export enum Sections {
   MEDIA_BROWSER = "media-browser"
 }
 
+export const DEFAULT_SECTION_PRIORITY = [
+  Sections.MUSIC_PLAYER,
+  Sections.QUEUE,
+  Sections.PLAYERS,
+  Sections.MEDIA_BROWSER,
+]
+
 export const DEFAULT_CARD: Sections = Sections.MUSIC_PLAYER
