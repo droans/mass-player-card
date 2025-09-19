@@ -205,6 +205,7 @@ export class MusicAssistantPlayerCard extends LitElement {
     el.activeSection = 'main';
   }
   protected renderPlayers() {
+    if (this.config.players.enabled) {
       return cache(html`
         <sl-tab-panel 
           name="${Sections.PLAYERS}" 
@@ -218,8 +219,11 @@ export class MusicAssistantPlayerCard extends LitElement {
           ></mass-player-players-card>
         </sl-tab-panel>
       `);
+    }
+    return html``
   }
   protected renderMusicPlayer() {
+    if (this.config.player.enabled) {
       return cache(html`
         <sl-tab-panel 
           name="${Sections.MUSIC_PLAYER}" 
@@ -235,8 +239,11 @@ export class MusicAssistantPlayerCard extends LitElement {
           ></mass-music-player-card>
         </sl-tab-panel>
       `);
+    }
+    return html``
   }
   protected renderPlayerQueue() {
+    if (this.config.queue.enabled) {
       return cache(html`
         <sl-tab-panel 
           name="${Sections.QUEUE}" 
@@ -249,8 +256,11 @@ export class MusicAssistantPlayerCard extends LitElement {
           ></mass-player-queue-card>
         </sl-tab-panel>
       `)
+    }
+    return html``
   }
   protected renderMediaBrowser() {
+    if (this.config.media_browser.enabled) {
       return cache(html`
         <sl-tab-panel 
           name="${Sections.MEDIA_BROWSER}" 
@@ -264,6 +274,8 @@ export class MusicAssistantPlayerCard extends LitElement {
           >
         </sl-tab-panel>
       `) 
+    }
+    return html``
   }
   protected renderMusicPlayerTab() {
     const active = this.active_section == Sections.MUSIC_PLAYER;
@@ -316,48 +328,54 @@ export class MusicAssistantPlayerCard extends LitElement {
   }
   protected renderMediaBrowserTab() {
     const active = this.active_section == Sections.MEDIA_BROWSER;
-    return html`
-      <sl-tab 
-        slot="nav"
-        .active=${active}
-        panel="${Sections.MEDIA_BROWSER}"
-        @click=${this.returnMediaBrowserToHome}
-      >
-          <ha-button
-            appearance="plain"
-            variant="brand"
-            size="medium"
-            class="action-button${active ? "-active" : ""}"
-          >
-            <ha-svg-icon
-              .path=${mdiAlbum}
-              style="height: 24px; width: 24px;${active ? "" : "fill: unset;"}"
-            ></ha-svg-icon>
-          </ha-button>
-      </sl-tab>
-    `
+    if (this.config.media_browser.enabled){
+      return html`
+        <sl-tab 
+          slot="nav"
+          .active=${active}
+          panel="${Sections.MEDIA_BROWSER}"
+          @click=${this.returnMediaBrowserToHome}
+        >
+            <ha-button
+              appearance="plain"
+              variant="brand"
+              size="medium"
+              class="action-button${active ? "-active" : ""}"
+            >
+              <ha-svg-icon
+                .path=${mdiAlbum}
+                style="height: 24px; width: 24px;${active ? "" : "fill: unset;"}"
+              ></ha-svg-icon>
+            </ha-button>
+        </sl-tab>
+      `
+    }
+    return html``
   }
   protected renderPlayersTab() {
     const active = this.active_section == Sections.PLAYERS;
-    return html`
-      <sl-tab 
-        slot="nav"
-        .active=${active}
-        panel="${Sections.PLAYERS}"
-      >
-          <ha-button
-            appearance="plain"
-            variant="brand"
-            size="medium"
-            class="action-button${active ? "-active" : ""}"
-          >
-            <ha-svg-icon
-              .path=${mdiSpeakerMultiple}
-              style="height: 24px; width: 24px;${active ? "" : "fill: unset;"}"
-            ></ha-svg-icon>
-          </ha-button>
-      </sl-tab>
-    `
+    if (this.config.players.enabled){
+      return html`
+        <sl-tab 
+          slot="nav"
+          .active=${active}
+          panel="${Sections.PLAYERS}"
+        >
+            <ha-button
+              appearance="plain"
+              variant="brand"
+              size="medium"
+              class="action-button${active ? "-active" : ""}"
+            >
+              <ha-svg-icon
+                .path=${mdiSpeakerMultiple}
+                style="height: 24px; width: 24px;${active ? "" : "fill: unset;"}"
+              ></ha-svg-icon>
+            </ha-button>
+        </sl-tab>
+      `
+    }
+    return html``
   }
   /* eslint-disable @typescript-eslint/unbound-method */
   protected renderTabs() {
