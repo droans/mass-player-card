@@ -17,7 +17,7 @@ import './sections/music-player';
 import './sections/player-queue';
 import './sections/players';
 import { HassEntity } from 'home-assistant-js-websocket';
-import { DEFAULT_CARD, Sections } from './const/card';
+import { Sections } from './const/card';
 import { MediaBrowser } from './sections/media-browser';
 import { 
   Config,

@@ -11,5 +11,3 @@ export const DEFAULT_SECTION_PRIORITY = [
   Sections.PLAYERS,
   Sections.MEDIA_BROWSER,
 ]
-
-export const DEFAULT_CARD: Sections = Sections.MUSIC_PLAYER
