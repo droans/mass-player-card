@@ -5,18 +5,21 @@ import { css } from 'lit';
 export default css`
   ha-control-button {
     --section-thumbnail-size: calc(var(--mass-player-card-height) / 5);
-    --thumbnail-size: calc(var(--mass-player-card-height) / 2.5);
+    --thumbnail-size: calc(var(--mass-player-card-height) / 2.5 - 2em);
     width: 98%;
     height: 98%;
     margin: 1%;
   }
   .thumbnail {
-    background-size: 100%;
+    background-size: cover;
     background-repeat: no-repeat;
     background-position: center;
     margin: 0 6%;
     height: var(--thumbnail-size);
     width: var(--thumbnail-size);
+    padding-left: 1em;
+    padding-right: 1em;
+    padding-bottom: 2em;
   }
   .thumbnail-section {
     background-repeat: no-repeat;
