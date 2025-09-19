@@ -154,7 +154,7 @@ media_browser:
 | items     | [SectionItemConfig](#section-item-config) | No       | N/A     | See below                                   |
 
 ## Sections Config
-Sections lets you add your own sections to the browser with your own items. These can either be media items (by providing `media_content_id` and `media_type`) or they can be a script (by providing `service`). If the item is a script, the current media player will be passed to it with the `entity_id` parameter.
+Sections lets you add your own sections to the browser with your own items. These can either be media items (by providing `media_content_id` and `media_content_type`) or they can be a script (by providing `service`). If the item is a script, the current media player will be passed to it with the `entity_id` parameter.
 | Parameter  | Type                                      | Required | Default | Description                                        |
 |------------|-------------------------------------------|----------|---------|----------------------------------------------------|
 | name       | str                                       | Yes      | N/A     | The name for the custom section                    |
