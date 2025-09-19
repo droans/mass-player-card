@@ -21,5 +21,5 @@ export interface PlayerData {
   favorite: boolean;
 }
 
-export const SWIPE_MIN_X = 200;
+export const SWIPE_MIN_X = 100;
 export const DEFAULT_MAX_VOLUME = 100;
