@@ -4,6 +4,18 @@ import {
   LitElement, 
   TemplateResult 
 } from "lit";
+import { property, state } from "lit/decorators.js";
+import { mdiArrowLeft } from "@mdi/js";
+
+import BrowserActions from "../actions/browser-actions";
+import '../components/media-browser-cards'
+import { 
+  customItem, 
+  customSection, 
+  FavoriteItemConfig, 
+  MediaBrowserConfig, 
+} from "../config/media-browser";
+
 import { 
   MediaBrowserItemsConfig, 
   MediaCardData, 
@@ -11,21 +23,13 @@ import {
   MediaLibraryItem, 
   MediaTypeIcons 
 } from "../const/media-browser";
-import BrowserActions from "../actions/browser-actions";
 import { ExtendedHass, Icon, MediaTypes } from "../const/common";
-import { property, state } from "lit/decorators.js";
-import '../components/media-browser-cards'
+
 import styles from '../styles/media-browser';
+
 import { backgroundImageFallback } from "../utils/icons";
 import { testMixedContent } from "../utils/util";
 import { EnqueueOptions } from "../const/actions";
-import { 
-  customItem, 
-  customSection, 
-  FavoriteItemConfig, 
-  MediaBrowserConfig, 
-} from "../config/media-browser";
-import { mdiArrowLeft } from "@mdi/js";
 
 export class MediaBrowser extends LitElement {
   public activePlayer!: string;
