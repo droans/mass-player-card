@@ -23,6 +23,7 @@ import {
 import { backgroundImageFallback, getFallbackImage } from "../utils/icons";
 import { ExtendedHass, ExtendedHassEntity, Icon } from '../const/common';
 import { 
+  MARQUEE_DELAY_MS,
   PlayerData, 
   SWIPE_MIN_X,
 } from "../const/music-player";
@@ -49,6 +50,7 @@ class MusicPlayerCard extends LitElement {
   private touchEndX = 0;
   private touchStartY = 0;
   private touchEndY = 0;
+  private _animationListener  = async () => this.onAnimationEnd();
   
   public set activeMediaPlayer(player: ExtendedHassEntity) {
     this._player = player;
@@ -234,12 +236,29 @@ class MusicPlayerCard extends LitElement {
     element?.addEventListener('touchstart', this.onSwipeStart);
     element?.addEventListener('touchend', this.onSwipeEnd);
   }
+  private onAnimationEnd = async () => {
+    if (this._track_title.className !== 'player-track-title marquee') {
+      return;
+    }
+    const delay = (delayMs: number) => {
+      return new Promise(resolve => setTimeout(resolve, delayMs))
+    };
+    this._track_title.className = 'player-track-title marquee-pause-end';
+    await delay(MARQUEE_DELAY_MS);
+    this._track_title.className = 'player-track-title marquee';
+    await delay(MARQUEE_DELAY_MS);
+  }
   protected wrapTitleMarquee() {
     const title = `${this.player_data.track_title} - ${this.player_data.track_album}`
     if (!this.shouldMarqueeTitle) {
+      /* eslint-disable-next-line @typescript-eslint/no-misused-promises */
+      this.removeEventListener('animationiteration', this._animationListener);
       return html`<div class="player-track-title">${title}</div>`
     }
-    const marqueeTime = `${(1 - (this.marquee_x_dist / 20)).toString()}s`;   
+    
+    const marqueeTime = `${(1 - (this.marquee_x_dist / 40)).toString()}s`;   
+    /* eslint-disable-next-line @typescript-eslint/no-misused-promises */
+    this._track_title.addEventListener('animationiteration', this._animationListener);
     return html`
       <div
         class="player-track-title marquee"

@@ -23,3 +23,4 @@ export interface PlayerData {
 
 export const SWIPE_MIN_X = 100;
 export const DEFAULT_MAX_VOLUME = 100;
+export const MARQUEE_DELAY_MS = 2000;
