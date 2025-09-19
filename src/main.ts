@@ -17,7 +17,7 @@ import './sections/music-player';
 import './sections/player-queue';
 import './sections/players';
 import { HassEntity } from 'home-assistant-js-websocket';
-import { DEFAULT_CARD, Sections } from './const/card';
+import { Sections } from './const/card';
 import { MediaBrowser } from './sections/media-browser';
 import { 
   Config,
@@ -27,6 +27,7 @@ import {
   processConfig,
 } from './config/config';
 import { ExtendedHass } from './const/common';
+import { getDefaultSection } from './utils/util';
 
 const DEV = false;
 
@@ -71,7 +72,7 @@ export class MusicAssistantPlayerCard extends LitElement {
   @state() private config!: Config;
   @state() private error?: TemplateResult;
   @state() private active_player_entity!: EntityConfig;
-  @state() private active_section: Sections = DEFAULT_CARD;
+  @state() private active_section!: Sections;
   @state() private entities!: HassEntity[];
   private _hass!: ExtendedHass;
 
@@ -132,6 +133,9 @@ export class MusicAssistantPlayerCard extends LitElement {
     if (!this.active_player_entity) {
       this.setDefaultActivePlayer();
     }
+    if (!this.active_section) {
+      this.setDefaultActiveSection();
+    }
     this.requestUpdate();
   }
   private setDefaultActivePlayer() {
@@ -152,6 +156,12 @@ export class MusicAssistantPlayerCard extends LitElement {
         this.active_player_entity = players[0];
       }
     }
+  }
+  private setDefaultActiveSection() {
+    if (this.active_section) {
+      return;
+    }
+    this.active_section = getDefaultSection(this.config);
   }
   private setActivePlayer = (player_entity: string) => {
     const player = this.config.entities.find(
@@ -186,7 +196,9 @@ export class MusicAssistantPlayerCard extends LitElement {
     return super.shouldUpdate(_changedProperties);
   }
   private browserItemSelected = () => {
-    this.active_section = Sections.MUSIC_PLAYER;
+    if (this.config.player.enabled){
+      this.active_section = Sections.MUSIC_PLAYER;
+    }
   }
   private playerSelected = (entity_id: string) => {
     this.setActivePlayer(entity_id);
@@ -379,7 +391,7 @@ export class MusicAssistantPlayerCard extends LitElement {
   }
   /* eslint-disable @typescript-eslint/unbound-method */
   protected renderTabs() {
-    return html`
+    return cache(html`
       <sl-tab-group
         @sl-tab-show=${this._handleTabChanged}
       >
@@ -388,7 +400,7 @@ export class MusicAssistantPlayerCard extends LitElement {
         ${this.renderMediaBrowserTab()}
         ${this.renderPlayersTab()}
       </sl-tab-group>
-    `
+    `)
   }
   /* eslint-enable @typescript-eslint/unbound-method */
   protected renderSections() {
