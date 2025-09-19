@@ -181,7 +181,7 @@ export class MediaBrowser extends LitElement {
       }
     );
     return html`
-      <div class="thumbnail" style="display: grid; grid-template-areas: 'bg-1 bg-2' 'bg-3 bg-4'; padding-bottom: 0%; height: unset; width: unset">
+      <div class="thumbnail" style="display: grid; grid-template-areas: 'bg-1 bg-2' 'bg-3 bg-4'; padding-bottom: 0%; height: unset; width: unset; padding-left: unset; padding-right: unset;">
         ${icons_html}
       </div>
     `
