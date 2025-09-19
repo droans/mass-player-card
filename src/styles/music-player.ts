@@ -135,21 +135,20 @@ export default css`
     background-color: rgba(var(--rgb-card-background-color), 0.9);
     border-radius: 10px;
   }
+  .marquee-pause-end {
+    left: var(--marquee-left-offset);
+    position: relative;
+  }
   .marquee {
-    animation: marquee var(--marquee-time) linear infinite;
+    animation: marquee var(--marquee-time) linear 2s;
+    animation-iteration-count: infinite;
     position: relative;
   }
   @keyframes marquee {
-    0% {
+    from {
       left: 0px;
     }
-    25% {
-      left: 0px;
-    }
-    75% {
-      left: var(--marquee-left-offset);
-    }
-    100% {
+    to {
       left: var(--marquee-left-offset);
     }
   }
