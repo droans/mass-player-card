@@ -11,7 +11,7 @@ jobs:
   build:
     name: Publish Release
     runs-on: ubuntu-latest
-    if: github.event.release.target_commitish == 'refs/heads/main'
+    if: contains(github.event.release.target_commitish, 'main')
     strategy:
       matrix:
         node-version: [22.x]
