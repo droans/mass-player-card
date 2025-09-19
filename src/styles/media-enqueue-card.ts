@@ -17,7 +17,7 @@ export default css`
   }
   #container {
     width: 100%;
-    height: var(--thumbnail-size);
+    height: calc(var(--mass-player-card-height) / 2);
     position: relative;
   }
 

@@ -84,7 +84,6 @@ export class MediaBrowser extends LitElement {
   public get activeCards() {
     return this._activeCards;
   }
-
   private setupIfReady(regenerate=false) {
     if (
       !this.config
