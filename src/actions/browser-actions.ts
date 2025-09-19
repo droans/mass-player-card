@@ -1,3 +1,4 @@
+import { EnqueueOptions } from "../const/actions";
 import { ExtendedHass, MediaTypes } from "../const/common";
 import { MediaLibraryItem } from "../const/media-browser";
 
@@ -23,6 +24,18 @@ export default class BrowserActions {
       await this.hass.callService(
         action[0], action[1],
         { entity_id: player_entity_id }
+      )
+    }
+    async actionEnqueueMedia(entity_id: string, content_id: string, content_type: string, enqueue: EnqueueOptions) {
+      const args = {
+        entity_id: entity_id,
+        media_id: content_id,
+        media_type: content_type,
+        enqueue: enqueue
+      }
+      await this.hass.callService(
+        'music_assistant', 'play_media',
+        args
       )
     }
     async actionGetFavorites(player_entity_id: string, media_type: MediaTypes, limit = 25): Promise<MediaLibraryItem[]> {
