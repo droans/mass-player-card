@@ -13,11 +13,13 @@ jobs:
   build:
     name: Publish Release
     runs-on: ubuntu-latest
-    if: github.event.release.target_commitish == 'dev'
+    # if: github.event.release.target_commitish == 'dev'
     strategy:
       matrix:
         node-version: [22.x]
     steps:
+      - run: |
+          echo "Release: ${{ github.event.release.target_commitish }}"
       - uses: actions/checkout@v3
         with:
           ref: dev
