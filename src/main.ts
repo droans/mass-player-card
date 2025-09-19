@@ -391,7 +391,7 @@ export class MusicAssistantPlayerCard extends LitElement {
   }
   /* eslint-disable @typescript-eslint/unbound-method */
   protected renderTabs() {
-    return html`
+    return cache(html`
       <sl-tab-group
         @sl-tab-show=${this._handleTabChanged}
       >
@@ -400,7 +400,7 @@ export class MusicAssistantPlayerCard extends LitElement {
         ${this.renderMediaBrowserTab()}
         ${this.renderPlayersTab()}
       </sl-tab-group>
-    `
+    `)
   }
   /* eslint-enable @typescript-eslint/unbound-method */
   protected renderSections() {
