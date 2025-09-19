@@ -18,6 +18,7 @@ import '../components/media-browser-cards'
 import styles from '../styles/media-browser';
 import { backgroundImageFallback } from "../utils/icons";
 import { testMixedContent } from "../utils/util";
+import { EnqueueOptions } from "../const/actions";
 import { 
   customItem, 
   customSection, 
@@ -129,6 +130,16 @@ export class MediaBrowser extends LitElement {
     const func = funcs[data.type];
   /* eslint-disable-next-line @typescript-eslint/no-unsafe-call */
     func(data);
+  }
+  private onEnqueue = (data: MediaCardData, enqueue: EnqueueOptions) => {
+    const content_id: string = data.media_content_id;
+    const content_type: string = data.media_content_type;
+    void this.actions.actionEnqueueMedia(
+      this.activePlayer,
+      content_id,
+      content_type,
+      enqueue
+    );
   }
   private onBack = () => {
     this.activeSection = 'main';
@@ -316,23 +327,29 @@ export class MediaBrowser extends LitElement {
       </div>
     `    
   }
+  protected renderBrowserCards() {
+    const activeCards = this.cards[this.activeSection];
+    return html`
+      <mass-browser-cards
+        .items=${activeCards}
+        .onSelectAction=${this.onSelect}
+        .hass=${this.hass}
+        .onEnqueueAction=${this.onEnqueue}
+      >
+      </mass-browser-cards>
+    `
+  }
   protected render() {
     if (!this.cards) {
       return;
     }
-    const activeCards = this.cards[this.activeSection];
     return html`
       <ha-card>
         <div class="header">
           ${this.activeSection == 'main' ? this.renderSectionHeader() : this.renderSubSectionHeader()}
         </div>
         <div class="mass-browser">
-          <mass-browser-cards
-            .items=${activeCards}
-            .onSelectAction=${this.onSelect}
-            .hass=${this.hass}
-          >
-          </mass-browser-cards>
+          ${this.renderBrowserCards()}
         </div>
       </ha-card>
     `;

@@ -1,11 +1,19 @@
 import { TemplateResult } from "lit";
 import {  Icon, MediaTypes } from "./common";
+import { EnqueueOptions } from "./actions";
+import { 
+  mdiPlayCircle, 
+  mdiPlayCircleOutline, 
+  mdiPlaylistPlus, 
+  mdiSkipNextCircle, 
+  mdiSkipNextCircleOutline
+} from "@mdi/js";
 
 
 export interface MediaBrowserItem {
   name: string,
-  uri: string,
-  media_type: MediaTypes,
+  media_content_id: string,
+  media_content_type: MediaTypes,
   image: string
 }
 export interface FavoriteItems {
@@ -46,3 +54,39 @@ export const MediaTypeIcons = {
   'track': Icon.CLEFT,
   'radio': Icon.RADIO,
 }
+
+interface EnqueueButtonData {
+  option: EnqueueOptions,
+  icon: string,
+  title: string
+}
+
+type EnqueueButtons = EnqueueButtonData[];
+
+export const ENQUEUE_BUTTONS: EnqueueButtons = [
+  {
+    option: EnqueueOptions.PLAY_NOW,
+    icon: mdiPlayCircleOutline,
+    title: "Play Now"
+  },
+  {
+    option: EnqueueOptions.PLAY_NEXT,
+    icon: mdiSkipNextCircleOutline,
+    title: "Play Next"
+  },
+  {
+    option: EnqueueOptions.PLAY_NOW_CLEAR_QUEUE,
+    icon: mdiPlayCircle,
+    title: "Play Now & Clear Queue"
+  },
+  {
+    option: EnqueueOptions.PLAY_NEXT_CLEAR_QUEUE,
+    icon: mdiSkipNextCircle,
+    title: "Play Next & Clear Queue"
+  },
+  {
+    option: EnqueueOptions.ADD_TO_QUEUE,
+    icon: mdiPlaylistPlus,
+    title: "Add to Queue"
+  },
+]
