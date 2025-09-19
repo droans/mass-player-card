@@ -11,10 +11,13 @@ jobs:
   build:
     name: Publish Release
     runs-on: ubuntu-latest
+    if: github.event.release.target_commitish == 'refs/heads/main'
     strategy:
       matrix:
         node-version: [22.x]
     steps:
+      - run: |
+          echo "Release: ${{ github.event.release.target_commitish }}"
       - uses: actions/checkout@v3
       - name: Use Node.js ${{ matrix.node-version }}
         uses: actions/setup-node@v4

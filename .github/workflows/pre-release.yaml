@@ -13,7 +13,7 @@ jobs:
   build:
     name: Publish Release
     runs-on: ubuntu-latest
-    # if: github.event.release.target_commitish == 'dev'
+    if: github.event.release.target_commitish == 'refs/heads/dev'
     strategy:
       matrix:
         node-version: [22.x]
