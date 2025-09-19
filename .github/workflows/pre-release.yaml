@@ -1,9 +1,11 @@
-name: Release
+name: Pre-Release
 on:
   workflow_dispatch:
   release:
     types:
       - published
+    # branches:
+    #   - dev
 permissions:
   contents: write
 
@@ -11,7 +13,7 @@ jobs:
   build:
     name: Publish Release
     runs-on: ubuntu-latest
-    if: contains(github.event.release.target_commitish, 'main')
+    if: contains(github.event.release.target_commitish, 'dev')
     strategy:
       matrix:
         node-version: [22.x]
@@ -19,6 +21,14 @@ jobs:
       - run: |
           echo "Release: ${{ github.event.release.target_commitish }}"
       - uses: actions/checkout@v3
+        with:
+          ref: dev
+      - name: Echo release info
+        run: |
+          echo "Release ${{ github.event.release }}"
+          echo "Release ${{ github.event.release.tag_name }} published"
+          echo "Target branch: ${{ github.event.release.target_commitish }}"
+          echo "Release name: ${{ github.event.release.name }}"
       - name: Use Node.js ${{ matrix.node-version }}
         uses: actions/setup-node@v4
         with:
