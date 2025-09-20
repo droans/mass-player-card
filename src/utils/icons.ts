@@ -14,8 +14,7 @@ export function getIcon(hass: ExtendedHass, icon: Icon): string {
   if (!hass) {
     return LightModeIcons[icon];
   }
-  /* eslint-disable-next-line @typescript-eslint/dot-notation */
-  if (hass.themes['darkMode']) {
+  if (hass.themes.darkMode) {
     return DarkModeIcons[icon];
   }
   return LightModeIcons[icon]
