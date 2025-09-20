@@ -22,7 +22,6 @@ class MediaEnqueueCard extends LitElement {
   public onEnqueueAction!: CardEnqueueService;
   public onSelectAction!: CardSelectedService;
   @state() code!: TemplateResult;
-  private stopPropagation = (ev: Event) => {ev.stopPropagation()};
   private _enqueue_buttons = ENQUEUE_BUTTONS;
   
   public set config(config: MediaCardItem) {
@@ -105,7 +104,6 @@ class MediaEnqueueCard extends LitElement {
   }
   protected renderEnqueueButton() {
     return html`
-      
       <ha-control-select-menu
         id="enqueue-menu-control"
         fixedMenuPosition

@@ -1,4 +1,4 @@
-import { HomeAssistant } from "custom-card-helpers"
+import { HomeAssistant, Themes } from "custom-card-helpers"
 import { HassEntity, HassEntityAttributeBase } from "home-assistant-js-websocket";
 
 export enum RepeatMode {
@@ -24,7 +24,7 @@ export enum Icon {
   MICROPHONE = "microphone",
   MICROPHONE_MAGIC = "microphone_magic",
   PERSON = "person",
-  PLAYLIST = "play;ist",
+  PLAYLIST = "playlist",
   RADIO = "radio"
 }
 
@@ -57,11 +57,18 @@ interface ExtendedEntityBase {
   device_id: string
 }
 
+export interface ExtendedThemes extends Themes {
+  darkMode: boolean,
+  default_dark_theme: string;
+  theme: string;
+}
+
 type ExtendedEntitiesBase = Record<string, ExtendedEntityBase>;
 type ExtendedHassEntities = Record<string, ExtendedHassEntity>;
 export interface ExtendedHass extends HomeAssistant {
-  entities: ExtendedEntitiesBase
-  states: ExtendedHassEntities
+  entities: ExtendedEntitiesBase,
+  states: ExtendedHassEntities,
+  themes: ExtendedThemes
 }
 
 export const DarkModeIcons: Record<string, string> = {

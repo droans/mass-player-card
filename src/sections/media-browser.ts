@@ -5,7 +5,14 @@ import {
   TemplateResult 
 } from "lit";
 import { property, state } from "lit/decorators.js";
-import { mdiArrowLeft } from "@mdi/js";
+import { 
+  mdiArrowLeft, 
+  mdiHeart, 
+  mdiHeartOutline, 
+  mdiMagnify, 
+  mdiMusic
+} from "@mdi/js";
+import '@shoelace-style/shoelace/dist/components/input/input';
 
 import BrowserActions from "../actions/browser-actions";
 import '../components/media-browser-cards'
@@ -17,11 +24,15 @@ import {
 } from "../config/media-browser";
 
 import { 
+  DEFAULT_SEARCH_LIMIT,
   MediaBrowserItemsConfig, 
   MediaCardData, 
   MediaCardItem, 
   MediaLibraryItem, 
-  MediaTypeIcons 
+  MediaTypeIcons, 
+  SEARCH_MEDIA_TYPE_BUTTONS, 
+  SEARCH_TERM_MIN_LENGTH, 
+  SEARCH_UPDATE_DELAY
 } from "../const/media-browser";
 import { ExtendedHass, Icon, MediaTypes } from "../const/common";
 
@@ -37,9 +48,14 @@ export class MediaBrowser extends LitElement {
   private _hass!: ExtendedHass;
   @state() private cards: MediaBrowserItemsConfig = {main: []};
   private _activeSection = 'main';
+  private previousSection = '';
   private actions!: BrowserActions;
   private _activeCards: MediaCardItem[] = [];
   public onMediaSelectedAction!: () => void;
+  private _lastSearchInputTs= 0;
+  @state() private _searchFavorites= false;
+  private _searchMediaType: MediaTypes = MediaTypes.TRACK;
+  @state() private _searchMediaTypeIcon: string = mdiMusic;
   public set config(config: MediaBrowserConfig) {
     if (!config) {
       return;
@@ -75,7 +91,7 @@ export class MediaBrowser extends LitElement {
     return this._activeSection;
   }
   private set activeCards(activeCards: MediaCardItem[]) {
-    if (!activeCards?.length) {
+    if (!activeCards?.length && this.activeSection != 'search') {
       return;
     }
     this._activeCards = activeCards;
@@ -98,6 +114,7 @@ export class MediaBrowser extends LitElement {
       this.generateCards().catch( () => {return});
       this.requestUpdate();
     }
+    this.cards.search = [];
     if (regenerate) {
       this.generateCards().catch( () => {return});
       this.activeCards = this.cards[this.activeSection]
@@ -145,7 +162,96 @@ export class MediaBrowser extends LitElement {
     );
   }
   private onBack = () => {
+    if (this.activeSection == 'search' && this.previousSection.length) {
+      this.activeSection = this.previousSection;
+      return;
+    }
     this.activeSection = 'main';
+  }
+  private onSearchPress = () => {
+    this._searchFavorites = true;
+    this.previousSection = this.activeSection;
+    this.activeSection = 'search';
+  }
+  private onSearchInput = (ev: Event) => {
+    // eslint-disable-next-line @typescript-eslint/no-explicit-any, @typescript-eslint/no-unsafe-member-access
+    const val = ((ev.target as any).value as string).trim();
+    if (val.length < SEARCH_TERM_MIN_LENGTH) {
+      return;
+    }
+    const cur_ts = Date.now();
+    this._lastSearchInputTs = cur_ts;
+    setTimeout(
+      async () => {await this.searchIfNotUpdated(cur_ts, val, this._searchMediaType);},
+      SEARCH_UPDATE_DELAY
+    )
+  }
+  private getMediaTypeSvg(media_type: MediaTypes) {
+    const data = SEARCH_MEDIA_TYPE_BUTTONS;
+    const result = data.find(
+      (item) => {
+        return (item.option as MediaTypes) == media_type;
+      }
+    );
+    return result?.icon ?? Icon.CLEFT;
+  }
+  private onSearchMediaTypeSelect = (ev: CustomEvent) => {
+    /* eslint-disable 
+      @typescript-eslint/no-explicit-any,
+      @typescript-eslint/no-unsafe-member-access,
+    */
+    const target = ev.target as any;
+    const value = target.value as MediaTypes;
+    if (!value) {
+      return;
+    }
+    target.value = "";
+    /* eslint-enable 
+      @typescript-eslint/no-explicit-any,
+      @typescript-eslint/no-unsafe-member-access,
+    */
+    this._searchMediaType = value;
+    this._searchMediaTypeIcon = this.getMediaTypeSvg(value);
+  }
+  private onSearchFavoriteSelect = () => {
+    this._searchFavorites = !this._searchFavorites;
+  }
+  private async searchIfNotUpdated(last_ts: number, search_term: string, media_type: MediaTypes) {
+    if (last_ts != this._lastSearchInputTs) {
+      return;
+    }
+    await this.generateSearchResults(search_term, media_type);
+    this.activeCards = this.cards.search;
+  }
+  private async generateSearchResults(
+    search_term: string, 
+    media_type: MediaTypes, 
+    library_only = false as const,
+    limit: number = DEFAULT_SEARCH_LIMIT
+  ) {
+    const search_result = await this.actions.actionSearchMedia(
+      this.activePlayer,
+      search_term,
+      media_type,
+      library_only,
+      limit
+    );
+    const items = search_result.map(
+      (item) => {
+        const r: MediaCardItem = {
+          title: item.name,
+          icon: item.image,
+          fallback: Icon.CLEFT,
+          data: {
+            type: 'favorites',
+            media_content_id: item.uri,
+            media_content_type: item.media_type
+          }
+        };
+        return r;
+      }
+    )
+    this.cards.search = items;
   }
   /* eslint-enable @typescript-eslint/no-unsafe-assignment */
   private _generateSectionBackgroundPart(icon: string, fallback: Icon = Icon.DISC) {
@@ -302,7 +408,7 @@ export class MediaBrowser extends LitElement {
     )
     return [...items, ...customs];
   }
-  protected renderSubSectionHeader() {
+  protected renderBackButton() {
     return html`
       <div id="back-button">
         <ha-button
@@ -318,15 +424,134 @@ export class MediaBrowser extends LitElement {
           ></ha-svg-icon>
         </ha-button>
       </div>
-      <div id="title" style="padding-right: 2.5em;">
-        ${this.activeSection}
+    `
+  }
+  protected renderSearchButton() {
+    return html`
+      <div id="search-button">
+        <ha-button
+          appearance="plain"
+          variant="brand"
+          size="medium"
+          class="button-search"
+          @click=${this.onSearchPress}
+        >
+          <ha-svg-icon
+            .path=${mdiMagnify}
+            style="height: 2rem; width: 2rem;"
+          ></ha-svg-icon>
+        </ha-button>
+      </div>
+    `
+  }
+  protected renderTitle() {
+    const title = this.activeSection == 'main' ? 'Media Browser' : this.activeSection;
+    return html`
+      <div id="title">
+        ${title}
+      </div>
+    `
+  }
+  protected renderSearchMediaTypeList() {
+    const buttons = SEARCH_MEDIA_TYPE_BUTTONS;
+    return buttons.map(
+      (item) => {
+        return html`
+          <ha-list-item
+            class="search-media-type-list-item"
+            .value="${item.option}"
+            .graphic=${item.icon}
+          >
+            <ha-svg-icon
+              class="search-media-type-item-svg"
+              slot="graphic"
+              .path=${item.icon}
+            ></ha-svg-icon>
+            ${item.title}
+          </ha-list-item>
+        `
+      }
+    )
+  }
+  protected renderSearchMediaTypesButton() {
+    return html`
+      <ha-control-select-menu
+        id="search-media-type-menu-control"
+        fixedMenuPosition
+        naturalMenuWidth
+        @selected=${this.onSearchMediaTypeSelect}
+      >
+        <ha-svg-icon
+          slot="icon"
+          id="search-media-type-menu-svg"
+          .path=${this._searchMediaTypeIcon}
+        ></ha-svg-icon>
+        ${this.renderSearchMediaTypeList()}
+      </ha-control-select-menu>
+    `
+  }
+  protected renderSearchFavoritesButton() {
+    return html`
+      <ha-button
+        appearance="plain"
+        variant="brand"
+        size="medium"
+        class="search-favorite-button"
+        @click=${this.onSearchFavoriteSelect}
+      >
+        <ha-svg-icon
+          .path=${this._searchFavorites ? mdiHeart : mdiHeartOutline}
+          style="height: 1.5rem; width: 1.5rem;"
+        ></ha-svg-icon>
+      </ha-button>
+    `
+  }
+  protected renderSearchBar() {
+    const styles_base_url = 'https://cdn.jsdelivr.net/npm/@shoelace-style/shoelace@2.20.1/cdn/themes/';
+    const styles_url = styles_base_url + (this.hass.themes.darkMode ? 'dark.css' : 'light.css');
+    return html`
+      <div id="search-input">
+        <link rel="stylesheet" href="${styles_url}" />
+        <sl-input
+          placeholder="Search"
+          type="search"
+          class="${this.hass.themes.darkMode ? 'sl-theme-dark' : 'sl-theme-light'}"
+          inputmode="search"
+          size="medium"
+          clearable
+          pill
+          autofocus
+        >
+          <span slot="suffix">
+            ${this.renderSearchMediaTypesButton()}
+            ${this.renderSearchFavoritesButton()}
+          </span>
+        </sl-input>
+      </div>
+    `
+  }
+  protected renderSearchHeader() {
+    return html`
+      <div id="header-search" class="header">
+        ${this.renderBackButton()}
+        ${this.renderSearchBar()}
       </div>
     `
   }
   protected renderSectionHeader() {
     return html`
-      <div id="title">
-        Media Browser
+      <div id="header-section" class="header">
+        ${this.renderBackButton()}
+        ${this.renderTitle()}
+        ${this.renderSearchButton()}
+      </div>
+    `
+  }
+  protected renderMainHeader() {
+    return html`
+      <div id="header-main" class="header">
+        ${this.renderTitle()}
+        ${this.renderSearchButton()}
       </div>
     `    
   }
@@ -342,20 +567,35 @@ export class MediaBrowser extends LitElement {
       </mass-browser-cards>
     `
   }
+  protected renderHeader() {
+    switch (this.activeSection) {
+      case "main":
+        return this.renderMainHeader();
+      case "search":
+        return this.renderSearchHeader();
+    default:
+      return this.renderSectionHeader();
+    }
+  }
   protected render() {
     if (!this.cards) {
       return;
     }
     return html`
       <ha-card>
-        <div class="header">
-          ${this.activeSection == 'main' ? this.renderSectionHeader() : this.renderSubSectionHeader()}
-        </div>
+        ${this.renderHeader()}
         <div class="mass-browser">
           ${this.renderBrowserCards()}
         </div>
       </ha-card>
     `;
+  }
+  protected updated() {
+    if (!(this.activeSection == 'search')) {
+      return;
+    }
+    const element = this.shadowRoot?.getElementById('search-input');
+    element?.addEventListener('sl-input', this.onSearchInput);
   }
   static get styles(): CSSResultGroup {
     return styles;

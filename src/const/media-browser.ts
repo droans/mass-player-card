@@ -2,9 +2,16 @@ import { TemplateResult } from "lit";
 import {  Icon, MediaTypes } from "./common";
 import { EnqueueOptions } from "./actions";
 import { 
+  mdiAccountMusic,
+  mdiAlbum,
+  mdiBook,
+  mdiMusic,
   mdiPlayCircle, 
   mdiPlayCircleOutline, 
+  mdiPlaylistMusic, 
   mdiPlaylistPlus, 
+  mdiPodcast, 
+  mdiRadio, 
   mdiSkipNextCircle, 
   mdiSkipNextCircleOutline
 } from "@mdi/js";
@@ -55,15 +62,15 @@ export const MediaTypeIcons = {
   'radio': Icon.RADIO,
 }
 
-interface EnqueueButtonData {
-  option: EnqueueOptions,
+interface ListItemData {
+  option: string,
   icon: string,
   title: string
 }
 
-type EnqueueButtons = EnqueueButtonData[];
+type ListItems = ListItemData[];
 
-export const ENQUEUE_BUTTONS: EnqueueButtons = [
+export const ENQUEUE_BUTTONS: ListItems = [
   {
     option: EnqueueOptions.PLAY_NOW,
     icon: mdiPlayCircleOutline,
@@ -90,3 +97,46 @@ export const ENQUEUE_BUTTONS: EnqueueButtons = [
     title: "Add to Queue"
   },
 ]
+
+export const SEARCH_MEDIA_TYPE_BUTTONS: ListItems = [
+  {
+    option: MediaTypes.ALBUM,
+    icon: mdiAlbum,
+    title: 'Albums'
+  },
+  {
+    option: MediaTypes.ARTIST,
+    icon: mdiAccountMusic,
+    title: 'Artists'
+  },
+  {
+    option: MediaTypes.AUDIOBOOK,
+    icon: mdiBook,
+    title: 'Audiobooks'
+  },
+  {
+    option: MediaTypes.PLAYLIST,
+    icon: mdiPlaylistMusic,
+    title: 'Playlists'
+  },
+  {
+    option: MediaTypes.PODCAST,
+    icon: mdiPodcast,
+    title: 'Podcasts'
+  },
+  {
+    option: MediaTypes.RADIO,
+    icon: mdiRadio,
+    title: 'Radio'
+  },
+  {
+    option: MediaTypes.TRACK,
+    icon: mdiMusic,
+    title: 'Tracks'
+  },
+
+]
+
+export const SEARCH_UPDATE_DELAY = 1000;
+export const DEFAULT_SEARCH_LIMIT = 20;
+export const SEARCH_TERM_MIN_LENGTH = 3;

@@ -1,6 +1,6 @@
 import { EnqueueOptions } from "../const/actions";
 import { ExtendedHass, MediaTypes } from "../const/common";
-import { MediaLibraryItem } from "../const/media-browser";
+import { DEFAULT_SEARCH_LIMIT, MediaLibraryItem } from "../const/media-browser";
 
 export default class BrowserActions {
     private hass: ExtendedHass;
@@ -63,6 +63,38 @@ export default class BrowserActions {
         @typescript-eslint/no-unsafe-member-access
       */
       return response.response.items;
+    }
+    async actionSearchMedia(
+      player_entity_id: string, 
+      search_term: string, 
+      media_type: MediaTypes, 
+      library_only: false,
+      limit: number = DEFAULT_SEARCH_LIMIT
+    ): Promise<MediaLibraryItem[]> {
+      const config_id = await this.getPlayerConfigEntry(player_entity_id);
+      const args = {
+        limit: limit,
+        library_only: library_only,
+        config_entry_id: config_id,
+        name: search_term,
+        media_type: [media_type]
+      }
+      // eslint-disable-next-line @typescript-eslint/no-explicit-any, @typescript-eslint/no-unsafe-assignment
+      const response = await this.hass.callWS<any>( 
+        {
+            type: 'call_service', 
+            domain: 'music_assistant', 
+            service: 'search', 
+            service_data: args,
+            return_response: true
+        }
+      );
+      const response_media_type = `${media_type}s`
+      /* eslint-disable-next-line 
+      @typescript-eslint/no-unsafe-member-access, 
+      @typescript-eslint/no-unsafe-return,
+      */
+      return response.response[response_media_type];
     }
     private async getPlayerConfigEntry(entity_id: string): Promise<string> {
       /* eslint-disable
