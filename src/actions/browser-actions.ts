@@ -68,7 +68,7 @@ export default class BrowserActions {
       player_entity_id: string, 
       search_term: string, 
       media_type: MediaTypes, 
-      library_only: false,
+      library_only = false,
       limit: number = DEFAULT_SEARCH_LIMIT
     ): Promise<MediaLibraryItem[]> {
       const config_id = await this.getPlayerConfigEntry(player_entity_id);

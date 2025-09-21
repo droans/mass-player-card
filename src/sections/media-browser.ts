@@ -7,8 +7,8 @@ import {
 import { property, state } from "lit/decorators.js";
 import { 
   mdiArrowLeft, 
-  mdiHeart, 
-  mdiHeartOutline, 
+  mdiLibrary, 
+  mdiLibraryOutline, 
   mdiMagnify, 
   mdiMusic
 } from "@mdi/js";
@@ -52,10 +52,13 @@ export class MediaBrowser extends LitElement {
   private actions!: BrowserActions;
   private _activeCards: MediaCardItem[] = [];
   public onMediaSelectedAction!: () => void;
+
   private _lastSearchInputTs= 0;
-  @state() private _searchFavorites= false;
+  @state() private _searchLibrary= false;
   private _searchMediaType: MediaTypes = MediaTypes.TRACK;
+  private _searchMediaTerm = "";
   @state() private _searchMediaTypeIcon: string = mdiMusic;
+  
   public set config(config: MediaBrowserConfig) {
     if (!config) {
       return;
@@ -129,6 +132,12 @@ export class MediaBrowser extends LitElement {
     this.onMediaSelectedAction();
   }
   private onSectionSelect = (data: MediaCardData) => {
+    const subtype: string = data?.subtype ?? 'custom';
+    const section = data.section;
+    if (subtype == 'favorite') {
+      this._searchMediaType = section;
+      this._searchMediaTypeIcon = this.getMediaTypeSvg(section);
+    }
     this.activeSection = data.section;
   }
   private onServiceSelect = (data: MediaCardData) => {
@@ -169,7 +178,6 @@ export class MediaBrowser extends LitElement {
     this.activeSection = 'main';
   }
   private onSearchPress = () => {
-    this._searchFavorites = true;
     this.previousSection = this.activeSection;
     this.activeSection = 'search';
   }
@@ -181,8 +189,11 @@ export class MediaBrowser extends LitElement {
     }
     const cur_ts = Date.now();
     this._lastSearchInputTs = cur_ts;
+    this._searchMediaTerm = val;
     setTimeout(
-      async () => {await this.searchIfNotUpdated(cur_ts, val, this._searchMediaType);},
+      async () => {
+        await this.searchIfNotUpdated(cur_ts, val, this._searchMediaType);
+      },
       SEARCH_UPDATE_DELAY
     )
   }
@@ -212,23 +223,29 @@ export class MediaBrowser extends LitElement {
     */
     this._searchMediaType = value;
     this._searchMediaTypeIcon = this.getMediaTypeSvg(value);
+    void this.generateSearchResults(this._searchMediaTerm, this._searchMediaType, this._searchLibrary);
   }
-  private onSearchFavoriteSelect = () => {
-    this._searchFavorites = !this._searchFavorites;
+  private onSearchLibrarySelect = () => {
+    this._searchLibrary = !this._searchLibrary;
+    void this.generateSearchResults(this._searchMediaTerm, this._searchMediaType, this._searchLibrary);
+
   }
   private async searchIfNotUpdated(last_ts: number, search_term: string, media_type: MediaTypes) {
     if (last_ts != this._lastSearchInputTs) {
       return;
     }
-    await this.generateSearchResults(search_term, media_type);
+    await this.generateSearchResults(search_term, media_type, this._searchLibrary);
     this.activeCards = this.cards.search;
   }
   private async generateSearchResults(
     search_term: string, 
     media_type: MediaTypes, 
-    library_only = false as const,
+    library_only = false as boolean,
     limit: number = DEFAULT_SEARCH_LIMIT
   ) {
+    if (search_term.length < SEARCH_TERM_MIN_LENGTH) {
+      return;
+    }
     const search_result = await this.actions.actionSearchMedia(
       this.activePlayer,
       search_term,
@@ -301,6 +318,7 @@ export class MediaBrowser extends LitElement {
       fallback: icon,
       data: {
         type: 'section',
+        subtype: 'favorite',
         section: media_type
       }
     }
@@ -323,6 +341,7 @@ export class MediaBrowser extends LitElement {
       fallback: Icon.CLEFT,
       data: {
         type: 'section',
+        subtype: 'custom',
         section: config.name
       }
     };
@@ -497,10 +516,10 @@ export class MediaBrowser extends LitElement {
         variant="brand"
         size="medium"
         class="search-favorite-button"
-        @click=${this.onSearchFavoriteSelect}
+        @click=${this.onSearchLibrarySelect}
       >
         <ha-svg-icon
-          .path=${this._searchFavorites ? mdiHeart : mdiHeartOutline}
+          .path=${this._searchLibrary ? mdiLibrary : mdiLibraryOutline}
           style="height: 1.5rem; width: 1.5rem;"
         ></ha-svg-icon>
       </ha-button>
@@ -522,7 +541,7 @@ export class MediaBrowser extends LitElement {
           pill
           autofocus
         >
-          <span slot="suffix">
+          <span slot="suffix" id="search-options">
             ${this.renderSearchMediaTypesButton()}
             ${this.renderSearchFavoritesButton()}
           </span>

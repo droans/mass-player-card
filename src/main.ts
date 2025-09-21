@@ -307,6 +307,8 @@ export class MusicAssistantPlayerCard extends LitElement {
             <ha-svg-icon
               .path=${mdiMusic}
               style="height: 24px; width: 24px;${active ? "" : "fill: unset;"}"
+              style="height: 24px; width: 24px;"
+              class="action-button-svg${active ? "" : "-inactive"}"
             ></ha-svg-icon>
           </ha-button>
         </sl-tab>
@@ -331,7 +333,8 @@ export class MusicAssistantPlayerCard extends LitElement {
           >
             <ha-svg-icon
               .path=${mdiPlaylistMusic}
-              style="height: 24px; width: 24px;${active ? "" : "fill: unset;"}"
+              style="height: 24px; width: 24px;"
+              class="action-button-svg${active ? "" : "-inactive"}"
             ></ha-svg-icon>
           </ha-button>
       `
@@ -356,7 +359,8 @@ export class MusicAssistantPlayerCard extends LitElement {
             >
               <ha-svg-icon
                 .path=${mdiAlbum}
-                style="height: 24px; width: 24px;${active ? "" : "fill: unset;"}"
+                style="height: 24px; width: 24px;"
+                class="action-button-svg${active ? "" : "-inactive"}"
               ></ha-svg-icon>
             </ha-button>
         </sl-tab>
@@ -381,7 +385,8 @@ export class MusicAssistantPlayerCard extends LitElement {
             >
               <ha-svg-icon
                 .path=${mdiSpeakerMultiple}
-                style="height: 24px; width: 24px;${active ? "" : "fill: unset;"}"
+                style="height: 24px; width: 24px;"
+                class="action-button-svg${active ? "" : "-inactive"}"
               ></ha-svg-icon>
             </ha-button>
         </sl-tab>

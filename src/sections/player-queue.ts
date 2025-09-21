@@ -142,6 +142,10 @@ class QueueCard extends LitElement {
     this.queue.splice(new_index, 0, this.queue.splice(old_index, 1)[0]);
   }
   private getQueue(forced_id = false) {
+      const app_is_mass = this.hass.states[this._active_player_entity].attributes.app_id == 'music_assistant';
+      if (!app_is_mass) {
+        return;
+      }
     if (
       !this.actions 
       || this.actions.player_entity !== this._active_player_entity
