@@ -7,8 +7,8 @@ import {
 import { property, state } from "lit/decorators.js";
 import { 
   mdiArrowLeft, 
-  mdiHeart, 
-  mdiHeartOutline, 
+  mdiLibrary, 
+  mdiLibraryOutline, 
   mdiMagnify, 
   mdiMusic
 } from "@mdi/js";
@@ -53,7 +53,7 @@ export class MediaBrowser extends LitElement {
   private _activeCards: MediaCardItem[] = [];
   public onMediaSelectedAction!: () => void;
   private _lastSearchInputTs= 0;
-  @state() private _searchFavorites= false;
+  @state() private _searchLibrary= false;
   private _searchMediaType: MediaTypes = MediaTypes.TRACK;
   @state() private _searchMediaTypeIcon: string = mdiMusic;
   public set config(config: MediaBrowserConfig) {
@@ -213,20 +213,20 @@ export class MediaBrowser extends LitElement {
     this._searchMediaType = value;
     this._searchMediaTypeIcon = this.getMediaTypeSvg(value);
   }
-  private onSearchFavoriteSelect = () => {
-    this._searchFavorites = !this._searchFavorites;
+  private onSearchLibrarySelect = () => {
+    this._searchLibrary = !this._searchLibrary;
   }
   private async searchIfNotUpdated(last_ts: number, search_term: string, media_type: MediaTypes) {
     if (last_ts != this._lastSearchInputTs) {
       return;
     }
-    await this.generateSearchResults(search_term, media_type);
+    await this.generateSearchResults(search_term, media_type, this._searchLibrary);
     this.activeCards = this.cards.search;
   }
   private async generateSearchResults(
     search_term: string, 
     media_type: MediaTypes, 
-    library_only = false as const,
+    library_only = false as boolean,
     limit: number = DEFAULT_SEARCH_LIMIT
   ) {
     const search_result = await this.actions.actionSearchMedia(
@@ -497,10 +497,10 @@ export class MediaBrowser extends LitElement {
         variant="brand"
         size="medium"
         class="search-favorite-button"
-        @click=${this.onSearchFavoriteSelect}
+        @click=${this.onSearchLibrarySelect}
       >
         <ha-svg-icon
-          .path=${this._searchFavorites ? mdiHeart : mdiHeartOutline}
+          .path=${this._searchLibrary ? mdiLibrary : mdiLibraryOutline}
           style="height: 1.5rem; width: 1.5rem;"
         ></ha-svg-icon>
       </ha-button>
