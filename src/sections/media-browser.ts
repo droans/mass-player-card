@@ -55,6 +55,7 @@ export class MediaBrowser extends LitElement {
   private _lastSearchInputTs= 0;
   @state() private _searchLibrary= false;
   private _searchMediaType: MediaTypes = MediaTypes.TRACK;
+  private _searchMediaTerm = "";
   @state() private _searchMediaTypeIcon: string = mdiMusic;
   public set config(config: MediaBrowserConfig) {
     if (!config) {
@@ -181,8 +182,11 @@ export class MediaBrowser extends LitElement {
     }
     const cur_ts = Date.now();
     this._lastSearchInputTs = cur_ts;
+    this._searchMediaTerm = val;
     setTimeout(
-      async () => {await this.searchIfNotUpdated(cur_ts, val, this._searchMediaType);},
+      async () => {
+        await this.searchIfNotUpdated(cur_ts, val, this._searchMediaType);
+      },
       SEARCH_UPDATE_DELAY
     )
   }
@@ -212,9 +216,12 @@ export class MediaBrowser extends LitElement {
     */
     this._searchMediaType = value;
     this._searchMediaTypeIcon = this.getMediaTypeSvg(value);
+    void this.generateSearchResults(this._searchMediaTerm, this._searchMediaType, this._searchLibrary);
   }
   private onSearchLibrarySelect = () => {
     this._searchLibrary = !this._searchLibrary;
+    void this.generateSearchResults(this._searchMediaTerm, this._searchMediaType, this._searchLibrary);
+
   }
   private async searchIfNotUpdated(last_ts: number, search_term: string, media_type: MediaTypes) {
     if (last_ts != this._lastSearchInputTs) {
@@ -229,6 +236,9 @@ export class MediaBrowser extends LitElement {
     library_only = false as boolean,
     limit: number = DEFAULT_SEARCH_LIMIT
   ) {
+    if (search_term.length < SEARCH_TERM_MIN_LENGTH) {
+      return;
+    }
     const search_result = await this.actions.actionSearchMedia(
       this.activePlayer,
       search_term,
