@@ -52,11 +52,13 @@ export class MediaBrowser extends LitElement {
   private actions!: BrowserActions;
   private _activeCards: MediaCardItem[] = [];
   public onMediaSelectedAction!: () => void;
+
   private _lastSearchInputTs= 0;
   @state() private _searchLibrary= false;
   private _searchMediaType: MediaTypes = MediaTypes.TRACK;
   private _searchMediaTerm = "";
   @state() private _searchMediaTypeIcon: string = mdiMusic;
+  
   public set config(config: MediaBrowserConfig) {
     if (!config) {
       return;
@@ -532,7 +534,7 @@ export class MediaBrowser extends LitElement {
           pill
           autofocus
         >
-          <span slot="suffix">
+          <span slot="suffix" id="search-options">
             ${this.renderSearchMediaTypesButton()}
             ${this.renderSearchFavoritesButton()}
           </span>
