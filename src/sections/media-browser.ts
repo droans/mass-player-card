@@ -178,7 +178,6 @@ export class MediaBrowser extends LitElement {
     this.activeSection = 'main';
   }
   private onSearchPress = () => {
-    this._searchFavorites = true;
     this.previousSection = this.activeSection;
     this.activeSection = 'search';
   }
