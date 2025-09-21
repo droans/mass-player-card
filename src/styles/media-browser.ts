@@ -53,6 +53,7 @@ export default css`
     --ha-ripple-color: rgba(0,0,0,0);
     --mdc-icon-size: 1.5em;
     --control-select-menu-height: 6em;
+    --control-select-menu-padding: 0px;
   }
   #search-media-type-list-item {
   }
