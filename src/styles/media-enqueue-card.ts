@@ -70,5 +70,7 @@ export default css`
   }
   #enqueue-svg {
     color: var(--mdc-theme-primary);
+    background-color: var(--ha-card-background,var(--card-background-color,#fff));
+    border-radius: 50%;
   }
 `;
