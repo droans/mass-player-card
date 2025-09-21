@@ -132,6 +132,12 @@ export class MediaBrowser extends LitElement {
     this.onMediaSelectedAction();
   }
   private onSectionSelect = (data: MediaCardData) => {
+    const subtype: string = data?.subtype ?? 'custom';
+    const section = data.section;
+    if (subtype == 'favorite') {
+      this._searchMediaType = section;
+      this._searchMediaTypeIcon = this.getMediaTypeSvg(section);
+    }
     this.activeSection = data.section;
   }
   private onServiceSelect = (data: MediaCardData) => {
@@ -313,6 +319,7 @@ export class MediaBrowser extends LitElement {
       fallback: icon,
       data: {
         type: 'section',
+        subtype: 'favorite',
         section: media_type
       }
     }
@@ -335,6 +342,7 @@ export class MediaBrowser extends LitElement {
       fallback: Icon.CLEFT,
       data: {
         type: 'section',
+        subtype: 'custom',
         section: config.name
       }
     };
