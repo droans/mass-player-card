@@ -42,6 +42,9 @@ export default css`
   background: rgba(from var(--md-ripple-color) r g b / 0.2);
   border-radius: 50%;
 }
+.action-button-svg-inactive {
+  --icon-primary-color: var(--md-sys-color-on-surface-variant);
+}
 sl-tab-panel {
   height: var(--mass-player-card-height);
   display: block;
