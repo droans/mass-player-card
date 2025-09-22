@@ -1,18 +1,31 @@
 import { CSSResultGroup, html, LitElement, TemplateResult } from "lit";
-import { state } from "lit/decorators.js";
-import { CardSelectedService } from "../const/actions";
-import { MediaCardItem } from "../const/media-browser";
-import { backgroundImageFallback, getFallbackImage } from "../utils/icons";
+import { property, state } from "lit/decorators.js";
+
+import './menu-button'
 import styles from '../styles/media-card';
-import { testMixedContent } from "../utils/util";
+import { ENQUEUE_BUTTONS, MediaCardItem } from "../const/media-browser";
 import { ExtendedHass } from "../const/common";
+import {
+  CardEnqueueService,
+  CardSelectedService,
+  EnqueueOptions,
+} from "../const/actions";
+import { testMixedContent } from "../utils/util";
+import { 
+  backgroundImageFallback, 
+  getFallbackImage,
+} from "../utils/icons";
+import { mdiPlayCircle } from "@mdi/js";
 
 class MediaCard extends LitElement {
   private _config!: MediaCardItem;
   public hass!: ExtendedHass;
+  public onEnqueueAction!: CardEnqueueService;
   public onSelectAction!: CardSelectedService;
   @state() code!: TemplateResult;
-
+  @property({ type: Boolean }) queueable = false;
+  private _enqueue_buttons = ENQUEUE_BUTTONS;
+  
   public set config(config: MediaCardItem) {
     if (!config) {
       return;
@@ -23,16 +36,28 @@ class MediaCard extends LitElement {
   public get config() {
     return this._config;
   }
-  private generateCode() {
-    this.code = html`
-      <ha-control-button @click=${this.onItemSelected}>
-        ${this.renderThumbnail()}
-        ${this.renderTitle()}
-      </ha-control-button>
-    `
+  private onEnqueue = (ev: CustomEvent) => {
+    ev.stopPropagation();
+    /* eslint-disable 
+      @typescript-eslint/no-explicit-any, 
+      @typescript-eslint/no-unsafe-assignment, 
+      @typescript-eslint/no-unsafe-member-access 
+    */
+    const target = ev.target as any;
+    const value = target.value as EnqueueOptions;
+    if (!value) {
+      return;
+    }
+    target.value = "";
+    /* eslint-enable 
+      @typescript-eslint/no-explicit-any, 
+      @typescript-eslint/no-unsafe-assignment, 
+      @typescript-eslint/no-unsafe-member-access 
+    */
+    this.onEnqueueAction(this._config.data, value);
   }
-  private onItemSelected = () => {
-    this.onSelectAction(this.config.data);
+  private onSelect = () => {
+    this.onSelectAction(this._config.data);
   }
   protected renderThumbnailFromBackground() {
     return html`
@@ -49,13 +74,11 @@ class MediaCard extends LitElement {
   protected renderThumbnailFromIcon() {
     const thumbnail = this.artworkStyle() || "";
     return html`
-      <div 
-        class="thumbnail" 
-        style="${thumbnail};padding-bottom: 2em;"
-      >
-      </div>
+      <div
+        id="thumbnail-div"
+        style="${thumbnail}; padding-bottom: 2em;"
+      ></div>
     `
-    
   }
   protected renderThumbnail() {
     if (this.config.background) {
@@ -65,9 +88,43 @@ class MediaCard extends LitElement {
   }
   protected renderTitle() {
     return html`
-      <div class="title">
+      <div
+        id="title-div"
+      >
         ${this.config.title}
       </div>
+    `
+  }
+  protected renderEnqueueButton() {
+    if (this.queueable) {
+      return html`
+        <mass-menu-button
+          id="enqueue-button-div"
+          .iconPath=${mdiPlayCircle}
+          .items=${this._enqueue_buttons}
+          .onSelectAction=${this.onEnqueue}
+          
+        ></mass-menu-button>
+      `
+    };
+    return html``
+  }
+  private generateCode() {
+    this.code = html`
+      <ha-card
+      >
+        <div id="container">
+          <div id="card-button-div">
+            <ha-control-button
+              @click=${this.onSelect}
+            >
+              ${this.renderThumbnail()}
+              ${this.renderTitle()}
+            </ha-control-button>
+          </div>
+            ${this.renderEnqueueButton()}
+        </div>
+      </ha-card>
     `
   }
   protected render() {
@@ -77,5 +134,4 @@ class MediaCard extends LitElement {
     return styles;
   }
 }
-
 customElements.define('mass-media-card', MediaCard);

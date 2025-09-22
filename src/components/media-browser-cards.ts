@@ -1,6 +1,6 @@
-import { CSSResultGroup, html, LitElement, TemplateResult } from "lit";
+import { CSSResultGroup, LitElement, TemplateResult } from "lit";
+import { html, literal } from "lit/static-html.js";
 import './media-card'
-import './media-enqueue-card'
 import { MediaCardData, MediaCardItem } from "../const/media-browser";
 import { CardEnqueueService, CardSelectedService, EnqueueOptions } from "../const/actions";
 import { state } from "lit/decorators.js";
@@ -33,21 +33,15 @@ class MediaBrowserCards extends LitElement {
   private generateCode() {
     const result = this.items.map(
       (item) => {
-        if (item.data?.media_content_id && item.data?.media_content_type) {
-          return html`
-            <mass-media-enqueue-card
-              .config=${item}
-              .onSelectAction=${this.onItemSelected}
-              .onEnqueueAction=${this.onEnqueue}
-              .hass=${this.hass}
-            ></mass-media-card>
-          `
-        }
+        // eslint-disable-next-line @typescript-eslint/no-unsafe-member-access
+        const queueable = (item.data?.media_content_id?.length > 0 && item.data?.media_content_type?.length > 0) ? literal`queueable` : literal``;
         return html`
           <mass-media-card
             .config=${item}
             .onSelectAction=${this.onItemSelected}
             .hass=${this.hass}
+            .onEnqueueAction=${this.onEnqueue}
+            ${queueable}
           >
           </mass-media-card>
         `

@@ -62,13 +62,13 @@ export const MediaTypeIcons = {
   'radio': Icon.RADIO,
 }
 
-interface ListItemData {
+export interface ListItemData {
   option: string,
   icon: string,
   title: string
 }
 
-type ListItems = ListItemData[];
+export type ListItems = ListItemData[];
 
 export const ENQUEUE_BUTTONS: ListItems = [
   {

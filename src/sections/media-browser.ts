@@ -15,7 +15,8 @@ import {
 import '@shoelace-style/shoelace/dist/components/input/input';
 
 import BrowserActions from "../actions/browser-actions";
-import '../components/media-browser-cards'
+import '../components/media-browser-cards';
+import '../components/section-header';
 import { 
   customItem, 
   customSection, 
@@ -136,7 +137,7 @@ export class MediaBrowser extends LitElement {
     const section = data.section;
     if (subtype == 'favorite') {
       this._searchMediaType = section;
-      this._searchMediaTypeIcon = this.getMediaTypeSvg(section);
+      this._searchMediaTypeIcon = this.getMediaTypeSvg((section as MediaTypes));
     }
     this.activeSection = data.section;
   }
@@ -429,7 +430,7 @@ export class MediaBrowser extends LitElement {
   }
   protected renderBackButton() {
     return html`
-      <div id="back-button">
+      <span slot="start" id="back-button">
         <ha-button
           appearance="plain"
           variant="brand"
@@ -442,12 +443,12 @@ export class MediaBrowser extends LitElement {
             style="height: 2rem; width: 2rem;"
           ></ha-svg-icon>
         </ha-button>
-      </div>
+      </span>
     `
   }
   protected renderSearchButton() {
     return html`
-      <div id="search-button">
+      <span slot="end" id="search-button">
         <ha-button
           appearance="plain"
           variant="brand"
@@ -460,119 +461,98 @@ export class MediaBrowser extends LitElement {
             style="height: 2rem; width: 2rem;"
           ></ha-svg-icon>
         </ha-button>
-      </div>
+      </span>
     `
   }
   protected renderTitle() {
     const title = this.activeSection == 'main' ? 'Media Browser' : this.activeSection;
     return html`
-      <div id="title">
+      <span slot="label" id="title">
         ${title}
-      </div>
+      </span>
     `
-  }
-  protected renderSearchMediaTypeList() {
-    const buttons = SEARCH_MEDIA_TYPE_BUTTONS;
-    return buttons.map(
-      (item) => {
-        return html`
-          <ha-list-item
-            class="search-media-type-list-item"
-            .value="${item.option}"
-            .graphic=${item.icon}
-          >
-            <ha-svg-icon
-              class="search-media-type-item-svg"
-              slot="graphic"
-              .path=${item.icon}
-            ></ha-svg-icon>
-            ${item.title}
-          </ha-list-item>
-        `
-      }
-    )
   }
   protected renderSearchMediaTypesButton() {
-    return html`
-      <ha-control-select-menu
-        id="search-media-type-menu-control"
-        fixedMenuPosition
-        naturalMenuWidth
-        @selected=${this.onSearchMediaTypeSelect}
-      >
-        <ha-svg-icon
-          slot="icon"
-          id="search-media-type-menu-svg"
-          .path=${this._searchMediaTypeIcon}
-        ></ha-svg-icon>
-        ${this.renderSearchMediaTypeList()}
-      </ha-control-select-menu>
-    `
+    if (this.activeSection == 'search') {
+      return html`
+        <mass-menu-button
+          id="search-media-type-menu"
+          .iconPath=${this._searchMediaTypeIcon}
+          .items=${SEARCH_MEDIA_TYPE_BUTTONS}
+          .onSelectAction=${this.onSearchMediaTypeSelect}
+        ></mass-menu-button>
+      `
+    }
+    return html``
   }
   protected renderSearchFavoritesButton() {
-    return html`
-      <ha-button
-        appearance="plain"
-        variant="brand"
-        size="medium"
-        class="search-favorite-button"
-        @click=${this.onSearchLibrarySelect}
-      >
-        <ha-svg-icon
-          .path=${this._searchLibrary ? mdiLibrary : mdiLibraryOutline}
-          style="height: 1.5rem; width: 1.5rem;"
-        ></ha-svg-icon>
-      </ha-button>
-    `
+    if (this.activeSection == 'search') {
+      return html`
+        <ha-button
+          appearance="plain"
+          variant="brand"
+          size="medium"
+          class="search-favorite-button"
+          @click=${this.onSearchLibrarySelect}
+        >
+          <ha-svg-icon
+            .path=${this._searchLibrary ? mdiLibrary : mdiLibraryOutline}
+            style="height: 1.5rem; width: 1.5rem;"
+          ></ha-svg-icon>
+        </ha-button>
+      `
+    } return html``
   }
   protected renderSearchBar() {
     const styles_base_url = 'https://cdn.jsdelivr.net/npm/@shoelace-style/shoelace@2.20.1/cdn/themes/';
     const styles_url = styles_base_url + (this.hass.themes.darkMode ? 'dark.css' : 'light.css');
     return html`
-      <div id="search-input">
+      <span 
+        slot="end" 
+        id="search-input"
+      >
         <link rel="stylesheet" href="${styles_url}" />
         <sl-input
           placeholder="Search"
           type="search"
-          class="${this.hass.themes.darkMode ? 'sl-theme-dark' : 'sl-theme-light'}"
+          class="${this.hass.themes.darkMode ? 'sl-theme-dark' : 'sl-theme-light'}
           inputmode="search"
           size="medium"
           clearable
           pill
-          autofocus
         >
           <span slot="suffix" id="search-options">
             ${this.renderSearchMediaTypesButton()}
             ${this.renderSearchFavoritesButton()}
           </span>
         </sl-input>
-      </div>
+      </span>
     `
   }
   protected renderSearchHeader() {
     return html`
-      <div id="header-search" class="header">
+      <mass-section-header>
         ${this.renderBackButton()}
         ${this.renderSearchBar()}
-      </div>
+      </mass-section-header>
     `
   }
   protected renderSectionHeader() {
     return html`
-      <div id="header-section" class="header">
+      <mass-section-header>
         ${this.renderBackButton()}
         ${this.renderTitle()}
         ${this.renderSearchButton()}
-      </div>
+      </mass-section-header>
     `
   }
   protected renderMainHeader() {
     return html`
-      <div id="header-main" class="header">
+      <mass-section-header>
         ${this.renderTitle()}
         ${this.renderSearchButton()}
-      </div>
-    `    
+      </mass-section-header>
+    `
   }
   protected renderBrowserCards() {
     const activeCards = this.cards[this.activeSection];
