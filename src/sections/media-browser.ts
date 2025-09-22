@@ -209,7 +209,7 @@ export class MediaBrowser extends LitElement {
     );
     return result?.icon ?? Icon.CLEFT;
   }
-  private onSearchMediaTypeSelect = (ev: CustomEvent) => {
+  private onSearchMediaTypeSelect = async (ev: CustomEvent) => {
     /* eslint-disable 
       @typescript-eslint/no-explicit-any,
       @typescript-eslint/no-unsafe-member-access,
@@ -226,11 +226,13 @@ export class MediaBrowser extends LitElement {
     */
     this._searchMediaType = value;
     this._searchMediaTypeIcon = this.getMediaTypeSvg(value);
-    void this.generateSearchResults(this._searchMediaTerm, this._searchMediaType, this._searchLibrary);
+    await this.generateSearchResults(this._searchMediaTerm, this._searchMediaType, this._searchLibrary);
+    this.activeCards = this.cards.search;
   }
-  private onSearchLibrarySelect = () => {
+  private onSearchLibrarySelect = async () => {
     this._searchLibrary = !this._searchLibrary;
-    void this.generateSearchResults(this._searchMediaTerm, this._searchMediaType, this._searchLibrary);
+    await this.generateSearchResults(this._searchMediaTerm, this._searchMediaType, this._searchLibrary);
+    this.activeCards = this.cards.search;
 
   }
   private async searchIfNotUpdated(last_ts: number, search_term: string, media_type: MediaTypes) {
