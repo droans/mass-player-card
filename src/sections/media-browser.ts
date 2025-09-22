@@ -471,43 +471,19 @@ export class MediaBrowser extends LitElement {
       </div>
     `
   }
-  protected renderSearchMediaTypeList() {
-    const buttons = SEARCH_MEDIA_TYPE_BUTTONS;
-    return buttons.map(
-      (item) => {
-        return html`
-          <ha-list-item
-            class="search-media-type-list-item"
-            .value="${item.option}"
-            .graphic=${item.icon}
-          >
-            <ha-svg-icon
-              class="search-media-type-item-svg"
-              slot="graphic"
-              .path=${item.icon}
-            ></ha-svg-icon>
-            ${item.title}
-          </ha-list-item>
-        `
-      }
-    )
   }
   protected renderSearchMediaTypesButton() {
-    return html`
-      <ha-control-select-menu
-        id="search-media-type-menu-control"
-        fixedMenuPosition
-        naturalMenuWidth
-        @selected=${this.onSearchMediaTypeSelect}
-      >
-        <ha-svg-icon
-          slot="icon"
-          id="search-media-type-menu-svg"
-          .path=${this._searchMediaTypeIcon}
-        ></ha-svg-icon>
-        ${this.renderSearchMediaTypeList()}
-      </ha-control-select-menu>
-    `
+    if (this.activeSection == 'search') {
+      return html`
+        <mass-menu-button
+          id="search-media-type-menu"
+          .iconPath=${this._searchMediaTypeIcon}
+          .items=${SEARCH_MEDIA_TYPE_BUTTONS}
+          .onSelectAction=${this.onSearchMediaTypeSelect}
+        ></mass-menu-button>
+      `
+    }
+    return html``
   }
   protected renderSearchFavoritesButton() {
     return html`
