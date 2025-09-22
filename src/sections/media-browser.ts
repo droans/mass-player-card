@@ -15,7 +15,8 @@ import {
 import '@shoelace-style/shoelace/dist/components/input/input';
 
 import BrowserActions from "../actions/browser-actions";
-import '../components/media-browser-cards'
+import '../components/media-browser-cards';
+import '../components/section-header';
 import { 
   customItem, 
   customSection, 
@@ -429,7 +430,7 @@ export class MediaBrowser extends LitElement {
   }
   protected renderBackButton() {
     return html`
-      <div id="back-button">
+      <span slot="start" id="back-button">
         <ha-button
           appearance="plain"
           variant="brand"
@@ -442,12 +443,12 @@ export class MediaBrowser extends LitElement {
             style="height: 2rem; width: 2rem;"
           ></ha-svg-icon>
         </ha-button>
-      </div>
+      </span>
     `
   }
   protected renderSearchButton() {
     return html`
-      <div id="search-button">
+      <span slot="end" id="search-button">
         <ha-button
           appearance="plain"
           variant="brand"
@@ -460,17 +461,16 @@ export class MediaBrowser extends LitElement {
             style="height: 2rem; width: 2rem;"
           ></ha-svg-icon>
         </ha-button>
-      </div>
+      </span>
     `
   }
   protected renderTitle() {
     const title = this.activeSection == 'main' ? 'Media Browser' : this.activeSection;
     return html`
-      <div id="title">
+      <span slot="label" id="title">
         ${title}
-      </div>
+      </span>
     `
-  }
   }
   protected renderSearchMediaTypesButton() {
     if (this.activeSection == 'search') {
@@ -486,69 +486,73 @@ export class MediaBrowser extends LitElement {
     return html``
   }
   protected renderSearchFavoritesButton() {
-    return html`
-      <ha-button
-        appearance="plain"
-        variant="brand"
-        size="medium"
-        class="search-favorite-button"
-        @click=${this.onSearchLibrarySelect}
-      >
-        <ha-svg-icon
-          .path=${this._searchLibrary ? mdiLibrary : mdiLibraryOutline}
-          style="height: 1.5rem; width: 1.5rem;"
-        ></ha-svg-icon>
-      </ha-button>
-    `
+    if (this.activeSection == 'search') {
+      return html`
+        <ha-button
+          appearance="plain"
+          variant="brand"
+          size="medium"
+          class="search-favorite-button"
+          @click=${this.onSearchLibrarySelect}
+        >
+          <ha-svg-icon
+            .path=${this._searchLibrary ? mdiLibrary : mdiLibraryOutline}
+            style="height: 1.5rem; width: 1.5rem;"
+          ></ha-svg-icon>
+        </ha-button>
+      `
+    } return html``
   }
   protected renderSearchBar() {
     const styles_base_url = 'https://cdn.jsdelivr.net/npm/@shoelace-style/shoelace@2.20.1/cdn/themes/';
     const styles_url = styles_base_url + (this.hass.themes.darkMode ? 'dark.css' : 'light.css');
     return html`
-      <div id="search-input">
+      <span 
+        slot="end" 
+        id="search-input"
+      >
         <link rel="stylesheet" href="${styles_url}" />
         <sl-input
           placeholder="Search"
           type="search"
-          class="${this.hass.themes.darkMode ? 'sl-theme-dark' : 'sl-theme-light'}"
+          class="${this.hass.themes.darkMode ? 'sl-theme-dark' : 'sl-theme-light'}
           inputmode="search"
           size="medium"
           clearable
           pill
-          autofocus
         >
           <span slot="suffix" id="search-options">
             ${this.renderSearchMediaTypesButton()}
             ${this.renderSearchFavoritesButton()}
           </span>
         </sl-input>
-      </div>
+      </span>
     `
   }
   protected renderSearchHeader() {
     return html`
-      <div id="header-search" class="header">
+      <mass-section-header>
         ${this.renderBackButton()}
         ${this.renderSearchBar()}
-      </div>
+      </mass-section-header>
     `
   }
   protected renderSectionHeader() {
     return html`
-      <div id="header-section" class="header">
+      <mass-section-header>
         ${this.renderBackButton()}
         ${this.renderTitle()}
         ${this.renderSearchButton()}
-      </div>
+      </mass-section-header>
     `
   }
   protected renderMainHeader() {
     return html`
-      <div id="header-main" class="header">
+      <mass-section-header>
         ${this.renderTitle()}
         ${this.renderSearchButton()}
-      </div>
-    `    
+      </mass-section-header>
+    `
   }
   protected renderBrowserCards() {
     const activeCards = this.cards[this.activeSection];
