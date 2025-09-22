@@ -137,7 +137,7 @@ export class MediaBrowser extends LitElement {
     const section = data.section;
     if (subtype == 'favorite') {
       this._searchMediaType = section;
-      this._searchMediaTypeIcon = this.getMediaTypeSvg(section);
+      this._searchMediaTypeIcon = this.getMediaTypeSvg((section as MediaTypes));
     }
     this.activeSection = data.section;
   }

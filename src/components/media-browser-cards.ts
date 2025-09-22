@@ -33,6 +33,7 @@ class MediaBrowserCards extends LitElement {
   private generateCode() {
     const result = this.items.map(
       (item) => {
+        // eslint-disable-next-line @typescript-eslint/no-unsafe-member-access
         const queueable = (item.data?.media_content_id?.length > 0 && item.data?.media_content_type?.length > 0) ? literal`queueable` : literal``;
         return html`
           <mass-media-card

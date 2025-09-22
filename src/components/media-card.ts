@@ -37,7 +37,6 @@ class MediaCard extends LitElement {
     return this._config;
   }
   private onEnqueue = (ev: CustomEvent) => {
-    console.log(`Received onEnqueue`);
     ev.stopPropagation();
     /* eslint-disable 
       @typescript-eslint/no-explicit-any, 
@@ -97,7 +96,6 @@ class MediaCard extends LitElement {
     `
   }
   protected renderEnqueueButton() {
-    console.log(`${this.config.title} queueable: ${this.queueable}`);
     if (this.queueable) {
       return html`
         <mass-menu-button
