@@ -6,7 +6,6 @@ import '../components/player-row'
 import styles from '../styles/player-queue';
 import PlayersActions from "../actions/players-actions";
 import { PlayerSelectedService } from "../const/actions";
-import { DEFAULT_PLAYERS_CONFIG } from "../const/players";
 import { Config, EntityConfig } from "../config/config";
 import { ExtendedHass } from "../const/common";
 import { consume } from "@lit/context";
@@ -15,6 +14,7 @@ import {
   hassExt
 } from "../const/context";
 import '../components/section-header';
+import { DEFAULT_PLAYERS_CONFIG } from "../config/players";
 
 class PlayersCard extends LitElement {
   @consume( { context: activeEntityConf, subscribe: true}) 

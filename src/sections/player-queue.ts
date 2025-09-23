@@ -6,12 +6,14 @@ import QueueActions from '../actions/queue-actions';
 import styles from '../styles/player-queue';
 import '../components/media-row'
 import { 
-  DEFAULT_QUEUE_CONFIG,
   MassQueueEvent,
-  QueueConfig,
   QueueItem,
 } from '../const/player-queue';
-import { QueueConfigErrors } from '../config/player-queue';
+import { 
+  DEFAULT_QUEUE_CONFIG,
+  QueueConfig,
+  QueueConfigErrors,
+} from '../config/player-queue';
 import { ExtendedHass } from '../const/common';
 import { LovelaceCard } from 'custom-card-helpers';
 import { consume } from '@lit/context';

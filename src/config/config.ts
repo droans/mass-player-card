@@ -11,11 +11,23 @@ import {
   mediaBrowserConfigForm, 
   processMediaBrowserConfig
 } from "./media-browser";
-import { playersConfigForm } from "./players";
+import { 
+  DEFAULT_PLAYERS_CONFIG,
+  PlayersConfig,
+  playersConfigForm
+} from "./players";
 import { playerConfigForm } from "./player";
-import { DEFAULT_QUEUE_CONFIG, QueueConfig } from "../const/player-queue";
-import { DEFAULT_MAX_VOLUME, DEFAULT_PLAYER_CONFIG, PlayerConfig } from "../const/music-player";
-import { DEFAULT_PLAYERS_CONFIG, PlayersConfig } from "../const/players";
+import { 
+  DEFAULT_QUEUE_CONFIG, 
+  QueueConfig 
+} from "./player-queue";
+import {
+  DEFAULT_PLAYER_CONFIG, 
+  PlayerConfig 
+} from "./player";
+import { 
+  DEFAULT_MAX_VOLUME 
+} from "../const/music-player";
 import { ExtendedHass } from "../const/common";
 
 export interface EntityConfig {
