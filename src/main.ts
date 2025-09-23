@@ -228,7 +228,9 @@ export class MusicAssistantPlayerCard extends LitElement {
   }
   private playerSelected = (entity_id: string) => {
     this.setActivePlayer(entity_id);
-    this.active_section = Sections.MUSIC_PLAYER;
+    if (this.config.player.enabled){
+      this.active_section = Sections.MUSIC_PLAYER;
+    }
   }
   private _handleTabChanged(ev: CustomEvent) {
     // eslint-disable-next-line @typescript-eslint/no-unsafe-assignment, @typescript-eslint/no-unsafe-member-access

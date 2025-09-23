@@ -158,6 +158,7 @@ export class MediaBrowser extends LitElement {
       void this.actions.actionPlayMedia(this.activePlayer, data.media_content_id, data.media_content_type);
     /* eslint-enable @typescript-eslint/no-unsafe-argument */
     }
+    this.onMediaSelectedAction();
   }
   private onSelect = (data: MediaCardData) => {
     const funcs = {
@@ -179,6 +180,7 @@ export class MediaBrowser extends LitElement {
       content_type,
       enqueue
     );
+    this.onMediaSelectedAction();
   }
   private onBack = () => {
     if (this.activeSection == 'search' && this.previousSection.length) {
