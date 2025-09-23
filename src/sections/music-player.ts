@@ -31,6 +31,7 @@ import { RepeatMode } from "../const/common";
 import { testMixedContent } from "../utils/util";
 import { 
   activeMediaPlayer,
+  activePlayerName,
   hassExt, 
   volumeMediaPlayer 
 } from "../const/context";
@@ -45,6 +46,7 @@ class MusicPlayerCard extends LitElement {
   
   @consume({ context: volumeMediaPlayer, subscribe: true })
   public volumeMediaPlayer!: ExtendedHassEntity;
+  @consume({ context: activePlayerName, subscribe: true })
   public mediaPlayerName!: string; 
   public maxVolume!: number;
   private _player!: ExtendedHassEntity;
