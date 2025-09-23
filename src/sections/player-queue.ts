@@ -40,8 +40,8 @@ class QueueCard extends LitElement {
     if (!hass) {
       return;
     }
-    if (this._active_player_entity) {
-      const lastUpdated = hass.states[this._active_player_entity].last_updated;
+    if (this.active_player_entity) {
+      const lastUpdated = hass.states[this.active_player_entity].last_updated;
       if (lastUpdated !== this.lastUpdated) {
         this.lastUpdated = lastUpdated;
       }
@@ -56,15 +56,15 @@ class QueueCard extends LitElement {
       return QueueConfigErrors.CONFIG_MISSING;
     }
     if (test_active) {
-      if (!this._active_player_entity) {
+      if (!this.active_player_entity) {
         return QueueConfigErrors.NO_ENTITY;
       };
-      if (typeof(this._active_player_entity) !== "string") {
+      if (typeof(this.active_player_entity) !== "string") {
         return QueueConfigErrors.ENTITY_TYPE;
       }
     }
     if (this.hass) {
-      if (!this.hass.states[this._active_player_entity]) {
+      if (!this.hass.states[this.active_player_entity]) {
         return QueueConfigErrors.MISSING_ENTITY;
       }
     }
@@ -79,27 +79,21 @@ class QueueCard extends LitElement {
     }
     if (_changedProperties.has('hass')) {
       const cur_id = this.newId;
-      const new_id = this.hass.states[this._active_player_entity].attributes.media_content_id;
+      const new_id = this.hass.states[this.active_player_entity].attributes.media_content_id;
       this.newId = new_id;
       return cur_id !== new_id;
     }
     return super.shouldUpdate(_changedProperties);
   }
-  private _listening = false;
-  /* eslint-disable-next-line @typescript-eslint/no-explicit-any */
-  private _unsubscribe: any;
-  private queueID = '';
-  private newId = '';
-  private actions!: QueueActions;
-  private failCt = 0;
-  private maxFailCt = 5;
-  private hasFailed = false;
 
   @consume( { context: activeEntityID, subscribe: true})
   @property({ attribute: false})
-  set active_player_entity(active_player_entity: string) {
+  public set active_player_entity(active_player_entity: string) {
     this._active_player_entity = active_player_entity;
     this.getQueueIfReady();
+  }
+  public get active_player_entity() {
+    return this._active_player_entity;
   }
   public set config(config: QueueConfig) {
 
@@ -117,13 +111,13 @@ class QueueCard extends LitElement {
     return this._config;
   }
   private getQueueIfReady() {
-    if (!this.hass || !this._config || !this._active_player_entity) {
+    if (!this.hass || !this._config || !this.active_player_entity) {
       return
     }
     this.getQueue(true);
     if (!this._listening) {
       void this.subscribeUpdates();
-  }
+    }
   }
   private eventListener = (event: MassQueueEvent) => {
     const event_data = event.data;
@@ -159,15 +153,15 @@ class QueueCard extends LitElement {
     this.queue.splice(new_index, 0, this.queue.splice(old_index, 1)[0]);
   }
   private getQueue(forced_id = false) {
-      const app_is_mass = this.hass.states[this._active_player_entity].attributes.app_id == 'music_assistant';
+      const app_is_mass = this.hass.states[this.active_player_entity].attributes.app_id == 'music_assistant';
       if (!app_is_mass) {
         return;
       }
     if (
       !this.actions
-      || this.actions.player_entity !== this._active_player_entity
+      || this.actions.player_entity !== this.active_player_entity
     ) {
-      this.actions = new QueueActions(this.hass, this._active_player_entity)
+      this.actions = new QueueActions(this.hass, this.active_player_entity)
     }
     if (this.testConfig(this._config) !== QueueConfigErrors.OK || this.hasFailed) {
       return;
@@ -178,7 +172,7 @@ class QueueCard extends LitElement {
       return
     }
     if (forced_id) {
-      const new_id = this.hass.states[this._active_player_entity]?.attributes?.media_content_id;
+      const new_id = this.hass.states[this.active_player_entity]?.attributes?.media_content_id;
       if (new_id) {
         this.newId = new_id;
       }
@@ -194,7 +188,7 @@ class QueueCard extends LitElement {
           this.queue = this.updateActiveTrack(queue);
         }
       );
-      this.queueID = this.hass.states[this._active_player_entity].attributes.active_queue;
+      this.queueID = this.hass.states[this.active_player_entity].attributes.active_queue;
     } catch {
       this.queue = []
     }
@@ -202,7 +196,7 @@ class QueueCard extends LitElement {
   private updateActiveTrack(queue: QueueItem[]): QueueItem[] {
     let content_id = this.newId;
     if (!content_id.length) {
-      content_id = this.hass.states[this._active_player_entity].attributes.media_content_id;
+      content_id = this.hass.states[this.active_player_entity].attributes.media_content_id;
     }
     const activeIndex = queue.findIndex(item => item.media_content_id === content_id);
     return queue.map( (element, index) => ({
