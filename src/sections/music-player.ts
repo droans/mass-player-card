@@ -274,9 +274,18 @@ class MusicPlayerCard extends LitElement {
   }
   private onPlayerSelect = (ev: CustomEvent) => {
     ev.stopPropagation();
+    /* eslint-disable
+      @typescript-eslint/no-explicit-any,
+      @typescript-eslint/no-unsafe-assignment,
+      @typescript-eslint/no-unsafe-member-access
+    */
     const target = ev.target as any;
     const player = target.value as string;
-    console.log(`Received player selection: ${player}`);
+    /* eslint-enable
+      @typescript-eslint/no-explicit-any,
+      @typescript-eslint/no-unsafe-assignment,
+      @typescript-eslint/no-unsafe-member-access
+    */
     this.selectedPlayerService(player);
   }
   protected updated() {
