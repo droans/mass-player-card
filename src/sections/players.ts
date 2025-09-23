@@ -14,6 +14,7 @@ import {
   activeEntityConf,
   hassExt
 } from "../const/context";
+import '../components/section-header';
 
 class PlayersCard extends LitElement {
   @consume( { context: activeEntityConf}) 
@@ -128,9 +129,11 @@ class PlayersCard extends LitElement {
   protected render() {
     return html`
       <ha-card>
-        <div class="header">
-          Players
-        </div>
+        <mass-section-header>
+          <span slot="label" id="title">
+            Players
+          </span>
+        </mass-section-header>
         <ha-md-list class="list">
           ${this.renderPlayerRows()}
         </ha-md-list>
