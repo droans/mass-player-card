@@ -57,13 +57,140 @@ In addition to the Music Assistant integration, this card depends on the custom 
 # Configuration
 The card does not have a visual editor. Use this configuration to create your card:
 
-## Example 
+### Minimal Config
+
+This is the minimal config you need for the card to work.
+
 ```yaml
-type: custom:mass-card
-entity: media_player.music_assistant_player
-title: Play Queue
-expanded: false
+type: custom:mass-player-card
+entities: 
+  - media_player.music_assistant_player
 ```
+
+### Default Configuration
+
+<details>
+  <summary>Full Default Config</summary>
+
+```yaml
+type: custom:mass-player-card
+queue:
+  enabled: true
+  limit_before: 5
+  limit_after: 100
+  show_album_covers: true
+  show_artist_names: true
+player:
+  enabled: true
+players:
+  enabled: true
+media_browser:
+  enabled: true
+  favorites:
+    albums:
+      enabled: true
+      limit: 25
+    artists:
+      enabled: true
+      limit: 25
+    audiobooks:
+      enabled: true
+      limit: 25
+    playlists:
+      enabled: true
+      limit: 25
+    podcasts:
+      enabled: true
+      limit: 25
+    radios:
+      enabled: true
+      limit: 25
+    tracks:
+      enabled: true
+      limit: 25
+```
+
+</details>
+
+### Full Example Configuration
+
+<details>
+  <summary> Full Example Config</summary>
+
+```yaml
+type: custom:mass-player-card
+entities:
+  - media_player.kitchen_player_music_assistant
+  - media_player.bedroom_player_music_assistant
+  - entity_id: media_player.living_room_player_music_assistant
+    volume_entity_id: media_player.living_room_tv
+  - entity_id: media_player.bathoom_music_assistant
+    name: Bathroom Speaker
+    max_volume: 50
+  - entity_id: media_player.loft_music_assistant
+    volume_entity_id: media_player.loft_tv
+    max_volume: 40
+    name: Loft TV
+  - entity_id: media_player.basement_music_assistant
+    name: Basement
+queue:
+  enabled: true
+  limit_before: 10
+  limit_after: 50
+  show_album_covers: true
+  show_artist_names: true
+player:
+  enabled: true
+players:
+  enabled: true
+media_browser:
+  enabled: true
+  favorites:
+    albums:
+      enabled: true
+      limit: 25
+    artists:
+      enabled: true
+      limit: 10
+    audiobooks:
+      enabled: true
+      limit: 5
+    playlists:
+      enabled: true
+      limit: 5
+    podcasts:
+      enabled: true
+      limit: 15
+    radios:
+      enabled: true
+      limit: 4
+    tracks:
+      enabled: true
+      limit: 100
+      items:
+        - name: My Playlist
+          image: https://resources.tidal.com/images/10c59b67/bb86/4960/8071/a23a03b8cbdd/750x750.jpg
+          service: script.play_example_playlist
+  sections:
+    - name: My Tracks
+      image: https://resources.tidal.com/images/0b5ff69d/b031/4445/a804/01b18b5a525f/750x750.jpg
+      items:
+        - name: The Show Goes On
+          image: https://resources.tidal.com/images/9a18c67f/1062/4068/986b/45654fade74a/750x750.jpg
+          media_content_id: tidal://track/241647167
+          media_content_type: track
+        - name: TRUSTFALL (Album)
+          image: https://i.scdn.co/image/ab67616d0000b2735b8cf73dd4eebd286d9a2c78
+          media_content_id: library://artist/40
+          media_content_type: track
+        - name: Where Is The Love?
+          image: https://resources.tidal.com/images/b15ef956/5eed/43ba/9bba/d1ea1c3e48a4/750x750.jpg
+          media_content_id: tidal://track/222419939
+          media_content_type: track
+      
+```
+
+</details>
 
 ## Base Config
 | Parameter     | Type                                             | Required | Default | Description                                        |
