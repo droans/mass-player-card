@@ -144,10 +144,11 @@ export default css`
     animation-iteration-count: infinite;
     position: relative;
   }
-  #player-select-menu {
-
+  #players-select-menu {
+    --control-select-menu-height: 2.5em;
   }
   .players-select-item {
+    height: 2.5em;
   }
   .players-select-item-icon {
     height: 2em;
