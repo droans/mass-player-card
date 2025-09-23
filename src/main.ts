@@ -125,6 +125,7 @@ export class MusicAssistantPlayerCard extends LitElement {
     if (should_update) {
       this._hass = hass;
       this.entities = new_ents;
+      this.setActivePlayer(this.activeEntityId);
     }
   }
   public get hass() {
