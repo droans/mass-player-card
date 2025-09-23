@@ -9,11 +9,20 @@ import { PlayerSelectedService } from "../const/actions";
 import { DEFAULT_PLAYERS_CONFIG } from "../const/players";
 import { Config, EntityConfig } from "../config/config";
 import { ExtendedHass } from "../const/common";
+import { consume } from "@lit/context";
+import {
+  activeEntityConf,
+  hassExt
+} from "../const/context";
 
 class PlayersCard extends LitElement {
-  @property({ attribute: false }) public activePlayerEntity!: EntityConfig;
+  @consume( { context: activeEntityConf}) 
+  @property({ attribute: false }) 
+  public activePlayerEntity!: EntityConfig;
   @property({ attribute: false }) private entities: HassEntity[] = [];
+
   public selectedPlayerService!: PlayerSelectedService;
+  
   private _config!: Config;
   private actions!: PlayersActions;
   private _hass!: ExtendedHass;
@@ -31,6 +40,8 @@ class PlayersCard extends LitElement {
   public get config() {
     return this._config;
   }
+  
+  @consume({context: hassExt})
   public set hass(hass: ExtendedHass) {
     if (!hass) {
       return;
@@ -107,7 +118,6 @@ class PlayersCard extends LitElement {
               .transferService=${this.transferQueue}
               .joined=${group_members.includes(item.entity_id)}
               .allowJoin=${attrs.group_members !== undefined}
-              .hass=${this.hass}
             >
             </mass-player-player-row>
           `

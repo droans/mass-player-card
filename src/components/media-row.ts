@@ -12,10 +12,14 @@ import { QueueItemSelectedService, QueueService } from '../const/actions';
 import { backgroundImageFallback, getFallbackImage } from '../utils/icons';
 import { ExtendedHass, Icon } from '../const/common';
 import { testMixedContent } from '../utils/util';
+import { hassExt } from '../const/context';
+import { consume } from '@lit/context';
 
 class MediaRow extends LitElement {
   @property({ attribute: false }) media_item!: QueueItem;
   @property({ type: Boolean }) selected = false;
+  
+  @consume({context: hassExt})
   public hass!: ExtendedHass;
   public removeService!: QueueService;
   public moveQueueItemNextService!: QueueService;

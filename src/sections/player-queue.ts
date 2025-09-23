@@ -14,6 +14,11 @@ import {
 import { QueueConfigErrors } from '../config/player-queue';
 import { ExtendedHass } from '../const/common';
 import { LovelaceCard } from 'custom-card-helpers';
+import { consume } from '@lit/context';
+import {
+  activeEntityID,
+  hassExt
+} from '../const/context';
 
 class QueueCard extends LitElement {
   @state() private lastUpdated = '';
@@ -22,6 +27,8 @@ class QueueCard extends LitElement {
   private _hass!: ExtendedHass;
   @state() private queue: QueueItem[] = [];
   private error?: TemplateResult;
+  
+  @consume({context: hassExt})
   public set hass(hass: ExtendedHass) {
     if (!hass) {
       return;
@@ -37,15 +44,17 @@ class QueueCard extends LitElement {
   public get hass() {
     return this._hass;
   }
-  private testConfig(config: QueueConfig) {
+  private testConfig(config: QueueConfig, test_active = true) {
     if (!config) {
       return QueueConfigErrors.CONFIG_MISSING;
     }
-    if (!this._active_player_entity) {
-      return QueueConfigErrors.NO_ENTITY;
-    };
-    if (typeof(this._active_player_entity) !== "string") {
-      return QueueConfigErrors.ENTITY_TYPE;
+    if (test_active) {
+      if (!this._active_player_entity) {
+        return QueueConfigErrors.NO_ENTITY;
+      };
+      if (typeof(this._active_player_entity) !== "string") {
+        return QueueConfigErrors.ENTITY_TYPE;
+      }
     }
     if (this.hass) {
       if (!this.hass.states[this._active_player_entity]) {
@@ -79,6 +88,7 @@ class QueueCard extends LitElement {
   private maxFailCt = 5;
   private hasFailed = false;
 
+  @consume( { context: activeEntityID})
   @property({ attribute: false})
   set active_player_entity(active_player_entity: string) {
     this._active_player_entity = active_player_entity;
@@ -86,7 +96,7 @@ class QueueCard extends LitElement {
   }
   public set config(config: QueueConfig) {
    
-    const status = this.testConfig(config);
+    const status = this.testConfig(config, false);
     if (status !== QueueConfigErrors.OK) {
       throw this.createError(status);
     }
@@ -241,7 +251,6 @@ class QueueCard extends LitElement {
               .moveQueueItemNextService=${this.onQueueItemMoveNext}
               .moveQueueItemUpService=${this.onQueueItemMoveUp}
               .moveQueueItemDownService=${this.onQueueItemMoveDown}
-              .hass=${this.hass}
             >
             </mass-player-media-row>`
         )

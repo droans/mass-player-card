@@ -42,9 +42,16 @@ import styles from '../styles/media-browser';
 import { backgroundImageFallback } from "../utils/icons";
 import { testMixedContent } from "../utils/util";
 import { EnqueueOptions } from "../const/actions";
+import { consume } from "@lit/context";
+import { 
+  activeEntityID, 
+  hassExt 
+} from "../const/context";
 
 export class MediaBrowser extends LitElement {
+  @consume( { context: activeEntityID})
   public activePlayer!: string;
+
   @property({attribute: false}) private _config!: MediaBrowserConfig;
   private _hass!: ExtendedHass;
   @state() private cards: MediaBrowserItemsConfig = {main: []};
@@ -70,6 +77,8 @@ export class MediaBrowser extends LitElement {
   public get config() {
     return this._config;
   }
+  
+  @consume({context: hassExt})
   public set hass(hass: ExtendedHass) {
     if (!hass) {
       return;
@@ -179,6 +188,8 @@ export class MediaBrowser extends LitElement {
     this.activeSection = 'main';
   }
   private onSearchPress = () => {
+    this._searchMediaTerm = '';
+    this.cards.search = [];
     this.previousSection = this.activeSection;
     this.activeSection = 'search';
   }
@@ -207,7 +218,7 @@ export class MediaBrowser extends LitElement {
     );
     return result?.icon ?? Icon.CLEFT;
   }
-  private onSearchMediaTypeSelect = (ev: CustomEvent) => {
+  private onSearchMediaTypeSelect = async (ev: CustomEvent) => {
     /* eslint-disable 
       @typescript-eslint/no-explicit-any,
       @typescript-eslint/no-unsafe-member-access,
@@ -224,11 +235,13 @@ export class MediaBrowser extends LitElement {
     */
     this._searchMediaType = value;
     this._searchMediaTypeIcon = this.getMediaTypeSvg(value);
-    void this.generateSearchResults(this._searchMediaTerm, this._searchMediaType, this._searchLibrary);
+    await this.generateSearchResults(this._searchMediaTerm, this._searchMediaType, this._searchLibrary);
+    this.activeCards = this.cards.search;
   }
-  private onSearchLibrarySelect = () => {
+  private onSearchLibrarySelect = async () => {
     this._searchLibrary = !this._searchLibrary;
-    void this.generateSearchResults(this._searchMediaTerm, this._searchMediaType, this._searchLibrary);
+    await this.generateSearchResults(this._searchMediaTerm, this._searchMediaType, this._searchLibrary);
+    this.activeCards = this.cards.search;
 
   }
   private async searchIfNotUpdated(last_ts: number, search_term: string, media_type: MediaTypes) {
@@ -560,7 +573,6 @@ export class MediaBrowser extends LitElement {
       <mass-browser-cards
         .items=${activeCards}
         .onSelectAction=${this.onSelect}
-        .hass=${this.hass}
         .onEnqueueAction=${this.onEnqueue}
       >
       </mass-browser-cards>

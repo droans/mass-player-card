@@ -16,9 +16,13 @@ import {
   getFallbackImage,
 } from "../utils/icons";
 import { mdiPlayCircle } from "@mdi/js";
+import { consume } from "@lit/context";
+import { hassExt } from "../const/context";
 
 class MediaCard extends LitElement {
   private _config!: MediaCardItem;
+  
+  @consume({context: hassExt})
   public hass!: ExtendedHass;
   public onEnqueueAction!: CardEnqueueService;
   public onSelectAction!: CardSelectedService;
