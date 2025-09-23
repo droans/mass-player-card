@@ -1,43 +1,56 @@
-import { LitElement, html, type TemplateResult, type CSSResultGroup, PropertyValues } from 'lit';
-import { cache } from 'lit/directives/cache.js';
-import { customElement, state } from 'lit/decorators.js';
-
+import { provide } from '@lit/context';
 import {
   mdiAlbum,
   mdiMusic,
   mdiPlaylistMusic,
   mdiSpeakerMultiple
 } from '@mdi/js';
+import { HassEntity } from 'home-assistant-js-websocket';
+import {
+  LitElement,
+  html,
+  type TemplateResult,
+  type CSSResultGroup,
+  PropertyValues
+} from 'lit';
+import {
+  customElement,
+  state
+} from 'lit/decorators.js';
+import { cache } from 'lit/directives/cache.js';
 
-
-import styles from './styles/main';
-import { version } from '../package.json';
 import './sections/media-browser';
 import './sections/music-player';
 import './sections/player-queue';
 import './sections/players';
-import { HassEntity } from 'home-assistant-js-websocket';
-import { Sections } from './const/card';
-import { MediaBrowser } from './sections/media-browser';
-import { 
+
+import {
   Config,
-  createConfigForm, 
-  createStubConfig, 
+  createConfigForm,
+  createStubConfig,
   EntityConfig,
   processConfig,
 } from './config/config';
-import { getDefaultSection } from './utils/util';
-import { provide } from '@lit/context';
+
+import { Sections } from './const/card';
 import {
   activeEntityConf,
-  activeEntityID, 
-  activeMediaPlayer, 
-  activePlayerName, 
-  ExtendedHass, 
-  ExtendedHassEntity, 
-  hassExt, 
+  activeEntityID,
+  activeMediaPlayer,
+  activePlayerName,
+  ExtendedHass,
+  ExtendedHassEntity,
+  hassExt,
   volumeMediaPlayer,
 } from './const/context';
+
+import { version } from '../package.json';
+
+import { MediaBrowser } from './sections/media-browser';
+
+import styles from './styles/main';
+
+import { getDefaultSection } from './utils/util';
 
 const DEV = false;
 

@@ -1,34 +1,37 @@
-import { 
+import {
   mdiAlbum, 
   mdiMusic, 
   mdiPlaylistMusic, 
   mdiSpeakerMultiple 
 } from "@mdi/js";
-import { queueConfigForm } from "./player-queue";
-import { 
-  DEFAULT_MEDIA_BROWSER_CONFIG, 
-  MediaBrowserConfig, 
-  mediaBrowserConfigForm, 
+
+
+import {
+  DEFAULT_MAX_VOLUME 
+} from "../const/music-player";
+import { ExtendedHass } from "../const/common";
+
+import {
+  DEFAULT_MEDIA_BROWSER_CONFIG,
+  MediaBrowserConfig,
+  mediaBrowserConfigForm,
   processMediaBrowserConfig
 } from "./media-browser";
-import { 
+import {
+  DEFAULT_PLAYER_CONFIG,
+  PlayerConfig,
+  playerConfigForm
+} from "./player";
+import {
   DEFAULT_PLAYERS_CONFIG,
   PlayersConfig,
   playersConfigForm
 } from "./players";
-import { playerConfigForm } from "./player";
-import { 
-  DEFAULT_QUEUE_CONFIG, 
-  QueueConfig 
-} from "./player-queue";
 import {
-  DEFAULT_PLAYER_CONFIG, 
-  PlayerConfig 
-} from "./player";
-import { 
-  DEFAULT_MAX_VOLUME 
-} from "../const/music-player";
-import { ExtendedHass } from "../const/common";
+  DEFAULT_QUEUE_CONFIG,
+  QueueConfig,
+  queueConfigForm
+} from "./player-queue";
 
 export interface EntityConfig {
   entity_id: string;

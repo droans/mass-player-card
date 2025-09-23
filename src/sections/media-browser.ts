@@ -1,52 +1,62 @@
-import { 
-  CSSResultGroup, 
-  html, 
-  LitElement, 
-  TemplateResult 
-} from "lit";
-import { property, state } from "lit/decorators.js";
-import { 
-  mdiArrowLeft, 
-  mdiLibrary, 
-  mdiLibraryOutline, 
-  mdiMagnify, 
-  mdiMusic
-} from "@mdi/js";
 import '@shoelace-style/shoelace/dist/components/input/input';
 
+import { consume } from "@lit/context";
+import {
+  mdiArrowLeft,
+  mdiLibrary,
+  mdiLibraryOutline,
+  mdiMagnify,
+  mdiMusic
+} from "@mdi/js";
+import {
+  CSSResultGroup,
+  html,
+  LitElement,
+  TemplateResult
+} from "lit";
+import {
+  property,
+  state
+} from "lit/decorators.js";
+
 import BrowserActions from "../actions/browser-actions";
+
 import '../components/media-browser-cards';
 import '../components/section-header';
-import { 
-  customItem, 
-  customSection, 
-  FavoriteItemConfig, 
-  MediaBrowserConfig, 
+
+import {
+  customItem,
+  customSection,
+  FavoriteItemConfig,
+  MediaBrowserConfig,
 } from "../config/media-browser";
 
+import { EnqueueOptions } from "../const/actions";
+import {
+  ExtendedHass,
+  Icon,
+  MediaTypes
+} from "../const/common";
 import { 
+  activeEntityID,
+  hassExt
+} from "../const/context";
+import {
   DEFAULT_SEARCH_LIMIT,
-  MediaBrowserItemsConfig, 
-  MediaCardData, 
-  MediaCardItem, 
-  MediaLibraryItem, 
-  MediaTypeIcons, 
-  SEARCH_MEDIA_TYPE_BUTTONS, 
-  SEARCH_TERM_MIN_LENGTH, 
+  MediaBrowserItemsConfig,
+  MediaCardData,
+  MediaCardItem,
+  MediaLibraryItem,
+  MediaTypeIcons,
+  SEARCH_MEDIA_TYPE_BUTTONS,
+  SEARCH_TERM_MIN_LENGTH,
   SEARCH_UPDATE_DELAY
 } from "../const/media-browser";
-import { ExtendedHass, Icon, MediaTypes } from "../const/common";
 
 import styles from '../styles/media-browser';
 
 import { backgroundImageFallback } from "../utils/icons";
 import { testMixedContent } from "../utils/util";
-import { EnqueueOptions } from "../const/actions";
-import { consume } from "@lit/context";
-import { 
-  activeEntityID, 
-  hassExt 
-} from "../const/context";
 
 export class MediaBrowser extends LitElement {
   @consume( { context: activeEntityID, subscribe: true})

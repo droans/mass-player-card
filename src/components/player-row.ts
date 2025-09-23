@@ -1,18 +1,37 @@
-import { html, type CSSResultGroup, LitElement, PropertyValues } from 'lit';
-import { property } from 'lit/decorators.js'
-import styles from '../styles/player-row';
-import { mdiLink, mdiLinkOff, mdiSwapHorizontal } from '@mdi/js';
-import { backgroundImageFallback, getFallbackImage } from '../utils/icons';
-import { ExtendedHass, ExtendedHassEntity, Icon } from '../const/common';
-import { 
-  PlayerJoinService, 
-  PlayerSelectedService, 
-  PlayerTransferService, 
-  PlayerUnjoinService 
-} from '../const/actions';
-import { testMixedContent } from '../utils/util';
 import { consume } from '@lit/context';
+import {
+  mdiLink,
+  mdiLinkOff,
+  mdiSwapHorizontal
+} from '@mdi/js';
+import {
+  html,
+  type CSSResultGroup,
+  LitElement,
+  PropertyValues
+} from 'lit';
+import { property } from 'lit/decorators.js'
+
+import {
+  PlayerJoinService,
+  PlayerSelectedService,
+  PlayerTransferService,
+  PlayerUnjoinService
+} from '../const/actions';
+import {
+  ExtendedHass,
+  ExtendedHassEntity,
+  Icon
+} from '../const/common';
 import { hassExt } from '../const/context';
+
+import {
+  backgroundImageFallback,
+  getFallbackImage
+} from '../utils/icons';
+import { testMixedContent } from '../utils/util';
+
+import styles from '../styles/player-row';
 
 class PlayerRow extends LitElement {
   @property({ type: Boolean }) player_entity!: ExtendedHassEntity;

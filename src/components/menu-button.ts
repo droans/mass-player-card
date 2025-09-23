@@ -1,7 +1,11 @@
-import { html, LitElement } from "lit";
-import { ListItems } from "../const/media-browser";
-import { MenuButtonSelectAction } from "../const/common";
+import {
+  html,
+  LitElement
+} from "lit";
 import { property } from "lit/decorators.js";
+
+import { MenuButtonSelectAction } from "../const/common";
+import { ListItems } from "../const/media-browser";
 
 class MassMenuButton extends LitElement {
   @property( { attribute: false }) public iconPath!: string;

@@ -1,5 +1,7 @@
 import { mdiHeart } from "@mdi/js";
+
 import { Config } from "./config";
+
 export interface MediaBrowserConfig {
   enabled: boolean,
   favorites: FavoritesConfig;

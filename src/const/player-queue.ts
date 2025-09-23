@@ -1,5 +1,5 @@
-import { QueueConfig } from "../config/player-queue";
 import { ExtendedHass } from "./common";
+import { QueueConfig } from "../config/player-queue";
 
 export interface QueueItem {
   media_title: string;

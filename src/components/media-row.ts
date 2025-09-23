@@ -1,19 +1,36 @@
-import { html, type CSSResultGroup, LitElement, PropertyValues } from 'lit';
-import { property } from 'lit/decorators.js'
+import { consume } from '@lit/context';
 import {
   mdiClose,
   mdiArrowCollapseUp,
   mdiArrowUp,
   mdiArrowDown
 } from '@mdi/js';
-import styles from '../styles/media-row';
-import { QueueItem } from '../const/player-queue';
-import { QueueItemSelectedService, QueueService } from '../const/actions';
-import { backgroundImageFallback, getFallbackImage } from '../utils/icons';
-import { ExtendedHass, Icon } from '../const/common';
-import { testMixedContent } from '../utils/util';
+import {
+  html,
+  type CSSResultGroup,
+  LitElement,
+  PropertyValues
+} from 'lit';
+import { property } from 'lit/decorators.js'
+
+import {
+  QueueItemSelectedService,
+  QueueService
+} from '../const/actions';
+import {
+  ExtendedHass,
+  Icon
+} from '../const/common';
 import { hassExt } from '../const/context';
-import { consume } from '@lit/context';
+import { QueueItem } from '../const/player-queue';
+
+import styles from '../styles/media-row';
+
+import {
+  backgroundImageFallback,
+  getFallbackImage
+} from '../utils/icons';
+import { testMixedContent } from '../utils/util';
 
 class MediaRow extends LitElement {
   @property({ attribute: false }) media_item!: QueueItem;

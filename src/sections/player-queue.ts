@@ -1,27 +1,31 @@
+import { consume } from '@lit/context';
+import { LovelaceCard } from 'custom-card-helpers';
 import { LitElement, html, type CSSResultGroup, PropertyValues, TemplateResult } from 'lit';
-import { keyed } from 'lit/directives/keyed.js';
 import { property, state } from 'lit/decorators.js';
+import { keyed } from 'lit/directives/keyed.js';
+
+import '../components/media-row'
+import '../components/section-header';
 
 import QueueActions from '../actions/queue-actions';
-import styles from '../styles/player-queue';
-import '../components/media-row'
-import { 
-  MassQueueEvent,
-  QueueItem,
-} from '../const/player-queue';
-import { 
+
+import {
   DEFAULT_QUEUE_CONFIG,
   QueueConfig,
   QueueConfigErrors,
 } from '../config/player-queue';
+
 import { ExtendedHass } from '../const/common';
-import { LovelaceCard } from 'custom-card-helpers';
-import { consume } from '@lit/context';
 import {
   activeEntityID,
   hassExt
 } from '../const/context';
-import '../components/section-header';
+import {
+  MassQueueEvent,
+  QueueItem,
+} from '../const/player-queue';
+
+import styles from '../styles/player-queue';
 
 class QueueCard extends LitElement {
   @state() private lastUpdated = '';

@@ -1,41 +1,61 @@
 import "@material/web/progress/linear-progress.js"
-import { CSSResultGroup, html, LitElement, PropertyValues } from "lit";
-import { property, query, state } from "lit/decorators.js";
 
-import PlayerActions from "../actions/player-actions";
-import styles from '../styles/music-player';
-import { 
+import {
   mdiHeart,
   mdiHeartPlusOutline,
-  mdiPause, 
-  mdiPlay, 
-  mdiPower, 
-  mdiRepeat, 
-  mdiRepeatOff, 
-  mdiRepeatOnce, 
-  mdiShuffle, 
-  mdiShuffleDisabled, 
-  mdiSkipNext, 
-  mdiSkipPrevious, 
-  mdiVolumeHigh, 
-  mdiVolumeMute 
+  mdiPause,
+  mdiPlay,
+  mdiPower,
+  mdiRepeat,
+  mdiRepeatOff,
+  mdiRepeatOnce,
+  mdiShuffle,
+  mdiShuffleDisabled,
+  mdiSkipNext,
+  mdiSkipPrevious,
+  mdiVolumeHigh,
+  mdiVolumeMute
 } from "@mdi/js";
-import { backgroundImageFallback, getFallbackImage } from "../utils/icons";
-import { ExtendedHass, ExtendedHassEntity, Icon } from '../const/common';
-import { 
-  MARQUEE_DELAY_MS,
-  PlayerData, 
-  SWIPE_MIN_X,
-} from "../const/music-player";
-import { RepeatMode } from "../const/common";
-import { testMixedContent } from "../utils/util";
-import { 
+import { consume } from "@lit/context";
+import {
+  CSSResultGroup,
+  html,
+  LitElement,
+  PropertyValues
+} from "lit";
+import {
+  property,
+  query,
+  state
+} from "lit/decorators.js";
+
+import PlayerActions from "../actions/player-actions";
+
+import {
+  ExtendedHass,
+  ExtendedHassEntity,
+  Icon,
+  RepeatMode
+} from '../const/common';
+import {
   activeMediaPlayer,
   activePlayerName,
-  hassExt, 
-  volumeMediaPlayer 
+  hassExt,
+  volumeMediaPlayer
 } from "../const/context";
-import { consume } from "@lit/context";
+import {
+  MARQUEE_DELAY_MS,
+  PlayerData,
+  SWIPE_MIN_X,
+} from "../const/music-player";
+
+import styles from '../styles/music-player';
+
+import {
+  backgroundImageFallback,
+  getFallbackImage
+} from "../utils/icons";
+import { testMixedContent } from "../utils/util";
 
 class MusicPlayerCard extends LitElement {
   @property({ attribute: false }) private player_data!: PlayerData;

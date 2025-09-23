@@ -1,5 +1,11 @@
-import { HomeAssistant, Themes } from "custom-card-helpers"
-import { HassEntity, HassEntityAttributeBase } from "home-assistant-js-websocket";
+import {
+  HomeAssistant,
+  Themes
+} from "custom-card-helpers"
+import {
+  HassEntity,
+  HassEntityAttributeBase
+} from "home-assistant-js-websocket";
 
 export enum RepeatMode {
   OFF = 'off',

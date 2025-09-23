@@ -1,5 +1,8 @@
-import { Config } from "../config/config";
-import { DEFAULT_SECTION_PRIORITY, Sections } from "../const/card";
+import {Config } from "../config/config";
+import {
+  DEFAULT_SECTION_PRIORITY,
+  Sections
+} from "../const/card";
 
 export function testMixedContent(url: string) {
   try {
