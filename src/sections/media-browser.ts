@@ -353,7 +353,7 @@ export class MediaBrowser extends LitElement {
   }
   private generateFavoriteData = async (config: FavoriteItemConfig, media_type: MediaTypes) => {
     if (config.enabled) {
-      const result = await this.getFavoriteSection(media_type, config.limit, config.items);
+      const result = await this.getFavoriteSection(media_type, config.limit, config.items, config.favorites_only);
       if (!result.length) {
         return;
       }
@@ -419,8 +419,8 @@ export class MediaBrowser extends LitElement {
       }
     )
   }
-  private getFavoriteSection = async (media_type: MediaTypes, limit: number, custom_items: customItem[]) => {
-    const response: MediaLibraryItem[] = await this.actions.actionGetFavorites(this.activePlayer, media_type, limit);
+  private getFavoriteSection = async (media_type: MediaTypes, limit: number, custom_items: customItem[], favorites_only = true) => {
+    const response: MediaLibraryItem[] = await this.actions.actionGetLibrary(this.activePlayer, media_type, limit, favorites_only);
     const icon: Icon = MediaTypeIcons[media_type];
     const items = response.map(
       (item) => {

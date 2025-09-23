@@ -90,24 +90,31 @@ media_browser:
     albums:
       enabled: true
       limit: 25
+      favorites_only: true
     artists:
       enabled: true
       limit: 25
+      favorites_only: true
     audiobooks:
       enabled: true
       limit: 25
+      favorites_only: true
     playlists:
       enabled: true
       limit: 25
+      favorites_only: true
     podcasts:
       enabled: true
       limit: 25
+      favorites_only: true
     radios:
       enabled: true
       limit: 25
+      favorites_only: true
     tracks:
       enabled: true
       limit: 25
+      favorites_only: true
 ```
 
 </details>
@@ -149,24 +156,31 @@ media_browser:
     albums:
       enabled: true
       limit: 25
+      favorites_only: true
     artists:
       enabled: true
       limit: 10
+      favorites_only: true
     audiobooks:
       enabled: true
       limit: 5
+      favorites_only: false
     playlists:
       enabled: true
       limit: 5
+      favorites_only: false
     podcasts:
       enabled: true
       limit: 15
+      favorites_only: false
     radios:
       enabled: true
       limit: 4
+      favorites_only: false
     tracks:
       enabled: true
       limit: 100
+      favorites_only: true
       items:
         - name: My Playlist
           image: https://resources.tidal.com/images/10c59b67/bb86/4960/8071/a23a03b8cbdd/750x750.jpg
@@ -280,11 +294,20 @@ media_browser:
     ...
 ```
 
-| Parameter | Type                                      | Required | Default | Description                                 |
-|-----------|-------------------------------------------|----------|---------|---------------------------------------------|
-| enabled   | bool                                      | No       | true    | Enable/disable favorites for the media type |
-| limit     | int                                       | No       | 25      | Maximum number of favorite items to return  |
-| items     | [SectionItemConfig](#section-item-config) | No       | N/A     | See below                                   |
+| Parameter      | Type                                      | Required | Default | Description                                                              |
+|----------------|-------------------------------------------|----------|---------|--------------------------------------------------------------------------|
+| enabled        | bool                                      | No       | true    | Enable/disable favorites for the media type                              |
+| limit          | int                                       | No       | 25      | Maximum number of favorite items to return                               |
+| favorites_only | bool                                      | No       | true    | True: Only return favorited items. False: Return any items from library  |
+| items          | [SectionItemConfig](#section-item-config) | No       | N/A     | See below                                                                |
+
+### WARNING: 
+
+Unless you have a small library, `favorites_only` will likely not work as you expect:
+* Music Assistant will always return items in alphabetical order. 
+* It will limit the returned items to 500. This may not cover all your items. Simultaneously, this many items may also cause performance issues.
+
+It is recommended that you add custom items instead. 
 
 ## Sections Config
 Sections lets you add your own sections to the browser with your own items. These can either be media items (by providing `media_content_id` and `media_content_type`) or they can be a script (by providing `service`). If the item is a script, the current media player will be passed to it with the `entity_id` parameter.
