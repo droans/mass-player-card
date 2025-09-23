@@ -37,7 +37,7 @@ import {
   Icon,
   MediaTypes
 } from "../const/common";
-import { 
+import {
   activeEntityID,
   hassExt
 } from "../const/context";
@@ -76,7 +76,7 @@ export class MediaBrowser extends LitElement {
   private _searchMediaType: MediaTypes = MediaTypes.TRACK;
   private _searchMediaTerm = "";
   @state() private _searchMediaTypeIcon: string = mdiMusic;
-  
+
   public set config(config: MediaBrowserConfig) {
     if (!config) {
       return;
@@ -87,7 +87,7 @@ export class MediaBrowser extends LitElement {
   public get config() {
     return this._config;
   }
-  
+
   @consume({context: hassExt, subscribe: true})
   public set hass(hass: ExtendedHass) {
     if (!hass) {
@@ -231,7 +231,7 @@ export class MediaBrowser extends LitElement {
     return result?.icon ?? Icon.CLEFT;
   }
   private onSearchMediaTypeSelect = async (ev: CustomEvent) => {
-    /* eslint-disable 
+    /* eslint-disable
       @typescript-eslint/no-explicit-any,
       @typescript-eslint/no-unsafe-member-access,
     */
@@ -241,7 +241,7 @@ export class MediaBrowser extends LitElement {
       return;
     }
     target.value = "";
-    /* eslint-enable 
+    /* eslint-enable
       @typescript-eslint/no-explicit-any,
       @typescript-eslint/no-unsafe-member-access,
     */
@@ -264,8 +264,8 @@ export class MediaBrowser extends LitElement {
     this.activeCards = this.cards.search;
   }
   private async generateSearchResults(
-    search_term: string, 
-    media_type: MediaTypes, 
+    search_term: string,
+    media_type: MediaTypes,
     library_only = false as boolean,
     limit: number = DEFAULT_SEARCH_LIMIT
   ) {
@@ -321,7 +321,7 @@ export class MediaBrowser extends LitElement {
       }
     )
     let icons_html = html``;
-    icons.forEach( 
+    icons.forEach(
       (icon) => {
         icons_html = html`
           ${icons_html}
@@ -337,7 +337,7 @@ export class MediaBrowser extends LitElement {
   }
   private generateFavoriteCard(media_type: MediaTypes, cards: MediaCardItem[]): MediaCardItem {
     const icon: Icon = MediaTypeIcons[media_type];
-    return {  
+    return {
       title: media_type,
       background: this.generateSectionBackground(cards, icon),
       icon: icon,
@@ -392,7 +392,7 @@ export class MediaBrowser extends LitElement {
         this.generateFavoriteData(favorites.podcasts, MediaTypes.PODCAST),
         this.generateFavoriteData(favorites.radios, MediaTypes.RADIO),
         this.generateFavoriteData(favorites.tracks, MediaTypes.TRACK),
-        
+
     ]);
     await promises;
     this.generateCustomSectionsData(this.config.sections);
@@ -400,7 +400,7 @@ export class MediaBrowser extends LitElement {
     this.requestUpdate();
   }
   private generateCustomSectionCards = (config: customItem[])  => {
-    return config.map( 
+    return config.map(
       (item) => {
         const r: MediaCardItem = {
           title: item.name,
@@ -435,7 +435,7 @@ export class MediaBrowser extends LitElement {
         return r;
       }
     )
-    const customs = custom_items.map( 
+    const customs = custom_items.map(
       (item) => {
         const r: MediaCardItem = {
           title: item.name,
@@ -532,8 +532,8 @@ export class MediaBrowser extends LitElement {
     const styles_base_url = 'https://cdn.jsdelivr.net/npm/@shoelace-style/shoelace@2.20.1/cdn/themes/';
     const styles_url = styles_base_url + (this.hass.themes.darkMode ? 'dark.css' : 'light.css');
     return html`
-      <span 
-        slot="end" 
+      <span
+        slot="end"
         id="search-input"
       >
         <link rel="stylesheet" href="${styles_url}" />

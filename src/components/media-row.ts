@@ -35,7 +35,7 @@ import { testMixedContent } from '../utils/util';
 class MediaRow extends LitElement {
   @property({ attribute: false }) media_item!: QueueItem;
   @property({ type: Boolean }) selected = false;
-  
+
   @consume({context: hassExt})
   public hass!: ExtendedHass;
   public removeService!: QueueService;
@@ -44,7 +44,7 @@ class MediaRow extends LitElement {
   public moveQueueItemDownService!: QueueService;
   public selectedService!: QueueItemSelectedService;
   public showAlbumCovers = true;
-  
+
   private callMoveItemUpService(e: Event) {
     e.stopPropagation();
     this.moveQueueItemUpService(this.media_item.queue_item_id);
@@ -91,9 +91,9 @@ class MediaRow extends LitElement {
     const played = !this.media_item.show_action_buttons  && !this.media_item.playing;
     if (this.media_item.media_image && this.showAlbumCovers) {
       return html`
-        <span 
-          class="thumbnail${played ? '-disabled' : ''}" 
-          slot="start" 
+        <span
+          class="thumbnail${played ? '-disabled' : ''}"
+          slot="start"
           style="${this.artworkStyle()}"
         >
         </span>
@@ -103,8 +103,8 @@ class MediaRow extends LitElement {
   }
   private renderTitle() {
     return html`
-      <span 
-        slot="headline" 
+      <span
+        slot="headline"
         class="title"
       >
         ${this.media_item.media_title}
@@ -114,8 +114,8 @@ class MediaRow extends LitElement {
   private renderArtist() {
     if (this.media_item.show_artist_name) {
       return html`
-        <span 
-          slot="supporting-text" 
+        <span
+          slot="supporting-text"
           class="title"
         >
           ${this.media_item.media_artist}
@@ -127,7 +127,7 @@ class MediaRow extends LitElement {
   private renderActionButtons() {
     if (this.media_item.show_action_buttons) {
       return html`
-        <span 
+        <span
           slot="end"
           class="button-group"
         >
@@ -193,7 +193,7 @@ class MediaRow extends LitElement {
             style="height: 1.5rem; width: 1.5rem;"
           ></ha-svg-icon>
         </ha-button>
-    `    
+    `
   }
   private renderRemoveButton() {
     return html`
@@ -214,7 +214,7 @@ class MediaRow extends LitElement {
 
   render() {
     return html`
-      <ha-md-list-item 
+      <ha-md-list-item
         class="button${this.media_item.playing ? '-active' : ''}"
 		    @click=${this.callOnQueueItemSelectedService}
         type="button"

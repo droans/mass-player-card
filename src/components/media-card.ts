@@ -28,15 +28,15 @@ import {
 
 import styles from '../styles/media-card';
 
-import { 
-  backgroundImageFallback, 
+import {
+  backgroundImageFallback,
   getFallbackImage,
 } from "../utils/icons";
 import { testMixedContent } from "../utils/util";
 
 class MediaCard extends LitElement {
   private _config!: MediaCardItem;
-  
+
   @consume({context: hassExt})
   public hass!: ExtendedHass;
   public onEnqueueAction!: CardEnqueueService;
@@ -44,7 +44,7 @@ class MediaCard extends LitElement {
   @state() code!: TemplateResult;
   @property({ type: Boolean }) queueable = false;
   private _enqueue_buttons = ENQUEUE_BUTTONS;
-  
+
   public set config(config: MediaCardItem) {
     if (!config) {
       return;
@@ -57,10 +57,10 @@ class MediaCard extends LitElement {
   }
   private onEnqueue = (ev: CustomEvent) => {
     ev.stopPropagation();
-    /* eslint-disable 
-      @typescript-eslint/no-explicit-any, 
-      @typescript-eslint/no-unsafe-assignment, 
-      @typescript-eslint/no-unsafe-member-access 
+    /* eslint-disable
+      @typescript-eslint/no-explicit-any,
+      @typescript-eslint/no-unsafe-assignment,
+      @typescript-eslint/no-unsafe-member-access
     */
     const target = ev.target as any;
     const value = target.value as EnqueueOptions;
@@ -68,10 +68,10 @@ class MediaCard extends LitElement {
       return;
     }
     target.value = "";
-    /* eslint-enable 
-      @typescript-eslint/no-explicit-any, 
-      @typescript-eslint/no-unsafe-assignment, 
-      @typescript-eslint/no-unsafe-member-access 
+    /* eslint-enable
+      @typescript-eslint/no-explicit-any,
+      @typescript-eslint/no-unsafe-assignment,
+      @typescript-eslint/no-unsafe-member-access
     */
     this.onEnqueueAction(this._config.data, value);
   }
@@ -122,7 +122,6 @@ class MediaCard extends LitElement {
           .iconPath=${mdiPlayCircle}
           .items=${this._enqueue_buttons}
           .onSelectAction=${this.onEnqueue}
-          
         ></mass-menu-button>
       `
     };

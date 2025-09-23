@@ -34,7 +34,7 @@ class QueueCard extends LitElement {
   private _hass!: ExtendedHass;
   @state() private queue: QueueItem[] = [];
   private error?: TemplateResult;
-  
+
   @consume({context: hassExt, subscribe: true})
   public set hass(hass: ExtendedHass) {
     if (!hass) {
@@ -102,7 +102,7 @@ class QueueCard extends LitElement {
     this.getQueueIfReady();
   }
   public set config(config: QueueConfig) {
-   
+
     const status = this.testConfig(config, false);
     if (status !== QueueConfigErrors.OK) {
       throw this.createError(status);
@@ -135,7 +135,7 @@ class QueueCard extends LitElement {
   }
   private async subscribeUpdates() {
     this._unsubscribe = await this.hass.connection.subscribeEvents(
-      this.eventListener, 
+      this.eventListener,
       "mass_queue"
     );
     this._listening = true;
@@ -164,7 +164,7 @@ class QueueCard extends LitElement {
         return;
       }
     if (
-      !this.actions 
+      !this.actions
       || this.actions.player_entity !== this._active_player_entity
     ) {
       this.actions = new QueueActions(this.hass, this._active_player_entity)
@@ -245,7 +245,7 @@ class QueueCard extends LitElement {
     return this.queue.map(
       (item) => {
         return keyed(
-          item.queue_item_id, 
+          item.queue_item_id,
           html`
             <mass-player-media-row
               .media_item=${item}
@@ -276,7 +276,7 @@ class QueueCard extends LitElement {
       </ha-card>
     `
   }
-  
+
   static get styles(): CSSResultGroup {
     return styles;
   }

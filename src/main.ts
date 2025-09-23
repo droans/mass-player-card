@@ -66,19 +66,19 @@ declare global {
   }
 }
 
-      /* eslint-disable-next-line 
-        no-console, 
+      /* eslint-disable-next-line
+        no-console,
       */
 console.info(
   `%c ${cardName}${DEV ? ' DEV' : ''} \n%c Version v${version}`,
   'color: teal; font-weight: bold; background: lightgray',
   'color: darkblue; font-weight: bold; background: white',
 );
-/* eslint-disable 
-  @typescript-eslint/no-explicit-any, 
-  @typescript-eslint/no-unsafe-assignment, 
+/* eslint-disable
+  @typescript-eslint/no-explicit-any,
+  @typescript-eslint/no-unsafe-assignment,
   @typescript-eslint/no-unsafe-member-access,
-  @typescript-eslint/no-unsafe-call 
+  @typescript-eslint/no-unsafe-call
 */
 (window as any).customCards = (window as any).customCards || [];
 (window as any).customCards.push({
@@ -100,7 +100,7 @@ export class MusicAssistantPlayerCard extends LitElement {
   @provide( { context: activePlayerName}) activePlayerName!: string;
   @provide( { context: activeMediaPlayer}) activeMediaPlayer!: ExtendedHassEntity;
   @provide( { context: volumeMediaPlayer}) volumeMediaPlayer!: ExtendedHassEntity;
-  
+
   @state() private active_section!: Sections;
   @state() private entities!: HassEntity[];
   @provide({context: hassExt}) private _hass!: ExtendedHass;
@@ -178,11 +178,11 @@ export class MusicAssistantPlayerCard extends LitElement {
     } else {
       const states = this.hass.states;
       const active_players = players.filter(
-        (entity) => ["playing", "paused"].includes(states[entity.entity_id].state) && states[entity.entity_id].attributes.app_id == 'music_assistant' 
+        (entity) => ["playing", "paused"].includes(states[entity.entity_id].state) && states[entity.entity_id].attributes.app_id == 'music_assistant'
       )
       if (active_players.length) {
         this.activeEntityConfig = active_players[0];
-      } else {  
+      } else {
         this.activeEntityConfig = players[0];
       }
       this.activePlayerName = this.activeEntityConfig.name;
@@ -260,8 +260,8 @@ export class MusicAssistantPlayerCard extends LitElement {
   protected renderPlayers() {
     if (this.config.players.enabled) {
       return cache(html`
-        <sl-tab-panel 
-          name="${Sections.PLAYERS}" 
+        <sl-tab-panel
+          name="${Sections.PLAYERS}"
           class="section${this.active_section==Sections.PLAYERS ? "" : "-hidden"}"
         >
           <mass-player-players-card
@@ -276,8 +276,8 @@ export class MusicAssistantPlayerCard extends LitElement {
   protected renderMusicPlayer() {
     if (this.config.player.enabled) {
       return cache(html`
-        <sl-tab-panel 
-          name="${Sections.MUSIC_PLAYER}" 
+        <sl-tab-panel
+          name="${Sections.MUSIC_PLAYER}"
           class="section${this.active_section==Sections.MUSIC_PLAYER ? "" : "-hidden"}"
         >
           <mass-music-player-card
@@ -292,8 +292,8 @@ export class MusicAssistantPlayerCard extends LitElement {
   protected renderPlayerQueue() {
     if (this.config.queue.enabled) {
       return cache(html`
-        <sl-tab-panel 
-          name="${Sections.QUEUE}" 
+        <sl-tab-panel
+          name="${Sections.QUEUE}"
           class="section${this.active_section==Sections.QUEUE ? "" : "-hidden"}"
         >
           <mass-player-queue-card
@@ -307,8 +307,8 @@ export class MusicAssistantPlayerCard extends LitElement {
   protected renderMediaBrowser() {
     if (this.config.media_browser.enabled) {
       return cache(html`
-        <sl-tab-panel 
-          name="${Sections.MEDIA_BROWSER}" 
+        <sl-tab-panel
+          name="${Sections.MEDIA_BROWSER}"
           class="section${this.active_section==Sections.MEDIA_BROWSER ? "" : "-hidden"}"
         >
           <mass-media-browser
@@ -316,7 +316,7 @@ export class MusicAssistantPlayerCard extends LitElement {
             .onMediaSelectedAction=${this.browserItemSelected}
           >
         </sl-tab-panel>
-      `) 
+      `)
     }
     return html``
   }
@@ -324,7 +324,7 @@ export class MusicAssistantPlayerCard extends LitElement {
     const active = this.active_section == Sections.MUSIC_PLAYER;
     if (this.config.player.enabled){
       return html`
-        <sl-tab 
+        <sl-tab
           slot="nav"
           .active=${active}
           panel="${Sections.MUSIC_PLAYER}"
@@ -349,7 +349,7 @@ export class MusicAssistantPlayerCard extends LitElement {
     const active = this.active_section == Sections.QUEUE;
     if (this.config.queue.enabled){
       return html`
-        <sl-tab 
+        <sl-tab
           slot="nav"
           .active=${active}
           panel="${Sections.QUEUE}"
@@ -374,7 +374,7 @@ export class MusicAssistantPlayerCard extends LitElement {
     const active = this.active_section == Sections.MEDIA_BROWSER;
     if (this.config.media_browser.enabled){
       return html`
-        <sl-tab 
+        <sl-tab
           slot="nav"
           .active=${active}
           panel="${Sections.MEDIA_BROWSER}"
@@ -401,7 +401,7 @@ export class MusicAssistantPlayerCard extends LitElement {
     const active = this.active_section == Sections.PLAYERS;
     if (this.config.players.enabled){
       return html`
-        <sl-tab 
+        <sl-tab
           slot="nav"
           .active=${active}
           panel="${Sections.PLAYERS}"

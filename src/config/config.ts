@@ -1,13 +1,13 @@
 import {
-  mdiAlbum, 
-  mdiMusic, 
-  mdiPlaylistMusic, 
-  mdiSpeakerMultiple 
+  mdiAlbum,
+  mdiMusic,
+  mdiPlaylistMusic,
+  mdiSpeakerMultiple
 } from "@mdi/js";
 
 
 import {
-  DEFAULT_MAX_VOLUME 
+  DEFAULT_MAX_VOLUME
 } from "../const/music-player";
 import { ExtendedHass } from "../const/common";
 
@@ -57,7 +57,7 @@ export const DEFAULT_CONFIG = {
 
 
 export function createStubConfig(hass: ExtendedHass, entities: string[]) {
-  const media_players = entities.filter( 
+  const media_players = entities.filter(
     (ent) => {
       return ent.split(".")[0] == "media_player";
     }
@@ -75,7 +75,7 @@ export function createStubConfig(hass: ExtendedHass, entities: string[]) {
 export function createConfigForm() {
   return {
     schema: [
-      { 
+      {
         name: "entities",
         required: true,
         selector: {

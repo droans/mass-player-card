@@ -18,7 +18,7 @@ class MassMenuButton extends LitElement {
     return this._items;
   }
   protected renderMenuItems() {
-    return this._items.map( 
+    return this._items.map(
       (item) => {
         return html`
           <ha-list-item
@@ -36,7 +36,6 @@ class MassMenuButton extends LitElement {
             ${item.title}
           </ha-list-item>
         `
-        
       }
     )
   }

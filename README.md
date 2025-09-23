@@ -63,7 +63,7 @@ This is the minimal config you need for the card to work.
 
 ```yaml
 type: custom:mass-player-card
-entities: 
+entities:
   - media_player.music_assistant_player
 ```
 
@@ -187,7 +187,6 @@ media_browser:
           image: https://resources.tidal.com/images/b15ef956/5eed/43ba/9bba/d1ea1c3e48a4/750x750.jpg
           media_content_id: tidal://track/222419939
           media_content_type: track
-      
 ```
 
 </details>
@@ -301,9 +300,9 @@ These will be for each item inside of that section. Either `service` must be pro
 |--------------------|-------|----------|---------|----------------------------------------------------|
 | name               | str   | Yes      | N/A     | The name for the custom section                    |
 | image              | str   | Yes      | N/A     | The URL of the image to use for the custom section |
-| media_content_id   | str   | No       | true    | Media Content ID of the item to be played          |                                      
+| media_content_id   | str   | No       | true    | Media Content ID of the item to be played          |
 | media_content_type | str   | No       | true    | Media Content type of the item to be played        |
-| service            | str   | No       | true    | Service to be called when selected                 |          
+| service            | str   | No       | true    | Service to be called when selected                 |
 
 ## Players Config
 

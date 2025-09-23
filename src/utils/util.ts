@@ -33,7 +33,7 @@ export function getDefaultSection(config: Config) {
   }
   const filtered = Object.entries(sections_conf).filter(
     (item) => item[1]
-  ).map( 
+  ).map(
     (item) => item[0]
   )
   const enabled_defaults = defaults.filter(

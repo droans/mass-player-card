@@ -10,7 +10,7 @@ export type QueueService = (
   queue_item_id: string
 ) => void;
 export type QueueItemSelectedService = (
-  queue_item_id: string, 
+  queue_item_id: string,
   media_content_id: string
 ) => void;
 

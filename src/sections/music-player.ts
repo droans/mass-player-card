@@ -63,11 +63,11 @@ class MusicPlayerCard extends LitElement {
   @property({ attribute: false}) private media_duration = 1;
   @state() private shouldMarqueeTitle = false;
   @query('.player-track-title') _track_title!: LitElement;
-  
+
   @consume({ context: volumeMediaPlayer, subscribe: true })
   public volumeMediaPlayer!: ExtendedHassEntity;
   @consume({ context: activePlayerName, subscribe: true })
-  public mediaPlayerName!: string; 
+  public mediaPlayerName!: string;
   public maxVolume!: number;
   private _player!: ExtendedHassEntity;
   private _listener: number|undefined;
@@ -81,7 +81,7 @@ class MusicPlayerCard extends LitElement {
   private touchStartY = 0;
   private touchEndY = 0;
   private _animationListener  = async () => this.onAnimationEnd();
-  
+
   @consume({ context: activeMediaPlayer, subscribe: true })
   public set activeMediaPlayer(player: ExtendedHassEntity) {
     this._player = player;
@@ -115,7 +115,7 @@ class MusicPlayerCard extends LitElement {
       player_name = this.activeMediaPlayer.attributes?.friendly_name ?? "Media Player";
     }
     const current_item = (await this.actions.actionGetCurrentItem(this.activeMediaPlayer));
-    
+
     const new_player_data: PlayerData = {
       playing: this.activeMediaPlayer.state == 'playing',
       repeat: this.activeMediaPlayer.attributes.repeat ?? false,
@@ -171,7 +171,7 @@ class MusicPlayerCard extends LitElement {
   private async onVolumeMuteToggle() {
     this.player_data.muted = !this.player_data.muted;
     await this.actions.actionMuteToggle(this.volumeMediaPlayer);
-    
+
   }
   private onFavorite = async () => {
     if (this.player_data.favorite) {
@@ -185,7 +185,6 @@ class MusicPlayerCard extends LitElement {
   private async onShuffleToggle() {
     this.player_data.shuffle = !this.player_data.shuffle;
     await this.actions.actionShuffleToggle(this.activeMediaPlayer);
-    
   }
   private async onRepeatToggle() {
     const cur_repeat = this.player_data.repeat;
@@ -198,7 +197,6 @@ class MusicPlayerCard extends LitElement {
     }
     this.player_data.repeat = repeat;
     await this.actions.actionRepeatSet(this.activeMediaPlayer, repeat);
-    
   }
   private onToggle = async () => {
     await this.actions.actionTogglePlayer(this.activeMediaPlayer);
@@ -290,15 +288,14 @@ class MusicPlayerCard extends LitElement {
       this.removeEventListener('animationiteration', this._animationListener);
       return html`<div class="player-track-title">${title}</div>`
     }
-    
-    const marqueeTime = `${(1 - (this.marquee_x_dist / 40)).toString()}s`;   
+    const marqueeTime = `${(1 - (this.marquee_x_dist / 40)).toString()}s`;
     /* eslint-disable-next-line @typescript-eslint/no-misused-promises */
     this._track_title.addEventListener('animationiteration', this._animationListener);
     return html`
       <div
         class="player-track-title marquee"
         style="
-          --marquee-left-offset: ${this.marquee_x_dist}px; 
+          --marquee-left-offset: ${this.marquee_x_dist}px;
           --marquee-time: ${marqueeTime};"
       >
       ${title}
@@ -308,14 +305,14 @@ class MusicPlayerCard extends LitElement {
   protected renderTitle() {
     if(!this.player_data?.track_title) {
       return html``
-    } 
+    }
     return this.wrapTitleMarquee();
   }
   protected renderArtist() {
     if (!this.player_data?.track_artist) {
       return html``
     }
-    return html`<div class="player-track-artist"> ${this.player_data.track_artist} </div>`; 
+    return html`<div class="player-track-artist"> ${this.player_data.track_artist} </div>`;
   }
   protected renderHeader() {
     return html`
@@ -348,14 +345,14 @@ class MusicPlayerCard extends LitElement {
   }
   private artworkStyle() {
     const img = this.player_data?.track_artwork || "";
-    if (!this.player_data?.track_artist || !testMixedContent(img)) { 
+    if (!this.player_data?.track_artist || !testMixedContent(img)) {
       return getFallbackImage(this.hass, Icon.CLEFT);
     }
       return backgroundImageFallback(this.hass, img, Icon.CLEFT);
   }
   protected renderArtwork() {
     return html`
-      <div 
+      <div
         class="artwork"
         id="artwork"
         style="${this.artworkStyle()}"
@@ -486,7 +483,6 @@ class MusicPlayerCard extends LitElement {
           style="height: 3rem; width: 3rem;"
         ></ha-svg-icon>
       </ha-button>
-      
       <ha-button
         appearance="plain"
         variant="brand"
@@ -537,7 +533,6 @@ class MusicPlayerCard extends LitElement {
   static get styles(): CSSResultGroup {
     return styles;
   }
-  
 }
 
 customElements.define('mass-music-player-card', MusicPlayerCard);

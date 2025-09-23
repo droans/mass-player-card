@@ -1,16 +1,16 @@
 
-import { 
+import {
   mdiAccountMusic,
   mdiAlbum,
   mdiBook,
   mdiMusic,
-  mdiPlayCircle, 
-  mdiPlayCircleOutline, 
-  mdiPlaylistMusic, 
-  mdiPlaylistPlus, 
-  mdiPodcast, 
-  mdiRadio, 
-  mdiSkipNextCircle, 
+  mdiPlayCircle,
+  mdiPlayCircleOutline,
+  mdiPlaylistMusic,
+  mdiPlaylistPlus,
+  mdiPodcast,
+  mdiRadio,
+  mdiSkipNextCircle,
   mdiSkipNextCircleOutline
 } from "@mdi/js";
 import { TemplateResult } from "lit";

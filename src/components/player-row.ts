@@ -37,7 +37,7 @@ class PlayerRow extends LitElement {
   @property({ type: Boolean }) player_entity!: ExtendedHassEntity;
   @property({ type: Boolean }) selected = false;
   @property({ type: Boolean }) joined = false;
-  
+
   @consume({context: hassExt})
   public hass!: ExtendedHass;
   public playerName!: string;
@@ -77,9 +77,9 @@ class PlayerRow extends LitElement {
   }
   private renderThumbnail() {
     return html`
-      <span 
-        class="thumbnail" 
-        slot="start" 
+      <span
+        class="thumbnail"
+        slot="start"
         style="${this.artworkStyle()}"
       >
       </span>
@@ -91,8 +91,8 @@ class PlayerRow extends LitElement {
       title = this.player_entity.attributes?.friendly_name ?? "Media Player"
     };
     return html`
-      <span 
-        slot="headline" 
+      <span
+        slot="headline"
         class="title"
       >
         ${title}
@@ -152,7 +152,7 @@ class PlayerRow extends LitElement {
   }
   render() {
     return html`
-      <ha-md-list-item 
+      <ha-md-list-item
         class="button${this.selected ? '-active' : ''}"
 		    @click=${this.callOnPlayerSelectedService}
         type="button"

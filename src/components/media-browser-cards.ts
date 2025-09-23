@@ -29,7 +29,6 @@ import styles from '../styles/media-browser-cards';
 class MediaBrowserCards extends LitElement {
   public onSelectAction!: CardSelectedService;
   public onEnqueueAction!: CardEnqueueService;
-  
   @consume({context: hassExt})
   public hass!: ExtendedHass;
   private _items!: MediaCardItem[];

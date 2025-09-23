@@ -1,19 +1,19 @@
 import { createContext } from '@lit/context'
 
-import type { 
-  ExtendedHass, 
-  ExtendedHassEntity 
+import type {
+  ExtendedHass,
+  ExtendedHassEntity
 } from "./common";
-export type { 
-  ExtendedHass, 
-  ExtendedHassEntity 
+export type {
+  ExtendedHass,
+  ExtendedHassEntity
 } from "./common";
 
-import type { 
-  EntityConfig 
+import type {
+  EntityConfig
 } from '../config/config';
 export type {
-  EntityConfig 
+  EntityConfig
 } from '../config/config';
 
 export const hassExt = createContext<ExtendedHass>('hass');

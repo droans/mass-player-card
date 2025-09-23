@@ -65,8 +65,8 @@ function favoritesConfigForm(section: string) {
   return {
     name: section,
     type: "expandable",
-    schema: [ 
-      { 
+    schema: [
+      {
         name: "",
         type: "grid",
         schema: [

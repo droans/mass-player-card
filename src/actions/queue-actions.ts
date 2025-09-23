@@ -8,12 +8,11 @@ export default class QueueActions {
   constructor(hass: ExtendedHass, player_entity: string) {
     this.hass = hass;
     this.player_entity = player_entity;
-    
   }
 
   async getQueue(limit_before: number, limit_after: number): Promise<QueueItem[]|null> {
     try {
-      /* eslint-disable 
+      /* eslint-disable
         @typescript-eslint/no-explicit-any,
         @typescript-eslint/no-unsafe-assignment,
       */
