@@ -70,7 +70,7 @@ expanded: false
 |---------------|--------------------------------------------------|----------|---------|----------------------------------------------------|
 | type          | str                                              | Yes      | n/a     | Use `custom:mass-player-card`                      |
 | entities      | list of string or [EntityConfig](#entity-config) | Yes      | n/a     | The Music Assistant `media_player` entities to use |
-| player        | [PlayerConfig](#player-config)                   | No       | 5       | See Below                                          |
+| player        | [MusicPlayerConfig](#music-player-config)        | No       | 5       | See Below                                          |
 | queue         | [QueueConfig](#queue-config)                     | No       | 5       | See Below                                          |
 | media_browser | [MediaBrowserConfig](#media-browser-config)      | No       | 5       | See Below                                          |
 | players       | [PlayersConfig](#players-config)                 | No       | 5       | See Below                                          |
@@ -85,7 +85,7 @@ For each entity, you can either provide the Entity ID by itself or you can provi
 | name             | str  | No       | N/A         | The name of the media player             |
 | max_volume       | int  | No       | N/A         | Max volume for the volume slider (0-100) |
 
-## Player Config
+## Music Player Config
 
 <details>
     <summary>📷 Media Player Example</summary>
