@@ -29,6 +29,8 @@ import {
 } from "../const/music-player";
 import { RepeatMode } from "../const/common";
 import { testMixedContent } from "../utils/util";
+import { hassExt } from "../const/context";
+import { consume } from "@lit/context";
 
 class MusicPlayerCard extends LitElement {
   @property({ attribute: false }) private player_data!: PlayerData;
@@ -56,6 +58,8 @@ class MusicPlayerCard extends LitElement {
     this._player = player;
     this.updatePlayerData();
   }
+  
+  @consume({context: hassExt})
   public set hass(hass: ExtendedHass) {
     if (hass) {
       this.actions = new PlayerActions(hass);

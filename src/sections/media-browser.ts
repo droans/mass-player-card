@@ -42,6 +42,8 @@ import styles from '../styles/media-browser';
 import { backgroundImageFallback } from "../utils/icons";
 import { testMixedContent } from "../utils/util";
 import { EnqueueOptions } from "../const/actions";
+import { consume } from "@lit/context";
+import { hassExt } from "../const/context";
 
 export class MediaBrowser extends LitElement {
   public activePlayer!: string;
@@ -70,6 +72,8 @@ export class MediaBrowser extends LitElement {
   public get config() {
     return this._config;
   }
+  
+  @consume({context: hassExt})
   public set hass(hass: ExtendedHass) {
     if (!hass) {
       return;
@@ -564,7 +568,6 @@ export class MediaBrowser extends LitElement {
       <mass-browser-cards
         .items=${activeCards}
         .onSelectAction=${this.onSelect}
-        .hass=${this.hass}
         .onEnqueueAction=${this.onEnqueue}
       >
       </mass-browser-cards>

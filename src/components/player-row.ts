@@ -11,11 +11,15 @@ import {
   PlayerUnjoinService 
 } from '../const/actions';
 import { testMixedContent } from '../utils/util';
+import { consume } from '@lit/context';
+import { hassExt } from '../const/context';
 
 class PlayerRow extends LitElement {
   @property({ type: Boolean }) player_entity!: ExtendedHassEntity;
   @property({ type: Boolean }) selected = false;
   @property({ type: Boolean }) joined = false;
+  
+  @consume({context: hassExt})
   public hass!: ExtendedHass;
   public playerName!: string;
   public selectedService!: PlayerSelectedService;

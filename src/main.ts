@@ -26,8 +26,9 @@ import {
   EntityConfig,
   processConfig,
 } from './config/config';
-import { ExtendedHass } from './const/common';
 import { getDefaultSection } from './utils/util';
+import { provide } from '@lit/context';
+import { ExtendedHass, hassExt } from './const/context';
 
 const DEV = false;
 
@@ -85,6 +86,7 @@ export class MusicAssistantPlayerCard extends LitElement {
       this.setDefaultActivePlayer();
     }
   }
+  @provide({context: hassExt})
   public set hass(hass: ExtendedHass) {
     if (!hass) {
       return;
@@ -227,7 +229,6 @@ export class MusicAssistantPlayerCard extends LitElement {
             .selectedPlayerService=${this.playerSelected}
             .activePlayerEntity=${this.active_player_entity}
             .config=${this.config}
-            .hass=${this.hass}
           ></mass-player-players-card>
         </sl-tab-panel>
       `);
@@ -247,7 +248,6 @@ export class MusicAssistantPlayerCard extends LitElement {
             .mediaPlayerName=${this.active_player_entity.name}
             .maxVolume=${this.active_player_entity.max_volume}
             .activeMediaPlayer=${this.hass.states[this.active_player_entity.entity_id]}
-            .hass=${this.hass}
           ></mass-music-player-card>
         </sl-tab-panel>
       `);
@@ -262,7 +262,6 @@ export class MusicAssistantPlayerCard extends LitElement {
           class="section${this.active_section==Sections.QUEUE ? "" : "-hidden"}"
         >
           <mass-player-queue-card
-            .hass=${this.hass}
             .active_player_entity=${this.active_player_entity.entity_id}
             .config=${this.config.queue}
           ></mass-player-queue-card>
@@ -281,7 +280,6 @@ export class MusicAssistantPlayerCard extends LitElement {
           <mass-media-browser
             .activePlayer=${this.active_player_entity.entity_id}
             .config=${this.config.media_browser}
-            .hass=${this.hass}
             .onMediaSelectedAction=${this.browserItemSelected}
           >
         </sl-tab-panel>

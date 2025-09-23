@@ -6,10 +6,14 @@ import { CardEnqueueService, CardSelectedService, EnqueueOptions } from "../cons
 import { state } from "lit/decorators.js";
 import styles from '../styles/media-browser-cards';
 import { ExtendedHass } from "../const/common";
+import { hassExt } from "../const/context";
+import { consume } from "@lit/context";
 
 class MediaBrowserCards extends LitElement {
   public onSelectAction!: CardSelectedService;
   public onEnqueueAction!: CardEnqueueService;
+  
+  @consume({context: hassExt})
   public hass!: ExtendedHass;
   private _items!: MediaCardItem[];
   @state() private code!: TemplateResult;
@@ -39,7 +43,6 @@ class MediaBrowserCards extends LitElement {
           <mass-media-card
             .config=${item}
             .onSelectAction=${this.onItemSelected}
-            .hass=${this.hass}
             .onEnqueueAction=${this.onEnqueue}
             ${queueable}
           >

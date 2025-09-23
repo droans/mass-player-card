@@ -14,6 +14,8 @@ import {
 import { QueueConfigErrors } from '../config/player-queue';
 import { ExtendedHass } from '../const/common';
 import { LovelaceCard } from 'custom-card-helpers';
+import { consume } from '@lit/context';
+import { hassExt } from '../const/context';
 
 class QueueCard extends LitElement {
   @state() private lastUpdated = '';
@@ -22,6 +24,8 @@ class QueueCard extends LitElement {
   private _hass!: ExtendedHass;
   @state() private queue: QueueItem[] = [];
   private error?: TemplateResult;
+  
+  @consume({context: hassExt})
   public set hass(hass: ExtendedHass) {
     if (!hass) {
       return;
@@ -241,7 +245,6 @@ class QueueCard extends LitElement {
               .moveQueueItemNextService=${this.onQueueItemMoveNext}
               .moveQueueItemUpService=${this.onQueueItemMoveUp}
               .moveQueueItemDownService=${this.onQueueItemMoveDown}
-              .hass=${this.hass}
             >
             </mass-player-media-row>`
         )
