@@ -38,6 +38,7 @@ import {
   activeEntityID,
   activeMediaPlayer,
   activePlayerName,
+  entitiesConfig,
   ExtendedHass,
   ExtendedHassEntity,
   hassExt,
@@ -99,6 +100,7 @@ export class MusicAssistantPlayerCard extends LitElement {
 
   @provide({context: hassExt}) private _hass!: ExtendedHass;
   @provide( { context: activeEntityConf}) @state() private activeEntityConfig!: EntityConfig;
+  @provide( { context: entitiesConfig}) @state() private EntitiesConfig!: EntityConfig[];
   @provide( { context: activeEntityID}) activeEntityId!: string;
   @provide( { context: activeMediaPlayer}) activeMediaPlayer!: ExtendedHassEntity;
   @provide( { context: activePlayerName}) activePlayerName!: string;
@@ -172,6 +174,7 @@ export class MusicAssistantPlayerCard extends LitElement {
       return;
     }
     const players = this.config.entities;
+    this.EntitiesConfig = players;
     if (!this.hass) {
       this.activeEntityConfig = players[0];
     } else {
@@ -281,6 +284,7 @@ export class MusicAssistantPlayerCard extends LitElement {
         >
           <mass-music-player-card
             .config=${this.config.player}
+            .selectedPlayerService=${this.playerSelected}
             .maxVolume=${this.activeEntityConfig.max_volume}
           ></mass-music-player-card>
         </sl-tab-panel>
