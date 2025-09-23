@@ -44,15 +44,17 @@ class QueueCard extends LitElement {
   public get hass() {
     return this._hass;
   }
-  private testConfig(config: QueueConfig) {
+  private testConfig(config: QueueConfig, test_active = true) {
     if (!config) {
       return QueueConfigErrors.CONFIG_MISSING;
     }
-    if (!this._active_player_entity) {
-      return QueueConfigErrors.NO_ENTITY;
-    };
-    if (typeof(this._active_player_entity) !== "string") {
-      return QueueConfigErrors.ENTITY_TYPE;
+    if (test_active) {
+      if (!this._active_player_entity) {
+        return QueueConfigErrors.NO_ENTITY;
+      };
+      if (typeof(this._active_player_entity) !== "string") {
+        return QueueConfigErrors.ENTITY_TYPE;
+      }
     }
     if (this.hass) {
       if (!this.hass.states[this._active_player_entity]) {
@@ -94,7 +96,7 @@ class QueueCard extends LitElement {
   }
   public set config(config: QueueConfig) {
    
-    const status = this.testConfig(config);
+    const status = this.testConfig(config, false);
     if (status !== QueueConfigErrors.OK) {
       throw this.createError(status);
     }
