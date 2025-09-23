@@ -35,14 +35,16 @@ import {
 import { testMixedContent } from "../utils/util";
 
 class MediaCard extends LitElement {
-  private _config!: MediaCardItem;
+  @property({ type: Boolean }) queueable = false;
+  @state() code!: TemplateResult;
 
   @consume({context: hassExt})
   public hass!: ExtendedHass;
-  public onEnqueueAction!: CardEnqueueService;
+
   public onSelectAction!: CardSelectedService;
-  @state() code!: TemplateResult;
-  @property({ type: Boolean }) queueable = false;
+  public onEnqueueAction!: CardEnqueueService;
+
+  private _config!: MediaCardItem;
   private _enqueue_buttons = ENQUEUE_BUTTONS;
 
   public set config(config: MediaCardItem) {
@@ -55,6 +57,7 @@ class MediaCard extends LitElement {
   public get config() {
     return this._config;
   }
+
   private onEnqueue = (ev: CustomEvent) => {
     ev.stopPropagation();
     /* eslint-disable

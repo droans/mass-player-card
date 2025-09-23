@@ -28,12 +28,22 @@ import {
 import styles from '../styles/player-queue';
 
 class QueueCard extends LitElement {
-  @state() private lastUpdated = '';
-  private _active_player_entity!: string;
   @property({ attribute: false }) public _config!: QueueConfig;
-  private _hass!: ExtendedHass;
+  @state() private lastUpdated = '';
   @state() private queue: QueueItem[] = [];
+
+  private _active_player_entity!: string;
+  private _hass!: ExtendedHass;
+  private _listening = false;
+  /* eslint-disable-next-line @typescript-eslint/no-explicit-any */
+  private _unsubscribe: any;
+  private actions!: QueueActions;
   private error?: TemplateResult;
+  private failCt = 0;
+  private hasFailed = false;
+  private maxFailCt = 5;
+  private newId = '';
+  private queueID = '';
 
   @consume({context: hassExt, subscribe: true})
   public set hass(hass: ExtendedHass) {
@@ -51,6 +61,32 @@ class QueueCard extends LitElement {
   public get hass() {
     return this._hass;
   }
+  
+  @consume( { context: activeEntityID, subscribe: true})
+  @property({ attribute: false})
+  public set active_player_entity(active_player_entity: string) {
+    this._active_player_entity = active_player_entity;
+    this.getQueueIfReady();
+  }
+  public get active_player_entity() {
+    return this._active_player_entity;
+  }
+
+  public set config(config: QueueConfig) {
+    const status = this.testConfig(config, false);
+    if (status !== QueueConfigErrors.OK) {
+      throw this.createError(status);
+    }
+    this._config = {
+      ...DEFAULT_QUEUE_CONFIG,
+      ...config
+    };
+    this.getQueueIfReady();
+  }
+  public get config() {
+    return this._config;
+  }
+
   private testConfig(config: QueueConfig, test_active = true) {
     if (!config) {
       return QueueConfigErrors.CONFIG_MISSING;
@@ -86,30 +122,6 @@ class QueueCard extends LitElement {
     return super.shouldUpdate(_changedProperties);
   }
 
-  @consume( { context: activeEntityID, subscribe: true})
-  @property({ attribute: false})
-  public set active_player_entity(active_player_entity: string) {
-    this._active_player_entity = active_player_entity;
-    this.getQueueIfReady();
-  }
-  public get active_player_entity() {
-    return this._active_player_entity;
-  }
-  public set config(config: QueueConfig) {
-
-    const status = this.testConfig(config, false);
-    if (status !== QueueConfigErrors.OK) {
-      throw this.createError(status);
-    }
-    this._config = {
-      ...DEFAULT_QUEUE_CONFIG,
-      ...config
-    };
-    this.getQueueIfReady();
-  }
-  public get config() {
-    return this._config;
-  }
   private getQueueIfReady() {
     if (!this.hass || !this._config || !this.active_player_entity) {
       return

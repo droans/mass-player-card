@@ -27,12 +27,15 @@ import {
 import styles from '../styles/media-browser-cards';
 
 class MediaBrowserCards extends LitElement {
-  public onSelectAction!: CardSelectedService;
-  public onEnqueueAction!: CardEnqueueService;
+  @state() private code!: TemplateResult;
+
   @consume({context: hassExt})
   public hass!: ExtendedHass;
+
+  public onEnqueueAction!: CardEnqueueService;
+  public onSelectAction!: CardSelectedService;
+
   private _items!: MediaCardItem[];
-  @state() private code!: TemplateResult;
 
   public set items(items: MediaCardItem[]) {
     if (!items?.length) {
@@ -44,6 +47,7 @@ class MediaBrowserCards extends LitElement {
   public get items() {
     return this._items;
   }
+
   private onItemSelected = (data: MediaCardData) => {
     this.onSelectAction(data);
   }

@@ -92,18 +92,17 @@ console.info(
 
 @customElement(`${cardId}${DEV ? '-dev' : ''}`)
 export class MusicAssistantPlayerCard extends LitElement {
+  @state() private active_section!: Sections;
   @state() private config!: Config;
+  @state() private entities!: HassEntity[];
   @state() private error?: TemplateResult;
 
+  @provide({context: hassExt}) private _hass!: ExtendedHass;
   @provide( { context: activeEntityConf}) @state() private activeEntityConfig!: EntityConfig;
   @provide( { context: activeEntityID}) activeEntityId!: string;
-  @provide( { context: activePlayerName}) activePlayerName!: string;
   @provide( { context: activeMediaPlayer}) activeMediaPlayer!: ExtendedHassEntity;
+  @provide( { context: activePlayerName}) activePlayerName!: string;
   @provide( { context: volumeMediaPlayer}) volumeMediaPlayer!: ExtendedHassEntity;
-
-  @state() private active_section!: Sections;
-  @state() private entities!: HassEntity[];
-  @provide({context: hassExt}) private _hass!: ExtendedHass;
 
   constructor() {
     super();

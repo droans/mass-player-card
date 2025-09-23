@@ -9,14 +9,17 @@ import { ListItems } from "../const/media-browser";
 
 class MassMenuButton extends LitElement {
   @property( { attribute: false }) public iconPath!: string;
-  public onSelectAction!: MenuButtonSelectAction;
   @property( { attribute: false }) private _items!: ListItems;
+
+  public onSelectAction!: MenuButtonSelectAction;
+
   public set items(items: ListItems) {
     this._items = items;
   }
   public get items() {
     return this._items;
   }
+
   protected renderMenuItems() {
     return this._items.map(
       (item) => {

@@ -58,29 +58,32 @@ import {
 import { testMixedContent } from "../utils/util";
 
 class MusicPlayerCard extends LitElement {
-  @property({ attribute: false }) private player_data!: PlayerData;
-  @property({ attribute: false}) private media_position = 0;
   @property({ attribute: false}) private media_duration = 1;
+  @property({ attribute: false}) private media_position = 0;
+  @property({ attribute: false }) private player_data!: PlayerData;
   @state() private shouldMarqueeTitle = false;
+
   @query('.player-track-title') _track_title!: LitElement;
 
-  @consume({ context: volumeMediaPlayer, subscribe: true })
-  public volumeMediaPlayer!: ExtendedHassEntity;
   @consume({ context: activePlayerName, subscribe: true })
   public mediaPlayerName!: string;
+  @consume({ context: volumeMediaPlayer, subscribe: true })
+  public volumeMediaPlayer!: ExtendedHassEntity;
+
   public maxVolume!: number;
-  private _player!: ExtendedHassEntity;
+
+  private _animationListener  = async () => this.onAnimationEnd();
   private _listener: number|undefined;
   private _hass!: ExtendedHass;
+  private _player!: ExtendedHassEntity;
   private actions!: PlayerActions;
-  private entity_pos = 0;
   private entity_dur = 1;
+  private entity_pos = 0;
   private marquee_x_dist = 0;
   private touchStartX = 0;
   private touchEndX = 0;
   private touchStartY = 0;
   private touchEndY = 0;
-  private _animationListener  = async () => this.onAnimationEnd();
 
   @consume({ context: activeMediaPlayer, subscribe: true })
   public set activeMediaPlayer(player: ExtendedHassEntity) {
@@ -90,6 +93,7 @@ class MusicPlayerCard extends LitElement {
   public get activeMediaPlayer() {
     return this._player;
   }
+
   @consume({context: hassExt, subscribe: true})
   public set hass(hass: ExtendedHass) {
     if (hass) {
@@ -103,6 +107,7 @@ class MusicPlayerCard extends LitElement {
   public get hass() {
     return this._hass;
   }
+
   private updatePlayerData() {
     this._updatePlayerData().catch( () => {return});
   }

@@ -38,10 +38,11 @@ class MediaRow extends LitElement {
 
   @consume({context: hassExt})
   public hass!: ExtendedHass;
-  public removeService!: QueueService;
+
+  public moveQueueItemDownService!: QueueService;
   public moveQueueItemNextService!: QueueService;
   public moveQueueItemUpService!: QueueService;
-  public moveQueueItemDownService!: QueueService;
+  public removeService!: QueueService;
   public selectedService!: QueueItemSelectedService;
   public showAlbumCovers = true;
 

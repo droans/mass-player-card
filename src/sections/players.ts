@@ -33,16 +33,17 @@ import {
 import styles from '../styles/player-queue';
 
 class PlayersCard extends LitElement {
+  @property({ attribute: false }) private entities: ExtendedHassEntity[] = [];
+
   @consume( { context: activeEntityConf, subscribe: true})
   @property({ attribute: false })
   public activePlayerEntity!: EntityConfig;
-  @property({ attribute: false }) private entities: ExtendedHassEntity[] = [];
 
   public selectedPlayerService!: PlayerSelectedService;
 
   private _config!: Config;
-  private actions!: PlayersActions;
   private _hass!: ExtendedHass;
+  private actions!: PlayersActions;
 
   @property( {attribute: false } )
   public set config(config: Config) {

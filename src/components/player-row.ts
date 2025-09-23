@@ -34,18 +34,20 @@ import { testMixedContent } from '../utils/util';
 import styles from '../styles/player-row';
 
 class PlayerRow extends LitElement {
+  @property({ type: Boolean }) joined = false;
   @property({ type: Boolean }) player_entity!: ExtendedHassEntity;
   @property({ type: Boolean }) selected = false;
-  @property({ type: Boolean }) joined = false;
 
   @consume({context: hassExt})
   public hass!: ExtendedHass;
-  public playerName!: string;
-  public selectedService!: PlayerSelectedService;
-  public joinService!: PlayerJoinService;
-  public unjoinService!: PlayerUnjoinService;
-  public transferService!: PlayerTransferService;
+
   public allowJoin = true;
+  public playerName!: string;
+  public joinService!: PlayerJoinService;
+  public selectedService!: PlayerSelectedService;
+  public transferService!: PlayerTransferService;
+  public unjoinService!: PlayerUnjoinService;
+
   private callOnPlayerSelectedService() {
     this.selectedService(this.player_entity.entity_id);
   }

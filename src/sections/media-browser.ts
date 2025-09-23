@@ -59,23 +59,25 @@ import { backgroundImageFallback } from "../utils/icons";
 import { testMixedContent } from "../utils/util";
 
 export class MediaBrowser extends LitElement {
+  @property({attribute: false}) private _config!: MediaBrowserConfig;
+  @state() private cards: MediaBrowserItemsConfig = {main: []};
+  @state() private _searchLibrary= false;
+  @state() private _searchMediaTypeIcon: string = mdiMusic;
+
   @consume( { context: activeEntityID, subscribe: true})
   public activePlayer!: string;
 
-  @property({attribute: false}) private _config!: MediaBrowserConfig;
-  private _hass!: ExtendedHass;
-  @state() private cards: MediaBrowserItemsConfig = {main: []};
-  private _activeSection = 'main';
-  private previousSection = '';
-  private actions!: BrowserActions;
-  private _activeCards: MediaCardItem[] = [];
   public onMediaSelectedAction!: () => void;
 
+  private _activeCards: MediaCardItem[] = [];
+  private _activeSection = 'main';
+  private _hass!: ExtendedHass;
   private _lastSearchInputTs= 0;
-  @state() private _searchLibrary= false;
-  private _searchMediaType: MediaTypes = MediaTypes.TRACK;
   private _searchMediaTerm = "";
-  @state() private _searchMediaTypeIcon: string = mdiMusic;
+  private _searchMediaType: MediaTypes = MediaTypes.TRACK;
+  private actions!: BrowserActions;
+  private previousSection = '';
+
 
   public set config(config: MediaBrowserConfig) {
     if (!config) {
