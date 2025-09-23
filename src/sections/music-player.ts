@@ -30,6 +30,8 @@ import {
 import { RepeatMode } from "../const/common";
 import { testMixedContent } from "../utils/util";
 import { 
+  activeMediaPlayer,
+  activePlayerName,
   hassExt, 
   volumeMediaPlayer 
 } from "../const/context";
@@ -42,8 +44,9 @@ class MusicPlayerCard extends LitElement {
   @state() private shouldMarqueeTitle = false;
   @query('.player-track-title') _track_title!: LitElement;
   
-  @consume({ context: volumeMediaPlayer })
+  @consume({ context: volumeMediaPlayer, subscribe: true })
   public volumeMediaPlayer!: ExtendedHassEntity;
+  @consume({ context: activePlayerName, subscribe: true })
   public mediaPlayerName!: string; 
   public maxVolume!: number;
   private _player!: ExtendedHassEntity;
@@ -59,11 +62,15 @@ class MusicPlayerCard extends LitElement {
   private touchEndY = 0;
   private _animationListener  = async () => this.onAnimationEnd();
   
+  @consume({ context: activeMediaPlayer, subscribe: true })
   public set activeMediaPlayer(player: ExtendedHassEntity) {
     this._player = player;
     this.updatePlayerData();
   }
-  @consume({context: hassExt})
+  public get activeMediaPlayer() {
+    return this._player;
+  }
+  @consume({context: hassExt, subscribe: true})
   public set hass(hass: ExtendedHass) {
     if (hass) {
       this.actions = new PlayerActions(hass);
@@ -80,23 +87,23 @@ class MusicPlayerCard extends LitElement {
     this._updatePlayerData().catch( () => {return});
   }
   private async _updatePlayerData() {
-    if (!this._player) {
+    if (!this.activeMediaPlayer) {
       return
     }
     let player_name = this.mediaPlayerName;
     if (!player_name.length) {
-      player_name = this._player.attributes?.friendly_name ?? "Media Player";
+      player_name = this.activeMediaPlayer.attributes?.friendly_name ?? "Media Player";
     }
-    const current_item = (await this.actions.actionGetCurrentItem(this._player));
+    const current_item = (await this.actions.actionGetCurrentItem(this.activeMediaPlayer));
     
     const new_player_data: PlayerData = {
-      playing: this._player.state == 'playing',
-      repeat: this._player.attributes.repeat ?? false,
-      shuffle: this._player.attributes.shuffle ?? false,
-      track_album: this._player.attributes.media_album_name,
-      track_artist: this._player.attributes.media_artist,
-      track_artwork: this._player.attributes.entity_picture_local ?? this._player.attributes.entity_picture,
-      track_title: this._player.attributes.media_title,
+      playing: this.activeMediaPlayer.state == 'playing',
+      repeat: this.activeMediaPlayer.attributes.repeat ?? false,
+      shuffle: this.activeMediaPlayer.attributes.shuffle ?? false,
+      track_album: this.activeMediaPlayer.attributes.media_album_name,
+      track_artist: this.activeMediaPlayer.attributes.media_artist,
+      track_artwork: this.activeMediaPlayer.attributes.entity_picture_local ?? this.activeMediaPlayer.attributes.entity_picture,
+      track_title: this.activeMediaPlayer.attributes.media_title,
       muted: this.volumeMediaPlayer.attributes.is_volume_muted,
       volume: Math.floor(this.volumeMediaPlayer.attributes.volume_level * 100),
       player_name: player_name,
@@ -105,8 +112,8 @@ class MusicPlayerCard extends LitElement {
     this.player_data = new_player_data;
     const old_pos = this.entity_pos;
     const old_dur = this.entity_dur;
-    const new_pos = this._player.attributes.media_position;
-    const new_dur = this._player.attributes.media_duration;
+    const new_pos = this.activeMediaPlayer.attributes.media_position;
+    const new_dur = this.activeMediaPlayer.attributes.media_duration;
     if (old_pos !== new_pos || old_dur !== new_dur) {
       this.media_duration = new_dur;
       this.entity_dur = new_dur;
@@ -129,15 +136,15 @@ class MusicPlayerCard extends LitElement {
   }
   private async onPlayPause() {
     this.player_data.playing = !this.player_data.playing;
-    await this.actions.actionPlayPause(this._player);
+    await this.actions.actionPlayPause(this.activeMediaPlayer);
   }
   private onNext = async () => {
-    await this.actions.actionNext(this._player);
+    await this.actions.actionNext(this.activeMediaPlayer);
     this.media_position = 0;
     this.entity_dur = 0;
   }
   private onPrevious = async () => {
-    await this.actions.actionPrevious(this._player);
+    await this.actions.actionPrevious(this.activeMediaPlayer);
     this.media_position = 0;
     this.entity_dur = 0;
   }
@@ -148,16 +155,16 @@ class MusicPlayerCard extends LitElement {
   }
   private onFavorite = async () => {
     if (this.player_data.favorite) {
-      await this.actions.actionRemoveFavorite(this._player);
+      await this.actions.actionRemoveFavorite(this.activeMediaPlayer);
       this.player_data.favorite = false;
     } else {
-      await this.actions.actionAddFavorite(this._player);
+      await this.actions.actionAddFavorite(this.activeMediaPlayer);
       this.player_data.favorite = true;
     }
   }
   private async onShuffleToggle() {
     this.player_data.shuffle = !this.player_data.shuffle;
-    await this.actions.actionShuffleToggle(this._player);
+    await this.actions.actionShuffleToggle(this.activeMediaPlayer);
     
   }
   private async onRepeatToggle() {
@@ -170,11 +177,11 @@ class MusicPlayerCard extends LitElement {
       repeat = RepeatMode.OFF;
     }
     this.player_data.repeat = repeat;
-    await this.actions.actionRepeatSet(this._player, repeat);
+    await this.actions.actionRepeatSet(this.activeMediaPlayer, repeat);
     
   }
   private onToggle = async () => {
-    await this.actions.actionTogglePlayer(this._player);
+    await this.actions.actionTogglePlayer(this.activeMediaPlayer);
   }
   private toTime(seconds: number) {
     if (isNaN(seconds)) {
@@ -202,7 +209,7 @@ class MusicPlayerCard extends LitElement {
     const seek = e.offsetX / prog_width;
     const pos = Math.floor(seek * this.media_duration);
     this.media_position = pos;
-    await this.actions.actionSeek(this._player, pos);
+    await this.actions.actionSeek(this.activeMediaPlayer, pos);
   }
   private onSwipeStart = (e: TouchEvent) => {
     const touches = e.changedTouches[0];

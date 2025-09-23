@@ -49,7 +49,7 @@ import {
 } from "../const/context";
 
 export class MediaBrowser extends LitElement {
-  @consume( { context: activeEntityID})
+  @consume( { context: activeEntityID, subscribe: true})
   public activePlayer!: string;
 
   @property({attribute: false}) private _config!: MediaBrowserConfig;
@@ -78,7 +78,7 @@ export class MediaBrowser extends LitElement {
     return this._config;
   }
   
-  @consume({context: hassExt})
+  @consume({context: hassExt, subscribe: true})
   public set hass(hass: ExtendedHass) {
     if (!hass) {
       return;

@@ -31,6 +31,8 @@ import { provide } from '@lit/context';
 import {
   activeEntityConf,
   activeEntityID, 
+  activeMediaPlayer, 
+  activePlayerName, 
   ExtendedHass, 
   ExtendedHassEntity, 
   hassExt, 
@@ -82,6 +84,8 @@ export class MusicAssistantPlayerCard extends LitElement {
 
   @provide( { context: activeEntityConf}) @state() private activeEntityConfig!: EntityConfig;
   @provide( { context: activeEntityID}) activeEntityId!: string;
+  @provide( { context: activePlayerName}) activePlayerName!: string;
+  @provide( { context: activeMediaPlayer}) activeMediaPlayer!: ExtendedHassEntity;
   @provide( { context: volumeMediaPlayer}) volumeMediaPlayer!: ExtendedHassEntity;
   
   @state() private active_section!: Sections;
@@ -121,6 +125,7 @@ export class MusicAssistantPlayerCard extends LitElement {
     if (should_update) {
       this._hass = hass;
       this.entities = new_ents;
+      this.setActivePlayer(this.activeEntityId);
     }
   }
   public get hass() {
@@ -167,6 +172,8 @@ export class MusicAssistantPlayerCard extends LitElement {
       } else {  
         this.activeEntityConfig = players[0];
       }
+      this.activePlayerName = this.activeEntityConfig.name;
+      this.activeMediaPlayer = states[this.activeEntityConfig.entity_id];
       this.volumeMediaPlayer = states[this.activeEntityConfig.volume_entity_id];
     }
     const conf = this.activeEntityConfig;
@@ -183,6 +190,10 @@ export class MusicAssistantPlayerCard extends LitElement {
       (entity) => entity.entity_id == player_entity
     )
     this.activeEntityConfig = player ?? this.activeEntityConfig;
+    this.activeEntityId = this.activeEntityConfig.entity_id;
+    this.activePlayerName = this.activeEntityConfig.name;
+    this.activeMediaPlayer = this.hass.states[this.activeEntityConfig.entity_id];
+    this.volumeMediaPlayer = this.hass.states[this.activeEntityConfig.volume_entity_id];
   }
 
   protected shouldUpdate(_changedProperties: PropertyValues): boolean {
@@ -256,10 +267,7 @@ export class MusicAssistantPlayerCard extends LitElement {
         >
           <mass-music-player-card
             .config=${this.config.player}
-            .volumeMediaPlayer=${this.hass.states[this.activeEntityConfig.volume_entity_id]}
-            .mediaPlayerName=${this.activeEntityConfig.name}
             .maxVolume=${this.activeEntityConfig.max_volume}
-            .activeMediaPlayer=${this.hass.states[this.activeEntityConfig.entity_id]}
           ></mass-music-player-card>
         </sl-tab-panel>
       `);
@@ -314,8 +322,6 @@ export class MusicAssistantPlayerCard extends LitElement {
           >
             <ha-svg-icon
               .path=${mdiMusic}
-              style="height: 24px; width: 24px;${active ? "" : "fill: unset;"}"
-              style="height: 24px; width: 24px;"
               class="action-button-svg${active ? "" : "-inactive"}"
             ></ha-svg-icon>
           </ha-button>
