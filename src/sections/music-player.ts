@@ -30,6 +30,7 @@ import {
 import { RepeatMode } from "../const/common";
 import { testMixedContent } from "../utils/util";
 import { 
+  activeMediaPlayer,
   hassExt, 
   volumeMediaPlayer 
 } from "../const/context";
@@ -59,6 +60,7 @@ class MusicPlayerCard extends LitElement {
   private touchEndY = 0;
   private _animationListener  = async () => this.onAnimationEnd();
   
+  @consume({ context: activeMediaPlayer, subscribe: true })
   public set activeMediaPlayer(player: ExtendedHassEntity) {
     this._player = player;
     this.updatePlayerData();

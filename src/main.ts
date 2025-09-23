@@ -31,6 +31,7 @@ import { provide } from '@lit/context';
 import {
   activeEntityConf,
   activeEntityID, 
+  activeMediaPlayer, 
   ExtendedHass, 
   ExtendedHassEntity, 
   hassExt, 
@@ -82,6 +83,7 @@ export class MusicAssistantPlayerCard extends LitElement {
 
   @provide( { context: activeEntityConf}) @state() private activeEntityConfig!: EntityConfig;
   @provide( { context: activeEntityID}) activeEntityId!: string;
+  @provide( { context: activeMediaPlayer}) activeMediaPlayer!: ExtendedHassEntity;
   @provide( { context: volumeMediaPlayer}) volumeMediaPlayer!: ExtendedHassEntity;
   
   @state() private active_section!: Sections;
@@ -167,6 +169,7 @@ export class MusicAssistantPlayerCard extends LitElement {
       } else {  
         this.activeEntityConfig = players[0];
       }
+      this.activeMediaPlayer = states[this.activeEntityConfig.entity_id];
       this.volumeMediaPlayer = states[this.activeEntityConfig.volume_entity_id];
     }
     const conf = this.activeEntityConfig;
@@ -184,6 +187,7 @@ export class MusicAssistantPlayerCard extends LitElement {
     )
     this.activeEntityConfig = player ?? this.activeEntityConfig;
     this.activeEntityId = this.activeEntityConfig.entity_id;
+    this.activeMediaPlayer = this.hass.states[this.activeEntityConfig.entity_id];
     this.volumeMediaPlayer = this.hass.states[this.activeEntityConfig.volume_entity_id];
   }
 
@@ -260,7 +264,6 @@ export class MusicAssistantPlayerCard extends LitElement {
             .config=${this.config.player}
             .mediaPlayerName=${this.activeEntityConfig.name}
             .maxVolume=${this.activeEntityConfig.max_volume}
-            .activeMediaPlayer=${this.hass.states[this.activeEntityConfig.entity_id]}
           ></mass-music-player-card>
         </sl-tab-panel>
       `);
