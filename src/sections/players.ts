@@ -17,7 +17,7 @@ import {
 import '../components/section-header';
 
 class PlayersCard extends LitElement {
-  @consume( { context: activeEntityConf}) 
+  @consume( { context: activeEntityConf, subscribe: true}) 
   @property({ attribute: false }) 
   public activePlayerEntity!: EntityConfig;
   @property({ attribute: false }) private entities: HassEntity[] = [];
@@ -42,7 +42,7 @@ class PlayersCard extends LitElement {
     return this._config;
   }
   
-  @consume({context: hassExt})
+  @consume({context: hassExt, subscribe: true})
   public set hass(hass: ExtendedHass) {
     if (!hass) {
       return;

@@ -29,7 +29,7 @@ class QueueCard extends LitElement {
   @state() private queue: QueueItem[] = [];
   private error?: TemplateResult;
   
-  @consume({context: hassExt})
+  @consume({context: hassExt, subscribe: true})
   public set hass(hass: ExtendedHass) {
     if (!hass) {
       return;
@@ -89,7 +89,7 @@ class QueueCard extends LitElement {
   private maxFailCt = 5;
   private hasFailed = false;
 
-  @consume( { context: activeEntityID})
+  @consume( { context: activeEntityID, subscribe: true})
   @property({ attribute: false})
   set active_player_entity(active_player_entity: string) {
     this._active_player_entity = active_player_entity;

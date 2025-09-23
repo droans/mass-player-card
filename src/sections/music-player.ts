@@ -42,7 +42,7 @@ class MusicPlayerCard extends LitElement {
   @state() private shouldMarqueeTitle = false;
   @query('.player-track-title') _track_title!: LitElement;
   
-  @consume({ context: volumeMediaPlayer })
+  @consume({ context: volumeMediaPlayer, subscribe: true })
   public volumeMediaPlayer!: ExtendedHassEntity;
   public mediaPlayerName!: string; 
   public maxVolume!: number;
@@ -63,7 +63,7 @@ class MusicPlayerCard extends LitElement {
     this._player = player;
     this.updatePlayerData();
   }
-  @consume({context: hassExt})
+  @consume({context: hassExt, subscribe: true})
   public set hass(hass: ExtendedHass) {
     if (hass) {
       this.actions = new PlayerActions(hass);

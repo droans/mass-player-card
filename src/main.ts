@@ -183,6 +183,8 @@ export class MusicAssistantPlayerCard extends LitElement {
       (entity) => entity.entity_id == player_entity
     )
     this.activeEntityConfig = player ?? this.activeEntityConfig;
+    this.activeEntityId = this.activeEntityConfig.entity_id;
+    this.volumeMediaPlayer = this.hass.states[this.activeEntityConfig.volume_entity_id];
   }
 
   protected shouldUpdate(_changedProperties: PropertyValues): boolean {
