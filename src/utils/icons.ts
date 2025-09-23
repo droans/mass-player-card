@@ -1,4 +1,9 @@
-import { DarkModeIcons, ExtendedHass, Icon, LightModeIcons } from "../const/common"
+import {
+  DarkModeIcons,
+  ExtendedHass,
+  Icon,
+  LightModeIcons
+} from "../const/common"
 
 export function backgroundImageFallback(hass: ExtendedHass, image_url: string, fallback: Icon) {
   const _fallback: string = getIcon(hass, fallback);

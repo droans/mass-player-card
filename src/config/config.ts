@@ -1,22 +1,37 @@
-import { 
-  mdiAlbum, 
-  mdiMusic, 
-  mdiPlaylistMusic, 
-  mdiSpeakerMultiple 
+import {
+  mdiAlbum,
+  mdiMusic,
+  mdiPlaylistMusic,
+  mdiSpeakerMultiple
 } from "@mdi/js";
-import { queueConfigForm } from "./player-queue";
-import { 
-  DEFAULT_MEDIA_BROWSER_CONFIG, 
-  MediaBrowserConfig, 
-  mediaBrowserConfigForm, 
+
+
+import {
+  DEFAULT_MAX_VOLUME
+} from "../const/music-player";
+import { ExtendedHass } from "../const/common";
+
+import {
+  DEFAULT_MEDIA_BROWSER_CONFIG,
+  MediaBrowserConfig,
+  mediaBrowserConfigForm,
   processMediaBrowserConfig
 } from "./media-browser";
-import { playersConfigForm } from "./players";
-import { playerConfigForm } from "./player";
-import { DEFAULT_QUEUE_CONFIG, QueueConfig } from "../const/player-queue";
-import { DEFAULT_MAX_VOLUME, DEFAULT_PLAYER_CONFIG, PlayerConfig } from "../const/music-player";
-import { DEFAULT_PLAYERS_CONFIG, PlayersConfig } from "../const/players";
-import { ExtendedHass } from "../const/common";
+import {
+  DEFAULT_PLAYER_CONFIG,
+  PlayerConfig,
+  playerConfigForm
+} from "./player";
+import {
+  DEFAULT_PLAYERS_CONFIG,
+  PlayersConfig,
+  playersConfigForm
+} from "./players";
+import {
+  DEFAULT_QUEUE_CONFIG,
+  QueueConfig,
+  queueConfigForm
+} from "./player-queue";
 
 export interface EntityConfig {
   entity_id: string;
@@ -42,7 +57,7 @@ export const DEFAULT_CONFIG = {
 
 
 export function createStubConfig(hass: ExtendedHass, entities: string[]) {
-  const media_players = entities.filter( 
+  const media_players = entities.filter(
     (ent) => {
       return ent.split(".")[0] == "media_player";
     }
@@ -60,7 +75,7 @@ export function createStubConfig(hass: ExtendedHass, entities: string[]) {
 export function createConfigForm() {
   return {
     schema: [
-      { 
+      {
         name: "entities",
         required: true,
         selector: {

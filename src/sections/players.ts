@@ -1,33 +1,50 @@
-import { CSSResultGroup, html, LitElement } from "lit";
-import { property } from "lit/decorators.js";
-import { HassEntity } from "home-assistant-js-websocket";
-import { keyed } from "lit/directives/keyed.js";
-import '../components/player-row'
-import styles from '../styles/player-queue';
-import PlayersActions from "../actions/players-actions";
-import { PlayerSelectedService } from "../const/actions";
-import { DEFAULT_PLAYERS_CONFIG } from "../const/players";
-import { Config, EntityConfig } from "../config/config";
-import { ExtendedHass } from "../const/common";
 import { consume } from "@lit/context";
+
+import {
+  CSSResultGroup,
+  html,
+  LitElement
+} from "lit";
+import { property } from "lit/decorators.js";
+import { keyed } from "lit/directives/keyed.js";
+
+import '../components/player-row'
+
+import PlayersActions from "../actions/players-actions";
+
+import '../components/section-header';
+
+import {
+  Config,
+  EntityConfig
+} from "../config/config";
+import { DEFAULT_PLAYERS_CONFIG } from "../config/players";
+
+import { PlayerSelectedService } from "../const/actions";
+import {
+  ExtendedHass,
+  ExtendedHassEntity
+} from "../const/common";
 import {
   activeEntityConf,
   hassExt
 } from "../const/context";
-import '../components/section-header';
+
+import styles from '../styles/player-queue';
 
 class PlayersCard extends LitElement {
-  @consume( { context: activeEntityConf, subscribe: true}) 
-  @property({ attribute: false }) 
+  @property({ attribute: false }) private entities: ExtendedHassEntity[] = [];
+
+  @consume( { context: activeEntityConf, subscribe: true})
+  @property({ attribute: false })
   public activePlayerEntity!: EntityConfig;
-  @property({ attribute: false }) private entities: HassEntity[] = [];
 
   public selectedPlayerService!: PlayerSelectedService;
-  
+
   private _config!: Config;
-  private actions!: PlayersActions;
   private _hass!: ExtendedHass;
-  
+  private actions!: PlayersActions;
+
   @property( {attribute: false } )
   public set config(config: Config) {
     if(this._hass && config) {
@@ -41,7 +58,7 @@ class PlayersCard extends LitElement {
   public get config() {
     return this._config;
   }
-  
+
   @consume({context: hassExt, subscribe: true})
   public set hass(hass: ExtendedHass) {
     if (!hass) {
@@ -89,7 +106,7 @@ class PlayersCard extends LitElement {
     if (!this._config) {
       return;
     }
-    const entities: HassEntity[] = [];
+    const entities: ExtendedHassEntity[] = [];
     this._config.entities.forEach(
       (item) => {
         entities.push(hass.states[item.entity_id]);

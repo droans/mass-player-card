@@ -1,72 +1,84 @@
-import { 
-  CSSResultGroup, 
-  html, 
-  LitElement, 
-  TemplateResult 
-} from "lit";
-import { property, state } from "lit/decorators.js";
-import { 
-  mdiArrowLeft, 
-  mdiLibrary, 
-  mdiLibraryOutline, 
-  mdiMagnify, 
-  mdiMusic
-} from "@mdi/js";
 import '@shoelace-style/shoelace/dist/components/input/input';
 
+import { consume } from "@lit/context";
+import {
+  mdiArrowLeft,
+  mdiLibrary,
+  mdiLibraryOutline,
+  mdiMagnify,
+  mdiMusic
+} from "@mdi/js";
+import {
+  CSSResultGroup,
+  html,
+  LitElement,
+  TemplateResult
+} from "lit";
+import {
+  property,
+  state
+} from "lit/decorators.js";
+
 import BrowserActions from "../actions/browser-actions";
+
 import '../components/media-browser-cards';
 import '../components/section-header';
-import { 
-  customItem, 
-  customSection, 
-  FavoriteItemConfig, 
-  MediaBrowserConfig, 
+
+import {
+  customItem,
+  customSection,
+  FavoriteItemConfig,
+  MediaBrowserConfig,
 } from "../config/media-browser";
 
-import { 
+import { EnqueueOptions } from "../const/actions";
+import {
+  ExtendedHass,
+  Icon,
+  MediaTypes
+} from "../const/common";
+import {
+  activeEntityID,
+  hassExt
+} from "../const/context";
+import {
   DEFAULT_SEARCH_LIMIT,
-  MediaBrowserItemsConfig, 
-  MediaCardData, 
-  MediaCardItem, 
-  MediaLibraryItem, 
-  MediaTypeIcons, 
-  SEARCH_MEDIA_TYPE_BUTTONS, 
-  SEARCH_TERM_MIN_LENGTH, 
+  MediaBrowserItemsConfig,
+  MediaCardData,
+  MediaCardItem,
+  MediaLibraryItem,
+  MediaTypeIcons,
+  SEARCH_MEDIA_TYPE_BUTTONS,
+  SEARCH_TERM_MIN_LENGTH,
   SEARCH_UPDATE_DELAY
 } from "../const/media-browser";
-import { ExtendedHass, Icon, MediaTypes } from "../const/common";
 
 import styles from '../styles/media-browser';
 
 import { backgroundImageFallback } from "../utils/icons";
 import { testMixedContent } from "../utils/util";
-import { EnqueueOptions } from "../const/actions";
-import { consume } from "@lit/context";
-import { 
-  activeEntityID, 
-  hassExt 
-} from "../const/context";
 
 export class MediaBrowser extends LitElement {
+  @property({attribute: false}) private _config!: MediaBrowserConfig;
+  @state() private cards: MediaBrowserItemsConfig = {main: []};
+  @state() private _searchLibrary= false;
+  @state() private _searchMediaTypeIcon: string = mdiMusic;
+
   @consume( { context: activeEntityID, subscribe: true})
   public activePlayer!: string;
 
-  @property({attribute: false}) private _config!: MediaBrowserConfig;
-  private _hass!: ExtendedHass;
-  @state() private cards: MediaBrowserItemsConfig = {main: []};
-  private _activeSection = 'main';
-  private previousSection = '';
-  private actions!: BrowserActions;
-  private _activeCards: MediaCardItem[] = [];
   public onMediaSelectedAction!: () => void;
 
+  private _activeCards: MediaCardItem[] = [];
+  private _activeSection = 'main';
+  private _hass!: ExtendedHass;
   private _lastSearchInputTs= 0;
-  @state() private _searchLibrary= false;
-  private _searchMediaType: MediaTypes = MediaTypes.TRACK;
   private _searchMediaTerm = "";
-  @state() private _searchMediaTypeIcon: string = mdiMusic;
-  
+  private _searchMediaType: MediaTypes = MediaTypes.TRACK;
+  private actions!: BrowserActions;
+  private previousSection = '';
+
+
   public set config(config: MediaBrowserConfig) {
     if (!config) {
       return;
@@ -77,7 +89,7 @@ export class MediaBrowser extends LitElement {
   public get config() {
     return this._config;
   }
-  
+
   @consume({context: hassExt, subscribe: true})
   public set hass(hass: ExtendedHass) {
     if (!hass) {
@@ -221,7 +233,7 @@ export class MediaBrowser extends LitElement {
     return result?.icon ?? Icon.CLEFT;
   }
   private onSearchMediaTypeSelect = async (ev: CustomEvent) => {
-    /* eslint-disable 
+    /* eslint-disable
       @typescript-eslint/no-explicit-any,
       @typescript-eslint/no-unsafe-member-access,
     */
@@ -231,7 +243,7 @@ export class MediaBrowser extends LitElement {
       return;
     }
     target.value = "";
-    /* eslint-enable 
+    /* eslint-enable
       @typescript-eslint/no-explicit-any,
       @typescript-eslint/no-unsafe-member-access,
     */
@@ -254,8 +266,8 @@ export class MediaBrowser extends LitElement {
     this.activeCards = this.cards.search;
   }
   private async generateSearchResults(
-    search_term: string, 
-    media_type: MediaTypes, 
+    search_term: string,
+    media_type: MediaTypes,
     library_only = false as boolean,
     limit: number = DEFAULT_SEARCH_LIMIT
   ) {
@@ -311,7 +323,7 @@ export class MediaBrowser extends LitElement {
       }
     )
     let icons_html = html``;
-    icons.forEach( 
+    icons.forEach(
       (icon) => {
         icons_html = html`
           ${icons_html}
@@ -327,7 +339,7 @@ export class MediaBrowser extends LitElement {
   }
   private generateFavoriteCard(media_type: MediaTypes, cards: MediaCardItem[]): MediaCardItem {
     const icon: Icon = MediaTypeIcons[media_type];
-    return {  
+    return {
       title: media_type,
       background: this.generateSectionBackground(cards, icon),
       icon: icon,
@@ -382,7 +394,7 @@ export class MediaBrowser extends LitElement {
         this.generateFavoriteData(favorites.podcasts, MediaTypes.PODCAST),
         this.generateFavoriteData(favorites.radios, MediaTypes.RADIO),
         this.generateFavoriteData(favorites.tracks, MediaTypes.TRACK),
-        
+
     ]);
     await promises;
     this.generateCustomSectionsData(this.config.sections);
@@ -390,7 +402,7 @@ export class MediaBrowser extends LitElement {
     this.requestUpdate();
   }
   private generateCustomSectionCards = (config: customItem[])  => {
-    return config.map( 
+    return config.map(
       (item) => {
         const r: MediaCardItem = {
           title: item.name,
@@ -425,7 +437,7 @@ export class MediaBrowser extends LitElement {
         return r;
       }
     )
-    const customs = custom_items.map( 
+    const customs = custom_items.map(
       (item) => {
         const r: MediaCardItem = {
           title: item.name,
@@ -522,8 +534,8 @@ export class MediaBrowser extends LitElement {
     const styles_base_url = 'https://cdn.jsdelivr.net/npm/@shoelace-style/shoelace@2.20.1/cdn/themes/';
     const styles_url = styles_base_url + (this.hass.themes.darkMode ? 'dark.css' : 'light.css');
     return html`
-      <span 
-        slot="end" 
+      <span
+        slot="end"
         id="search-input"
       >
         <link rel="stylesheet" href="${styles_url}" />

@@ -1,33 +1,51 @@
-import { html, type CSSResultGroup, LitElement, PropertyValues } from 'lit';
-import { property } from 'lit/decorators.js'
+import { consume } from '@lit/context';
 import {
   mdiClose,
   mdiArrowCollapseUp,
   mdiArrowUp,
   mdiArrowDown
 } from '@mdi/js';
-import styles from '../styles/media-row';
-import { QueueItem } from '../const/player-queue';
-import { QueueItemSelectedService, QueueService } from '../const/actions';
-import { backgroundImageFallback, getFallbackImage } from '../utils/icons';
-import { ExtendedHass, Icon } from '../const/common';
-import { testMixedContent } from '../utils/util';
+import {
+  html,
+  type CSSResultGroup,
+  LitElement,
+  PropertyValues
+} from 'lit';
+import { property } from 'lit/decorators.js'
+
+import {
+  QueueItemSelectedService,
+  QueueService
+} from '../const/actions';
+import {
+  ExtendedHass,
+  Icon
+} from '../const/common';
 import { hassExt } from '../const/context';
-import { consume } from '@lit/context';
+import { QueueItem } from '../const/player-queue';
+
+import styles from '../styles/media-row';
+
+import {
+  backgroundImageFallback,
+  getFallbackImage
+} from '../utils/icons';
+import { testMixedContent } from '../utils/util';
 
 class MediaRow extends LitElement {
   @property({ attribute: false }) media_item!: QueueItem;
   @property({ type: Boolean }) selected = false;
-  
+
   @consume({context: hassExt})
   public hass!: ExtendedHass;
-  public removeService!: QueueService;
+
+  public moveQueueItemDownService!: QueueService;
   public moveQueueItemNextService!: QueueService;
   public moveQueueItemUpService!: QueueService;
-  public moveQueueItemDownService!: QueueService;
+  public removeService!: QueueService;
   public selectedService!: QueueItemSelectedService;
   public showAlbumCovers = true;
-  
+
   private callMoveItemUpService(e: Event) {
     e.stopPropagation();
     this.moveQueueItemUpService(this.media_item.queue_item_id);
@@ -74,9 +92,9 @@ class MediaRow extends LitElement {
     const played = !this.media_item.show_action_buttons  && !this.media_item.playing;
     if (this.media_item.media_image && this.showAlbumCovers) {
       return html`
-        <span 
-          class="thumbnail${played ? '-disabled' : ''}" 
-          slot="start" 
+        <span
+          class="thumbnail${played ? '-disabled' : ''}"
+          slot="start"
           style="${this.artworkStyle()}"
         >
         </span>
@@ -86,8 +104,8 @@ class MediaRow extends LitElement {
   }
   private renderTitle() {
     return html`
-      <span 
-        slot="headline" 
+      <span
+        slot="headline"
         class="title"
       >
         ${this.media_item.media_title}
@@ -97,8 +115,8 @@ class MediaRow extends LitElement {
   private renderArtist() {
     if (this.media_item.show_artist_name) {
       return html`
-        <span 
-          slot="supporting-text" 
+        <span
+          slot="supporting-text"
           class="title"
         >
           ${this.media_item.media_artist}
@@ -110,7 +128,7 @@ class MediaRow extends LitElement {
   private renderActionButtons() {
     if (this.media_item.show_action_buttons) {
       return html`
-        <span 
+        <span
           slot="end"
           class="button-group"
         >
@@ -176,7 +194,7 @@ class MediaRow extends LitElement {
             style="height: 1.5rem; width: 1.5rem;"
           ></ha-svg-icon>
         </ha-button>
-    `    
+    `
   }
   private renderRemoveButton() {
     return html`
@@ -197,7 +215,7 @@ class MediaRow extends LitElement {
 
   render() {
     return html`
-      <ha-md-list-item 
+      <ha-md-list-item
         class="button${this.media_item.playing ? '-active' : ''}"
 		    @click=${this.callOnQueueItemSelectedService}
         type="button"

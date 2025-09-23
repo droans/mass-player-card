@@ -1,4 +1,7 @@
-import { html, LitElement } from "lit";
+import {
+  html,
+  LitElement
+} from "lit";
 
 import styles from '../styles/section-header';
 

@@ -1,3 +1,18 @@
+export interface QueueConfig {
+  enabled: boolean;
+  limit_before: number;
+  limit_after: number;
+  show_album_covers: boolean;
+  show_artist_names: boolean;
+}
+export const DEFAULT_QUEUE_CONFIG: QueueConfig = {
+  enabled: true,
+  limit_before: 5,
+  limit_after: 100,
+  show_album_covers: true,
+  show_artist_names: true
+}
+
 export function queueConfigForm() {
   return [
     { name: "enabled", selector: { boolean: {} } },

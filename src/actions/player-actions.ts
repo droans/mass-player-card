@@ -1,8 +1,8 @@
 import { HassEntity } from "home-assistant-js-websocket";
-import { 
-  ExtendedHass, 
-  ExtendedHassEntity, 
-  RepeatMode 
+import {
+  ExtendedHass,
+  ExtendedHassEntity,
+  RepeatMode
 } from "../const/common";
 import { QueueItem } from "../const/player-queue";
 
@@ -63,7 +63,7 @@ export default class PlayerActions {
     } catch (e) {
       /* eslint-disable-next-line no-console */
       console.error(`Error calling play previous`, e)
-    } 
+    }
   }
   async actionShuffleToggle(entity: HassEntity) {
     const shuffle = !entity.attributes.shuffle;
@@ -81,7 +81,6 @@ export default class PlayerActions {
     }
   }
   async actionRepeatSet(entity: HassEntity, repeatMode: RepeatMode) {
-    
     try {
       await this.hass.callService(
         'media_player', 'repeat_set',
@@ -124,7 +123,6 @@ export default class PlayerActions {
     }
   }
   async actionTogglePlayer(entity: HassEntity) {
-    
     try {
       await this.hass.callService(
         'media_player', 'toggle',
@@ -139,7 +137,7 @@ export default class PlayerActions {
   }
   async actionGetCurrentItem(entity: ExtendedHassEntity): Promise<QueueItem|null> {
     try {
-      /* eslint-disable 
+      /* eslint-disable
         @typescript-eslint/no-explicit-any,
         @typescript-eslint/no-unsafe-assignment,
         @typescript-eslint/no-unsafe-member-access

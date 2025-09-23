@@ -1,21 +1,25 @@
-import { TemplateResult } from "lit";
-import {  Icon, MediaTypes } from "./common";
-import { EnqueueOptions } from "./actions";
-import { 
+
+import {
   mdiAccountMusic,
   mdiAlbum,
   mdiBook,
   mdiMusic,
-  mdiPlayCircle, 
-  mdiPlayCircleOutline, 
-  mdiPlaylistMusic, 
-  mdiPlaylistPlus, 
-  mdiPodcast, 
-  mdiRadio, 
-  mdiSkipNextCircle, 
+  mdiPlayCircle,
+  mdiPlayCircleOutline,
+  mdiPlaylistMusic,
+  mdiPlaylistPlus,
+  mdiPodcast,
+  mdiRadio,
+  mdiSkipNextCircle,
   mdiSkipNextCircleOutline
 } from "@mdi/js";
+import { TemplateResult } from "lit";
 
+import { EnqueueOptions } from "./actions";
+import {
+  Icon,
+  MediaTypes
+} from "./common";
 
 export interface MediaBrowserItem {
   name: string,

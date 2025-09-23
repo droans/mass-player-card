@@ -1,11 +1,5 @@
 import { RepeatMode } from "./common";
 
-export const DEFAULT_PLAYER_CONFIG: PlayerConfig = {
-  enabled: true
-}
-export interface PlayerConfig {
-  enabled: boolean;
-}
 
 export interface PlayerData {
   playing: boolean;

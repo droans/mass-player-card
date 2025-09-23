@@ -1,35 +1,52 @@
-import { CSSResultGroup, html, LitElement, TemplateResult } from "lit";
-import { property, state } from "lit/decorators.js";
+
+import { consume } from "@lit/context";
+import { mdiPlayCircle } from "@mdi/js";
+import {
+  CSSResultGroup,
+  html,
+  LitElement,
+  TemplateResult
+} from "lit";
+import {
+  property,
+  state
+} from "lit/decorators.js";
 
 import './menu-button'
-import styles from '../styles/media-card';
-import { ENQUEUE_BUTTONS, MediaCardItem } from "../const/media-browser";
-import { ExtendedHass } from "../const/common";
+
 import {
   CardEnqueueService,
   CardSelectedService,
   EnqueueOptions,
 } from "../const/actions";
-import { testMixedContent } from "../utils/util";
-import { 
-  backgroundImageFallback, 
+import { ExtendedHass } from "../const/common";
+import { hassExt } from "../const/context";
+import {
+  ENQUEUE_BUTTONS,
+  MediaCardItem
+} from "../const/media-browser";
+
+import styles from '../styles/media-card';
+
+import {
+  backgroundImageFallback,
   getFallbackImage,
 } from "../utils/icons";
-import { mdiPlayCircle } from "@mdi/js";
-import { consume } from "@lit/context";
-import { hassExt } from "../const/context";
+import { testMixedContent } from "../utils/util";
 
 class MediaCard extends LitElement {
-  private _config!: MediaCardItem;
-  
+  @property({ type: Boolean }) queueable = false;
+  @state() code!: TemplateResult;
+
   @consume({context: hassExt})
   public hass!: ExtendedHass;
-  public onEnqueueAction!: CardEnqueueService;
+
   public onSelectAction!: CardSelectedService;
-  @state() code!: TemplateResult;
-  @property({ type: Boolean }) queueable = false;
+  public onEnqueueAction!: CardEnqueueService;
+
+  private _config!: MediaCardItem;
   private _enqueue_buttons = ENQUEUE_BUTTONS;
-  
+
   public set config(config: MediaCardItem) {
     if (!config) {
       return;
@@ -40,12 +57,13 @@ class MediaCard extends LitElement {
   public get config() {
     return this._config;
   }
+
   private onEnqueue = (ev: CustomEvent) => {
     ev.stopPropagation();
-    /* eslint-disable 
-      @typescript-eslint/no-explicit-any, 
-      @typescript-eslint/no-unsafe-assignment, 
-      @typescript-eslint/no-unsafe-member-access 
+    /* eslint-disable
+      @typescript-eslint/no-explicit-any,
+      @typescript-eslint/no-unsafe-assignment,
+      @typescript-eslint/no-unsafe-member-access
     */
     const target = ev.target as any;
     const value = target.value as EnqueueOptions;
@@ -53,10 +71,10 @@ class MediaCard extends LitElement {
       return;
     }
     target.value = "";
-    /* eslint-enable 
-      @typescript-eslint/no-explicit-any, 
-      @typescript-eslint/no-unsafe-assignment, 
-      @typescript-eslint/no-unsafe-member-access 
+    /* eslint-enable
+      @typescript-eslint/no-explicit-any,
+      @typescript-eslint/no-unsafe-assignment,
+      @typescript-eslint/no-unsafe-member-access
     */
     this.onEnqueueAction(this._config.data, value);
   }
@@ -107,7 +125,6 @@ class MediaCard extends LitElement {
           .iconPath=${mdiPlayCircle}
           .items=${this._enqueue_buttons}
           .onSelectAction=${this.onEnqueue}
-          
         ></mass-menu-button>
       `
     };

@@ -1,5 +1,7 @@
 import { mdiHeart } from "@mdi/js";
+
 import { Config } from "./config";
+
 export interface MediaBrowserConfig {
   enabled: boolean,
   favorites: FavoritesConfig;
@@ -63,8 +65,8 @@ function favoritesConfigForm(section: string) {
   return {
     name: section,
     type: "expandable",
-    schema: [ 
-      { 
+    schema: [
+      {
         name: "",
         type: "grid",
         schema: [

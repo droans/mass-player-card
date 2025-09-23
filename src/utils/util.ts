@@ -1,5 +1,8 @@
-import { Config } from "../config/config";
-import { DEFAULT_SECTION_PRIORITY, Sections } from "../const/card";
+import {Config } from "../config/config";
+import {
+  DEFAULT_SECTION_PRIORITY,
+  Sections
+} from "../const/card";
 
 export function testMixedContent(url: string) {
   try {
@@ -30,7 +33,7 @@ export function getDefaultSection(config: Config) {
   }
   const filtered = Object.entries(sections_conf).filter(
     (item) => item[1]
-  ).map( 
+  ).map(
     (item) => item[0]
   )
   const enabled_defaults = defaults.filter(

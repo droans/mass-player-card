@@ -1,20 +1,27 @@
-import { html, LitElement } from "lit";
-import { ListItems } from "../const/media-browser";
-import { MenuButtonSelectAction } from "../const/common";
+import {
+  html,
+  LitElement
+} from "lit";
 import { property } from "lit/decorators.js";
+
+import { MenuButtonSelectAction } from "../const/common";
+import { ListItems } from "../const/media-browser";
 
 class MassMenuButton extends LitElement {
   @property( { attribute: false }) public iconPath!: string;
-  public onSelectAction!: MenuButtonSelectAction;
   @property( { attribute: false }) private _items!: ListItems;
+
+  public onSelectAction!: MenuButtonSelectAction;
+
   public set items(items: ListItems) {
     this._items = items;
   }
   public get items() {
     return this._items;
   }
+
   protected renderMenuItems() {
-    return this._items.map( 
+    return this._items.map(
       (item) => {
         return html`
           <ha-list-item
@@ -32,7 +39,6 @@ class MassMenuButton extends LitElement {
             ${item.title}
           </ha-list-item>
         `
-        
       }
     )
   }
