@@ -38,7 +38,7 @@ A Home Assistant media player card built for Music Assistant players.
 
 In addition to the Music Assistant integration, this card depends on the custom integration `mass_queue` for all the actions. Follow all instructions [in the repository](https://github.com/droans/mass_queue) to install first.
 
-<img src="https://github.com/droans/mass-player-card/blob/main/static/music_player/desktop.png" alt="Player Card Example">
+<img src="https://github.com/droans/mass-player-card/blob/main/static/combined.png" alt="Player Card Example">
 
 ### HACS Installation
 1. Use button above to add to your Home Assistant instance.
@@ -86,6 +86,13 @@ For each entity, you can either provide the Entity ID by itself or you can provi
 | max_volume       | int  | No       | N/A         | Max volume for the volume slider (0-100) |
 
 ## Player Config
+
+<details>
+    <summary>📷 Media Player Example</summary>
+<img src="https://github.com/droans/mass-player-card/blob/main/static/music_player/desktop.png" alt="Player Card Example">
+</details>
+
+
 | Parameter | Type | Required | Default | Description                     |
 |-----------|------|----------|---------|---------------------------------|
 | enabled   | bool | No       | true    | Enable/disable music player tab |
