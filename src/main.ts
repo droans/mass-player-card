@@ -30,6 +30,7 @@ import { getDefaultSection } from './utils/util';
 import { provide } from '@lit/context';
 import {
   activeEntityConf,
+  activeEntityID, 
   ExtendedHass, 
   hassExt, 
 } from './const/context';
@@ -78,6 +79,7 @@ export class MusicAssistantPlayerCard extends LitElement {
   @state() private error?: TemplateResult;
 
   @provide( { context: activeEntityConf}) @state() private activeEntityConfig!: EntityConfig;
+  @provide( { context: activeEntityID}) activeEntityId!: string;
   @state() private active_section!: Sections;
   @state() private entities!: HassEntity[];
   private _hass!: ExtendedHass;
@@ -164,6 +166,7 @@ export class MusicAssistantPlayerCard extends LitElement {
       }
     }
     const conf = this.activeEntityConfig;
+    this.activeEntityId = conf.entity_id;
   }
   private setDefaultActiveSection() {
     if (this.active_section) {
@@ -267,7 +270,6 @@ export class MusicAssistantPlayerCard extends LitElement {
           class="section${this.active_section==Sections.QUEUE ? "" : "-hidden"}"
         >
           <mass-player-queue-card
-            .active_player_entity=${this.activeEntityConfig.entity_id}
             .config=${this.config.queue}
           ></mass-player-queue-card>
         </sl-tab-panel>
@@ -283,7 +285,6 @@ export class MusicAssistantPlayerCard extends LitElement {
           class="section${this.active_section==Sections.MEDIA_BROWSER ? "" : "-hidden"}"
         >
           <mass-media-browser
-            .activePlayer=${this.activeEntityConfig.entity_id}
             .config=${this.config.media_browser}
             .onMediaSelectedAction=${this.browserItemSelected}
           >

@@ -15,7 +15,10 @@ import { QueueConfigErrors } from '../config/player-queue';
 import { ExtendedHass } from '../const/common';
 import { LovelaceCard } from 'custom-card-helpers';
 import { consume } from '@lit/context';
-import { hassExt } from '../const/context';
+import {
+  activeEntityID,
+  hassExt
+} from '../const/context';
 
 class QueueCard extends LitElement {
   @state() private lastUpdated = '';
@@ -83,6 +86,7 @@ class QueueCard extends LitElement {
   private maxFailCt = 5;
   private hasFailed = false;
 
+  @consume( { context: activeEntityID})
   @property({ attribute: false})
   set active_player_entity(active_player_entity: string) {
     this._active_player_entity = active_player_entity;

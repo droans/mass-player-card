@@ -43,10 +43,15 @@ import { backgroundImageFallback } from "../utils/icons";
 import { testMixedContent } from "../utils/util";
 import { EnqueueOptions } from "../const/actions";
 import { consume } from "@lit/context";
-import { hassExt } from "../const/context";
+import { 
+  activeEntityID, 
+  hassExt 
+} from "../const/context";
 
 export class MediaBrowser extends LitElement {
+  @consume( { context: activeEntityID})
   public activePlayer!: string;
+
   @property({attribute: false}) private _config!: MediaBrowserConfig;
   private _hass!: ExtendedHass;
   @state() private cards: MediaBrowserItemsConfig = {main: []};
