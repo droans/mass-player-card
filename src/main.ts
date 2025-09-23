@@ -72,17 +72,17 @@ console.info(
 export class MusicAssistantPlayerCard extends LitElement {
   @state() private config!: Config;
   @state() private error?: TemplateResult;
-  @state() private active_player_entity!: EntityConfig;
+  @state() private activeEntityConfig!: EntityConfig;
   @state() private active_section!: Sections;
   @state() private entities!: HassEntity[];
   private _hass!: ExtendedHass;
 
   constructor() {
     super();
-    if (this.config && !this.active_player_entity) {
-      this.active_player_entity = this.config.entities[0];
+    if (this.config && !this.activeEntityConfig) {
+      this.activeEntityConfig = this.config.entities[0];
     }
-    if (!this.active_player_entity) {
+    if (!this.activeEntityConfig) {
       this.setDefaultActivePlayer();
     }
   }
@@ -132,7 +132,7 @@ export class MusicAssistantPlayerCard extends LitElement {
       throw this.createError('You need to define entities.');
     };
     this.config = processConfig(config);
-    if (!this.active_player_entity) {
+    if (!this.activeEntityConfig) {
       this.setDefaultActivePlayer();
     }
     if (!this.active_section) {
@@ -146,16 +146,16 @@ export class MusicAssistantPlayerCard extends LitElement {
     }
     const players = this.config.entities;
     if (!this.hass) {
-      this.active_player_entity = players[0];
+      this.activeEntityConfig = players[0];
     } else {
       const states = this.hass.states;
       const active_players = players.filter(
         (entity) => ["playing", "paused"].includes(states[entity.entity_id].state) && states[entity.entity_id].attributes.app_id == 'music_assistant' 
       )
       if (active_players.length) {
-        this.active_player_entity = active_players[0];
+        this.activeEntityConfig = active_players[0];
       } else {  
-        this.active_player_entity = players[0];
+        this.activeEntityConfig = players[0];
       }
     }
   }
@@ -169,11 +169,11 @@ export class MusicAssistantPlayerCard extends LitElement {
     const player = this.config.entities.find(
       (entity) => entity.entity_id == player_entity
     )
-    this.active_player_entity = player ?? this.active_player_entity;
+    this.activeEntityConfig = player ?? this.activeEntityConfig;
   }
 
   protected shouldUpdate(_changedProperties: PropertyValues): boolean {
-    if (_changedProperties.has('active_player_entity')
+    if (_changedProperties.has('activeEntityConfig')
        || _changedProperties.has('active_section')
     ) {
       return true;
@@ -227,7 +227,7 @@ export class MusicAssistantPlayerCard extends LitElement {
         >
           <mass-player-players-card
             .selectedPlayerService=${this.playerSelected}
-            .activePlayerEntity=${this.active_player_entity}
+            .activePlayerEntity=${this.activeEntityConfig}
             .config=${this.config}
           ></mass-player-players-card>
         </sl-tab-panel>
@@ -244,10 +244,10 @@ export class MusicAssistantPlayerCard extends LitElement {
         >
           <mass-music-player-card
             .config=${this.config.player}
-            .volumeMediaPlayer=${this.hass.states[this.active_player_entity.volume_entity_id]}
-            .mediaPlayerName=${this.active_player_entity.name}
-            .maxVolume=${this.active_player_entity.max_volume}
-            .activeMediaPlayer=${this.hass.states[this.active_player_entity.entity_id]}
+            .volumeMediaPlayer=${this.hass.states[this.activeEntityConfig.volume_entity_id]}
+            .mediaPlayerName=${this.activeEntityConfig.name}
+            .maxVolume=${this.activeEntityConfig.max_volume}
+            .activeMediaPlayer=${this.hass.states[this.activeEntityConfig.entity_id]}
           ></mass-music-player-card>
         </sl-tab-panel>
       `);
@@ -262,7 +262,7 @@ export class MusicAssistantPlayerCard extends LitElement {
           class="section${this.active_section==Sections.QUEUE ? "" : "-hidden"}"
         >
           <mass-player-queue-card
-            .active_player_entity=${this.active_player_entity.entity_id}
+            .active_player_entity=${this.activeEntityConfig.entity_id}
             .config=${this.config.queue}
           ></mass-player-queue-card>
         </sl-tab-panel>
@@ -278,7 +278,7 @@ export class MusicAssistantPlayerCard extends LitElement {
           class="section${this.active_section==Sections.MEDIA_BROWSER ? "" : "-hidden"}"
         >
           <mass-media-browser
-            .activePlayer=${this.active_player_entity.entity_id}
+            .activePlayer=${this.activeEntityConfig.entity_id}
             .config=${this.config.media_browser}
             .onMediaSelectedAction=${this.browserItemSelected}
           >
