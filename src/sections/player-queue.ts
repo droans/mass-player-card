@@ -19,6 +19,7 @@ import {
   activeEntityID,
   hassExt
 } from '../const/context';
+import '../components/section-header';
 
 class QueueCard extends LitElement {
   @state() private lastUpdated = '';
@@ -244,8 +245,6 @@ class QueueCard extends LitElement {
               .media_item=${item}
               .selected=${item.playing}
               .showAlbumCovers=${show_album_covers}
-              .showMoveUpNext=${item.show_move_up_next}
-              .showArtistName=${item.show_artist_name}
               .selectedService=${this.onQueueItemSelected}
               .removeService=${this.onQueueItemRemoved}
               .moveQueueItemNextService=${this.onQueueItemMoveNext}
@@ -260,9 +259,11 @@ class QueueCard extends LitElement {
   protected render() {
     return this.error ?? html`
       <ha-card>
-        <div class="header">
-          Queue
-        </div>
+        <mass-section-header>
+          <span slot="label" id="title">
+            Queue
+          </span>
+        </mass-section-header>
         <ha-md-list class="list">
           ${this.renderQueueItems()}
         </ha-md-list>
