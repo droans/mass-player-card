@@ -28,7 +28,11 @@ import {
 } from './config/config';
 import { getDefaultSection } from './utils/util';
 import { provide } from '@lit/context';
-import { ExtendedHass, hassExt } from './const/context';
+import {
+  activeEntityConf,
+  ExtendedHass, 
+  hassExt, 
+} from './const/context';
 
 const DEV = false;
 
@@ -72,7 +76,8 @@ console.info(
 export class MusicAssistantPlayerCard extends LitElement {
   @state() private config!: Config;
   @state() private error?: TemplateResult;
-  @state() private activeEntityConfig!: EntityConfig;
+
+  @provide( { context: activeEntityConf}) @state() private activeEntityConfig!: EntityConfig;
   @state() private active_section!: Sections;
   @state() private entities!: HassEntity[];
   private _hass!: ExtendedHass;
@@ -158,6 +163,7 @@ export class MusicAssistantPlayerCard extends LitElement {
         this.activeEntityConfig = players[0];
       }
     }
+    const conf = this.activeEntityConfig;
   }
   private setDefaultActiveSection() {
     if (this.active_section) {
@@ -227,7 +233,6 @@ export class MusicAssistantPlayerCard extends LitElement {
         >
           <mass-player-players-card
             .selectedPlayerService=${this.playerSelected}
-            .activePlayerEntity=${this.activeEntityConfig}
             .config=${this.config}
           ></mass-player-players-card>
         </sl-tab-panel>

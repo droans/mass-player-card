@@ -1,4 +1,10 @@
 import { createContext } from '@lit/context'
-import type { ExtendedHass } from "./common";
-export type { ExtendedHass } from "./common";
+import type { 
+  EntityConfig 
+} from '../config/config';
+export type {
+  EntityConfig 
+} from '../config/config';
+
 export const hassExt = createContext<ExtendedHass>('hass');
+export const activeEntityConf = createContext<EntityConfig>('active-entity-conf');
