@@ -13,13 +13,13 @@ import {
   mdiShuffleDisabled,
   mdiSkipNext,
   mdiSkipPrevious,
+  mdiSpeaker,
   mdiVolumeHigh,
   mdiVolumeMute
 } from "@mdi/js";
 import { consume } from "@lit/context";
 import {
   CSSResultGroup,
-  html,
   LitElement,
   PropertyValues
 } from "lit";
@@ -28,6 +28,13 @@ import {
   query,
   state
 } from "lit/decorators.js";
+import {
+  html,
+  literal
+} from "lit/static-html.js";
+
+import '../components/menu-button';
+
 
 import PlayerActions from "../actions/player-actions";
 
@@ -40,6 +47,8 @@ import {
 import {
   activeMediaPlayer,
   activePlayerName,
+  entitiesConfig,
+  EntityConfig,
   hassExt,
   volumeMediaPlayer
 } from "../const/context";
@@ -56,6 +65,7 @@ import {
   getFallbackImage
 } from "../utils/icons";
 import { testMixedContent } from "../utils/util";
+import { PlayerSelectedService } from "../const/actions";
 
 class MusicPlayerCard extends LitElement {
   @property({ attribute: false}) private media_duration = 1;
@@ -65,12 +75,16 @@ class MusicPlayerCard extends LitElement {
 
   @query('.player-track-title') _track_title!: LitElement;
 
+  @consume({ context: entitiesConfig, subscribe: true })
+  public playerEntities!: EntityConfig[];
+
   @consume({ context: activePlayerName, subscribe: true })
   public mediaPlayerName!: string;
   @consume({ context: volumeMediaPlayer, subscribe: true })
   public volumeMediaPlayer!: ExtendedHassEntity;
-
+  
   public maxVolume!: number;
+  public selectedPlayerService!: PlayerSelectedService;
 
   private _animationListener  = async () => this.onAnimationEnd();
   private _listener: number|undefined;
@@ -258,6 +272,13 @@ class MusicPlayerCard extends LitElement {
       /* eslint-enable @typescript-eslint/no-floating-promises */
     }
   }
+  private onPlayerSelect = (ev: CustomEvent) => {
+    ev.stopPropagation();
+    const target = ev.target as any;
+    const player = target.value as string;
+    console.log(`Received player selection: ${player}`);
+    this.selectedPlayerService(player);
+  }
   protected updated() {
     const title = this._track_title;
     const offset = title?.offsetWidth ?? 0;
@@ -319,10 +340,55 @@ class MusicPlayerCard extends LitElement {
     }
     return html`<div class="player-track-artist"> ${this.player_data.track_artist} </div>`;
   }
+  protected renderPlayerItems() {
+    return this.playerEntities.map( 
+      (item) =>
+      {
+        const active = this._player.entity_id == item.entity_id ? literal`selected` : literal``;
+        const name = item.name.length > 0 ? item.name : this.hass.states[item.entity_id].attributes.friendly_name;
+        // console.log(`${item.entity_id} Attrs: `);
+        // console.log(this.hass.states[item.entity_id].attributes.friendly_name);
+        return html`
+          <ha-list-item
+            class="players-select-item"
+            .value="${item.entity_id}"
+            .graphic=${mdiSpeaker}
+            ${active}
+          >
+            <ha-svg-icon
+              class="players-select-item-icon"
+              slot="graphic"
+              .path=${mdiSpeaker}
+            ></ha-svg-icon>
+            ${name}
+          </ha-list-item>
+        `
+      }
+    )
+  }
+  protected renderPlayerName() {
+    return html`
+      <ha-control-select-menu
+        id="players-select-menu"
+        fixedMenuPosition
+        naturalMenuWidth
+        @selected=${this.onPlayerSelect}
+      >
+        <ha-svg-icon
+          slot="icon"
+          id="players-select-menu-icon"
+          .path=${mdiSpeaker}
+        ></ha-svg-icon>
+        ${this.renderPlayerItems()}
+      </ha-control-select-menu>
+    `
+  }
   protected renderHeader() {
     return html`
       <div class="header">
-        <div class="player-name"> ${this.player_data?.player_name ?? this.mediaPlayerName} </div>
+        <div class="player-name">
+          ${this.renderPlayerName()}
+        </div>
         ${this.renderTitle()}
         ${this.renderArtist()}
       </div>

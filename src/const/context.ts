@@ -21,4 +21,5 @@ export const activeEntityConf = createContext<EntityConfig>('active-entity-conf'
 export const activeEntityID = createContext<string>('active-entity-id');
 export const activePlayerName = createContext<string>('active-player-name');
 export const activeMediaPlayer = createContext<ExtendedHassEntity>('active-entity');
+export const entitiesConfig = createContext<EntityConfig[]>('entities-config');
 export const volumeMediaPlayer = createContext<ExtendedHassEntity>('volume-entity');

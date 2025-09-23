@@ -26,7 +26,7 @@ export default css`
     margin: 0.75em 1.75em 0em 1.75em;
     text-align: center;
     overflow: hidden;
-    height: 5.25em;
+    height: 7.5em;
   }
   .player-name {
     font-size: 0.8rem;
@@ -143,6 +143,16 @@ export default css`
     animation: marquee var(--marquee-time) linear 2s;
     animation-iteration-count: infinite;
     position: relative;
+  }
+  #player-select-menu {
+
+  }
+  .players-select-item {
+  }
+  .players-select-item-icon {
+    height: 2em;
+    width: 2em;
+    color: var(--mdc-theme-primary);
   }
   @keyframes marquee {
     from {
