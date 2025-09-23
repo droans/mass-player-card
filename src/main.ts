@@ -32,7 +32,9 @@ import {
   activeEntityConf,
   activeEntityID, 
   ExtendedHass, 
+  ExtendedHassEntity, 
   hassExt, 
+  volumeMediaPlayer,
 } from './const/context';
 
 const DEV = false;
@@ -80,6 +82,8 @@ export class MusicAssistantPlayerCard extends LitElement {
 
   @provide( { context: activeEntityConf}) @state() private activeEntityConfig!: EntityConfig;
   @provide( { context: activeEntityID}) activeEntityId!: string;
+  @provide( { context: volumeMediaPlayer}) volumeMediaPlayer!: ExtendedHassEntity;
+  
   @state() private active_section!: Sections;
   @state() private entities!: HassEntity[];
   private _hass!: ExtendedHass;
@@ -164,6 +168,7 @@ export class MusicAssistantPlayerCard extends LitElement {
       } else {  
         this.activeEntityConfig = players[0];
       }
+      this.volumeMediaPlayer = states[this.activeEntityConfig.volume_entity_id];
     }
     const conf = this.activeEntityConfig;
     this.activeEntityId = conf.entity_id;

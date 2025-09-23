@@ -29,7 +29,10 @@ import {
 } from "../const/music-player";
 import { RepeatMode } from "../const/common";
 import { testMixedContent } from "../utils/util";
-import { hassExt } from "../const/context";
+import { 
+  hassExt, 
+  volumeMediaPlayer 
+} from "../const/context";
 import { consume } from "@lit/context";
 
 class MusicPlayerCard extends LitElement {
@@ -38,6 +41,8 @@ class MusicPlayerCard extends LitElement {
   @property({ attribute: false}) private media_duration = 1;
   @state() private shouldMarqueeTitle = false;
   @query('.player-track-title') _track_title!: LitElement;
+  
+  @consume({ context: volumeMediaPlayer })
   public volumeMediaPlayer!: ExtendedHassEntity;
   public mediaPlayerName!: string; 
   public maxVolume!: number;
@@ -58,7 +63,6 @@ class MusicPlayerCard extends LitElement {
     this._player = player;
     this.updatePlayerData();
   }
-  
   @consume({context: hassExt})
   public set hass(hass: ExtendedHass) {
     if (hass) {
