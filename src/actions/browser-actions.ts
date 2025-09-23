@@ -38,7 +38,7 @@ export default class BrowserActions {
         args
       )
     }
-    async actionGetFavorites(player_entity_id: string, media_type: MediaTypes, limit = 25): Promise<MediaLibraryItem[]> {
+    async actionGetLibrary(player_entity_id: string, media_type: MediaTypes, limit = 25, favorite=true): Promise<MediaLibraryItem[]> {
       const config_id = await this.getPlayerConfigEntry(player_entity_id);
       /* eslint-disable-next-line
         @typescript-eslint/no-explicit-any,
@@ -50,7 +50,7 @@ export default class BrowserActions {
             domain: 'music_assistant',
             service: 'get_library',
             service_data: {
-                favorite: true,
+                favorite: favorite,
                 limit: limit,
                 config_entry_id: config_id,
                 media_type: media_type
