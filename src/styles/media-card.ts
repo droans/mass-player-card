@@ -15,8 +15,8 @@ export default css`
     width: var(--section-thumbnail-size);
   }
   ha-control-button {
-    --section-thumbnail-size: calc(var(--mass-player-card-height) / 5);
-    --thumbnail-size: calc(var(--mass-player-card-height) / 2.5 - 2em);
+    --section-thumbnail-size: calc(var(--mass-player-card-height) / 4);
+    --thumbnail-size: calc(var(--mass-player-card-height) / 2);
     width: 98%;
     height: 98%;
     margin: 1%;
