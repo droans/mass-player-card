@@ -64,7 +64,10 @@ import {
   backgroundImageFallback,
   getFallbackImage
 } from "../utils/icons";
-import { testMixedContent } from "../utils/util";
+import {
+  secondsToTime,
+  testMixedContent
+} from "../utils/util";
 import { PlayerSelectedService } from "../const/actions";
 
 class MusicPlayerCard extends LitElement {
@@ -219,14 +222,6 @@ class MusicPlayerCard extends LitElement {
   }
   private onToggle = async () => {
     await this.actions.actionTogglePlayer(this.activeMediaPlayer);
-  }
-  private toTime(seconds: number) {
-    if (isNaN(seconds)) {
-      return '0:00';
-    }
-    const mins = Math.floor(seconds / 60);
-    const secs = seconds % 60
-    return `${mins.toString()}:${secs < 10 ? "0" : ""}${secs.toString()}`
   }
   private tickProgress = () => {
     const playing = this.player_data.playing;
@@ -404,8 +399,8 @@ class MusicPlayerCard extends LitElement {
     `
   }
   protected renderTime() {
-    const pos = this.toTime(this.media_position);
-    const dur = this.toTime(this.media_duration);
+    const pos = secondsToTime(this.media_position);
+    const dur = secondsToTime(this.media_duration);
     return `${pos} - ${dur}`
   }
   protected renderProgress() {
