@@ -199,7 +199,7 @@ class MusicPlayerCard extends LitElement {
     this._listener = undefined;
     this.tickProgress();
   }
-  private async onVolumeChange(ev: CustomEvent) {
+  private onVolumeChange = async (ev: CustomEvent) => {
     // eslint-disable-next-line @typescript-eslint/no-unsafe-assignment, @typescript-eslint/no-unsafe-member-access
     let volume: number = ev.detail.value;
     if (isNaN(volume)) return;
@@ -221,7 +221,7 @@ class MusicPlayerCard extends LitElement {
     this.media_position = 0;
     this.entity_dur = 0;
   }
-  private async onVolumeMuteToggle() {
+  private onVolumeMuteToggle = async () => {
     this.player_data.muted = !this.player_data.muted;
     await this.actions.actionMuteToggle(this.volumeMediaPlayer);
 
