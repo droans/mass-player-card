@@ -1,4 +1,4 @@
-import { consume } from '@lit/context';
+import { consume, provide } from '@lit/context';
 import { LovelaceCard } from 'custom-card-helpers';
 import { LitElement, html, type CSSResultGroup, PropertyValues, TemplateResult } from 'lit';
 import { property, state } from 'lit/decorators.js';
@@ -18,7 +18,8 @@ import {
 import { ExtendedHass } from '../const/common';
 import {
   activeEntityID,
-  hassExt
+  hassExt,
+  playerQueueConfigContext
 } from '../const/context';
 import {
   MassQueueEvent,
@@ -28,7 +29,9 @@ import {
 import styles from '../styles/player-queue';
 
 class QueueCard extends LitElement {
-  @property({ attribute: false }) public _config!: QueueConfig;
+  @provide({context: playerQueueConfigContext})
+  @property({ attribute: false }) 
+  public _config!: QueueConfig;
   @state() private lastUpdated = '';
   @state() private queue: QueueItem[] = [];
 

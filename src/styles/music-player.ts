@@ -79,26 +79,6 @@ export default css`
   .button-play-pause::part(base) {
     box-shadow: rgba(0, 0, 0, 0.16) 0px 2px 4px 0px;
   }
-  .volume {
-    display: flex;
-    flex-direction: row;
-    align-items: center;
-    justify-content: space-evenly;
-    padding-left: 2em;
-    padding-right: 2em;
-  }
-  .button-power {
-    margin-right: 1em;
-  }
-  .button-mute {
-    margin-left: 1em;
-  }
-  .button-favorite {
-    margin-left: 1em;
-  }
-  ha-control-slider {
-    --control-slider-thickness: 2.25em;
-  }
   .player-controls {
     width: var(--player-control-icon-width);
     height: var(--player-control-icon-width);
@@ -144,10 +124,11 @@ export default css`
     animation-iteration-count: infinite;
     position: relative;
   }
-  #player-select-menu {
-
+  #players-select-menu {
+    --control-select-menu-height: 2.5em;
   }
   .players-select-item {
+    height: 2.5em;
   }
   .players-select-item-icon {
     height: 2em;

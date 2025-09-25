@@ -1,11 +1,8 @@
 import "@material/web/progress/linear-progress.js"
 
 import {
-  mdiHeart,
-  mdiHeartPlusOutline,
   mdiPause,
   mdiPlay,
-  mdiPower,
   mdiRepeat,
   mdiRepeatOff,
   mdiRepeatOnce,
@@ -14,14 +11,13 @@ import {
   mdiSkipNext,
   mdiSkipPrevious,
   mdiSpeaker,
-  mdiVolumeHigh,
-  mdiVolumeMute
 } from "@mdi/js";
-import { consume } from "@lit/context";
+import { consume, provide } from "@lit/context";
 import {
   CSSResultGroup,
   LitElement,
-  PropertyValues
+  PropertyValues,
+  TemplateResult
 } from "lit";
 import {
   property,
@@ -34,6 +30,7 @@ import {
 } from "lit/static-html.js";
 
 import '../components/menu-button';
+import '../components/volume-row';
 
 
 import PlayerActions from "../actions/player-actions";
@@ -45,11 +42,15 @@ import {
   RepeatMode
 } from '../const/common';
 import {
+  activeEntityConf,
   activeMediaPlayer,
+  activePlayerDataContext,
   activePlayerName,
+  configContext,
   entitiesConfig,
   EntityConfig,
   hassExt,
+  musicPlayerConfigContext,
   volumeMediaPlayer
 } from "../const/context";
 import {
@@ -64,13 +65,17 @@ import {
   backgroundImageFallback,
   getFallbackImage
 } from "../utils/icons";
-import { testMixedContent } from "../utils/util";
+import {
+  secondsToTime,
+  testMixedContent
+} from "../utils/util";
 import { PlayerSelectedService } from "../const/actions";
+import { Config } from "../config/config";
+import { PlayerConfig } from "../config/player";
 
 class MusicPlayerCard extends LitElement {
   @property({ attribute: false}) private media_duration = 1;
   @property({ attribute: false}) private media_position = 0;
-  @property({ attribute: false }) private player_data!: PlayerData;
   @state() private shouldMarqueeTitle = false;
 
   @query('.player-track-title') _track_title!: LitElement;
@@ -78,10 +83,18 @@ class MusicPlayerCard extends LitElement {
   @consume({ context: entitiesConfig, subscribe: true })
   public playerEntities!: EntityConfig[];
 
+  @provide({ context: musicPlayerConfigContext})
+  private _config!: PlayerConfig;
+  @provide({ context: activePlayerDataContext})
+  @state()
+  private player_data!: PlayerData;
+
   @consume({ context: activePlayerName, subscribe: true })
   public mediaPlayerName!: string;
   @consume({ context: volumeMediaPlayer, subscribe: true })
   public volumeMediaPlayer!: ExtendedHassEntity;
+  @consume({ context: activeEntityConf, subscribe: true })
+  public activeEntity!: EntityConfig;
   
   public maxVolume!: number;
   public selectedPlayerService!: PlayerSelectedService;
@@ -98,6 +111,7 @@ class MusicPlayerCard extends LitElement {
   private touchEndX = 0;
   private touchStartY = 0;
   private touchEndY = 0;
+  private _cardConfig!: Config;
 
   @consume({ context: activeMediaPlayer, subscribe: true })
   public set activeMediaPlayer(player: ExtendedHassEntity) {
@@ -120,6 +134,21 @@ class MusicPlayerCard extends LitElement {
   }
   public get hass() {
     return this._hass;
+  }
+
+  @consume({ context: configContext, subscribe: true })
+  public set cardConfig(config: Config) {
+    this._cardConfig = config;
+    this.config = config.player;
+  }
+  public get cardConfig() {
+    return this._cardConfig;
+  }
+  public set config(config: PlayerConfig) {
+    this._config = config;
+  }
+  public get config() {
+    return this._config;
   }
 
   private updatePlayerData() {
@@ -165,7 +194,7 @@ class MusicPlayerCard extends LitElement {
     this._listener = undefined;
     this.tickProgress();
   }
-  private async onVolumeChange(ev: CustomEvent) {
+  private onVolumeChange = async (ev: CustomEvent) => {
     // eslint-disable-next-line @typescript-eslint/no-unsafe-assignment, @typescript-eslint/no-unsafe-member-access
     let volume: number = ev.detail.value;
     if (isNaN(volume)) return;
@@ -187,7 +216,7 @@ class MusicPlayerCard extends LitElement {
     this.media_position = 0;
     this.entity_dur = 0;
   }
-  private async onVolumeMuteToggle() {
+  private onVolumeMuteToggle = async () => {
     this.player_data.muted = !this.player_data.muted;
     await this.actions.actionMuteToggle(this.volumeMediaPlayer);
 
@@ -219,14 +248,6 @@ class MusicPlayerCard extends LitElement {
   }
   private onToggle = async () => {
     await this.actions.actionTogglePlayer(this.activeMediaPlayer);
-  }
-  private toTime(seconds: number) {
-    if (isNaN(seconds)) {
-      return '0:00';
-    }
-    const mins = Math.floor(seconds / 60);
-    const secs = seconds % 60
-    return `${mins.toString()}:${secs < 10 ? "0" : ""}${secs.toString()}`
   }
   private tickProgress = () => {
     const playing = this.player_data.playing;
@@ -355,8 +376,6 @@ class MusicPlayerCard extends LitElement {
       {
         const active = this._player.entity_id == item.entity_id ? literal`selected` : literal``;
         const name = item.name.length > 0 ? item.name : this.hass.states[item.entity_id].attributes.friendly_name;
-        // console.log(`${item.entity_id} Attrs: `);
-        // console.log(this.hass.states[item.entity_id].attributes.friendly_name);
         return html`
           <ha-list-item
             class="players-select-item"
@@ -375,7 +394,12 @@ class MusicPlayerCard extends LitElement {
       }
     )
   }
-  protected renderPlayerName() {
+  protected renderPlayerName(): TemplateResult {
+    const config_hide = this.config.hide.player_selector;
+    const entity_hide = this.activeEntity.hide.player.player_selector;
+    if (config_hide || entity_hide) {
+      return html`${this.player_data?.player_name ?? this.mediaPlayerName}`;
+    }
     return html`
       <ha-control-select-menu
         id="players-select-menu"
@@ -404,8 +428,8 @@ class MusicPlayerCard extends LitElement {
     `
   }
   protected renderTime() {
-    const pos = this.toTime(this.media_position);
-    const dur = this.toTime(this.media_duration);
+    const pos = secondsToTime(this.media_position);
+    const dur = secondsToTime(this.media_duration);
     return `${pos} - ${dur}`
   }
   protected renderProgress() {
@@ -457,6 +481,53 @@ class MusicPlayerCard extends LitElement {
       </ha-button>
     `
   }
+  protected renderShuffle() {
+    const config_hide = this.config.hide.shuffle;
+    const entity_hide = this.activeEntity.hide.player.shuffle;
+    if (config_hide || entity_hide) {
+      return html``
+    }
+    return html`
+      <ha-button
+        appearance="${this.player_data.shuffle ? "accent" : "plain"}"
+        variant="brand"
+        @click=${this.onShuffleToggle}
+        size="small"
+      >
+        <ha-svg-icon
+          slot="start"
+          .path=${this.player_data.shuffle ? mdiShuffle : mdiShuffleDisabled}
+        ></ha-svg-icon>
+        Shuffle
+      </ha-button>
+    `
+  }
+  protected renderControlsLeft() {
+    return html`
+      <div class="controls-left">
+        <div class="track-previous">${this.renderTrackPrevious()}</div>
+        <div class="shuffle">${this.renderShuffle()}</div>
+      </div>
+    `
+  }
+  protected renderPlayPause() {
+    return html`
+      <div class="play-pause">
+        <ha-button
+          appearance="${this.player_data.playing ? "filled" : "outlined"}"
+          variant="brand"
+          size="medium"
+          class="button-play-pause"
+          @click=${this.onPlayPause}
+        >
+          <ha-svg-icon
+            .path=${this.player_data.playing ?  mdiPause : mdiPlay}
+            style="height: 4rem; width: 4rem;"
+          ></ha-svg-icon>
+        </ha-button>
+      </div>
+    `
+  }
   protected renderTrackNext() {
     return html`
       <ha-button
@@ -473,39 +544,12 @@ class MusicPlayerCard extends LitElement {
       </ha-button>
     `
   }
-  protected renderPlayPause() {
-    return html`
-      <ha-button
-        appearance="${this.player_data.playing ? "filled" : "outlined"}"
-        variant="brand"
-        size="medium"
-        class="button-play-pause"
-        @click=${this.onPlayPause}
-      >
-        <ha-svg-icon
-          .path=${this.player_data.playing ?  mdiPause : mdiPlay}
-          style="height: 4rem; width: 4rem;"
-        ></ha-svg-icon>
-      </ha-button>
-    `
-  }
-  protected renderShuffle() {
-    return html`
-      <ha-button
-        appearance="${this.player_data.shuffle ? "accent" : "plain"}"
-        variant="brand"
-        @click=${this.onShuffleToggle}
-        size="small"
-      >
-        <ha-svg-icon
-          slot="start"
-          .path=${this.player_data.shuffle ? mdiShuffle : mdiShuffleDisabled}
-        ></ha-svg-icon>
-        Shuffle
-      </ha-button>
-    `
-  }
   protected renderRepeat() {
+    const config_hide = this.config.hide.repeat;
+    const entity_hide = this.activeEntity.hide.player.repeat;
+    if (config_hide || entity_hide) {
+      return html``
+    }
     let icon = mdiRepeat;
     const repeat = this.player_data.repeat;
     if (repeat == RepeatMode.ONCE) {
@@ -529,69 +573,34 @@ class MusicPlayerCard extends LitElement {
       </ha-button>
     `
   }
-  protected renderVolume() {
+  protected renderControlsRight() {
     return html`
-      <ha-button
-        appearance="plain"
-        variant="brand"
-        size="medium"
-        class="button-power"
-        @click=${this.onToggle}
-      >
-        <ha-svg-icon
-          .path=${mdiPower}
-          style="height: 3rem; width: 3rem;"
-        ></ha-svg-icon>
-      </ha-button>
-      <ha-control-slider
-        .disabled=${this.player_data.muted}
-        .unit="%"
-        .value=${this.player_data.volume}
-        .min=0
-        .max=${this.maxVolume}
-        @value-changed=${this.onVolumeChange}
-      ></ha-control-slider>
-      <ha-button
-        appearance="plain"
-        variant="brand"
-        size="medium"
-        class="button-mute"
-        @click=${this.onVolumeMuteToggle}
-      >
-        <ha-svg-icon
-          .path=${this.player_data.muted ? mdiVolumeMute : mdiVolumeHigh}
-          style="height: 3rem; width: 3rem;"
-        ></ha-svg-icon>
-      </ha-button>
-      <ha-button
-        appearance="plain"
-        variant="brand"
-        size="medium"
-        class="button-favorite"
-        @click=${this.onFavorite}
-      >
-        <ha-svg-icon
-          .path=${this.player_data.favorite ? mdiHeart : mdiHeartPlusOutline}
-          style="height: 3rem; width: 3rem;"
-        ></ha-svg-icon>
-      </ha-button>
+      <div class="controls-right">
+        <div class="track-next"> ${this.renderTrackNext()} </div>
+        <div class="repeat">${this.renderRepeat()}</div>
+      </div>
+    `
+  }
+  protected renderVolumeRow() {
+    return html`
+      <mass-volume-row
+        .maxVolume=${this.maxVolume}
+        .onPowerToggleSelect=${this.onToggle}
+        .onVolumeMuteToggleSelect=${this.onVolumeMuteToggle}
+        .onVolumeChange=${this.onVolumeChange}
+        .onFavoriteToggleSelect=${this.onFavorite}
+      ></mass-volume-row>
     `
   }
   /* eslint-enable @typescript-eslint/unbound-method */
   protected renderControls() {
     return html`
       <div class="controls">
-        <div class="controls-left">
-          <div class="track-previous">${this.renderTrackPrevious()}</div>
-          <div class="shuffle">${this.renderShuffle()}</div>
-        </div>
-        <div class="play-pause">${this.renderPlayPause()}</div>
-        <div class="controls-right">
-          <div class="track-next"> ${this.renderTrackNext()} </div>
-          <div class="repeat">${this.renderRepeat()}</div>
-        </div>
+        ${this.renderControlsLeft()}
+        ${this.renderPlayPause()}
+        ${this.renderControlsRight()}
       </div>
-      <div class="volume">${this.renderVolume()}</div>
+      ${this.renderVolumeRow()}
     `
   }
   protected shouldUpdate(_changedProperties: PropertyValues): boolean {

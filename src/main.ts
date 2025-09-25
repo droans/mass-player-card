@@ -38,6 +38,7 @@ import {
   activeEntityID,
   activeMediaPlayer,
   activePlayerName,
+  configContext,
   entitiesConfig,
   ExtendedHass,
   ExtendedHassEntity,
@@ -94,10 +95,10 @@ console.info(
 @customElement(`${cardId}${DEV ? '-dev' : ''}`)
 export class MusicAssistantPlayerCard extends LitElement {
   @state() private active_section!: Sections;
-  @state() private config!: Config;
   @state() private entities!: HassEntity[];
   @state() private error?: TemplateResult;
 
+  @provide({context: configContext}) @state() private config!: Config;
   @provide({context: hassExt}) private _hass!: ExtendedHass;
   @provide( { context: activeEntityConf}) @state() private activeEntityConfig!: EntityConfig;
   @provide( { context: entitiesConfig}) @state() private EntitiesConfig!: EntityConfig[];

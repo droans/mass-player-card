@@ -1,4 +1,4 @@
-import { consume } from "@lit/context";
+import { consume, provide } from "@lit/context";
 
 import {
   CSSResultGroup,
@@ -18,7 +18,7 @@ import {
   Config,
   EntityConfig
 } from "../config/config";
-import { DEFAULT_PLAYERS_CONFIG } from "../config/players";
+import { DEFAULT_PLAYERS_CONFIG, PlayersConfig } from "../config/players";
 
 import { PlayerSelectedService } from "../const/actions";
 import {
@@ -27,7 +27,8 @@ import {
 } from "../const/common";
 import {
   activeEntityConf,
-  hassExt
+  hassExt,
+  playersConfigContext
 } from "../const/context";
 
 import styles from '../styles/player-queue';
@@ -39,9 +40,12 @@ class PlayersCard extends LitElement {
   @property({ attribute: false })
   public activePlayerEntity!: EntityConfig;
 
+  private _config!: Config;
+
+  @provide({ context: playersConfigContext })
+  private _sectionConfig!: PlayersConfig;
   public selectedPlayerService!: PlayerSelectedService;
 
-  private _config!: Config;
   private _hass!: ExtendedHass;
   private actions!: PlayersActions;
 
@@ -54,6 +58,7 @@ class PlayersCard extends LitElement {
       ...DEFAULT_PLAYERS_CONFIG,
       ...config
     };
+    this._sectionConfig = this._config.players;
   }
   public get config() {
     return this._config;

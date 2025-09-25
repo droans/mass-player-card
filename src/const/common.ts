@@ -77,8 +77,11 @@ export interface ExtendedHass extends HomeAssistant {
   themes: ExtendedThemes
 }
 
-export type MenuButtonSelectAction = (
+export type ServiceCustomEvent = (
   ev: CustomEvent
+) => void
+
+export type ServiceNoParams = (
 ) => void
 
 export const DarkModeIcons: Record<string, string> = {

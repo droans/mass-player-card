@@ -4,14 +4,14 @@ import {
 } from "lit";
 import { property } from "lit/decorators.js";
 
-import { MenuButtonSelectAction } from "../const/common";
+import { ServiceCustomEvent } from "../const/common";
 import { ListItems } from "../const/media-browser";
 
 class MassMenuButton extends LitElement {
   @property( { attribute: false }) public iconPath!: string;
   @property( { attribute: false }) private _items!: ListItems;
 
-  public onSelectAction!: MenuButtonSelectAction;
+  public onSelectAction!: ServiceCustomEvent;
 
   public set items(items: ListItems) {
     this._items = items;
