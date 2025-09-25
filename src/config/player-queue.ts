@@ -60,7 +60,7 @@ export enum QueueConfigErrors {
 }
 
 function processHiddenElementsConfig(config: QueueConfig): QueueConfig {
-  let hidden_elements_config = config.hide;
+  const hidden_elements_config = config.hide;
   return {
     ...config,
     hide: {

@@ -76,7 +76,6 @@ class MediaRow extends LitElement {
     }
     const entity = this._entityConfig.hide.queue;
     const card = this._config.hide;
-    const hide = this.hide;
     this.hide = {
       album_covers: entity.album_covers || card.album_covers,
       artist_names: entity.artist_names || card.artist_names,

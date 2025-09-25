@@ -140,8 +140,8 @@ export function createConfigForm() {
 }
 
 function processEntityHiddenItemConfig(config: EntityConfig): HiddenElementsConfig {
-  let used_hide = config?.hide;
-  let hide: HiddenElementsConfig = {
+  const used_hide = config?.hide;
+  const hide: HiddenElementsConfig = {
     ...ENTITY_DEFAULT_HIDDEN_ITEM_CONFIG,
     ...used_hide,
   }

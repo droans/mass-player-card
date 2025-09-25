@@ -1,11 +1,8 @@
 import "@material/web/progress/linear-progress.js"
 
 import {
-  mdiHeart,
-  mdiHeartPlusOutline,
   mdiPause,
   mdiPlay,
-  mdiPower,
   mdiRepeat,
   mdiRepeatOff,
   mdiRepeatOnce,
@@ -14,8 +11,6 @@ import {
   mdiSkipNext,
   mdiSkipPrevious,
   mdiSpeaker,
-  mdiVolumeHigh,
-  mdiVolumeMute
 } from "@mdi/js";
 import { consume, provide } from "@lit/context";
 import {

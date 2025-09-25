@@ -133,7 +133,7 @@ export function mediaBrowserConfigForm() {
 }
 
 function processHiddenElementsConfig(config: MediaBrowserConfig): MediaBrowserConfig {
-  let hidden_elements_config = config.hide;
+  const hidden_elements_config = config.hide;
   return {
     ...config,
     hide: {

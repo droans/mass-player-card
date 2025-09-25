@@ -117,7 +117,9 @@ class MediaCard extends LitElement {
     const button_mapping = HIDDEN_BUTTON_VALUE;
     const opts = default_buttons.filter(
       (item) => {
+        //eslint-disable-next-line @typescript-eslint/no-unsafe-assignment
         const hide_val = button_mapping[item.option];
+        //eslint-disable-next-line @typescript-eslint/no-unsafe-member-access
         return !this.hide[hide_val];
       }
     )

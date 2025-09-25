@@ -1,11 +1,10 @@
 import { html, TemplateResult } from "lit"
 import { ExtendedHass, Icon, MediaTypes } from "../const/common"
-import { backgroundImageFallback, getFallbackImage } from "./icons"
+import { backgroundImageFallback } from "./icons"
 import { MediaCardItem, MediaLibraryItem, MediaTypeIcons } from "../const/media-browser"
 import { testMixedContent } from "./util"
 import { customItem } from "../config/media-browser"
 
-/* eslint-enable @typescript-eslint/no-unsafe-assignment */
 function generateSectionBackgroundPart(hass: ExtendedHass, icon: string, fallback: Icon = Icon.DISC) {
   const image = backgroundImageFallback(hass, icon, fallback)
   return html`

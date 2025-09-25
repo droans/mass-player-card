@@ -34,7 +34,7 @@ export function playerConfigForm() {
 }
 
 function processHiddenElementsConfig(config: PlayerConfig): PlayerConfig {
-  let hidden_elements_config = config.hide;
+  const hidden_elements_config = config.hide;
   return {
     ...config,
     hide: {
