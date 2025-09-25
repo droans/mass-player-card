@@ -1,6 +1,6 @@
 import '@shoelace-style/shoelace/dist/components/input/input';
 
-import { consume } from "@lit/context";
+import { consume, provide } from "@lit/context";
 import {
   mdiArrowLeft,
   mdiLibrary,
@@ -37,8 +37,11 @@ import {
   MediaTypes
 } from "../const/common";
 import {
+  activeEntityConf,
   activeEntityID,
-  hassExt
+  EntityConfig,
+  hassExt,
+  mediaBrowserConfigContext,
 } from "../const/context";
 import {
   DEFAULT_SEARCH_LIMIT,
@@ -61,13 +64,17 @@ import {
 } from '../utils/media-browser';
 
 export class MediaBrowser extends LitElement {
-  @property({attribute: false}) private _config!: MediaBrowserConfig;
+  @provide( { context: mediaBrowserConfigContext })
+  @property({attribute: false}) 
+  private _config!: MediaBrowserConfig;
   @state() private cards: MediaBrowserItemsConfig = {main: []};
   @state() private _searchLibrary= false;
   @state() private _searchMediaTypeIcon: string = mdiMusic;
 
   @consume( { context: activeEntityID, subscribe: true})
   public activePlayer!: string;
+  @consume( { context: activeEntityConf, subscribe: true})
+  public playerConfig!: EntityConfig;
 
   public onMediaSelectedAction!: () => void;
 
@@ -79,7 +86,8 @@ export class MediaBrowser extends LitElement {
   private _searchMediaType: MediaTypes = MediaTypes.TRACK;
   private actions!: BrowserActions;
   private previousSection = '';
-
+  private _hideBackButton!: boolean;
+  private _hideSearch!: boolean;
 
   public set config(config: MediaBrowserConfig) {
     if (!config) {
@@ -147,6 +155,16 @@ export class MediaBrowser extends LitElement {
       this.activeCards = this.cards[this.activeSection]
       this.requestUpdate();
     }
+    this.setHiddenElements();
+  }
+  private setHiddenElements() {
+    if (!this.config || !this.playerConfig) {
+      return;
+    }
+    const card = this.config.hide;
+    const entity = this.playerConfig.hide.media_browser;
+    this._hideBackButton = card.back_button || entity.back_button;
+    this._hideSearch = card.search || entity.search;
   }
   /* eslint-disable @typescript-eslint/no-unsafe-assignment */
   private onFavoriteItemSelected = (data: MediaCardData) => {
@@ -334,6 +352,9 @@ export class MediaBrowser extends LitElement {
     return [...items, ...customs];
   }
   protected renderBackButton() {
+    if (this._hideBackButton) {
+      return html``
+    }
     return html`
       <span slot="start" id="back-button">
         <ha-button
@@ -352,6 +373,9 @@ export class MediaBrowser extends LitElement {
     `
   }
   protected renderSearchButton() {
+    if (this._hideSearch) {
+      return html``
+    }
     return html`
       <span slot="end" id="search-button">
         <ha-button
@@ -390,7 +414,7 @@ export class MediaBrowser extends LitElement {
     }
     return html``
   }
-  protected renderSearchFavoritesButton() {
+  protected renderSearchLibraryButton() {
     if (this.activeSection == 'search') {
       return html`
         <ha-button
@@ -428,7 +452,7 @@ export class MediaBrowser extends LitElement {
         >
           <span slot="suffix" id="search-options">
             ${this.renderSearchMediaTypesButton()}
-            ${this.renderSearchFavoritesButton()}
+            ${this.renderSearchLibraryButton()}
           </span>
         </sl-input>
       </span>

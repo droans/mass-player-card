@@ -9,9 +9,15 @@ export type {
   ExtendedHassEntity
 } from "./common";
 
-import type {
-  EntityConfig
+import {
+  Config,
+  type EntityConfig
 } from '../config/config';
+import { PlayerConfig } from '../config/player';
+import { PlayerData } from './music-player';
+import { QueueConfig } from '../config/player-queue';
+import { MediaBrowserConfig } from '../config/media-browser';
+import { PlayersConfig } from '../config/players';
 export type {
   EntityConfig
 } from '../config/config';
@@ -23,3 +29,9 @@ export const activePlayerName = createContext<string>('active-player-name');
 export const activeMediaPlayer = createContext<ExtendedHassEntity>('active-entity');
 export const entitiesConfig = createContext<EntityConfig[]>('entities-config');
 export const volumeMediaPlayer = createContext<ExtendedHassEntity>('volume-entity');
+export const configContext = createContext<Config>('config');
+export const musicPlayerConfigContext = createContext<PlayerConfig>('music-player-config');
+export const activePlayerDataContext = createContext<PlayerData>('active-player-data');
+export const playerQueueConfigContext = createContext<QueueConfig>('player-queue-config');
+export const mediaBrowserConfigContext = createContext<MediaBrowserConfig>('media-browser-config');
+export const playersConfigContext = createContext<PlayersConfig>('players-config');

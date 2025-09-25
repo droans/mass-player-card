@@ -17,11 +17,12 @@ import {
   mdiVolumeHigh,
   mdiVolumeMute
 } from "@mdi/js";
-import { consume } from "@lit/context";
+import { consume, provide } from "@lit/context";
 import {
   CSSResultGroup,
   LitElement,
-  PropertyValues
+  PropertyValues,
+  TemplateResult
 } from "lit";
 import {
   property,
@@ -34,6 +35,7 @@ import {
 } from "lit/static-html.js";
 
 import '../components/menu-button';
+import '../components/volume-row';
 
 
 import PlayerActions from "../actions/player-actions";
@@ -45,11 +47,15 @@ import {
   RepeatMode
 } from '../const/common';
 import {
+  activeEntityConf,
   activeMediaPlayer,
+  activePlayerDataContext,
   activePlayerName,
+  configContext,
   entitiesConfig,
   EntityConfig,
   hassExt,
+  musicPlayerConfigContext,
   volumeMediaPlayer
 } from "../const/context";
 import {
@@ -69,11 +75,12 @@ import {
   testMixedContent
 } from "../utils/util";
 import { PlayerSelectedService } from "../const/actions";
+import { Config } from "../config/config";
+import { PlayerConfig } from "../config/player";
 
 class MusicPlayerCard extends LitElement {
   @property({ attribute: false}) private media_duration = 1;
   @property({ attribute: false}) private media_position = 0;
-  @property({ attribute: false }) private player_data!: PlayerData;
   @state() private shouldMarqueeTitle = false;
 
   @query('.player-track-title') _track_title!: LitElement;
@@ -81,10 +88,18 @@ class MusicPlayerCard extends LitElement {
   @consume({ context: entitiesConfig, subscribe: true })
   public playerEntities!: EntityConfig[];
 
+  @provide({ context: musicPlayerConfigContext})
+  private _config!: PlayerConfig;
+  @provide({ context: activePlayerDataContext})
+  @state()
+  private player_data!: PlayerData;
+
   @consume({ context: activePlayerName, subscribe: true })
   public mediaPlayerName!: string;
   @consume({ context: volumeMediaPlayer, subscribe: true })
   public volumeMediaPlayer!: ExtendedHassEntity;
+  @consume({ context: activeEntityConf, subscribe: true })
+  public activeEntity!: EntityConfig;
   
   public maxVolume!: number;
   public selectedPlayerService!: PlayerSelectedService;
@@ -101,6 +116,7 @@ class MusicPlayerCard extends LitElement {
   private touchEndX = 0;
   private touchStartY = 0;
   private touchEndY = 0;
+  private _cardConfig!: Config;
 
   @consume({ context: activeMediaPlayer, subscribe: true })
   public set activeMediaPlayer(player: ExtendedHassEntity) {
@@ -123,6 +139,21 @@ class MusicPlayerCard extends LitElement {
   }
   public get hass() {
     return this._hass;
+  }
+
+  @consume({ context: configContext, subscribe: true })
+  public set cardConfig(config: Config) {
+    this._cardConfig = config;
+    this.config = config.player;
+  }
+  public get cardConfig() {
+    return this._cardConfig;
+  }
+  public set config(config: PlayerConfig) {
+    this._config = config;
+  }
+  public get config() {
+    return this._config;
   }
 
   private updatePlayerData() {
@@ -350,8 +381,6 @@ class MusicPlayerCard extends LitElement {
       {
         const active = this._player.entity_id == item.entity_id ? literal`selected` : literal``;
         const name = item.name.length > 0 ? item.name : this.hass.states[item.entity_id].attributes.friendly_name;
-        // console.log(`${item.entity_id} Attrs: `);
-        // console.log(this.hass.states[item.entity_id].attributes.friendly_name);
         return html`
           <ha-list-item
             class="players-select-item"
@@ -370,7 +399,12 @@ class MusicPlayerCard extends LitElement {
       }
     )
   }
-  protected renderPlayerName() {
+  protected renderPlayerName(): TemplateResult {
+    const config_hide = this.config.hide.player_selector;
+    const entity_hide = this.activeEntity.hide.player.player_selector;
+    if (config_hide || entity_hide) {
+      return html`${this.player_data?.player_name ?? this.mediaPlayerName}`;
+    }
     return html`
       <ha-control-select-menu
         id="players-select-menu"
@@ -453,6 +487,11 @@ class MusicPlayerCard extends LitElement {
     `
   }
   protected renderShuffle() {
+    const config_hide = this.config.hide.shuffle;
+    const entity_hide = this.activeEntity.hide.player.shuffle;
+    if (config_hide || entity_hide) {
+      return html``
+    }
     return html`
       <ha-button
         appearance="${this.player_data.shuffle ? "accent" : "plain"}"
@@ -511,6 +550,11 @@ class MusicPlayerCard extends LitElement {
     `
   }
   protected renderRepeat() {
+    const config_hide = this.config.hide.repeat;
+    const entity_hide = this.activeEntity.hide.player.repeat;
+    if (config_hide || entity_hide) {
+      return html``
+    }
     let icon = mdiRepeat;
     const repeat = this.player_data.repeat;
     if (repeat == RepeatMode.ONCE) {
@@ -542,75 +586,15 @@ class MusicPlayerCard extends LitElement {
       </div>
     `
   }
-  protected renderPower() {
-    return html`
-      <ha-button
-        appearance="plain"
-        variant="brand"
-        size="medium"
-        class="button-power"
-        @click=${this.onToggle}
-      >
-        <ha-svg-icon
-          .path=${mdiPower}
-          style="height: 3rem; width: 3rem;"
-        ></ha-svg-icon>
-      </ha-button>
-    `
-  }
-  protected renderMute() {
-    return html`
-      <ha-button
-        appearance="plain"
-        variant="brand"
-        size="medium"
-        class="button-mute"
-        @click=${this.onVolumeMuteToggle}
-      >
-        <ha-svg-icon
-          .path=${this.player_data.muted ? mdiVolumeMute : mdiVolumeHigh}
-          style="height: 3rem; width: 3rem;"
-        ></ha-svg-icon>
-      </ha-button>
-    `
-  }
-  protected renderFavorite() {
-    return html`
-      <ha-button
-        appearance="plain"
-        variant="brand"
-        size="medium"
-        id="button-favorite"
-        part="button-favorite"
-        @click=${this.onFavorite}
-      >
-        <ha-svg-icon
-          .path=${this.player_data.favorite ? mdiHeart : mdiHeartPlusOutline}
-          style="height: 3rem; width: 3rem;"
-        ></ha-svg-icon>
-      </ha-button>
-    `
-  }
-  protected renderVolumeBar() {
-    return html`
-      <ha-control-slider
-        .disabled=${this.player_data.muted}
-        .unit="%"
-        .value=${this.player_data.volume}
-        .min=0
-        .max=${this.maxVolume}
-        @value-changed=${this.onVolumeChange}
-      ></ha-control-slider>
-    `
-  }
   protected renderVolumeRow() {
     return html`
-      <div class="volume">
-        ${this.renderPower()}
-        ${this.renderVolumeBar()}
-        ${this.renderMute()}
-        ${this.renderFavorite()}
-      </div>
+      <mass-volume-row
+        .maxVolume=${this.maxVolume}
+        .onPowerToggleSelect=${this.onToggle}
+        .onVolumeMuteToggleSelect=${this.onVolumeMuteToggle}
+        .onVolumeChange=${this.onVolumeChange}
+        .onFavoriteToggleSelect=${this.onFavorite}
+      ></mass-volume-row>
     `
   }
   /* eslint-enable @typescript-eslint/unbound-method */

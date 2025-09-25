@@ -23,7 +23,7 @@ import {
   ExtendedHassEntity,
   Icon
 } from '../const/common';
-import { hassExt } from '../const/context';
+import { activeEntityConf, EntityConfig, hassExt, playersConfigContext } from '../const/context';
 
 import {
   backgroundImageFallback,
@@ -32,6 +32,7 @@ import {
 import { testMixedContent } from '../utils/util';
 
 import styles from '../styles/player-row';
+import { DEFAULT_PLAYERS_HIDDEN_ELEMENTS_CONFIG, PlayersConfig, PlayersHiddenElementsConfig } from '../config/players';
 
 class PlayerRow extends LitElement {
   @property({ type: Boolean }) joined = false;
@@ -48,6 +49,38 @@ class PlayerRow extends LitElement {
   public transferService!: PlayerTransferService;
   public unjoinService!: PlayerUnjoinService;
 
+  private _config!: PlayersConfig;
+  private _entityConfig!: EntityConfig;
+  private hide: PlayersHiddenElementsConfig = DEFAULT_PLAYERS_HIDDEN_ELEMENTS_CONFIG;
+
+  @consume({ context: playersConfigContext, subscribe: true})
+  public set config(config: PlayersConfig) {
+    this._config = config;
+    this.updateHiddenElements();
+  }
+  public get config() {
+    return this._config;
+  }
+  @consume({ context: activeEntityConf, subscribe: true})
+  public set entityConfig(config: EntityConfig) {
+    this._entityConfig = config;
+    this.updateHiddenElements();
+  }
+  public get entityConfig() {
+    return this._entityConfig;
+  }
+  private updateHiddenElements() {
+    if (!this.config || !this.entityConfig) {
+      return;
+    }
+    const entity = this.entityConfig.hide.players;
+    const card = this.config.hide;
+    this.hide = {
+      action_buttons: entity.action_buttons || card.action_buttons,
+      join_button: entity.join_button || card.join_button,
+      transfer_button: entity.transfer_button || card.transfer_button,
+    }
+  }
   private callOnPlayerSelectedService() {
     this.selectedService(this.player_entity.entity_id);
   }
@@ -106,6 +139,9 @@ class PlayerRow extends LitElement {
 
   /* eslint-disable @typescript-eslint/unbound-method */
   protected renderTransferButton() {
+    if (this.hide.transfer_button) {
+      return html``
+    }
     return html`
       <ha-button
         appearance="plain"
@@ -121,6 +157,9 @@ class PlayerRow extends LitElement {
     `
   }
   protected renderJoinButon() {
+    if (this.hide.join_button) {
+      return html``
+    }
     if (!this.player_entity.attributes?.group_members || !this.allowJoin) {
       return;
     }
@@ -139,7 +178,7 @@ class PlayerRow extends LitElement {
     `
   }
   protected renderActionButtons() {
-    if (!this.selected) {
+    if (!this.selected && !this.hide.action_buttons) {
       return html`
         <span
           slot="end"
