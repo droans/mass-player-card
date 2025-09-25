@@ -452,38 +452,6 @@ class MusicPlayerCard extends LitElement {
       </ha-button>
     `
   }
-  protected renderTrackNext() {
-    return html`
-      <ha-button
-        class="controls-previous-next"
-        appearance="outlined"
-        variant="brand"
-        @click=${this.onNext}
-        size="small"
-        style="display: block;"
-      >
-        <ha-svg-icon
-          .path=${mdiSkipNext}
-        ></ha-svg-icon>
-      </ha-button>
-    `
-  }
-  protected renderPlayPause() {
-    return html`
-      <ha-button
-        appearance="${this.player_data.playing ? "filled" : "outlined"}"
-        variant="brand"
-        size="medium"
-        class="button-play-pause"
-        @click=${this.onPlayPause}
-      >
-        <ha-svg-icon
-          .path=${this.player_data.playing ?  mdiPause : mdiPlay}
-          style="height: 4rem; width: 4rem;"
-        ></ha-svg-icon>
-      </ha-button>
-    `
-  }
   protected renderShuffle() {
     return html`
       <ha-button
@@ -497,6 +465,48 @@ class MusicPlayerCard extends LitElement {
           .path=${this.player_data.shuffle ? mdiShuffle : mdiShuffleDisabled}
         ></ha-svg-icon>
         Shuffle
+      </ha-button>
+    `
+  }
+  protected renderControlsLeft() {
+    return html`
+      <div class="controls-left">
+        <div class="track-previous">${this.renderTrackPrevious()}</div>
+        <div class="shuffle">${this.renderShuffle()}</div>
+      </div>
+    `
+  }
+  protected renderPlayPause() {
+    return html`
+      <div class="play-pause">
+        <ha-button
+          appearance="${this.player_data.playing ? "filled" : "outlined"}"
+          variant="brand"
+          size="medium"
+          class="button-play-pause"
+          @click=${this.onPlayPause}
+        >
+          <ha-svg-icon
+            .path=${this.player_data.playing ?  mdiPause : mdiPlay}
+            style="height: 4rem; width: 4rem;"
+          ></ha-svg-icon>
+        </ha-button>
+      </div>
+    `
+  }
+  protected renderTrackNext() {
+    return html`
+      <ha-button
+        class="controls-previous-next"
+        appearance="outlined"
+        variant="brand"
+        @click=${this.onNext}
+        size="small"
+        style="display: block;"
+      >
+        <ha-svg-icon
+          .path=${mdiSkipNext}
+        ></ha-svg-icon>
       </ha-button>
     `
   }
@@ -524,7 +534,15 @@ class MusicPlayerCard extends LitElement {
       </ha-button>
     `
   }
-  protected renderVolume() {
+  protected renderControlsRight() {
+    return html`
+      <div class="controls-right">
+        <div class="track-next"> ${this.renderTrackNext()} </div>
+        <div class="repeat">${this.renderRepeat()}</div>
+      </div>
+    `
+  }
+  protected renderPower() {
     return html`
       <ha-button
         appearance="plain"
@@ -538,14 +556,10 @@ class MusicPlayerCard extends LitElement {
           style="height: 3rem; width: 3rem;"
         ></ha-svg-icon>
       </ha-button>
-      <ha-control-slider
-        .disabled=${this.player_data.muted}
-        .unit="%"
-        .value=${this.player_data.volume}
-        .min=0
-        .max=${this.maxVolume}
-        @value-changed=${this.onVolumeChange}
-      ></ha-control-slider>
+    `
+  }
+  protected renderMute() {
+    return html`
       <ha-button
         appearance="plain"
         variant="brand"
@@ -558,11 +572,16 @@ class MusicPlayerCard extends LitElement {
           style="height: 3rem; width: 3rem;"
         ></ha-svg-icon>
       </ha-button>
+    `
+  }
+  protected renderFavorite() {
+    return html`
       <ha-button
         appearance="plain"
         variant="brand"
         size="medium"
-        class="button-favorite"
+        id="button-favorite"
+        part="button-favorite"
         @click=${this.onFavorite}
       >
         <ha-svg-icon
@@ -572,21 +591,37 @@ class MusicPlayerCard extends LitElement {
       </ha-button>
     `
   }
+  protected renderVolumeBar() {
+    return html`
+      <ha-control-slider
+        .disabled=${this.player_data.muted}
+        .unit="%"
+        .value=${this.player_data.volume}
+        .min=0
+        .max=${this.maxVolume}
+        @value-changed=${this.onVolumeChange}
+      ></ha-control-slider>
+    `
+  }
+  protected renderVolumeRow() {
+    return html`
+      <div class="volume">
+        ${this.renderPower()}
+        ${this.renderVolumeBar()}
+        ${this.renderMute()}
+        ${this.renderFavorite()}
+      </div>
+    `
+  }
   /* eslint-enable @typescript-eslint/unbound-method */
   protected renderControls() {
     return html`
       <div class="controls">
-        <div class="controls-left">
-          <div class="track-previous">${this.renderTrackPrevious()}</div>
-          <div class="shuffle">${this.renderShuffle()}</div>
-        </div>
-        <div class="play-pause">${this.renderPlayPause()}</div>
-        <div class="controls-right">
-          <div class="track-next"> ${this.renderTrackNext()} </div>
-          <div class="repeat">${this.renderRepeat()}</div>
-        </div>
+        ${this.renderControlsLeft()}
+        ${this.renderPlayPause()}
+        ${this.renderControlsRight()}
       </div>
-      <div class="volume">${this.renderVolume()}</div>
+      ${this.renderVolumeRow()}
     `
   }
   protected shouldUpdate(_changedProperties: PropertyValues): boolean {
