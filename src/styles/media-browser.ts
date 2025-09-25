@@ -7,22 +7,34 @@ export default css`
     box-shadow: unset;
     height: var(--mass-player-card-height);
   }
-.header {
-  padding-top: 12px;
-  height: auto;
-  display: flex;
-}
   #title {
-    width: 100%;
+    text-indent: var(--title-indent);
     text-transform: capitalize;
-    font-size: 1.5rem;
-    text-align: center;
-    font-weight: 600;
   }
-  #back-button {
-    margin-left: 1em;
-    height: 1em;
-    width: 1em;
-    margin-top: -2px
+  #search-input {
+    height: 40px;
+    position: relative;
+    width: calc(100% - 5em);
+    z-index: 2;
+  }
+  #search-media-type-menu {
+    display: inline-block;
+  }
+  #search-media-type-menu::part(menu-button) {
+  }
+  #search-media-type-menu::part(menu-select-menu) {
+    --mdc-icon-size: 1.5em;
+    --control-select-menu-padding: 0px;
+    --control-select-menu-background-color: unset;
+  }
+  #search-media-type-menu::part(menu-svg) {
+    color: var(--mdc-theme-primary);
+    border-radius: 50%;
+  }
+  #search-media-type-menu::part(menu-list-item) {
+  }
+  #search-media-type-menu::part(menu-list-item-svg) {
+    height: 2em;
+    width: 2em;
   }
 `;

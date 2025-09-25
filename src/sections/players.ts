@@ -1,23 +1,54 @@
-import { CSSResultGroup, html, LitElement } from "lit";
+import { consume, provide } from "@lit/context";
+
+import {
+  CSSResultGroup,
+  html,
+  LitElement
+} from "lit";
 import { property } from "lit/decorators.js";
-import { HassEntity } from "home-assistant-js-websocket";
 import { keyed } from "lit/directives/keyed.js";
+
 import '../components/player-row'
-import styles from '../styles/player-queue';
+
 import PlayersActions from "../actions/players-actions";
+
+import '../components/section-header';
+
+import {
+  Config,
+  EntityConfig
+} from "../config/config";
+import { DEFAULT_PLAYERS_CONFIG, PlayersConfig } from "../config/players";
+
 import { PlayerSelectedService } from "../const/actions";
-import { DEFAULT_PLAYERS_CONFIG } from "../const/players";
-import { Config, EntityConfig } from "../config/config";
-import { ExtendedHass } from "../const/common";
+import {
+  ExtendedHass,
+  ExtendedHassEntity
+} from "../const/common";
+import {
+  activeEntityConf,
+  hassExt,
+  playersConfigContext
+} from "../const/context";
+
+import styles from '../styles/player-queue';
 
 class PlayersCard extends LitElement {
-  @property({ attribute: false }) public activePlayerEntity!: EntityConfig;
-  @property({ attribute: false }) private entities: HassEntity[] = [];
-  public selectedPlayerService!: PlayerSelectedService;
+  @property({ attribute: false }) private entities: ExtendedHassEntity[] = [];
+
+  @consume( { context: activeEntityConf, subscribe: true})
+  @property({ attribute: false })
+  public activePlayerEntity!: EntityConfig;
+
   private _config!: Config;
-  private actions!: PlayersActions;
+
+  @provide({ context: playersConfigContext })
+  private _sectionConfig!: PlayersConfig;
+  public selectedPlayerService!: PlayerSelectedService;
+
   private _hass!: ExtendedHass;
-  
+  private actions!: PlayersActions;
+
   @property( {attribute: false } )
   public set config(config: Config) {
     if(this._hass && config) {
@@ -27,10 +58,13 @@ class PlayersCard extends LitElement {
       ...DEFAULT_PLAYERS_CONFIG,
       ...config
     };
+    this._sectionConfig = this._config.players;
   }
   public get config() {
     return this._config;
   }
+
+  @consume({context: hassExt, subscribe: true})
   public set hass(hass: ExtendedHass) {
     if (!hass) {
       return;
@@ -77,7 +111,7 @@ class PlayersCard extends LitElement {
     if (!this._config) {
       return;
     }
-    const entities: HassEntity[] = [];
+    const entities: ExtendedHassEntity[] = [];
     this._config.entities.forEach(
       (item) => {
         entities.push(hass.states[item.entity_id]);
@@ -107,7 +141,6 @@ class PlayersCard extends LitElement {
               .transferService=${this.transferQueue}
               .joined=${group_members.includes(item.entity_id)}
               .allowJoin=${attrs.group_members !== undefined}
-              .hass=${this.hass}
             >
             </mass-player-player-row>
           `
@@ -118,9 +151,11 @@ class PlayersCard extends LitElement {
   protected render() {
     return html`
       <ha-card>
-        <div class="header">
-          Players
-        </div>
+        <mass-section-header>
+          <span slot="label" id="title">
+            Players
+          </span>
+        </mass-section-header>
         <ha-md-list class="list">
           ${this.renderPlayerRows()}
         </ha-md-list>

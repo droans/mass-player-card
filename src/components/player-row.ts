@@ -1,28 +1,86 @@
-import { html, type CSSResultGroup, LitElement, PropertyValues } from 'lit';
+import { consume } from '@lit/context';
+import {
+  mdiLink,
+  mdiLinkOff,
+  mdiSwapHorizontal
+} from '@mdi/js';
+import {
+  html,
+  type CSSResultGroup,
+  LitElement,
+  PropertyValues
+} from 'lit';
 import { property } from 'lit/decorators.js'
-import styles from '../styles/player-row';
-import { mdiLink, mdiLinkOff, mdiSwapHorizontal } from '@mdi/js';
-import { backgroundImageFallback, getFallbackImage } from '../utils/icons';
-import { ExtendedHass, ExtendedHassEntity, Icon } from '../const/common';
-import { 
-  PlayerJoinService, 
-  PlayerSelectedService, 
-  PlayerTransferService, 
-  PlayerUnjoinService 
+
+import {
+  PlayerJoinService,
+  PlayerSelectedService,
+  PlayerTransferService,
+  PlayerUnjoinService
 } from '../const/actions';
+import {
+  ExtendedHass,
+  ExtendedHassEntity,
+  Icon
+} from '../const/common';
+import { activeEntityConf, EntityConfig, hassExt, playersConfigContext } from '../const/context';
+
+import {
+  backgroundImageFallback,
+  getFallbackImage
+} from '../utils/icons';
 import { testMixedContent } from '../utils/util';
 
+import styles from '../styles/player-row';
+import { DEFAULT_PLAYERS_HIDDEN_ELEMENTS_CONFIG, PlayersConfig, PlayersHiddenElementsConfig } from '../config/players';
+
 class PlayerRow extends LitElement {
+  @property({ type: Boolean }) joined = false;
   @property({ type: Boolean }) player_entity!: ExtendedHassEntity;
   @property({ type: Boolean }) selected = false;
-  @property({ type: Boolean }) joined = false;
+
+  @consume({context: hassExt})
   public hass!: ExtendedHass;
-  public playerName!: string;
-  public selectedService!: PlayerSelectedService;
-  public joinService!: PlayerJoinService;
-  public unjoinService!: PlayerUnjoinService;
-  public transferService!: PlayerTransferService;
+
   public allowJoin = true;
+  public playerName!: string;
+  public joinService!: PlayerJoinService;
+  public selectedService!: PlayerSelectedService;
+  public transferService!: PlayerTransferService;
+  public unjoinService!: PlayerUnjoinService;
+
+  private _config!: PlayersConfig;
+  private _entityConfig!: EntityConfig;
+  private hide: PlayersHiddenElementsConfig = DEFAULT_PLAYERS_HIDDEN_ELEMENTS_CONFIG;
+
+  @consume({ context: playersConfigContext, subscribe: true})
+  public set config(config: PlayersConfig) {
+    this._config = config;
+    this.updateHiddenElements();
+  }
+  public get config() {
+    return this._config;
+  }
+  @consume({ context: activeEntityConf, subscribe: true})
+  public set entityConfig(config: EntityConfig) {
+    this._entityConfig = config;
+    this.updateHiddenElements();
+  }
+  public get entityConfig() {
+    return this._entityConfig;
+  }
+  private updateHiddenElements() {
+    if (!this.config || !this.entityConfig) {
+      return;
+    }
+    const entity = this.entityConfig.hide.players;
+    const card = this.config.hide;
+    this.hide = {
+      action_buttons: entity.action_buttons || card.action_buttons,
+      join_button: entity.join_button || card.join_button,
+      transfer_button: entity.transfer_button || card.transfer_button,
+    }
+  }
   private callOnPlayerSelectedService() {
     this.selectedService(this.player_entity.entity_id);
   }
@@ -54,9 +112,9 @@ class PlayerRow extends LitElement {
   }
   private renderThumbnail() {
     return html`
-      <span 
-        class="thumbnail" 
-        slot="start" 
+      <span
+        class="thumbnail"
+        slot="start"
         style="${this.artworkStyle()}"
       >
       </span>
@@ -68,8 +126,8 @@ class PlayerRow extends LitElement {
       title = this.player_entity.attributes?.friendly_name ?? "Media Player"
     };
     return html`
-      <span 
-        slot="headline" 
+      <span
+        slot="headline"
         class="title"
       >
         ${title}
@@ -81,6 +139,9 @@ class PlayerRow extends LitElement {
 
   /* eslint-disable @typescript-eslint/unbound-method */
   protected renderTransferButton() {
+    if (this.hide.transfer_button) {
+      return html``
+    }
     return html`
       <ha-button
         appearance="plain"
@@ -96,6 +157,9 @@ class PlayerRow extends LitElement {
     `
   }
   protected renderJoinButon() {
+    if (this.hide.join_button) {
+      return html``
+    }
     if (!this.player_entity.attributes?.group_members || !this.allowJoin) {
       return;
     }
@@ -114,7 +178,7 @@ class PlayerRow extends LitElement {
     `
   }
   protected renderActionButtons() {
-    if (!this.selected) {
+    if (!this.selected && !this.hide.action_buttons) {
       return html`
         <span
           slot="end"
@@ -129,7 +193,7 @@ class PlayerRow extends LitElement {
   }
   render() {
     return html`
-      <ha-md-list-item 
+      <ha-md-list-item
         class="button${this.selected ? '-active' : ''}"
 		    @click=${this.callOnPlayerSelectedService}
         type="button"

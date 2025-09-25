@@ -1,44 +1,80 @@
 import { mdiHeart } from "@mdi/js";
+
 import { Config } from "./config";
+
+export interface MediaBrowserHiddenElementsConfig {
+  back_button: boolean;
+  search: boolean;
+  titles: boolean;
+  enqueue_menu: boolean;
+  add_to_queue_button: boolean;
+  play_next_button: boolean;
+  play_next_clear_queue_button: boolean;
+  play_now_button: boolean;
+  play_now_clear_queue_button: boolean;
+}
+
+export const DEFAULT_MEDIA_BROWSER_HIDDEN_ELEMENTS_CONFIG: MediaBrowserHiddenElementsConfig = {
+  back_button: false,
+  search: false,
+  titles: false,
+  enqueue_menu: false,
+  add_to_queue_button: false,
+  play_next_button: false,
+  play_next_clear_queue_button: false,
+  play_now_button: false,
+  play_now_clear_queue_button: false,
+}
+export const HIDDEN_BUTTON_VALUE = {
+  add: 'add_to_queue_button',
+  play: 'play_now_button',
+  next: 'play_next_button',
+  replace: 'play_now_clear_queue_button',
+  replace_next: 'play_next_clear_queue_button',
+}
+
 export interface MediaBrowserConfig {
-  enabled: boolean,
+  enabled: boolean;
   favorites: FavoritesConfig;
   sections: customSection[];
+  hide: MediaBrowserHiddenElementsConfig
 }
 
 export interface customSection {
-  name: string,
-  image: string,
-  items: customItem[]
+  name: string;
+  image: string;
+  items: customItem[];
 }
 export interface customItem {
-  name: string,
-  image: string,
-  media_content_id: never,
-  media_content_type: never,
-  service: never
+  name: string;
+  image: string;
+  media_content_id: never;
+  media_content_type: never;
+  service: never;
 }
 
 export interface FavoritesConfig {
-  enabled: boolean,
-  albums: FavoriteItemConfig,
-  artists: FavoriteItemConfig,
-  audiobooks: FavoriteItemConfig,
-  playlists: FavoriteItemConfig,
-  podcasts: FavoriteItemConfig,
-  radios: FavoriteItemConfig
-  tracks: FavoriteItemConfig,
+  enabled: boolean;
+  albums: FavoriteItemConfig;
+  artists: FavoriteItemConfig;
+  audiobooks: FavoriteItemConfig;
+  playlists: FavoriteItemConfig;
+  podcasts: FavoriteItemConfig;
+  radios: FavoriteItemConfig;
+  tracks: FavoriteItemConfig;
 }
 
 export interface FavoriteItemConfig {
-  enabled: boolean,
-  limit: number,
-  items: customItem[],
+  enabled: boolean;
+  limit: number;
+  favorites_only: boolean;
+  items: customItem[];
 }
 export const DEFAULT_FAVORITE_ITEM_CONFIG: FavoriteItemConfig = {
   enabled: true,
   limit: 25,
-  items: []
+  items: [],
+  favorites_only: true
 }
 
 const DEFAULT_FAVORITES_CONFIG: FavoritesConfig = {
@@ -56,15 +92,16 @@ const DEFAULT_CUSTOM_SECTION_CONFIG = []
 export const DEFAULT_MEDIA_BROWSER_CONFIG: MediaBrowserConfig = {
   enabled: true,
   favorites: DEFAULT_FAVORITES_CONFIG,
-  sections: DEFAULT_CUSTOM_SECTION_CONFIG
+  sections: DEFAULT_CUSTOM_SECTION_CONFIG,
+  hide: DEFAULT_MEDIA_BROWSER_HIDDEN_ELEMENTS_CONFIG
 }
 
 function favoritesConfigForm(section: string) {
   return {
     name: section,
     type: "expandable",
-    schema: [ 
-      { 
+    schema: [
+      {
         name: "",
         type: "grid",
         schema: [
@@ -93,6 +130,17 @@ export function mediaBrowserConfigForm() {
       ]
     }
   ]
+}
+
+function processHiddenElementsConfig(config: MediaBrowserConfig): MediaBrowserConfig {
+  const hidden_elements_config = config.hide;
+  return {
+    ...config,
+    hide: {
+      ...DEFAULT_MEDIA_BROWSER_HIDDEN_ELEMENTS_CONFIG,
+      ...hidden_elements_config
+    }
+  }  
 }
 
 function processFavoriteItemConfig(config: FavoriteItemConfig) {
@@ -146,6 +194,7 @@ export function processMediaBrowserConfig(config: Config): Config {
   browser_config = processDefaults(browser_config);
   browser_config = processFavorites(browser_config);
   browser_config = processSections(browser_config);
+  browser_config = processHiddenElementsConfig(browser_config);
   return {
     ...config,
     media_browser: browser_config

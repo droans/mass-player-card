@@ -1,28 +1,55 @@
-import { 
-  mdiAlbum, 
-  mdiMusic, 
-  mdiPlaylistMusic, 
-  mdiSpeakerMultiple 
+import {
+  mdiAlbum,
+  mdiMusic,
+  mdiPlaylistMusic,
+  mdiSpeakerMultiple
 } from "@mdi/js";
-import { queueConfigForm } from "./player-queue";
-import { 
-  DEFAULT_MEDIA_BROWSER_CONFIG, 
-  MediaBrowserConfig, 
-  mediaBrowserConfigForm, 
+
+
+import {
+  DEFAULT_MAX_VOLUME
+} from "../const/music-player";
+import { ExtendedHass } from "../const/common";
+
+import {
+  DEFAULT_MEDIA_BROWSER_CONFIG,
+  DEFAULT_MEDIA_BROWSER_HIDDEN_ELEMENTS_CONFIG,
+  MediaBrowserConfig,
+  mediaBrowserConfigForm,
+  MediaBrowserHiddenElementsConfig,
   processMediaBrowserConfig
 } from "./media-browser";
-import { playersConfigForm } from "./players";
-import { playerConfigForm } from "./player";
-import { DEFAULT_QUEUE_CONFIG, QueueConfig } from "../const/player-queue";
-import { DEFAULT_MAX_VOLUME, DEFAULT_PLAYER_CONFIG, PlayerConfig } from "../const/music-player";
-import { DEFAULT_PLAYERS_CONFIG, PlayersConfig } from "../const/players";
-import { ExtendedHass } from "../const/common";
+import {
+  DEFAULT_PLAYER_CONFIG,
+  DEFAULT_PLAYER_HIDDEN_ELEMENTS_CONFIG,
+  PlayerConfig,
+  playerConfigForm,
+  PlayerHiddenElementsConfig,
+  processPlayerConfig
+} from "./player";
+import {
+  DEFAULT_PLAYERS_CONFIG,
+  DEFAULT_PLAYERS_HIDDEN_ELEMENTS_CONFIG,
+  PlayersConfig,
+  playersConfigForm,
+  PlayersHiddenElementsConfig,
+  processPlayersConfig
+} from "./players";
+import {
+  DEFAULT_PLAYER_QUEUE_HIDDEN_ELEMENTS_CONFIG,
+  DEFAULT_QUEUE_CONFIG,
+  PlayerQueueHiddenElementsConfig,
+  processQueueConfig,
+  QueueConfig,
+  queueConfigForm
+} from "./player-queue";
 
 export interface EntityConfig {
   entity_id: string;
   volume_entity_id: string;
   max_volume: number;
   name: string;
+  hide: HiddenElementsConfig;
 }
 
 export interface Config {
@@ -33,6 +60,13 @@ export interface Config {
   players: PlayersConfig;
 }
 
+interface HiddenElementsConfig {
+  player: PlayerHiddenElementsConfig;
+  queue: PlayerQueueHiddenElementsConfig;
+  media_browser: MediaBrowserHiddenElementsConfig;
+  players: PlayersHiddenElementsConfig
+};
+
 export const DEFAULT_CONFIG = {
   queue: DEFAULT_QUEUE_CONFIG,
   player: DEFAULT_PLAYER_CONFIG,
@@ -40,9 +74,15 @@ export const DEFAULT_CONFIG = {
   media_browser: DEFAULT_MEDIA_BROWSER_CONFIG
 }
 
+const ENTITY_DEFAULT_HIDDEN_ITEM_CONFIG: HiddenElementsConfig = {
+  player: DEFAULT_PLAYER_HIDDEN_ELEMENTS_CONFIG,
+  queue: DEFAULT_PLAYER_QUEUE_HIDDEN_ELEMENTS_CONFIG,
+  media_browser: DEFAULT_MEDIA_BROWSER_HIDDEN_ELEMENTS_CONFIG,
+  players: DEFAULT_PLAYERS_HIDDEN_ELEMENTS_CONFIG,
+}
 
 export function createStubConfig(hass: ExtendedHass, entities: string[]) {
-  const media_players = entities.filter( 
+  const media_players = entities.filter(
     (ent) => {
       return ent.split(".")[0] == "media_player";
     }
@@ -60,7 +100,7 @@ export function createStubConfig(hass: ExtendedHass, entities: string[]) {
 export function createConfigForm() {
   return {
     schema: [
-      { 
+      {
         name: "entities",
         required: true,
         selector: {
@@ -99,12 +139,27 @@ export function createConfigForm() {
   }
 }
 
+function processEntityHiddenItemConfig(config: EntityConfig): HiddenElementsConfig {
+  const used_hide = config?.hide;
+  const hide: HiddenElementsConfig = {
+    ...ENTITY_DEFAULT_HIDDEN_ITEM_CONFIG,
+    ...used_hide,
+  }
+  hide.player = {
+    ...DEFAULT_PLAYER_HIDDEN_ELEMENTS_CONFIG,
+    ...hide?.player,
+  }
+  
+  return hide;
+}
+
 function entityConfigFromEntityID(entity_id: string): EntityConfig {
   return {
     entity_id: entity_id,
     volume_entity_id: entity_id,
     name: "",
     max_volume: DEFAULT_MAX_VOLUME,
+    hide: ENTITY_DEFAULT_HIDDEN_ITEM_CONFIG
   }
 }
 
@@ -112,12 +167,15 @@ function processEntityConfig(config: string|EntityConfig): EntityConfig {
   if (typeof(config) == "string") {
     return entityConfigFromEntityID(config)
   }
-  return {
+  const HIDDEN_ELEMENTS = processEntityHiddenItemConfig(config);
+  const r = {
     entity_id: config.entity_id,
     volume_entity_id: config?.volume_entity_id ?? config.entity_id,
     name: config?.name ?? "",
     max_volume: config?.max_volume ?? DEFAULT_MAX_VOLUME,
+    hide: HIDDEN_ELEMENTS,
   }
+  return r;
 }
 
 function mergeDefaultConfig(config: Config): Config {
@@ -145,5 +203,8 @@ export function processConfig(config: Config): Config {
   config = mergeDefaultConfig(config);
   config = processEntitiesConfig(config);
   config = processMediaBrowserConfig(config);
+  config = processPlayerConfig(config);
+  config = processQueueConfig(config);
+  config = processPlayersConfig(config);
   return config;
 }

@@ -26,7 +26,7 @@ export default css`
     margin: 0.75em 1.75em 0em 1.75em;
     text-align: center;
     overflow: hidden;
-    height: 5.25em;
+    height: 7.5em;
   }
   .player-name {
     font-size: 0.8rem;
@@ -79,26 +79,6 @@ export default css`
   .button-play-pause::part(base) {
     box-shadow: rgba(0, 0, 0, 0.16) 0px 2px 4px 0px;
   }
-  .volume {
-    display: flex;
-    flex-direction: row;
-    align-items: center;
-    justify-content: space-evenly;
-    padding-left: 2em;
-    padding-right: 2em;
-  }
-  .button-power {
-    margin-right: 1em;
-  }
-  .button-mute {
-    margin-left: 1em;
-  }
-  .button-favorite {
-    margin-left: 1em;
-  }
-  ha-control-slider {
-    --control-slider-thickness: 2.25em;
-  }
   .player-controls {
     width: var(--player-control-icon-width);
     height: var(--player-control-icon-width);
@@ -135,21 +115,31 @@ export default css`
     background-color: rgba(var(--rgb-card-background-color), 0.9);
     border-radius: 10px;
   }
-  .marquee {
-    animation: marquee var(--marquee-time) linear infinite;
+  .marquee-pause-end {
+    left: var(--marquee-left-offset);
     position: relative;
   }
+  .marquee {
+    animation: marquee var(--marquee-time) linear 2s;
+    animation-iteration-count: infinite;
+    position: relative;
+  }
+  #players-select-menu {
+    --control-select-menu-height: 2.5em;
+  }
+  .players-select-item {
+    height: 2.5em;
+  }
+  .players-select-item-icon {
+    height: 2em;
+    width: 2em;
+    color: var(--mdc-theme-primary);
+  }
   @keyframes marquee {
-    0% {
+    from {
       left: 0px;
     }
-    25% {
-      left: 0px;
-    }
-    75% {
-      left: var(--marquee-left-offset);
-    }
-    100% {
+    to {
       left: var(--marquee-left-offset);
     }
   }

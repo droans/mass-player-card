@@ -1,11 +1,5 @@
 import { RepeatMode } from "./common";
 
-export const DEFAULT_PLAYER_CONFIG: PlayerConfig = {
-  enabled: true
-}
-export interface PlayerConfig {
-  enabled: boolean;
-}
 
 export interface PlayerData {
   playing: boolean;
@@ -21,5 +15,6 @@ export interface PlayerData {
   favorite: boolean;
 }
 
-export const SWIPE_MIN_X = 200;
+export const SWIPE_MIN_X = 100;
 export const DEFAULT_MAX_VOLUME = 100;
+export const MARQUEE_DELAY_MS = 2000;
