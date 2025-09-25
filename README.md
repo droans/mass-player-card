@@ -74,6 +74,20 @@ entities:
 
 ```yaml
 type: custom:mass-player-card
+entities:
+  - entity_id: <MEDIA_PLAYER_ENTITY>
+    volume_entity_id: <MEDIA_PLAYER_ENTITY>
+    max_volume: 100
+    name: <MEDIA_PLAYER_ENTITY_NAME>
+    hide:
+      player:
+        favorite: false
+        mute: false
+        player_selector: false
+        power: false
+        repeat: false
+        shuffle: false
+        volume: false
 queue:
   enabled: true
   limit_before: 5
@@ -128,18 +142,38 @@ media_browser:
 type: custom:mass-player-card
 entities:
   - media_player.kitchen_player_music_assistant
-  - media_player.bedroom_player_music_assistant
+  - entity_id: media_player.bedroom_player_music_assistant
+    hide:
+      player:
+        favorite: true
+        mute: true
+        player_selector: true
+        power: true
+        repeat: true
+        shuffle: true
+        volume: true
   - entity_id: media_player.living_room_player_music_assistant
     volume_entity_id: media_player.living_room_tv
   - entity_id: media_player.bathoom_music_assistant
     name: Bathroom Speaker
     max_volume: 50
+    hide:
+      player:
+        mute: true
+        power: true
+        volume: true
+      queue:
+        move_up_button: true
   - entity_id: media_player.loft_music_assistant
     volume_entity_id: media_player.loft_tv
     max_volume: 40
     name: Loft TV
   - entity_id: media_player.basement_music_assistant
     name: Basement
+    hide:
+      player:
+        mute: true
+        power: true
 queue:
   enabled: true
   limit_before: 10
@@ -218,12 +252,23 @@ media_browser:
 ## Entity Config
 For each entity, you can either provide the Entity ID by itself or you can provide the Music Assistant media player Entity ID, the media player Entity ID for volume control, and/or the name of the player. Below is the config if you would like to provide the additional details.
 
-| Parameter        | Type | Required | Default     | Description                              |
-|------------------|------|----------|-------------|------------------------------------------|
-| entity_id        | str  | Yes      | N/A         | The Music Assistant entity               |
-| volume_entity_id | str  | No       | `entity_id` | The media player for volume control      |
-| name             | str  | No       | N/A         | The name of the media player             |
-| max_volume       | int  | No       | N/A         | Max volume for the volume slider (0-100) |
+| Parameter        | Type                                                          | Required | Default     | Description                              |
+|------------------|---------------------------------------------------------------|----------|-------------|------------------------------------------|
+| entity_id        | str                                                           | Yes      | N/A         | The Music Assistant entity               |
+| volume_entity_id | str                                                           | No       | `entity_id` | The media player for volume control      |
+| name             | str                                                           | No       | N/A         | The name of the media player             |
+| max_volume       | int                                                           | No       | N/A         | Max volume for the volume slider (0-100) |
+| hide             | [EntityHiddenElementsConfig](#entity-hidden-elements-config)  | No       | See below   | See Below                                |
+
+## Entity Hidden Elements Config
+Certain elements across the different sections can be hidden or displayed depending on your configuration. By default, every item will be displayed.
+
+| Parameter     | Type                                                                     | Required | Default     | Description                              |
+|---------------|--------------------------------------------------------------------------|----------|-------------|------------------------------------------|
+| player        | [MusicPlayerHiddenElementsConfig](#music-player-hidden-elements-config)  | No       | See below   | See Below                                |
+| queue         | [QueueHiddenElementsConfig](#queue-hidden-elements-config)  | No       | See below   | See Below                                |
+| media_browser | [MediaBrowserHiddenElementsConfig](#media-browser-hidden-elements-config)  | No       | See below   | See Below                                |
+| players       | [PlayersHiddenElementsConfig](#players-hidden-elements-config)  | No       | See below   | See Below                                |
 
 ## Music Player Config
 
@@ -232,10 +277,23 @@ For each entity, you can either provide the Entity ID by itself or you can provi
 <img src="https://github.com/droans/mass-player-card/blob/main/static/music_player/desktop.png" alt="Player Card Example">
 </details>
 
-
 | Parameter | Type | Required | Default | Description                     |
 |-----------|------|----------|---------|---------------------------------|
 | enabled   | bool | No       | true    | Enable/disable music player tab |
+
+
+## Music Player Hidden Elements Config
+Multiple elements on the Music Player tab can be hidden. By default, all elements are visible
+
+| Parameter       | Type | Required | Default     | Description                       |
+|-----------------|------|----------|-------------|-----------------------------------|
+| favorite        | bool  | No       | false       | Hides the favorite button        |
+| mute            | bool  | No       | false       | Hides the mute button            |
+| player_selector | bool  | No       | false       | Hides the player selector button |
+| power           | bool  | No       | false       | Hides the power button           |
+| repeat          | bool  | No       | false       | Hides the repeat button          |
+| shuffle         | bool  | No       | false       | Hides the shuffle button         |
+| volume          | bool  | No       | false       | Hides the volume button          |
 
 ## Queue Config
 Display and interact with the player's queue.
@@ -252,6 +310,20 @@ Display and interact with the player's queue.
 | limit_after       | bool | No       | 25      | Number of item to display after current active item  |
 | show_album_covers | bool | No       | true    | Show album cover images for each item                |
 | show_artist_names | bool | No       | true    | Show artist names for each item                      |
+| hide              | [QueueHiddenElementsConfig](#queue-hidden-elements-config)  | No       | See below   | See Below                                |
+
+## Queue Hidden Elements Config
+Multiple elements on the queue tab can be hidden. By default, all elements are visible
+
+| Parameter        | Type  | Required | Default     | Description                |
+|------------------|-------|----------|-------------|----------------------------|
+| action_buttons   | bool  | No       | false       | Hides the action buttons   |
+| move_down_button | bool  | No       | false       | Hides the Move Down button |
+| move_up_button   | bool  | No       | false       | Hides the Move Up button   |
+| move_next_button | bool  | No       | false       | Hides the Move Next button |
+| remove_button    | bool  | No       | false       | Hides the Remove button    |
+| album_covers     | bool  | No       | false       | Hides album covers         |
+| artist_names     | bool  | No       | false       | Hides artist names         |
 
 ## Media Browser Config
 
@@ -260,11 +332,27 @@ Display and interact with the player's queue.
 <img src="https://github.com/droans/mass-player-card/blob/main/static/media_browser/desktop.png" alt="Player Card Media Browser Section Example">
 </details>
 
-| Parameter | Type                                      | Required | Default | Description                      |
-|-----------|-------------------------------------------|----------|---------|----------------------------------|
-| enabled   | bool                                      | No       | true    | Enable/disable media browser tab |
-| favorites | [FavoritesConfig](#favorites-config)      | No       | -       | See below                        |
-| sections | list of [SectionsConfig](#sections-config) | No       | -       | See below                        |
+| Parameter | Type                                                                       | Required | Default     | Description                      |
+|-----------|----------------------------------------------------------------------------|----------|-------------|----------------------------------|
+| enabled   | bool                                                                       | No       | true        | Enable/disable media browser tab |
+| favorites | [FavoritesConfig](#favorites-config)                                       | No       | -           | See below                        |
+| sections  | list of [SectionsConfig](#sections-config)                                 | No       | -           | See below                        |
+| hide      | [MediaBrowserHiddenElementsConfig](#media-browser-hidden-elements-config)  | No       | See below   | See Below                                |
+
+## Media Browser Hidden Elements Config
+Multiple elements on the media browser tab can be hidden. By default, all elements are visible
+
+| Parameter                    | Type  | Required | Default     | Description                                |
+|------------------------------|-------|----------|-------------|--------------------------------------------|
+| back_button                  | bool  | No       | false       | Hides the back button                      |
+| search                       | bool  | No       | false       | Hides the search button                    |
+| titles                       | bool  | No       | false       | Hides titles for each section/item         |
+| enqueue_menu                 | bool  | No       | false       | Hides the enqueue menu                     |
+| add_to_queue_button          | bool  | No       | false       | Hides the "Add to Queue" button            |
+| play_now_button              | bool  | No       | false       | Hides the "Play Now" button                |
+| play_now_clear_queue_button  | bool  | No       | false       | Hides the "Play Now & Clear Queue" button  |
+| play_next_button             | bool  | No       | false       | Hides the "Play Next" button               |
+| play_next_clear_queue_button | bool  | No       | false       | Hides the "Play Next & Clear Queue" button |
 
 ## Favorites Config
 | Parameter  | Type                            | Required | Default | Description                     |
@@ -334,6 +422,16 @@ These will be for each item inside of that section. Either `service` must be pro
 <img src="https://github.com/droans/mass-player-card/blob/main/static/players/desktop.png" alt="Player Card Players Section Example">
 </details>
 
-| Parameter | Type | Required | Default | Description                     |
-|-----------|------|----------|---------|---------------------------------|
-| enabled   | bool | No       | true    | Enable/disable music player tab |
+| Parameter | Type                                                            | Required | Default     | Description                     |
+|-----------|-----------------------------------------------------------------|----------|-------------|---------------------------------|
+| enabled   | bool                                                            | No       | true        | Enable/disable music player tab |
+| hide      | [PlayersHiddenElementsConfig](#players-hidden-elements-config)  | No       | See below   | See Below                       |
+
+## Players Hidden Elements Config
+Multiple elements on the players tab can be hidden. By default, all elements are visible
+
+| Parameter       | Type  | Required | Default     | Description               |
+|-----------------|-------|----------|-------------|---------------------------|
+| action_buttons  | bool  | No       | false       | Hides the action buttons  |
+| join_button     | bool  | No       | false       | Hides the join button     |
+| transfer_button | bool  | No       | false       | Hides the transfer button |
