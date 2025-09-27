@@ -2,7 +2,6 @@ import { consume, provide } from '@lit/context';
 import { LovelaceCard } from 'custom-card-helpers';
 import { LitElement, html, type CSSResultGroup, PropertyValues, TemplateResult } from 'lit';
 import { property, state } from 'lit/decorators.js';
-import { keyed } from 'lit/directives/keyed.js';
 
 import '../components/media-row'
 import '../components/section-header';
@@ -55,7 +54,7 @@ class QueueCard extends LitElement {
   @consume( { context: activeSectionContext, subscribe: true})
   @state()
   public set activeSection(section: string) {
-    if (section == Sections.QUEUE) {
+    if ((section as Sections) == Sections.QUEUE) {
       const els = this.shadowRoot?.querySelectorAll('mass-player-media-row');
       els?.forEach( 
         (element) => {
@@ -267,16 +266,6 @@ class QueueCard extends LitElement {
     this.moveQueueItem(cur_idx, new_idx);
     await this.actions.MoveQueueItemDown(queue_item_id);
   }
-  private onAnimationStart = (ev: Event) => {
-    const target = ev.target as HTMLElement;
-    const child = target.children[0] as HTMLElement;
-    child.style.display = 'none';
-  }
-  private onAnimationFinish = (ev: Event) => {
-    const target = ev.target as HTMLElement;
-    const child = target.children[0] as HTMLElement;
-    child.style.display = 'unset';
-  }
   private renderQueueItems() {
     const show_album_covers = this._config.show_album_covers;
     let delay = 0;
@@ -329,25 +318,33 @@ class QueueCard extends LitElement {
       </ha-card>
     `
   }
+  //eslint-disable-next-line @typescript-eslint/no-explicit-any
   private onTabHidden = (ev: any) => {
+    //eslint-disable-next-line @typescript-eslint/no-unsafe-member-access
     if (ev.detail.name != Sections.QUEUE) {
       return;
     }
     const animation_elements = this.shadowRoot?.querySelectorAll('wa-animation');
     animation_elements?.forEach(
       (element) => {
+      /* eslint-disable 
+        @typescript-eslint/no-unsafe-assignment,
+        @typescript-eslint/no-explicit-any,
+        @typescript-eslint/no-unsafe-member-access,
+        @typescript-eslint/no-unsafe-call,
+      */
         const el = element as any;
         el.cancel();
+      /* eslint-enable 
+        @typescript-eslint/no-unsafe-assignment,
+        @typescript-eslint/no-explicit-any,
+        @typescript-eslint/no-unsafe-member-access,
+        @typescript-eslint/no-unsafe-call,
+      */
       }
     )
     this.requestUpdate();
   }
-  // protected updated(_changedProperties: PropertyValues): void {
-  //   if (!this._tabListening) {
-  //     this._tabListening = true;
-  //     window.addEventListener('sl-tab-hide', this.onTabHidden);
-  //   }
-  // }
   static get styles(): CSSResultGroup {
     return styles;
   }

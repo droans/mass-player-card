@@ -13,8 +13,7 @@ import {
   PropertyValues
 } from 'lit';
 import {
-  html,
-  literal
+  html
 } from "lit/static-html.js";
 import {
   customElement,
