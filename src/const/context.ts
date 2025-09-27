@@ -35,3 +35,4 @@ export const activePlayerDataContext = createContext<PlayerData>('active-player-
 export const playerQueueConfigContext = createContext<QueueConfig>('player-queue-config');
 export const mediaBrowserConfigContext = createContext<MediaBrowserConfig>('media-browser-config');
 export const playersConfigContext = createContext<PlayersConfig>('players-config');
+export const activeSectionContext = createContext<string>('active-section');

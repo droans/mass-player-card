@@ -2,7 +2,6 @@ import { consume, provide } from '@lit/context';
 import { LovelaceCard } from 'custom-card-helpers';
 import { LitElement, html, type CSSResultGroup, PropertyValues, TemplateResult } from 'lit';
 import { property, state } from 'lit/decorators.js';
-import { keyed } from 'lit/directives/keyed.js';
 
 import '../components/media-row'
 import '../components/section-header';
@@ -18,6 +17,7 @@ import {
 import { ExtendedHass } from '../const/common';
 import {
   activeEntityID,
+  activeSectionContext,
   hassExt,
   playerQueueConfigContext
 } from '../const/context';
@@ -27,6 +27,8 @@ import {
 } from '../const/player-queue';
 
 import styles from '../styles/player-queue';
+import { cache } from 'lit/directives/cache.js';
+import { Sections } from '../const/card';
 
 class QueueCard extends LitElement {
   @provide({context: playerQueueConfigContext})
@@ -47,7 +49,22 @@ class QueueCard extends LitElement {
   private maxFailCt = 5;
   private newId = '';
   private queueID = '';
+  private _tabListening = false;
 
+  @consume( { context: activeSectionContext, subscribe: true})
+  @state()
+  public set activeSection(section: string) {
+    if ((section as Sections) == Sections.QUEUE) {
+      const els = this.shadowRoot?.querySelectorAll('mass-player-media-row');
+      els?.forEach( 
+        (element) => {
+          const el = element as HTMLElement;
+          el.className = '';
+          el.className = 'media-row-animation';
+        }
+      )
+    }
+  }
   @consume({context: hassExt, subscribe: true})
   public set hass(hass: ExtendedHass) {
     if (!hass) {
@@ -251,23 +268,39 @@ class QueueCard extends LitElement {
   }
   private renderQueueItems() {
     const show_album_covers = this._config.show_album_covers;
+    let delay = 0;
+    const delay_add = 62.5;
     return this.queue.map(
       (item) => {
-        return keyed(
-          item.queue_item_id,
+        const result = cache(
           html`
-            <mass-player-media-row
-              .media_item=${item}
-              .selected=${item.playing}
-              .showAlbumCovers=${show_album_covers}
-              .selectedService=${this.onQueueItemSelected}
-              .removeService=${this.onQueueItemRemoved}
-              .moveQueueItemNextService=${this.onQueueItemMoveNext}
-              .moveQueueItemUpService=${this.onQueueItemMoveUp}
-              .moveQueueItemDownService=${this.onQueueItemMoveDown}
-            >
-            </mass-player-media-row>`
-        )
+              <wa-animation
+                name="backInRight"
+                easing="ease-in"
+                iterations=1
+                play=${this.checkVisibility()}
+                playback-rate=1
+                delay=${delay}
+
+              >
+                <mass-player-media-row
+                  class="media-row-animation"
+                  style="animation-duration: ${delay}ms;"
+                  .media_item=${item}
+                  .selected=${item.playing}
+                  .showAlbumCovers=${show_album_covers}
+                  .selectedService=${this.onQueueItemSelected}
+                  .removeService=${this.onQueueItemRemoved}
+                  .moveQueueItemNextService=${this.onQueueItemMoveNext}
+                  .moveQueueItemUpService=${this.onQueueItemMoveUp}
+                  .moveQueueItemDownService=${this.onQueueItemMoveDown}
+                >
+                </mass-player-media-row>
+              </wa-animation>
+          `
+        );
+        delay += delay_add;
+        return result;
       }
     );
   }
@@ -285,7 +318,33 @@ class QueueCard extends LitElement {
       </ha-card>
     `
   }
-
+  //eslint-disable-next-line @typescript-eslint/no-explicit-any
+  private onTabHidden = (ev: any) => {
+    //eslint-disable-next-line @typescript-eslint/no-unsafe-member-access
+    if (ev.detail.name != Sections.QUEUE) {
+      return;
+    }
+    const animation_elements = this.shadowRoot?.querySelectorAll('wa-animation');
+    animation_elements?.forEach(
+      (element) => {
+      /* eslint-disable 
+        @typescript-eslint/no-unsafe-assignment,
+        @typescript-eslint/no-explicit-any,
+        @typescript-eslint/no-unsafe-member-access,
+        @typescript-eslint/no-unsafe-call,
+      */
+        const el = element as any;
+        el.cancel();
+      /* eslint-enable 
+        @typescript-eslint/no-unsafe-assignment,
+        @typescript-eslint/no-explicit-any,
+        @typescript-eslint/no-unsafe-member-access,
+        @typescript-eslint/no-unsafe-call,
+      */
+      }
+    )
+    this.requestUpdate();
+  }
   static get styles(): CSSResultGroup {
     return styles;
   }
