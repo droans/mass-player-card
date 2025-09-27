@@ -18,6 +18,7 @@ import { PlayerData } from './music-player';
 import { QueueConfig } from '../config/player-queue';
 import { MediaBrowserConfig } from '../config/media-browser';
 import { PlayersConfig } from '../config/players';
+import { Sections } from './card';
 export type {
   EntityConfig
 } from '../config/config';
@@ -36,3 +37,4 @@ export const playerQueueConfigContext = createContext<QueueConfig>('player-queue
 export const mediaBrowserConfigContext = createContext<MediaBrowserConfig>('media-browser-config');
 export const playersConfigContext = createContext<PlayersConfig>('players-config');
 export const activeSectionContext = createContext<Sections>('active-section');
+export const mediaCardDisplayContext = createContext<boolean>('media-card-display');

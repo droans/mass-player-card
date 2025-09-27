@@ -12,7 +12,7 @@ import {
   PropertyValues,
   TemplateResult
 } from 'lit';
-import { property } from 'lit/decorators.js'
+import { property, state } from 'lit/decorators.js'
 
 import {
   QueueItemSelectedService,
@@ -22,7 +22,13 @@ import {
   ExtendedHass,
   Icon
 } from '../const/common';
-import { activeEntityConf, EntityConfig, hassExt, playerQueueConfigContext } from '../const/context';
+import {
+  activeEntityConf,
+  EntityConfig,
+  hassExt,
+  mediaCardDisplayContext,
+  playerQueueConfigContext
+} from '../const/context';
 import { QueueItem } from '../const/player-queue';
 
 import styles from '../styles/media-row';
@@ -38,8 +44,12 @@ class MediaRow extends LitElement {
   @property({ attribute: false }) media_item!: QueueItem;
   @property({ type: Boolean }) selected = false;
 
-  @consume({context: hassExt})
+  @consume({context: hassExt, subscribe: true})
   public hass!: ExtendedHass;
+
+  @consume({ context: mediaCardDisplayContext, subscribe: true })
+  @state()
+  public display!: boolean;
 
   public moveQueueItemDownService!: QueueService;
   public moveQueueItemNextService!: QueueService;
@@ -261,17 +271,19 @@ class MediaRow extends LitElement {
 
   render(): TemplateResult {
     return html`
-      <ha-md-list-item
-        class="button${this.media_item.playing ? '-active' : ''}"
-		    @click=${this.callOnQueueItemSelectedService}
-        type="button"
-      >
-        ${this.renderThumbnail()}
-        ${this.renderTitle()}
-        ${this.renderArtist()}
-        ${this.renderActionButtons()}
-      </ha-md-list-item>
-      <div class="divider"</div>
+        <ha-md-list-item
+          style="${this.display? "" : "display: none;"}"
+          class="button${this.media_item.playing ? '-active' : ''}"
+          @click=${this.callOnQueueItemSelectedService}
+          type="button"
+        >
+          ${this.renderThumbnail()}
+          ${this.renderTitle()}
+          ${this.renderArtist()}
+          ${this.renderActionButtons()}
+        </ha-md-list-item>
+        <div class="divider"</div>
+      </div>
     `
   }
   static get styles(): CSSResultGroup {
