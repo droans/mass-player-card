@@ -11,6 +11,7 @@ import {
   property,
   state
 } from "lit/decorators.js";
+import '@awesome.me/webawesome/dist/components/card/card.js';
 
 import './menu-button'
 
@@ -165,7 +166,9 @@ class MediaCard extends LitElement {
     return html`
       <div
         id="thumbnail-div"
-        style="${thumbnail}; padding-bottom: 2em;"
+        slot="media"
+        class="wa-grid"
+        style="${thumbnail};"
       ></div>
     `
   }
@@ -202,19 +205,19 @@ class MediaCard extends LitElement {
   }
   private generateCode() {
     this.code = html`
-      <ha-card
-      >
+      <ha-card>
         <div id="container">
-          <div id="card-button-div">
-            <ha-control-button
-              @click=${this.onSelect}
-            >
-              ${this.renderThumbnail()}
-              ${this.renderTitle()}
-            </ha-control-button>
+        <wa-card
+          class="media-card"
+          @click=${this.onSelect}
+        >
+          <div slot="media">
+            ${this.renderThumbnail()}
           </div>
-            ${this.renderEnqueueButton()}
-        </div>
+          ${this.renderTitle()}
+        </wa-card>
+        ${this.renderEnqueueButton()}
+      </div>
       </ha-card>
     `
   }
