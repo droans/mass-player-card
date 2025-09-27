@@ -3,10 +3,11 @@ import { consume } from "@lit/context";
 import { mdiPlayCircle } from "@mdi/js";
 import {
   CSSResultGroup,
-  html,
   LitElement,
   TemplateResult
 } from "lit";
+import { 
+  html } from "lit/static-html.js";
 import {
   property,
   state
@@ -23,6 +24,7 @@ import {
 import { ExtendedHass } from "../const/common";
 import {
   activeEntityConf,
+  activeSectionContext,
   EntityConfig,
   hassExt,
   mediaBrowserConfigContext
@@ -45,6 +47,7 @@ import {
   MediaBrowserConfig,
   MediaBrowserHiddenElementsConfig
 } from "../config/media-browser";
+import { Sections } from "../const/card";
 
 class MediaCard extends LitElement {
   @property({ type: Boolean }) queueable = false;
@@ -58,11 +61,21 @@ class MediaCard extends LitElement {
   public onEnqueueAction!: CardEnqueueService;
 
   private _cardConfig!: MediaBrowserConfig;
+  private _activeSection!: Sections;
+  private _play = false;
 
   private _config!: MediaCardItem;
   private _entityConfig!: EntityConfig;
   private hide: MediaBrowserHiddenElementsConfig = DEFAULT_MEDIA_BROWSER_HIDDEN_ELEMENTS_CONFIG;
-
+  @consume({ context: activeSectionContext, subscribe: true })
+  public set activeSection(section: Sections) {
+    this._play = section == Sections.MEDIA_BROWSER;
+    this._activeSection = section;
+    this.generateCode();
+  }
+  public get activeSection() {
+    return this._activeSection;
+  }
   public set config(config: MediaCardItem) {
     if (!config) {
       return;
@@ -205,20 +218,28 @@ class MediaCard extends LitElement {
   }
   private generateCode() {
     this.code = html`
-      <ha-card>
-        <div id="container">
-        <wa-card
-          class="media-card"
-          @click=${this.onSelect}
-        >
-          <div slot="media">
-            ${this.renderThumbnail()}
-          </div>
-          ${this.renderTitle()}
-        </wa-card>
-        ${this.renderEnqueueButton()}
-      </div>
-      </ha-card>
+      <wa-animation
+        name="pulse"
+        easing="ease"
+        iterations=1
+        play=${this._play}
+        playback-rate=1
+      >
+        <ha-card>
+          <div id="container">
+          <wa-card
+            class="media-card"
+            @click=${this.onSelect}
+          >
+            <div slot="media">
+              ${this.renderThumbnail()}
+            </div>
+            ${this.renderTitle()}
+          </wa-card>
+          ${this.renderEnqueueButton()}
+        </div>
+        </ha-card>
+      </wa-animation>
     `
   }
   protected render() {
