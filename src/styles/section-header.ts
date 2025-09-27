@@ -8,6 +8,7 @@ export default css`
     display: block;
     position: relative;
     z-index: 1;
+    height: 3em;
   }
   .start {
     display: block;

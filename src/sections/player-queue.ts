@@ -19,6 +19,7 @@ import {
   activeEntityID,
   activeSectionContext,
   hassExt,
+  mediaCardDisplayContext,
   playerQueueConfigContext
 } from '../const/context';
 import {
@@ -49,21 +50,18 @@ class QueueCard extends LitElement {
   private maxFailCt = 5;
   private newId = '';
   private queueID = '';
-  private _tabListening = false;
 
-  @consume( { context: activeSectionContext, subscribe: true})
-  @state()
-  public set activeSection(section: string) {
-    if ((section as Sections) == Sections.QUEUE) {
-      const els = this.shadowRoot?.querySelectorAll('mass-player-media-row');
-      els?.forEach( 
-        (element) => {
-          const el = element as HTMLElement;
-          el.className = '';
-          el.className = 'media-row-animation';
-        }
-      )
-    }
+  @provide({context: mediaCardDisplayContext})
+  private _mediaCardDisplay = true;
+  private _section!: Sections;
+
+  @consume({ context: activeSectionContext, subscribe: true})
+  public set activeSection(section: Sections) {
+    this._mediaCardDisplay = section == Sections.QUEUE;
+    this._section = section;
+  }
+  public get activeSection() {
+    return this._section;
   }
   @consume({context: hassExt, subscribe: true})
   public set hass(hass: ExtendedHass) {
@@ -275,12 +273,13 @@ class QueueCard extends LitElement {
         const result = cache(
           html`
               <wa-animation
-                name="backInRight"
-                easing="ease-in"
+                name="fadeIn"
+                easing="linear"
                 iterations=1
                 play=${this.checkVisibility()}
                 playback-rate=1
                 delay=${delay}
+                duration=${delay_add * 8}
 
               >
                 <mass-player-media-row
