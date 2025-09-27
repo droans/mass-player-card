@@ -18,6 +18,7 @@ import {
 import { ExtendedHass } from '../const/common';
 import {
   activeEntityID,
+  activeSectionContext,
   hassExt,
   playerQueueConfigContext
 } from '../const/context';
@@ -27,6 +28,8 @@ import {
 } from '../const/player-queue';
 
 import styles from '../styles/player-queue';
+import { cache } from 'lit/directives/cache.js';
+import { Sections } from '../const/card';
 
 class QueueCard extends LitElement {
   @provide({context: playerQueueConfigContext})
@@ -47,7 +50,22 @@ class QueueCard extends LitElement {
   private maxFailCt = 5;
   private newId = '';
   private queueID = '';
+  private _tabListening = false;
 
+  @consume( { context: activeSectionContext, subscribe: true})
+  @state()
+  public set activeSection(section: string) {
+    if (section == Sections.QUEUE) {
+      const els = this.shadowRoot?.querySelectorAll('mass-player-media-row');
+      els?.forEach( 
+        (element) => {
+          const el = element as HTMLElement;
+          el.className = '';
+          el.className = 'media-row-animation';
+        }
+      )
+    }
+  }
   @consume({context: hassExt, subscribe: true})
   public set hass(hass: ExtendedHass) {
     if (!hass) {
@@ -249,25 +267,51 @@ class QueueCard extends LitElement {
     this.moveQueueItem(cur_idx, new_idx);
     await this.actions.MoveQueueItemDown(queue_item_id);
   }
+  private onAnimationStart = (ev: Event) => {
+    const target = ev.target as HTMLElement;
+    const child = target.children[0] as HTMLElement;
+    child.style.display = 'none';
+  }
+  private onAnimationFinish = (ev: Event) => {
+    const target = ev.target as HTMLElement;
+    const child = target.children[0] as HTMLElement;
+    child.style.display = 'unset';
+  }
   private renderQueueItems() {
     const show_album_covers = this._config.show_album_covers;
+    let delay = 0;
+    const delay_add = 62.5;
     return this.queue.map(
       (item) => {
-        return keyed(
-          item.queue_item_id,
+        const result = cache(
           html`
-            <mass-player-media-row
-              .media_item=${item}
-              .selected=${item.playing}
-              .showAlbumCovers=${show_album_covers}
-              .selectedService=${this.onQueueItemSelected}
-              .removeService=${this.onQueueItemRemoved}
-              .moveQueueItemNextService=${this.onQueueItemMoveNext}
-              .moveQueueItemUpService=${this.onQueueItemMoveUp}
-              .moveQueueItemDownService=${this.onQueueItemMoveDown}
-            >
-            </mass-player-media-row>`
-        )
+              <wa-animation
+                name="backInRight"
+                easing="ease-in"
+                iterations=1
+                play=${this.checkVisibility()}
+                playback-rate=1
+                delay=${delay}
+
+              >
+                <mass-player-media-row
+                  class="media-row-animation"
+                  style="animation-duration: ${delay}ms;"
+                  .media_item=${item}
+                  .selected=${item.playing}
+                  .showAlbumCovers=${show_album_covers}
+                  .selectedService=${this.onQueueItemSelected}
+                  .removeService=${this.onQueueItemRemoved}
+                  .moveQueueItemNextService=${this.onQueueItemMoveNext}
+                  .moveQueueItemUpService=${this.onQueueItemMoveUp}
+                  .moveQueueItemDownService=${this.onQueueItemMoveDown}
+                >
+                </mass-player-media-row>
+              </wa-animation>
+          `
+        );
+        delay += delay_add;
+        return result;
       }
     );
   }
@@ -285,7 +329,25 @@ class QueueCard extends LitElement {
       </ha-card>
     `
   }
-
+  private onTabHidden = (ev: any) => {
+    if (ev.detail.name != Sections.QUEUE) {
+      return;
+    }
+    const animation_elements = this.shadowRoot?.querySelectorAll('wa-animation');
+    animation_elements?.forEach(
+      (element) => {
+        const el = element as any;
+        el.cancel();
+      }
+    )
+    this.requestUpdate();
+  }
+  // protected updated(_changedProperties: PropertyValues): void {
+  //   if (!this._tabListening) {
+  //     this._tabListening = true;
+  //     window.addEventListener('sl-tab-hide', this.onTabHidden);
+  //   }
+  // }
   static get styles(): CSSResultGroup {
     return styles;
   }

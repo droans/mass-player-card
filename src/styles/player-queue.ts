@@ -62,4 +62,20 @@ export default css`
   padding-top: 12px;
   height: auto;
 }
+  .media-row-animation {
+    animation-name: hideAnimation;
+    animation-timing-function: linear;
+    animation-iteration-count: 1;
+  }
+  @keyframes hideAnimation {
+    0% {
+      opacity: 0%;
+    }
+    99.9% {
+      opacity: 0%;
+    }
+    100% {
+      opacity: 100%;
+    }
+  }
 `;

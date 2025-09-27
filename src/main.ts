@@ -8,11 +8,14 @@ import {
 import { HassEntity } from 'home-assistant-js-websocket';
 import {
   LitElement,
-  html,
   type TemplateResult,
   type CSSResultGroup,
   PropertyValues
 } from 'lit';
+import {
+  html,
+  literal
+} from "lit/static-html.js";
 import {
   customElement,
   state
@@ -38,6 +41,7 @@ import {
   activeEntityID,
   activeMediaPlayer,
   activePlayerName,
+  activeSectionContext,
   configContext,
   entitiesConfig,
   ExtendedHass,
@@ -94,10 +98,10 @@ console.info(
 
 @customElement(`${cardId}${DEV ? '-dev' : ''}`)
 export class MusicAssistantPlayerCard extends LitElement {
-  @state() private active_section!: Sections;
   @state() private entities!: HassEntity[];
   @state() private error?: TemplateResult;
 
+  @provide({ context: activeSectionContext}) @state() private active_section!: Sections;
   @provide({context: configContext}) @state() private config!: Config;
   @provide({context: hassExt}) private _hass!: ExtendedHass;
   @provide( { context: activeEntityConf}) @state() private activeEntityConfig!: EntityConfig;
@@ -267,10 +271,18 @@ export class MusicAssistantPlayerCard extends LitElement {
           name="${Sections.PLAYERS}"
           class="section${this.active_section==Sections.PLAYERS ? "" : "-hidden"}"
         >
-          <mass-player-players-card
-            .selectedPlayerService=${this.playerSelected}
-            .config=${this.config}
-          ></mass-player-players-card>
+          <wa-animation 
+            name="fadeInUp"
+            easing="ease-in"
+            iterations=1
+            play=${this.active_section==Sections.PLAYERS}
+            playback-rate=4
+          >
+            <mass-player-players-card
+              .selectedPlayerService=${this.playerSelected}
+              .config=${this.config}
+            ></mass-player-players-card>
+          </wa-animation>
         </sl-tab-panel>
       `);
     }
@@ -283,26 +295,38 @@ export class MusicAssistantPlayerCard extends LitElement {
           name="${Sections.MUSIC_PLAYER}"
           class="section${this.active_section==Sections.MUSIC_PLAYER ? "" : "-hidden"}"
         >
-          <mass-music-player-card
-            .config=${this.config.player}
-            .selectedPlayerService=${this.playerSelected}
-            .maxVolume=${this.activeEntityConfig.max_volume}
-          ></mass-music-player-card>
+          <wa-animation 
+            name="fadeInUp"
+            easing="ease-in"
+            iterations=1
+            play=${this.active_section==Sections.MUSIC_PLAYER}
+            playback-rate=4
+          >
+            <mass-music-player-card
+              .config=${this.config.player}
+              .selectedPlayerService=${this.playerSelected}
+              .maxVolume=${this.activeEntityConfig.max_volume}
+            ></mass-music-player-card>
+          </wa-animation>
         </sl-tab-panel>
       `);
     }
     return html``
   }
   protected renderPlayerQueue() {
+    // const active = this.active_section == Sections.QUEUE;
+    // if (!active) {
+    //   return html``;
+    // }
     if (this.config.queue.enabled) {
       return cache(html`
         <sl-tab-panel
           name="${Sections.QUEUE}"
           class="section${this.active_section==Sections.QUEUE ? "" : "-hidden"}"
         >
-          <mass-player-queue-card
-            .config=${this.config.queue}
-          ></mass-player-queue-card>
+            <mass-player-queue-card
+              .config=${this.config.queue}
+            ></mass-player-queue-card>
         </sl-tab-panel>
       `)
     }
@@ -315,10 +339,18 @@ export class MusicAssistantPlayerCard extends LitElement {
           name="${Sections.MEDIA_BROWSER}"
           class="section${this.active_section==Sections.MEDIA_BROWSER ? "" : "-hidden"}"
         >
-          <mass-media-browser
-            .config=${this.config.media_browser}
-            .onMediaSelectedAction=${this.browserItemSelected}
+          <wa-animation 
+            name="fadeInUp"
+            easing="ease-in"
+            iterations=1
+            play=${this.active_section==Sections.MEDIA_BROWSER}
+            playback-rate=4
           >
+            <mass-media-browser
+              .config=${this.config.media_browser}
+              .onMediaSelectedAction=${this.browserItemSelected}
+            >
+          </wa-animation>
         </sl-tab-panel>
       `)
     }
