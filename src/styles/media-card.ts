@@ -9,12 +9,13 @@ export default css`
     border-radius: var(--border-radius) !important;
     overflow: hidden;
     margin: 0px 3px 3px 3px;
+    aspect-ratio: 1;
   }
   .thumbnail-section {
     background-repeat: no-repeat;
     background-size: contain;
-    height: var(--section-thumbnail-size);
-    width: var(--section-thumbnail-size);
+    width: 100%;
+    aspect-ratio: 1;
   }
   wa-card {
   }
@@ -22,7 +23,6 @@ export default css`
     --section-thumbnail-size: calc(var(--mass-player-card-height) / 4);
     --thumbnail-size: calc(var(--mass-player-card-height) / 2);
     width: var(--thumbnail-size);
-    height: var(--thumbnail-size);
     position: relative;
   }
 
@@ -103,5 +103,7 @@ export default css`
     --wa-color-surface-border: var(--ha-color-border-neutral-normal);
     --wa-panel-border-width: var(--ha-card-border-width);
     --wa-shadow-s: var(--ha-card-box-shadow);
+    height: 100%;
+    width: 100%;
   }
 `;

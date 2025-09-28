@@ -181,7 +181,7 @@ class MediaCard extends LitElement {
         id="thumbnail-div"
         slot="media"
         class="wa-grid"
-        style="${thumbnail};"
+        style="${thumbnail}; height: 100%; aspect-ratio: 1; width: 100%;"
       ></div>
     `
   }
