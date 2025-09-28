@@ -202,7 +202,7 @@ class PlayerRow extends LitElement {
         ${this.renderTitle()}
         ${this.renderActionButtons()}
       </ha-md-list-item>
-      <div class="divider"</div>
+      <div class="divider"></div>
     `
   }
   /* eslint-enable @typescript-eslint/unbound-method */

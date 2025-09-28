@@ -444,7 +444,7 @@ export class MediaBrowser extends LitElement {
         <sl-input
           placeholder="Search"
           type="search"
-          class="${this.hass.themes.darkMode ? 'sl-theme-dark' : 'sl-theme-light'}
+          class="${this.hass.themes.darkMode ? 'sl-theme-dark' : 'sl-theme-light'}"
           inputmode="search"
           size="medium"
           clearable
