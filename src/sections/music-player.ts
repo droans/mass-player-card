@@ -25,10 +25,7 @@ import {
   query,
   state
 } from "lit/decorators.js";
-import {
-  html,
-  literal
-} from "lit/static-html.js";
+import { html } from "lit/static-html.js";
 
 import '../components/menu-button';
 import '../components/section-header';
@@ -55,6 +52,9 @@ import {
   musicPlayerConfigContext,
   volumeMediaPlayer
 } from "../const/context";
+import {
+  ListItemData
+} from "../const/media-browser";
 import {
   MARQUEE_DELAY_MS,
   PlayerData,
@@ -154,11 +154,13 @@ class MusicPlayerCard extends LitElement {
 
   private updatePlayerData() {
     const activeQueue = this._player.attributes.active_queue;
-    this.groupedPlayers = this.playerEntities.filter(
-      (e) => {
-        return activeQueue == this.hass.states[e.entity_id].attributes.active_queue;
-      }
-    )
+    if (this.hass) {
+      this.groupedPlayers = this.playerEntities.filter(
+        (e) => {
+          return activeQueue == this.hass.states[e.entity_id].attributes.active_queue;
+        }
+      )
+    }
     this._updatePlayerData().catch( () => {return});
   }
   private async _updatePlayerData() {
@@ -315,6 +317,8 @@ class MusicPlayerCard extends LitElement {
       @typescript-eslint/no-unsafe-member-access
     */
     this.selectedPlayerService(player);
+    //eslint-disable-next-line @typescript-eslint/no-unsafe-member-access
+    target.value = "";
   }
   protected updated() {
     const title = this._track_title;
@@ -365,6 +369,13 @@ class MusicPlayerCard extends LitElement {
       </div>
     `
   }
+  protected renderPlayerName() {
+    return html`
+      <div class="player-name">
+        ${this.player_data?.player_name ?? this.mediaPlayerName}
+      </div>
+      `;
+  }
   protected renderTitle() {
     if(!this.player_data?.track_title) {
       return html``
@@ -376,7 +387,9 @@ class MusicPlayerCard extends LitElement {
       (item) => {
         const name = item.name.length > 0 ? item.name : this.hass.states[item.entity_id].attributes.friendly_name;
         return html`
-          <div class="grouped-players-item">
+          <div 
+            class="grouped-players-item"
+          >
             <div class="player-name-icon">
               <ha-list-item
                 class="grouped-players-select-item"
@@ -407,20 +420,13 @@ class MusicPlayerCard extends LitElement {
     const hide = this.config.hide.group_volume || this.activeEntity.hide.player.group_volume;
     if (this.groupedPlayers.length > 1 && !hide) {
       return html`
-        <div id="menu-button" slot="end">
-          <ha-control-select-menu
-            id="grouped-players-menu"
-            fixedMenuPosition
-            naturalMenuWidth
-          >
-            <ha-svg-icon
-              slot="icon"
-              id="menu-svg"
-              .path=${mdiSpeakerMultiple}
-            ></ha-svg-icon>
-            ${this.renderGroupedPlayers()}
-          </ha-control-select-menu>
-        </div>
+        <mass-menu-button
+          slot="end"
+          id="grouped-players-menu"
+          .iconPath=${mdiSpeakerMultiple}
+        >
+        ${this.renderGroupedPlayers()}
+        </mass-menu-button>
       `
     }
     return html``;
@@ -433,25 +439,14 @@ class MusicPlayerCard extends LitElement {
   }
   protected renderPlayerItems() {
     return this.playerEntities.map( 
-      (item) =>
-      {
-        const active = this._player.entity_id == item.entity_id ? literal`selected` : literal``;
+      (item) => {
         const name = item.name.length > 0 ? item.name : this.hass.states[item.entity_id].attributes.friendly_name;
-        return html`
-          <ha-list-item
-            class="players-select-item"
-            .value="${item.entity_id}"
-            .graphic=${mdiSpeaker}
-            ${active}
-          >
-            <ha-svg-icon
-              class="players-select-item-icon"
-              slot="graphic"
-              .path=${mdiSpeaker}
-            ></ha-svg-icon>
-            ${name}
-          </ha-list-item>
-        `
+        const r: ListItemData = {
+          option: item.entity_id,
+          icon: mdiSpeaker,
+          title: name ?? item.name
+        };
+        return r;
       }
     )
   }
@@ -463,39 +458,33 @@ class MusicPlayerCard extends LitElement {
   protected renderHeader(): TemplateResult {
     return html`
       <mass-section-header>
-          ${this.renderPlayerName()}
+          ${this.renderPlayerSelector()}
           ${this.renderSectionTitle()}
           ${this.renderGrouped()}
       </mass-section-header>
     `
   }
-  protected renderPlayerName(): TemplateResult {
+  protected renderPlayerSelector(): TemplateResult {
     const config_hide = this.config.hide.player_selector;
     const entity_hide = this.activeEntity.hide.player.player_selector;
     if (config_hide || entity_hide) {
-      return html`${this.player_data?.player_name ?? this.mediaPlayerName}`;
+      return html``;
     }
     return html`
       <span slot="start">
-        <ha-control-select-menu
+        <mass-menu-button
           id="players-select-menu"
-          fixedMenuPosition
-          naturalMenuWidth
-          @selected=${this.onPlayerSelect}
-        >
-          <ha-svg-icon
-            slot="icon"
-            id="players-select-menu-icon"
-            .path=${mdiSpeaker}
-          ></ha-svg-icon>
-          ${this.renderPlayerItems()}
-        </ha-control-select-menu>
+          .iconPath=${mdiSpeaker}
+          .onSelectAction=${this.onPlayerSelect}
+          .items=${this.renderPlayerItems()}
+        ></mass-menu-button>
       </span>
     `
   }
   protected renderPlayerHeader() {
     return html`
       <div class="player-header">
+        ${this.renderPlayerName()}
         ${this.renderTitle()}
         ${this.renderArtist()}
       </div>

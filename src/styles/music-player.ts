@@ -29,7 +29,7 @@ export default css`
     margin: 0em 1.75em 0em 1.75em;
     text-align: center;
     overflow: hidden;
-    height: auto;
+    height: 5em;
   }
   .player-name {
     font-size: 0.8rem;
@@ -140,6 +140,7 @@ export default css`
   }
   #grouped-players-menu {
     --control-select-menu-height: 2.5em;
+    --control-select-thickness: 2.5em;
     max-width: var(--control-select-menu-height);
   }
   .grouped-players-item {
@@ -161,6 +162,7 @@ export default css`
     position: relative;
     width: 96%;
     left: 2%;
+    height: 2.5em;
   }
   .divider {
     margin-top: 4px;
@@ -172,6 +174,42 @@ export default css`
     background-color: var(--divider-color);
     margin-left: 8px;
     margin-right: 8px;
+  }
+  #players-select-menu::part(menu-button) {
+    --ha-ripple-color: rgba(0,0,0,0);
+  }
+  #players-select-menu::part(menu-select-menu) {
+    height: 2.5em;
+    width: 2.5em;
+    --control-select-menu-padding: 7px;
+    --mdc-icon-size: 1.5em;
+    --control-select-menu-height: 2.5em;
+  }
+  #players-select-menu::part(menu-svg) {
+    color: var(--mdc-theme-primary);
+    border-radius: 50%;
+  }
+  #players-select-menu::part(menu-list-item) {
+  }
+  #players-select-menu::part(menu-list-item-svg) {
+    height: 2em;
+    width: 2em;
+  }
+
+  
+  #grouped-players-menu::part(menu-button) {
+    --ha-ripple-color: rgba(0,0,0,0);
+  }
+  #grouped-players-menu::part(menu-select-menu) {
+    height: 2.5em;
+    width: 2.5em;
+    --control-select-menu-padding: 7px;
+    --mdc-icon-size: 1.5em;
+    --control-select-menu-height: 2.5em;
+  }
+  #grouped-players-menu::part(menu-svg) {
+    color: var(--mdc-theme-primary);
+    border-radius: 50%;
   }
   @keyframes marquee {
     from {
