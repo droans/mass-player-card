@@ -1,8 +1,11 @@
 import {
   html,
-  LitElement
+  LitElement,
+  TemplateResult,
 } from "lit";
-import { property } from "lit/decorators.js";
+import {
+  property,
+} from "lit/decorators.js";
 
 import { ServiceCustomEvent } from "../const/common";
 import { ListItems } from "../const/media-browser";
@@ -10,7 +13,6 @@ import { ListItems } from "../const/media-browser";
 class MassMenuButton extends LitElement {
   @property( { attribute: false }) public iconPath!: string;
   @property( { attribute: false }) private _items!: ListItems;
-
   public onSelectAction!: ServiceCustomEvent;
 
   public set items(items: ListItems) {
@@ -19,8 +21,10 @@ class MassMenuButton extends LitElement {
   public get items() {
     return this._items;
   }
-
-  protected renderMenuItems() {
+  protected renderMenuItems(): TemplateResult|TemplateResult[] {
+    if (!this.items) {
+      return html``
+    }
     return this._items.map(
       (item) => {
         return html`
@@ -60,6 +64,7 @@ class MassMenuButton extends LitElement {
             .path=${this.iconPath}
           ></ha-svg-icon>
           ${this.renderMenuItems()}
+          <slot></slot>
         </ha-control-select-menu>
       </div>
     `
