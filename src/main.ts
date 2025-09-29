@@ -491,11 +491,19 @@ export class MusicAssistantPlayerCard extends LitElement {
   static get styles(): CSSResultGroup {
     return styles;
   }
-
+  connectedCallback() {
+    super.connectedCallback();
+    this.shadowRoot?.querySelectorAll('wa-animation').forEach( 
+      // eslint-disable-next-line @typescript-eslint/no-explicit-any
+      (e: any) => {
+      // eslint-disable-next-line @typescript-eslint/no-unsafe-member-access
+        e.play = true;
+      }
+    );
+  }
   public getCardSize() {
     return 3;
   }
-
   private createError(errorString: string): Error {
     const error = new Error(errorString);
     /* eslint-disable-next-line
