@@ -14,19 +14,22 @@ export default css`
 
   .container {
     display: grid;
-    grid-template-rows: 'min-content' 'min-content' 'auto' 'min-content';
     grid-template-areas:
       'header'
+      'player-header'
       'progress'
       'artwork'
       'controls';
   }
   .header {
     grid-area: header;
-    margin: 0.75em 1.75em 0em 1.75em;
+  }
+  .player-header {
+    grid-area: player-header;
+    margin: 0em 1.75em 0em 1.75em;
     text-align: center;
     overflow: hidden;
-    height: 7.5em;
+    height: auto;
   }
   .player-name {
     font-size: 0.8rem;
@@ -134,6 +137,41 @@ export default css`
     height: 2em;
     width: 2em;
     color: var(--mdc-theme-primary);
+  }
+  #grouped-players-menu {
+    --control-select-menu-height: 2.5em;
+    max-width: var(--control-select-menu-height);
+  }
+  .grouped-players-item {
+    height: calc(var(--control-select-menu-height) * 2);
+    display: contents;
+  }
+  .grouped-players-select-item {
+    height: 2.5em;
+  }
+  .grouped-players-select-item-icon {
+    height: 2em;
+    width: 2em;
+    color: var(--mdc-theme-primary);
+  }
+  .grouped-players-volume-slider {
+    display: contents;
+  }
+  .grouped-players-volume-slider::part(slider) {
+    position: relative;
+    width: 96%;
+    left: 2%;
+  }
+  .divider {
+    margin-top: 4px;
+  }
+  .divider::before {
+    content: " ";
+    display: block;
+    height: 1px;
+    background-color: var(--divider-color);
+    margin-left: 8px;
+    margin-right: 8px;
   }
   @keyframes marquee {
     from {

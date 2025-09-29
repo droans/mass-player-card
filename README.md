@@ -285,15 +285,16 @@ Certain elements across the different sections can be hidden or displayed depend
 ## Music Player Hidden Elements Config
 Multiple elements on the Music Player tab can be hidden. By default, all elements are visible
 
-| Parameter       | Type | Required | Default     | Description                       |
-|-----------------|------|----------|-------------|-----------------------------------|
-| favorite        | bool  | No       | false       | Hides the favorite button        |
-| mute            | bool  | No       | false       | Hides the mute button            |
-| player_selector | bool  | No       | false       | Hides the player selector button |
-| power           | bool  | No       | false       | Hides the power button           |
-| repeat          | bool  | No       | false       | Hides the repeat button          |
-| shuffle         | bool  | No       | false       | Hides the shuffle button         |
-| volume          | bool  | No       | false       | Hides the volume button          |
+| Parameter       | Type | Required | Default     | Description                           |
+|-----------------|------|----------|-------------|---------------------------------------|
+| favorite        | bool  | No       | false       | Hides the favorite button            |
+| mute            | bool  | No       | false       | Hides the mute button                |
+| player_selector | bool  | No       | false       | Hides the player selector button     |
+| power           | bool  | No       | false       | Hides the power button               |
+| repeat          | bool  | No       | false       | Hides the repeat button              |
+| shuffle         | bool  | No       | false       | Hides the shuffle button             |
+| volume          | bool  | No       | false       | Hides the volume button              |
+| group_volume    | bool  | No       | false       | Hides the grouped player volume menu |
 
 ## Queue Config
 Display and interact with the player's queue.

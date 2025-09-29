@@ -8,6 +8,7 @@ export interface PlayerHiddenElementsConfig {
   repeat: boolean,
   shuffle: boolean,
   volume: boolean,
+  group_volume: boolean,
 }
 export const DEFAULT_PLAYER_HIDDEN_ELEMENTS_CONFIG: PlayerHiddenElementsConfig = {
   favorite: false,
@@ -17,6 +18,7 @@ export const DEFAULT_PLAYER_HIDDEN_ELEMENTS_CONFIG: PlayerHiddenElementsConfig =
   repeat: false,
   shuffle: false,
   volume: false,
+  group_volume: false,
 }
 export const DEFAULT_PLAYER_CONFIG: PlayerConfig = {
   enabled: true,
