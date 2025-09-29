@@ -22,7 +22,7 @@ export default css`
     height: calc(var(--mass-player-card-height) - 2em);
     background-repeat: no-repeat;
     background-position: center;
-    background-size: contain;
+    background-size: 40%;
     position: relative;
   }
   #active-track-text {
