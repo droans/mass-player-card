@@ -22,7 +22,7 @@ export default css`
   #container {
     --section-thumbnail-size: calc(var(--mass-player-card-height) / 4);
     --thumbnail-size: calc(var(--mass-player-card-height) / 2);
-    width: var(--thumbnail-size);
+    width: 100%;
     position: relative;
   }
 
