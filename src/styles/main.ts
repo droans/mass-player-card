@@ -1,7 +1,7 @@
 import { css } from 'lit';
 export default css`
  ha-card {
-    --mass-player-card-height: 42em;
+    --mass-player-card-height: 35em;
     --expansion-panel-content-padding: 0px;
     --md-list-container-color: rgba(0,0,0,0) !important;
     --md-list-item-leading-space: 0px;
