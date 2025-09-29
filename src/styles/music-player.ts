@@ -11,25 +11,24 @@ export default css`
   .hoverable:active {
     color: var(--primary-color);
   }
-
-  .container {
-    display: grid;
-    grid-template-areas:
-      'header'
-      'player-header'
-      'progress'
-      'artwork'
-      'controls';
-  }
-  .header {
-    grid-area: header;
-  }
   .player-header {
-    grid-area: player-header;
     margin: 0em 1.75em 0em 1.75em;
     text-align: center;
     overflow: hidden;
     height: 5em;
+  }
+  #player-card {
+    z-index: 1;
+    height: calc(var(--mass-player-card-height) - 2em);
+    background-repeat: no-repeat;
+    background-position: center;
+    background-size: contain;
+    position: relative;
+  }
+  #active-track-text {
+    background: rgba(from var(--ha-card-background) r g b / 0.85);
+    z-index: 1;
+    position: relative;
   }
   .player-name {
     font-size: 0.8rem;
@@ -62,6 +61,12 @@ export default css`
     flex-direction: row;
     align-items: center;
     justify-content: center;
+  }
+  .media-controls {
+    background: rgba(from var(--ha-card-background) r g b / 0.85);
+    position: absolute;
+    bottom: 0;
+    width: 100%;
   }
   .controls-left {
     display: flex;
@@ -97,18 +102,6 @@ export default css`
     margin: 0px 6px 0px 6px;
     --ha-button-border-radius: 50%;
     border-radius: 50%;
-  }
-  .shuffle {
-  }
-  .repeat {
-  }
-  .artwork {
-    background-size: 100%;
-    height: 300px;
-    width: 300px;
-    justify-self: center;
-    border-radius: 36px;
-    background-repeat: no-repeat;
   }
   *[hide] {
     display: none;
@@ -195,8 +188,6 @@ export default css`
     height: 2em;
     width: 2em;
   }
-
-  
   #grouped-players-menu::part(menu-button) {
     --ha-ripple-color: rgba(0,0,0,0);
   }

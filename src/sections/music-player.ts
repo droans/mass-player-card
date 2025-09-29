@@ -481,6 +481,16 @@ class MusicPlayerCard extends LitElement {
       </span>
     `
   }
+  protected renderActiveItemSection() {
+    return html`
+      <div id="active-track">
+        <div id="active-track-text">
+          ${this.renderPlayerHeader()}
+          ${this.renderProgress()}
+        </div>
+      </div>
+    `
+  }
   protected renderPlayerHeader() {
     return html`
       <div class="player-header">
@@ -658,12 +668,16 @@ class MusicPlayerCard extends LitElement {
   /* eslint-enable @typescript-eslint/unbound-method */
   protected renderControls() {
     return html`
-      <div class="controls">
-        ${this.renderControlsLeft()}
-        ${this.renderPlayPause()}
-        ${this.renderControlsRight()}
+      <div class="media-controls">
+        <div class="controls">
+          ${this.renderControlsLeft()}
+          ${this.renderPlayPause()}
+          ${this.renderControlsRight()}
+        </div>
+        <div class="volume">
+          ${this.renderVolumeRow()}
+        </div>
       </div>
-      ${this.renderVolumeRow()}
     `
   }
   protected shouldUpdate(_changedProperties: PropertyValues): boolean {
@@ -676,10 +690,10 @@ class MusicPlayerCard extends LitElement {
     return html`
       <div class="container">
         ${this.renderHeader()}
-        ${this.renderPlayerHeader()}
-        ${this.renderProgress()}
-        ${this.renderArtwork()}
-        ${this.renderControls()}
+        <div id="player-card" style="${this.artworkStyle()}">
+          ${this.renderActiveItemSection()}
+          ${this.renderControls()}
+        </div>
       </div>
     `
   }
