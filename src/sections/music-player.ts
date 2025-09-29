@@ -11,6 +11,7 @@ import {
   mdiSkipNext,
   mdiSkipPrevious,
   mdiSpeaker,
+  mdiSpeakerMultiple,
 } from "@mdi/js";
 import { consume, provide } from "@lit/context";
 import {
@@ -30,8 +31,9 @@ import {
 } from "lit/static-html.js";
 
 import '../components/menu-button';
+import '../components/section-header';
 import '../components/volume-row';
-
+import '../components/volume-slider';
 
 import PlayerActions from "../actions/player-actions";
 
@@ -103,6 +105,7 @@ class MusicPlayerCard extends LitElement {
   private _listener: number|undefined;
   private _hass!: ExtendedHass;
   private _player!: ExtendedHassEntity;
+  private groupedPlayers!: EntityConfig[];
   private actions!: PlayerActions;
   private entity_dur = 1;
   private entity_pos = 0;
@@ -127,9 +130,7 @@ class MusicPlayerCard extends LitElement {
     if (hass) {
       this.actions = new PlayerActions(hass);
     }
-    if (!this._hass) {
-      this._hass = hass;
-    }
+    this._hass = hass;
     this.updatePlayerData();
   }
   public get hass() {
@@ -152,6 +153,12 @@ class MusicPlayerCard extends LitElement {
   }
 
   private updatePlayerData() {
+    const activeQueue = this._player.attributes.active_queue;
+    this.groupedPlayers = this.playerEntities.filter(
+      (e) => {
+        return activeQueue == this.hass.states[e.entity_id].attributes.active_queue;
+      }
+    )
     this._updatePlayerData().catch( () => {return});
   }
   private async _updatePlayerData() {
@@ -364,6 +371,60 @@ class MusicPlayerCard extends LitElement {
     }
     return this.wrapTitleMarquee();
   }
+  protected renderGroupedPlayers() {
+    return this.groupedPlayers.map(
+      (item) => {
+        const name = item.name.length > 0 ? item.name : this.hass.states[item.entity_id].attributes.friendly_name;
+        return html`
+          <div class="grouped-players-item">
+            <div class="player-name-icon">
+              <ha-list-item
+                class="grouped-players-select-item"
+                .graphic=${mdiSpeaker}
+                noninteractive
+                hide-label
+              >
+                <ha-svg-icon
+                  class="grouped-players-select-item-icon"
+                  slot="graphic"
+                  .path=${mdiSpeaker}
+                ></ha-svg-icon>
+                ${name}
+              </ha-list-item>
+            </div>
+            <mass-volume-slider
+              class="grouped-players-volume-slider"
+              maxVolume=${item.max_volume}
+              .entityId=${item.volume_entity_id}
+            ></mass-volume-slider>
+            <div class="divider"></div>
+          </div>
+        `
+      }
+    )
+  }
+  protected renderGrouped() {
+    const hide = this.config.hide.group_volume || this.activeEntity.hide.player.group_volume;
+    if (this.groupedPlayers.length > 1 && !hide) {
+      return html`
+        <div id="menu-button" slot="end">
+          <ha-control-select-menu
+            id="grouped-players-menu"
+            fixedMenuPosition
+            naturalMenuWidth
+          >
+            <ha-svg-icon
+              slot="icon"
+              id="menu-svg"
+              .path=${mdiSpeakerMultiple}
+            ></ha-svg-icon>
+            ${this.renderGroupedPlayers()}
+          </ha-control-select-menu>
+        </div>
+      `
+    }
+    return html``;
+  }
   protected renderArtist() {
     if (!this.player_data?.track_artist) {
       return html``
@@ -394,6 +455,20 @@ class MusicPlayerCard extends LitElement {
       }
     )
   }
+  protected renderSectionTitle() {
+    return html`
+      <span slot="label">Music Player</span>
+    `
+  }
+  protected renderHeader(): TemplateResult {
+    return html`
+      <mass-section-header>
+          ${this.renderPlayerName()}
+          ${this.renderSectionTitle()}
+          ${this.renderGrouped()}
+      </mass-section-header>
+    `
+  }
   protected renderPlayerName(): TemplateResult {
     const config_hide = this.config.hide.player_selector;
     const entity_hide = this.activeEntity.hide.player.player_selector;
@@ -401,27 +476,26 @@ class MusicPlayerCard extends LitElement {
       return html`${this.player_data?.player_name ?? this.mediaPlayerName}`;
     }
     return html`
-      <ha-control-select-menu
-        id="players-select-menu"
-        fixedMenuPosition
-        naturalMenuWidth
-        @selected=${this.onPlayerSelect}
-      >
-        <ha-svg-icon
-          slot="icon"
-          id="players-select-menu-icon"
-          .path=${mdiSpeaker}
-        ></ha-svg-icon>
-        ${this.renderPlayerItems()}
-      </ha-control-select-menu>
+      <span slot="start">
+        <ha-control-select-menu
+          id="players-select-menu"
+          fixedMenuPosition
+          naturalMenuWidth
+          @selected=${this.onPlayerSelect}
+        >
+          <ha-svg-icon
+            slot="icon"
+            id="players-select-menu-icon"
+            .path=${mdiSpeaker}
+          ></ha-svg-icon>
+          ${this.renderPlayerItems()}
+        </ha-control-select-menu>
+      </span>
     `
   }
-  protected renderHeader() {
+  protected renderPlayerHeader() {
     return html`
-      <div class="header">
-        <div class="player-name">
-          ${this.renderPlayerName()}
-        </div>
+      <div class="player-header">
         ${this.renderTitle()}
         ${this.renderArtist()}
       </div>
@@ -613,6 +687,7 @@ class MusicPlayerCard extends LitElement {
     return html`
       <div class="container">
         ${this.renderHeader()}
+        ${this.renderPlayerHeader()}
         ${this.renderProgress()}
         ${this.renderArtwork()}
         ${this.renderControls()}

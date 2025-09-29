@@ -76,7 +76,8 @@ class VolumeRow extends LitElement {
       volume: entity.volume || card.volume,
       player_selector: false,
       repeat: false,
-      shuffle: false
+      shuffle: false,
+      group_volume: false
     }
   }
   private onToggle = () => {
