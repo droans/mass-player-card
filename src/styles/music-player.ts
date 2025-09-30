@@ -43,6 +43,7 @@ export default css`
     background: rgba(from var(--ha-card-background) r g b / 0.85);
     z-index: 1;
     position: relative;
+    backdrop-filter: blur(3px);
   }
   .player-name {
     font-size: 0.8rem;
@@ -77,6 +78,7 @@ export default css`
     justify-content: center;
   }
   .media-controls {
+    backdrop-filter: blur(3px);
     background: rgba(from var(--ha-card-background) r g b / 0.85);
     position: absolute;
     bottom: 0;
