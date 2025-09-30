@@ -25,6 +25,20 @@ export default css`
     background-size: 40%;
     position: relative;
   }
+  #artwork-div {
+    position: absolute;
+    aspect-ratio: 1;
+    justify-self: center;
+    height: 100%;
+    width: 100%;
+    place-content: center;
+  }
+  #artwork-img {
+    border-radius: var(--border-radius);
+    max-height: 22em;
+    justify-self: center;
+    display: block;
+  }
   #active-track-text {
     background: rgba(from var(--ha-card-background) r g b / 0.85);
     z-index: 1;

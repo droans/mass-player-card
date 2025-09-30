@@ -64,8 +64,7 @@ import {
 import styles from '../styles/music-player';
 
 import {
-  backgroundImageFallback,
-  getFallbackImage
+  getIcon,
 } from "../utils/icons";
 import {
   secondsToTime,
@@ -332,7 +331,7 @@ class MusicPlayerCard extends LitElement {
         this.shouldMarqueeTitle = false;
       }
     }
-    const element = this.shadowRoot?.getElementById('artwork');
+    const element = this.shadowRoot?.getElementById('artwork-div');
     element?.addEventListener('touchstart', this.onSwipeStart);
     element?.addEventListener('touchend', this.onSwipeEnd);
   }
@@ -520,24 +519,29 @@ class MusicPlayerCard extends LitElement {
       </div>
     `
   }
-  private artworkStyle() {
-    const img = this.player_data?.track_artwork || "";
-    if (!this.player_data?.track_artist || !testMixedContent(img)) {
-      return getFallbackImage(this.hass, Icon.CLEFT);
-    }
-      return backgroundImageFallback(this.hass, img, Icon.CLEFT);
-  }
   protected renderArtwork() {
-    return html`
-      <div
-        class="artwork"
-        id="artwork"
-        style="${this.artworkStyle()}"
-      >
-      </div>
-    `
+    const img = this.player_data?.track_artwork || "";
+    const fallback = getIcon(this.hass, Icon.CLEFT);
+    if (!this.player_data.track_artist || !testMixedContent(img)) {
+      return html`
+        <div id="artwork-div">
+          <img 
+            id="artwork-img"
+            src="${fallback}">
+        </div>
+      `
+    } else {
+      return html`
+        <div id="artwork-div">
+          <img 
+            id="artwork-img"
+            src="${img}" 
+            onerror="this.src='${fallback}';"
+          >
+        </div>
+      `
+    }
   }
-  /* eslint-disable @typescript-eslint/unbound-method */
   protected renderTrackPrevious() {
     return html`
       <ha-button
@@ -690,8 +694,9 @@ class MusicPlayerCard extends LitElement {
     return html`
       <div class="container">
         ${this.renderHeader()}
-        <div id="player-card" style="${this.artworkStyle()}">
+        <div id="player-card">
           ${this.renderActiveItemSection()}
+          ${this.renderArtwork()}
           ${this.renderControls()}
         </div>
       </div>
