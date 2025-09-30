@@ -213,7 +213,7 @@ class MusicPlayerCard extends LitElement {
     volume = volume / 100;
     await this.actions.actionSetVolume(this.volumeMediaPlayer, volume);
   }
-  private async onPlayPause() {
+  private onPlayPause = async () => {
     this.player_data.playing = !this.player_data.playing;
     await this.actions.actionPlayPause(this.activeMediaPlayer);
   }
@@ -241,11 +241,11 @@ class MusicPlayerCard extends LitElement {
       this.player_data.favorite = true;
     }
   }
-  private async onShuffleToggle() {
+  private onShuffleToggle = async () => {
     this.player_data.shuffle = !this.player_data.shuffle;
     await this.actions.actionShuffleToggle(this.activeMediaPlayer);
   }
-  private async onRepeatToggle() {
+  private onRepeatToggle = async () => {
     const cur_repeat = this.player_data.repeat;
     let repeat = RepeatMode.ALL;
     if (cur_repeat === RepeatMode.ALL) {
@@ -672,7 +672,6 @@ class MusicPlayerCard extends LitElement {
       ></mass-volume-row>
     `
   }
-  /* eslint-enable @typescript-eslint/unbound-method */
   protected renderControls() {
     return html`
       <div class="media-controls">

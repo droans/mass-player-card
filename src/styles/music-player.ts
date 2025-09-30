@@ -3,14 +3,6 @@ import { css } from 'lit';
 // Styles belonging to the card
 // https://lit.dev/docs/components/styles/
 export default css`
-  .hoverable:focus,
-  .hoverable:hover {
-    color: var(--accent-color);
-  }
-
-  .hoverable:active {
-    color: var(--primary-color);
-  }
   .player-header {
     margin: 0em 1.75em 0em 1.75em;
     text-align: center;

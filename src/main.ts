@@ -462,6 +462,7 @@ export class MusicAssistantPlayerCard extends LitElement {
   protected renderTabs() {
     return cache(html`
       <sl-tab-group
+        id="tabs"
         @sl-tab-show=${this._handleTabChanged}
       >
         ${this.renderMusicPlayerTab()}
@@ -483,8 +484,8 @@ export class MusicAssistantPlayerCard extends LitElement {
   protected render() {
     return this.error ?? html`
       <ha-card>
-      ${this.renderSections()}
-      ${this.renderTabs()}
+        ${this.renderSections()}
+        ${this.renderTabs()}
       </ha-card>
     `
   }
