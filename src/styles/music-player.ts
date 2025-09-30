@@ -18,7 +18,7 @@ export default css`
     height: 5em;
   }
   #player-card {
-    z-index: 1;
+    z-index: 0;
     height: calc(var(--mass-player-card-height) - 2em);
     background-repeat: no-repeat;
     background-position: center;
