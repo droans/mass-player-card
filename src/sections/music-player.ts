@@ -680,9 +680,6 @@ class MusicPlayerCard extends LitElement {
           ${this.renderPlayPause()}
           ${this.renderControlsRight()}
         </div>
-        <div class="volume">
-          ${this.renderVolumeRow()}
-        </div>
       </div>
     `
   }
@@ -700,6 +697,9 @@ class MusicPlayerCard extends LitElement {
           ${this.renderActiveItemSection()}
           ${this.renderArtwork()}
           ${this.renderControls()}
+        </div>
+        <div class="volume">
+          ${this.renderVolumeRow()}
         </div>
       </div>
     `
