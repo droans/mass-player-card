@@ -152,6 +152,9 @@ class MusicPlayerCard extends LitElement {
   }
 
   private updatePlayerData() {
+    if (!this.hass) {
+      return;
+    }
     const activeQueue = this._player.attributes.active_queue;
     if (this.hass) {
       this.groupedPlayers = this.playerEntities.filter(
