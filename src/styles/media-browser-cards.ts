@@ -15,12 +15,20 @@ export default css`
     width: 100%;
   }
   .icons {
-    display: grid;
-    grid-template-columns: 50% 50%;
+    display: flex;
+    justify-content: space-evenly;
+    flex-wrap: wrap;
+    row-gap: 20px;
     overflow-y: scroll;
     height: calc(var(--mass-player-card-height) - 4em);
-    width: 100%;
-    -ms-overflow-style: none; /* IE and Edge */
-    scrollbar-width: none; /* Firefox */
+    scrollbar-width: none;
+  }
+  mass-media-card {
+    max-height: 100%;
+    display: flex;
+    aspect-ratio: 1;
+    width: 30em;
+    max-width: 48%;
+    justify-content: center;
   }
 `;
