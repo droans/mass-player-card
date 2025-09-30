@@ -38,7 +38,7 @@ import styles from '../styles/media-card';
 
 import {
   backgroundImageFallback,
-  getFallbackImage,
+  getFallbackBackgroundImage,
 } from "../utils/icons";
 import { testMixedContent } from "../utils/util";
 import {
@@ -170,7 +170,7 @@ class MediaCard extends LitElement {
   private artworkStyle() {
     const img = this.config.icon;
     if (!testMixedContent(img)) {
-      return getFallbackImage(this.hass, this.config.fallback);
+      return getFallbackBackgroundImage(this.hass, this.config.fallback);
     }
     return backgroundImageFallback(this.hass, img, this.config.fallback);
   }
