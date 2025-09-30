@@ -25,6 +25,11 @@ export default css`
     background-size: 22em;
     position: relative;
   }
+  #active-track {
+    position: absolute;
+    top: 0;
+    width: 100%;
+  }
   #artwork-div {
     position: absolute;
     aspect-ratio: 1;
