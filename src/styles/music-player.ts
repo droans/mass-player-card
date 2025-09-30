@@ -19,10 +19,10 @@ export default css`
   }
   #player-card {
     z-index: 0;
-    height: calc(var(--mass-player-card-height) - 2em);
+    height: calc(var(--mass-player-card-height) - 5em);
     background-repeat: no-repeat;
     background-position: center;
-    background-size: 40%;
+    background-size: 22em;
     position: relative;
   }
   #artwork-div {
