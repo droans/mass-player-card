@@ -27,7 +27,7 @@ import { activeEntityConf, EntityConfig, hassExt, playersConfigContext } from '.
 
 import {
   backgroundImageFallback,
-  getFallbackImage
+  getFallbackBackgroundImage
 } from '../utils/icons';
 import { testMixedContent } from '../utils/util';
 
@@ -106,7 +106,7 @@ class PlayerRow extends LitElement {
   private artworkStyle() {
     const img: string = this.player_entity?.attributes?.entity_picture_local ?? "";
     if (!testMixedContent(img)) {
-      return getFallbackImage(this.hass, Icon.HEADPHONES);
+      return getFallbackBackgroundImage(this.hass, Icon.HEADPHONES);
     }
     return backgroundImageFallback(this.hass, img, Icon.HEADPHONES);
   }

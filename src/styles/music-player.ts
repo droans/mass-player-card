@@ -3,14 +3,6 @@ import { css } from 'lit';
 // Styles belonging to the card
 // https://lit.dev/docs/components/styles/
 export default css`
-  .hoverable:focus,
-  .hoverable:hover {
-    color: var(--accent-color);
-  }
-
-  .hoverable:active {
-    color: var(--primary-color);
-  }
   .player-header {
     margin: 0em 1.75em 0em 1.75em;
     text-align: center;
@@ -18,17 +10,37 @@ export default css`
     height: 5em;
   }
   #player-card {
-    z-index: 1;
-    height: calc(var(--mass-player-card-height) - 2em);
+    z-index: 0;
+    height: calc(var(--mass-player-card-height) - 5em);
     background-repeat: no-repeat;
     background-position: center;
-    background-size: 40%;
+    background-size: 22em;
     position: relative;
+  }
+  #active-track {
+    position: absolute;
+    top: 0;
+    width: 100%;
+  }
+  #artwork-div {
+    position: absolute;
+    aspect-ratio: 1;
+    justify-self: center;
+    height: 100%;
+    width: 100%;
+    place-content: center;
+  }
+  #artwork-img {
+    border-radius: var(--border-radius);
+    max-height: 22em;
+    justify-self: center;
+    display: block;
   }
   #active-track-text {
     background: rgba(from var(--ha-card-background) r g b / 0.85);
     z-index: 1;
     position: relative;
+    backdrop-filter: blur(3px);
   }
   .player-name {
     font-size: 0.8rem;
@@ -63,6 +75,7 @@ export default css`
     justify-content: center;
   }
   .media-controls {
+    backdrop-filter: blur(3px);
     background: rgba(from var(--ha-card-background) r g b / 0.85);
     position: absolute;
     bottom: 0;

@@ -35,7 +35,7 @@ import styles from '../styles/media-row';
 
 import {
   backgroundImageFallback,
-  getFallbackImage
+  getFallbackBackgroundImage
 } from '../utils/icons';
 import { testMixedContent } from '../utils/util';
 import { DEFAULT_PLAYER_QUEUE_HIDDEN_ELEMENTS_CONFIG, PlayerQueueHiddenElementsConfig, QueueConfig } from '../config/player-queue';
@@ -134,7 +134,7 @@ class MediaRow extends LitElement {
   private artworkStyle() {
     const img = this.media_item.media_image || "";
     if (!testMixedContent(img)) {
-      return getFallbackImage(this.hass, Icon.CLEFT);
+      return getFallbackBackgroundImage(this.hass, Icon.CLEFT);
     }
     return backgroundImageFallback(this.hass, img, Icon.CLEFT);
   }

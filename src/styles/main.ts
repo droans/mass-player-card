@@ -23,7 +23,7 @@ export default css`
    --player-track-color: var(--ha-color-text-link);
    --player-name-color: var(--ha-color-text-secondary);
  }
-  sl-tab-group {
+  #tabs {
     --track-width: 0px;
     display: flex;
     justify-content: center;
