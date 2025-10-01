@@ -1,4 +1,4 @@
-import { provide } from '@lit/context';
+import { consume, provide } from '@lit/context';
 import {
   mdiAlbum,
   mdiMusic,
@@ -36,17 +36,8 @@ import {
 
 import { Sections } from './const/card';
 import {
-  activeEntityConf,
-  activeEntityID,
-  activeMediaPlayer,
-  activePlayerName,
   activeSectionContext,
-  configContext,
-  entitiesConfig,
   ExtendedHass,
-  ExtendedHassEntity,
-  hassExt,
-  volumeMediaPlayer,
 } from './const/context';
 
 import { version } from '../package.json';
@@ -56,6 +47,7 @@ import { MediaBrowser } from './sections/media-browser';
 import styles from './styles/main';
 
 import { getDefaultSection } from './utils/util';
+import { MassCardController } from './controller/controller';
 
 const DEV = false;
 
@@ -100,39 +92,18 @@ export class MusicAssistantPlayerCard extends LitElement {
   @state() private entities!: HassEntity[];
   @state() private error?: TemplateResult;
 
-  @provide({ context: activeSectionContext}) @state() private active_section!: Sections;
-  @provide({context: configContext}) @state() private config!: Config;
-  @provide({context: hassExt}) private _hass!: ExtendedHass;
-  @provide( { context: activeEntityConf}) @state() private activeEntityConfig!: EntityConfig;
-  @provide( { context: entitiesConfig}) @state() private EntitiesConfig!: EntityConfig[];
-  @provide( { context: activeEntityID}) activeEntityId!: string;
-  @provide( { context: activeMediaPlayer}) activeMediaPlayer!: ExtendedHassEntity;
-  @provide( { context: activePlayerName}) activePlayerName!: string;
-  @provide( { context: volumeMediaPlayer}) volumeMediaPlayer!: ExtendedHassEntity;
-
-  constructor() {
-    super();
-    if (this.config && !this.activeEntityConfig) {
-      this.activeEntityConfig = this.config.entities[0];
-    }
-    if (!this.activeEntityConfig) {
-      this.setDefaultActivePlayer();
-    }
-  }
+  private _controller = new MassCardController(this);
   public set hass(hass: ExtendedHass) {
     if (!hass) {
       return;
     }
     const ents = this.config.entities;
     let should_update = false;
-    if (!this._hass) {
-      this._hass = hass;
-      this.setDefaultActivePlayer();
-    }
+    this._controller.hass = hass;
     const new_ents: HassEntity[] = [];
     ents.forEach(
       (entity) => {
-        const old_state = JSON.stringify(this._hass.states[entity.entity_id]);
+        const old_state = JSON.stringify(this.hass.states[entity.entity_id]);
         const new_state = JSON.stringify(hass.states[entity.entity_id]);
         new_ents.push(hass.states[entity.entity_id]);
         if (old_state !== new_state) {
@@ -141,15 +112,26 @@ export class MusicAssistantPlayerCard extends LitElement {
       }
     )
     if (should_update) {
-      this._hass = hass;
+      this._controller.hass = hass;
       this.entities = new_ents;
-      this.setActivePlayer(this.activeEntityId);
+      // this.setActivePlayer(this.activeEntityId);
     }
   }
   public get hass() {
-    return this._hass;
+    return this._controller.hass;
+  }
+  public get config() {
+    return this._controller.config;
   }
 
+  @consume({ context: activeSectionContext, subscribe: true}) 
+  @state() 
+  private set active_section(section: Sections) {
+    this._controller.activeSection = section;
+  }
+  public get active_section() {
+    return this._controller.activeSection;
+  }
   static getConfigForm() {
     return createConfigForm();
   }
@@ -164,55 +146,23 @@ export class MusicAssistantPlayerCard extends LitElement {
     if (!config.entities) {
       throw this.createError('You need to define entities.');
     };
-    this.config = processConfig(config);
-    if (!this.activeEntityConfig) {
-      this.setDefaultActivePlayer();
-    }
+    this._controller.config = config;
     if (!this.active_section) {
       this.setDefaultActiveSection();
     }
     this.requestUpdate();
   }
-  private setDefaultActivePlayer() {
-    if (!this.config) {
-      return;
-    }
-    const players = this.config.entities;
-    this.EntitiesConfig = players;
-    if (!this.hass) {
-      this.activeEntityConfig = players[0];
-    } else {
-      const states = this.hass.states;
-      const active_players = players.filter(
-        (entity) => ["playing", "paused"].includes(states[entity.entity_id].state) && states[entity.entity_id].attributes.app_id == 'music_assistant'
-      )
-      if (active_players.length) {
-        this.activeEntityConfig = active_players[0];
-      } else {
-        this.activeEntityConfig = players[0];
-      }
-      this.activePlayerName = this.activeEntityConfig.name;
-      this.activeMediaPlayer = states[this.activeEntityConfig.entity_id];
-      this.volumeMediaPlayer = states[this.activeEntityConfig.volume_entity_id];
-    }
-    const conf = this.activeEntityConfig;
-    this.activeEntityId = conf.entity_id;
-  }
   private setDefaultActiveSection() {
     if (this.active_section) {
       return;
     }
-    this.active_section = getDefaultSection(this.config);
+    this._controller.activeSection = getDefaultSection(this.config);
   }
   private setActivePlayer = (player_entity: string) => {
-    const player = this.config.entities.find(
-      (entity) => entity.entity_id == player_entity
-    )
-    this.activeEntityConfig = player ?? this.activeEntityConfig;
-    this.activeEntityId = this.activeEntityConfig.entity_id;
-    this.activePlayerName = this.activeEntityConfig.name;
-    this.activeMediaPlayer = this.hass.states[this.activeEntityConfig.entity_id];
-    this.volumeMediaPlayer = this.hass.states[this.activeEntityConfig.volume_entity_id];
+    if (!player_entity.length) {
+      return;
+    }
+    this._controller.activeEntity = player_entity;
   }
 
   protected shouldUpdate(_changedProperties: PropertyValues): boolean {
@@ -302,9 +252,7 @@ export class MusicAssistantPlayerCard extends LitElement {
             playback-rate=4
           >
             <mass-music-player-card
-              .config=${this.config.player}
               .selectedPlayerService=${this.playerSelected}
-              .maxVolume=${this.activeEntityConfig.max_volume}
             ></mass-music-player-card>
           </wa-animation>
         </sl-tab-panel>

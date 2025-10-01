@@ -43,14 +43,13 @@ import {
 import {
   activeEntityConf,
   activeMediaPlayer,
+  activePlayerControllerContext,
   activePlayerDataContext,
-  activePlayerName,
   configContext,
-  entitiesConfig,
+  entitiesConfigContext,
   EntityConfig,
   hassExt,
   musicPlayerConfigContext,
-  volumeMediaPlayer
 } from "../const/context";
 import {
   ListItemData
@@ -73,6 +72,7 @@ import {
 import { PlayerSelectedService } from "../const/actions";
 import { Config } from "../config/config";
 import { PlayerConfig } from "../config/player";
+import { ActivePlayerController } from "../controller/active-player";
 
 class MusicPlayerCard extends LitElement {
   @property({ attribute: false}) private media_duration = 1;
@@ -81,29 +81,24 @@ class MusicPlayerCard extends LitElement {
 
   @query('.player-track-title') _track_title!: LitElement;
 
-  @consume({ context: entitiesConfig, subscribe: true })
+  @consume({ context: entitiesConfigContext, subscribe: true })
   public playerEntities!: EntityConfig[];
 
-  @provide({ context: musicPlayerConfigContext})
   private _config!: PlayerConfig;
   @provide({ context: activePlayerDataContext})
   @state()
   private player_data!: PlayerData;
 
-  @consume({ context: activePlayerName, subscribe: true })
-  public mediaPlayerName!: string;
-  @consume({ context: volumeMediaPlayer, subscribe: true })
-  public volumeMediaPlayer!: ExtendedHassEntity;
-  @consume({ context: activeEntityConf, subscribe: true })
-  public activeEntity!: EntityConfig;
-  
-  public maxVolume!: number;
-  public selectedPlayerService!: PlayerSelectedService;
+  @consume({ context: activePlayerControllerContext, subscribe: true})
+  @state()
+  private activePlayerController!: ActivePlayerController;
+  private _activeEntityConfig!: EntityConfig;
+  private _activeEntity!: ExtendedHassEntity;
 
+  public selectedPlayerService!: PlayerSelectedService;
   private _animationListener  = async () => this.onAnimationEnd();
   private _listener: number|undefined;
   private _hass!: ExtendedHass;
-  private _player!: ExtendedHassEntity;
   private groupedPlayers!: EntityConfig[];
   private actions!: PlayerActions;
   private entity_dur = 1;
@@ -113,15 +108,26 @@ class MusicPlayerCard extends LitElement {
   private touchEndX = 0;
   private touchStartY = 0;
   private touchEndY = 0;
-  private _cardConfig!: Config;
 
-  @consume({ context: activeMediaPlayer, subscribe: true })
-  public set activeMediaPlayer(player: ExtendedHassEntity) {
-    this._player = player;
-    this.updatePlayerData();
+  @consume({ context: activeEntityConf, subscribe: true})
+  public set activeEntityConfig(entity: EntityConfig) {
+    this._activeEntityConfig = entity;
+  }
+  public get activeEntityConfig() {
+    return this._activeEntityConfig;
   }
   public get activeMediaPlayer() {
-    return this._player;
+    return this.activePlayerController.activeMediaPlayer;
+  }
+
+  @consume({ context: activeMediaPlayer, subscribe: true})
+  @state()
+  private set activeEntity(entity: ExtendedHassEntity) {
+    this._activeEntity = entity;
+    this.updatePlayerData();
+  }
+  public get activeEntity() {
+    return this._activeEntity;
   }
 
   @consume({context: hassExt, subscribe: true})
@@ -129,21 +135,17 @@ class MusicPlayerCard extends LitElement {
     if (hass) {
       this.actions = new PlayerActions(hass);
     }
+    const hassExists = !!this._hass;
     this._hass = hass;
-    this.updatePlayerData();
+    if (!hassExists) {
+      this.updatePlayerData();
+    }
   }
   public get hass() {
     return this._hass;
   }
 
-  @consume({ context: configContext, subscribe: true })
-  public set cardConfig(config: Config) {
-    this._cardConfig = config;
-    this.config = config.player;
-  }
-  public get cardConfig() {
-    return this._cardConfig;
-  }
+  @consume({ context: musicPlayerConfigContext, subscribe: true})
   public set config(config: PlayerConfig) {
     this._config = config;
   }
@@ -155,39 +157,19 @@ class MusicPlayerCard extends LitElement {
     if (!this.hass) {
       return;
     }
-    const activeQueue = this._player.attributes.active_queue;
-    if (this.hass) {
-      this.groupedPlayers = this.playerEntities.filter(
-        (e) => {
-          return activeQueue == this.hass.states[e.entity_id].attributes.active_queue;
-        }
-      )
-    }
+    this.groupedPlayers = this.activePlayerController.getGroupedPlayers();
     this._updatePlayerData().catch( () => {return});
   }
   private async _updatePlayerData() {
     if (!this.activeMediaPlayer) {
       return
     }
-    let player_name = this.mediaPlayerName;
+    let player_name = this.activeEntityConfig.name;
     if (!player_name.length) {
       player_name = this.activeMediaPlayer.attributes?.friendly_name ?? "Media Player";
     }
     const current_item = (await this.actions.actionGetCurrentItem(this.activeMediaPlayer));
-
-    const new_player_data: PlayerData = {
-      playing: this.activeMediaPlayer.state == 'playing',
-      repeat: this.activeMediaPlayer.attributes.repeat ?? false,
-      shuffle: this.activeMediaPlayer.attributes.shuffle ?? false,
-      track_album: this.activeMediaPlayer.attributes.media_album_name,
-      track_artist: this.activeMediaPlayer.attributes.media_artist,
-      track_artwork: this.activeMediaPlayer.attributes.entity_picture_local ?? this.activeMediaPlayer.attributes.entity_picture,
-      track_title: this.activeMediaPlayer.attributes.media_title,
-      muted: this.volumeMediaPlayer.attributes.is_volume_muted,
-      volume: Math.floor(this.volumeMediaPlayer.attributes.volume_level * 100),
-      player_name: player_name,
-      favorite: current_item?.favorite ?? false,
-    }
+    const new_player_data = this.activePlayerController.getactivePlayerData(current_item);
     this.player_data = new_player_data;
     const old_pos = this.entity_pos;
     const old_dur = this.entity_dur;
@@ -211,7 +193,7 @@ class MusicPlayerCard extends LitElement {
     if (isNaN(volume)) return;
     this.player_data.volume = volume;
     volume = volume / 100;
-    await this.actions.actionSetVolume(this.volumeMediaPlayer, volume);
+    await this.actions.actionSetVolume(this.activePlayerController.volumeMediaPlayer, volume);
   }
   private onPlayPause = async () => {
     this.player_data.playing = !this.player_data.playing;
@@ -229,7 +211,7 @@ class MusicPlayerCard extends LitElement {
   }
   private onVolumeMuteToggle = async () => {
     this.player_data.muted = !this.player_data.muted;
-    await this.actions.actionMuteToggle(this.volumeMediaPlayer);
+    await this.actions.actionMuteToggle(this.activePlayerController.volumeMediaPlayer);
 
   }
   private onFavorite = async () => {
@@ -313,6 +295,9 @@ class MusicPlayerCard extends LitElement {
     */
     const target = ev.target as any;
     const player = target.value as string;
+    if (!player.length) {
+      return;
+    }
     /* eslint-enable
       @typescript-eslint/no-explicit-any,
       @typescript-eslint/no-unsafe-assignment,
@@ -374,7 +359,7 @@ class MusicPlayerCard extends LitElement {
   protected renderPlayerName() {
     return html`
       <div class="player-name">
-        ${this.player_data?.player_name ?? this.mediaPlayerName}
+        ${this.player_data?.player_name ?? this.activePlayerController.activePlayerName}
       </div>
       `;
   }
@@ -419,7 +404,7 @@ class MusicPlayerCard extends LitElement {
     )
   }
   protected renderGrouped() {
-    const hide = this.config.hide.group_volume || this.activeEntity.hide.player.group_volume;
+    const hide = this.config.hide.group_volume || this.activeEntityConfig.hide.player.group_volume;
     if (this.groupedPlayers.length > 1 && !hide) {
       return html`
         <mass-menu-button
@@ -468,7 +453,7 @@ class MusicPlayerCard extends LitElement {
   }
   protected renderPlayerSelector(): TemplateResult {
     const config_hide = this.config.hide.player_selector;
-    const entity_hide = this.activeEntity.hide.player.player_selector;
+    const entity_hide = this.activeEntityConfig.hide.player.player_selector;
     if (config_hide || entity_hide) {
       return html``;
     }
@@ -563,7 +548,7 @@ class MusicPlayerCard extends LitElement {
   }
   protected renderShuffle() {
     const config_hide = this.config.hide.shuffle;
-    const entity_hide = this.activeEntity.hide.player.shuffle;
+    const entity_hide = this.activeEntityConfig.hide.player.shuffle;
     if (config_hide || entity_hide) {
       return html``
     }
@@ -626,7 +611,7 @@ class MusicPlayerCard extends LitElement {
   }
   protected renderRepeat() {
     const config_hide = this.config.hide.repeat;
-    const entity_hide = this.activeEntity.hide.player.repeat;
+    const entity_hide = this.activeEntityConfig.hide.player.repeat;
     if (config_hide || entity_hide) {
       return html``
     }
@@ -664,7 +649,7 @@ class MusicPlayerCard extends LitElement {
   protected renderVolumeRow() {
     return html`
       <mass-volume-row
-        .maxVolume=${this.maxVolume}
+        .maxVolume=${this.activePlayerController.activeEntityConfig.max_volume}
         .onPowerToggleSelect=${this.onToggle}
         .onVolumeMuteToggleSelect=${this.onVolumeMuteToggle}
         .onVolumeChange=${this.onVolumeChange}
