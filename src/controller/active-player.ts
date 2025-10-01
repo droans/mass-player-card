@@ -1,4 +1,4 @@
-import { ContextConsumer, ContextProvider, provide } from "@lit/context";
+import { ContextProvider } from "@lit/context";
 import { ExtendedHass, ExtendedHassEntity } from "../const/common";
 import {
   activeEntityConf,

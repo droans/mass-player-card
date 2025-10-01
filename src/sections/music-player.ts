@@ -45,7 +45,6 @@ import {
   activeMediaPlayer,
   activePlayerControllerContext,
   activePlayerDataContext,
-  configContext,
   entitiesConfigContext,
   EntityConfig,
   hassExt,
@@ -70,7 +69,6 @@ import {
   testMixedContent
 } from "../utils/util";
 import { PlayerSelectedService } from "../const/actions";
-import { Config } from "../config/config";
 import { PlayerConfig } from "../config/player";
 import { ActivePlayerController } from "../controller/active-player";
 

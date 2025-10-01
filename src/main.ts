@@ -1,4 +1,4 @@
-import { consume, provide } from '@lit/context';
+import { consume } from '@lit/context';
 import {
   mdiAlbum,
   mdiMusic,
@@ -30,8 +30,6 @@ import {
   Config,
   createConfigForm,
   createStubConfig,
-  EntityConfig,
-  processConfig,
 } from './config/config';
 
 import { Sections } from './const/card';

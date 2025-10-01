@@ -4,7 +4,6 @@ import { ExtendedHass } from "../const/common";
 import {
   activePlayerControllerContext,
   activeSectionContext,
-  configContext,
   hassExt
 } from "../const/context";
 import { MassCardConfigController } from "./config";
