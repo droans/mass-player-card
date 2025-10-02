@@ -247,12 +247,23 @@ class MusicPlayerCard extends LitElement {
   private onToggle = async () => {
     await this.actionsController.actionTogglePower();
   }
+  private requestProgressUpdate() {
+    void this.activePlayerController.getPlayerProgress().then(
+      (progress) => {
+        this.media_position = progress as number;
+      }
+    )
   }
   private tickProgress = () => {
     const playing = this.player_data.playing;
     if (playing) {
+      const sec = new Date().getSeconds();
       if (this._listener) {
-        this.media_position += 1;
+        if (!(sec % 5)) {
+          this.requestProgressUpdate();
+        } else {
+          this.media_position += 1;
+        }
       } else {
       this._listener = setInterval(this.tickProgress, 1000);
       }
