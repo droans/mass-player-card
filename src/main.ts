@@ -263,7 +263,7 @@ export class MusicAssistantPlayerCard extends LitElement {
   protected renderPlayers() {
     if (this.config.players.enabled) {
       return cache(html`
-        <sl-tab-panel
+        <wa-tab-panel
           name="${Sections.PLAYERS}"
           class="section${this.active_section==Sections.PLAYERS ? "" : "-hidden"}"
         >
@@ -271,7 +271,7 @@ export class MusicAssistantPlayerCard extends LitElement {
             .selectedPlayerService=${this.playerSelected}
             .config=${this.config}
           ></mass-player-players-card>
-        </sl-tab-panel>
+        </wa-tab-panel>
       `);
     }
     return html``
@@ -279,7 +279,7 @@ export class MusicAssistantPlayerCard extends LitElement {
   protected renderMusicPlayer() {
     if (this.config.player.enabled) {
       return cache(html`
-        <sl-tab-panel
+        <wa-tab-panel
           name="${Sections.MUSIC_PLAYER}"
           class="section${this.active_section==Sections.MUSIC_PLAYER ? "" : "-hidden"}"
         >
@@ -288,7 +288,7 @@ export class MusicAssistantPlayerCard extends LitElement {
             .selectedPlayerService=${this.playerSelected}
             .maxVolume=${this.activeEntityConfig.max_volume}
           ></mass-music-player-card>
-        </sl-tab-panel>
+        </wa-tab-panel>
       `);
     }
     return html``
@@ -296,14 +296,14 @@ export class MusicAssistantPlayerCard extends LitElement {
   protected renderPlayerQueue() {
     if (this.config.queue.enabled) {
       return cache(html`
-        <sl-tab-panel
+        <wa-tab-panel
           name="${Sections.QUEUE}"
           class="section${this.active_section==Sections.QUEUE ? "" : "-hidden"}"
         >
           <mass-player-queue-card
             .config=${this.config.queue}
           ></mass-player-queue-card>
-        </sl-tab-panel>
+        </wa-tab-panel>
       `)
     }
     return html``
@@ -311,7 +311,7 @@ export class MusicAssistantPlayerCard extends LitElement {
   protected renderMediaBrowser() {
     if (this.config.media_browser.enabled) {
       return cache(html`
-        <sl-tab-panel
+        <wa-tab-panel
           name="${Sections.MEDIA_BROWSER}"
           class="section${this.active_section==Sections.MEDIA_BROWSER ? "" : "-hidden"}"
         >
@@ -319,7 +319,7 @@ export class MusicAssistantPlayerCard extends LitElement {
             .config=${this.config.media_browser}
             .onMediaSelectedAction=${this.browserItemSelected}
           >
-        </sl-tab-panel>
+        </wa-tab-panel>
       `)
     }
     return html``
@@ -328,7 +328,7 @@ export class MusicAssistantPlayerCard extends LitElement {
     const active = this.active_section == Sections.MUSIC_PLAYER;
     if (this.config.player.enabled){
       return html`
-        <sl-tab
+        <wa-tab
           slot="nav"
           .active=${active}
           panel="${Sections.MUSIC_PLAYER}"
@@ -344,7 +344,7 @@ export class MusicAssistantPlayerCard extends LitElement {
               class="action-button-svg${active ? "" : "-inactive"}"
             ></ha-svg-icon>
           </ha-button>
-        </sl-tab>
+        </wa-tab>
       `
     }
     return html``
@@ -353,7 +353,7 @@ export class MusicAssistantPlayerCard extends LitElement {
     const active = this.active_section == Sections.QUEUE;
     if (this.config.queue.enabled){
       return html`
-        <sl-tab
+        <wa-tab
           slot="nav"
           .active=${active}
           panel="${Sections.QUEUE}"
@@ -378,7 +378,7 @@ export class MusicAssistantPlayerCard extends LitElement {
     const active = this.active_section == Sections.MEDIA_BROWSER;
     if (this.config.media_browser.enabled){
       return html`
-        <sl-tab
+        <wa-tab
           slot="nav"
           .active=${active}
           panel="${Sections.MEDIA_BROWSER}"
@@ -396,7 +396,7 @@ export class MusicAssistantPlayerCard extends LitElement {
                 class="action-button-svg${active ? "" : "-inactive"}"
               ></ha-svg-icon>
             </ha-button>
-        </sl-tab>
+        </wa-tab>
       `
     }
     return html``
@@ -405,7 +405,7 @@ export class MusicAssistantPlayerCard extends LitElement {
     const active = this.active_section == Sections.PLAYERS;
     if (this.config.players.enabled){
       return html`
-        <sl-tab
+        <wa-tab
           slot="nav"
           .active=${active}
           panel="${Sections.PLAYERS}"
@@ -422,7 +422,7 @@ export class MusicAssistantPlayerCard extends LitElement {
                 class="action-button-svg${active ? "" : "-inactive"}"
               ></ha-svg-icon>
             </ha-button>
-        </sl-tab>
+        </wa-tab>
       `
     }
     return html``
@@ -430,14 +430,14 @@ export class MusicAssistantPlayerCard extends LitElement {
   /* eslint-disable @typescript-eslint/unbound-method */
   protected renderTabs() {
     return cache(html`
-      <sl-tab-group
-        @sl-tab-show=${this._handleTabChanged}
+      <wa-tab-group
+        @wa-tab-show=${this._handleTabChanged}
       >
         ${this.renderMusicPlayerTab()}
         ${this.renderQueueTab()}
         ${this.renderMediaBrowserTab()}
         ${this.renderPlayersTab()}
-      </sl-tab-group>
+      </wa-tab-group>
     `)
   }
   /* eslint-enable @typescript-eslint/unbound-method */

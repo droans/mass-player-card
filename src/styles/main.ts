@@ -23,7 +23,7 @@ export default css`
    --player-track-color: var(--ha-color-text-link);
    --player-name-color: var(--ha-color-text-secondary);
  }
-  sl-tab-group {
+  wa-tab-group {
     --track-width: 0px;
     display: flex;
     justify-content: center;
@@ -43,7 +43,7 @@ export default css`
 .action-button-svg-inactive {
   --icon-primary-color: var(--md-sys-color-on-surface-variant);
 }
-sl-tab-panel {
+wa-tab-panel {
   height: var(--mass-player-card-height);
   display: block;
 }
