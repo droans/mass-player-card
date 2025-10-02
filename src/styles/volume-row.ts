@@ -21,4 +21,11 @@ export default css`
   #volume-slider {
     --control-slider-thickness: 2.25em;
   } 
+  .button-min::part(base) {
+    --wa-form-control-padding-inline: 0px;
+  }
+  .button-min {
+    height: 40px;
+    width: 40px;
+  }
 `

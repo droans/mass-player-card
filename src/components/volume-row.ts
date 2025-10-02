@@ -102,6 +102,7 @@ class VolumeRow extends LitElement {
         variant="brand"
         size="medium"
         id="button-power"
+        class="button-min"
         part="button-power"
         @click=${this.onToggle}
       >
@@ -122,6 +123,7 @@ class VolumeRow extends LitElement {
         variant="brand"
         size="medium"
         id="button-mute"
+        class="button-min"
         part="button-mute"
         @click=${this.onVolumeMuteToggle}
       >
@@ -142,6 +144,7 @@ class VolumeRow extends LitElement {
         variant="brand"
         size="medium"
         id="button-favorite"
+        class="button-min"
         part="button-favorite"
         @click=${this.onFavorite}
       >

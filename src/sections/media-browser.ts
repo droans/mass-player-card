@@ -361,7 +361,7 @@ export class MediaBrowser extends LitElement {
           appearance="plain"
           variant="brand"
           size="medium"
-          class="button-back"
+          class="button-back button-min"
           @click=${this.onBack}
         >
           <ha-svg-icon
@@ -382,7 +382,7 @@ export class MediaBrowser extends LitElement {
           appearance="plain"
           variant="brand"
           size="medium"
-          class="button-search"
+          class="button-search button-min"
           @click=${this.onSearchPress}
         >
           <ha-svg-icon
@@ -460,7 +460,7 @@ export class MediaBrowser extends LitElement {
   }
   protected renderSearchHeader() {
     return html`
-      <mass-section-header>
+      <mass-section-header id="search">
         ${this.renderBackButton()}
         ${this.renderSearchBar()}
       </mass-section-header>
