@@ -41,6 +41,7 @@ import {
   RepeatMode
 } from '../const/common';
 import {
+  actionsControllerContext,
   activeEntityConf,
   activeMediaPlayer,
   activePlayerControllerContext,
@@ -71,6 +72,7 @@ import {
 import { PlayerSelectedService } from "../const/actions";
 import { PlayerConfig } from "../config/player";
 import { ActivePlayerController } from "../controller/active-player";
+import { ActionsController } from "../controller/actions";
 
 class MusicPlayerCard extends LitElement {
   @property({ attribute: false}) private media_duration = 1;
@@ -90,6 +92,11 @@ class MusicPlayerCard extends LitElement {
   @consume({ context: activePlayerControllerContext, subscribe: true})
   @state()
   private activePlayerController!: ActivePlayerController;
+  
+  @consume({ context: actionsControllerContext, subscribe: true})
+  @state()
+  private actionsController!: ActionsController;
+
   private _activeEntityConfig!: EntityConfig;
   private _activeEntity!: ExtendedHassEntity;
 
@@ -191,39 +198,39 @@ class MusicPlayerCard extends LitElement {
     if (isNaN(volume)) return;
     this.player_data.volume = volume;
     volume = volume / 100;
-    await this.actions.actionSetVolume(this.activePlayerController.volumeMediaPlayer, volume);
+    await this.actionsController.actionSetVolume(volume);
   }
   private onPlayPause = async () => {
     this.player_data.playing = !this.player_data.playing;
-    await this.actions.actionPlayPause(this.activeMediaPlayer);
+    await this.actionsController.actionPlayPause();
   }
   private onNext = async () => {
-    await this.actions.actionNext(this.activeMediaPlayer);
+    await this.actionsController.actionPlayNext();
     this.media_position = 0;
     this.entity_dur = 0;
   }
   private onPrevious = async () => {
-    await this.actions.actionPrevious(this.activeMediaPlayer);
+    await this.actionsController.actionPlayPrevious();
     this.media_position = 0;
     this.entity_dur = 0;
   }
   private onVolumeMuteToggle = async () => {
     this.player_data.muted = !this.player_data.muted;
-    await this.actions.actionMuteToggle(this.activePlayerController.volumeMediaPlayer);
+    await this.actionsController.actionToggleMute();
 
   }
   private onFavorite = async () => {
     if (this.player_data.favorite) {
-      await this.actions.actionRemoveFavorite(this.activeMediaPlayer);
+      await this.actionsController.actionRemoveFavorite();
       this.player_data.favorite = false;
     } else {
-      await this.actions.actionAddFavorite(this.activeMediaPlayer);
+      await this.actionsController.actionAddFavorite();
       this.player_data.favorite = true;
     }
   }
   private onShuffleToggle = async () => {
     this.player_data.shuffle = !this.player_data.shuffle;
-    await this.actions.actionShuffleToggle(this.activeMediaPlayer);
+    await this.actionsController.actionToggleShuffle();
   }
   private onRepeatToggle = async () => {
     const cur_repeat = this.player_data.repeat;
@@ -235,10 +242,11 @@ class MusicPlayerCard extends LitElement {
       repeat = RepeatMode.OFF;
     }
     this.player_data.repeat = repeat;
-    await this.actions.actionRepeatSet(this.activeMediaPlayer, repeat);
+    await this.actionsController.actionSetRepeat(repeat);
   }
   private onToggle = async () => {
-    await this.actions.actionTogglePlayer(this.activeMediaPlayer);
+    await this.actionsController.actionTogglePower();
+  }
   }
   private tickProgress = () => {
     const playing = this.player_data.playing;
