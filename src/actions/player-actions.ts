@@ -7,10 +7,17 @@ import {
 import { QueueItem } from "../const/player-queue";
 
 export default class PlayerActions {
-  private hass: ExtendedHass;
+  private _hass!: ExtendedHass;
   constructor(hass: ExtendedHass) {
     this.hass = hass;
   }
+  public set hass(hass: ExtendedHass) {
+    this._hass = hass;
+  }
+  public get hass() {
+    return this._hass;
+  }
+
   async actionPlayPause(entity: HassEntity) {
     try {
       await this.hass.callService(
@@ -105,7 +112,7 @@ export default class PlayerActions {
       )
     } catch (e) {
       /* eslint-disable-next-line no-console */
-      console.error(`Error calling repeat`, e)
+      console.error(`Error setting volume`, e)
     }
   }
   async actionSeek(entity: HassEntity, position: number) {

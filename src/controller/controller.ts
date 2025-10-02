@@ -2,6 +2,7 @@ import { ContextProvider } from "@lit/context";
 import { Config } from "../config/config";
 import { ExtendedHass } from "../const/common";
 import {
+  actionsControllerContext,
   activePlayerControllerContext,
   activeSectionContext,
   hassExt
@@ -9,22 +10,37 @@ import {
 import { MassCardConfigController } from "./config";
 import { ActivePlayerController } from "./active-player";
 import { Sections } from "../const/card";
+import { ActionsController } from "./actions";
 
 export class MassCardController {
   private _hass = new ContextProvider(document.body, { context: hassExt });
+  private _host: HTMLElement;
+
   private configController: MassCardConfigController;
   private activePlayerController!: ContextProvider<{ __context__: ActivePlayerController; }, HTMLElement>;
-  private _host: HTMLElement;
+  private actionsController!: ContextProvider<{ __context__: ActionsController; }, HTMLElement>;
+  
   private _activeSection = new ContextProvider(document.body, { context: activeSectionContext});
+
   constructor(host: HTMLElement) {
     this._host = host;
     this.configController = new MassCardConfigController(host);
   }
   private setupIfReady() {
+    this._setupActiveController();      
+    this._setupActionsController();
+  }
+  private _setupActiveController() {
     if (this.hass && this.config && !this.activePlayerController) {
       const active_controller = new ActivePlayerController(this.hass, this.config, this._host);
       this.activePlayerController = new ContextProvider(this._host, { context: activePlayerControllerContext})
       this.activePlayerController.setValue(active_controller)
+    }
+  }
+  private _setupActionsController() {
+    if (this.hass && this.config && this.ActivePlayer.activeEntityConfig) {
+      this.actionsController = new ContextProvider(this._host, { context: actionsControllerContext});
+      this.actionsController.setValue(new ActionsController(this._host, this.hass, this.ActivePlayer.activeEntityConfig));
     }
   }
 
@@ -32,6 +48,7 @@ export class MassCardController {
     this._hass.value = hass;
     this.setupIfReady();
     this.ActivePlayer.hass = hass;
+    this.Actions.hass = hass;
   }
   public get hass() {
     return this._hass.value;
@@ -47,16 +64,29 @@ export class MassCardController {
   public get Config() {
     return this.configController;
   }
-  public set activeEntity(entity: string) {
+  public set activeEntityId(entity: string) {
     this.ActivePlayer.setActivePlayer(entity);
+    this.Actions.setEntityConfig(this.ActivePlayer.activeEntityConfig);
   }
-  public get ActivePlayer() {
-    return this.activePlayerController.value;
+  public get activeEntityId() {
+    return this.ActivePlayer.activeEntityID;
+  }
+  public get activeEntity() {
+    return this.ActivePlayer.activeMediaPlayer;
+  }
+  public get volumeEntity() {
+    return this.ActivePlayer.volumeMediaPlayer;
   }
   public set activeSection(section: Sections) {
     this._activeSection.setValue(section);
   }
   public get activeSection() {
     return this._activeSection.value;
+  }
+  public get ActivePlayer() {
+    return this.activePlayerController.value;
+  }
+  public get Actions() {
+    return this.actionsController.value;
   }
 }
