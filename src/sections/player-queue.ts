@@ -158,11 +158,16 @@ class QueueCard extends LitElement {
     }}
   }
   private async subscribeUpdates() {
-    this._unsubscribe = await this.hass.connection.subscribeEvents(
-      this.eventListener,
-      "mass_queue"
-    );
-    this._listening = true;
+    if (this.hass.user.is_admin) {
+      this._unsubscribe = await this.hass.connection.subscribeEvents(
+        this.eventListener,
+        "mass_queue"
+      );
+      this._listening = true;
+    } else {
+      /* eslint-disable-next-line no-console */
+      console.error(`User is a non-admin; queue updates may be delayed or non-existent!`)
+    }
   }
   public disconnectedCallback(): void {
     super.disconnectedCallback();
