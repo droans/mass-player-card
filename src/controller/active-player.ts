@@ -138,4 +138,38 @@ export class ActivePlayerController {
       favorite: current_item?.favorite ?? false,
     }
   }
+  public async getPlayerProgress() {
+    const current_queue = await this.actionGetCurrentQueue();
+    const elapsed = current_queue.elapsed_time;
+    return elapsed;
+  }
+  async actionGetCurrentQueue() {
+    const entity_id = this.activeEntityID;
+    try {
+      /* eslint-disable
+        @typescript-eslint/no-explicit-any,
+        @typescript-eslint/no-unsafe-assignment,
+        @typescript-eslint/no-unsafe-member-access
+      */
+      const data = {
+        type: 'call_service',
+        domain: 'music_assistant',
+        service: 'get_queue',
+        service_data: {
+          entity_id: entity_id,
+        },
+        return_response: true
+      }
+      const ret = await this.hass.callWS<any>(data);
+      /* eslint-disable-next-line @typescript-eslint/no-unsafe-call */
+      const result = ret.response[entity_id]
+      return result;
+      /* eslint-enable */
+    } catch (e) {
+      /* eslint-disable-next-line no-console */
+      console.error('Error getting queue', e);
+      return null;
+    }
+  }
+
 }
