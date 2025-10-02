@@ -37,7 +37,7 @@ export default css`
     display: block;
   }
   #active-track-text {
-    background: rgba(from var(--ha-card-background) r g b / 0.85);
+    background: rgba(from var(--ha-card-background) r g b / 0.6);
     z-index: 1;
     position: relative;
     backdrop-filter: blur(3px);
@@ -76,7 +76,7 @@ export default css`
   }
   .media-controls {
     backdrop-filter: blur(3px);
-    background: rgba(from var(--ha-card-background) r g b / 0.85);
+    background: rgba(from var(--ha-card-background) r g b / 0.6);
     position: absolute;
     bottom: 0;
     width: 100%;
