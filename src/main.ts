@@ -160,7 +160,7 @@ export class MusicAssistantPlayerCard extends LitElement {
     if (!player_entity.length) {
       return;
     }
-    this._controller.activeEntity = player_entity;
+    this._controller.activeEntityId = player_entity;
   }
 
   protected shouldUpdate(_changedProperties: PropertyValues): boolean {

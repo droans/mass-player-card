@@ -21,6 +21,9 @@ export class MassCardController {
     this.configController = new MassCardConfigController(host);
   }
   private setupIfReady() {
+    this._setupActiveController();      
+  }
+  private _setupActiveController() {
     if (this.hass && this.config && !this.activePlayerController) {
       const active_controller = new ActivePlayerController(this.hass, this.config, this._host);
       this.activePlayerController = new ContextProvider(this._host, { context: activePlayerControllerContext})
@@ -47,16 +50,25 @@ export class MassCardController {
   public get Config() {
     return this.configController;
   }
-  public set activeEntity(entity: string) {
+  public set activeEntityId(entity: string) {
     this.ActivePlayer.setActivePlayer(entity);
   }
-  public get ActivePlayer() {
-    return this.activePlayerController.value;
+  public get activeEntityId() {
+    return this.ActivePlayer.activeEntityID;
+  }
+  public get activeEntity() {
+    return this.ActivePlayer.activeMediaPlayer;
+  }
+  public get volumeEntity() {
+    return this.ActivePlayer.volumeMediaPlayer;
   }
   public set activeSection(section: Sections) {
     this._activeSection.setValue(section);
   }
   public get activeSection() {
     return this._activeSection.value;
+  }
+  public get ActivePlayer() {
+    return this.activePlayerController.value;
   }
 }
