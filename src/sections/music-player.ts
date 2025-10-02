@@ -248,9 +248,9 @@ class MusicPlayerCard extends LitElement {
     await this.actionsController.actionTogglePower();
   }
   private requestProgressUpdate() {
-    this.activePlayerController.getPlayerProgress().then(
+    void this.activePlayerController.getPlayerProgress().then(
       (progress) => {
-        this.media_position = progress;
+        this.media_position = progress as number;
       }
     )
   }

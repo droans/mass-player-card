@@ -139,9 +139,19 @@ export class ActivePlayerController {
     }
   }
   public async getPlayerProgress() {
+    /* eslint-disable
+      @typescript-eslint/no-unsafe-assignment,
+      @typescript-eslint/no-unsafe-member-access,
+      @typescript-eslint/no-unsafe-return,
+    */
     const current_queue = await this.actionGetCurrentQueue();
     const elapsed = current_queue.elapsed_time;
     return elapsed;
+    /* eslint-enable
+      @typescript-eslint/no-unsafe-assignment,
+      @typescript-eslint/no-unsafe-member-access,
+      @typescript-eslint/no-unsafe-return,
+    */
   }
   async actionGetCurrentQueue() {
     const entity_id = this.activeEntityID;
@@ -161,7 +171,9 @@ export class ActivePlayerController {
         return_response: true
       }
       const ret = await this.hass.callWS<any>(data);
-      /* eslint-disable-next-line @typescript-eslint/no-unsafe-call */
+      /* eslint-disable
+        @typescript-eslint/no-unsafe-return
+      */
       const result = ret.response[entity_id]
       return result;
       /* eslint-enable */
