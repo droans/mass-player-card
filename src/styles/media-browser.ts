@@ -37,6 +37,9 @@ export default css`
     height: 2em;
     width: 2em;
   }
+  #search::part(end) {
+    width: calc(100% - 3em - 40px);
+  }
   .button-min::part(base) {
     --wa-form-control-padding-inline: 0px;
   }

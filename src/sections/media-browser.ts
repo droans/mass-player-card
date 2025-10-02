@@ -460,7 +460,7 @@ export class MediaBrowser extends LitElement {
   }
   protected renderSearchHeader() {
     return html`
-      <mass-section-header>
+      <mass-section-header id="search">
         ${this.renderBackButton()}
         ${this.renderSearchBar()}
       </mass-section-header>
