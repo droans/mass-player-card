@@ -90,16 +90,65 @@ entities:
         volume: false
 queue:
   enabled: true
+  hide:
+    action_buttons: false
+    move_down_button: false
+    move_next_button: false
+    move_up_button: false
+    remove_button: false
+    album_covers: false
+    artist_names: false
   limit_before: 5
   limit_after: 100
   show_album_covers: true
   show_artist_names: true
 player:
   enabled: true
+  hide:
+    favorite: false
+    mute: false
+    player_selector: false
+    power: false
+    repeat: false
+    shuffle: false
+    volume: false
+    group_volume: false
+  layout:
+    controls_layout: compact
+    icons:
+      shuffle:
+        size: small
+        box_shadow: false
+      previous:
+        size: small
+        box_shadow: false
+      play_pause:
+        size: large
+        box_shadow: true
+      next:
+        size: small
+        box_shadow: false
+      repeat:
+        size: small
+        box_shadow: false
 players:
   enabled: true
+  hide:
+    action_buttons: false
+    join_button: false
+    transfer_button: false
 media_browser:
   enabled: true
+  hidden:
+    back_button: false
+    search: false
+    titles: false
+    enqueue_menu: false
+    add_to_queue_button: false
+    play_next_button: false
+    play_next_clear_queue_button: false
+    play_now_button: false
+    play_now_clear_queue_button: false
   favorites:
     albums:
       enabled: true
@@ -182,6 +231,12 @@ queue:
   show_artist_names: true
 player:
   enabled: true
+  layout:
+    controls_layout: spaced
+    icons:
+      play_pause:
+        size: small
+        box_shadow: true
 players:
   enabled: true
 media_browser:
@@ -277,9 +332,11 @@ Certain elements across the different sections can be hidden or displayed depend
 <img src="https://github.com/droans/mass-player-card/blob/main/static/music_player/desktop.png" alt="Player Card Example">
 </details>
 
-| Parameter | Type | Required | Default | Description                     |
-|-----------|------|----------|---------|---------------------------------|
-| enabled   | bool | No       | true    | Enable/disable music player tab |
+| Parameter | Type                                                                    | Required | Default | Description                     |
+|-----------|-------------------------------------------------------------------------|----------|---------|---------------------------------|
+| enabled   | bool                                                                    | No       | true    | Enable/disable music player tab |
+| hide      | [MusicPlayerHiddenElementsConfig](#music-player-hidden-elements-config) | No       | N/A     | See below                       |
+| layout    | [MusicPlayerLayoutConfig](#music-player-hidden-elements-config)         | No       | N/A     | See below                       |
 
 
 ## Music Player Hidden Elements Config
@@ -295,6 +352,48 @@ Multiple elements on the Music Player tab can be hidden. By default, all element
 | shuffle         | bool  | No       | false       | Hides the shuffle button             |
 | volume          | bool  | No       | false       | Hides the volume button              |
 | group_volume    | bool  | No       | false       | Hides the grouped player volume menu |
+
+## Music Player Layout Config
+The layout of the control buttons can be adjusted to your liking. Use the full default configuration below as an example.
+
+<detail>
+<summary>Full Default Configuration</summary>
+
+```yaml
+type: custom:mass-player-card
+player:
+  layout:
+    controls_layout: compact          # Options: compact or spaced (default: compact)
+    icons:
+      shuffle:
+        size: small                   # Options: small or large (default: small)
+        box_shadow: false             # Options: True/False (default: false)
+        label: true                   # Options: True/False (default: false)
+                                      # Note: Label will never show if size is large
+      previous:
+        size: small                   # Options: small or large (default: small)
+        box_shadow: false             # Options: True/False (default: false)
+        label: false                  # Options: True/False (default: false)
+                                      # Note: Label will never show if size is large
+      next:
+        size: small                   # Options: small or large (default: small)
+        box_shadow: false             # Options: True/False (default: false)
+        label: false                  # Options: True/False (default: false)
+                                      # Note: Label will never show if size is large
+      repeat:
+        size: small                   # Options: small or large (default: small)
+        box_shadow: false             # Options: True/False (default: false)
+        label: true                   # Options: True/False (default: false)
+                                      # Note: Label will never show if size is large
+      play_pause:
+        size: large                   # Options: small or large (default: small)
+        box_shadow: true              # Options: True/False (default: false)
+        label: false                  # Options: True/False (default: false)
+                                      # Note: Label will never show if size is large
+      
+```
+
+</detail>
 
 ## Queue Config
 Display and interact with the player's queue.
