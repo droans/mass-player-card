@@ -43,7 +43,7 @@ export default css`
 .action-button-svg-inactive {
   --icon-primary-color: var(--md-sys-color-on-surface-variant);
 }
-sl-tab-panel {
+wa-tab-panel {
   height: var(--mass-player-card-height);
   display: block;
 }
