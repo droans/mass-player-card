@@ -38,7 +38,12 @@ export class MassCardController {
     }
   }
   private _setupActionsController() {
-    if (this.hass && this.config && this.ActivePlayer.activeEntityConfig) {
+    const is_ready = !!(
+      this.activePlayerController
+        && this.config
+        && this.hass
+    )
+    if (!this.actionsController && is_ready){
       this.actionsController = new ContextProvider(this._host, { context: actionsControllerContext});
       this.actionsController.setValue(new ActionsController(this._host, this.hass, this.ActivePlayer.activeEntityConfig));
     }
