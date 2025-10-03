@@ -183,14 +183,6 @@ class MusicPlayerCard extends LitElement {
     this._listener = undefined;
     this.tickProgress();
   }
-  private onVolumeChange = async (ev: CustomEvent) => {
-    // eslint-disable-next-line @typescript-eslint/no-unsafe-assignment, @typescript-eslint/no-unsafe-member-access
-    let volume: number = ev.detail.value;
-    if (isNaN(volume)) return;
-    this.player_data.volume = volume;
-    volume = volume / 100;
-    await this.actionsController.actionSetVolume(volume);
-  }
   private onNext = async () => {
     await this.actionsController.actionPlayNext();
     this.media_position = 0;
@@ -200,30 +192,6 @@ class MusicPlayerCard extends LitElement {
     await this.actionsController.actionPlayPrevious();
     this.media_position = 0;
     this.entity_dur = 0;
-  }
-  private onVolumeMuteToggle = async () => {
-    this.player_data.muted = !this.player_data.muted;
-    await this.actionsController.actionToggleMute();
-
-  }
-  private onFavorite = async () => {
-    if (this.player_data.favorite) {
-      await this.actionsController.actionRemoveFavorite();
-      this.player_data.favorite = false;
-    } else {
-      await this.actionsController.actionAddFavorite();
-      this.player_data.favorite = true;
-    }
-  }
-  private onToggle = async () => {
-    await this.actionsController.actionTogglePower();
-  }
-  private requestProgressUpdate() {
-    void this.activePlayerController.getPlayerProgress().then(
-      (progress) => {
-        this.media_position = progress as number;
-      }
-    )
   }
   private tickProgress = () => {
     const playing = this.player_data.playing;
@@ -520,13 +488,9 @@ class MusicPlayerCard extends LitElement {
   }
   protected renderVolumeRow() {
     return html`
-      <mass-volume-row
-        .maxVolume=${this.activePlayerController.activeEntityConfig.max_volume}
-        .onPowerToggleSelect=${this.onToggle}
-        .onVolumeMuteToggleSelect=${this.onVolumeMuteToggle}
-        .onVolumeChange=${this.onVolumeChange}
-        .onFavoriteToggleSelect=${this.onFavorite}
-      ></mass-volume-row>
+      <div class="volume">
+        <mass-volume-row></mass-volume-row>
+      </div>
     `
   }
   protected renderControls() {
