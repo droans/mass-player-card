@@ -103,8 +103,13 @@ export function playerConfigForm() {
 function processPlayerIconsConfig(config: PlayerConfig): PlayerConfig {
   const layout_config = config.layout;
   const d = DEFAULT_PLAYER_ICON_CONFIG;
-  const i = layout_config.icons;
-  const icons_config: PlayerIcons = {
+  const icons_config = layout_config.icons;
+
+  let i: PlayerIcons = {
+    ...d,
+    ...icons_config
+  };
+  i = {
     shuffle: {
       ...d.shuffle,
       ...i.shuffle,
@@ -126,14 +131,14 @@ function processPlayerIconsConfig(config: PlayerConfig): PlayerConfig {
       ...i.repeat,
     }
   }
-  
-  return {
+  const result = {
     ...config,
     layout: {
       ...layout_config,
-      icons: icons_config
+      icons: i
     }
   }
+  return result;
 
 }
 
