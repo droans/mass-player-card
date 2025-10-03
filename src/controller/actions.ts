@@ -19,7 +19,6 @@ export class ActionsController {
   private _playersActions!: PlayersActions;
   private _queueActions!: QueueActions;
   
-
   constructor(host: HTMLElement, hass: ExtendedHass, entityConfig: EntityConfig) {
     this._host = host;
     this._hass = hass;
@@ -53,7 +52,12 @@ export class ActionsController {
     this._queueActions.hass = this._hass;
     this._queueActions.player_entity = this._activeEntityId;
   }
-
+  /*
+      Actions
+  */
+      /*
+          Player
+      */
   public async actionTogglePower() {
     await this.PlayerActions.actionTogglePlayer(this._activeEntity);
   }
@@ -73,6 +77,9 @@ export class ActionsController {
     await this.PlayerActions.actionRepeatSet(this._activeEntity, repeatMpde);
   }
 
+      /*
+          Current Item
+      */
   public async actionAddFavorite() {
     await this.PlayerActions.actionAddFavorite(this._activeEntity);
   }
@@ -80,6 +87,9 @@ export class ActionsController {
     await this.PlayerActions.actionRemoveFavorite(this._activeEntity);
   }
 
+      /*
+          Volume
+      */
   public async actionSetVolume(volume: number) {
     const used_vol = volume > 1 ? volume / 100 : volume;
     await this.PlayerActions.actionSetVolume(this._volumeEntity, used_vol);
