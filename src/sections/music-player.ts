@@ -434,7 +434,7 @@ class MusicPlayerCard extends LitElement {
   }
   protected render() {
     return html`
-      <div class="container">
+      <div id="container">
         ${this.renderHeader()}
         <div id="player-card">
           ${this.renderActiveItemSection()}
