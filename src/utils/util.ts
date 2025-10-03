@@ -4,6 +4,7 @@ import {
   Sections
 } from "../const/card";
 import { ExtendedHassEntity } from "../const/common.js";
+import { QueueItem } from "../const/player-queue.js";
 
 export function testMixedContent(url: string) {
   try {
@@ -51,9 +52,9 @@ export function secondsToTime(seconds: number) {
     const secs = seconds % 60
     return `${mins.toString()}:${secs < 10 ? "0" : ""}${secs.toString()}`  
 }
-export function playerHasUpdated(old_player: ExtendedHassEntity, new_player: ExtendedHassEntity) {
-  const old_attrs = old_player.attributes;
-  const new_attrs = new_player.attributes;
+export function playerHasUpdated(old_player: ExtendedHassEntity, new_player: ExtendedHassEntity): boolean {
+  const old_attrs = old_player?.attributes;
+  const new_attrs = new_player?.attributes;
   const attrs = [
     'active_queue',
     'app_id',
@@ -70,8 +71,8 @@ export function playerHasUpdated(old_player: ExtendedHassEntity, new_player: Ext
     'shuffle',
     'volume_level',
   ]
-  const old_state = old_player.state;
-  const new_state = new_player.state;
+  const old_state = old_player?.state;
+  const new_state = new_player?.state;
   const changed_attrs = attrs.filter(
     (attr) => {
       return old_attrs[attr] !== new_attrs[attr];
@@ -80,4 +81,15 @@ export function playerHasUpdated(old_player: ExtendedHassEntity, new_player: Ext
   const state_changed = old_state != new_state;
   const attrs_changed = changed_attrs.length > 0;
   return state_changed || attrs_changed;
+}
+
+export function queueItemhasUpdated(old_item: QueueItem, new_item: QueueItem): boolean {
+  return (
+    old_item?.media_content_id !== new_item?.media_content_id
+      || old_item?.playing !== new_item?.playing
+      || old_item?.queue_item_id !== new_item?.queue_item_id
+      || old_item?.show_action_buttons !== new_item?.show_action_buttons
+      || old_item?.show_artist_name !== new_item?.show_artist_name
+      || old_item?.show_move_up_next !== new_item?.show_move_up_next
+  )
 }

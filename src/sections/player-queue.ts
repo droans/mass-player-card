@@ -282,7 +282,6 @@ class QueueCard extends LitElement {
             >
               <mass-player-media-row
                 .media_item=${item}
-                .selected=${item.playing}
                 .showAlbumCovers=${show_album_covers}
                 .selectedService=${this.onQueueItemSelected}
                 .removeService=${this.onQueueItemRemoved}
