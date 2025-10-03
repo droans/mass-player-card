@@ -8,7 +8,7 @@ import { customItem } from "../config/media-browser"
 function generateSectionBackgroundPart(hass: ExtendedHass, icon: string, fallback: Icon = Icon.DISC) {
   const image = backgroundImageFallback(hass, icon, fallback)
   return html`
-    <div class="thumbnail-section" style="${image};"></div>
+    <div class="thumbnail-section" style="${image}"></div>
   `
 }
 function generateSectionBackground(hass: ExtendedHass, cards: MediaCardItem[], fallback: Icon) {
