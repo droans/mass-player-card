@@ -32,7 +32,10 @@ export default class PlayerActions {
     }
   }
   async actionMuteToggle(entity: HassEntity) {
-    const mute = !entity.attributes.is_volume_muted;
+    // Assume that entity might not be updated
+    const e = this.hass.states[entity.entity_id];
+    const is_muted = e.attributes.is_volume_muted;
+    const mute = !is_muted;
     try {
       await this.hass.callService(
         'media_player', 'volume_mute',
