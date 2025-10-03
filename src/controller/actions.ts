@@ -76,6 +76,9 @@ export class ActionsController {
   public async actionSetRepeat(repeatMpde: RepeatMode) {
     await this.PlayerActions.actionRepeatSet(this._activeEntity, repeatMpde);
   }
+  public async actionSeek(pos: number) {
+    await this.PlayerActions.actionSeek(this._activeEntity, pos);
+  }
 
       /*
           Current Item
