@@ -145,13 +145,13 @@ export class ActivePlayerController {
       @typescript-eslint/no-unsafe-return,
     */
     const current_queue = await this.actionGetCurrentQueue();
-    const elapsed = current_queue.elapsed_time;
+    const elapsed = current_queue?.elapsed_time ?? 0;
     return elapsed;
   }
   public async getPlayerActiveItemDuration(): Promise<number> {
     
     const current_queue = await this.actionGetCurrentQueue();
-    return current_queue.current_item.duration;
+    return current_queue.current_item?.duration ?? 1;
     /* eslint-enable
       @typescript-eslint/no-unsafe-assignment,
       @typescript-eslint/no-unsafe-member-access,

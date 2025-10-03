@@ -2,7 +2,6 @@ import { consume, provide } from '@lit/context';
 import { LovelaceCard } from 'custom-card-helpers';
 import { LitElement, html, type CSSResultGroup, PropertyValues, TemplateResult } from 'lit';
 import { property, state } from 'lit/decorators.js';
-
 import '../components/media-row'
 import '../components/section-header';
 
@@ -28,7 +27,6 @@ import {
 } from '../const/player-queue';
 
 import styles from '../styles/player-queue';
-import { cache } from 'lit/directives/cache.js';
 import { Sections } from '../const/card';
 
 class QueueCard extends LitElement {
@@ -271,39 +269,33 @@ class QueueCard extends LitElement {
   }
   private renderQueueItems() {
     const show_album_covers = this._config.show_album_covers;
-    let delay = 0;
     const delay_add = 62.5;
+    let i = 1;
     return this.queue.map(
       (item) => {
-        const result = cache(
+        const result = 
           html`
-              <wa-animation
-                name="fadeIn"
-                easing="linear"
-                iterations=1
-                play=${this.checkVisibility()}
-                playback-rate=1
-                delay=${delay}
-                duration=${delay_add * 8}
-
+            <ha-fade-in
+              .delay=${delay_add * i}
+              .duration=${delay_add * 2}
+              .fill="forwards"
+              play=${this.checkVisibility()}
+            >
+              <mass-player-media-row
+                style="opacity: 0%;"
+                .media_item=${item}
+                .showAlbumCovers=${show_album_covers}
+                .selectedService=${this.onQueueItemSelected}
+                .removeService=${this.onQueueItemRemoved}
+                .moveQueueItemNextService=${this.onQueueItemMoveNext}
+                .moveQueueItemUpService=${this.onQueueItemMoveUp}
+                .moveQueueItemDownService=${this.onQueueItemMoveDown}
               >
-                <mass-player-media-row
-                  class="media-row-animation"
-                  style="animation-duration: ${delay}ms;"
-                  .media_item=${item}
-                  .selected=${item.playing}
-                  .showAlbumCovers=${show_album_covers}
-                  .selectedService=${this.onQueueItemSelected}
-                  .removeService=${this.onQueueItemRemoved}
-                  .moveQueueItemNextService=${this.onQueueItemMoveNext}
-                  .moveQueueItemUpService=${this.onQueueItemMoveUp}
-                  .moveQueueItemDownService=${this.onQueueItemMoveDown}
-                >
-                </mass-player-media-row>
-              </wa-animation>
+              </mass-player-media-row>
+            </ha-fade-in>
           `
-        );
-        delay += delay_add;
+        ;
+        i++;
         return result;
       }
     );
@@ -321,33 +313,6 @@ class QueueCard extends LitElement {
         </ha-md-list>
       </ha-card>
     `
-  }
-  //eslint-disable-next-line @typescript-eslint/no-explicit-any
-  private onTabHidden = (ev: any) => {
-    //eslint-disable-next-line @typescript-eslint/no-unsafe-member-access
-    if (ev.detail.name != Sections.QUEUE) {
-      return;
-    }
-    const animation_elements = this.shadowRoot?.querySelectorAll('wa-animation');
-    animation_elements?.forEach(
-      (element) => {
-      /* eslint-disable 
-        @typescript-eslint/no-unsafe-assignment,
-        @typescript-eslint/no-explicit-any,
-        @typescript-eslint/no-unsafe-member-access,
-        @typescript-eslint/no-unsafe-call,
-      */
-        const el = element as any;
-        el.cancel();
-      /* eslint-enable 
-        @typescript-eslint/no-unsafe-assignment,
-        @typescript-eslint/no-explicit-any,
-        @typescript-eslint/no-unsafe-member-access,
-        @typescript-eslint/no-unsafe-call,
-      */
-      }
-    )
-    this.requestUpdate();
   }
   static get styles(): CSSResultGroup {
     return styles;

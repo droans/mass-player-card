@@ -37,12 +37,11 @@ import {
   backgroundImageFallback,
   getFallbackBackgroundImage
 } from '../utils/icons';
-import { testMixedContent } from '../utils/util';
+import { queueItemhasUpdated, testMixedContent } from '../utils/util';
 import { DEFAULT_PLAYER_QUEUE_HIDDEN_ELEMENTS_CONFIG, PlayerQueueHiddenElementsConfig, QueueConfig } from '../config/player-queue';
 
 class MediaRow extends LitElement {
   @property({ attribute: false }) media_item!: QueueItem;
-  @property({ type: Boolean }) selected = false;
 
   @consume({context: hassExt, subscribe: true})
   public hass!: ExtendedHass;
@@ -116,18 +115,10 @@ class MediaRow extends LitElement {
     this.selectedService(this.media_item.queue_item_id, this.media_item.media_content_id);
   }
   protected shouldUpdate(_changedProperties: PropertyValues<this>): boolean {
-    if (_changedProperties.has('selected')) {
-      return true;
-    }
     if (_changedProperties.has('media_item')) {
       // eslint-disable-next-line @typescript-eslint/no-non-null-assertion
       const oldItem: QueueItem = _changedProperties.get('media_item')!;
-      return oldItem.media_title !== this.media_item.media_title
-        || oldItem.media_artist !== this.media_item.media_artist
-        || oldItem.media_image !== this.media_item.media_image
-        || oldItem.playing !== this.media_item.playing
-        || oldItem.show_action_buttons !== this.media_item.show_action_buttons
-        || oldItem.show_move_up_next !== this.media_item.show_move_up_next
+      return queueItemhasUpdated(oldItem, this.media_item);
     }
     return true;
   }
@@ -283,7 +274,6 @@ class MediaRow extends LitElement {
           ${this.renderActionButtons()}
         </ha-md-list-item>
         <div class="divider"></div>
-      </div>
     `
   }
   static get styles(): CSSResultGroup {
