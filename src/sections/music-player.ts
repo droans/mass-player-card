@@ -183,16 +183,6 @@ class MusicPlayerCard extends LitElement {
     this._listener = undefined;
     this.tickProgress();
   }
-  private onNext = async () => {
-    await this.actionsController.actionPlayNext();
-    this.media_position = 0;
-    this.entity_dur = 0;
-  }
-  private onPrevious = async () => {
-    await this.actionsController.actionPlayPrevious();
-    this.media_position = 0;
-    this.entity_dur = 0;
-  }
   private tickProgress = () => {
     const playing = this.player_data.playing;
     if (playing) {
@@ -233,13 +223,11 @@ class MusicPlayerCard extends LitElement {
       if (Math.abs(x_swipe) < SWIPE_MIN_X) {
         return;
       }
-      /* eslint-disable @typescript-eslint/no-floating-promises */
       if (x_swipe > 0) {
-        this.onPrevious();
+        void this.actionsController.actionPlayPrevious();
       } else {
-        this.onNext();
+        void this.actionsController.actionPlayNext();
       }
-      /* eslint-enable @typescript-eslint/no-floating-promises */
     }
   }
   private onPlayerSelect = (ev: CustomEvent) => {
