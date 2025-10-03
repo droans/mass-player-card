@@ -3,6 +3,7 @@ import {
   DEFAULT_SECTION_PRIORITY,
   Sections
 } from "../const/card";
+import { ExtendedHassEntity } from "../const/common.js";
 
 export function testMixedContent(url: string) {
   try {
@@ -49,4 +50,34 @@ export function secondsToTime(seconds: number) {
     const mins = Math.floor(seconds / 60);
     const secs = seconds % 60
     return `${mins.toString()}:${secs < 10 ? "0" : ""}${secs.toString()}`  
+}
+export function playerHasUpdated(old_player: ExtendedHassEntity, new_player: ExtendedHassEntity) {
+  const old_attrs = old_player.attributes;
+  const new_attrs = new_player.attributes;
+  const attrs = [
+    'active_queue',
+    'app_id',
+    'entity_picture_local',
+    'is_volume_muted',
+    'media_album_name',
+    'media_artist',
+    'media_content_id',
+    'media_content_type',
+    'media_duration',
+    'media_position',
+    'media_title',
+    'repeat',
+    'shuffle',
+    'volume_level',
+  ]
+  const old_state = old_player.state;
+  const new_state = new_player.state;
+  const changed_attrs = attrs.filter(
+    (attr) => {
+      return old_attrs[attr] !== new_attrs[attr];
+    }
+  )
+  const state_changed = old_state != new_state;
+  const attrs_changed = changed_attrs.length > 0;
+  return state_changed || attrs_changed;
 }
