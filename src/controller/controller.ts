@@ -17,8 +17,8 @@ export class MassCardController {
   private _host: HTMLElement;
 
   private configController: MassCardConfigController;
-  private activePlayerController!: ContextProvider<{ __context__: ActivePlayerController; }, HTMLElement>;
-  private actionsController!: ContextProvider<{ __context__: ActionsController; }, HTMLElement>;
+  private activePlayerController!: ContextProvider<typeof activePlayerControllerContext>;
+  private actionsController!: ContextProvider<typeof actionsControllerContext>;
   
   private _activeSection = new ContextProvider(document.body, { context: activeSectionContext});
 

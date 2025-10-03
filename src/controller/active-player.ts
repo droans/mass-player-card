@@ -11,11 +11,11 @@ import { Config, EntityConfig } from "../config/config";
 import { PlayerData } from "../const/music-player";
 import { QueueItem } from "../const/player-queue";
 export class ActivePlayerController {
-  private _activeEntityConfig: ContextProvider<{ __context__: EntityConfig; }, HTMLElement>;
-  private _activeEntityID!: ContextProvider<{ __context__: string; }, HTMLElement>;
-  private _activeMediaPlayer: ContextProvider<{ __context__: ExtendedHassEntity; }, HTMLElement>;
-  private _activePlayerName: ContextProvider<{ __context__: string; }, HTMLElement>;
-  private _volumeMediaPlayer: ContextProvider<{ __context__: ExtendedHassEntity; }, HTMLElement>;
+  private _activeEntityConfig: ContextProvider<typeof activeEntityConf>;
+  private _activeEntityID: ContextProvider<typeof activeEntityID>;
+  private _activeMediaPlayer: ContextProvider<typeof activeMediaPlayer>;
+  private _activePlayerName: ContextProvider<typeof activePlayerName>;
+  private _volumeMediaPlayer: ContextProvider<typeof volumeMediaPlayer>;
   
   private _hass: ExtendedHass;
   private _config: Config;
@@ -138,7 +138,7 @@ export class ActivePlayerController {
       favorite: current_item?.favorite ?? false,
     }
   }
-  public async getPlayerProgress() {
+  public async getPlayerProgress(): Promise<number> {
     /* eslint-disable
       @typescript-eslint/no-unsafe-assignment,
       @typescript-eslint/no-unsafe-member-access,
@@ -147,6 +147,7 @@ export class ActivePlayerController {
     const current_queue = await this.actionGetCurrentQueue();
     const elapsed = current_queue.elapsed_time;
     return elapsed;
+  }
     /* eslint-enable
       @typescript-eslint/no-unsafe-assignment,
       @typescript-eslint/no-unsafe-member-access,
