@@ -55,15 +55,6 @@ export default css`
   .player-track-artist {
     font-size: 1em;
   }
-  .progress {
-    padding-left: 36px;
-    padding-right: 36px;
-    padding-bottom: 8px;
-  }
-  .time {
-    justify-self: center;
-    padding-bottom: 4px;
-  }
   .media-controls {
     backdrop-filter: blur(3px);
     background: rgba(from var(--ha-card-background) r g b / 0.6);
