@@ -258,10 +258,6 @@ export class MusicAssistantPlayerCard extends LitElement {
     return html``
   }
   protected renderPlayerQueue() {
-    // const active = this.active_section == Sections.QUEUE;
-    // if (!active) {
-    //   return html``;
-    // }
     if (this.config.queue.enabled) {
       return cache(html`
         <wa-tab-panel
