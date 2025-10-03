@@ -278,9 +278,11 @@ class QueueCard extends LitElement {
             <ha-fade-in
               .delay=${delay_add * i}
               .duration=${delay_add * 2}
+              .fill="forwards"
               play=${this.checkVisibility()}
             >
               <mass-player-media-row
+                style="opacity: 0%;"
                 .media_item=${item}
                 .showAlbumCovers=${show_album_covers}
                 .selectedService=${this.onQueueItemSelected}
