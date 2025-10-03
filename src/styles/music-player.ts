@@ -64,57 +64,12 @@ export default css`
     justify-self: center;
     padding-bottom: 4px;
   }
-  .controls {
-    grid-area: controls;
-    overflow-y: auto;
-    margin: 0.25rem;
-    padding: 0.5rem;
-    display: flex;
-    flex-direction: row;
-    align-items: center;
-    justify-content: center;
-  }
   .media-controls {
     backdrop-filter: blur(3px);
     background: rgba(from var(--ha-card-background) r g b / 0.6);
     position: absolute;
     bottom: 0;
     width: 100%;
-  }
-  .controls-left {
-    display: flex;
-    flex-direction: column;
-    align-items: end;
-    justify-content: center;
-  }
-  .controls-right {
-    display: flex;
-    flex-direction: column;
-    align-items: start;
-    justify-content: center;
-  }
-  .controls-previous-next::part(base) {
-    height: 30px;
-    width: 60px;
-  }
-  .button-play-pause::part(base) {
-    box-shadow: rgba(0, 0, 0, 0.16) 0px 2px 4px 0px;
-  }
-  .player-controls {
-    width: var(--player-control-icon-width);
-    height: var(--player-control-icon-width);
-  }
-  .track-previous {
-    margin: 0px 0px 4px 0px;
-  }
-  .track-next {
-    margin: 0px 0px 4px 0px;
-  }
-  .play-pause {
-    --ha-button-height: var(--player-play-pause-icon-size);
-    margin: 0px 6px 0px 6px;
-    --ha-button-border-radius: 50%;
-    border-radius: 50%;
   }
   *[hide] {
     display: none;

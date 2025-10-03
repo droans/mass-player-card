@@ -1,15 +1,6 @@
 import "@material/web/progress/linear-progress.js"
 
 import {
-  mdiPause,
-  mdiPlay,
-  mdiRepeat,
-  mdiRepeatOff,
-  mdiRepeatOnce,
-  mdiShuffle,
-  mdiShuffleDisabled,
-  mdiSkipNext,
-  mdiSkipPrevious,
   mdiSpeaker,
   mdiSpeakerMultiple,
 } from "@mdi/js";
@@ -31,6 +22,7 @@ import '../components/menu-button';
 import '../components/section-header';
 import '../components/volume-row';
 import '../components/volume-slider';
+import '../components/player-controls';
 
 import PlayerActions from "../actions/player-actions";
 
@@ -38,7 +30,6 @@ import {
   ExtendedHass,
   ExtendedHassEntity,
   Icon,
-  RepeatMode
 } from '../const/common';
 import {
   actionsControllerContext,
@@ -200,10 +191,6 @@ class MusicPlayerCard extends LitElement {
     volume = volume / 100;
     await this.actionsController.actionSetVolume(volume);
   }
-  private onPlayPause = async () => {
-    this.player_data.playing = !this.player_data.playing;
-    await this.actionsController.actionPlayPause();
-  }
   private onNext = async () => {
     await this.actionsController.actionPlayNext();
     this.media_position = 0;
@@ -227,22 +214,6 @@ class MusicPlayerCard extends LitElement {
       await this.actionsController.actionAddFavorite();
       this.player_data.favorite = true;
     }
-  }
-  private onShuffleToggle = async () => {
-    this.player_data.shuffle = !this.player_data.shuffle;
-    await this.actionsController.actionToggleShuffle();
-  }
-  private onRepeatToggle = async () => {
-    const cur_repeat = this.player_data.repeat;
-    let repeat = RepeatMode.ALL;
-    if (cur_repeat === RepeatMode.ALL) {
-      repeat = RepeatMode.ONCE;
-    }
-    if (cur_repeat === RepeatMode.ONCE) {
-      repeat = RepeatMode.OFF;
-    }
-    this.player_data.repeat = repeat;
-    await this.actionsController.actionSetRepeat(repeat);
   }
   private onToggle = async () => {
     await this.actionsController.actionTogglePower();
@@ -547,122 +518,6 @@ class MusicPlayerCard extends LitElement {
       `
     }
   }
-  protected renderTrackPrevious() {
-    return html`
-      <ha-button
-        class="controls-previous-next"
-        appearance="outlined"
-        variant="brand"
-        @click=${this.onPrevious}
-        size="small"
-        style="display: block;"
-      >
-        <ha-svg-icon
-          .path=${mdiSkipPrevious}
-        ></ha-svg-icon>
-      </ha-button>
-    `
-  }
-  protected renderShuffle() {
-    const config_hide = this.config.hide.shuffle;
-    const entity_hide = this.activeEntityConfig.hide.player.shuffle;
-    if (config_hide || entity_hide) {
-      return html``
-    }
-    return html`
-      <ha-button
-        appearance="${this.player_data.shuffle ? "accent" : "plain"}"
-        variant="brand"
-        @click=${this.onShuffleToggle}
-        size="small"
-      >
-        <ha-svg-icon
-          slot="start"
-          .path=${this.player_data.shuffle ? mdiShuffle : mdiShuffleDisabled}
-        ></ha-svg-icon>
-        Shuffle
-      </ha-button>
-    `
-  }
-  protected renderControlsLeft() {
-    return html`
-      <div class="controls-left">
-        <div class="track-previous">${this.renderTrackPrevious()}</div>
-        <div class="shuffle">${this.renderShuffle()}</div>
-      </div>
-    `
-  }
-  protected renderPlayPause() {
-    return html`
-      <div class="play-pause">
-        <ha-button
-          appearance="${this.player_data.playing ? "filled" : "outlined"}"
-          variant="brand"
-          size="medium"
-          class="button-play-pause"
-          @click=${this.onPlayPause}
-        >
-          <ha-svg-icon
-            .path=${this.player_data.playing ?  mdiPause : mdiPlay}
-            style="height: 4rem; width: 4rem;"
-          ></ha-svg-icon>
-        </ha-button>
-      </div>
-    `
-  }
-  protected renderTrackNext() {
-    return html`
-      <ha-button
-        class="controls-previous-next"
-        appearance="outlined"
-        variant="brand"
-        @click=${this.onNext}
-        size="small"
-        style="display: block;"
-      >
-        <ha-svg-icon
-          .path=${mdiSkipNext}
-        ></ha-svg-icon>
-      </ha-button>
-    `
-  }
-  protected renderRepeat() {
-    const config_hide = this.config.hide.repeat;
-    const entity_hide = this.activeEntityConfig.hide.player.repeat;
-    if (config_hide || entity_hide) {
-      return html``
-    }
-    let icon = mdiRepeat;
-    const repeat = this.player_data.repeat;
-    if (repeat == RepeatMode.ONCE) {
-      icon = mdiRepeatOnce;
-    }
-    if (repeat == RepeatMode.OFF) {
-      icon = mdiRepeatOff;
-    }
-    return html`
-      <ha-button
-        appearance="${this.player_data.repeat == RepeatMode.OFF ? "plain" : "accent"}"
-        variant="brand"
-        size="small"
-        @click=${this.onRepeatToggle}
-      >
-        <ha-svg-icon
-          slot="start"
-          .path=${icon}
-        ></ha-svg-icon>
-        Repeat
-      </ha-button>
-    `
-  }
-  protected renderControlsRight() {
-    return html`
-      <div class="controls-right">
-        <div class="track-next"> ${this.renderTrackNext()} </div>
-        <div class="repeat">${this.renderRepeat()}</div>
-      </div>
-    `
-  }
   protected renderVolumeRow() {
     return html`
       <mass-volume-row
@@ -677,11 +532,7 @@ class MusicPlayerCard extends LitElement {
   protected renderControls() {
     return html`
       <div class="media-controls">
-        <div class="controls">
-          ${this.renderControlsLeft()}
-          ${this.renderPlayPause()}
-          ${this.renderControlsRight()}
-        </div>
+        <mass-player-controls></mass-player-controls>
       </div>
     `
   }
