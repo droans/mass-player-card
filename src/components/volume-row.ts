@@ -10,10 +10,7 @@ import {
 import { DEFAULT_PLAYER_HIDDEN_ELEMENTS_CONFIG, PlayerConfig, PlayerHiddenElementsConfig } from "../config/player";
 
 import {
-  ServiceCustomEvent,
-  ServiceNoParams
-} from "../const/common";
-import {
+  actionsControllerContext,
   activeEntityConf,
   activePlayerDataContext,
   EntityConfig,
@@ -22,20 +19,20 @@ import {
 import { PlayerData } from "../const/music-player";
 
 import styles from '../styles/volume-row';
+import { ActionsController } from "../controller/actions.js";
 
 class VolumeRow extends LitElement {
 
-  public maxVolume!: number;
-  public onPowerToggleSelect!: ServiceNoParams;
-  public onVolumeMuteToggleSelect!: ServiceNoParams;
-  public onVolumeChange!: ServiceCustomEvent;
-  public onFavoriteToggleSelect!: ServiceNoParams;
+  private maxVolume!: number;
 
   private _config!: PlayerConfig;
   private _entityConfig!: EntityConfig;
   private hide: PlayerHiddenElementsConfig = DEFAULT_PLAYER_HIDDEN_ELEMENTS_CONFIG;
   private _player_data!: PlayerData;
 
+  @consume({ context: actionsControllerContext, subscribe: true})
+  private actions!: ActionsController
+  
   @consume({ context: musicPlayerConfigContext, subscribe: true })
   public set config(config: PlayerConfig) {
     this._config = config;
@@ -50,6 +47,7 @@ class VolumeRow extends LitElement {
   @consume({ context: activeEntityConf, subscribe: true})
   public set entityConfig(config: EntityConfig) {
     this._entityConfig = config;
+    this.maxVolume = config.max_volume;
     if (this._config && this._entityConfig) {
       this.updateHiddenElements();
     }
@@ -80,17 +78,26 @@ class VolumeRow extends LitElement {
       group_volume: false
     }
   }
-  private onToggle = () => {
-    this.onPowerToggleSelect();
+  private onToggle = async () => {
+    await this.actions.actionTogglePower();
   }
-  private onVolumeMuteToggle = () => {
-    this.onVolumeMuteToggleSelect();
+  private onVolumeMuteToggle = async () => {
+    await this.actions.actionToggleMute();
   }
-  private onVolume = (ev: CustomEvent) => {
-    this.onVolumeChange(ev);
+  private onVolume = async (ev: CustomEvent) => {
+    // eslint-disable-next-line @typescript-eslint/no-unsafe-assignment, @typescript-eslint/no-unsafe-member-access
+    let volume: number = ev.detail.value;
+    if (isNaN(volume)) return;
+    this.player_data.volume = volume;
+    volume = volume / 100;
+    await this.actions.actionSetVolume(volume);
   }
-  private onFavorite = () => {
-    this.onFavoriteToggleSelect();
+  private onFavorite = async () => {
+    if (this.player_data.favorite) {
+      await this.actions.actionRemoveFavorite();
+    } else {
+      await this.actions.actionAddFavorite();
+    }
   }
   protected renderPower(): TemplateResult {
     if (this.hide.power) {

@@ -12,17 +12,17 @@ import {
   TemplateResult
 } from "lit";
 import {
-  property,
   query,
   state
 } from "lit/decorators.js";
 import { html } from "lit/static-html.js";
 
+import '../components/media-progress';
 import '../components/menu-button';
+import '../components/player-controls';
 import '../components/section-header';
 import '../components/volume-row';
 import '../components/volume-slider';
-import '../components/player-controls';
 
 import PlayerActions from "../actions/player-actions";
 
@@ -57,7 +57,6 @@ import {
   getIcon,
 } from "../utils/icons";
 import {
-  secondsToTime,
   testMixedContent
 } from "../utils/util";
 import { PlayerSelectedService } from "../const/actions";
@@ -66,8 +65,6 @@ import { ActivePlayerController } from "../controller/active-player";
 import { ActionsController } from "../controller/actions";
 
 class MusicPlayerCard extends LitElement {
-  @property({ attribute: false}) private media_duration = 1;
-  @property({ attribute: false}) private media_position = 0;
   @state() private shouldMarqueeTitle = false;
 
   @query('.player-track-title') _track_title!: LitElement;
@@ -93,12 +90,9 @@ class MusicPlayerCard extends LitElement {
 
   public selectedPlayerService!: PlayerSelectedService;
   private _animationListener  = async () => this.onAnimationEnd();
-  private _listener: number|undefined;
   private _hass!: ExtendedHass;
   private groupedPlayers!: EntityConfig[];
   private actions!: PlayerActions;
-  private entity_dur = 1;
-  private entity_pos = 0;
   private marquee_x_dist = 0;
   private touchStartX = 0;
   private touchEndX = 0;
@@ -167,88 +161,6 @@ class MusicPlayerCard extends LitElement {
     const current_item = (await this.actions.actionGetCurrentItem(this.activeMediaPlayer));
     const new_player_data = this.activePlayerController.getactivePlayerData(current_item);
     this.player_data = new_player_data;
-    const old_pos = this.entity_pos;
-    const old_dur = this.entity_dur;
-    const new_pos = this.activeMediaPlayer.attributes.media_position;
-    const new_dur = this.activeMediaPlayer.attributes.media_duration;
-    if (old_pos !== new_pos || old_dur !== new_dur) {
-      this.media_duration = new_dur;
-      this.entity_dur = new_dur;
-      this.media_position = new_pos;
-      this.entity_pos = new_pos;
-    }
-    if (this._listener) {
-      clearInterval(this._listener)
-    };
-    this._listener = undefined;
-    this.tickProgress();
-  }
-  private onVolumeChange = async (ev: CustomEvent) => {
-    // eslint-disable-next-line @typescript-eslint/no-unsafe-assignment, @typescript-eslint/no-unsafe-member-access
-    let volume: number = ev.detail.value;
-    if (isNaN(volume)) return;
-    this.player_data.volume = volume;
-    volume = volume / 100;
-    await this.actionsController.actionSetVolume(volume);
-  }
-  private onNext = async () => {
-    await this.actionsController.actionPlayNext();
-    this.media_position = 0;
-    this.entity_dur = 0;
-  }
-  private onPrevious = async () => {
-    await this.actionsController.actionPlayPrevious();
-    this.media_position = 0;
-    this.entity_dur = 0;
-  }
-  private onVolumeMuteToggle = async () => {
-    this.player_data.muted = !this.player_data.muted;
-    await this.actionsController.actionToggleMute();
-
-  }
-  private onFavorite = async () => {
-    if (this.player_data.favorite) {
-      await this.actionsController.actionRemoveFavorite();
-      this.player_data.favorite = false;
-    } else {
-      await this.actionsController.actionAddFavorite();
-      this.player_data.favorite = true;
-    }
-  }
-  private onToggle = async () => {
-    await this.actionsController.actionTogglePower();
-  }
-  private requestProgressUpdate() {
-    void this.activePlayerController.getPlayerProgress().then(
-      (progress) => {
-        this.media_position = progress as number;
-      }
-    )
-  }
-  private tickProgress = () => {
-    const playing = this.player_data.playing;
-    if (playing) {
-      const sec = new Date().getSeconds();
-      if (this._listener) {
-        if (!(sec % 5)) {
-          this.requestProgressUpdate();
-        } else {
-          this.media_position += 1;
-        }
-      } else {
-      this._listener = setInterval(this.tickProgress, 1000);
-      }
-    } else {
-      clearInterval(this._listener);
-    }
-  }
-  private onSeek = async (e: MouseEvent) => {
-    const progress_element = this.shadowRoot?.getElementById('progress');
-    const prog_width = progress_element?.offsetWidth ?? 1;
-    const seek = e.offsetX / prog_width;
-    const pos = Math.floor(seek * this.media_duration);
-    this.media_position = pos;
-    await this.actions.actionSeek(this.activeMediaPlayer, pos);
   }
   private onSwipeStart = (e: TouchEvent) => {
     const touches = e.changedTouches[0];
@@ -265,13 +177,11 @@ class MusicPlayerCard extends LitElement {
       if (Math.abs(x_swipe) < SWIPE_MIN_X) {
         return;
       }
-      /* eslint-disable @typescript-eslint/no-floating-promises */
       if (x_swipe > 0) {
-        this.onPrevious();
+        void this.actionsController.actionPlayPrevious();
       } else {
-        this.onNext();
+        void this.actionsController.actionPlayNext();
       }
-      /* eslint-enable @typescript-eslint/no-floating-promises */
     }
   }
   private onPlayerSelect = (ev: CustomEvent) => {
@@ -475,24 +385,9 @@ class MusicPlayerCard extends LitElement {
       </div>
     `
   }
-  protected renderTime() {
-    const pos = secondsToTime(this.media_position);
-    const dur = secondsToTime(this.media_duration);
-    return `${pos} - ${dur}`
-  }
   protected renderProgress() {
     return html`
-      <div class="progress">
-        <div class="time">
-          ${this.renderTime()}
-        </div>
-        <md-linear-progress
-          id="progress"
-          value="${this.media_position / this.media_duration}"
-          @click=${this.onSeek}
-        >
-        </md-linear-progress>
-      </div>
+      <mass-progress-bar></mass-progress-bar>
     `
   }
   protected renderArtwork() {
@@ -520,13 +415,9 @@ class MusicPlayerCard extends LitElement {
   }
   protected renderVolumeRow() {
     return html`
-      <mass-volume-row
-        .maxVolume=${this.activePlayerController.activeEntityConfig.max_volume}
-        .onPowerToggleSelect=${this.onToggle}
-        .onVolumeMuteToggleSelect=${this.onVolumeMuteToggle}
-        .onVolumeChange=${this.onVolumeChange}
-        .onFavoriteToggleSelect=${this.onFavorite}
-      ></mass-volume-row>
+      <div class="volume">
+        <mass-volume-row></mass-volume-row>
+      </div>
     `
   }
   protected renderControls() {
@@ -551,9 +442,7 @@ class MusicPlayerCard extends LitElement {
           ${this.renderArtwork()}
           ${this.renderControls()}
         </div>
-        <div class="volume">
-          ${this.renderVolumeRow()}
-        </div>
+        ${this.renderVolumeRow()}
       </div>
     `
   }

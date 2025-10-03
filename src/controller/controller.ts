@@ -17,8 +17,8 @@ export class MassCardController {
   private _host: HTMLElement;
 
   private configController: MassCardConfigController;
-  private activePlayerController!: ContextProvider<{ __context__: ActivePlayerController; }, HTMLElement>;
-  private actionsController!: ContextProvider<{ __context__: ActionsController; }, HTMLElement>;
+  private activePlayerController!: ContextProvider<typeof activePlayerControllerContext>;
+  private actionsController!: ContextProvider<typeof actionsControllerContext>;
   
   private _activeSection = new ContextProvider(document.body, { context: activeSectionContext});
 
@@ -38,7 +38,12 @@ export class MassCardController {
     }
   }
   private _setupActionsController() {
-    if (this.hass && this.config && this.ActivePlayer.activeEntityConfig) {
+    const is_ready = !!(
+      this.activePlayerController
+        && this.config
+        && this.hass
+    )
+    if (!this.actionsController && is_ready){
       this.actionsController = new ContextProvider(this._host, { context: actionsControllerContext});
       this.actionsController.setValue(new ActionsController(this._host, this.hass, this.ActivePlayer.activeEntityConfig));
     }
