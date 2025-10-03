@@ -82,7 +82,6 @@ class MusicPlayerCard extends LitElement {
   private activePlayerController!: ActivePlayerController;
   
   @consume({ context: actionsControllerContext, subscribe: true})
-  @state()
   private actionsController!: ActionsController;
 
   private _activeEntityConfig!: EntityConfig;
