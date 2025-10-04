@@ -4,7 +4,7 @@ import {
   Icon,
   LightModeIcons,
   MediaTypes
-} from "../const/common"
+} from "../const/common";
 import { SEARCH_MEDIA_TYPE_BUTTONS } from "../const/media-browser";
 
 export function backgroundImageFallback(hass: ExtendedHass, image_url: string, fallback: Icon) {
@@ -12,7 +12,7 @@ export function backgroundImageFallback(hass: ExtendedHass, image_url: string, f
   return `background-image: url(${image_url}), url(${_fallback})`
 }
 
-export function getFallbackImage(hass: ExtendedHass, fallback: Icon) {
+export function getFallbackBackgroundImage(hass: ExtendedHass, fallback: Icon) {
   const _fallback: string = getIcon(hass, fallback);
   return `background-image: url(${_fallback})`
 }

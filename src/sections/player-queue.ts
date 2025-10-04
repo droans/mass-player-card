@@ -2,8 +2,6 @@ import { consume, provide } from '@lit/context';
 import { LovelaceCard } from 'custom-card-helpers';
 import { LitElement, html, type CSSResultGroup, PropertyValues, TemplateResult } from 'lit';
 import { property, state } from 'lit/decorators.js';
-import { keyed } from 'lit/directives/keyed.js';
-
 import '../components/media-row'
 import '../components/section-header';
 
@@ -18,7 +16,9 @@ import {
 import { ExtendedHass } from '../const/common';
 import {
   activeEntityID,
+  activeSectionContext,
   hassExt,
+  mediaCardDisplayContext,
   playerQueueConfigContext
 } from '../const/context';
 import {
@@ -27,6 +27,7 @@ import {
 } from '../const/player-queue';
 
 import styles from '../styles/player-queue';
+import { Sections } from '../const/card';
 
 class QueueCard extends LitElement {
   @provide({context: playerQueueConfigContext})
@@ -48,6 +49,18 @@ class QueueCard extends LitElement {
   private newId = '';
   private queueID = '';
 
+  @provide({context: mediaCardDisplayContext})
+  private _mediaCardDisplay = true;
+  private _section!: Sections;
+
+  @consume({ context: activeSectionContext, subscribe: true})
+  public set activeSection(section: Sections) {
+    this._mediaCardDisplay = section == Sections.QUEUE;
+    this._section = section;
+  }
+  public get activeSection() {
+    return this._section;
+  }
   @consume({context: hassExt, subscribe: true})
   public set hass(hass: ExtendedHass) {
     if (!hass) {
@@ -143,11 +156,16 @@ class QueueCard extends LitElement {
     }}
   }
   private async subscribeUpdates() {
-    this._unsubscribe = await this.hass.connection.subscribeEvents(
-      this.eventListener,
-      "mass_queue"
-    );
-    this._listening = true;
+    if (this.hass.user.is_admin) {
+      this._unsubscribe = await this.hass.connection.subscribeEvents(
+        this.eventListener,
+        "mass_queue"
+      );
+      this._listening = true;
+    } else {
+      /* eslint-disable-next-line no-console */
+      console.error(`User is a non-admin; queue updates may be delayed or non-existent!`)
+    }
   }
   public disconnectedCallback(): void {
     super.disconnectedCallback();
@@ -251,23 +269,34 @@ class QueueCard extends LitElement {
   }
   private renderQueueItems() {
     const show_album_covers = this._config.show_album_covers;
+    const delay_add = 62.5;
+    let i = 1;
     return this.queue.map(
       (item) => {
-        return keyed(
-          item.queue_item_id,
+        const result = 
           html`
-            <mass-player-media-row
-              .media_item=${item}
-              .selected=${item.playing}
-              .showAlbumCovers=${show_album_covers}
-              .selectedService=${this.onQueueItemSelected}
-              .removeService=${this.onQueueItemRemoved}
-              .moveQueueItemNextService=${this.onQueueItemMoveNext}
-              .moveQueueItemUpService=${this.onQueueItemMoveUp}
-              .moveQueueItemDownService=${this.onQueueItemMoveDown}
+            <ha-fade-in
+              .delay=${delay_add * i}
+              .duration=${delay_add * 2}
+              .fill="forwards"
+              play=${this.checkVisibility()}
             >
-            </mass-player-media-row>`
-        )
+              <mass-player-media-row
+                style="opacity: 0%;"
+                .media_item=${item}
+                .showAlbumCovers=${show_album_covers}
+                .selectedService=${this.onQueueItemSelected}
+                .removeService=${this.onQueueItemRemoved}
+                .moveQueueItemNextService=${this.onQueueItemMoveNext}
+                .moveQueueItemUpService=${this.onQueueItemMoveUp}
+                .moveQueueItemDownService=${this.onQueueItemMoveDown}
+              >
+              </mass-player-media-row>
+            </ha-fade-in>
+          `
+        ;
+        i++;
+        return result;
       }
     );
   }
@@ -285,7 +314,6 @@ class QueueCard extends LitElement {
       </ha-card>
     `
   }
-
   static get styles(): CSSResultGroup {
     return styles;
   }

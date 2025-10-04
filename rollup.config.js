@@ -5,7 +5,7 @@ import { babel } from '@rollup/plugin-babel';
 import terser from '@rollup/plugin-terser';
 import json from '@rollup/plugin-json';
 import image from '@rollup/plugin-image';
-import gzipPlugin from 'rollup-plugin-gzip';
+import css from "rollup-plugin-import-css";
 
 export default [
   {
@@ -25,7 +25,7 @@ export default [
         babelHelpers: 'bundled',
       }),
       terser(),
-      gzipPlugin(),
+      css(),
     ],
     onwarn(warning, warn) {
       warn(warning);

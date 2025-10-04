@@ -18,14 +18,7 @@ export default css`
   #button-favorite {
     margin-left: 1em;
   }
-  #volume-slider {
+  ha-control-slider {
     --control-slider-thickness: 2.25em;
   } 
-  .button-min::part(base) {
-    --wa-form-control-padding-inline: 0px;
-  }
-  .button-min {
-    height: 40px;
-    width: 40px;
-  }
 `

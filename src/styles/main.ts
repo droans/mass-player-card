@@ -1,7 +1,7 @@
 import { css } from 'lit';
 export default css`
  ha-card {
-    --mass-player-card-height: 42em;
+    --mass-player-card-height: 35em;
     --expansion-panel-content-padding: 0px;
     --md-list-container-color: rgba(0,0,0,0) !important;
     --md-list-item-leading-space: 0px;
@@ -22,8 +22,9 @@ export default css`
    --player-play-pause-icon-size: 6rem;
    --player-track-color: var(--ha-color-text-link);
    --player-name-color: var(--ha-color-text-secondary);
+   border-radius: 20px 20px 28px 28px
  }
-  wa-tab-group {
+  #tabs {
     --track-width: 0px;
     display: flex;
     justify-content: center;
@@ -41,7 +42,14 @@ export default css`
   border-radius: 50%;
 }
 .action-button-svg-inactive {
-  --icon-primary-color: var(--md-sys-color-on-surface-variant);
+  --icon-primary-color: var(--md-sys-color-primary-palette-key-color);
+  height: 36px;
+  width: 36px;
+}
+.action-button-svg {
+  --icon-primary-color: var(--ha-control-color);
+  height: 48px;
+  width: 48px;
 }
 wa-tab-panel {
   height: var(--mass-player-card-height);
@@ -49,5 +57,15 @@ wa-tab-panel {
 }
 .section-hidden {
   display: none;
+}
+.player-tabs {
+  --primary-container: rgba(from var(--primary-color) r g b / 0.25);
+}
+.tabbed {
+  background-color: rgba(from var(--secondary-background-color) r g b /0.25) !important;
+}
+.icon-i {
+  height: 100%;
+  width: 100%;
 }
 `

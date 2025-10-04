@@ -12,7 +12,7 @@ import {
   PropertyValues,
   TemplateResult
 } from 'lit';
-import { property } from 'lit/decorators.js'
+import { property, state } from 'lit/decorators.js'
 
 import {
   QueueItemSelectedService,
@@ -22,24 +22,33 @@ import {
   ExtendedHass,
   Icon
 } from '../const/common';
-import { activeEntityConf, EntityConfig, hassExt, playerQueueConfigContext } from '../const/context';
+import {
+  activeEntityConf,
+  EntityConfig,
+  hassExt,
+  mediaCardDisplayContext,
+  playerQueueConfigContext
+} from '../const/context';
 import { QueueItem } from '../const/player-queue';
 
 import styles from '../styles/media-row';
 
 import {
   backgroundImageFallback,
-  getFallbackImage
+  getFallbackBackgroundImage
 } from '../utils/icons';
-import { testMixedContent } from '../utils/util';
+import { queueItemhasUpdated, testMixedContent } from '../utils/util';
 import { DEFAULT_PLAYER_QUEUE_HIDDEN_ELEMENTS_CONFIG, PlayerQueueHiddenElementsConfig, QueueConfig } from '../config/player-queue';
 
 class MediaRow extends LitElement {
   @property({ attribute: false }) media_item!: QueueItem;
-  @property({ type: Boolean }) selected = false;
 
-  @consume({context: hassExt})
+  @consume({context: hassExt, subscribe: true})
   public hass!: ExtendedHass;
+
+  @consume({ context: mediaCardDisplayContext, subscribe: true })
+  @state()
+  public display!: boolean;
 
   public moveQueueItemDownService!: QueueService;
   public moveQueueItemNextService!: QueueService;
@@ -106,25 +115,17 @@ class MediaRow extends LitElement {
     this.selectedService(this.media_item.queue_item_id, this.media_item.media_content_id);
   }
   protected shouldUpdate(_changedProperties: PropertyValues<this>): boolean {
-    if (_changedProperties.has('selected')) {
-      return true;
-    }
     if (_changedProperties.has('media_item')) {
       // eslint-disable-next-line @typescript-eslint/no-non-null-assertion
       const oldItem: QueueItem = _changedProperties.get('media_item')!;
-      return oldItem.media_title !== this.media_item.media_title
-        || oldItem.media_artist !== this.media_item.media_artist
-        || oldItem.media_image !== this.media_item.media_image
-        || oldItem.playing !== this.media_item.playing
-        || oldItem.show_action_buttons !== this.media_item.show_action_buttons
-        || oldItem.show_move_up_next !== this.media_item.show_move_up_next
+      return queueItemhasUpdated(oldItem, this.media_item);
     }
     return true;
   }
   private artworkStyle() {
     const img = this.media_item.media_image || "";
     if (!testMixedContent(img)) {
-      return getFallbackImage(this.hass, Icon.CLEFT);
+      return getFallbackBackgroundImage(this.hass, Icon.CLEFT);
     }
     return backgroundImageFallback(this.hass, img, Icon.CLEFT);
   }
@@ -261,17 +262,18 @@ class MediaRow extends LitElement {
 
   render(): TemplateResult {
     return html`
-      <ha-md-list-item
-        class="button${this.media_item.playing ? '-active' : ''}"
-		    @click=${this.callOnQueueItemSelectedService}
-        type="button"
-      >
-        ${this.renderThumbnail()}
-        ${this.renderTitle()}
-        ${this.renderArtist()}
-        ${this.renderActionButtons()}
-      </ha-md-list-item>
-      <div class="divider"</div>
+        <ha-md-list-item
+          style="${this.display? "" : "display: none;"}"
+          class="button${this.media_item.playing ? '-active' : ''}"
+          @click=${this.callOnQueueItemSelectedService}
+          type="button"
+        >
+          ${this.renderThumbnail()}
+          ${this.renderTitle()}
+          ${this.renderArtist()}
+          ${this.renderActionButtons()}
+        </ha-md-list-item>
+        <div class="divider"></div>
     `
   }
   static get styles(): CSSResultGroup {

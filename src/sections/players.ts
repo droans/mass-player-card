@@ -106,6 +106,7 @@ class PlayersCard extends LitElement {
       (entity) => entity.entity_id == target_player
     )!
     this.activePlayerEntity = player;
+    this.selectedPlayerService(target_player);
   }
   private setEntities(hass: ExtendedHass) {
     if (!this._config) {

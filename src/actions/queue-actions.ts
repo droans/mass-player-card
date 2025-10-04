@@ -2,12 +2,24 @@ import { QueueItem } from "../const/player-queue";
 import { ExtendedHass } from "../const/common";
 
 export default class QueueActions {
-  private hass: ExtendedHass;
-  public player_entity: string;
+  private _hass!: ExtendedHass;
+  public _player_entity!: string;
 
   constructor(hass: ExtendedHass, player_entity: string) {
     this.hass = hass;
     this.player_entity = player_entity;
+  }
+  public set hass(hass: ExtendedHass) {
+    this._hass = hass;
+  }
+  public get hass() {
+    return this._hass;
+  }
+  public set player_entity(entity: string) {
+    this._player_entity = entity;
+  }
+  public get player_entity() {
+    return this._player_entity;
   }
 
   async getQueue(limit_before: number, limit_after: number): Promise<QueueItem[]|null> {

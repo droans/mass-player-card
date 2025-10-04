@@ -4,26 +4,25 @@ import { css } from 'lit';
 // https://lit.dev/docs/components/styles/
 export default css`
   ha-card {
-    box-shadow: unset;
     display: flex;
     position: relative;
+    border-radius: var(--border-radius) !important;
+    overflow: hidden;
+    margin: 0px 3px 3px 3px;
+    aspect-ratio: 1;
   }
   .thumbnail-section {
     background-repeat: no-repeat;
     background-size: contain;
-    height: var(--section-thumbnail-size);
-    width: var(--section-thumbnail-size);
+    width: 100%;
+    aspect-ratio: 1;
   }
-  ha-control-button {
-    --section-thumbnail-size: calc(var(--mass-player-card-height) / 4);
-    --thumbnail-size: calc(var(--mass-player-card-height) / 2);
-    width: 98%;
-    height: 98%;
-    margin: 1%;
+  wa-card {
   }
   #container {
+    --section-thumbnail-size: calc(var(--mass-player-card-height) / 4);
+    --thumbnail-size: calc(var(--mass-player-card-height) / 2);
     width: 100%;
-    height: calc(var(--mass-player-card-height) / 2);
     position: relative;
   }
 
@@ -31,12 +30,8 @@ export default css`
     background-size: 100%;
     background-repeat: no-repeat;
     background-position: center;
-    margin: 0 6%;
     height: var(--thumbnail-size);
     width: var(--thumbnail-size);
-    padding-bottom: 2em;
-    padding-left: 1em;
-    padding-right: 1em;
   }
 
   #title-div {
@@ -47,6 +42,7 @@ export default css`
     line-height: 160%;
     bottom: 0;
     background-color: rgba(from var(--ha-card-background) r g b / 0.9);
+    border-radius: 0px 0px 12px 12px;
   }
 
   #enqueue-menu-control {
@@ -95,5 +91,19 @@ export default css`
     color: var(--mdc-theme-primary);
     background-color: var(--ha-card-background,var(--card-background-color,#fff));
     border-radius: 50%;
+  }
+  .media-card::part(body) {
+    padding: unset;
+    text-align: center;
+  }
+  wa-card {
+    --inner-border-radius: var(--border-radius);
+    --wa-panel-border-radius: var(--border-radius);
+    --wa-panel-border-style: var(--ha-card-border-style);
+    --wa-color-surface-border: var(--ha-color-border-neutral-normal);
+    --wa-panel-border-width: var(--ha-card-border-width);
+    --wa-shadow-s: var(--ha-card-box-shadow);
+    height: 100%;
+    width: 100%;
   }
 `;
