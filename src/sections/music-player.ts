@@ -414,7 +414,7 @@ class MusicPlayerCard extends LitElement {
   }
   protected renderVolumeRow() {
     return html`
-      <div class="volume">
+      <div id="volume">
         <mass-volume-row></mass-volume-row>
       </div>
     `

@@ -22,6 +22,7 @@ export default css`
    --player-play-pause-icon-size: 6rem;
    --player-track-color: var(--ha-color-text-link);
    --player-name-color: var(--ha-color-text-secondary);
+   border-radius: 20px 20px 28px 28px
  }
   #tabs {
     --track-width: 0px;
@@ -42,6 +43,13 @@ export default css`
 }
 .action-button-svg-inactive {
   --icon-primary-color: var(--md-sys-color-on-surface-variant);
+  height: 2em;
+  width: 2em;
+}
+.action-button-svg {
+  --icon-primary-color: var(--ha-control-color);
+  height: 36px;
+  width: 36px;
 }
 sl-tab-panel {
   height: var(--mass-player-card-height);
@@ -49,5 +57,15 @@ sl-tab-panel {
 }
 .section-hidden {
   display: none;
+}
+.player-tabs {
+  --primary-container: rgba(from var(--primary-color) r g b / 0.25);
+}
+.tabbed {
+  background-color: rgba(from var(--secondary-background-color) r g b /0.25) !important;
+}
+.icon-i {
+  height: 100%;
+  width: 100%;
 }
 `

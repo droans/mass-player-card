@@ -198,6 +198,9 @@ export class MusicAssistantPlayerCard extends LitElement {
       this.active_section = Sections.MUSIC_PLAYER;
     }
   }
+  private newHandleTabChanged(section: Sections) {
+    this.active_section = section;
+  }
   private _handleTabChanged(ev: CustomEvent) {
     // eslint-disable-next-line @typescript-eslint/no-unsafe-assignment, @typescript-eslint/no-unsafe-member-access
     const newTab: Sections = ev.detail.name;
@@ -300,24 +303,38 @@ export class MusicAssistantPlayerCard extends LitElement {
     const active = this.active_section == Sections.MUSIC_PLAYER;
     if (this.config.player.enabled){
       return html`
-        <wa-tab
-          slot="nav"
-          .active=${active}
-          panel="${Sections.MUSIC_PLAYER}"
+        <a 
+          class="${active ? `active` : ``} player-tabs"
+          @click=${() => this.newHandleTabChanged(Sections.MUSIC_PLAYER)}
         >
-          <ha-button
-            appearance="plain"
-            variant="brand"
-            size="medium"
-            class="action-button${active ? "-active" : ""}"
-          >
+          <i class="icon-i">
             <ha-svg-icon
               .path=${mdiMusic}
               class="action-button-svg${active ? "" : "-inactive"}"
             ></ha-svg-icon>
-          </ha-button>
-        </wa-tab>
+          </i>
+          <span></span> 
+        </a>
       `
+      // return html`
+      //   <wa-tab
+      //     slot="nav"
+      //     .active=${active}
+      //     panel="${Sections.MUSIC_PLAYER}"
+      //   >
+      //     <ha-button
+      //       appearance="plain"
+      //       variant="brand"
+      //       size="medium"
+      //       class="action-button${active ? "-active" : ""}"
+      //     >
+      //       <ha-svg-icon
+      //         .path=${mdiMusic}
+      //         class="action-button-svg${active ? "" : "-inactive"}"
+      //       ></ha-svg-icon>
+      //     </ha-button>
+      //   </wa-tab>
+      // `
     }
     return html``
   }
@@ -325,24 +342,38 @@ export class MusicAssistantPlayerCard extends LitElement {
     const active = this.active_section == Sections.QUEUE;
     if (this.config.queue.enabled){
       return html`
-        <wa-tab
-          slot="nav"
-          .active=${active}
-          panel="${Sections.QUEUE}"
+        <a 
+          class="${active ? `active` : ``}"
+          @click=${() => this.newHandleTabChanged(Sections.QUEUE)}
         >
-          <ha-button
-            appearance="plain"
-            variant="brand"
-            size="medium"
-            class="action-button${active ? "-active" : ""}"
-          >
+          <i class="icon-i">
             <ha-svg-icon
               .path=${mdiPlaylistMusic}
-              style="height: 24px; width: 24px;"
               class="action-button-svg${active ? "" : "-inactive"}"
             ></ha-svg-icon>
-          </ha-button>
+          </i>
+          <span></span> 
+        </a>
       `
+      // return html`
+      //   <wa-tab
+      //     slot="nav"
+      //     .active=${active}
+      //     panel="${Sections.QUEUE}"
+      //   >
+      //     <ha-button
+      //       appearance="plain"
+      //       variant="brand"
+      //       size="medium"
+      //       class="action-button${active ? "-active" : ""}"
+      //     >
+      //       <ha-svg-icon
+      //         .path=${mdiPlaylistMusic}
+      //         style="height: 24px; width: 24px;"
+      //         class="action-button-svg${active ? "" : "-inactive"}"
+      //       ></ha-svg-icon>
+      //     </ha-button>
+      // `
     }
     return html``
   }
@@ -350,26 +381,40 @@ export class MusicAssistantPlayerCard extends LitElement {
     const active = this.active_section == Sections.MEDIA_BROWSER;
     if (this.config.media_browser.enabled){
       return html`
-        <wa-tab
-          slot="nav"
-          .active=${active}
-          panel="${Sections.MEDIA_BROWSER}"
-          @click=${this.returnMediaBrowserToHome}
+        <a 
+          class="${active ? `active` : ``}"
+          @click=${() => this.newHandleTabChanged(Sections.MEDIA_BROWSER)}
         >
-            <ha-button
-              appearance="plain"
-              variant="brand"
-              size="medium"
-              class="action-button${active ? "-active" : ""}"
-            >
-              <ha-svg-icon
-                .path=${mdiAlbum}
-                style="height: 24px; width: 24px;"
-                class="action-button-svg${active ? "" : "-inactive"}"
-              ></ha-svg-icon>
-            </ha-button>
-        </wa-tab>
+          <i class="icon-i">
+            <ha-svg-icon
+              .path=${mdiAlbum}
+              class="action-button-svg${active ? "" : "-inactive"}"
+            ></ha-svg-icon>
+          </i>
+          <span></span> 
+        </a>
       `
+      // return html`
+      //   <wa-tab
+      //     slot="nav"
+      //     .active=${active}
+      //     panel="${Sections.MEDIA_BROWSER}"
+      //     @click=${this.returnMediaBrowserToHome}
+      //   >
+      //       <ha-button
+      //         appearance="plain"
+      //         variant="brand"
+      //         size="medium"
+      //         class="action-button${active ? "-active" : ""}"
+      //       >
+      //         <ha-svg-icon
+      //           .path=${mdiAlbum}
+      //           style="height: 24px; width: 24px;"
+      //           class="action-button-svg${active ? "" : "-inactive"}"
+      //         ></ha-svg-icon>
+      //       </ha-button>
+      //   </wa-tab>
+      // `
     }
     return html``
   }
@@ -377,41 +422,66 @@ export class MusicAssistantPlayerCard extends LitElement {
     const active = this.active_section == Sections.PLAYERS;
     if (this.config.players.enabled){
       return html`
-        <wa-tab
-          slot="nav"
-          .active=${active}
-          panel="${Sections.PLAYERS}"
+        <a 
+          class="${active ? `active` : ``}"
+          @click=${() => this.newHandleTabChanged(Sections.PLAYERS)}
         >
-            <ha-button
-              appearance="plain"
-              variant="brand"
-              size="medium"
-              class="action-button${active ? "-active" : ""}"
-            >
-              <ha-svg-icon
-                .path=${mdiSpeakerMultiple}
-                style="height: 24px; width: 24px;"
-                class="action-button-svg${active ? "" : "-inactive"}"
-              ></ha-svg-icon>
-            </ha-button>
-        </wa-tab>
+          <i class="icon-i">
+            <ha-svg-icon
+              .path=${mdiSpeakerMultiple}
+              class="action-button-svg${active ? "" : "-inactive"}"
+            ></ha-svg-icon>
+          </i>
+          <span></span> 
+        </a>
       `
+    //   return html`
+    //     <wa-tab
+    //       slot="nav"
+    //       .active=${active}
+    //       panel="${Sections.PLAYERS}"
+    //     >
+    //         <ha-button
+    //           appearance="plain"
+    //           variant="brand"
+    //           size="medium"
+    //           class="action-button${active ? "-active" : ""}"
+    //         >
+    //           <ha-svg-icon
+    //             .path=${mdiSpeakerMultiple}
+    //             style="height: 24px; width: 24px;"
+    //             class="action-button-svg${active ? "" : "-inactive"}"
+    //           ></ha-svg-icon>
+    //         </ha-button>
+    //     </wa-tab>
+    //   `
     }
     return html``
   }
   /* eslint-disable @typescript-eslint/unbound-method */
   protected renderTabs() {
-    return cache(html`
-      <wa-tab-group
-        id="tabs"
-        @wa-tab-show=${this._handleTabChanged}
-      >
-        ${this.renderMusicPlayerTab()}
-        ${this.renderQueueTab()}
-        ${this.renderMediaBrowserTab()}
-        ${this.renderPlayersTab()}
-      </wa-tab-group>
-    `)
+    return html`
+      <div>
+        <nav class="tabbed">
+          <link href="https://cdn.jsdelivr.net/npm/beercss@3.12.11/dist/cdn/beer.min.css" rel="stylesheet">
+          ${this.renderMusicPlayerTab()}
+          ${this.renderQueueTab()}
+          ${this.renderMediaBrowserTab()}
+          ${this.renderPlayersTab()}
+        </nav>
+      </div>
+    `
+    // return cache(html`
+    //   <wa-tab-group
+    //     id="tabs"
+    //     @wa-tab-show=${this._handleTabChanged}
+    //   >
+    //     ${this.renderMusicPlayerTab()}
+    //     ${this.renderQueueTab()}
+    //     ${this.renderMediaBrowserTab()}
+    //     ${this.renderPlayersTab()}
+    //   </wa-tab-group>
+    // `)
   }
   /* eslint-enable @typescript-eslint/unbound-method */
   protected renderSections() {

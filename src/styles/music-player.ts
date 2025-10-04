@@ -172,4 +172,9 @@ export default css`
       left: var(--marquee-left-offset);
     }
   }
+  #volume {
+    position: absolute;
+    bottom: 0;
+    width: 100%;
+  }
 `;

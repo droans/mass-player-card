@@ -14,15 +14,15 @@ export default css`
   }
   #progress-bar {
     --primary: var(--accent-color);
+    --_light: unset;
+    --_dark: unset;
   }
   .progress-plain {
     --_light: var(--md-linear-progress-track-color, var(--md-sys-color-surface-container-highest, #e6e0e9));
     --_dark: var(--light);
-    --_size: 8px;
+    --_size: 6px !important;
   }
   .wavy {
-    --_light: unset;
-    --_dark: unset;
   }
   #progress-handle {
     background-color: var(--primary-color);
@@ -36,11 +36,11 @@ export default css`
     block-size: calc(var(--_size) * 3);
   }
   
-  .prog-incomplete-wavy {
+  .prog-incomplete {
     position: absolute;
     left: var(--incomplete-progress-start-pct);
     --height: 6px;
-    top: calc(50% - (var(--height) / 2));
+    top: calc(50% - (var(--height) / 2 - 1px));
     height: var(--height);
     background-color: var(--md-linear-progress-track-color, var(--md-sys-color-surface-container-highest, #e6e0e9));
     width: calc(100% - var(--incomplete-progress-start-pct));
