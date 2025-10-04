@@ -70,7 +70,7 @@ class MassPlayerProgressBar extends LitElement {
   public get activePlayer() {
     return this._activePlayer;
   }
-  
+
   @consume({ context: activePlayerDataContext, subscribe: true})
   public set player_data(player_data: PlayerData) {
     this._player_data = player_data;
@@ -81,6 +81,10 @@ class MassPlayerProgressBar extends LitElement {
   }
   
   private requestProgress() {
+    if (this._listener) {
+      clearInterval(this._listener)
+      this._listener = undefined;
+    }
     void this.activePlayerController.getPlayerProgress().then( 
       (progress) => {
         progress = Math.min(progress, this.entity_duration ?? progress);
