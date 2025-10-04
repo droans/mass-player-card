@@ -27,9 +27,11 @@
     "@mdi/js": "7.4.47",
     "@mdi/react": "1.6.1",
     "@shoelace-style/shoelace": "^2.20.1",
+    "beercss": "^3.12.11",
     "custom-card-helpers": "1.9.0",
     "home-assistant-js-websocket": "9.5.0",
-    "lit": "3.3.1"
+    "lit": "3.3.1",
+    "rollup-plugin-import-css": "^4.0.2"
   },
   "devDependencies": {
     "@awesome.me/webawesome": "^3.0.0-beta.6",
