@@ -324,7 +324,7 @@ export class MusicAssistantPlayerCard extends LitElement {
     if (this.config.queue.enabled){
       return html`
         <a 
-          class="${active ? `active` : ``}"
+          class="${active ? `active` : ``} player-tabs"
           @click=${() => {this.newHandleTabChanged(Sections.QUEUE)}}
         >
           <i class="icon-i">
@@ -344,7 +344,7 @@ export class MusicAssistantPlayerCard extends LitElement {
     if (this.config.media_browser.enabled){
       return html`
         <a 
-          class="${active ? `active` : ``}"
+          class="${active ? `active` : ``} player-tabs"
           @click=${() => {this.newHandleTabChanged(Sections.MEDIA_BROWSER)}}
         >
           <i class="icon-i">
@@ -364,7 +364,7 @@ export class MusicAssistantPlayerCard extends LitElement {
     if (this.config.players.enabled){
       return html`
         <a 
-          class="${active ? `active` : ``}"
+          class="${active ? `active` : ``} player-tabs"
           @click=${() => {this.newHandleTabChanged(Sections.PLAYERS)}}
         >
           <i class="icon-i">
