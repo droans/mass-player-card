@@ -42,14 +42,14 @@ export default css`
   border-radius: 50%;
 }
 .action-button-svg-inactive {
-  --icon-primary-color: var(--md-sys-color-on-surface-variant);
-  height: 2em;
-  width: 2em;
+  --icon-primary-color: var(--md-sys-color-primary-palette-key-color);
+  height: 36px;
+  width: 36px;
 }
 .action-button-svg {
   --icon-primary-color: var(--ha-control-color);
-  height: 36px;
-  width: 36px;
+  height: 48px;
+  width: 48px;
 }
 sl-tab-panel {
   height: var(--mass-player-card-height);
