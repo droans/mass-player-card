@@ -51,15 +51,9 @@ class MassPlayerProgressBar extends LitElement {
   public set activePlayer(player: ExtendedHassEntity) {
     if (this._activePlayer) {
       if (!playerHasUpdated(this._activePlayer, player)) {
-        console.log(`Player hasn't updated, making no further changes.`);
         return;
       }
     }
-    console.log(`Got updated player`);
-    console.log(`Old player:`);
-    console.log(this._activePlayer);
-    console.log(`New player:`);
-    console.log(player);
     this._activePlayer = player;
     const cur_dur = player.attributes.media_duration;
     const cur_pos = player.attributes.media_position;
@@ -71,21 +65,19 @@ class MassPlayerProgressBar extends LitElement {
       clearInterval(this._listener);
     }
     this._listener = undefined;
-    console.log(`Beginning tick`);
     this.requestProgress();
   }
+  public get activePlayer() {
+    return this._activePlayer;
+  }
+  
   @consume({ context: activePlayerDataContext, subscribe: true})
   public set player_data(player_data: PlayerData) {
     this._player_data = player_data;
-    console.log(`Got updated player data, beginning tick`);
-    console.log(player_data);
     this.requestProgress();
   }
   public get player_data() {
     return this._player_data;
-  }
-  public get activePlayer() {
-    return this._activePlayer;
   }
   
   private requestProgress() {
