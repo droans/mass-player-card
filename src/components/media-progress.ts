@@ -157,11 +157,11 @@ class MassPlayerProgressBar extends LitElement {
         <div id="progress-div">
           <link href="https://cdn.jsdelivr.net/npm/beercss@3.12.11/dist/cdn/beer.min.css" rel="stylesheet">
           <div
-            class="${this.player_data.playing? `prog-incomplete-wavy` : ``}" 
+            class="prog-incomplete" 
             style="--incomplete-progress-start-pct: ${Math.round(this._prog_pct * 100)}%;"
           ></div>
           <progress 
-            class="${this.player_data.playing ? `wavy` : `progress-plain`} medium"
+            class="${this.player_data.playing ? `wavy medium` : `medium progress-plain`}"
             id="progress-bar"
             value="${this._prog_pct}"
             max="1"
