@@ -659,6 +659,13 @@ __metadata:
   languageName: node
   linkType: hard
 
+"@material/material-color-utilities@npm:^0.2.7":
+  version: 0.2.7
+  resolution: "@material/material-color-utilities@npm:0.2.7"
+  checksum: 10c0/7734f8d7cffe6a92d47fcca82b4846e39ffd79be9c057f3299466696dcdee5379b8a8a3aa6a9692d40bd6900905f689105d9a8ce47882ab22348df10621f70cd
+  languageName: node
+  linkType: hard
+
 "@material/web@npm:2.4.0":
   version: 2.4.0
   resolution: "@material/web@npm:2.4.0"
@@ -846,6 +853,22 @@ __metadata:
     rollup:
       optional: true
   checksum: 10c0/794890d512751451bcc06aa112366ef47ea8f9125dac49b1abf72ff8b079518b09359de9c60a013b33266541634e765ae61839c749fae0edb59a463418665c55
+  languageName: node
+  linkType: hard
+
+"@rollup/pluginutils@npm:^5.2.0":
+  version: 5.3.0
+  resolution: "@rollup/pluginutils@npm:5.3.0"
+  dependencies:
+    "@types/estree": "npm:^1.0.0"
+    estree-walker: "npm:^2.0.2"
+    picomatch: "npm:^4.0.2"
+  peerDependencies:
+    rollup: ^1.20.0||^2.0.0||^3.0.0||^4.0.0
+  peerDependenciesMeta:
+    rollup:
+      optional: true
+  checksum: 10c0/001834bf62d7cf5bac424d2617c113f7f7d3b2bf3c1778cbcccb72cdc957b68989f8e7747c782c2b911f1dde8257f56f8ac1e779e29e74e638e3f1e2cac2bcd0
   languageName: node
   linkType: hard
 
@@ -1469,6 +1492,15 @@ __metadata:
   version: 1.0.2
   resolution: "balanced-match@npm:1.0.2"
   checksum: 10c0/9308baf0a7e4838a82bbfd11e01b1cb0f0cf2893bc1676c27c2a8c0e70cbae1c59120c3268517a8ae7fb6376b4639ef81ca22582611dbee4ed28df945134aaee
+  languageName: node
+  linkType: hard
+
+"beercss@npm:^3.12.11":
+  version: 3.12.11
+  resolution: "beercss@npm:3.12.11"
+  dependencies:
+    material-dynamic-colors: "npm:^1.1.2"
+  checksum: 10c0/5a66a598ead53b350b41d513fbd41b70e0df29a3cae82b58d7c46e04078144cf8856343fcac8ac687b0073229f08e763055d040cff271a133365d741df4d6417
   languageName: node
   linkType: hard
 
@@ -2779,6 +2811,7 @@ __metadata:
     "@shoelace-style/shoelace": "npm:^2.20.1"
     "@typescript-eslint/eslint-plugin": "npm:^7.0.0"
     "@typescript-eslint/parser": "npm:^7.0.0"
+    beercss: "npm:^3.12.11"
     custom-card-helpers: "npm:1.9.0"
     eslint: "npm:9.21.0"
     eslint-config-prettier: "npm:10.0.2"
@@ -2789,6 +2822,7 @@ __metadata:
     lit: "npm:3.3.1"
     rollup: "npm:^4.0.0"
     rollup-plugin-commonjs: "npm:^10.1.0"
+    rollup-plugin-import-css: "npm:^4.0.2"
     rollup-plugin-serve: "npm:^3.0.0"
     rollup-plugin-typescript2: "npm:^0.36.0"
     ts-lit-plugin: "npm:^2.0.2"
@@ -2796,6 +2830,17 @@ __metadata:
     typescript-eslint: "npm:8.26.0"
   languageName: unknown
   linkType: soft
+
+"material-dynamic-colors@npm:^1.1.2":
+  version: 1.1.2
+  resolution: "material-dynamic-colors@npm:1.1.2"
+  dependencies:
+    "@material/material-color-utilities": "npm:^0.2.7"
+  bin:
+    material-dynamic-colors: cli.js
+  checksum: 10c0/a37a72228fb3b80a6154366681715012aad99107ac57f56fee2b98f737fd8d1f7da3f4c933ba1eeb85e03b8abed92176984863f5a44ae11ccb270a388d44862f
+  languageName: node
+  linkType: hard
 
 "merge2@npm:^1.3.0, merge2@npm:^1.4.1":
   version: 1.4.1
@@ -3328,6 +3373,17 @@ __metadata:
   peerDependencies:
     rollup: ">=1.12.0"
   checksum: 10c0/d514ae2521a31bdc4fa0afb6b9df38f84caae0ba13cad1de5db495614dea6c30f608ed55e7e7c3df08e2372ac47c51891c5a4c71b577ee2406e5546582427aea
+  languageName: node
+  linkType: hard
+
+"rollup-plugin-import-css@npm:^4.0.2":
+  version: 4.0.2
+  resolution: "rollup-plugin-import-css@npm:4.0.2"
+  dependencies:
+    "@rollup/pluginutils": "npm:^5.2.0"
+  peerDependencies:
+    rollup: ^2.x.x || ^3.x.x || ^4.x.x
+  checksum: 10c0/b2c86d75ebfee160987b5079c8955607764adebb7178b6dd1cb12873d3aa859c36a600042288446e7a6145b6d8c2c83d0d1f96d35d337844067661c73ae03a62
   languageName: node
   linkType: hard
 
