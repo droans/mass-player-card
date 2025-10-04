@@ -305,7 +305,7 @@ export class MusicAssistantPlayerCard extends LitElement {
       return html`
         <a 
           class="${active ? `active` : ``} player-tabs"
-          @click=${() => this.newHandleTabChanged(Sections.MUSIC_PLAYER)}
+          @click=${() => {this.newHandleTabChanged(Sections.MUSIC_PLAYER)}}
         >
           <i class="icon-i">
             <ha-svg-icon
@@ -316,25 +316,6 @@ export class MusicAssistantPlayerCard extends LitElement {
           <span></span> 
         </a>
       `
-      // return html`
-      //   <wa-tab
-      //     slot="nav"
-      //     .active=${active}
-      //     panel="${Sections.MUSIC_PLAYER}"
-      //   >
-      //     <ha-button
-      //       appearance="plain"
-      //       variant="brand"
-      //       size="medium"
-      //       class="action-button${active ? "-active" : ""}"
-      //     >
-      //       <ha-svg-icon
-      //         .path=${mdiMusic}
-      //         class="action-button-svg${active ? "" : "-inactive"}"
-      //       ></ha-svg-icon>
-      //     </ha-button>
-      //   </wa-tab>
-      // `
     }
     return html``
   }
@@ -344,7 +325,7 @@ export class MusicAssistantPlayerCard extends LitElement {
       return html`
         <a 
           class="${active ? `active` : ``}"
-          @click=${() => this.newHandleTabChanged(Sections.QUEUE)}
+          @click=${() => {this.newHandleTabChanged(Sections.QUEUE)}}
         >
           <i class="icon-i">
             <ha-svg-icon
@@ -355,25 +336,6 @@ export class MusicAssistantPlayerCard extends LitElement {
           <span></span> 
         </a>
       `
-      // return html`
-      //   <wa-tab
-      //     slot="nav"
-      //     .active=${active}
-      //     panel="${Sections.QUEUE}"
-      //   >
-      //     <ha-button
-      //       appearance="plain"
-      //       variant="brand"
-      //       size="medium"
-      //       class="action-button${active ? "-active" : ""}"
-      //     >
-      //       <ha-svg-icon
-      //         .path=${mdiPlaylistMusic}
-      //         style="height: 24px; width: 24px;"
-      //         class="action-button-svg${active ? "" : "-inactive"}"
-      //       ></ha-svg-icon>
-      //     </ha-button>
-      // `
     }
     return html``
   }
@@ -383,7 +345,7 @@ export class MusicAssistantPlayerCard extends LitElement {
       return html`
         <a 
           class="${active ? `active` : ``}"
-          @click=${() => this.newHandleTabChanged(Sections.MEDIA_BROWSER)}
+          @click=${() => {this.newHandleTabChanged(Sections.MEDIA_BROWSER)}}
         >
           <i class="icon-i">
             <ha-svg-icon
@@ -394,27 +356,6 @@ export class MusicAssistantPlayerCard extends LitElement {
           <span></span> 
         </a>
       `
-      // return html`
-      //   <wa-tab
-      //     slot="nav"
-      //     .active=${active}
-      //     panel="${Sections.MEDIA_BROWSER}"
-      //     @click=${this.returnMediaBrowserToHome}
-      //   >
-      //       <ha-button
-      //         appearance="plain"
-      //         variant="brand"
-      //         size="medium"
-      //         class="action-button${active ? "-active" : ""}"
-      //       >
-      //         <ha-svg-icon
-      //           .path=${mdiAlbum}
-      //           style="height: 24px; width: 24px;"
-      //           class="action-button-svg${active ? "" : "-inactive"}"
-      //         ></ha-svg-icon>
-      //       </ha-button>
-      //   </wa-tab>
-      // `
     }
     return html``
   }
@@ -424,7 +365,7 @@ export class MusicAssistantPlayerCard extends LitElement {
       return html`
         <a 
           class="${active ? `active` : ``}"
-          @click=${() => this.newHandleTabChanged(Sections.PLAYERS)}
+          @click=${() => {this.newHandleTabChanged(Sections.PLAYERS)}}
         >
           <i class="icon-i">
             <ha-svg-icon
@@ -435,30 +376,9 @@ export class MusicAssistantPlayerCard extends LitElement {
           <span></span> 
         </a>
       `
-    //   return html`
-    //     <wa-tab
-    //       slot="nav"
-    //       .active=${active}
-    //       panel="${Sections.PLAYERS}"
-    //     >
-    //         <ha-button
-    //           appearance="plain"
-    //           variant="brand"
-    //           size="medium"
-    //           class="action-button${active ? "-active" : ""}"
-    //         >
-    //           <ha-svg-icon
-    //             .path=${mdiSpeakerMultiple}
-    //             style="height: 24px; width: 24px;"
-    //             class="action-button-svg${active ? "" : "-inactive"}"
-    //           ></ha-svg-icon>
-    //         </ha-button>
-    //     </wa-tab>
-    //   `
     }
     return html``
   }
-  /* eslint-disable @typescript-eslint/unbound-method */
   protected renderTabs() {
     return html`
       <div>
@@ -471,19 +391,7 @@ export class MusicAssistantPlayerCard extends LitElement {
         </nav>
       </div>
     `
-    // return cache(html`
-    //   <wa-tab-group
-    //     id="tabs"
-    //     @wa-tab-show=${this._handleTabChanged}
-    //   >
-    //     ${this.renderMusicPlayerTab()}
-    //     ${this.renderQueueTab()}
-    //     ${this.renderMediaBrowserTab()}
-    //     ${this.renderPlayersTab()}
-    //   </wa-tab-group>
-    // `)
   }
-  /* eslint-enable @typescript-eslint/unbound-method */
   protected renderSections() {
     return html`
       ${this.renderMusicPlayer()}
