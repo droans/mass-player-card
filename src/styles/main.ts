@@ -41,17 +41,7 @@ export default css`
   background: rgba(from var(--md-ripple-color) r g b / 0.2);
   border-radius: 50%;
 }
-.action-button-svg-inactive {
-  --icon-primary-color: var(--md-sys-color-primary-palette-key-color);
-  height: 36px;
-  width: 36px;
-}
-.action-button-svg {
-  --icon-primary-color: var(--ha-control-color);
-  height: 48px;
-  width: 48px;
-}
-wa-tab-panel {
+sl-tab-panel {
   height: var(--mass-player-card-height);
   display: block;
 }
@@ -62,7 +52,29 @@ wa-tab-panel {
   --primary-container: rgba(from var(--primary-color) r g b / 0.25);
 }
 .tabbed {
-  background-color: rgba(from var(--secondary-background-color) r g b /0.25) !important;
+  --tabbed-elevation: var(--md-sys-elevation-level1);
+  --tabbed-background-color: var(--md-sys-color-surface-container);
+  --tab-active-icon-color: var(--md-sys-color-on-secondary-container);
+  --tab-active-indicator-color: var(--md-sys-color-secondary-container);
+  --tab-inactive-icon-color: var(--md-sys-color-on-surface-variant);
+  --tab-icon-height: 36px;
+
+  background-color: var(--tabbed-background-color);
+  box-shadow: var(--tabbed-elevation);
+
+}
+a.active {
+  --primary-container: var(--tab-active-indicator-color);
+}
+.action-button-svg {
+  --icon-primary-color: var(--tab-active-icon-color);
+  height: var(--tab-icon-height);
+  width: var(--tab-icon-height);
+}
+.action-button-svg-inactive {
+  --icon-primary-color: var(--tab-inactive-icon-color);
+  height: var(--tab-icon-height);
+  width: var(--tab-icon-height);
 }
 .icon-i {
   height: 100%;

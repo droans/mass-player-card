@@ -14,7 +14,7 @@ export default css`
   }
   #player-card {
     z-index: 0;
-    height: calc(var(--mass-player-card-height) - 5em);
+    height: calc(var(--mass-player-card-height) - 6em);
     background-repeat: no-repeat;
     background-position: center;
     background-size: 22em;
@@ -174,7 +174,7 @@ export default css`
   }
   #volume {
     position: absolute;
-    bottom: 0;
+    bottom: 0.5em;
     width: 100%;
   }
 `;
