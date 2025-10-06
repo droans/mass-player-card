@@ -53,15 +53,15 @@ sl-tab-panel {
 }
 .tabbed {
   --tabbed-elevation: var(--md-sys-elevation-level1);
-  --tabbed-background-color: var(--md-sys-color-surface-container);
+  --tabbed-background-color: var(--md-sys-color-surface-container-high);
   --tab-active-icon-color: var(--md-sys-color-on-secondary-container);
   --tab-active-indicator-color: var(--md-sys-color-secondary-container);
   --tab-inactive-icon-color: var(--md-sys-color-on-surface-variant);
   --tab-icon-height: 36px;
-
+}
+nav.tabbed {
   background-color: var(--tabbed-background-color);
   box-shadow: var(--tabbed-elevation);
-
 }
 a.active {
   --primary-container: var(--tab-active-indicator-color);

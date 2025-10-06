@@ -20,8 +20,6 @@ export default css`
   wa-card {
   }
   #container {
-    --section-thumbnail-size: calc(var(--mass-player-card-height) / 4);
-    --thumbnail-size: calc(var(--mass-player-card-height) / 2);
     width: 100%;
     position: relative;
   }
@@ -30,8 +28,6 @@ export default css`
     background-size: 100%;
     background-repeat: no-repeat;
     background-position: center;
-    height: var(--thumbnail-size);
-    width: var(--thumbnail-size);
   }
 
   #title-div {

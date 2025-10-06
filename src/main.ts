@@ -200,11 +200,9 @@ export class MusicAssistantPlayerCard extends LitElement {
   }
   private newHandleTabChanged(section: Sections) {
     this.active_section = section;
-  }
-  private _handleTabChanged(ev: CustomEvent) {
-    // eslint-disable-next-line @typescript-eslint/no-unsafe-assignment, @typescript-eslint/no-unsafe-member-access
-    const newTab: Sections = ev.detail.name;
-    this.active_section = newTab;
+    if (section == Sections.MEDIA_BROWSER) {
+      this.returnMediaBrowserToHome();
+    }
   }
   private returnMediaBrowserToHome = () => {
     const el: MediaBrowser | null | undefined = this.shadowRoot?.querySelector('mass-media-browser');
