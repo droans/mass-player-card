@@ -1,3 +1,4 @@
+import { hiddenElementsConfigItem } from "../utils/config.js";
 import { Config } from "./config";
 
 export enum PlayerControlsLayout {
@@ -93,10 +94,21 @@ export interface PlayerConfig {
   hide: PlayerHiddenElementsConfig;
   layout: PlayerLayoutConfig;
 }
+const PLAYER_HIDDEN_ITEMS = [
+  'favorite',
+  'mute',
+  'player_selector',
+  'power',
+  'repeat',
+  'shuffle',
+  'volume',
+  'group_volume',
+]
 
 export function playerConfigForm() {
   return [
-    { name: "enabled", selector: { boolean: {} } },
+    { name: "enabled", selector: { boolean: {} }, default: true },
+    hiddenElementsConfigItem(PLAYER_HIDDEN_ITEMS),
   ]
 }
 

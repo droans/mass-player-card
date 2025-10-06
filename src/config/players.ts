@@ -1,3 +1,4 @@
+import { hiddenElementsConfigItem } from "../utils/config.js";
 import { Config } from "./config";
 
 export interface PlayersHiddenElementsConfig {
@@ -21,9 +22,16 @@ export const DEFAULT_PLAYERS_CONFIG: PlayersConfig = {
   hide: DEFAULT_PLAYERS_HIDDEN_ELEMENTS_CONFIG,
 }
 
+const PLAYERS_HIDDEN_ITEMS = [
+  'action_buttons',
+  'join_button',
+  'transfer_button',
+]
+
 export function playersConfigForm() {
   return [
-    { name: "enabled", selector: { boolean: {} } },
+    { name: "enabled", selector: { boolean: {} }, default: true },
+    hiddenElementsConfigItem(PLAYERS_HIDDEN_ITEMS),
   ]
 }
 

@@ -112,6 +112,12 @@ export function createConfigForm() {
         },
       },
       {
+        name: "player",
+        type: "expandable",
+        iconPath: mdiMusic,
+        schema: playerConfigForm()
+      },
+      {
         name: "queue",
         type: "expandable",
         iconPath: mdiPlaylistMusic,
@@ -128,12 +134,6 @@ export function createConfigForm() {
         type: "expandable",
         iconPath: mdiSpeakerMultiple,
         schema: playersConfigForm()
-      },
-      {
-        name: "player",
-        type: "expandable",
-        iconPath: mdiMusic,
-        schema: playerConfigForm()
       },
     ]
   }
