@@ -241,6 +241,7 @@ players:
   enabled: true
 media_browser:
   enabled: true
+  columns: 2
   favorites:
     albums:
       enabled: true
