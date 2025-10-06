@@ -341,7 +341,9 @@ class MusicPlayerCard extends LitElement {
   }
   protected renderHeader(): TemplateResult {
     return html`
-      <mass-section-header>
+      <mass-section-header
+        class="${this.config.layout.large_artwork ? `header-art-lg` : ``}"
+      >
           ${this.renderPlayerSelector()}
           ${this.renderSectionTitle()}
           ${this.renderGrouped()}
@@ -386,7 +388,9 @@ class MusicPlayerCard extends LitElement {
   }
   protected renderProgress() {
     return html`
-      <mass-progress-bar></mass-progress-bar>
+      <mass-progress-bar
+        class="${this.config.layout.large_artwork ? `bg-art-lg` : ``}"
+      ></mass-progress-bar>
     `
   }
   protected renderArtwork() {
@@ -405,6 +409,7 @@ class MusicPlayerCard extends LitElement {
         <div id="artwork-div">
           <img 
             id="artwork-img"
+            class="${this.config.layout.large_artwork ? `artwork-large` : ``}"
             src="${img}" 
             onerror="this.src='${fallback}';"
           >
@@ -415,7 +420,9 @@ class MusicPlayerCard extends LitElement {
   protected renderVolumeRow() {
     return html`
       <div id="volume">
-        <mass-volume-row></mass-volume-row>
+        <mass-volume-row
+        class="${this.config.layout.large_artwork ? `vol-art-lg` : ``}"
+        ></mass-volume-row>
       </div>
     `
   }
@@ -440,8 +447,8 @@ class MusicPlayerCard extends LitElement {
           ${this.renderActiveItemSection()}
           ${this.renderArtwork()}
           ${this.renderControls()}
+          ${this.renderVolumeRow()}
         </div>
-        ${this.renderVolumeRow()}
       </div>
     `
   }

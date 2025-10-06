@@ -365,6 +365,7 @@ type: custom:mass-player-card
 player:
   layout:
     controls_layout: compact          # Options: compact or spaced (default: compact)
+    large_artwork: true               # Options: True/False (default: true)
     icons:
       shuffle:
         size: small                   # Options: small or large (default: small)

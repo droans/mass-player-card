@@ -62,7 +62,8 @@ export const DEFAULT_PLAYER_ICON_CONFIG: PlayerIcons = {
 
 export const DEFAULT_PLAYER_LAYOUT_CONFIG: PlayerLayoutConfig = {
   controls_layout: PlayerControlsLayout.COMPACT,
-  icons: DEFAULT_PLAYER_ICON_CONFIG
+  icons: DEFAULT_PLAYER_ICON_CONFIG,
+  large_artwork: true
 }
 export const DEFAULT_PLAYER_CONFIG: PlayerConfig = {
   enabled: true,
@@ -87,6 +88,7 @@ export interface PlayerIcons {
 export interface PlayerLayoutConfig {
   controls_layout: PlayerControlsLayout
   icons: PlayerIcons
+  large_artwork: boolean
 }
 
 export interface PlayerConfig {
