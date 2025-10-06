@@ -18,19 +18,23 @@ import {
   EnqueueOptions
 } from "../const/actions";
 import { ExtendedHass } from "../const/common";
-import { hassExt } from "../const/context";
+import { hassExt, mediaBrowserConfigContext } from "../const/context";
 import {
   MediaCardData,
   MediaCardItem
 } from "../const/media-browser";
 
 import styles from '../styles/media-browser-cards';
+import { MediaBrowserConfig } from "../config/media-browser.js";
 
 class MediaBrowserCards extends LitElement {
   @state() private code!: TemplateResult;
 
   @consume({context: hassExt})
   public hass!: ExtendedHass;
+
+  @consume({ context: mediaBrowserConfigContext})
+  private browserConfig!: MediaBrowserConfig;
 
   public onEnqueueAction!: CardEnqueueService;
   public onSelectAction!: CardSelectedService;
@@ -59,8 +63,10 @@ class MediaBrowserCards extends LitElement {
       (item) => {
         // eslint-disable-next-line @typescript-eslint/no-unsafe-member-access
         const queueable = (item.data?.media_content_id?.length > 0 && item.data?.media_content_type?.length > 0) ? literal`queueable` : literal``;
+        const width = ((1 / this.browserConfig.columns) * 100) - 2
         return html`
           <mass-media-card
+            style="max-width: ${width.toString()}%"
             .config=${item}
             .onSelectAction=${this.onItemSelected}
             .onEnqueueAction=${this.onEnqueue}

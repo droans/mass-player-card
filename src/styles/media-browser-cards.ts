@@ -25,10 +25,8 @@ export default css`
   }
   mass-media-card {
     max-height: 100%;
-    display: flex;
     aspect-ratio: 1;
     width: 30em;
-    max-width: 48%;
     justify-content: center;
   }
 `;

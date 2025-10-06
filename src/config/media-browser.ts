@@ -38,6 +38,7 @@ export interface MediaBrowserConfig {
   favorites: FavoritesConfig;
   sections: customSection[];
   hide: MediaBrowserHiddenElementsConfig
+  columns: number;
 }
 
 export interface customSection {
@@ -93,7 +94,8 @@ export const DEFAULT_MEDIA_BROWSER_CONFIG: MediaBrowserConfig = {
   enabled: true,
   favorites: DEFAULT_FAVORITES_CONFIG,
   sections: DEFAULT_CUSTOM_SECTION_CONFIG,
-  hide: DEFAULT_MEDIA_BROWSER_HIDDEN_ELEMENTS_CONFIG
+  hide: DEFAULT_MEDIA_BROWSER_HIDDEN_ELEMENTS_CONFIG,
+  columns: 2
 }
 
 function favoritesConfigForm(section: string) {

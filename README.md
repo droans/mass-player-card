@@ -432,12 +432,13 @@ Multiple elements on the queue tab can be hidden. By default, all elements are v
 <img src="https://github.com/droans/mass-player-card/blob/main/static/media_browser/desktop.png" alt="Player Card Media Browser Section Example">
 </details>
 
-| Parameter | Type                                                                       | Required | Default     | Description                      |
-|-----------|----------------------------------------------------------------------------|----------|-------------|----------------------------------|
-| enabled   | bool                                                                       | No       | true        | Enable/disable media browser tab |
-| favorites | [FavoritesConfig](#favorites-config)                                       | No       | -           | See below                        |
-| sections  | list of [SectionsConfig](#sections-config)                                 | No       | -           | See below                        |
-| hide      | [MediaBrowserHiddenElementsConfig](#media-browser-hidden-elements-config)  | No       | See below   | See Below                                |
+| Parameter | Type                                                                      | Required | Default     | Description                      |
+|-----------|---------------------------------------------------------------------------|----------|-------------|----------------------------------|
+| enabled   | bool                                                                      | No       | true        | Enable/disable media browser tab |
+| columns   | number                                                                    | No       | 2           | Number of columns for each row.  |
+| favorites | [FavoritesConfig](#favorites-config)                                      | No       | -           | See below                        |
+| sections  | list of [SectionsConfig](#sections-config)                                | No       | -           | See below                        |
+| hide      | [MediaBrowserHiddenElementsConfig](#media-browser-hidden-elements-config) | No       | See below   | See Below                        |
 
 ## Media Browser Hidden Elements Config
 Multiple elements on the media browser tab can be hidden. By default, all elements are visible
