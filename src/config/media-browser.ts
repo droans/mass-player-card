@@ -1,6 +1,7 @@
 import { mdiHeart } from "@mdi/js";
 
 import { Config } from "./config";
+import { hiddenElementsConfigItem } from "../utils/config.js";
 
 export interface MediaBrowserHiddenElementsConfig {
   back_button: boolean;
@@ -98,6 +99,18 @@ export const DEFAULT_MEDIA_BROWSER_CONFIG: MediaBrowserConfig = {
   columns: 2
 }
 
+const MEDIA_BROWSER_HIDDEN_ITEMS = [
+  "back_button",
+  "search",
+  "titles",
+  "enqueue_menu",
+  "add_to_queue_button",
+  "play_now_button",
+  "play_now_clear_queue_button",
+  "play_next_button",
+  "play_next_clear_queue_button",
+]
+
 function favoritesConfigForm(section: string) {
   return {
     name: section,
@@ -114,9 +127,11 @@ function favoritesConfigForm(section: string) {
     ]
   }
 }
+
 export function mediaBrowserConfigForm() {
   return [
-    { name: "enabled", selector: { boolean: {} } },
+    { name: "enabled", selector: { boolean: {} }, default: true },
+    { name: "columns", selector: { number: { min: 1, max: 10, mode: "box" } } },
     {
       name: "favorites",
       type: "expandable",
@@ -130,7 +145,8 @@ export function mediaBrowserConfigForm() {
         favoritesConfigForm("radios"),
         favoritesConfigForm("tracks"),
       ]
-    }
+    },
+    hiddenElementsConfigItem(MEDIA_BROWSER_HIDDEN_ITEMS)
   ]
 }
 
