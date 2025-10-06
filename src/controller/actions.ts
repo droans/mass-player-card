@@ -46,10 +46,18 @@ export class ActionsController {
     this._queueActions = new QueueActions(this._hass, this._activeEntityId);
   }
   private _updateActions() {
-    this._browserActions.hass = this._hass;
-    this._playerActions.hass = this._hass;
-    this._playersActions.hass = this._hass;
-    this._queueActions.hass = this._hass;
+    if (this._hass) {
+      this._browserActions.hass = this._hass;
+      this._playerActions.hass = this._hass;
+      this._playersActions.hass = this._hass;
+      this._queueActions.hass = this._hass;
+      if (this._activeEntityId) {
+        this._activeEntity = this._hass.states[this._activeEntityId];
+      }
+      if (this._volumeEntityId) {
+        this._volumeEntity = this._hass.states[this._volumeEntityId];
+      }
+  }
     this._queueActions.player_entity = this._activeEntityId;
   }
   /*
