@@ -1,7 +1,6 @@
 import { ContextProvider } from "@lit/context";
 import { Config, processConfig } from "../config/config";
 import {
-  configContext,
   entitiesConfigContext,
   mediaBrowserConfigContext,
   musicPlayerConfigContext,
@@ -10,7 +9,7 @@ import {
 } from "../const/context";
 
 export class MassCardConfigController {
-  private _config = new ContextProvider(document.body, { context: configContext});
+  private _config!: Config;
   private _entitiesConfig = new ContextProvider(document.body, { context: entitiesConfigContext});
   private _mediaBrowserConfig = new ContextProvider(document.body, { context: mediaBrowserConfigContext});
   private _playerQueueConfig = new ContextProvider(document.body, { context: playerQueueConfigContext});
@@ -23,29 +22,29 @@ export class MassCardConfigController {
   }
   public set config(config: Config) {
     const conf = processConfig(config);
-    this._config.value = conf;
+    this._config = conf;
     this._entitiesConfig.value = conf.entities;
     this._playerQueueConfig.value = conf.queue;
     this._musicPlayerConfig.value = conf.player;
     this._playersConfig.value = conf.players;
   }
   public get config() {
-    return this._config.value;
+    return this._config;
   }
 
   public get Entities() {
-    return this._config.value.entities;
+    return this.config.entities;
   }
   public get MediaBrowser() {
-    return this._config.value.media_browser;
+    return this.config.media_browser;
   }
   public get PlayerQueue() {
-    return this._config.value.queue;
+    return this.config.queue;
   }
   public get MusicPlayer() {
-    return this._config.value.player;
+    return this.config.player;
   }
   public get Players() {
-    return this._config.value.players;
+    return this.config.players;
   }
 }

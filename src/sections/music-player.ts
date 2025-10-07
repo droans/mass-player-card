@@ -97,7 +97,7 @@ class MusicPlayerCard extends LitElement {
   private touchEndX = 0;
   private touchStartY = 0;
   private touchEndY = 0;
-
+  
   @consume({ context: activeEntityConf, subscribe: true})
   public set activeEntityConfig(entity: EntityConfig) {
     this._activeEntityConfig = entity;
@@ -204,7 +204,8 @@ class MusicPlayerCard extends LitElement {
     //eslint-disable-next-line @typescript-eslint/no-unsafe-member-access
     target.value = "";
   }
-  protected updated() {
+
+  private marqueeTitleWhenUpdated() {
     const title = this._track_title;
     const offset = title?.offsetWidth ?? 0;
     const scroll = title?.scrollWidth ?? 0;
@@ -219,6 +220,10 @@ class MusicPlayerCard extends LitElement {
     const element = this.shadowRoot?.getElementById('artwork-div');
     element?.addEventListener('touchstart', this.onSwipeStart);
     element?.addEventListener('touchend', this.onSwipeEnd);
+  }
+
+  protected updated() {
+    this.marqueeTitleWhenUpdated();
   }
   private onAnimationEnd = async () => {
     if (this._track_title.className !== 'player-track-title marquee') {
