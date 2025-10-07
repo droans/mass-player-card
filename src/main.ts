@@ -1,10 +1,4 @@
-import { consume } from '@lit/context';
-import {
-  mdiAlbum,
-  mdiMusic,
-  mdiPlaylistMusic,
-  mdiSpeakerMultiple
-} from '@mdi/js';
+import { consume, provide } from '@lit/context';
 import { HassEntity } from 'home-assistant-js-websocket';
 import {
   LitElement,
@@ -26,6 +20,8 @@ import './sections/music-player';
 import './sections/player-queue';
 import './sections/players';
 
+import './components/navigation-bar';
+
 import {
   Config,
   createConfigForm,
@@ -35,12 +31,11 @@ import {
 import { Sections } from './const/card';
 import {
   activeSectionContext,
+  controllerContext,
   ExtendedHass,
 } from './const/context';
 
 import { version } from '../package.json';
-
-import { MediaBrowser } from './sections/media-browser';
 
 import styles from './styles/main';
 
@@ -90,6 +85,7 @@ export class MusicAssistantPlayerCard extends LitElement {
   @state() private entities!: HassEntity[];
   @state() private error?: TemplateResult;
 
+  @provide({ context: controllerContext})
   private _controller = new MassCardController(this);
   public set hass(hass: ExtendedHass) {
     if (!hass) {
@@ -198,19 +194,6 @@ export class MusicAssistantPlayerCard extends LitElement {
       this.active_section = Sections.MUSIC_PLAYER;
     }
   }
-  private newHandleTabChanged(section: Sections) {
-    this.active_section = section;
-    if (section == Sections.MEDIA_BROWSER) {
-      this.returnMediaBrowserToHome();
-    }
-  }
-  private returnMediaBrowserToHome = () => {
-    const el: MediaBrowser | null | undefined = this.shadowRoot?.querySelector('mass-media-browser');
-    if (!el) {
-      return;
-    }
-    el.activeSection = 'main';
-  }
   protected renderPlayers() {
     if (this.config.players.enabled) {
       return cache(html`
@@ -297,96 +280,10 @@ export class MusicAssistantPlayerCard extends LitElement {
     }
     return html``
   }
-  protected renderMusicPlayerTab() {
-    const active = this.active_section == Sections.MUSIC_PLAYER;
-    if (this.config.player.enabled){
-      return html`
-        <a 
-          class="${active ? `active` : ``} player-tabs"
-          @click=${() => {this.newHandleTabChanged(Sections.MUSIC_PLAYER)}}
-        >
-          <i class="icon-i">
-            <ha-svg-icon
-              .path=${mdiMusic}
-              class="action-button-svg${active ? "" : "-inactive"}"
-            ></ha-svg-icon>
-          </i>
-          <span></span> 
-        </a>
-      `
-    }
-    return html``
-  }
-  protected renderQueueTab() {
-    const active = this.active_section == Sections.QUEUE;
-    if (this.config.queue.enabled){
-      return html`
-        <a 
-          class="${active ? `active` : ``} player-tabs"
-          @click=${() => {this.newHandleTabChanged(Sections.QUEUE)}}
-        >
-          <i class="icon-i">
-            <ha-svg-icon
-              .path=${mdiPlaylistMusic}
-              class="action-button-svg${active ? "" : "-inactive"}"
-            ></ha-svg-icon>
-          </i>
-          <span></span> 
-        </a>
-      `
-    }
-    return html``
-  }
-  protected renderMediaBrowserTab() {
-    const active = this.active_section == Sections.MEDIA_BROWSER;
-    if (this.config.media_browser.enabled){
-      return html`
-        <a 
-          class="${active ? `active` : ``} player-tabs"
-          @click=${() => {this.newHandleTabChanged(Sections.MEDIA_BROWSER)}}
-        >
-          <i class="icon-i">
-            <ha-svg-icon
-              .path=${mdiAlbum}
-              class="action-button-svg${active ? "" : "-inactive"}"
-            ></ha-svg-icon>
-          </i>
-          <span></span> 
-        </a>
-      `
-    }
-    return html``
-  }
-  protected renderPlayersTab() {
-    const active = this.active_section == Sections.PLAYERS;
-    if (this.config.players.enabled){
-      return html`
-        <a 
-          class="${active ? `active` : ``} player-tabs"
-          @click=${() => {this.newHandleTabChanged(Sections.PLAYERS)}}
-        >
-          <i class="icon-i">
-            <ha-svg-icon
-              .path=${mdiSpeakerMultiple}
-              class="action-button-svg${active ? "" : "-inactive"}"
-            ></ha-svg-icon>
-          </i>
-          <span></span> 
-        </a>
-      `
-    }
-    return html``
-  }
   protected renderTabs() {
     return html`
-      <div>
-        <nav class="tabbed">
-          <link href="https://cdn.jsdelivr.net/npm/beercss@3.12.11/dist/cdn/beer.min.css" rel="stylesheet">
-          ${this.renderMusicPlayerTab()}
-          ${this.renderQueueTab()}
-          ${this.renderMediaBrowserTab()}
-          ${this.renderPlayersTab()}
-        </nav>
+      <div id="navbar">
+        <mass-nav-bar></mass-nav-bar>
       </div>
     `
   }
