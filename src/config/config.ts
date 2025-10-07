@@ -58,6 +58,7 @@ export interface Config {
   player: PlayerConfig;
   media_browser: MediaBrowserConfig;
   players: PlayersConfig;
+  expressive: boolean;
 }
 
 interface HiddenElementsConfig {
@@ -67,11 +68,13 @@ interface HiddenElementsConfig {
   players: PlayersHiddenElementsConfig
 };
 
-export const DEFAULT_CONFIG = {
+export const DEFAULT_CONFIG: Config = {
   queue: DEFAULT_QUEUE_CONFIG,
   player: DEFAULT_PLAYER_CONFIG,
   players: DEFAULT_PLAYERS_CONFIG,
-  media_browser: DEFAULT_MEDIA_BROWSER_CONFIG
+  media_browser: DEFAULT_MEDIA_BROWSER_CONFIG,
+  expressive: true,
+  entities: []
 }
 
 const ENTITY_DEFAULT_HIDDEN_ITEM_CONFIG: HiddenElementsConfig = {
