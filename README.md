@@ -299,6 +299,7 @@ media_browser:
 | Parameter     | Type                                             | Required | Default | Description                                        |
 |---------------|--------------------------------------------------|----------|---------|----------------------------------------------------|
 | type          | str                                              | Yes      | n/a     | Use `custom:mass-player-card`                      |
+| expressive    | boolean                                          | No       | true    | Enables Material Expressive theme                  |
 | entities      | list of string or [EntityConfig](#entity-config) | Yes      | n/a     | The Music Assistant `media_player` entities to use |
 | player        | [MusicPlayerConfig](#music-player-config)        | No       | 5       | See Below                                          |
 | queue         | [QueueConfig](#queue-config)                     | No       | 5       | See Below                                          |
@@ -365,6 +366,7 @@ type: custom:mass-player-card
 player:
   layout:
     controls_layout: compact          # Options: compact or spaced (default: compact)
+    large_artwork: true               # Options: True/False (default: true)
     icons:
       shuffle:
         size: small                   # Options: small or large (default: small)

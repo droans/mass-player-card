@@ -14,7 +14,7 @@ export default css`
   }
   #player-card {
     z-index: 0;
-    height: calc(var(--mass-player-card-height) - 6em);
+    height: calc(var(--mass-player-card-height) - 3em);
     background-repeat: no-repeat;
     background-position: center;
     background-size: 22em;
@@ -36,6 +36,7 @@ export default css`
   #artwork-img {
     border-radius: var(--border-radius);
     max-height: 22em;
+    max-width: 100%;
     justify-self: center;
     display: block;
   }
@@ -62,7 +63,7 @@ export default css`
     backdrop-filter: blur(3px);
     background: rgba(from var(--ha-card-background) r g b / 0.6);
     position: absolute;
-    bottom: 0;
+    bottom: 40px;
     width: 100%;
   }
   *[hide] {
@@ -174,7 +175,36 @@ export default css`
   }
   #volume {
     position: absolute;
-    bottom: 0.5em;
+    bottom: 0;
     width: 100%;
+  }
+  .artwork-large {
+    position: absolute;
+    top: -3em;
+    max-height: 35em !important;
+    max-width: 100%;
+  }
+  .bg-art-lg {
+    background: rgba(from var(--ha-card-background) r g b / 0.6);
+    backdrop-filter: blur(3px);
+    z-index: 1;
+  }
+  .header-art-lg {
+    z-index: 1;
+    position: relative;
+  }
+  .header-art-lg::part(header) {
+    background: rgba(from var(--ha-card-background) r g b / 0.6);
+    backdrop-filter: blur(3px);
+    z-index: 0;
+  }
+  .vol-art-lg {
+    z-index: 1;
+    position: relative;
+  }
+  .vol-art-lg::part(volume-div) {
+    background: rgba(from var(--ha-card-background) r g b / 0.6);
+    backdrop-filter: blur(3px);
+    z-index: 0;
   }
 `;

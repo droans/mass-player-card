@@ -14,7 +14,7 @@ import { ActionsController } from "./actions";
 
 export class MassCardController {
   private _hass = new ContextProvider(document.body, { context: hassExt });
-  private _host: HTMLElement;
+  private _host!: HTMLElement;
 
   private configController: MassCardConfigController;
   private activePlayerController!: ContextProvider<typeof activePlayerControllerContext>;
@@ -23,8 +23,14 @@ export class MassCardController {
   private _activeSection = new ContextProvider(document.body, { context: activeSectionContext});
 
   constructor(host: HTMLElement) {
-    this._host = host;
+    this.host = host;
     this.configController = new MassCardConfigController(host);
+  }
+  public set host(host: HTMLElement) {
+    this._host = host;
+  }
+  public get host() {
+    return this._host;
   }
   private setupIfReady() {
     this._setupActiveController();      
@@ -32,8 +38,8 @@ export class MassCardController {
   }
   private _setupActiveController() {
     if (this.hass && this.config && !this.activePlayerController) {
-      const active_controller = new ActivePlayerController(this.hass, this.config, this._host);
-      this.activePlayerController = new ContextProvider(this._host, { context: activePlayerControllerContext})
+      const active_controller = new ActivePlayerController(this.hass, this.config, this.host);
+      this.activePlayerController = new ContextProvider(this.host, { context: activePlayerControllerContext})
       this.activePlayerController.setValue(active_controller)
     }
   }
@@ -44,8 +50,8 @@ export class MassCardController {
         && this.hass
     )
     if (!this.actionsController && is_ready){
-      this.actionsController = new ContextProvider(this._host, { context: actionsControllerContext});
-      this.actionsController.setValue(new ActionsController(this._host, this.hass, this.ActivePlayer.activeEntityConfig));
+      this.actionsController = new ContextProvider(this.host, { context: actionsControllerContext});
+      this.actionsController.setValue(new ActionsController(this.host, this.hass, this.ActivePlayer.activeEntityConfig));
     }
   }
 

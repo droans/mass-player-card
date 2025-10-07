@@ -8,7 +8,7 @@ import styles from '../styles/section-header';
 class MassSectionHeader extends LitElement {
   protected render() {
     return html`
-      <div id="header" class="header">
+      <div id="header" class="header" part="header">
         <slot name="start" part="start" class="start"></slot>
         <slot name="label" part="label" class="label"></slot>
         <slot name="end" part="end" class="end"></slot>

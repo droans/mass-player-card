@@ -23,6 +23,7 @@
   "type": "module",
   "dependencies": {
     "@lit/context": "1.1.6",
+    "@material/material-color-utilities": "^0.3.0",
     "@material/web": "2.4.0",
     "@mdi/js": "7.4.47",
     "@mdi/react": "1.6.1",

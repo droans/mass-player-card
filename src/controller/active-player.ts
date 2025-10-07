@@ -1,21 +1,26 @@
 import { ContextProvider } from "@lit/context";
-import { ExtendedHass, ExtendedHassEntity } from "../const/common";
+import { ExtendedHass, ExtendedHassEntity, Icon } from "../const/common";
 import {
   activeEntityConf,
   activeEntityID,
   activeMediaPlayer,
   activePlayerName,
+  expressiveThemeContext,
   volumeMediaPlayer
 } from "../const/context";
 import { Config, EntityConfig } from "../config/config";
 import { PlayerData } from "../const/music-player";
 import { QueueItem } from "../const/player-queue";
+import { applyTheme, themeFromImage, Theme } from "@material/material-color-utilities";
+import { getIcon } from "../utils/icons.js";
+import { playerHasUpdated } from "../utils/util.js";
 export class ActivePlayerController {
   private _activeEntityConfig: ContextProvider<typeof activeEntityConf>;
   private _activeEntityID: ContextProvider<typeof activeEntityID>;
   private _activeMediaPlayer: ContextProvider<typeof activeMediaPlayer>;
   private _activePlayerName: ContextProvider<typeof activePlayerName>;
   private _volumeMediaPlayer: ContextProvider<typeof volumeMediaPlayer>;
+  private _expressiveTheme = new ContextProvider(document.body, { context: expressiveThemeContext});
   
   private _hass: ExtendedHass;
   private _config: Config;
@@ -66,7 +71,14 @@ export class ActivePlayerController {
   }
   
   private set activeMediaPlayer(player: ExtendedHassEntity) {
-    this._activeMediaPlayer.setValue(player);
+    const old_track = this?.activeMediaPlayer?.attributes?.media_content_id;
+    const new_track = player?.attributes?.media_content_id;
+    if (playerHasUpdated(this.activeMediaPlayer, player)) {
+      this._activeMediaPlayer.setValue(player);
+      if (old_track != new_track) {
+        this.applyExpressiveTheme().catch( () => {return});
+      }
+    }
   }
   public get activeMediaPlayer() {
     return this._activeMediaPlayer.value;
@@ -87,6 +99,13 @@ export class ActivePlayerController {
   public get volumeMediaPlayer() {
     return this._volumeMediaPlayer.value;
   }
+  private set expressiveTheme(theme: Theme | undefined) {
+    this._expressiveTheme.setValue(theme);
+  }
+  public get expressiveTheme() {
+    return this._expressiveTheme.value;
+  }
+  
   public getGroupedPlayers() {
     const activeQueue = this.activeMediaPlayer.attributes.active_queue;
     const ents = this.config.entities;
@@ -187,6 +206,45 @@ export class ActivePlayerController {
       console.error('Error getting queue', e);
       return null;
     }
+  }
+
+  public applyExpressiveThemeTo(host: HTMLElement) {
+    if (this.expressiveTheme) {
+      applyTheme(this.expressiveTheme, {dark: this.hass.themes.darkMode, target: host})
+    }
+  }
+  public async applyExpressiveTheme() { 
+    if (!this.config.expressive) {
+      return;
+    }
+    const theme = await this.generateExpressiveTheme();
+    const options = {
+      dark: this.hass.themes.darkMode,
+      target: this._host
+    }
+    if (theme) {
+      applyTheme(theme, options)
+    }
+  }
+  public async generateExpressiveTheme() {
+
+    return this.generateExpressiveThemeFromImage();
+  }
+  public generateImageElement(): HTMLImageElement|undefined {
+    const attrs = this.activeMediaPlayer.attributes;
+    const url = attrs.entity_picture_local ?? attrs.entity_picture ?? getIcon(this._hass, Icon.CLEFT);
+    const elem = document.createElement('img');
+    elem.src = url;
+    return elem;
+  }
+  public async generateExpressiveThemeFromImage() {
+    const elem = this.generateImageElement();
+    if (!elem) {
+      return;
+    }
+    const theme = await themeFromImage(elem);
+    this.expressiveTheme = theme;
+    return themeFromImage(elem);
   }
 
 }

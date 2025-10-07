@@ -181,7 +181,7 @@ class VolumeRow extends LitElement {
   }
   protected render(): TemplateResult {
     return html`
-      <div id="volume">
+      <div id="volume" part="volume-div">
         ${this.renderPower()}
         ${this.renderVolumeBar()}
         ${this.renderMute()}

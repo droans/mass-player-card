@@ -21,6 +21,7 @@ import { PlayersConfig } from '../config/players';
 import { Sections } from './card';
 import { ActivePlayerController } from '../controller/active-player';
 import { ActionsController } from '../controller/actions';
+import { Theme } from '@material/material-color-utilities';
 export type {
   EntityConfig
 } from '../config/config';
@@ -43,4 +44,4 @@ export const playersConfigContext = createContext<PlayersConfig>('players-config
 export const activeSectionContext = createContext<Sections>('active-section');
 export const mediaCardDisplayContext = createContext<boolean>('media-card-display');
 export const activePlayerControllerContext = createContext<ActivePlayerController>('active-player-controller');
-export const actionsControllerContext = createContext<ActionsController>('actions-controller')
+export const expressiveThemeContext = createContext<Theme | undefined>('expressive-theme');
