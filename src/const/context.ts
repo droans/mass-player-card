@@ -9,10 +9,7 @@ export type {
   ExtendedHassEntity
 } from "./common";
 
-import {
-  Config,
-  type EntityConfig
-} from '../config/config';
+import { type EntityConfig } from '../config/config';
 import { PlayerConfig } from '../config/player';
 import { PlayerData } from './music-player';
 import { QueueConfig } from '../config/player-queue';
@@ -21,6 +18,7 @@ import { PlayersConfig } from '../config/players';
 import { Sections } from './card';
 import { ActivePlayerController } from '../controller/active-player';
 import { ActionsController } from '../controller/actions';
+import { MassCardController } from '../controller/controller.js';
 import { Theme } from '@material/material-color-utilities';
 export type {
   EntityConfig
@@ -34,7 +32,6 @@ export const activeMediaPlayer = createContext<ExtendedHassEntity>('active-entit
 export const volumeMediaPlayer = createContext<ExtendedHassEntity>('volume-entity');
 export const activePlayerDataContext = createContext<PlayerData>('active-player-data');
 
-export const configContext = createContext<Config>('config');
 export const entitiesConfigContext = createContext<EntityConfig[]>('entities-config');
 export const musicPlayerConfigContext = createContext<PlayerConfig>('music-player-config');
 export const playerQueueConfigContext = createContext<QueueConfig>('player-queue-config');
@@ -44,4 +41,7 @@ export const playersConfigContext = createContext<PlayersConfig>('players-config
 export const activeSectionContext = createContext<Sections>('active-section');
 export const mediaCardDisplayContext = createContext<boolean>('media-card-display');
 export const activePlayerControllerContext = createContext<ActivePlayerController>('active-player-controller');
+export const actionsControllerContext = createContext<ActionsController>('actions-controller');
+export const controllerContext = createContext<MassCardController>('controller');
+
 export const expressiveThemeContext = createContext<Theme | undefined>('expressive-theme');
