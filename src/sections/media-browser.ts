@@ -509,12 +509,12 @@ export class MediaBrowser extends LitElement {
       return;
     }
     return html`
-      <ha-card>
+      <div id="container">
         ${this.renderHeader()}
         <div class="mass-browser">
           ${this.renderBrowserCards()}
         </div>
-      </ha-card>
+      </div>
     `;
   }
   protected updated() {

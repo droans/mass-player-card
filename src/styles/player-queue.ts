@@ -3,7 +3,7 @@ import { css } from 'lit';
 // Styles belonging to the card
 // https://lit.dev/docs/components/styles/
 export default css`
-  ha-card {
+  #container {
     overflow: hidden;
     width: 100%;
     justify-content: center;

@@ -3,25 +3,20 @@ import { css } from 'lit';
 // Styles belonging to the card
 // https://lit.dev/docs/components/styles/
 export default css`
-  ha-card {
-    display: flex;
-    position: relative;
-    border-radius: var(--border-radius) !important;
-    overflow: hidden;
-    margin: 0px 3px 3px 3px;
-    aspect-ratio: 1;
-  }
   .thumbnail-section {
     background-repeat: no-repeat;
     background-size: contain;
     width: 100%;
     aspect-ratio: 1;
   }
-  wa-card {
-  }
   #container {
     width: 100%;
     position: relative;
+    display: flex;
+    border-radius: var(--ha-card-border-radius) !important;
+    overflow: hidden;
+    margin: 0px 3px 3px 3px;
+    aspect-ratio: 1;
   }
 
   #thumbnail-div {

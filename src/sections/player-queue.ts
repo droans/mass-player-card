@@ -302,7 +302,7 @@ class QueueCard extends LitElement {
   }
   protected render() {
     return this.error ?? html`
-      <ha-card>
+      <div id="container">
         <mass-section-header>
           <span slot="label" id="title">
             Queue
@@ -311,7 +311,7 @@ class QueueCard extends LitElement {
         <ha-md-list class="list">
           ${this.renderQueueItems()}
         </ha-md-list>
-      </ha-card>
+      </div>
     `
   }
   static get styles(): CSSResultGroup {

@@ -225,7 +225,6 @@ class MediaCard extends LitElement {
         play=${this._play}
         playback-rate=1
       >
-        <ha-card>
           <div id="container">
           <wa-card
             class="media-card"
@@ -238,7 +237,6 @@ class MediaCard extends LitElement {
           </wa-card>
           ${this.renderEnqueueButton()}
         </div>
-        </ha-card>
       </wa-animation>
     `
   }
