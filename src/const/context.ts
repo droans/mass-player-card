@@ -21,6 +21,7 @@ import { PlayersConfig } from '../config/players';
 import { Sections } from './card';
 import { ActivePlayerController } from '../controller/active-player';
 import { ActionsController } from '../controller/actions';
+import { Theme } from '@material/material-color-utilities';
 export type {
   EntityConfig
 } from '../config/config';
