@@ -76,7 +76,7 @@ export class ActivePlayerController {
     if (playerHasUpdated(this.activeMediaPlayer, player)) {
       this._activeMediaPlayer.setValue(player);
       if (old_track != new_track && this.config.expressive) {
-        this.applyExpressiveTheme().catch( () => {return});
+        void this.applyExpressiveTheme();
       }
     }
   }
@@ -217,11 +217,12 @@ export class ActivePlayerController {
     if (!this.config.expressive) {
       return;
     }
-    const theme = await this.generateExpressiveTheme();
+    const _theme = this.generateExpressiveTheme();
     const options = {
       dark: this.hass.themes.darkMode,
       target: this._host
     }
+    const theme = await _theme;
     if (theme) {
       applyTheme(theme, options)
     }
@@ -244,7 +245,7 @@ export class ActivePlayerController {
     }
     const theme = await themeFromImage(elem);
     this.expressiveTheme = theme;
-    return themeFromImage(elem);
+    return theme;
   }
 
 }
