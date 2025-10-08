@@ -77,11 +77,9 @@ class MediaBrowserCards extends LitElement {
       }
     )
     this.code = html`
-      <ha-card>
         <div class="icons wa-grid">
           ${result}
         </div>
-      </ha-card>
     `
   }
 

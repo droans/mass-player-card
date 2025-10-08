@@ -115,6 +115,11 @@ export function createConfigForm() {
         },
       },
       {
+        "name": "expressive",
+        required: false,
+        selector: { boolean: {}, default: true }
+      },
+      {
         name: "player",
         type: "expandable",
         iconPath: mdiMusic,

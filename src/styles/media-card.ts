@@ -3,25 +3,20 @@ import { css } from 'lit';
 // Styles belonging to the card
 // https://lit.dev/docs/components/styles/
 export default css`
-  ha-card {
-    display: flex;
-    position: relative;
-    border-radius: var(--border-radius) !important;
-    overflow: hidden;
-    margin: 0px 3px 3px 3px;
-    aspect-ratio: 1;
-  }
   .thumbnail-section {
     background-repeat: no-repeat;
     background-size: contain;
     width: 100%;
     aspect-ratio: 1;
   }
-  wa-card {
-  }
   #container {
     width: 100%;
     position: relative;
+    display: flex;
+    border-radius: var(--ha-card-border-radius) !important;
+    overflow: hidden;
+    margin: 0px 3px 3px 3px;
+    aspect-ratio: 1;
   }
 
   #thumbnail-div {
@@ -67,7 +62,7 @@ export default css`
     --control-select-menu-background-color: unset;
   }
   mass-menu-button::part(menu-svg) {
-    color: var(--mdc-theme-primary);
+    color: var(--md-sys-color-primary);
     background-color: var(--ha-card-background,var(--card-background-color,#fff));
     border-radius: 50%;
   }
@@ -84,7 +79,7 @@ export default css`
     width: 2em;
   }
   #enqueue-svg {
-    color: var(--mdc-theme-primary);
+    color: var(--md-sys-color-primary);
     background-color: var(--ha-card-background,var(--card-background-color,#fff));
     border-radius: 50%;
   }
@@ -93,8 +88,8 @@ export default css`
     text-align: center;
   }
   wa-card {
-    --inner-border-radius: var(--border-radius);
-    --wa-panel-border-radius: var(--border-radius);
+    --inner-border-radius: var(--ha-card-border-radius);
+    --wa-panel-border-radius: var(--ha-card-border-radius);
     --wa-panel-border-style: var(--ha-card-border-style);
     --wa-color-surface-border: var(--ha-color-border-neutral-normal);
     --wa-panel-border-width: var(--ha-card-border-width);

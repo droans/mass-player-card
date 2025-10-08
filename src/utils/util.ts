@@ -75,7 +75,11 @@ export function playerHasUpdated(old_player: ExtendedHassEntity, new_player: Ext
   const new_state = new_player?.state;
   const changed_attrs = attrs.filter(
     (attr) => {
-      return old_attrs[attr] !== new_attrs[attr];
+      try {
+        return old_attrs[attr] !== new_attrs[attr]
+      } catch {
+        return true;
+      };
     }
   )
   const state_changed = old_state != new_state;

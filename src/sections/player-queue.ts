@@ -16,6 +16,7 @@ import {
 import { ExtendedHass } from '../const/common';
 import {
   activeEntityID,
+  activePlayerControllerContext,
   activeSectionContext,
   hassExt,
   mediaCardDisplayContext,
@@ -28,8 +29,12 @@ import {
 
 import styles from '../styles/player-queue';
 import { Sections } from '../const/card';
+import { ActivePlayerController } from '../controller/active-player.js';
 
 class QueueCard extends LitElement {
+  @consume({ context: activePlayerControllerContext})
+  private activePlayerController!: ActivePlayerController;
+
   @provide({context: playerQueueConfigContext})
   @property({ attribute: false }) 
   public _config!: QueueConfig;
@@ -271,15 +276,18 @@ class QueueCard extends LitElement {
     const show_album_covers = this._config.show_album_covers;
     const delay_add = 62.5;
     let i = 1;
+    const visibility = this.checkVisibility();
     return this.queue.map(
       (item) => {
         const result = 
           html`
-            <ha-fade-in
-              .delay=${delay_add * i}
-              .duration=${delay_add * 2}
-              .fill="forwards"
-              play=${this.checkVisibility()}
+            <wa-animation
+              name="fadeIn"
+              delay=${delay_add * i}
+              duration=${delay_add * 2}
+              fill="forwards"
+              play=${visibility}
+              iterations=1
             >
               <mass-player-media-row
                 style="opacity: 0%;"
@@ -292,7 +300,7 @@ class QueueCard extends LitElement {
                 .moveQueueItemDownService=${this.onQueueItemMoveDown}
               >
               </mass-player-media-row>
-            </ha-fade-in>
+            </wa-animation>
           `
         ;
         i++;
@@ -302,7 +310,7 @@ class QueueCard extends LitElement {
   }
   protected render() {
     return this.error ?? html`
-      <ha-card>
+      <div id="container">
         <mass-section-header>
           <span slot="label" id="title">
             Queue
@@ -311,9 +319,17 @@ class QueueCard extends LitElement {
         <ha-md-list class="list">
           ${this.renderQueueItems()}
         </ha-md-list>
-      </ha-card>
+      </div>
     `
   }
+  // protected updated() {
+  //   const nodes = this.shadowRoot?.querySelectorAll('mass-player-media-row') ?? [];
+  //   nodes.forEach(
+  //     (node) => {
+  //       this.activePlayerController.applyExpressiveThemeTo(node.shadowRoot.firstElementChild)
+  //     }
+  //   )
+  // }
   static get styles(): CSSResultGroup {
     return styles;
   }

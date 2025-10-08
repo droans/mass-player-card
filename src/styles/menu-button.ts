@@ -5,7 +5,7 @@ export default css`
   #menu-select-menu {
   }
   #menu-svg {
-    color: var(--mdc-theme-primary);
+    color: var(--md-sys-color-primary);
     background-color: var(--ha-card-background,var(--card-background-color,#fff));
     border-radius: 50%;
   }

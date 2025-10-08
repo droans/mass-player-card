@@ -3,7 +3,7 @@ import { css } from 'lit';
 // Styles belonging to the card
 // https://lit.dev/docs/components/styles/
 export default css`
-  ha-card {
+  #container {
     box-shadow: unset;
     height: var(--mass-player-card-height);
   }
@@ -28,7 +28,7 @@ export default css`
     --control-select-menu-background-color: unset;
   }
   #search-media-type-menu::part(menu-svg) {
-    color: var(--mdc-theme-primary);
+    color: var(--md-sys-color-primary);
     border-radius: 50%;
   }
   #search-media-type-menu::part(menu-list-item) {

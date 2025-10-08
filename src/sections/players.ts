@@ -151,7 +151,7 @@ class PlayersCard extends LitElement {
   }
   protected render() {
     return html`
-      <ha-card>
+      <div id="container">
         <mass-section-header>
           <span slot="label" id="title">
             Players
@@ -160,7 +160,7 @@ class PlayersCard extends LitElement {
         <ha-md-list class="list">
           ${this.renderPlayerRows()}
         </ha-md-list>
-      </ha-card>
+      </div>
     `
   }
   static get styles(): CSSResultGroup {
