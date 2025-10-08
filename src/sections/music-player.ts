@@ -20,6 +20,7 @@ import { html } from "lit/static-html.js";
 import '../components/media-progress';
 import '../components/menu-button';
 import '../components/player-controls';
+import '../components/player-controls-expressive';
 import '../components/section-header';
 import '../components/volume-row';
 import '../components/volume-slider';
@@ -37,6 +38,7 @@ import {
   activeMediaPlayer,
   activePlayerControllerContext,
   activePlayerDataContext,
+  configContext,
   entitiesConfigContext,
   EntityConfig,
   hassExt,
@@ -63,6 +65,7 @@ import { PlayerSelectedService } from "../const/actions";
 import { PlayerConfig } from "../config/player";
 import { ActivePlayerController } from "../controller/active-player";
 import { ActionsController } from "../controller/actions";
+import { Config } from "../config/config.js";
 
 class MusicPlayerCard extends LitElement {
   @state() private shouldMarqueeTitle = false;
@@ -71,6 +74,9 @@ class MusicPlayerCard extends LitElement {
 
   @consume({ context: entitiesConfigContext, subscribe: true })
   public playerEntities!: EntityConfig[];
+  
+  @consume({ context: configContext, subscribe: true})
+  private cardConfig!: Config;
 
   private _config!: PlayerConfig;
   @provide({ context: activePlayerDataContext})
@@ -432,9 +438,13 @@ class MusicPlayerCard extends LitElement {
     `
   }
   protected renderControls() {
+    
     return html`
       <div class="media-controls">
-        <mass-player-controls></mass-player-controls>
+        ${this?.cardConfig?.expressive ?
+          html`<mass-player-controls-expressive></mass-player-controls-expressive>`
+        : html`<mass-player-controls></mass-player-controls>`
+        }
       </div>
     `
   }
