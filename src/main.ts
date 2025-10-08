@@ -31,6 +31,7 @@ import {
 import { Sections } from './const/card';
 import {
   activeSectionContext,
+  configContext,
   controllerContext,
   ExtendedHass,
 } from './const/context';
@@ -87,6 +88,8 @@ export class MusicAssistantPlayerCard extends LitElement {
 
   @provide({ context: controllerContext})
   private _controller = new MassCardController(this);
+  @provide({ context: configContext })
+  private _config!: Config;
   public set hass(hass: ExtendedHass) {
     if (!hass) {
       return;
@@ -112,6 +115,10 @@ export class MusicAssistantPlayerCard extends LitElement {
   }
   public get hass() {
     return this._controller.hass;
+  }
+  public set config(config: Config) {
+    this._config = config;
+    this._controller.config = config;
   }
   public get config() {
     return this._controller.config;
@@ -140,6 +147,7 @@ export class MusicAssistantPlayerCard extends LitElement {
       throw this.createError('You need to define entities.');
     };
     this._controller.config = config;
+    this.config = this._controller.config;
     if (!this.active_section) {
       this.setDefaultActiveSection();
     }
