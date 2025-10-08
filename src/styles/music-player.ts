@@ -29,9 +29,10 @@ export default css`
     position: absolute;
     aspect-ratio: 1;
     justify-self: center;
-    height: 100%;
+    height: var(--mass-player-card-height);
     width: 100%;
     place-content: center;
+    top: -3em;
   }
   #artwork-img {
     border-radius: var(--ha-card-border-radius);

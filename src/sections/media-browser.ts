@@ -366,7 +366,7 @@ export class MediaBrowser extends LitElement {
         >
           <ha-svg-icon
             .path=${mdiArrowLeft}
-            style="height: 2rem; width: 2rem;"
+            class="header-icon"
           ></ha-svg-icon>
         </ha-button>
       </span>
@@ -387,7 +387,7 @@ export class MediaBrowser extends LitElement {
         >
           <ha-svg-icon
             .path=${mdiMagnify}
-            style="height: 2rem; width: 2rem;"
+            class="header-icon"
           ></ha-svg-icon>
         </ha-button>
       </span>

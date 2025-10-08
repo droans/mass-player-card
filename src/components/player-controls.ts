@@ -97,7 +97,7 @@ class MassPlayerControls extends LitElement {
           <ha-svg-icon
             ${slotHtml}
             .path=${mdiSkipPrevious}
-            class="svg-${icon_size}"
+            class="svg-${icon_size} icon-outlined"
           ></ha-svg-icon>
           ${labelHtml}
         </ha-button>
@@ -123,7 +123,7 @@ class MassPlayerControls extends LitElement {
           <ha-svg-icon
             ${slotHtml}
             .path=${this.player_data.playing ?  mdiPause : mdiPlay}
-            class="svg-${icon_size}"
+            class="svg-${icon_size} icon-outlined"
           ></ha-svg-icon>
           ${labelHtml}
         </ha-button>

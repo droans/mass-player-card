@@ -115,7 +115,7 @@ class VolumeRow extends LitElement {
       >
         <ha-svg-icon
           .path=${mdiPower}
-          style="height: 3rem; width: 3rem;"
+          class="svg-plain"
         ></ha-svg-icon>
       </ha-button>
     `
@@ -136,7 +136,7 @@ class VolumeRow extends LitElement {
       >
         <ha-svg-icon
           .path=${this.player_data.muted ? mdiVolumeMute : mdiVolumeHigh}
-          style="height: 3rem; width: 3rem;"
+          class="svg-plain"
         ></ha-svg-icon>
       </ha-button>
     `
@@ -157,7 +157,7 @@ class VolumeRow extends LitElement {
       >
         <ha-svg-icon
           .path=${this.player_data.favorite ? mdiHeart : mdiHeartPlusOutline}
-          style="height: 3rem; width: 3rem;"
+          class="svg-plain"
         ></ha-svg-icon>
       </ha-button>
     `

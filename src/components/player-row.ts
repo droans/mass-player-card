@@ -152,7 +152,7 @@ class PlayerRow extends LitElement {
       >
         <ha-svg-icon
           .path=${mdiSwapHorizontal}
-          style="height: 1.5rem; width: 1.5rem;"
+          class="svg-action-button"
         ></ha-svg-icon>
     `
   }
@@ -173,7 +173,7 @@ class PlayerRow extends LitElement {
       >
         <ha-svg-icon
           .path=${this.joined ? mdiLinkOff : mdiLink}
-          style="height: 1.5rem; width: 1.5rem;"
+          class="svg-action-button"
         ></ha-svg-icon>
     `
   }

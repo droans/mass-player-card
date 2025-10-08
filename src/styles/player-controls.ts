@@ -77,4 +77,13 @@ export default css`
   .icon-filled {
     
   }
+  .icon-accent::part(base) {
+    background-color: var(--md-sys-color-primary)
+  }
+  .icon-accent::part(label) {
+    color: var(--md-sys-color-on-primary)
+  }
+  .icon-outlined::part(label) {
+    color: var(--md-sys-color-on-surface-variant);
+  }
 `;

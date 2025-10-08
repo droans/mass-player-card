@@ -197,7 +197,7 @@ class MediaRow extends LitElement {
       >
         <ha-svg-icon
           .path=${mdiArrowCollapseUp}
-          style="height: 1.5rem; width: 1.5rem;"
+          class="svg-action-button"
         ></ha-svg-icon>
       </ha-button>
     `
@@ -216,7 +216,7 @@ class MediaRow extends LitElement {
       >
         <ha-svg-icon
           .path=${mdiArrowUp}
-          style="height: 1.5rem; width: 1.5rem;"
+          class="svg-action-button"
         ></ha-svg-icon>
       </ha-button>
     `
@@ -226,18 +226,18 @@ class MediaRow extends LitElement {
       return html``
     };
     return html`
-        <ha-button
-          appearance="plain"
-          variant="brand"
-          size="medium"
-          class="action-button"
-          @click=${this.callMoveItemDownService}
-        >
-          <ha-svg-icon
-            .path=${mdiArrowDown}
-            style="height: 1.5rem; width: 1.5rem;"
-          ></ha-svg-icon>
-        </ha-button>
+      <ha-button
+        appearance="plain"
+        variant="brand"
+        size="medium"
+        class="action-button"
+        @click=${this.callMoveItemDownService}
+      >
+        <ha-svg-icon
+          .path=${mdiArrowDown}
+          class="svg-action-button"
+        ></ha-svg-icon>
+      </ha-button>
     `
   }
   private renderRemoveButton(): TemplateResult {
@@ -252,11 +252,11 @@ class MediaRow extends LitElement {
           class="action-button"
           @click=${this.callRemoveItemService}
         >
-          <ha-svg-icon
-            .path=${mdiClose}
-            style="height: 1.5rem; width: 1.5rem;"
-          ></ha-svg-icon>
-        </ha-button>
+        <ha-svg-icon
+          .path=${mdiClose}
+        class="svg-action-button"
+        ></ha-svg-icon>
+      </ha-button>
     `
   }
 

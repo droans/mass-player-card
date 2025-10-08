@@ -28,5 +28,11 @@ export default css`
   .button-min {
     height: 40px;
     width: 40px;
+    --wa-color-fill-quiet: rgba(from var(--md-sys-color-primary) r g b / 0.1);
+  }
+  .svg-plain {
+    color: var(--md-sys-color-primary);
+    height: 3em;
+    width: 3em;
   }
 `
