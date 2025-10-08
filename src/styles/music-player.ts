@@ -34,7 +34,7 @@ export default css`
     place-content: center;
   }
   #artwork-img {
-    border-radius: var(--border-radius);
+    border-radius: var(--ha-card-border-radius);
     max-height: 22em;
     max-width: 100%;
     justify-self: center;
@@ -52,7 +52,7 @@ export default css`
   }
   .player-track-title {
     font-size: 1.5rem;
-    color: var(--player-track-color);
+    color: var(--player-track-color, var(--md-sys-color-primary));
     white-space: nowrap;
     text-overflow: clip;
   }
@@ -92,7 +92,7 @@ export default css`
   .players-select-item-icon {
     height: 2em;
     width: 2em;
-    color: var(--mdc-theme-primary);
+    color: var(--md-sys-color-primary);
   }
   #grouped-players-menu {
     --control-select-menu-height: 2.5em;
@@ -109,7 +109,7 @@ export default css`
   .grouped-players-select-item-icon {
     height: 2em;
     width: 2em;
-    color: var(--mdc-theme-primary);
+    color: var(--md-sys-color-primary);
   }
   .grouped-players-volume-slider {
     display: contents;
@@ -142,7 +142,7 @@ export default css`
     --control-select-menu-height: 2.5em;
   }
   #players-select-menu::part(menu-svg) {
-    color: var(--mdc-theme-primary);
+    color: var(--md-sys-color-primary);
     border-radius: 50%;
   }
   #players-select-menu::part(menu-list-item) {
@@ -162,7 +162,7 @@ export default css`
     --control-select-menu-height: 2.5em;
   }
   #grouped-players-menu::part(menu-svg) {
-    color: var(--mdc-theme-primary);
+    color: var(--md-sys-color-primary);
     border-radius: 50%;
   }
   @keyframes marquee {

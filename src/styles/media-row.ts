@@ -3,6 +3,9 @@ import { css } from 'lit';
 // Styles belonging to the card
 // https://lit.dev/docs/components/styles/
 export default css`
+  :host {
+    --me-font-color: var(--md-sys-color-primary);
+  }
   .button {
     margin: 0.15rem;
     border-radius: 0.7rem;
@@ -12,9 +15,10 @@ export default css`
   .button-active {
     margin: 0.15rem;
     border-radius: 0.7rem;
-    background-color: var(--media-row-background-color-active);
+    background-color: var(--media-row-background-color-active, var(--md-sys-color-secondary-container));
     height: var(--media-row-height);
-    --font-color: var(--mdc-theme-primary);
+    --primary-text-color: var(--me-font-color) !important;
+    --font-color: var(--me-font-color) !important;
     padding-inline-start: 0px;
     padding-inline-end: 8px;
     color: var(--accent-color);
@@ -66,5 +70,8 @@ export default css`
     background-color: var(--divider-color);
     margin-left: 8px;
     margin-right: 8px;
+  }
+  .button-active :host {
+    --md-sys-color-primary: unset;
   }
 `;

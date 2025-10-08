@@ -59,14 +59,15 @@ class MassPlayerControls extends LitElement {
     const slotHtml = generateControlSlotHtml(icon_style);
     const labelHtml = generateControlLabelHtml(icon_style, 'Shuffle');
     const div_layout= this.layoutConfig.controls_layout == PlayerControlsLayout.COMPACT ? "div-compact" : "div-spaced";
+    const appearance = this.player_data.shuffle ? "accent" : "plain";
     return html`
       <div class="shuffle div-${icon_size} ${div_layout}">
         <ha-button
-          appearance="${this.player_data.shuffle ? "accent" : "plain"}"
+          appearance="${appearance}"
           variant="brand"
           @click=${this.onShuffle}
           size="${icon_size}"
-          class="icon-${icon_size} ${icon_style.box_shadow ? `has-box-shadow` : ``}"
+          class="icon-${icon_size} ${icon_style.box_shadow ? `has-box-shadow` : ``} icon-${appearance}"
         >
           <ha-svg-icon
             ${slotHtml}
@@ -109,13 +110,14 @@ class MassPlayerControls extends LitElement {
     const slotHtml = generateControlSlotHtml(icon_style);
     const label = this.player_data.playing ? 'Playing' : 'Paused';
     const labelHtml = generateControlLabelHtml(icon_style, label);
+    const appearance = this.player_data.playing ? "filled" : "outlined";
     return html`
       <div class="play-pause div-${icon_size} ${div_layout}">
         <ha-button
-          appearance="${this.player_data.playing ? "filled" : "outlined"}"
+          appearance="${appearance}"
           variant="brand"
           size="${icon_size}"
-          class="button-play-pause icon-${icon_size} ${icon_style.box_shadow ? `has-box-shadow` : ``}"
+          class="button-play-pause icon-${icon_size} ${icon_style.box_shadow ? `has-box-shadow` : ``} icon-${appearance}"
           @click=${this.onPlayPause}
         >
           <ha-svg-icon
@@ -168,14 +170,14 @@ class MassPlayerControls extends LitElement {
     const icon_size = icon_style.size == PlayerIconSize.LARGE ? "medium" : "small";
     const slotHtml = generateControlSlotHtml(icon_style);
     const labelHtml = generateControlLabelHtml(icon_style, 'Repeat');
-
+    const appearance = this.player_data.repeat == RepeatMode.OFF ? "accent" : "plain";
     return html`
       <div class="repeat div-${icon_size} ${div_layout}">
         <ha-button
-          appearance="${this.player_data.repeat == RepeatMode.OFF ? "plain" : "accent"}"
+          appearance="${appearance}"
           variant="brand"
           size="${icon_size}"
-          class="icon-${icon_size} ${icon_style.box_shadow ? `has-box-shadow` : ``}"
+          class="icon-${icon_size} ${icon_style.box_shadow ? `has-box-shadow` : ``} icon-${appearance}"
           @click=${this.onRepeat}
         >
           <ha-svg-icon

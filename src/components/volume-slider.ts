@@ -56,6 +56,7 @@ class VolumeSlider extends LitElement {
     return html`
       <ha-control-slider
         part="slider"
+        style="--control-slider-color: var(--md-sys-color-primary) !important;"
         .disabled=${this.entity.attributes.is_volume_muted}
         .unit="%"
         .value=${this.entity.attributes.volume_level * 100}

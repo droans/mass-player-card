@@ -4,11 +4,12 @@ import { state } from "lit/decorators.js";
 import { consume } from "@lit/context";
 import 'beercss';
 import { ActivePlayerController } from "../controller/active-player.js";
-import { actionsControllerContext, activeMediaPlayer, activePlayerControllerContext, activePlayerDataContext, ExtendedHassEntity } from "../const/context.js";
+import { actionsControllerContext, activeMediaPlayer, activePlayerControllerContext, activePlayerDataContext, controllerContext, ExtendedHassEntity } from "../const/context.js";
 import { ActionsController } from "../controller/actions.js";
 import { playerHasUpdated } from "../utils/util.js";
 import { PlayerData } from "../const/music-player.js";
 import { secondsToTime } from "../utils/util.js";
+import { MassCardController } from "../controller/controller.js";
 class MassPlayerProgressBar extends LitElement {
   @state() private _media_duration = 1;
   @state() private _media_position = 0;
@@ -25,6 +26,9 @@ class MassPlayerProgressBar extends LitElement {
   private activePlayerController!: ActivePlayerController
   @consume({ context: actionsControllerContext, subscribe: true})
   private actions!: ActionsController;
+  @consume({ context: controllerContext, subscribe: true})
+  private controller!: MassCardController;
+
   private _player_data!: PlayerData;
 
   private _activePlayer!: ExtendedHassEntity;
@@ -149,6 +153,7 @@ class MassPlayerProgressBar extends LitElement {
     `
   }
   protected render(): TemplateResult {
+    const cls = !(this.player_data.playing && this.controller.config.expressive) ? `medium progress-plain` : `wavy medium`;
     return html`
       <div class="progress">
         <div id="time">
@@ -161,7 +166,7 @@ class MassPlayerProgressBar extends LitElement {
             style="--incomplete-progress-start-pct: ${Math.round(this._prog_pct * 100)}%;"
           ></div>
           <progress 
-            class="${this.player_data.playing ? `wavy medium` : `medium progress-plain`}"
+            class="${cls}"
             id="progress-bar"
             value="${this._prog_pct}"
             max="1"

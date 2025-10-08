@@ -20,5 +20,6 @@ export default css`
   }
   ha-control-slider {
     --control-slider-thickness: 2.25em;
+    --control-slider-color: var(--md-sys-color-primary) !important;
   } 
 `

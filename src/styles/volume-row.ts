@@ -20,6 +20,7 @@ export default css`
   }
   #volume-slider {
     --control-slider-thickness: 2.25em;
+    --control-slider-color: var(--md-sys-color-primary);
   } 
   .button-min::part(base) {
     --wa-form-control-padding-inline: 0px;

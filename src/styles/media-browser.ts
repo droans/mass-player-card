@@ -28,7 +28,7 @@ export default css`
     --control-select-menu-background-color: unset;
   }
   #search-media-type-menu::part(menu-svg) {
-    color: var(--mdc-theme-primary);
+    color: var(--md-sys-color-primary);
     border-radius: 50%;
   }
   #search-media-type-menu::part(menu-list-item) {

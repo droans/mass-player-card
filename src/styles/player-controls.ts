@@ -65,4 +65,16 @@ export default css`
   .div-spaced {
     align-self: center;
   }
+  .icon-plain {
+
+  }
+  .icon-accent {
+
+  }
+  .icon-outlined {
+    color: var(--md-sys-color-on-secondary-container);
+  }
+  .icon-filled {
+    
+  }
 `;
