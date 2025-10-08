@@ -49,24 +49,23 @@ class MassMenuButton extends LitElement {
 
   protected render() {
     return html`
-      <div id="menu-button" part="menu-button">
-        <ha-control-select-menu
-          id="menu-select-menu"
-          part="menu-select-menu"
-          fixedMenuPosition
-          naturalMenuWidth
-          @selected=${this.onSelectAction}
-        >
-          <ha-svg-icon
-            slot="icon"
-            id="menu-svg"
-            part="menu-svg"
-            .path=${this.iconPath}
-          ></ha-svg-icon>
-          ${this.renderMenuItems()}
-          <slot></slot>
-        </ha-control-select-menu>
-      </div>
+        <div id="menu-button" part="menu-button">
+          <ha-control-select-menu
+            id="menu-select-menu"
+            part="menu-select-menu"
+            naturalMenuWidth
+            @selected=${this.onSelectAction}
+          >
+            <ha-svg-icon
+              slot="icon"
+              id="menu-svg"
+              part="menu-svg"
+              .path=${this.iconPath}
+            ></ha-svg-icon>
+            ${this.renderMenuItems()}
+            <slot></slot>
+          </ha-control-select-menu>
+        </div>
     `
   }
 }

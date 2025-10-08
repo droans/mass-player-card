@@ -5,6 +5,7 @@ import { css } from 'lit';
 export default css`
   :host {
     --me-font-color: var(--md-sys-color-primary);
+    --me-icon-color: var(--md-sys-color-primary);
   }
   .button {
     margin: 0.15rem;
@@ -73,5 +74,10 @@ export default css`
   }
   .button-active :host {
     --md-sys-color-primary: unset;
+  }
+  .svg-action-button {
+    height: 1.5rem;
+    width: 1.5rem;
+    color: var(--me-icon-color);
   }
 `;

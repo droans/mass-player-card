@@ -46,5 +46,11 @@ export default css`
   .button-min {
     height: 40px;
     width: 40px;
+    --wa-color-fill-quiet: rgba(from var(--md-sys-color-primary) r g b / 0.1);
+  }
+  .header-icon {
+    height: 2rem;
+    width: 2rem;
+    color: var(--md-sys-color-primary);
   }
 `;

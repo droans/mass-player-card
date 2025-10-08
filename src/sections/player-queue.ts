@@ -322,14 +322,6 @@ class QueueCard extends LitElement {
       </div>
     `
   }
-  // protected updated() {
-  //   const nodes = this.shadowRoot?.querySelectorAll('mass-player-media-row') ?? [];
-  //   nodes.forEach(
-  //     (node) => {
-  //       this.activePlayerController.applyExpressiveThemeTo(node.shadowRoot.firstElementChild)
-  //     }
-  //   )
-  // }
   static get styles(): CSSResultGroup {
     return styles;
   }

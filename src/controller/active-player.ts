@@ -75,7 +75,7 @@ export class ActivePlayerController {
     const new_track = player?.attributes?.media_content_id;
     if (playerHasUpdated(this.activeMediaPlayer, player)) {
       this._activeMediaPlayer.setValue(player);
-      if (old_track != new_track) {
+      if (old_track != new_track && this.config.expressive) {
         this.applyExpressiveTheme().catch( () => {return});
       }
     }

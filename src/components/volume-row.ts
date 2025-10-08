@@ -13,6 +13,7 @@ import {
   actionsControllerContext,
   activeEntityConf,
   activePlayerDataContext,
+  controllerContext,
   EntityConfig,
   musicPlayerConfigContext
 } from "../const/context";
@@ -20,6 +21,7 @@ import { PlayerData } from "../const/music-player";
 
 import styles from '../styles/volume-row';
 import { ActionsController } from "../controller/actions.js";
+import { MassCardController } from "../controller/controller.js";
 
 class VolumeRow extends LitElement {
 
@@ -27,6 +29,9 @@ class VolumeRow extends LitElement {
 
   private _config!: PlayerConfig;
   private _entityConfig!: EntityConfig;
+  @consume({ context: controllerContext })
+  private controller!: MassCardController;
+
   private hide: PlayerHiddenElementsConfig = DEFAULT_PLAYER_HIDDEN_ELEMENTS_CONFIG;
   private _player_data!: PlayerData;
 
@@ -67,10 +72,11 @@ class VolumeRow extends LitElement {
   private updateHiddenElements() {
     const entity = this.entityConfig.hide.player;
     const card = this.config.hide;
+    const expressive = this.controller.config.expressive;
     this.hide = {
-      favorite: entity.favorite || card.favorite,
+      favorite: entity.favorite || card.favorite || expressive,
       mute: entity.mute || card.mute,
-      power: entity.power || card.power,
+      power: entity.power || card.power || expressive,
       volume: entity.volume || card.volume,
       player_selector: false,
       repeat: false,
@@ -115,7 +121,7 @@ class VolumeRow extends LitElement {
       >
         <ha-svg-icon
           .path=${mdiPower}
-          style="height: 3rem; width: 3rem;"
+          class="svg-plain"
         ></ha-svg-icon>
       </ha-button>
     `
@@ -136,7 +142,7 @@ class VolumeRow extends LitElement {
       >
         <ha-svg-icon
           .path=${this.player_data.muted ? mdiVolumeMute : mdiVolumeHigh}
-          style="height: 3rem; width: 3rem;"
+          class="svg-plain"
         ></ha-svg-icon>
       </ha-button>
     `
@@ -157,7 +163,7 @@ class VolumeRow extends LitElement {
       >
         <ha-svg-icon
           .path=${this.player_data.favorite ? mdiHeart : mdiHeartPlusOutline}
-          style="height: 3rem; width: 3rem;"
+          class="svg-plain"
         ></ha-svg-icon>
       </ha-button>
     `

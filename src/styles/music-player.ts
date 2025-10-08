@@ -29,9 +29,10 @@ export default css`
     position: absolute;
     aspect-ratio: 1;
     justify-self: center;
-    height: 100%;
+    height: var(--mass-player-card-height);
     width: 100%;
     place-content: center;
+    top: -3em;
   }
   #artwork-img {
     border-radius: var(--ha-card-border-radius);
@@ -175,18 +176,13 @@ export default css`
   }
   #volume {
     position: absolute;
-    bottom: 0;
+    bottom: 0.5em;
     width: 100%;
   }
   .artwork-large {
-    position: absolute;
-    top: -3em;
     max-height: 35em !important;
-    max-width: 100%;
   }
   .bg-art-lg {
-    background: rgba(from var(--ha-card-background) r g b / 0.6);
-    backdrop-filter: blur(3px);
     z-index: 1;
   }
   .header-art-lg {
@@ -203,7 +199,6 @@ export default css`
     position: relative;
   }
   .vol-art-lg::part(volume-div) {
-    background: rgba(from var(--ha-card-background) r g b / 0.6);
     backdrop-filter: blur(3px);
     z-index: 0;
   }
