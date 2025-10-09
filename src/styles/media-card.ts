@@ -87,6 +87,10 @@ export default css`
     padding: unset;
     text-align: center;
   }
+  media-card {
+    border-radius: var(--ha-card-border-radius) !important;
+    overflow: hidden;
+  }
   wa-card {
     --inner-border-radius: var(--ha-card-border-radius);
     --wa-panel-border-radius: var(--ha-card-border-radius);

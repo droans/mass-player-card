@@ -366,7 +366,8 @@ type: custom:mass-player-card
 player:
   layout:
     controls_layout: compact          # Options: compact or spaced (default: compact)
-    large_artwork: true               # Options: True/False (default: true)
+    artwork_size: large               # Options: small, medium, large (default: large)
+                                      # Note: Medium/Large will display in the background behind the header and player controls. Small will display on its own.
     icons:
       shuffle:
         size: small                   # Options: small or large (default: small)

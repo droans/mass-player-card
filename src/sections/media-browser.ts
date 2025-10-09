@@ -409,6 +409,7 @@ export class MediaBrowser extends LitElement {
           .iconPath=${this._searchMediaTypeIcon}
           .items=${icons}
           .onSelectAction=${this.onSearchMediaTypeSelect}
+          fixedMenuPosition
         ></mass-menu-button>
       `
     }

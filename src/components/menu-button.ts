@@ -13,6 +13,7 @@ import { ListItems } from "../const/media-browser";
 class MassMenuButton extends LitElement {
   @property( { attribute: false }) public iconPath!: string;
   @property( { attribute: false }) private _items!: ListItems;
+  @property( { type: Boolean, attribute: "fixedMenuPosition" }) public fixedMenuPosition!: boolean;
   public onSelectAction!: ServiceCustomEvent;
 
   public set items(items: ListItems) {
@@ -54,6 +55,7 @@ class MassMenuButton extends LitElement {
             id="menu-select-menu"
             part="menu-select-menu"
             naturalMenuWidth
+            ?fixedMenuPosition=${this.fixedMenuPosition}
             @selected=${this.onSelectAction}
           >
             <ha-svg-icon
