@@ -227,6 +227,7 @@ class MediaCard extends LitElement {
         .iconPath=${this.Icons.PLAY_CIRCLE}
         .items=${this._enqueue_buttons}
         .onSelectAction=${this.onEnqueue}
+        fixedMenuPosition
       ></mass-menu-button>
     `
   }
