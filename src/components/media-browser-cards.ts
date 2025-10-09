@@ -26,6 +26,7 @@ import {
 
 import styles from '../styles/media-browser-cards';
 import { MediaBrowserConfig } from "../config/media-browser.js";
+import { cache } from "lit/directives/cache.js";
 
 class MediaBrowserCards extends LitElement {
   @state() private code!: TemplateResult;
@@ -45,8 +46,12 @@ class MediaBrowserCards extends LitElement {
     if (!items?.length) {
       return;
     }
-    this._items = items;
-    this.generateCode();
+    const cur_items = JSON.stringify(this._items);
+    const new_items = JSON.stringify(items);
+    if (cur_items != new_items){
+      this._items = items;
+      this.generateCode();
+    }
   }
   public get items() {
     return this._items;
@@ -64,7 +69,7 @@ class MediaBrowserCards extends LitElement {
         // eslint-disable-next-line @typescript-eslint/no-unsafe-member-access
         const queueable = (item.data?.media_content_id?.length > 0 && item.data?.media_content_type?.length > 0) ? literal`queueable` : literal``;
         const width = ((1 / this.browserConfig.columns) * 100) - 2
-        return html`
+        return cache(html`
           <mass-media-card
             style="max-width: ${width.toString()}%"
             .config=${item}
@@ -73,7 +78,7 @@ class MediaBrowserCards extends LitElement {
             ${queueable}
           >
           </mass-media-card>
-        `
+        `)
       }
     )
     this.code = html`

@@ -1,11 +1,5 @@
 import { consume } from '@lit/context';
 import {
-  mdiClose,
-  mdiArrowCollapseUp,
-  mdiArrowUp,
-  mdiArrowDown
-} from '@mdi/js';
-import {
   html,
   type CSSResultGroup,
   LitElement,
@@ -20,12 +14,13 @@ import {
 } from '../const/actions';
 import {
   ExtendedHass,
-  Icon
+  Thumbnail
 } from '../const/common';
 import {
   activeEntityConf,
   EntityConfig,
   hassExt,
+  IconsContext,
   mediaCardDisplayContext,
   playerQueueConfigContext
 } from '../const/context';
@@ -36,15 +31,17 @@ import styles from '../styles/media-row';
 import {
   backgroundImageFallback,
   getFallbackBackgroundImage
-} from '../utils/icons';
+} from '../utils/thumbnails';
 import { queueItemhasUpdated, testMixedContent } from '../utils/util';
 import { DEFAULT_PLAYER_QUEUE_HIDDEN_ELEMENTS_CONFIG, PlayerQueueHiddenElementsConfig, QueueConfig } from '../config/player-queue';
+import { Icons } from '../const/icons.js';
 
 class MediaRow extends LitElement {
   @property({ attribute: false }) media_item!: QueueItem;
 
   @consume({context: hassExt, subscribe: true})
   public hass!: ExtendedHass;
+  @consume({ context: IconsContext}) private Icons!: Icons;
 
   @consume({ context: mediaCardDisplayContext, subscribe: true })
   @state()
@@ -125,9 +122,9 @@ class MediaRow extends LitElement {
   private artworkStyle() {
     const img = this.media_item.media_image || "";
     if (!testMixedContent(img)) {
-      return getFallbackBackgroundImage(this.hass, Icon.CLEFT);
+      return getFallbackBackgroundImage(this.hass, Thumbnail.CLEFT);
     }
-    return backgroundImageFallback(this.hass, img, Icon.CLEFT);
+    return backgroundImageFallback(this.hass, img, Thumbnail.CLEFT);
   }
   private renderThumbnail(): TemplateResult {
     const played = !this.media_item.show_action_buttons  && !this.media_item.playing;
@@ -196,7 +193,7 @@ class MediaRow extends LitElement {
         @click=${this.callMoveItemNextService}
       >
         <ha-svg-icon
-          .path=${mdiArrowCollapseUp}
+          .path=${this.Icons.ARROW_PLAY_NEXT}
           class="svg-action-button"
         ></ha-svg-icon>
       </ha-button>
@@ -215,7 +212,7 @@ class MediaRow extends LitElement {
         @click=${this.callMoveItemUpService}
       >
         <ha-svg-icon
-          .path=${mdiArrowUp}
+          .path=${this.Icons.ARROW_UP}
           class="svg-action-button"
         ></ha-svg-icon>
       </ha-button>
@@ -234,7 +231,7 @@ class MediaRow extends LitElement {
         @click=${this.callMoveItemDownService}
       >
         <ha-svg-icon
-          .path=${mdiArrowDown}
+          .path=${this.Icons.ARROW_DOWN}
           class="svg-action-button"
         ></ha-svg-icon>
       </ha-button>
@@ -253,7 +250,7 @@ class MediaRow extends LitElement {
           @click=${this.callRemoveItemService}
         >
         <ha-svg-icon
-          .path=${mdiClose}
+          .path=${this.Icons.CLOSE}
         class="svg-action-button"
         ></ha-svg-icon>
       </ha-button>

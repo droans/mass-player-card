@@ -2,11 +2,16 @@ import { ContextProvider } from "@lit/context";
 import { Config, processConfig } from "../config/config";
 import {
   entitiesConfigContext,
+  IconsContext,
   mediaBrowserConfigContext,
   musicPlayerConfigContext,
   playerQueueConfigContext,
   playersConfigContext
 } from "../const/context";
+import {
+  getIcons,
+  Icons
+} from "../const/icons.js";
 
 export class MassCardConfigController {
   private _config!: Config;
@@ -15,6 +20,7 @@ export class MassCardConfigController {
   private _playerQueueConfig = new ContextProvider(document.body, { context: playerQueueConfigContext});
   private _musicPlayerConfig = new ContextProvider(document.body, { context: musicPlayerConfigContext});
   private _playersConfig = new ContextProvider(document.body, { context: playersConfigContext});
+  private _icons = new ContextProvider(document.body, { context: IconsContext});
   private _host: HTMLElement;
   
   constructor(host: HTMLElement) {
@@ -27,9 +33,16 @@ export class MassCardConfigController {
     this._playerQueueConfig.value = conf.queue;
     this._musicPlayerConfig.value = conf.player;
     this._playersConfig.value = conf.players;
+    this.Icons = getIcons(config.expressive);
   }
   public get config() {
     return this._config;
+  }
+  private set Icons(icons: Icons) {
+    this._icons.setValue(icons);
+  }
+  public get Icons() {
+    return this._icons.value;
   }
 
   public get Entities() {

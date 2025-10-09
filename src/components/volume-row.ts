@@ -1,5 +1,4 @@
 import { consume } from "@lit/context";
-import { mdiHeart, mdiHeartPlusOutline, mdiPower, mdiVolumeHigh, mdiVolumeMute } from "@mdi/js";
 import {
   CSSResultGroup,
   html,
@@ -15,6 +14,7 @@ import {
   activePlayerDataContext,
   controllerContext,
   EntityConfig,
+  IconsContext,
   musicPlayerConfigContext
 } from "../const/context";
 import { PlayerData } from "../const/music-player";
@@ -22,6 +22,7 @@ import { PlayerData } from "../const/music-player";
 import styles from '../styles/volume-row';
 import { ActionsController } from "../controller/actions.js";
 import { MassCardController } from "../controller/controller.js";
+import { Icons } from "../const/icons.js";
 
 class VolumeRow extends LitElement {
 
@@ -31,6 +32,7 @@ class VolumeRow extends LitElement {
   private _entityConfig!: EntityConfig;
   @consume({ context: controllerContext })
   private controller!: MassCardController;
+  @consume({ context: IconsContext}) private Icons!: Icons;
 
   private hide: PlayerHiddenElementsConfig = DEFAULT_PLAYER_HIDDEN_ELEMENTS_CONFIG;
   private _player_data!: PlayerData;
@@ -120,7 +122,7 @@ class VolumeRow extends LitElement {
         @click=${this.onToggle}
       >
         <ha-svg-icon
-          .path=${mdiPower}
+          .path=${this.Icons.POWER}
           class="svg-plain"
         ></ha-svg-icon>
       </ha-button>
@@ -141,7 +143,7 @@ class VolumeRow extends LitElement {
         @click=${this.onVolumeMuteToggle}
       >
         <ha-svg-icon
-          .path=${this.player_data.muted ? mdiVolumeMute : mdiVolumeHigh}
+          .path=${this.player_data.muted ? this.Icons.VOLUME_MUTE : this.Icons.VOLUME_HIGH}
           class="svg-plain"
         ></ha-svg-icon>
       </ha-button>
@@ -162,7 +164,7 @@ class VolumeRow extends LitElement {
         @click=${this.onFavorite}
       >
         <ha-svg-icon
-          .path=${this.player_data.favorite ? mdiHeart : mdiHeartPlusOutline}
+          .path=${this.player_data.favorite ? this.Icons.HEART : this.Icons.HEART_PLUS}
           class="svg-plain"
         ></ha-svg-icon>
       </ha-button>

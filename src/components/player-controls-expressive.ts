@@ -1,32 +1,25 @@
 import { CSSResultGroup, html, LitElement, TemplateResult } from "lit";
 
 import styles from '../styles/player-controls-expressive'
-import {
-  mdiHeart,
-  mdiHeartPlusOutline,
-  mdiPause,
-  mdiPlay,
-  mdiPower,
-  mdiShuffle,
-  mdiSkipNext,
-  mdiSkipPrevious
-} from "@mdi/js";
 import { consume } from "@lit/context";
 import {
   actionsControllerContext,
-  activePlayerDataContext
+  activePlayerDataContext,
+  IconsContext
 } from "../const/context.js";
 import { ActionsController } from "../controller/actions.js";
 import { PlayerData } from "../const/music-player.js";
 import { RepeatMode } from "../const/common.js";
 import { getIteratedRepeatMode, getRepeatIcon } from "../utils/music-player.js";
 import { state } from "lit/decorators.js";
+import { Icons } from "../const/icons.js";
 
 class MassPlayerControlsExpressive extends LitElement {
   @consume({ context: actionsControllerContext, subscribe: true })
   private actions!: ActionsController;
   @state()
   private _playerData!: PlayerData;
+  @consume({ context: IconsContext}) private Icons!: Icons;
 
   private playing = false;
   private repeat = RepeatMode.OFF;
@@ -89,7 +82,7 @@ class MassPlayerControlsExpressive extends LitElement {
         @click=${this.onPrevious}
       >
         <ha-svg-icon
-          .path=${mdiSkipPrevious}
+          .path=${this.Icons.SKIP_PREVIOUS}
           class="icons-next-previous"
         >
         </ha-svg-icon>
@@ -105,7 +98,7 @@ class MassPlayerControlsExpressive extends LitElement {
         @click=${this.onPlayPause}
       >
         <ha-svg-icon
-          .path=${playing ? mdiPause : mdiPlay}
+          .path=${playing ? this.Icons.PAUSE : this.Icons.PLAY}
           class="icon-play-pause"
         >
         </ha-svg-icon>
@@ -120,7 +113,7 @@ class MassPlayerControlsExpressive extends LitElement {
         @click=${this.onNext}
       >
         <ha-svg-icon
-          .path=${mdiSkipNext}
+          .path=${this.Icons.SKIP_NEXT}
           class="icons-next-previous"
         >
         </ha-svg-icon>
@@ -134,7 +127,7 @@ class MassPlayerControlsExpressive extends LitElement {
         @click=${this.onPower}
       >
         <ha-svg-icon
-          .path=${mdiPower}
+          .path=${this.Icons.POWER}
           class="icons-lower"
         >
         </ha-svg-icon>
@@ -151,7 +144,7 @@ class MassPlayerControlsExpressive extends LitElement {
         @click=${this.onShuffle}
       >
       <ha-svg-icon
-        .path=${mdiShuffle}
+        .path=${shuffle ? this.Icons.SHUFFLE : this.Icons.SHUFFLE_DISABLED}
         class="icons-lower"
       ></ha-svg-icon>
       <span>Shuffle</span>
@@ -161,7 +154,7 @@ class MassPlayerControlsExpressive extends LitElement {
   protected renderRepeat(): TemplateResult {
     const repeat = this.repeat;
     const repeat_on = repeat != RepeatMode.OFF;
-    const icon = getRepeatIcon(repeat);
+    const icon = getRepeatIcon(repeat, this.Icons);
     return html`
       <button
         class="no-round medium button-lower${repeat_on ? `-active active` : ``}"
@@ -184,7 +177,7 @@ class MassPlayerControlsExpressive extends LitElement {
         @click=${this.onFavorite}
       >
         <ha-svg-icon
-          .path=${favorite ? mdiHeart : mdiHeartPlusOutline}
+          .path=${favorite ? this.Icons.HEART : this.Icons.HEART_PLUS}
           id="icons-lower"
         >
         </ha-svg-icon>

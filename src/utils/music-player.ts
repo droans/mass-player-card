@@ -1,7 +1,7 @@
 import { html } from "lit";
 import { PlayerIcon, PlayerIconSize } from "../config/player";
 import { RepeatMode } from "../const/common.js";
-import { mdiRepeat, mdiRepeatOff, mdiRepeatOnce } from "@mdi/js";
+import { Icons } from "../const/icons.js";
 
 export function generateControlSlotHtml(icon_style: PlayerIcon) {
   if (
@@ -32,12 +32,12 @@ export function getIteratedRepeatMode(cur_repeat: RepeatMode): RepeatMode {
   }
   return RepeatMode.ALL;
 }
-export function getRepeatIcon(repeat: RepeatMode): string {
+export function getRepeatIcon(repeat: RepeatMode, icons: Icons): string {
   if (repeat == RepeatMode.ALL) {
-    return mdiRepeat;
+    return icons.REPEAT;
   }
   if (repeat == RepeatMode.ONCE) {
-    return mdiRepeatOnce;
+    return icons.REPEAT_ONCE;
   }
-  return mdiRepeatOff;
+  return icons.REPEAT_OFF;
 }

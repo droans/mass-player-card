@@ -1,18 +1,23 @@
 import { CSSResultGroup, html, LitElement, PropertyValues, TemplateResult } from "lit";
 import styles  from '../styles/navigation-bar'
-import { activeSectionContext, controllerContext } from "../const/context.js";
+import {
+  activeSectionContext,
+  controllerContext,
+  IconsContext
+} from "../const/context.js";
 import { consume } from "@lit/context";
 import { state } from "lit/decorators.js";
 import { Sections } from "../const/card.js";
 import { Config } from "../config/config.js";
 import { MassCardController } from "../controller/controller.js";
-import { mdiAlbum, mdiMusic, mdiPlaylistMusic, mdiSpeakerMultiple } from "@mdi/js";
 import { MediaBrowser } from "../sections/media-browser.js";
+import { Icons } from "../const/icons.js";
 
 class MassNavBar extends LitElement {
   private _controller!: MassCardController;
   private _config!: Config;
-  
+  @consume({ context: IconsContext}) private Icons!: Icons;
+
   @consume({ context: activeSectionContext, subscribe: true}) 
   @state() 
   private set active_section(section: Sections) {
@@ -57,7 +62,7 @@ class MassNavBar extends LitElement {
 
   protected renderMusicPlayerTab(): TemplateResult {
     const section = Sections.MUSIC_PLAYER;
-    const icon = mdiMusic;
+    const icon = this.Icons.MUSIC;
     if (this.config.player.enabled){
       return this.renderTab(section, icon)
     }
@@ -65,7 +70,7 @@ class MassNavBar extends LitElement {
   }
   protected renderQueueTab(): TemplateResult {
     const section = Sections.QUEUE;
-    const icon = mdiPlaylistMusic;
+    const icon = this.Icons.PLAYLIST;
     if (this.config.queue.enabled){
       return this.renderTab(section, icon)
     }
@@ -73,7 +78,7 @@ class MassNavBar extends LitElement {
   }
   protected renderMediaBrowserTab(): TemplateResult {
     const section = Sections.MEDIA_BROWSER;
-    const icon = mdiAlbum;
+    const icon = this.Icons.MUSIC;
     if (this.config.media_browser.enabled){
       return this.renderTab(section, icon)
     }
@@ -81,7 +86,7 @@ class MassNavBar extends LitElement {
   }
   protected renderPlayersTab(): TemplateResult {
     const section = Sections.PLAYERS;
-    const icon = mdiSpeakerMultiple;
+    const icon = this.Icons.SPEAKER_MULTIPLE;
     if (this.config.players.enabled){
       return this.renderTab(section, icon)
     }

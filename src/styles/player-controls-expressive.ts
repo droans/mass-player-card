@@ -31,7 +31,7 @@ export default css`
     width: var(--play-pause-icon-height);
   }
   .button-next-previous {
-    --surface-container: var(--md-sys-color-surface-container);
+    --surface-container: var(--md-sys-color-secondary-container);
     --on-surface-container: var(--md-sys-color-on-surface-variant);
     border-radius: 18px !important;
     height: var(--play-pause-icon-height);
@@ -76,8 +76,8 @@ export default css`
 
   }
   .button-lower {
-    --surface-container: var(--md-sys-color-surface-container);
-    --on-surface-container: var(--md-sys-color-on-surface-variant);
+    --surface-container: var(--md-sys-color-surface);
+    --on-surface-container: var(--md-sys-color-on-surface);
   }
   .button-lower-active {
     --secondary-container: var(--md-sys-color-secondary-container);

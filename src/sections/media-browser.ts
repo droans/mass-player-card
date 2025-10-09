@@ -2,10 +2,6 @@ import '@shoelace-style/shoelace/dist/components/input/input';
 
 import { consume, provide } from "@lit/context";
 import {
-  mdiArrowLeft,
-  mdiLibrary,
-  mdiLibraryOutline,
-  mdiMagnify,
   mdiMusic
 } from "@mdi/js";
 import {
@@ -33,7 +29,7 @@ import {
 import { EnqueueOptions } from "../const/actions";
 import {
   ExtendedHass,
-  Icon,
+  Thumbnail,
   MediaTypes
 } from "../const/common";
 import {
@@ -41,27 +37,29 @@ import {
   activeEntityID,
   EntityConfig,
   hassExt,
+  IconsContext,
   mediaBrowserConfigContext,
 } from "../const/context";
 import {
   DEFAULT_SEARCH_LIMIT,
+  getSearchMediaButtons,
   MediaBrowserItemsConfig,
   MediaCardData,
   MediaCardItem,
   MediaLibraryItem,
-  SEARCH_MEDIA_TYPE_BUTTONS,
   SEARCH_TERM_MIN_LENGTH,
   SEARCH_UPDATE_DELAY
 } from "../const/media-browser";
 
 import styles from '../styles/media-browser';
 
-import { getMediaTypeSvg } from "../utils/icons";
+import { getMediaTypeSvg } from "../utils/thumbnails";
 import {
   generateCustomSectionCards,
   generateFavoriteCard,
   generateFavoritesSectionCards
 } from '../utils/media-browser';
+import { Icons } from '../const/icons.js';
 
 export class MediaBrowser extends LitElement {
   @provide( { context: mediaBrowserConfigContext })
@@ -70,6 +68,7 @@ export class MediaBrowser extends LitElement {
   @state() private cards: MediaBrowserItemsConfig = {main: []};
   @state() private _searchLibrary= false;
   @state() private _searchMediaTypeIcon: string = mdiMusic;
+  @consume({ context: IconsContext}) private Icons!: Icons;
 
   @consume( { context: activeEntityID, subscribe: true})
   public activePlayer!: string;
@@ -178,7 +177,7 @@ export class MediaBrowser extends LitElement {
     const section = data.section;
     if (subtype == 'favorite') {
       this._searchMediaType = section;
-      this._searchMediaTypeIcon = getMediaTypeSvg((section as MediaTypes));
+      this._searchMediaTypeIcon = getMediaTypeSvg((section as MediaTypes), this.Icons);
     }
     this.activeSection = data.section;
   }
@@ -259,7 +258,7 @@ export class MediaBrowser extends LitElement {
       @typescript-eslint/no-unsafe-member-access,
     */
     this._searchMediaType = value;
-    this._searchMediaTypeIcon = getMediaTypeSvg(value);
+    this._searchMediaTypeIcon = getMediaTypeSvg(value, this.Icons);
     await this.generateSearchResults(this._searchMediaTerm, this._searchMediaType, this._searchLibrary);
     this.activeCards = this.cards.search;
   }
@@ -309,8 +308,8 @@ export class MediaBrowser extends LitElement {
   private generateCustomSectionData = (config: customSection) => {
     const section_card = {
       title: config.name,
-      icon: config.image,
-      fallback: Icon.CLEFT,
+      thumbnail: config.image,
+      fallback: Thumbnail.CLEFT,
       data: {
         type: 'section',
         subtype: 'custom',
@@ -365,7 +364,7 @@ export class MediaBrowser extends LitElement {
           @click=${this.onBack}
         >
           <ha-svg-icon
-            .path=${mdiArrowLeft}
+            .path=${this.Icons.ARROW_LEFT}
             class="header-icon"
           ></ha-svg-icon>
         </ha-button>
@@ -386,7 +385,7 @@ export class MediaBrowser extends LitElement {
           @click=${this.onSearchPress}
         >
           <ha-svg-icon
-            .path=${mdiMagnify}
+            .path=${this.Icons.SEARCH}
             class="header-icon"
           ></ha-svg-icon>
         </ha-button>
@@ -403,11 +402,12 @@ export class MediaBrowser extends LitElement {
   }
   protected renderSearchMediaTypesButton() {
     if (this.activeSection == 'search') {
+      const icons = getSearchMediaButtons(this.Icons);
       return html`
         <mass-menu-button
           id="search-media-type-menu"
           .iconPath=${this._searchMediaTypeIcon}
-          .items=${SEARCH_MEDIA_TYPE_BUTTONS}
+          .items=${icons}
           .onSelectAction=${this.onSearchMediaTypeSelect}
         ></mass-menu-button>
       `
@@ -425,7 +425,7 @@ export class MediaBrowser extends LitElement {
           @click=${this.onSearchLibrarySelect}
         >
           <ha-svg-icon
-            .path=${this._searchLibrary ? mdiLibrary : mdiLibraryOutline}
+            .path=${this._searchLibrary ? this.Icons.LIBRARY : this.Icons.LIBRARY_OUTLINED}
             style="height: 1.5rem; width: 1.5rem;"
           ></ha-svg-icon>
         </ha-button>

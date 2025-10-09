@@ -1,10 +1,5 @@
 import { consume } from '@lit/context';
 import {
-  mdiLink,
-  mdiLinkOff,
-  mdiSwapHorizontal
-} from '@mdi/js';
-import {
   html,
   type CSSResultGroup,
   LitElement,
@@ -21,23 +16,25 @@ import {
 import {
   ExtendedHass,
   ExtendedHassEntity,
-  Icon
+  Thumbnail
 } from '../const/common';
-import { activeEntityConf, EntityConfig, hassExt, playersConfigContext } from '../const/context';
+import { activeEntityConf, EntityConfig, hassExt, IconsContext, playersConfigContext } from '../const/context';
 
 import {
   backgroundImageFallback,
   getFallbackBackgroundImage
-} from '../utils/icons';
+} from '../utils/thumbnails';
 import { testMixedContent } from '../utils/util';
 
 import styles from '../styles/player-row';
 import { DEFAULT_PLAYERS_HIDDEN_ELEMENTS_CONFIG, PlayersConfig, PlayersHiddenElementsConfig } from '../config/players';
+import { Icons } from '../const/icons.js';
 
 class PlayerRow extends LitElement {
   @property({ type: Boolean }) joined = false;
   @property({ type: Boolean }) player_entity!: ExtendedHassEntity;
   @property({ type: Boolean }) selected = false;
+  @consume({ context: IconsContext}) private Icons!: Icons;
 
   @consume({context: hassExt})
   public hass!: ExtendedHass;
@@ -106,9 +103,9 @@ class PlayerRow extends LitElement {
   private artworkStyle() {
     const img: string = this.player_entity?.attributes?.entity_picture_local ?? "";
     if (!testMixedContent(img)) {
-      return getFallbackBackgroundImage(this.hass, Icon.HEADPHONES);
+      return getFallbackBackgroundImage(this.hass, Thumbnail.HEADPHONES);
     }
-    return backgroundImageFallback(this.hass, img, Icon.HEADPHONES);
+    return backgroundImageFallback(this.hass, img, Thumbnail.HEADPHONES);
   }
   private renderThumbnail() {
     return html`
@@ -151,7 +148,7 @@ class PlayerRow extends LitElement {
         @click=${this.onTransferPressed}
       >
         <ha-svg-icon
-          .path=${mdiSwapHorizontal}
+          .path=${this.Icons.SWAP}
           class="svg-action-button"
         ></ha-svg-icon>
     `
@@ -172,7 +169,7 @@ class PlayerRow extends LitElement {
         @click=${this.onJoinPressed}
       >
         <ha-svg-icon
-          .path=${this.joined ? mdiLinkOff : mdiLink}
+          .path=${this.joined ? this.Icons.LINK_OFF : this.Icons.LINK}
           class="svg-action-button"
         ></ha-svg-icon>
     `
