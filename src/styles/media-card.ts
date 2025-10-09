@@ -14,7 +14,7 @@ export default css`
     position: relative;
     display: flex;
     border-radius: var(--ha-card-border-radius) !important;
-    overflow: hidden;
+    overflow: visible !important;
     margin: 0px 3px 3px 3px;
     aspect-ratio: 1;
   }
