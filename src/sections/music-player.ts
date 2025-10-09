@@ -59,7 +59,7 @@ import {
   testMixedContent
 } from "../utils/util";
 import { PlayerSelectedService } from "../const/actions";
-import { PlayerConfig } from "../config/player";
+import { ArtworkSize, PlayerConfig } from "../config/player";
 import { ActivePlayerController } from "../controller/active-player";
 import { ActionsController } from "../controller/actions";
 import { Config } from "../config/config.js";
@@ -102,6 +102,13 @@ class MusicPlayerCard extends LitElement {
   private touchEndX = 0;
   private touchStartY = 0;
   private touchEndY = 0;
+  private _artworkHeaderClass!: string;
+  private _artworkProgressClass!: string;
+  private _artworkArtworkClass!: string;
+  private _artworkArtworkDivClass!: string;
+  private _artworkVolumeClass!: string;
+  private _artworkMediaControlsClass!: string;
+  private _artworkActiveTrackClass!: string;
   
   @consume({ context: activeEntityConf, subscribe: true})
   public set activeEntityConfig(entity: EntityConfig) {
@@ -142,6 +149,34 @@ class MusicPlayerCard extends LitElement {
   @consume({ context: musicPlayerConfigContext, subscribe: true})
   public set config(config: PlayerConfig) {
     this._config = config;
+    switch (config.layout.artwork_size) {
+      case ArtworkSize.LARGE:
+        this._artworkHeaderClass = 'header-art-lg';
+        this._artworkProgressClass = 'bg-art-lg';
+        this._artworkArtworkClass = 'artwork-large';
+        this._artworkVolumeClass = 'vol-art-lg';
+        this._artworkMediaControlsClass = 'controls-art-lg';
+        this._artworkArtworkDivClass = 'artwork-div-lg';
+        this._artworkActiveTrackClass = 'active-track-lg';
+        break;
+      case ArtworkSize.MEDIUM:
+        this._artworkHeaderClass = 'header-art-med';
+        this._artworkProgressClass = 'bg-art-med';
+        this._artworkArtworkClass = 'artwork-med';
+        this._artworkVolumeClass = 'vol-art-med';
+        this._artworkMediaControlsClass = 'controls-art-med';
+        this._artworkArtworkDivClass = 'artwork-div-med';
+        this._artworkActiveTrackClass = 'active-track-med';
+        break;
+      case ArtworkSize.SMALL: 
+        this._artworkHeaderClass = 'header-art-sm';
+        this._artworkProgressClass = 'bg-art-sm';
+        this._artworkArtworkClass = 'artwork-sm';
+        this._artworkVolumeClass = 'vol-art-sm';
+        this._artworkMediaControlsClass = 'controls-art-sm';
+        this._artworkArtworkDivClass = 'artwork-div-sm';
+        this._artworkActiveTrackClass = 'active-track-sm';
+    }
   }
   public get config() {
     return this._config;
@@ -352,7 +387,7 @@ class MusicPlayerCard extends LitElement {
   protected renderHeader(): TemplateResult {
     return html`
       <mass-section-header
-        class="${this.config.layout.large_artwork ? `header-art-lg` : ``}"
+        class="${this._artworkHeaderClass}"
       >
           ${this.renderPlayerSelector()}
           ${this.renderSectionTitle()}
@@ -379,7 +414,7 @@ class MusicPlayerCard extends LitElement {
   }
   protected renderActiveItemSection() {
     return html`
-      <div id="active-track">
+      <div id="${this._artworkActiveTrackClass}">
         <div id="active-track-text">
           ${this.renderPlayerHeader()}
           ${this.renderProgress()}
@@ -399,7 +434,7 @@ class MusicPlayerCard extends LitElement {
   protected renderProgress() {
     return html`
       <mass-progress-bar
-        class="${this.config.layout.large_artwork ? `bg-art-lg` : ``}"
+        class="${this._artworkProgressClass}"
       ></mass-progress-bar>
     `
   }
@@ -408,7 +443,7 @@ class MusicPlayerCard extends LitElement {
     const fallback = getThumbnail(this.hass, Thumbnail.CLEFT);
     if (!this.player_data.track_artist || !testMixedContent(img)) {
       return html`
-        <div id="artwork-div">
+        <div id="${this._artworkArtworkDivClass}">
           <img 
             id="artwork-img"
             src="${fallback}">
@@ -416,10 +451,10 @@ class MusicPlayerCard extends LitElement {
       `
     } else {
       return html`
-        <div id="artwork-div">
+        <div id="${this._artworkArtworkDivClass}">
           <img 
             id="artwork-img"
-            class="${this.config.layout.large_artwork ? `artwork-large` : ``}"
+            class="${this._artworkArtworkClass}"
             src="${img}" 
             onerror="this.src='${fallback}';"
           >
@@ -431,7 +466,7 @@ class MusicPlayerCard extends LitElement {
     return html`
       <div id="volume">
         <mass-volume-row
-        class="${this.config.layout.large_artwork ? `vol-art-lg` : ``}"
+        class="${this._artworkVolumeClass}"
         ></mass-volume-row>
       </div>
     `
@@ -439,7 +474,7 @@ class MusicPlayerCard extends LitElement {
   protected renderControls() {
     
     return html`
-      <div class="media-controls">
+      <div class="media-controls ${this._artworkMediaControlsClass}">
         ${this?.cardConfig?.expressive ?
           html`<mass-player-controls-expressive></mass-player-controls-expressive>`
         : html`<mass-player-controls></mass-player-controls>`

@@ -20,12 +20,12 @@ export default css`
     background-size: 22em;
     position: relative;
   }
-  #active-track {
+  /* #active-track {
     position: absolute;
     top: 0;
     width: 100%;
-  }
-  #artwork-div {
+  } */
+  /* #artwork-div {
     position: absolute;
     aspect-ratio: 1;
     justify-self: center;
@@ -33,10 +33,9 @@ export default css`
     width: 100%;
     place-content: center;
     top: -3em;
-  }
+  } */
   #artwork-img {
     border-radius: var(--ha-card-border-radius);
-    max-height: 22em;
     max-width: 100%;
     justify-self: center;
     display: block;
@@ -179,14 +178,65 @@ export default css`
     bottom: 0.5em;
     width: 100%;
   }
+  #active-track-lg {
+    position: absolute;
+    top: 0;
+    width: 100%;
+  }
+  #active-track-med {
+    position: absolute;
+    top: 0;
+    width: 100%;
+  }
+  #active-track-sm {
+    position: relative;
+    width: 100%;
+  }
+  #artwork-div-lg {
+    position: absolute;
+    aspect-ratio: 1;
+    justify-self: center;
+    height: var(--mass-player-card-height);
+    width: 100%;
+    place-content: center;
+    top: -3em;
+    
+  }
+  #artwork-div-med {
+  }
+  #artwork-div-sm {
+    position: relative;
+    height: 10em;
+    display: flex;
+    justify-self: center;
+  }
   .artwork-large {
     max-height: 35em !important;
+  }
+  .artwork-med {
+    max-height: 22em !important;
+
+  }
+  .artwork-sm {
+
   }
   .bg-art-lg {
     z-index: 1;
   }
+  .bg-art-med {
+
+  }
+  .bg-art-sm {
+
+  }
   .header-art-lg {
     z-index: 1;
+    position: relative;
+  }
+  .header-art-med {
+
+  }
+  .header-art-sm {
     position: relative;
   }
   .header-art-lg::part(header) {
@@ -198,8 +248,22 @@ export default css`
     z-index: 1;
     position: relative;
   }
+  .vol-art-med {
+  }
+  .vol-art-sm {
+
+  }
   .vol-art-lg::part(volume-div) {
     backdrop-filter: blur(3px);
     z-index: 0;
+  }
+  .controls-art-lg {
+
+  }
+  .controls-art-med {
+    
+  }
+  .controls-art-sm {
+    
   }
 `;
