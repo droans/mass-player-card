@@ -30,7 +30,7 @@ import {
   mediaBrowserConfigContext
 } from "../const/context";
 import {
-  ENQUEUE_BUTTONS,
+  ListItems,
   MediaCardItem
 } from "../const/media-browser";
 
@@ -54,7 +54,7 @@ class MediaCard extends LitElement {
   @property({ type: Boolean }) queueable = false;
   @state() code!: TemplateResult;
   @state() private _enqueue_buttons = ENQUEUE_BUTTONS;
-  @consume({ context: IconsContext}) private Icons!: Icons;
+  private _icons!: Icons;
 
   @consume({context: hassExt})
   public hass!: ExtendedHass;
@@ -98,6 +98,14 @@ class MediaCard extends LitElement {
   public get cardConfig() {
     return this._cardConfig;
   }
+  @consume({ context: IconsContext, subscribe: true}) 
+  public set Icons(icons: Icons) {
+    this._icons = icons;
+  }
+  public get Icons() {
+    return this._icons;
+  }
+
 
   @consume( { context: activeEntityConf, subscribe: true})
   public set entityConfig(config: EntityConfig) {
@@ -219,6 +227,16 @@ class MediaCard extends LitElement {
     `
   }
   private generateCode() {
+    if (
+      !this._enqueue_buttons
+      || !this.hass
+      || !this.activeSection
+      || !this.cardConfig
+      || !this.Icons
+      || !this.entityConfig
+    ) {
+      return;
+    }
     this.code = html`
       <wa-animation
         name="pulse"
