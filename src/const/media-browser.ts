@@ -17,7 +17,7 @@ import { TemplateResult } from "lit";
 
 import { EnqueueOptions } from "./actions";
 import {
-  Icon,
+  Thumbnail,
   MediaTypes
 } from "./common";
 
@@ -40,8 +40,8 @@ export interface FavoriteItems {
 export type MediaCardData = Record<string, any>
 export interface MediaCardItem {
   title: string,
-  icon: string,
-  fallback: Icon,
+  thumbnail: string,
+  fallback: Thumbnail,
   data: MediaCardData,
   background?: TemplateResult
 }
@@ -56,19 +56,19 @@ export interface MediaLibraryItem {
   media_type: string
 }
 
-export const MediaTypeIcons = {
-  'album': Icon.DISC,
-  'artist': Icon.PERSON,
-  'audiobook': Icon.BOOK,
-  'playlist': Icon.PLAYLIST,
-  'podcast': Icon.MICROPHONE_MAGIC,
-  'track': Icon.CLEFT,
-  'radio': Icon.RADIO,
+export const MediaTypeThumbnails = {
+  'album': Thumbnail.DISC,
+  'artist': Thumbnail.PERSON,
+  'audiobook': Thumbnail.BOOK,
+  'playlist': Thumbnail.PLAYLIST,
+  'podcast': Thumbnail.MICROPHONE_MAGIC,
+  'track': Thumbnail.CLEFT,
+  'radio': Thumbnail.RADIO,
 }
 
 export interface ListItemData {
   option: string,
-  icon: string,
+  thumbnail: string,
   title: string
 }
 
@@ -77,27 +77,27 @@ export type ListItems = ListItemData[];
 export const ENQUEUE_BUTTONS: ListItems = [
   {
     option: EnqueueOptions.PLAY_NOW,
-    icon: mdiPlayCircleOutline,
+    thumbnail: mdiPlayCircleOutline,
     title: "Play Now"
   },
   {
     option: EnqueueOptions.PLAY_NEXT,
-    icon: mdiSkipNextCircleOutline,
+    thumbnail: mdiSkipNextCircleOutline,
     title: "Play Next"
   },
   {
     option: EnqueueOptions.PLAY_NOW_CLEAR_QUEUE,
-    icon: mdiPlayCircle,
+    thumbnail: mdiPlayCircle,
     title: "Play Now & Clear Queue"
   },
   {
     option: EnqueueOptions.PLAY_NEXT_CLEAR_QUEUE,
-    icon: mdiSkipNextCircle,
+    thumbnail: mdiSkipNextCircle,
     title: "Play Next & Clear Queue"
   },
   {
     option: EnqueueOptions.ADD_TO_QUEUE,
-    icon: mdiPlaylistPlus,
+    thumbnail: mdiPlaylistPlus,
     title: "Add to Queue"
   },
 ]
@@ -105,37 +105,37 @@ export const ENQUEUE_BUTTONS: ListItems = [
 export const SEARCH_MEDIA_TYPE_BUTTONS: ListItems = [
   {
     option: MediaTypes.ALBUM,
-    icon: mdiAlbum,
+    thumbnail: mdiAlbum,
     title: 'Albums'
   },
   {
     option: MediaTypes.ARTIST,
-    icon: mdiAccountMusic,
+    thumbnail: mdiAccountMusic,
     title: 'Artists'
   },
   {
     option: MediaTypes.AUDIOBOOK,
-    icon: mdiBook,
+    thumbnail: mdiBook,
     title: 'Audiobooks'
   },
   {
     option: MediaTypes.PLAYLIST,
-    icon: mdiPlaylistMusic,
+    thumbnail: mdiPlaylistMusic,
     title: 'Playlists'
   },
   {
     option: MediaTypes.PODCAST,
-    icon: mdiPodcast,
+    thumbnail: mdiPodcast,
     title: 'Podcasts'
   },
   {
     option: MediaTypes.RADIO,
-    icon: mdiRadio,
+    thumbnail: mdiRadio,
     title: 'Radio'
   },
   {
     option: MediaTypes.TRACK,
-    icon: mdiMusic,
+    thumbnail: mdiMusic,
     title: 'Tracks'
   },
 

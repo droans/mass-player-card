@@ -30,7 +30,7 @@ import PlayerActions from "../actions/player-actions";
 import {
   ExtendedHass,
   ExtendedHassEntity,
-  Icon,
+  Thumbnail,
 } from '../const/common';
 import {
   actionsControllerContext,
@@ -56,8 +56,8 @@ import {
 import styles from '../styles/music-player';
 
 import {
-  getIcon,
-} from "../utils/icons";
+  getThumbnail,
+} from "../utils/thumbnails";
 import {
   testMixedContent
 } from "../utils/util";
@@ -338,7 +338,7 @@ class MusicPlayerCard extends LitElement {
         const name = item.name.length > 0 ? item.name : this.hass.states[item.entity_id].attributes.friendly_name;
         const r: ListItemData = {
           option: item.entity_id,
-          icon: mdiSpeaker,
+          thumbnail: mdiSpeaker,
           title: name ?? item.name
         };
         return r;
@@ -406,7 +406,7 @@ class MusicPlayerCard extends LitElement {
   }
   protected renderArtwork() {
     const img = this.player_data?.track_artwork || "";
-    const fallback = getIcon(this.hass, Icon.CLEFT);
+    const fallback = getThumbnail(this.hass, Thumbnail.CLEFT);
     if (!this.player_data.track_artist || !testMixedContent(img)) {
       return html`
         <div id="artwork-div">

@@ -1,5 +1,5 @@
 import { ContextProvider } from "@lit/context";
-import { ExtendedHass, ExtendedHassEntity, Icon } from "../const/common";
+import { ExtendedHass, ExtendedHassEntity, Thumbnail } from "../const/common";
 import {
   activeEntityConf,
   activeEntityID,
@@ -12,7 +12,7 @@ import { Config, EntityConfig } from "../config/config";
 import { PlayerData } from "../const/music-player";
 import { QueueItem } from "../const/player-queue";
 import { applyTheme, themeFromImage, Theme } from "@material/material-color-utilities";
-import { getIcon } from "../utils/icons.js";
+import { getThumbnail } from "../utils/thumbnails.js";
 import { playerHasUpdated } from "../utils/util.js";
 export class ActivePlayerController {
   private _activeEntityConfig: ContextProvider<typeof activeEntityConf>;
@@ -233,7 +233,7 @@ export class ActivePlayerController {
   }
   public generateImageElement(): HTMLImageElement|undefined {
     const attrs = this.activeMediaPlayer.attributes;
-    const url = attrs.entity_picture_local ?? attrs.entity_picture ?? getIcon(this._hass, Icon.CLEFT);
+    const url = attrs.entity_picture_local ?? attrs.entity_picture ?? getThumbnail(this._hass, Thumbnail.CLEFT);
     const elem = document.createElement('img');
     elem.src = url;
     return elem;

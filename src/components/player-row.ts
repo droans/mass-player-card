@@ -21,14 +21,14 @@ import {
 import {
   ExtendedHass,
   ExtendedHassEntity,
-  Icon
+  Thumbnail
 } from '../const/common';
 import { activeEntityConf, EntityConfig, hassExt, playersConfigContext } from '../const/context';
 
 import {
   backgroundImageFallback,
   getFallbackBackgroundImage
-} from '../utils/icons';
+} from '../utils/thumbnails';
 import { testMixedContent } from '../utils/util';
 
 import styles from '../styles/player-row';
@@ -106,9 +106,9 @@ class PlayerRow extends LitElement {
   private artworkStyle() {
     const img: string = this.player_entity?.attributes?.entity_picture_local ?? "";
     if (!testMixedContent(img)) {
-      return getFallbackBackgroundImage(this.hass, Icon.HEADPHONES);
+      return getFallbackBackgroundImage(this.hass, Thumbnail.HEADPHONES);
     }
-    return backgroundImageFallback(this.hass, img, Icon.HEADPHONES);
+    return backgroundImageFallback(this.hass, img, Thumbnail.HEADPHONES);
   }
   private renderThumbnail() {
     return html`

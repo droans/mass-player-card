@@ -39,7 +39,7 @@ import styles from '../styles/media-card';
 import {
   backgroundImageFallback,
   getFallbackBackgroundImage,
-} from "../utils/icons";
+} from "../utils/thumbnails";
 import { testMixedContent } from "../utils/util";
 import {
   DEFAULT_MEDIA_BROWSER_HIDDEN_ELEMENTS_CONFIG,
@@ -168,13 +168,13 @@ class MediaCard extends LitElement {
     `
   }
   private artworkStyle() {
-    const img = this.config.icon;
+    const img = this.config.thumbnail;
     if (!testMixedContent(img)) {
       return getFallbackBackgroundImage(this.hass, this.config.fallback);
     }
     return backgroundImageFallback(this.hass, img, this.config.fallback);
   }
-  protected renderThumbnailFromIcon() {
+  protected renderThumbnailFromThumbnail() {
     const thumbnail = this.artworkStyle() || "";
     return html`
       <div
@@ -189,7 +189,7 @@ class MediaCard extends LitElement {
     if (this.config.background) {
       return this.renderThumbnailFromBackground();
     }
-    return this.renderThumbnailFromIcon();
+    return this.renderThumbnailFromThumbnail();
   }
   protected renderTitle() {
     if (this.hide.titles) {

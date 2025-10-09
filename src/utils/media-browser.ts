@@ -1,23 +1,23 @@
 import { html, TemplateResult } from "lit"
-import { ExtendedHass, Icon, MediaTypes } from "../const/common"
-import { backgroundImageFallback } from "./icons"
-import { MediaCardItem, MediaLibraryItem, MediaTypeIcons } from "../const/media-browser"
+import { ExtendedHass, Thumbnail, MediaTypes } from "../const/common"
+import { backgroundImageFallback } from "./thumbnails"
+import { MediaCardItem, MediaLibraryItem, MediaTypeThumbnails } from "../const/media-browser"
 import { testMixedContent } from "./util"
 import { customItem } from "../config/media-browser"
 
-function generateSectionBackgroundPart(hass: ExtendedHass, icon: string, fallback: Icon = Icon.DISC) {
-  const image = backgroundImageFallback(hass, icon, fallback)
+function generateSectionBackgroundPart(hass: ExtendedHass, thumbnail: string, fallback: Thumbnail = Thumbnail.DISC) {
+  const image = backgroundImageFallback(hass, thumbnail, fallback)
   return html`
     <div class="thumbnail-section" style="${image}"></div>
   `
 }
-function generateSectionBackground(hass: ExtendedHass, cards: MediaCardItem[], fallback: Icon) {
+function generateSectionBackground(hass: ExtendedHass, cards: MediaCardItem[], fallback: Thumbnail) {
   const rng = [...Array(4).keys()];
-  const icons: TemplateResult[] = []
+  const thumbnails: TemplateResult[] = []
   const filteredCards = cards.filter(
     (item) =>{
-      if (item.icon) {
-        return testMixedContent(item.icon || "")
+      if (item.thumbnail) {
+        return testMixedContent(item.thumbnail || "")
       }
       return false;
     }
@@ -25,31 +25,31 @@ function generateSectionBackground(hass: ExtendedHass, cards: MediaCardItem[], f
   rng.forEach(
     (i) => {
       const idx = i % filteredCards.length;
-      icons.push(generateSectionBackgroundPart(hass, filteredCards[idx]?.icon ?? fallback, fallback));
+      thumbnails.push(generateSectionBackgroundPart(hass, filteredCards[idx]?.thumbnail ?? fallback, fallback));
     }
   )
-  let icons_html = html``;
-  icons.forEach(
-    (icon) => {
-      icons_html = html`
-        ${icons_html}
-        ${icon}
+  let thumbnail_html = html``;
+  thumbnails.forEach(
+    (thumbnail) => {
+      thumbnail_html = html`
+        ${thumbnail_html}
+        ${thumbnail}
       `
     }
   );
   return html`
     <div class="thumbnail" style="display: grid; grid-template-columns: 1fr 1fr; padding-bottom: 0%; height: unset; width: unset; padding-left: unset; padding-right: unset;">
-      ${icons_html}
+      ${thumbnail_html}
     </div>
   `
 }
 export function generateFavoriteCard(hass: ExtendedHass, media_type: MediaTypes, cards: MediaCardItem[]): MediaCardItem {
-  const icon: Icon = MediaTypeIcons[media_type];
+  const thumbnail: Thumbnail = MediaTypeThumbnails[media_type];
   return {
     title: media_type,
-    background: generateSectionBackground(hass, cards, icon),
-    icon: icon,
-    fallback: icon,
+    background: generateSectionBackground(hass, cards, thumbnail),
+    thumbnail: thumbnail,
+    fallback: thumbnail,
     data: {
       type: 'section',
       subtype: 'favorite',
@@ -62,8 +62,8 @@ export function generateCustomSectionCards(config: customItem[]) {
     (item) => {
       const r: MediaCardItem = {
         title: item.name,
-        icon: item.image,
-        fallback: Icon.CLEFT,
+        thumbnail: item.image,
+        fallback: Thumbnail.CLEFT,
         data: {
           type: 'service',
           media_content_id: item.media_content_id,
@@ -76,13 +76,13 @@ export function generateCustomSectionCards(config: customItem[]) {
   )
 }
 export function generateFavoritesSectionCards(config: MediaLibraryItem[], media_type: MediaTypes) {
-  const icon = MediaTypeIcons[media_type];
+  const thumbnail = MediaTypeThumbnails[media_type];
   return config.map(
     (item) => {
       const r: MediaCardItem = {
         title: item.name,
-        icon: item.image,
-        fallback: icon,
+        thumbnail: item.image,
+        fallback: thumbnail,
         data: {
           type: 'service',
           media_content_id: item.uri,

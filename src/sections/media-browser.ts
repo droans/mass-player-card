@@ -33,7 +33,7 @@ import {
 import { EnqueueOptions } from "../const/actions";
 import {
   ExtendedHass,
-  Icon,
+  Thumbnail,
   MediaTypes
 } from "../const/common";
 import {
@@ -56,7 +56,7 @@ import {
 
 import styles from '../styles/media-browser';
 
-import { getMediaTypeSvg } from "../utils/icons";
+import { getMediaTypeSvg } from "../utils/thumbnails";
 import {
   generateCustomSectionCards,
   generateFavoriteCard,
@@ -309,8 +309,8 @@ export class MediaBrowser extends LitElement {
   private generateCustomSectionData = (config: customSection) => {
     const section_card = {
       title: config.name,
-      icon: config.image,
-      fallback: Icon.CLEFT,
+      thumbnail: config.image,
+      fallback: Thumbnail.CLEFT,
       data: {
         type: 'section',
         subtype: 'custom',

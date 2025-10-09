@@ -32,13 +32,13 @@ class MassMenuButton extends LitElement {
             class="menu-list-item"
             part="menu-list-item"
             .value="${item.option}"
-            .graphic=${item.icon}
+            .graphic=${item.thumbnail}
           >
             <ha-svg-icon
               class="menu-list-item-svg"
               part="menu-list-item-svg"
               slot="graphic"
-              .path=${item.icon}
+              .path=${item.thumbnail}
             ></ha-svg-icon>
             ${item.title}
           </ha-list-item>
