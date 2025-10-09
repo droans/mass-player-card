@@ -1,6 +1,5 @@
 
 import { consume } from "@lit/context";
-import { mdiPlayCircle } from "@mdi/js";
 import {
   CSSResultGroup,
   LitElement,
@@ -27,6 +26,7 @@ import {
   activeSectionContext,
   EntityConfig,
   hassExt,
+  IconsContext,
   mediaBrowserConfigContext
 } from "../const/context";
 import {
@@ -48,11 +48,13 @@ import {
   MediaBrowserHiddenElementsConfig
 } from "../config/media-browser";
 import { Sections } from "../const/card";
+import { Icons } from "../const/icons.js";
 
 class MediaCard extends LitElement {
   @property({ type: Boolean }) queueable = false;
   @state() code!: TemplateResult;
   @state() private _enqueue_buttons = ENQUEUE_BUTTONS;
+  @consume({ context: IconsContext}) private Icons!: Icons;
 
   @consume({context: hassExt})
   public hass!: ExtendedHass;
@@ -210,7 +212,7 @@ class MediaCard extends LitElement {
     return html`
       <mass-menu-button
         id="enqueue-button-div"
-        .iconPath=${mdiPlayCircle}
+        .iconPath=${this.Icons.PLAY_CIRCLE}
         .items=${this._enqueue_buttons}
         .onSelectAction=${this.onEnqueue}
       ></mass-menu-button>

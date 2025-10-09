@@ -18,8 +18,9 @@ import { PlayersConfig } from '../config/players';
 import { Sections } from './card';
 import { ActivePlayerController } from '../controller/active-player';
 import { ActionsController } from '../controller/actions';
-import { MassCardController } from '../controller/controller.js';
+import { MassCardController } from '../controller/controller';
 import { Theme } from '@material/material-color-utilities';
+import { Icons } from './icons';
 export type {
   EntityConfig
 } from '../config/config';
@@ -46,3 +47,4 @@ export const actionsControllerContext = createContext<ActionsController>('action
 export const controllerContext = createContext<MassCardController>('controller');
 
 export const expressiveThemeContext = createContext<Theme | undefined>('expressive-theme');
+export const IconsContext = createContext<Icons>('icons');

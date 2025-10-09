@@ -1,9 +1,5 @@
 import "@material/web/progress/linear-progress.js"
 
-import {
-  mdiSpeaker,
-  mdiSpeakerMultiple,
-} from "@mdi/js";
 import { consume, provide } from "@lit/context";
 import {
   CSSResultGroup,
@@ -42,6 +38,7 @@ import {
   entitiesConfigContext,
   EntityConfig,
   hassExt,
+  IconsContext,
   musicPlayerConfigContext,
 } from "../const/context";
 import {
@@ -66,11 +63,13 @@ import { PlayerConfig } from "../config/player";
 import { ActivePlayerController } from "../controller/active-player";
 import { ActionsController } from "../controller/actions";
 import { Config } from "../config/config.js";
+import { Icons } from "../const/icons.js";
 
 class MusicPlayerCard extends LitElement {
   @state() private shouldMarqueeTitle = false;
 
   @query('.player-track-title') _track_title!: LitElement;
+  @consume({ context: IconsContext}) private Icons!: Icons;
 
   @consume({ context: entitiesConfigContext, subscribe: true })
   public playerEntities!: EntityConfig[];
@@ -288,14 +287,14 @@ class MusicPlayerCard extends LitElement {
             <div class="player-name-icon">
               <ha-list-item
                 class="grouped-players-select-item"
-                .graphic=${mdiSpeaker}
+                .graphic=${this.Icons.SPEAKER}
                 noninteractive
                 hide-label
               >
                 <ha-svg-icon
                   class="grouped-players-select-item-icon"
                   slot="graphic"
-                  .path=${mdiSpeaker}
+                  .path=${this.Icons.SPEAKER}
                 ></ha-svg-icon>
                 ${name}
               </ha-list-item>
@@ -318,7 +317,7 @@ class MusicPlayerCard extends LitElement {
         <mass-menu-button
           slot="end"
           id="grouped-players-menu"
-          .iconPath=${mdiSpeakerMultiple}
+          .iconPath=${this.Icons.SPEAKER_MULTIPLE}
         >
         ${this.renderGroupedPlayers()}
         </mass-menu-button>
@@ -338,7 +337,7 @@ class MusicPlayerCard extends LitElement {
         const name = item.name.length > 0 ? item.name : this.hass.states[item.entity_id].attributes.friendly_name;
         const r: ListItemData = {
           option: item.entity_id,
-          thumbnail: mdiSpeaker,
+          thumbnail: this.Icons.SPEAKER,
           title: name ?? item.name
         };
         return r;
@@ -371,7 +370,7 @@ class MusicPlayerCard extends LitElement {
       <span slot="start">
         <mass-menu-button
           id="players-select-menu"
-          .iconPath=${mdiSpeaker}
+          .iconPath=${this.Icons.SPEAKER}
           .onSelectAction=${this.onPlayerSelect}
           .items=${this.renderPlayerItems()}
         ></mass-menu-button>

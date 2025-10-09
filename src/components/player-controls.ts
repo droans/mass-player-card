@@ -3,8 +3,12 @@ import styles from '../styles/player-controls';
 import { PlayerConfig, PlayerControlsLayout, PlayerIconSize, PlayerLayoutConfig } from "../config/player";
 import { ActionsController } from "../controller/actions";
 import { consume } from "@lit/context";
-import { actionsControllerContext, activePlayerDataContext, musicPlayerConfigContext } from "../const/context";
-import { mdiPause, mdiPlay, mdiRepeat, mdiRepeatOff, mdiRepeatOnce, mdiShuffle, mdiShuffleDisabled, mdiSkipNext, mdiSkipPrevious } from "@mdi/js";
+import {
+  actionsControllerContext,
+  activePlayerDataContext,
+  IconsContext,
+  musicPlayerConfigContext
+} from "../const/context";
 import { PlayerData } from "../const/music-player";
 import { RepeatMode } from "../const/common";
 import { state } from "lit/decorators.js";
@@ -12,6 +16,7 @@ import {
   html
 } from "lit/static-html.js";
 import { generateControlLabelHtml, generateControlSlotHtml } from "../utils/music-player";
+import { Icons } from "../const/icons.js";
 
 class MassPlayerControls extends LitElement {
   @consume({ context: actionsControllerContext, subscribe: true})
@@ -19,6 +24,7 @@ class MassPlayerControls extends LitElement {
   @consume({ context: activePlayerDataContext, subscribe: true})
   @state()
   private player_data!: PlayerData;
+  @consume({ context: IconsContext}) private Icons!: Icons;
   private _config!: PlayerConfig;
   private layoutConfig!: PlayerLayoutConfig;
   
@@ -71,7 +77,7 @@ class MassPlayerControls extends LitElement {
         >
           <ha-svg-icon
             ${slotHtml}
-            .path=${this.player_data.shuffle ? mdiShuffle : mdiShuffleDisabled}
+            .path=${this.player_data.shuffle ? this.Icons.SHUFFLE : this.Icons.SHUFFLE_DISABLED}
             class="svg-${icon_size}"
           ></ha-svg-icon>
           ${labelHtml}
@@ -96,7 +102,7 @@ class MassPlayerControls extends LitElement {
         >
           <ha-svg-icon
             ${slotHtml}
-            .path=${mdiSkipPrevious}
+            .path=${this.Icons.SKIP_PREVIOUS}
             class="svg-${icon_size} icon-outlined"
           ></ha-svg-icon>
           ${labelHtml}
@@ -122,7 +128,7 @@ class MassPlayerControls extends LitElement {
         >
           <ha-svg-icon
             ${slotHtml}
-            .path=${this.player_data.playing ?  mdiPause : mdiPlay}
+            .path=${this.player_data.playing ?  this.Icons.PAUSE : this.Icons.PLAY}
             class="svg-${icon_size} icon-outlined"
           ></ha-svg-icon>
           ${labelHtml}
@@ -148,7 +154,7 @@ class MassPlayerControls extends LitElement {
         >
           <ha-svg-icon
             ${slotHtml}
-            .path=${mdiSkipNext}
+            .path=${this.Icons.SKIP_NEXT}
             class="svg-${icon_size}"
           ></ha-svg-icon>
           ${labelHtml}
@@ -157,13 +163,13 @@ class MassPlayerControls extends LitElement {
     `
   }
   protected renderRepeat(): TemplateResult {
-    let icon = mdiRepeat;
+    let icon = this.Icons.REPEAT;
     const repeat = this.player_data.repeat;
     if (repeat == RepeatMode.ONCE) {
-      icon = mdiRepeatOnce;
+      icon = this.Icons.REPEAT_ONCE;
     }
     if (repeat == RepeatMode.OFF) {
-      icon = mdiRepeatOff;
+      icon = this.Icons.REPEAT_OFF;
     }
     const div_layout= this.layoutConfig.controls_layout == PlayerControlsLayout.COMPACT ? "div-compact" : "div-spaced";
     const icon_style = this.layoutConfig.icons.repeat;
