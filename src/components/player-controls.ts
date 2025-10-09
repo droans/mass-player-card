@@ -15,7 +15,12 @@ import { state } from "lit/decorators.js";
 import {
   html
 } from "lit/static-html.js";
-import { generateControlLabelHtml, generateControlSlotHtml } from "../utils/music-player";
+import {
+  generateControlLabelHtml,
+  generateControlSlotHtml,
+  getIteratedRepeatMode,
+  getRepeatIcon
+} from "../utils/music-player";
 import { Icons } from "../const/icons.js";
 
 class MassPlayerControls extends LitElement {
@@ -49,13 +54,8 @@ class MassPlayerControls extends LitElement {
   }
   private onRepeat = async () => {
     const cur_repeat = this.player_data.repeat;
-    let repeat = RepeatMode.ALL;
-    if (cur_repeat === RepeatMode.ALL) {
-      repeat = RepeatMode.ONCE;
-    }
-    if (cur_repeat === RepeatMode.ONCE) {
-      repeat = RepeatMode.OFF;
-    }
+    const repeat = getIteratedRepeatMode(cur_repeat);
+    this.requestUpdate();
     await this.controller.actionSetRepeat(repeat);
   }
 
@@ -163,14 +163,7 @@ class MassPlayerControls extends LitElement {
     `
   }
   protected renderRepeat(): TemplateResult {
-    let icon = this.Icons.REPEAT;
-    const repeat = this.player_data.repeat;
-    if (repeat == RepeatMode.ONCE) {
-      icon = this.Icons.REPEAT_ONCE;
-    }
-    if (repeat == RepeatMode.OFF) {
-      icon = this.Icons.REPEAT_OFF;
-    }
+    const icon = getRepeatIcon(this.player_data.repeat, this.Icons);
     const div_layout= this.layoutConfig.controls_layout == PlayerControlsLayout.COMPACT ? "div-compact" : "div-spaced";
     const icon_style = this.layoutConfig.icons.repeat;
     const icon_size = icon_style.size == PlayerIconSize.LARGE ? "medium" : "small";

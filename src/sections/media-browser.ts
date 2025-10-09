@@ -42,11 +42,11 @@ import {
 } from "../const/context";
 import {
   DEFAULT_SEARCH_LIMIT,
+  getSearchMediaButtons,
   MediaBrowserItemsConfig,
   MediaCardData,
   MediaCardItem,
   MediaLibraryItem,
-  SEARCH_MEDIA_TYPE_BUTTONS,
   SEARCH_TERM_MIN_LENGTH,
   SEARCH_UPDATE_DELAY
 } from "../const/media-browser";
@@ -177,7 +177,7 @@ export class MediaBrowser extends LitElement {
     const section = data.section;
     if (subtype == 'favorite') {
       this._searchMediaType = section;
-      this._searchMediaTypeIcon = getMediaTypeSvg((section as MediaTypes));
+      this._searchMediaTypeIcon = getMediaTypeSvg((section as MediaTypes), this.Icons);
     }
     this.activeSection = data.section;
   }
@@ -258,7 +258,7 @@ export class MediaBrowser extends LitElement {
       @typescript-eslint/no-unsafe-member-access,
     */
     this._searchMediaType = value;
-    this._searchMediaTypeIcon = getMediaTypeSvg(value);
+    this._searchMediaTypeIcon = getMediaTypeSvg(value, this.Icons);
     await this.generateSearchResults(this._searchMediaTerm, this._searchMediaType, this._searchLibrary);
     this.activeCards = this.cards.search;
   }
@@ -402,11 +402,12 @@ export class MediaBrowser extends LitElement {
   }
   protected renderSearchMediaTypesButton() {
     if (this.activeSection == 'search') {
+      const icons = getSearchMediaButtons(this.Icons);
       return html`
         <mass-menu-button
           id="search-media-type-menu"
           .iconPath=${this._searchMediaTypeIcon}
-          .items=${SEARCH_MEDIA_TYPE_BUTTONS}
+          .items=${icons}
           .onSelectAction=${this.onSearchMediaTypeSelect}
         ></mass-menu-button>
       `

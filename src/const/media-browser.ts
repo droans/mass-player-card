@@ -1,18 +1,3 @@
-
-import {
-  mdiAccountMusic,
-  mdiAlbum,
-  mdiBook,
-  mdiMusic,
-  mdiPlayCircle,
-  mdiPlayCircleOutline,
-  mdiPlaylistMusic,
-  mdiPlaylistPlus,
-  mdiPodcast,
-  mdiRadio,
-  mdiSkipNextCircle,
-  mdiSkipNextCircleOutline
-} from "@mdi/js";
 import { TemplateResult } from "lit";
 
 import { EnqueueOptions } from "./actions";
@@ -20,6 +5,7 @@ import {
   Thumbnail,
   MediaTypes
 } from "./common";
+import { Icons } from "./icons.js";
 
 export interface MediaBrowserItem {
   name: string,
@@ -68,78 +54,81 @@ export const MediaTypeThumbnails = {
 
 export interface ListItemData {
   option: string,
-  thumbnail: string,
+  icon: string,
   title: string
 }
 
 export type ListItems = ListItemData[];
 
-export const ENQUEUE_BUTTONS: ListItems = [
-  {
-    option: EnqueueOptions.PLAY_NOW,
-    thumbnail: mdiPlayCircleOutline,
-    title: "Play Now"
-  },
-  {
-    option: EnqueueOptions.PLAY_NEXT,
-    thumbnail: mdiSkipNextCircleOutline,
-    title: "Play Next"
-  },
-  {
-    option: EnqueueOptions.PLAY_NOW_CLEAR_QUEUE,
-    thumbnail: mdiPlayCircle,
-    title: "Play Now & Clear Queue"
-  },
-  {
-    option: EnqueueOptions.PLAY_NEXT_CLEAR_QUEUE,
-    thumbnail: mdiSkipNextCircle,
-    title: "Play Next & Clear Queue"
-  },
-  {
-    option: EnqueueOptions.ADD_TO_QUEUE,
-    thumbnail: mdiPlaylistPlus,
-    title: "Add to Queue"
-  },
-]
+export function getEnqueueButtons(icons: Icons): ListItems {
+  return [
+    {
+      option: EnqueueOptions.PLAY_NOW,
+      icon: icons.PLAY_CIRCLE_OUTLINE,
+      title: "Play Now"
+    },
+    {
+      option: EnqueueOptions.PLAY_NEXT,
+      icon: icons.SKIP_NEXT_CIRCLE_OUTLINED,
+      title: "Play Next"
+    },
+    {
+      option: EnqueueOptions.PLAY_NOW_CLEAR_QUEUE,
+      icon: icons.PLAY_CIRCLE,
+      title: "Play Now & Clear Queue"
+    },
+    {
+      option: EnqueueOptions.PLAY_NEXT_CLEAR_QUEUE,
+      icon: icons.SKIP_NEXT_CIRCLE,
+      title: "Play Next & Clear Queue"
+    },
+    {
+      option: EnqueueOptions.ADD_TO_QUEUE,
+      icon: icons.PLAYLIST_PLUS,
+      title: "Add to Queue"
+    },
+  ]
+}
+export function getSearchMediaButtons(icons: Icons): ListItems {
+  return [
+    {
+      option: MediaTypes.ALBUM,
+      icon: icons.ALBUM,
+      title: 'Albums'
+    },
+    {
+      option: MediaTypes.ARTIST,
+      icon: icons.ARTIST,
+      title: 'Artists'
+    },
+    {
+      option: MediaTypes.AUDIOBOOK,
+      icon: icons.BOOK,
+      title: 'Audiobooks'
+    },
+    {
+      option: MediaTypes.PLAYLIST,
+      icon: icons.PLAYLIST,
+      title: 'Playlists'
+    },
+    {
+      option: MediaTypes.PODCAST,
+      icon: icons.PODCAST,
+      title: 'Podcasts'
+    },
+    {
+      option: MediaTypes.RADIO,
+      icon: icons.RADIO,
+      title: 'Radio'
+    },
+    {
+      option: MediaTypes.TRACK,
+      icon: icons.MUSIC,
+      title: 'Tracks'
+    },
 
-export const SEARCH_MEDIA_TYPE_BUTTONS: ListItems = [
-  {
-    option: MediaTypes.ALBUM,
-    thumbnail: mdiAlbum,
-    title: 'Albums'
-  },
-  {
-    option: MediaTypes.ARTIST,
-    thumbnail: mdiAccountMusic,
-    title: 'Artists'
-  },
-  {
-    option: MediaTypes.AUDIOBOOK,
-    thumbnail: mdiBook,
-    title: 'Audiobooks'
-  },
-  {
-    option: MediaTypes.PLAYLIST,
-    thumbnail: mdiPlaylistMusic,
-    title: 'Playlists'
-  },
-  {
-    option: MediaTypes.PODCAST,
-    thumbnail: mdiPodcast,
-    title: 'Podcasts'
-  },
-  {
-    option: MediaTypes.RADIO,
-    thumbnail: mdiRadio,
-    title: 'Radio'
-  },
-  {
-    option: MediaTypes.TRACK,
-    thumbnail: mdiMusic,
-    title: 'Tracks'
-  },
-
-]
+  ]
+}
 
 export const SEARCH_UPDATE_DELAY = 1000;
 export const DEFAULT_SEARCH_LIMIT = 20;

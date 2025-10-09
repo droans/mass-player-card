@@ -337,7 +337,7 @@ class MusicPlayerCard extends LitElement {
         const name = item.name.length > 0 ? item.name : this.hass.states[item.entity_id].attributes.friendly_name;
         const r: ListItemData = {
           option: item.entity_id,
-          thumbnail: this.Icons.SPEAKER,
+          icon: this.Icons.SPEAKER,
           title: name ?? item.name
         };
         return r;

@@ -5,7 +5,8 @@ import {
   LightModeThumbnails,
   MediaTypes
 } from "../const/common";
-import { SEARCH_MEDIA_TYPE_BUTTONS } from "../const/media-browser";
+import { Icons } from "../const/icons.js";
+import { getSearchMediaButtons } from "../const/media-browser.js";
 
 export function backgroundImageFallback(hass: ExtendedHass, image_url: string, fallback: Thumbnail) {
   const _fallback: string = getThumbnail(hass, fallback);
@@ -26,12 +27,12 @@ export function getThumbnail(hass: ExtendedHass, thumbnail: Thumbnail): string {
   }
   return LightModeThumbnails[thumbnail]
 }
-export function getMediaTypeSvg(media_type: MediaTypes) {
-  const data = SEARCH_MEDIA_TYPE_BUTTONS;
+export function getMediaTypeSvg(media_type: MediaTypes, icons: Icons) {
+  const data = getSearchMediaButtons(icons);
   const result = data.find(
     (item) => {
       return (item.option as MediaTypes) == media_type;
     }
   );
-  return result?.thumbnail ?? Thumbnail.CLEFT;
+  return result?.icon ?? Thumbnail.CLEFT;
 }

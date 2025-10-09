@@ -154,7 +154,7 @@ class MassPlayerControlsExpressive extends LitElement {
   protected renderRepeat(): TemplateResult {
     const repeat = this.repeat;
     const repeat_on = repeat != RepeatMode.OFF;
-    const icon = getRepeatIcon(repeat);
+    const icon = getRepeatIcon(repeat, this.Icons);
     return html`
       <button
         class="no-round medium button-lower${repeat_on ? `-active active` : ``}"

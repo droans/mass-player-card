@@ -30,6 +30,8 @@ import {
   mediaBrowserConfigContext
 } from "../const/context";
 import {
+  getEnqueueButtons,
+  getSearchMediaButtons,
   ListItems,
   MediaCardItem
 } from "../const/media-browser";
@@ -53,7 +55,8 @@ import { Icons } from "../const/icons.js";
 class MediaCard extends LitElement {
   @property({ type: Boolean }) queueable = false;
   @state() code!: TemplateResult;
-  @state() private _enqueue_buttons = ENQUEUE_BUTTONS;
+  @state() private _enqueue_buttons!: ListItems;
+  @state() private _search_buttons!: ListItems;
   private _icons!: Icons;
 
   @consume({context: hassExt})
@@ -111,6 +114,7 @@ class MediaCard extends LitElement {
   public set entityConfig(config: EntityConfig) {
     this._entityConfig = config;
     this.updateHiddenElements();
+    this._search_buttons = getSearchMediaButtons(this.Icons)
   }
   public get entityConfig() {
     return this._entityConfig;
@@ -137,7 +141,7 @@ class MediaCard extends LitElement {
     this.generateCode();
   }
   private updateEnqueueButtons() {
-    const default_buttons = ENQUEUE_BUTTONS;
+    const default_buttons = getEnqueueButtons(this.Icons);
     const button_mapping = HIDDEN_BUTTON_VALUE;
     const opts = default_buttons.filter(
       (item) => {
@@ -245,7 +249,7 @@ class MediaCard extends LitElement {
         play=${this._play}
         playback-rate=1
       >
-          <div id="container">
+        <div id="container">
           <wa-card
             class="media-card"
             @click=${this.onSelect}
