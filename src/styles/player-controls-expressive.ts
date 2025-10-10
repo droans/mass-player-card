@@ -17,10 +17,11 @@ export default css`
     --next-prev-icon-color: var(--md-sys-color-on-surface-variant);
     --play-icon-color: var(--md-sys-color-on-primary);
     --pause-icon-color: var(--md-sys-color-on-secondary-container);
-    --lower-button-background-color: var(--md-sys-color-tertiary-container) !important;
-    --lower-button-background-color-active: var(--md-sys-color-tertiary) !important;
-    --lower-button-icon-color: var(--md-sys-color-on-tertiary-container);
-    --lower-button-icon-color-active: var(--md-sys-color-on-tertiary);
+
+    --lower-button-background-color: var(--md-sys-color-secondary-container) !important;
+    --lower-button-background-color-active: var(--md-sys-color-secondary) !important;
+    --lower-button-icon-color: var(--md-sys-color-on-secondary-container);
+    --lower-button-icon-color-active: var(--md-sys-color-on-secondary);
     --lower-button-border-radius: 8px;
     --lower-button-start-border-radius: 24px 8px 8px 24px;
     --lower-button-end-border-radius: 8px 24px 24px 8px;

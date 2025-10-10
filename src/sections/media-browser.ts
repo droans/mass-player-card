@@ -211,7 +211,6 @@ export class MediaBrowser extends LitElement {
       content_type,
       enqueue
     );
-    this.onMediaSelectedAction();
   }
   private onBack = () => {
     if (this.activeSection == 'search' && this.previousSection.length) {
