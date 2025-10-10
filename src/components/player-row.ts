@@ -18,7 +18,13 @@ import {
   ExtendedHassEntity,
   Thumbnail
 } from '../const/common';
-import { activeEntityConf, EntityConfig, hassExt, IconsContext, playersConfigContext } from '../const/context';
+import {
+  activeEntityConf,
+  EntityConfig,
+  hassExt,
+  IconsContext,
+  playersConfigContext, 
+  useExpressiveContext} from '../const/context';
 
 import {
   backgroundImageFallback,
@@ -35,6 +41,8 @@ class PlayerRow extends LitElement {
   @property({ type: Boolean }) player_entity!: ExtendedHassEntity;
   @property({ type: Boolean }) selected = false;
   @consume({ context: IconsContext}) private Icons!: Icons;
+  @consume({ context: useExpressiveContext })
+  private useExpressive!: boolean;
 
   @consume({context: hassExt})
   public hass!: ExtendedHass;
@@ -189,9 +197,11 @@ class PlayerRow extends LitElement {
     return html``;
   }
   render() {
+    const active = this.selected ? `-active` : ``;
+    const expressive = this.useExpressive ? `button-expressive`: ``;
     return html`
       <ha-md-list-item
-        class="button${this.selected ? '-active' : ''}"
+        class="button${active} ${expressive}${active}"
 		    @click=${this.callOnPlayerSelectedService}
         type="button"
       >

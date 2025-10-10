@@ -2,7 +2,6 @@ import { CSSResultGroup, html, LitElement, TemplateResult } from "lit";
 import styles from '../styles/progress-bar'
 import { state } from "lit/decorators.js";
 import { consume } from "@lit/context";
-import 'beercss';
 import { ActivePlayerController } from "../controller/active-player.js";
 import { actionsControllerContext, activeMediaPlayer, activePlayerControllerContext, activePlayerDataContext, controllerContext, ExtendedHassEntity } from "../const/context.js";
 import { ActionsController } from "../controller/actions.js";

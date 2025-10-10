@@ -352,6 +352,7 @@ class MusicPlayerCard extends LitElement {
         <mass-menu-button
           slot="end"
           id="grouped-players-menu"
+          class="menu-header ${this.cardConfig.expressive ? `menu-header-expressive` : ``}"
           .iconPath=${this.Icons.SPEAKER_MULTIPLE}
         >
         ${this.renderGroupedPlayers()}
@@ -405,6 +406,7 @@ class MusicPlayerCard extends LitElement {
       <span slot="start">
         <mass-menu-button
           id="players-select-menu"
+          class="menu-header ${this.cardConfig.expressive ? `menu-header-expressive` : ``}"
           .iconPath=${this.Icons.SPEAKER}
           .onSelectAction=${this.onPlayerSelect}
           .items=${this.renderPlayerItems()}
@@ -415,7 +417,10 @@ class MusicPlayerCard extends LitElement {
   protected renderActiveItemSection() {
     return html`
       <div id="${this._artworkActiveTrackClass}">
-        <div id="active-track-text">
+        <div
+          id="active-track-text"
+          class="${this.cardConfig.expressive ? `active-track-text-expressive` : ``}"
+        >
           ${this.renderPlayerHeader()}
           ${this.renderProgress()}
         </div>
@@ -446,6 +451,7 @@ class MusicPlayerCard extends LitElement {
         <div id="${this._artworkArtworkDivClass}">
           <img 
             id="artwork-img"
+            class="${this._artworkArtworkClass}"
             src="${fallback}">
         </div>
       `
@@ -489,10 +495,17 @@ class MusicPlayerCard extends LitElement {
     return super.shouldUpdate(_changedProperties);
   }
   protected render() {
+    const expressive = this.cardConfig.expressive;
     return html`
-      <div id="container">
+      <div
+        id="container"
+        class="${expressive ? `container-expressive` : ``}"
+      >
         ${this.renderHeader()}
-        <div id="player-card">
+        <div 
+          id="player-card"
+          class="${expressive ? `player-card-expressive` : ``}"
+        >
           ${this.renderActiveItemSection()}
           ${this.renderArtwork()}
           ${this.renderControls()}

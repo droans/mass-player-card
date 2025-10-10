@@ -10,6 +10,9 @@ export default css`
   a.active {
     --primary-container: var(--tab-active-indicator-color);
   }
+  a.active-expressive {
+    box-shadow: var(--md-sys-elevation-level2);
+  }
   .player-tabs {
     --primary-container: rgba(from var(--primary-color) r g b / 0.25);
   }
@@ -29,11 +32,14 @@ export default css`
   }
   .tabbed {
     --tabbed-elevation: var(--md-sys-elevation-level1);
-    --tabbed-background-color: var(--md-sys-color-surface-container-high);
+    --tabbed-background-color: var(--tabbed-background-color);
     --tab-active-icon-color: var(--md-sys-color-on-secondary-container);
     --tab-active-indicator-color: var(--md-sys-color-secondary-container);
-    --tab-inactive-icon-color: var(--md-sys-color-on-surface-variant);
-    --tab-icon-height: 36px;
+    --tab-inactive-icon-color: var(--md-sys-color-on-primary-container);
+    --tab-icon-height: 24px;
+  }
+  .tabbed-expressive {
+    --tabbed-background-color: var(--md-sys-color-primary-container) !important;
   }
 
 `;

@@ -39,6 +39,7 @@ import {
   hassExt,
   IconsContext,
   mediaBrowserConfigContext,
+  useExpressiveContext
 } from "../const/context";
 import {
   DEFAULT_SEARCH_LIMIT,
@@ -69,6 +70,7 @@ export class MediaBrowser extends LitElement {
   @state() private _searchLibrary= false;
   @state() private _searchMediaTypeIcon: string = mdiMusic;
   @consume({ context: IconsContext}) private Icons!: Icons;
+  @consume({ context: useExpressiveContext}) private useExpressive!: boolean;
 
   @consume( { context: activeEntityID, subscribe: true})
   public activePlayer!: string;
@@ -359,7 +361,7 @@ export class MediaBrowser extends LitElement {
           appearance="plain"
           variant="brand"
           size="medium"
-          class="button-back button-min"
+          class="button-back button-min ${this.useExpressive ? `button-expressive` : ``}"
           @click=${this.onBack}
         >
           <ha-svg-icon
@@ -380,7 +382,7 @@ export class MediaBrowser extends LitElement {
           appearance="plain"
           variant="brand"
           size="medium"
-          class="button-search button-min"
+          class="button-search button-min ${this.useExpressive ? `button-expressive` : ``}"
           @click=${this.onSearchPress}
         >
           <ha-svg-icon
@@ -509,9 +511,12 @@ export class MediaBrowser extends LitElement {
       return;
     }
     return html`
-      <div id="container">
+      <div
+        id="container"
+        class="${this.useExpressive ? `container-expressive` : ``}"
+      >
         ${this.renderHeader()}
-        <div class="mass-browser">
+        <div class="mass-browser ${this.useExpressive ? `mass-browser-expressive` : ``}">
           ${this.renderBrowserCards()}
         </div>
       </div>

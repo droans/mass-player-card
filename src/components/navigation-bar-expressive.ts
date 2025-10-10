@@ -64,7 +64,7 @@ class MassNavBar extends LitElement {
     const section = Sections.MUSIC_PLAYER;
     const icon = this.Icons.MUSIC;
     if (this.config.player.enabled){
-      return this.renderTab(section, icon)
+      return this.renderTab(section, icon, "Music Player")
     }
     return html``
   }
@@ -72,7 +72,7 @@ class MassNavBar extends LitElement {
     const section = Sections.QUEUE;
     const icon = this.Icons.PLAYLIST;
     if (this.config.queue.enabled){
-      return this.renderTab(section, icon)
+      return this.renderTab(section, icon, "Queue")
     }
     return html``
   }
@@ -80,7 +80,7 @@ class MassNavBar extends LitElement {
     const section = Sections.MEDIA_BROWSER;
     const icon = this.Icons.ALBUM;
     if (this.config.media_browser.enabled){
-      return this.renderTab(section, icon)
+      return this.renderTab(section, icon, "Media Browser")
     }
     return html``
   }
@@ -88,15 +88,15 @@ class MassNavBar extends LitElement {
     const section = Sections.PLAYERS;
     const icon = this.Icons.SPEAKER_MULTIPLE;
     if (this.config.players.enabled){
-      return this.renderTab(section, icon)
+      return this.renderTab(section, icon, "Players")
     }
     return html``
   }
-  private renderTab(section: Sections, icon: string): TemplateResult {
+  private renderTab(section: Sections, icon: string, title: string): TemplateResult {
     const active = this.active_section == section;
     return html`
       <a 
-        class="${active ? `active` : ``} player-tabs"
+        class="${active ? `active active-expressive` : ``} player-tabs"
         @click=${() => {this.handleTabChanged(section)}}
       >
         <i class="icon-i">
@@ -105,7 +105,7 @@ class MassNavBar extends LitElement {
             class="action-button-svg${active ? "" : "-inactive"}"
           ></ha-svg-icon>
         </i>
-        <span></span> 
+        <span style="width: 100%">${title}</span> 
       </a>
     `
     
@@ -113,7 +113,7 @@ class MassNavBar extends LitElement {
   protected render(): TemplateResult {
     return html`
       <div>
-        <nav class="tabbed">
+        <nav class="tabbed tabbed-expressive">
           <link href="https://cdn.jsdelivr.net/npm/beercss@3.12.11/dist/cdn/beer.min.css" rel="stylesheet">
           ${this.renderMusicPlayerTab()}
           ${this.renderQueueTab()}
@@ -134,4 +134,4 @@ class MassNavBar extends LitElement {
   }
 }
 
-customElements.define('mass-nav-bar', MassNavBar);
+customElements.define('mass-nav-bar-expressive', MassNavBar);

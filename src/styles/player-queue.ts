@@ -7,10 +7,12 @@ export default css`
     overflow: hidden;
     width: 100%;
     justify-content: center;
-    background: unset;
     box-shadow: unset;
-    border-radius: unset;
     height: var(--mass-player-card-height);
+  }
+  .container-expressive {
+    border-radius: var(--expressive-border-radius-container);
+    background-color: var(--expressive-color-container);
   }
   .main {
     display: flex;
@@ -48,6 +50,10 @@ export default css`
     -ms-overflow-style: none;
     scrollbar-width: none;
     border-radius: var(--ha-card-border-radius,12px);
+  }
+  .list-expressive {
+    background-color: var(--md-sys-color-background);
+    border-radius: var(--expressive-border-radius-container);
   }
   *[selected] {
     color: var(--accent-color)

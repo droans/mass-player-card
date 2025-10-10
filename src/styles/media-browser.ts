@@ -7,6 +7,10 @@ export default css`
     box-shadow: unset;
     height: var(--mass-player-card-height);
   }
+  .container-expressive {
+    border-radius: var(--expressive-border-radius-container);
+    background-color: var(--expressive-color-container);
+  }
   #title {
     text-indent: var(--title-indent);
     text-transform: capitalize;
@@ -42,15 +46,31 @@ export default css`
   }
   .button-min::part(base) {
     --wa-form-control-padding-inline: 0px;
+    height: 35px;
+    width: 35px;
+  }
+  .button-expressive::part(base) {
+    box-shadow: var(--md-sys-elevation-level1);
+    border-radius: 12px;
+    background-color: var(--md-sys-color-secondary-container);
   }
   .button-min {
-    height: 40px;
-    width: 40px;
+    height: 35px;
+    width: 35px;
     --wa-color-fill-quiet: rgba(from var(--md-sys-color-primary) r g b / 0.1);
+    position: relative;
   }
   .header-icon {
     height: 2rem;
     width: 2rem;
-    color: var(--md-sys-color-primary);
+    color: var(--md-sys-color-on-secondary-container);
+  }
+  .mass-browser {
+    padding-top: 8px;
+  }
+  .mass-browser-expressive {
+    background-color: var(--md-sys-color-background);
+    height: calc(100% - 3em);
+    border-radius: var(--expressive-border-radius-container);
   }
 `;

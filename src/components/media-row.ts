@@ -22,7 +22,8 @@ import {
   hassExt,
   IconsContext,
   mediaCardDisplayContext,
-  playerQueueConfigContext
+  playerQueueConfigContext,
+  useExpressiveContext,
 } from '../const/context';
 import { QueueItem } from '../const/player-queue';
 
@@ -46,6 +47,9 @@ class MediaRow extends LitElement {
   @consume({ context: mediaCardDisplayContext, subscribe: true })
   @state()
   public display!: boolean;
+
+  @consume({ context: useExpressiveContext})
+  private useExpressive!: boolean;
 
   public moveQueueItemDownService!: QueueService;
   public moveQueueItemNextService!: QueueService;
@@ -171,6 +175,7 @@ class MediaRow extends LitElement {
       <span
         slot="end"
         class="button-group"
+        @click=${(e: Event) => {e.stopPropagation()}}
       >
         ${this.renderMoveNextButton()}
         ${this.renderMoveUpButton()}
@@ -189,7 +194,7 @@ class MediaRow extends LitElement {
         appearance="plain"
         variant="brand"
         size="medium"
-        class="action-button"
+        class="action-button ${this.useExpressive ? `action-button-expressive` : ``}"
         @click=${this.callMoveItemNextService}
       >
         <ha-svg-icon
@@ -208,7 +213,7 @@ class MediaRow extends LitElement {
         appearance="plain"
         variant="brand"
         size="medium"
-        class="action-button"
+        class="action-button ${this.useExpressive ? `action-button-expressive` : ``}"
         @click=${this.callMoveItemUpService}
       >
         <ha-svg-icon
@@ -227,7 +232,7 @@ class MediaRow extends LitElement {
         appearance="plain"
         variant="brand"
         size="medium"
-        class="action-button"
+        class="action-button ${this.useExpressive ? `action-button-expressive` : ``}"
         @click=${this.callMoveItemDownService}
       >
         <ha-svg-icon
@@ -246,7 +251,7 @@ class MediaRow extends LitElement {
           appearance="plain"
           variant="brand"
           size="medium"
-          class="action-button"
+          class="action-button ${this.useExpressive ? `action-button-expressive` : ``}"
           @click=${this.callRemoveItemService}
         >
         <ha-svg-icon
@@ -258,10 +263,12 @@ class MediaRow extends LitElement {
   }
 
   render(): TemplateResult {
+    const playing = this.media_item.playing ? `-active` : ``;
+    const expressive = this.useExpressive ? `button-expressive` : ``;
     return html`
         <ha-md-list-item
           style="${this.display? "" : "display: none;"}"
-          class="button${this.media_item.playing ? '-active' : ''}"
+          class="button${playing} ${expressive}${playing}"
           @click=${this.callOnQueueItemSelectedService}
           type="button"
         >

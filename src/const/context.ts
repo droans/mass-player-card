@@ -47,4 +47,5 @@ export const actionsControllerContext = createContext<ActionsController>('action
 export const controllerContext = createContext<MassCardController>('controller');
 
 export const expressiveThemeContext = createContext<Theme | undefined>('expressive-theme');
+export const useExpressiveContext = createContext<boolean>('use-expressive');
 export const IconsContext = createContext<Icons>('icons');

@@ -6,6 +6,10 @@ export default css`
   #container {
     height: var(--mass-player-card-height);
   }
+  .container-expressive {
+    border-radius: var(--expressive-border-radius-container);
+    background-color: var(--expressive-color-container);
+  }
   .player-header {
     margin: 0em 1.75em 0em 1.75em;
     text-align: center;
@@ -20,20 +24,10 @@ export default css`
     background-size: 22em;
     position: relative;
   }
-  /* #active-track {
-    position: absolute;
-    top: 0;
-    width: 100%;
-  } */
-  /* #artwork-div {
-    position: absolute;
-    aspect-ratio: 1;
-    justify-self: center;
-    height: var(--mass-player-card-height);
-    width: 100%;
-    place-content: center;
-    top: -3em;
-  } */
+  .player-card-expressive {
+    background-color: var(--md-sys-color-background);
+    border-radius: var(--expressive-border-radius-container);
+  }
   #artwork-img {
     border-radius: var(--ha-card-border-radius);
     max-width: 100%;
@@ -45,6 +39,10 @@ export default css`
     z-index: 1;
     position: relative;
     backdrop-filter: blur(3px);
+  }
+  .active-track-text-expressive {
+    border-radius: var(--expressive-border-radius-container);
+
   }
   .player-name {
     font-size: 0.8rem;
@@ -160,6 +158,8 @@ export default css`
     --control-select-menu-padding: 7px;
     --mdc-icon-size: 1.5em;
     --control-select-menu-height: 2.5em;
+    box-shadow: var(--md-sys-elevation-level1);
+    border-radius: 12px;
   }
   #grouped-players-menu::part(menu-svg) {
     color: var(--md-sys-color-primary);
@@ -203,6 +203,12 @@ export default css`
     
   }
   #artwork-div-med {
+    aspect-ratio: 1;
+    justify-self: center;
+    place-content: center;
+    height: 100%;
+    top: -2em;
+    position: absolute;
   }
   #artwork-div-sm {
     position: relative;
@@ -233,16 +239,16 @@ export default css`
     z-index: 1;
     position: relative;
   }
+  .header-art-lg::part(header) {
+    background: rgba(from var(--ha-card-background) r g b / 0.6);
+    backdrop-filter: blur(3px);
+    z-index: 0;
+  }
   .header-art-med {
 
   }
   .header-art-sm {
     position: relative;
-  }
-  .header-art-lg::part(header) {
-    background: rgba(from var(--ha-card-background) r g b / 0.6);
-    backdrop-filter: blur(3px);
-    z-index: 0;
   }
   .vol-art-lg {
     z-index: 1;
@@ -265,5 +271,13 @@ export default css`
   }
   .controls-art-sm {
     
+  }
+  .menu-header-expressive::part(menu-select-menu) {
+    background-color: var(--md-sys-color-secondary-container);
+    box-shadow: var(--md-sys-elevation-level1);
+    border-radius: 12px;
+  }
+  .menu-header-expressive::part(menu-svg) {
+    color: var(--md-sys-color-secondary-on-container);
   }
 `;
