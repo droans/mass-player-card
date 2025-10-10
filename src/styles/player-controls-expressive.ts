@@ -51,6 +51,7 @@ export default css`
     height: var(--next-prev-button-height);
     width: var(--next-prev-button-width);
     --inherited-background-color: var(--next-prev-background-color);
+    --wa-color-fill-normal: var(--next-prev-background-color);
     --ha-button-border-radius: var(--next-prev-border-radius);
   }
   .icons-next-previous {
@@ -64,9 +65,11 @@ export default css`
     --ha-button-border-radius: var(--play-pause-border-radius);
   }
   #button-play::part(base) {
+    --wa-color-fill-normal: var(--play-background-color);
     --inherited-background-color: var(--play-background-color);
   }
   #button-pause::part(base) {
+    --wa-color-fill-normal: var(--pause-background-color);
     --inherited-background-color: var(--pause-background-color);
   }
   .icon-play-pause {
@@ -85,17 +88,21 @@ export default css`
 
   }
   .button-lower::part(base) {
+    --wa-color-fill-normal: var(--lower-button-background-color);
     --inherited-background-color: var(--lower-button-background-color);
     --ha-button-border-radius: var(--lower-button-border-radius);
   }
   .button-lower-active::part(base) {
+    --wa-color-fill-normal: var(--lower-button-background-color-active);
     --inherited-background-color: var(--lower-button-background-color-active);
     --ha-button-border-radius: var(--lower-button-border-radius);
   }
   .button-lower::part(label) {
+    color:  var(--lower-button-icon-color);
     --inherited-text-color: var(--lower-button-icon-color);
   }
   .button-lower-active::part(label) {
+    color: var(--lower-button-icon-color-active);
     --inherited-text-color: var(--lower-button-icon-color-active);
   }
   .icons-lower {
@@ -106,14 +113,11 @@ export default css`
   }
   .button-lower:first-of-type::part(base) {
     --ha-button-border-radius: var(--lower-button-start-border-radius);
-    --x: "AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA"
   }
   .button-lower:last-of-type::part(base) {
     --ha-button-border-radius: var(--lower-button-end-border-radius);
-    --x: "AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA"
   }
   .button-lower:only-of-type::part(base) {
     --ha-button-border-radius: var(--lower-button-only-border-radius) !important;
-    --x: "AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA" 
   }
 `;
