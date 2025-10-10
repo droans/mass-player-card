@@ -388,7 +388,7 @@ class MusicPlayerCard extends LitElement {
   protected renderHeader(): TemplateResult {
     return html`
       <mass-section-header
-        class="${this._artworkHeaderClass}"
+        class="${this._artworkHeaderClass} ${this.cardConfig.expressive ? `header-expressive` : ``}"
       >
           ${this.renderPlayerSelector()}
           ${this.renderSectionTitle()}
@@ -419,7 +419,7 @@ class MusicPlayerCard extends LitElement {
       <div id="${this._artworkActiveTrackClass}">
         <div
           id="active-track-text"
-          class="${this.cardConfig.expressive ? `active-track-text-expressive` : ``}"
+          class="${this.cardConfig.expressive ? `active-track-text-expressive` : ``} ${this.config.layout.artwork_size != ArtworkSize.LARGE ? `active-track-text-rounded` : ``}"
         >
           ${this.renderPlayerHeader()}
           ${this.renderProgress()}
@@ -472,7 +472,7 @@ class MusicPlayerCard extends LitElement {
     return html`
       <div id="volume">
         <mass-volume-row
-        class="${this._artworkVolumeClass}"
+        class="${this._artworkVolumeClass} ${this.cardConfig.expressive ? `volume-expressive` : ``}"
         ></mass-volume-row>
       </div>
     `
@@ -480,7 +480,7 @@ class MusicPlayerCard extends LitElement {
   protected renderControls() {
     
     return html`
-      <div class="media-controls ${this._artworkMediaControlsClass}">
+      <div class="media-controls ${this._artworkMediaControlsClass} ${this.cardConfig.expressive ? `media-controls-expressive` : ``}">
         ${this?.cardConfig?.expressive ?
           html`<mass-player-controls-expressive></mass-player-controls-expressive>`
         : html`<mass-player-controls></mass-player-controls>`
@@ -502,15 +502,23 @@ class MusicPlayerCard extends LitElement {
         class="${expressive ? `container-expressive` : ``}"
       >
         ${this.renderHeader()}
-        <div 
-          id="player-card"
-          class="${expressive ? `player-card-expressive` : ``}"
+        <wa-animation 
+          name="fadeIn"
+          easing="ease-in"
+          iterations=1
+          play=${this.checkVisibility()}
+          playback-rate=4
         >
-          ${this.renderActiveItemSection()}
-          ${this.renderArtwork()}
-          ${this.renderControls()}
-          ${this.renderVolumeRow()}
-        </div>
+          <div 
+            id="player-card"
+            class="${expressive ? `player-card-expressive` : ``}"
+          >
+            ${this.renderActiveItemSection()}
+            ${this.renderArtwork()}
+            ${this.renderControls()}
+            ${this.renderVolumeRow()}
+          </div>
+        </wa-animation>
       </div>
     `
   }

@@ -161,9 +161,17 @@ class PlayersCard extends LitElement {
             Players
           </span>
         </mass-section-header>
-        <ha-md-list class="list ${expressive ? `list-expressive` : ``}">
-          ${this.renderPlayerRows()}
-        </ha-md-list>
+        <wa-animation 
+          name="fadeIn"
+          easing="ease-in"
+          iterations=1
+          play=${this.checkVisibility()}
+          playback-rate=4
+        >
+          <ha-md-list class="list ${expressive ? `list-expressive` : ``}">
+            ${this.renderPlayerRows()}
+          </ha-md-list>
+        </wa-animation>
       </div>
     `
   }

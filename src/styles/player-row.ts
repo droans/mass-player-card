@@ -59,6 +59,10 @@ export default css`
     align-items: center;
     justify-content: flex-end;
     gap: 8px;
+    height: 48px;
+    right: 0;
+    padding-right: 16px;
+    position: absolute;
   }
   .action-button {
     width: var(--media-row-icon-width);

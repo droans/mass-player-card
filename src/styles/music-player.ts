@@ -8,7 +8,6 @@ export default css`
   }
   .container-expressive {
     border-radius: var(--expressive-border-radius-container);
-    background-color: var(--expressive-color-container);
   }
   .player-header {
     margin: 0em 1.75em 0em 1.75em;
@@ -26,7 +25,7 @@ export default css`
   }
   .player-card-expressive {
     background-color: var(--md-sys-color-background);
-    border-radius: var(--expressive-border-radius-container);
+    border-radius: 8px 8px 0px 0px;
   }
   #artwork-img {
     border-radius: var(--ha-card-border-radius);
@@ -35,14 +34,16 @@ export default css`
     display: block;
   }
   #active-track-text {
-    background: rgba(from var(--ha-card-background) r g b / 0.6);
+    background: var(--player-blur-color);
     z-index: 1;
     position: relative;
     backdrop-filter: blur(3px);
   }
   .active-track-text-expressive {
-    border-radius: var(--expressive-border-radius-container);
-
+    background: var(--expressive-player-blur-color) !important;
+  }
+  .active-track-text-rounded {
+    border-radius: 8px 8px 0px 0px;
   }
   .player-name {
     font-size: 0.8rem;
@@ -59,17 +60,20 @@ export default css`
   }
   .media-controls {
     backdrop-filter: blur(3px);
-    background: rgba(from var(--ha-card-background) r g b / 0.6);
+    background: var(--player-blur-color);
     position: absolute;
-    bottom: 40px;
+    bottom: calc(40px + 0.5em);
     width: 100%;
+  }
+  .media-controls-expressive {
+    background: var(--expressive-player-blur-color);
   }
   *[hide] {
     display: none;
   }
 
   *[background] {
-    background-color: rgba(var(--rgb-card-background-color), 0.9);
+    background-color: rgba(var(--player-blur-color), 0.9);
     border-radius: 10px;
   }
   .marquee-pause-end {
@@ -175,7 +179,7 @@ export default css`
   }
   #volume {
     position: absolute;
-    bottom: 0.5em;
+    bottom: 8px;
     width: 100%;
   }
   #active-track-lg {
@@ -240,14 +244,23 @@ export default css`
     position: relative;
   }
   .header-art-lg::part(header) {
-    background: rgba(from var(--ha-card-background) r g b / 0.6);
-    backdrop-filter: blur(3px);
+    background: var(--player-blur-color);
+    backdrop-filter: var(--player-blur);
     z-index: 0;
+  }
+  .header-expressive::part(header) {
+    background: var(--expressive-player-blur-color);
   }
   .header-art-med {
 
   }
   .header-art-sm {
+    position: relative;
+  }
+  .volume-expressive::part(volume-div) {
+    background: var(--expressive-player-blur-color);
+    padding-bottom: 12px;
+    bottom: -8px;
     position: relative;
   }
   .vol-art-lg {

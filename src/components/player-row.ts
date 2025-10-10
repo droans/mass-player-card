@@ -125,6 +125,21 @@ class PlayerRow extends LitElement {
       </span>
     `
   }
+  private _calculateTitleWidth() {
+    let button_ct = 0;
+    const hide = this.config.hide;
+    if (!hide.join_button && this.player_entity.attributes?.group_members && this.allowJoin) {
+      button_ct += 1;
+    }
+    if (!hide.transfer_button) {
+      button_ct += 1;
+    }
+    if (this.selected || hide.action_buttons) {
+      return `100%;`;
+    }
+    const gap_ct = button_ct - 1;
+    return `calc(100% - ( (32px * ${button_ct.toString()}) + (8px * ${gap_ct.toString()}) + 16px));`
+  }
   private renderTitle() {
     let title = this.playerName;
     if (!title.length) {
@@ -134,6 +149,7 @@ class PlayerRow extends LitElement {
       <span
         slot="headline"
         class="title"
+        style="width: ${this._calculateTitleWidth()}"
       >
         ${title}
       </span>
@@ -152,7 +168,7 @@ class PlayerRow extends LitElement {
         appearance="plain"
         variant="brand"
         size="medium"
-        class="action-button"
+        class="action-button ${this.useExpressive ? `action-button-expressive` : ``}"
         @click=${this.onTransferPressed}
       >
         <ha-svg-icon
@@ -173,7 +189,7 @@ class PlayerRow extends LitElement {
         appearance="plain"
         variant="brand"
         size="medium"
-        class="action-button"
+        class="action-button ${this.useExpressive ? `action-button-expressive` : ``}"
         @click=${this.onJoinPressed}
       >
         <ha-svg-icon
@@ -188,6 +204,7 @@ class PlayerRow extends LitElement {
         <span
           slot="end"
           class="button-group"
+          @click=${ (ev: Event) => {ev.stopPropagation()}}
         >
           ${this.renderJoinButon()}
           ${this.renderTransferButton()}
