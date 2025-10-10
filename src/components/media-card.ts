@@ -27,7 +27,8 @@ import {
   EntityConfig,
   hassExt,
   IconsContext,
-  mediaBrowserConfigContext
+  mediaBrowserConfigContext,
+  useExpressiveContext
 } from "../const/context";
 import {
   getEnqueueButtons,
@@ -61,6 +62,9 @@ class MediaCard extends LitElement {
 
   @consume({context: hassExt})
   public hass!: ExtendedHass;
+
+  @consume({ context: useExpressiveContext })
+  private useExpressive!: boolean;
 
   public onSelectAction!: CardSelectedService;
   public onEnqueueAction!: CardEnqueueService;
@@ -252,10 +256,10 @@ class MediaCard extends LitElement {
       >
         <div id="container">
           <wa-card
-            class="media-card"
+            class="media-card ${this.useExpressive ? `media-card-expressive` : ``}"
             @click=${this.onSelect}
           >
-            <div slot="media">
+            <div slot="media" id="media">
               ${this.renderThumbnail()}
             </div>
             ${this.renderTitle()}

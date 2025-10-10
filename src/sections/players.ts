@@ -150,16 +150,28 @@ class PlayersCard extends LitElement {
     )
   }
   protected render() {
+    const expressive = this.config.expressive;
     return html`
-      <div id="container">
+      <div
+        id="container"
+        class="${expressive ? `container-expressive` : ``}"
+      >
         <mass-section-header>
           <span slot="label" id="title">
             Players
           </span>
         </mass-section-header>
-        <ha-md-list class="list">
-          ${this.renderPlayerRows()}
-        </ha-md-list>
+        <wa-animation 
+          name="fadeIn"
+          easing="ease-in"
+          iterations=1
+          play=${this.checkVisibility()}
+          playback-rate=4
+        >
+          <ha-md-list class="list ${expressive ? `list-expressive` : ``}">
+            ${this.renderPlayerRows()}
+          </ha-md-list>
+        </wa-animation>
       </div>
     `
   }

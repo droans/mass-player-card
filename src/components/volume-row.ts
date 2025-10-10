@@ -183,6 +183,7 @@ class VolumeRow extends LitElement {
         .max=${this.maxVolume}
         @value-changed=${this.onVolume}
         id="volume-slider"
+        class="${this.controller.ActivePlayer.useExpressive ? `volume-slider-expressive` : ``}"
         part="volume-slider"
       ></ha-control-slider>
     `

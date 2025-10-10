@@ -309,14 +309,18 @@ class QueueCard extends LitElement {
     );
   }
   protected render() {
+    const expressive = this.activePlayerController.useExpressive;
     return this.error ?? html`
-      <div id="container">
+      <div
+        id="container"
+        class="${expressive ? `container-expressive` : ``}"
+      >
         <mass-section-header>
           <span slot="label" id="title">
             Queue
           </span>
         </mass-section-header>
-        <ha-md-list class="list">
+        <ha-md-list class="list ${expressive ? `list-expressive` : ``}">
           ${this.renderQueueItems()}
         </ha-md-list>
       </div>

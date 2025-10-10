@@ -87,6 +87,7 @@ class MassPlayerControlsExpressive extends LitElement {
         <ha-svg-icon
           .path=${this.Icons.SKIP_PREVIOUS}
           class="icons-next-previous"
+          id="icon-previous"
         ></ha-svg-icon>
       </ha-button>
     `
@@ -123,6 +124,7 @@ class MassPlayerControlsExpressive extends LitElement {
         <ha-svg-icon
           .path=${this.Icons.SKIP_NEXT}
           class="icons-next-previous"
+          id="icon-previous"
         ></ha-svg-icon>
       </ha-button>
     `

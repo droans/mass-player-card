@@ -6,6 +6,9 @@ export default css`
   #container {
     height: var(--mass-player-card-height);
   }
+  .container-expressive {
+    border-radius: var(--expressive-border-radius-container);
+  }
   .player-header {
     margin: 0em 1.75em 0em 1.75em;
     text-align: center;
@@ -20,20 +23,10 @@ export default css`
     background-size: 22em;
     position: relative;
   }
-  /* #active-track {
-    position: absolute;
-    top: 0;
-    width: 100%;
-  } */
-  /* #artwork-div {
-    position: absolute;
-    aspect-ratio: 1;
-    justify-self: center;
-    height: var(--mass-player-card-height);
-    width: 100%;
-    place-content: center;
-    top: -3em;
-  } */
+  .player-card-expressive {
+    background-color: var(--md-sys-color-background);
+    border-radius: 8px 8px 0px 0px;
+  }
   #artwork-img {
     border-radius: var(--ha-card-border-radius);
     max-width: 100%;
@@ -41,10 +34,16 @@ export default css`
     display: block;
   }
   #active-track-text {
-    background: rgba(from var(--ha-card-background) r g b / 0.6);
+    background: var(--player-blur-color);
     z-index: 1;
     position: relative;
     backdrop-filter: blur(3px);
+  }
+  .active-track-text-expressive {
+    background: var(--expressive-player-blur-color) !important;
+  }
+  .active-track-text-rounded {
+    border-radius: 8px 8px 0px 0px;
   }
   .player-name {
     font-size: 0.8rem;
@@ -61,17 +60,20 @@ export default css`
   }
   .media-controls {
     backdrop-filter: blur(3px);
-    background: rgba(from var(--ha-card-background) r g b / 0.6);
+    background: var(--player-blur-color);
     position: absolute;
-    bottom: 40px;
+    bottom: calc(40px + 0.5em);
     width: 100%;
+  }
+  .media-controls-expressive {
+    background: var(--expressive-player-blur-color);
   }
   *[hide] {
     display: none;
   }
 
   *[background] {
-    background-color: rgba(var(--rgb-card-background-color), 0.9);
+    background-color: rgba(var(--player-blur-color), 0.9);
     border-radius: 10px;
   }
   .marquee-pause-end {
@@ -160,6 +162,8 @@ export default css`
     --control-select-menu-padding: 7px;
     --mdc-icon-size: 1.5em;
     --control-select-menu-height: 2.5em;
+    box-shadow: var(--md-sys-elevation-level1);
+    border-radius: 12px;
   }
   #grouped-players-menu::part(menu-svg) {
     color: var(--md-sys-color-primary);
@@ -175,7 +179,7 @@ export default css`
   }
   #volume {
     position: absolute;
-    bottom: 0.5em;
+    bottom: 8px;
     width: 100%;
   }
   #active-track-lg {
@@ -203,6 +207,12 @@ export default css`
     
   }
   #artwork-div-med {
+    aspect-ratio: 1;
+    justify-self: center;
+    place-content: center;
+    height: 100%;
+    top: -2em;
+    position: absolute;
   }
   #artwork-div-sm {
     position: relative;
@@ -233,16 +243,25 @@ export default css`
     z-index: 1;
     position: relative;
   }
+  .header-art-lg::part(header) {
+    background: var(--player-blur-color);
+    backdrop-filter: var(--player-blur);
+    z-index: 0;
+  }
+  .header-expressive::part(header) {
+    background: var(--expressive-player-blur-color);
+  }
   .header-art-med {
 
   }
   .header-art-sm {
     position: relative;
   }
-  .header-art-lg::part(header) {
-    background: rgba(from var(--ha-card-background) r g b / 0.6);
-    backdrop-filter: blur(3px);
-    z-index: 0;
+  .volume-expressive::part(volume-div) {
+    background: var(--expressive-player-blur-color);
+    padding-bottom: 12px;
+    bottom: -8px;
+    position: relative;
   }
   .vol-art-lg {
     z-index: 1;
@@ -265,5 +284,13 @@ export default css`
   }
   .controls-art-sm {
     
+  }
+  .menu-header-expressive::part(menu-select-menu) {
+    background-color: var(--md-sys-color-secondary-container);
+    box-shadow: var(--md-sys-elevation-level1);
+    border-radius: 12px;
+  }
+  .menu-header-expressive::part(menu-svg) {
+    color: var(--md-sys-color-secondary-on-container);
   }
 `;

@@ -20,6 +20,7 @@ import './sections/music-player';
 import './sections/player-queue';
 import './sections/players';
 
+import './components/navigation-bar-expressive';
 import './components/navigation-bar';
 
 import {
@@ -209,18 +210,10 @@ export class MusicAssistantPlayerCard extends LitElement {
           name="${Sections.PLAYERS}"
           class="section${this.active_section==Sections.PLAYERS ? "" : "-hidden"}"
         >
-          <wa-animation 
-            name="fadeInUp"
-            easing="ease-in"
-            iterations=1
-            play=${this.active_section==Sections.PLAYERS}
-            playback-rate=4
-          >
             <mass-player-players-card
               .selectedPlayerService=${this.playerSelected}
               .config=${this.config}
             ></mass-player-players-card>
-          </wa-animation>
         </wa-tab-panel>
       `);
     }
@@ -233,17 +226,9 @@ export class MusicAssistantPlayerCard extends LitElement {
           name="${Sections.MUSIC_PLAYER}"
           class="section${this.active_section==Sections.MUSIC_PLAYER ? "" : "-hidden"}"
         >
-          <wa-animation 
-            name="fadeInUp"
-            easing="ease-in"
-            iterations=1
-            play=${this.active_section==Sections.MUSIC_PLAYER}
-            playback-rate=4
-          >
             <mass-music-player-card
               .selectedPlayerService=${this.playerSelected}
             ></mass-music-player-card>
-          </wa-animation>
         </wa-tab-panel>
       `);
     }
@@ -271,13 +256,6 @@ export class MusicAssistantPlayerCard extends LitElement {
           name="${Sections.MEDIA_BROWSER}"
           class="section${this.active_section==Sections.MEDIA_BROWSER ? "" : "-hidden"}"
         >
-          <wa-animation 
-            name="fadeInUp"
-            easing="ease-in"
-            iterations=1
-            play=${this.active_section==Sections.MEDIA_BROWSER}
-            playback-rate=4
-          >
             <mass-media-browser
               .config=${this.config.media_browser}
               .onMediaSelectedAction=${this.browserItemSelected}
@@ -290,8 +268,8 @@ export class MusicAssistantPlayerCard extends LitElement {
   }
   protected renderTabs() {
     return html`
-      <div id="navbar">
-        <mass-nav-bar></mass-nav-bar>
+      <div id="navbar${this.config.expressive && this.active_section == Sections.MUSIC_PLAYER ? `-expressive` : ``}">
+        ${this.config.expressive ? html`<mass-nav-bar-expressive></mass-nav-bar-expressive>` : html`<mass-nav-bar></mass-nav-bar>` }
       </div>
     `
   }
@@ -305,7 +283,7 @@ export class MusicAssistantPlayerCard extends LitElement {
   }
   protected render() {
     return this.error ?? html`
-      <ha-card>
+      <ha-card id="${this.config.expressive ? `expressive` : ``}">
         ${this.renderSections()}
         ${this.renderTabs()}
       </ha-card>

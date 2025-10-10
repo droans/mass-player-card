@@ -13,6 +13,18 @@ export default css`
     background: var(--media-row-background-color);
     height: var(--media-row-height);
   }
+  .button-expressive {
+    background-color: var(--expressive-media-row-color);
+  }
+  .button-expressive-active {
+    background-color: var(--expressive-media-row-color-active);
+  }
+  .button-expressive > .title {
+    color: var(--expressive-media-row-color-text);
+  }
+  .button-expressive-active > .title {
+    color: var(--expressive-media-row-color-text-active);
+  }
   .button-active {
     margin: 0.15rem;
     border-radius: 0.7rem;
@@ -46,11 +58,22 @@ export default css`
     flex-direction: row;
     align-items: center;
     justify-content: flex-end;
+    gap: 8px;
+    height: 48px;
+    right: 0;
+    padding-right: 16px;
+    position: absolute;
   }
   .action-button {
     width: var(--media-row-icon-width);
     transform: scale(1);
     align-content: center;
+  }
+  .action-button-expressive::part(base):hover {
+    background-color: var(--md-sys-color-primary-container) !important;
+    --inherited-background-color: var(--md-sys-color-primary-container) !important;
+    box-shadow: var(--md-sys-elevation-level1);
+    border-radius: 25%;
   }
   .action-button::part(base) {
     height: 30px;
@@ -76,5 +99,11 @@ export default css`
     height: 1.5rem;
     width: 1.5rem;
     color: var(--me-icon-color);
+  }
+  .headline-expressive {
+    color: var(--expressive-media-row-color-text);
+  }
+  .headline-expressive-active {
+    color: var(--expressive-media-row-color-text-active);
   }
 `;

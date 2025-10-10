@@ -22,7 +22,8 @@ import {
   hassExt,
   IconsContext,
   mediaCardDisplayContext,
-  playerQueueConfigContext
+  playerQueueConfigContext,
+  useExpressiveContext,
 } from '../const/context';
 import { QueueItem } from '../const/player-queue';
 
@@ -46,6 +47,9 @@ class MediaRow extends LitElement {
   @consume({ context: mediaCardDisplayContext, subscribe: true })
   @state()
   public display!: boolean;
+
+  @consume({ context: useExpressiveContext})
+  private useExpressive!: boolean;
 
   public moveQueueItemDownService!: QueueService;
   public moveQueueItemNextService!: QueueService;
@@ -140,11 +144,34 @@ class MediaRow extends LitElement {
     }
     return html``
   }
+  private _calculateTitleWidth() {
+    let button_ct = 0;
+    const hide = this.config.hide;
+    const media_item = this.media_item
+    if (media_item.show_move_up_next && !hide.move_next_button) {
+      button_ct += 1
+    }
+    if (media_item.show_move_up_next && !hide.move_up_button) {
+      button_ct +=1
+    }
+    if (!hide.move_down_button) {
+      button_ct += 1
+    }
+    if (!hide.remove_button) {
+      button_ct += 1
+    }
+    if (button_ct == 0 || !media_item.show_action_buttons || hide.action_buttons) {
+      return `100%`;
+    }
+    const gap_ct = button_ct - 1;
+    return `calc(100% - ((32px * ${button_ct.toString()}) + (8px * ${gap_ct.toString()}) + 16px));`
+  }
   private renderTitle(): TemplateResult {
     return html`
       <span
         slot="headline"
         class="title"
+        style="width: ${this._calculateTitleWidth()}"
       >
         ${this.media_item.media_title}
       </span>
@@ -156,6 +183,7 @@ class MediaRow extends LitElement {
         <span
           slot="supporting-text"
           class="title"
+          style="width: ${this._calculateTitleWidth()}"
         >
           ${this.media_item.media_artist}
         </span>
@@ -171,6 +199,7 @@ class MediaRow extends LitElement {
       <span
         slot="end"
         class="button-group"
+        @click=${(e: Event) => {e.stopPropagation()}}
       >
         ${this.renderMoveNextButton()}
         ${this.renderMoveUpButton()}
@@ -189,7 +218,7 @@ class MediaRow extends LitElement {
         appearance="plain"
         variant="brand"
         size="medium"
-        class="action-button"
+        class="action-button ${this.useExpressive ? `action-button-expressive` : ``}"
         @click=${this.callMoveItemNextService}
       >
         <ha-svg-icon
@@ -208,7 +237,7 @@ class MediaRow extends LitElement {
         appearance="plain"
         variant="brand"
         size="medium"
-        class="action-button"
+        class="action-button ${this.useExpressive ? `action-button-expressive` : ``}"
         @click=${this.callMoveItemUpService}
       >
         <ha-svg-icon
@@ -227,7 +256,7 @@ class MediaRow extends LitElement {
         appearance="plain"
         variant="brand"
         size="medium"
-        class="action-button"
+        class="action-button ${this.useExpressive ? `action-button-expressive` : ``}"
         @click=${this.callMoveItemDownService}
       >
         <ha-svg-icon
@@ -246,7 +275,7 @@ class MediaRow extends LitElement {
           appearance="plain"
           variant="brand"
           size="medium"
-          class="action-button"
+          class="action-button ${this.useExpressive ? `action-button-expressive` : ``}"
           @click=${this.callRemoveItemService}
         >
         <ha-svg-icon
@@ -258,10 +287,12 @@ class MediaRow extends LitElement {
   }
 
   render(): TemplateResult {
+    const playing = this.media_item.playing ? `-active` : ``;
+    const expressive = this.useExpressive ? `button-expressive` : ``;
     return html`
         <ha-md-list-item
           style="${this.display? "" : "display: none;"}"
-          class="button${this.media_item.playing ? '-active' : ''}"
+          class="button${playing} ${expressive}${playing}"
           @click=${this.callOnQueueItemSelectedService}
           type="button"
         >

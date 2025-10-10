@@ -24,7 +24,10 @@ export default css`
     background-repeat: no-repeat;
     background-position: center;
   }
-
+  .thumbnail {
+    border-radius: 28px;
+    overflow: hidden !important
+  }
   #title-div {
     font-size: 1.2rem;
     text-transform: capitalize;
@@ -33,7 +36,7 @@ export default css`
     line-height: 160%;
     bottom: 0;
     background-color: rgba(from var(--ha-card-background) r g b / 0.9);
-    border-radius: 0px 0px 12px 12px;
+    border-radius: 0px 0px 28px 28px;
   }
 
   #enqueue-menu-control {
@@ -87,9 +90,12 @@ export default css`
     padding: unset;
     text-align: center;
   }
-  media-card {
+  .media-card {
     border-radius: var(--ha-card-border-radius) !important;
     overflow: hidden;
+  }
+  .media-card-expressive {
+    box-shadow: var(--md-sys-elevation-level2);
   }
   wa-card {
     --inner-border-radius: var(--ha-card-border-radius);

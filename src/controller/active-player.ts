@@ -6,6 +6,7 @@ import {
   activeMediaPlayer,
   activePlayerName,
   expressiveThemeContext,
+  useExpressiveContext,
   volumeMediaPlayer
 } from "../const/context";
 import { Config, EntityConfig } from "../config/config";
@@ -21,14 +22,15 @@ export class ActivePlayerController {
   private _activePlayerName: ContextProvider<typeof activePlayerName>;
   private _volumeMediaPlayer: ContextProvider<typeof volumeMediaPlayer>;
   private _expressiveTheme = new ContextProvider(document.body, { context: expressiveThemeContext});
+  private _useExpressive = new ContextProvider(document.body, { context: useExpressiveContext });
   
-  private _hass: ExtendedHass;
-  private _config: Config;
+  private _hass!: ExtendedHass;
+  private _config!: Config;
   private _host: HTMLElement;
 
   constructor(hass: ExtendedHass, config: Config, host: HTMLElement) {
     this._hass = hass;
-    this._config = config;
+    this.config = config;
     this._host = host;
     this._activeEntityConfig = new ContextProvider(host, {context: activeEntityConf})
     this._activeEntityID = new ContextProvider(host, {context: activeEntityID})
@@ -44,18 +46,28 @@ export class ActivePlayerController {
   public get hass() {
     return this._hass;
   }
+
   public set config(config: Config) {
     this._config = config;
+    this.useExpressive = config.expressive;
   }
   public get config() {
     return this._config;
   }
+
+  public set useExpressive(expressive: boolean) {
+    this._useExpressive.setValue(expressive);
+  }
+  public get useExpressive() {
+    return this._useExpressive.value;
+  }
+
   private set activeEntityConfig(conf: EntityConfig) {
     this._activeEntityConfig.setValue(conf);
     const states = this.hass.states;
     this.activePlayerName = this.activeEntityConfig.name;
-    this.activeMediaPlayer = states[this.activeEntityConfig.entity_id];
     this.volumeMediaPlayer = states[this.activeEntityConfig.volume_entity_id];
+    this.activeMediaPlayer = states[this.activeEntityConfig.entity_id];
     this.activeEntityID = this.activeEntityConfig.entity_id;
 
   }
@@ -79,10 +91,14 @@ export class ActivePlayerController {
         void this.applyExpressiveTheme();
       }
     }
+    if (this.config.expressive && !this.expressiveTheme) {
+      void this.applyExpressiveTheme();
+    }
   }
   public get activeMediaPlayer() {
     return this._activeMediaPlayer.value;
   }
+
   private set activePlayerName(name: string) {
     if (name.length) {
       this._activePlayerName.setValue(name);
@@ -93,12 +109,24 @@ export class ActivePlayerController {
   public get activePlayerName() {
     return this._activePlayerName.value;
   }
+
   private set volumeMediaPlayer(player: ExtendedHassEntity) {
-    this._volumeMediaPlayer.setValue(player);
+    if (!player) {
+      return
+    }
+    const old_attrs = this.volumeMediaPlayer?.attributes;
+    const new_attrs = player?.attributes;
+    if (
+      old_attrs?.volume_level != new_attrs?.volume_level
+      || old_attrs?.is_volume_muted != new_attrs?.is_volume_muted
+    ) {
+      this._volumeMediaPlayer.setValue(player);
+    }
   }
   public get volumeMediaPlayer() {
     return this._volumeMediaPlayer.value;
   }
+
   private set expressiveTheme(theme: Theme | undefined) {
     this._expressiveTheme.setValue(theme);
   }
@@ -141,18 +169,17 @@ export class ActivePlayerController {
 
   public getactivePlayerData(current_item: QueueItem | null): PlayerData {
     const player = this.activeMediaPlayer;
-    const vol_player = this.volumeMediaPlayer;
-    
+    const vol_player = this.volumeMediaPlayer;    
     return {
-      playing: player.state == 'playing',
-      repeat: player.attributes.repeat ?? false,
-      shuffle: player.attributes.shuffle ?? false,
-      track_album: player.attributes.media_album_name,
-      track_artist: player.attributes.media_artist,
-      track_artwork: player.attributes.entity_picture_local ?? player.attributes.entity_picture,
-      track_title: player.attributes.media_title,
-      muted: vol_player.attributes.is_volume_muted,
-      volume: Math.floor(vol_player.attributes.volume_level * 100),
+      playing: player?.state == 'playing',
+      repeat: player?.attributes?.repeat ?? false,
+      shuffle: player?.attributes?.shuffle ?? false,
+      track_album: player?.attributes?.media_album_name ?? '',
+      track_artist: player?.attributes?.media_artist ?? '',
+      track_artwork: player?.attributes?.entity_picture_local ?? player?.attributes?.entity_picture,
+      track_title: player?.attributes?.media_title ?? '',
+      muted: vol_player?.attributes?.is_volume_muted ?? true,
+      volume: Math.floor(vol_player?.attributes?.volume_level * 100) ?? 0,
       player_name: this.activePlayerName,
       favorite: current_item?.favorite ?? false,
     }
@@ -232,8 +259,10 @@ export class ActivePlayerController {
     return this.generateExpressiveThemeFromImage();
   }
   public generateImageElement(): HTMLImageElement|undefined {
+    const player_data = this.getactivePlayerData(null);
     const attrs = this.activeMediaPlayer.attributes;
-    const url = attrs.entity_picture_local ?? attrs.entity_picture ?? getThumbnail(this._hass, Thumbnail.CLEFT);
+    const def = getThumbnail(this.hass, Thumbnail.CLEFT);
+    const url = player_data.playing ? attrs.entity_picture_local ?? attrs.entity_picture ?? def : def; 
     const elem = document.createElement('img');
     elem.src = url;
     return elem;

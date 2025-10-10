@@ -8,9 +8,10 @@ export default css`
     --play-pause-button-width: 96px;
     --play-pause-border-radius: 18px !important;
     --next-prev-button-height: var(--play-pause-icon-height);
-    --next-prev-button-width: 36px;
-    --next-prev-icon-height: 24px;
-    --next-prev-border-radius: 18px !important;
+    --next-prev-button-width: 48px;
+    --next-prev-icon-height: 48px;
+    --next-border-radius: 36px 18px 18px 36px !important;
+    --prev-border-radius: 18px 36px 36px 18px !important;
     --next-prev-background-color: var(--md-sys-color-secondary-container, var(--inherited-background-color,var(--ha-button-background-color))) !important;
     --play-background-color: var(--md-sys-color-primary, var(--inherited-background-color,var(--ha-button-background-color))) !important;
     --pause-background-color: var(--md-sys-color-secondary-container, var(--inherited-background-color,var(--ha-button-background-color))) !important;
@@ -46,14 +47,21 @@ export default css`
     place-self: center;
     padding: 6px;
     border-radius: 24px;
-    background-color: rgba(from var(--ha-card-background) r g b / 0.4) !important
+    background-color: rgba(from var(--ha-card-background) r g b / 0.4) !important;
+    /* box-shadow: var(--md-sys-elevation-level1); */
   }
   .button-next-previous::part(base) {
     height: var(--next-prev-button-height);
     width: var(--next-prev-button-width);
     --inherited-background-color: var(--next-prev-background-color);
     --wa-color-fill-normal: var(--next-prev-background-color);
-    --ha-button-border-radius: var(--next-prev-border-radius);
+    box-shadow: var(--md-sys-elevation-level1);
+  }
+  #button-previous::part(base) {
+    --ha-button-border-radius: var(--next-border-radius);
+  }
+  #button-next::part(base) {
+    --ha-button-border-radius: var(--prev-border-radius);
   }
   .icons-next-previous {
     color: var(--next-prev-icon-color);
@@ -64,6 +72,7 @@ export default css`
     height: var(--play-pause-icon-height);
     width: var(--play-pause-button-width);
     --ha-button-border-radius: var(--play-pause-border-radius);
+    box-shadow: var(--md-sys-elevation-level2);
   }
   #button-play::part(base) {
     --wa-color-fill-normal: var(--play-background-color);
@@ -92,6 +101,7 @@ export default css`
     --wa-color-fill-normal: var(--lower-button-background-color);
     --inherited-background-color: var(--lower-button-background-color);
     --ha-button-border-radius: var(--lower-button-border-radius);
+    box-shadow: var(--md-sys-elevation-level1);
   }
   .button-lower-active::part(base) {
     --wa-color-fill-normal: var(--lower-button-background-color-active);
