@@ -22,6 +22,7 @@ import { PlayerData, SLSwipeEvent, SWIPE_QUEUE_ITEMS_AFTER, SWIPE_QUEUE_ITEMS_BE
 import SlCarousel from "@shoelace-style/shoelace/dist/components/carousel/carousel.js";
 import { PlayerConfig } from "../config/player.js";
 import { QueueController } from "../controller/queue.js";
+import { keyed } from "lit/directives/keyed.js";
 
 class MassPlayerArtwork extends LitElement {
   @consume({ context: hassExt, subscribe: true })
@@ -168,12 +169,15 @@ class MassPlayerArtwork extends LitElement {
       >
     `
   }
-  protected renderCarouselItem(img: string | undefined) {
-    return html`
-      <sl-carousel-item>
-        ${this.renderItemArtwork(img)}
-      </sl-carousel-item>
-    `
+  protected renderCarouselItem(img: string | undefined, content_id: string) {
+    return keyed(
+      `carousel-${content_id}`,
+      html`
+        <sl-carousel-item>
+          ${this.renderItemArtwork(img)}
+        </sl-carousel-item>
+      `
+    )
   }
   protected renderCarouselItems() {
     const items = this._queueItems;
@@ -183,7 +187,7 @@ class MassPlayerArtwork extends LitElement {
         if (item.playing) {
           this._curSlideIdx = idx;
         }
-        return this.renderCarouselItem(img)
+        return this.renderCarouselItem(img, item.media_content_id);
       }
     )
     return html`${result}`
