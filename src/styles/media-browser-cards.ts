@@ -6,6 +6,12 @@ export default css`
   :host {
     width: 100%;
   }
+  mass-media-card {
+    max-height: 100%;
+    aspect-ratio: 1;
+    width: 30em;
+    justify-content: center;
+  }
   .icons {
     display: flex;
     justify-content: space-evenly;
@@ -14,11 +20,5 @@ export default css`
     overflow-y: scroll;
     height: calc(var(--mass-player-card-height) - 4em);
     scrollbar-width: none;
-  }
-  mass-media-card {
-    max-height: 100%;
-    aspect-ratio: 1;
-    width: 30em;
-    justify-content: center;
   }
 `;

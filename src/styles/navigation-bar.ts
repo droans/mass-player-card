@@ -3,23 +3,13 @@ import { css } from 'lit';
 // Styles belonging to the card
 // https://lit.dev/docs/components/styles/
 export default css`
-  nav.tabbed {
-    background-color: var(--tabbed-background-color);
-    box-shadow: var(--tabbed-elevation);
-  }
   a.active {
     --primary-container: var(--tab-active-indicator-color);
   }
   a.active-expressive {
     box-shadow: var(--md-sys-elevation-level2);
   }
-  .player-tabs {
-    --primary-container: rgba(from var(--primary-color) r g b / 0.25);
-  }
-  .icon-i {
-    height: 100%;
-    width: 100%;
-  }
+  
   .action-button-svg {
     --icon-primary-color: var(--tab-active-icon-color);
     height: var(--tab-icon-height);
@@ -30,6 +20,21 @@ export default css`
     height: var(--tab-icon-height);
     width: var(--tab-icon-height);
   }
+
+  .icon-i {
+    height: 100%;
+    width: 100%;
+  }
+
+  nav.tabbed {
+    background-color: var(--tabbed-background-color);
+    box-shadow: var(--tabbed-elevation);
+  }
+
+  .player-tabs {
+    --primary-container: rgba(from var(--primary-color) r g b / 0.25);
+  }
+
   .tabbed {
     --tabbed-elevation: var(--md-sys-elevation-level1);
     --tabbed-background-color: var(--tabbed-background-color);
@@ -41,5 +46,4 @@ export default css`
   .tabbed-expressive {
     --tabbed-background-color: var(--md-sys-color-primary-container) !important;
   }
-
 `;

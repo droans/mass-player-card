@@ -5,8 +5,6 @@ import { property, state } from 'lit/decorators.js';
 import '../components/media-row'
 import '../components/section-header';
 
-import QueueActions from '../actions/queue-actions';
-
 import {
   DEFAULT_QUEUE_CONFIG,
   QueueConfig,
@@ -15,44 +13,87 @@ import {
 
 import { ExtendedHass } from '../const/common';
 import {
+  activeEntityConf,
   activeEntityID,
   activePlayerControllerContext,
   activeSectionContext,
+  EntityConfig,
   hassExt,
   mediaCardDisplayContext,
-  playerQueueConfigContext
+  playerQueueConfigContext,
+  queueContext,
+  queueControllerContext
 } from '../const/context';
 import {
-  MassQueueEvent,
   QueueItem,
+  QueueItems,
 } from '../const/player-queue';
 
 import styles from '../styles/player-queue';
 import { Sections } from '../const/card';
 import { ActivePlayerController } from '../controller/active-player.js';
+import { QueueController } from '../controller/queue.js';
 
 class QueueCard extends LitElement {
+  
   @consume({ context: activePlayerControllerContext})
   private activePlayerController!: ActivePlayerController;
 
+  @consume({ context: activeEntityConf, subscribe: true})
+  private entityConf!: EntityConfig;
+
   @provide({context: playerQueueConfigContext})
-  @property({ attribute: false }) 
   public _config!: QueueConfig;
-  @state() private lastUpdated = '';
-  @state() private queue: QueueItem[] = [];
+  @state() private _queue: QueueItems = [];
+  private _queueController!: QueueController;
+
+  @consume({ context: queueControllerContext, subscribe: true})
+  public set queueController(controller: QueueController) {
+    this._queueController = controller;
+  }
+  public get queueController() {
+    return this._queueController;
+  }
+  
+  @consume({ context: queueContext, subscribe: true})
+  public set queue(queue: QueueItems | null) {
+    if (queue) {
+      if (!this.queue?.length) {
+        this._queue = queue;
+        return;
+      }
+      const new_queue = JSON.stringify(queue);
+      const old_queue = JSON.stringify(this.queue);
+      if (new_queue != old_queue) {
+        this._queue = this.processQueue(queue);
+      }
+      return;
+    }
+  }
+  public get queue() {
+    return this._queue;
+  }
+
+  private processQueue(queue: QueueItems) {
+    const active_idx = queue.findIndex( i => i.playing );
+
+    return queue.map(
+      (item, idx) => {
+        {
+          const r: QueueItem = {
+            ...item,
+            show_action_buttons: idx > active_idx,
+            show_move_up_next: idx > active_idx + 1,
+          }
+          return r;
+        }
+      }
+    )
+  }
 
   private _active_player_entity!: string;
   private _hass!: ExtendedHass;
-  private _listening = false;
-  /* eslint-disable-next-line @typescript-eslint/no-explicit-any */
-  private _unsubscribe: any;
-  private actions!: QueueActions;
   private error?: TemplateResult;
-  private failCt = 0;
-  private hasFailed = false;
-  private maxFailCt = 5;
-  private newId = '';
-  private queueID = '';
 
   @provide({context: mediaCardDisplayContext})
   private _mediaCardDisplay = true;
@@ -71,12 +112,6 @@ class QueueCard extends LitElement {
     if (!hass) {
       return;
     }
-    if (this.active_player_entity) {
-      const lastUpdated = hass.states[this.active_player_entity].last_updated;
-      if (lastUpdated !== this.lastUpdated) {
-        this.lastUpdated = lastUpdated;
-      }
-    }
     this._hass = hass;
   }
   public get hass() {
@@ -87,7 +122,6 @@ class QueueCard extends LitElement {
   @property({ attribute: false})
   public set active_player_entity(active_player_entity: string) {
     this._active_player_entity = active_player_entity;
-    this.getQueueIfReady();
   }
   public get active_player_entity() {
     return this._active_player_entity;
@@ -102,7 +136,6 @@ class QueueCard extends LitElement {
       ...DEFAULT_QUEUE_CONFIG,
       ...config
     };
-    this.getQueueIfReady();
   }
   public get config() {
     return this._config;
@@ -128,156 +161,51 @@ class QueueCard extends LitElement {
     return QueueConfigErrors.OK;
   }
   protected shouldUpdate(_changedProperties: PropertyValues): boolean {
+    if (!_changedProperties.size) {
+      return false;
+    }
     if (
       _changedProperties.has('_config')
       || _changedProperties.has('queue')
     ) {
       return true;
     }
-    if (_changedProperties.has('hass')) {
-      const cur_id = this.newId;
-      const new_id = this.hass.states[this.active_player_entity].attributes.media_content_id;
-      this.newId = new_id;
-      return cur_id !== new_id;
-    }
     return super.shouldUpdate(_changedProperties);
   }
 
-  private getQueueIfReady() {
-    if (!this.hass || !this._config || !this.active_player_entity) {
-      return
-    }
-    this.getQueue(true);
-    if (!this._listening) {
-      void this.subscribeUpdates();
-    }
-  }
-  private eventListener = (event: MassQueueEvent) => {
-    const event_data = event.data;
-    if (event_data.type == 'queue_updated') {
-      const updated_queue_id = event_data.data.queue_id;
-      if (updated_queue_id == this.queueID) {
-        this.getQueue(true);
-    }}
-  }
-  private async subscribeUpdates() {
-    if (this.hass.user.is_admin) {
-      this._unsubscribe = await this.hass.connection.subscribeEvents(
-        this.eventListener,
-        "mass_queue"
-      );
-      this._listening = true;
-    } else {
-      /* eslint-disable-next-line no-console */
-      console.error(`User is a non-admin; queue updates may be delayed or non-existent!`)
-    }
-  }
   public disconnectedCallback(): void {
     super.disconnectedCallback();
-    if (!this._unsubscribe) {
-      return;
-    }
-    /* eslint-disable-next-line @typescript-eslint/no-unsafe-call */
-    this._unsubscribe();
+    if (this?.queueController?.isSubscribed) this.queueController.unsubscribeUpdates();
+    super.disconnectedCallback();
   }
-  private getQueueItemIndex(queue_item_id: string, queue: QueueItem[] = []): number {
-    if (!queue.length) {
-      queue = this.queue;
+  public connectedCallback(): void {
+    if (this.queueController) {
+      void this.queueController.subscribeUpdates();
     }
-    return queue.findIndex(item => item.queue_item_id == queue_item_id)
+    super.connectedCallback();
   }
-  private moveQueueItem(old_index, new_index) {
-    /* eslint-disable-next-line @typescript-eslint/no-unsafe-argument */
-    this.queue.splice(new_index, 0, this.queue.splice(old_index, 1)[0]);
-  }
-  private getQueue(forced_id = false) {
-      const app_is_mass = this.hass.states[this.active_player_entity].attributes.app_id == 'music_assistant';
-      if (!app_is_mass) {
-        return;
-      }
-    if (
-      !this.actions
-      || this.actions.player_entity !== this.active_player_entity
-    ) {
-      this.actions = new QueueActions(this.hass, this.active_player_entity)
-    }
-    if (this.testConfig(this._config) !== QueueConfigErrors.OK || this.hasFailed) {
-      return;
-    }
-    if (this.failCt >= this.maxFailCt) {
-      this.hasFailed = true;
-      throw this.createError(`Failed to get queue ${this.failCt.toString()} times! Please check card config and that the services are working properly.`)
-      return
-    }
-    if (forced_id) {
-      const new_id = this.hass.states[this.active_player_entity]?.attributes?.media_content_id;
-      if (new_id) {
-        this.newId = new_id;
-      }
-    }
-    try {
-      /* eslint-disable-next-line @typescript-eslint/no-floating-promises */
-      this.actions.getQueue(this._config.limit_before, this._config.limit_after).then(
-        (queue) => {
-          if (queue == null) {
-            this.failCt ++;
-            return
-          }
-          this.queue = this.updateActiveTrack(queue);
-        }
-      );
-      this.queueID = this.hass.states[this.active_player_entity].attributes.active_queue;
-    } catch {
-      this.queue = []
-    }
-  }
-  private updateActiveTrack(queue: QueueItem[]): QueueItem[] {
-    let content_id = this.newId;
-    if (!content_id.length) {
-      content_id = this.hass.states[this.active_player_entity].attributes.media_content_id;
-    }
-    const activeIndex = queue.findIndex(item => item.media_content_id === content_id);
-    return queue.map( (element, index) => ({
-      ...element,
-      playing: index === activeIndex,
-      show_action_buttons: index > activeIndex,
-      show_move_up_next: index > activeIndex + 1,
-      show_artist_name: this._config.show_artist_names
-    }));
-  }
-  private onQueueItemSelected = async (queue_item_id: string, content_id: string) => {
-    this.newId = content_id
-    await this.actions.playQueueItem(queue_item_id);
-    this.getQueue();
+  private onQueueItemSelected = async (queue_item_id: string) => {
+    await this.queueController.playQueueItem(queue_item_id);
+    await this.queueController.getQueue();
   }
   private onQueueItemRemoved = async (queue_item_id: string) => {
-    await this.actions.removeQueueItem(queue_item_id);
-    this.queue = this.queue.filter( (item) => item.queue_item_id !== queue_item_id);
+    await this.queueController.removeQueueItem(queue_item_id);
   }
   private onQueueItemMoveNext = async (queue_item_id: string) => {
-    const cur_idx = this.getQueueItemIndex(queue_item_id) ;
-    const new_idx = this.queue.findIndex(item => item.playing) + 1;
-    this.moveQueueItem(cur_idx, new_idx);
-    await this.actions.MoveQueueItemNext(queue_item_id);
+    await this.queueController.moveQueueItemNext(queue_item_id);
   }
   private onQueueItemMoveUp = async (queue_item_id: string) => {
-    const cur_idx = this.getQueueItemIndex(queue_item_id);
-    const new_idx = cur_idx - 1;
-    this.moveQueueItem(cur_idx, new_idx);
-    await this.actions.MoveQueueItemUp(queue_item_id);
+    await this.queueController.moveQueueItemUp(queue_item_id);
   }
   private onQueueItemMoveDown = async (queue_item_id: string) => {
-    const cur_idx = this.getQueueItemIndex(queue_item_id);
-    const new_idx = cur_idx + 1;
-    this.moveQueueItem(cur_idx, new_idx);
-    await this.actions.MoveQueueItemDown(queue_item_id);
+    await this.queueController.moveQueueItemDown(queue_item_id);
   }
   private renderQueueItems() {
     const show_album_covers = this._config.show_album_covers;
     const delay_add = 62.5;
     let i = 1;
     const visibility = this.checkVisibility();
-    return this.queue.map(
+    return this.queue?.map(
       (item) => {
         const result = 
           html`
