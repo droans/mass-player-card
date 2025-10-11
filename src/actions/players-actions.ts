@@ -1,9 +1,15 @@
 import { ExtendedHass } from "../const/common";
 
 export default class PlayersActions {
-  private hass: ExtendedHass;
+  private _hass!: ExtendedHass;
   constructor(hass: ExtendedHass) {
     this.hass = hass;
+  }
+  public set hass(hass: ExtendedHass) {
+    this._hass = hass;
+  }
+  public get hass() {
+    return this._hass;
   }
 
   async actionTransferQueue(source_player: string, target_players: string) {

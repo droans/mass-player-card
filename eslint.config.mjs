@@ -2,7 +2,8 @@ import eslint from "@eslint/js";
 import prettierConfig from "eslint-config-prettier";
 import globals from "globals";
 import tseslint from "typescript-eslint";
-
+import lit from "eslint-plugin-lit";
+import wc from 'eslint-plugin-wc';
 const rootConfigFiles = [".prettierrc.js", "eslint.config.mjs"];
 
 export default tseslint.config(
@@ -12,6 +13,16 @@ export default tseslint.config(
   eslint.configs.recommended,
   tseslint.configs.strictTypeChecked,
   tseslint.configs.stylisticTypeChecked,
+  {
+    plugins: {
+      lit: lit,
+      wc: wc,
+    },
+    rules: {
+      ...lit.configs.recommended.rules,
+      ...wc.configs.recommended.rules,
+    }
+  },
   // default language/parser options
   {
     languageOptions: {

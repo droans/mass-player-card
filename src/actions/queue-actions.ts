@@ -1,16 +1,28 @@
-import { QueueItem } from "../const/player-queue";
+import { QueueItems } from "../const/player-queue";
 import { ExtendedHass } from "../const/common";
 
 export default class QueueActions {
-  private hass: ExtendedHass;
-  public player_entity: string;
+  private _hass!: ExtendedHass;
+  public _player_entity!: string;
 
   constructor(hass: ExtendedHass, player_entity: string) {
     this.hass = hass;
     this.player_entity = player_entity;
   }
+  public set hass(hass: ExtendedHass) {
+    this._hass = hass;
+  }
+  public get hass() {
+    return this._hass;
+  }
+  public set player_entity(entity: string) {
+    this._player_entity = entity;
+  }
+  public get player_entity() {
+    return this._player_entity;
+  }
 
-  async getQueue(limit_before: number, limit_after: number): Promise<QueueItem[]|null> {
+  async getQueue(limit_before: number, limit_after: number): Promise<QueueItems|null> {
     try {
       /* eslint-disable
         @typescript-eslint/no-explicit-any,
@@ -28,7 +40,7 @@ export default class QueueActions {
         return_response: true
       });
       /* eslint-disable-next-line @typescript-eslint/no-unsafe-member-access */
-      const result: QueueItem[] = ret.response[this.player_entity];
+      const result: QueueItems = ret.response[this.player_entity];
       return result;
       /* eslint-enable */
     } catch (e) {

@@ -2,10 +2,6 @@ import '@shoelace-style/shoelace/dist/components/input/input';
 
 import { consume, provide } from "@lit/context";
 import {
-  mdiArrowLeft,
-  mdiLibrary,
-  mdiLibraryOutline,
-  mdiMagnify,
   mdiMusic
 } from "@mdi/js";
 import {
@@ -33,7 +29,7 @@ import {
 import { EnqueueOptions } from "../const/actions";
 import {
   ExtendedHass,
-  Icon,
+  Thumbnail,
   MediaTypes
 } from "../const/common";
 import {
@@ -41,27 +37,30 @@ import {
   activeEntityID,
   EntityConfig,
   hassExt,
+  IconsContext,
   mediaBrowserConfigContext,
+  useExpressiveContext
 } from "../const/context";
 import {
   DEFAULT_SEARCH_LIMIT,
+  getSearchMediaButtons,
   MediaBrowserItemsConfig,
   MediaCardData,
   MediaCardItem,
   MediaLibraryItem,
-  SEARCH_MEDIA_TYPE_BUTTONS,
   SEARCH_TERM_MIN_LENGTH,
   SEARCH_UPDATE_DELAY
 } from "../const/media-browser";
 
 import styles from '../styles/media-browser';
 
-import { getMediaTypeSvg } from "../utils/icons";
+import { getMediaTypeSvg } from "../utils/thumbnails";
 import {
   generateCustomSectionCards,
   generateFavoriteCard,
   generateFavoritesSectionCards
 } from '../utils/media-browser';
+import { Icons } from '../const/icons.js';
 
 export class MediaBrowser extends LitElement {
   @provide( { context: mediaBrowserConfigContext })
@@ -70,6 +69,8 @@ export class MediaBrowser extends LitElement {
   @state() private cards: MediaBrowserItemsConfig = {main: []};
   @state() private _searchLibrary= false;
   @state() private _searchMediaTypeIcon: string = mdiMusic;
+  @consume({ context: IconsContext}) private Icons!: Icons;
+  @consume({ context: useExpressiveContext}) private useExpressive!: boolean;
 
   @consume( { context: activeEntityID, subscribe: true})
   public activePlayer!: string;
@@ -178,7 +179,7 @@ export class MediaBrowser extends LitElement {
     const section = data.section;
     if (subtype == 'favorite') {
       this._searchMediaType = section;
-      this._searchMediaTypeIcon = getMediaTypeSvg((section as MediaTypes));
+      this._searchMediaTypeIcon = getMediaTypeSvg((section as MediaTypes), this.Icons);
     }
     this.activeSection = data.section;
   }
@@ -212,7 +213,6 @@ export class MediaBrowser extends LitElement {
       content_type,
       enqueue
     );
-    this.onMediaSelectedAction();
   }
   private onBack = () => {
     if (this.activeSection == 'search' && this.previousSection.length) {
@@ -259,7 +259,7 @@ export class MediaBrowser extends LitElement {
       @typescript-eslint/no-unsafe-member-access,
     */
     this._searchMediaType = value;
-    this._searchMediaTypeIcon = getMediaTypeSvg(value);
+    this._searchMediaTypeIcon = getMediaTypeSvg(value, this.Icons);
     await this.generateSearchResults(this._searchMediaTerm, this._searchMediaType, this._searchLibrary);
     this.activeCards = this.cards.search;
   }
@@ -309,8 +309,8 @@ export class MediaBrowser extends LitElement {
   private generateCustomSectionData = (config: customSection) => {
     const section_card = {
       title: config.name,
-      icon: config.image,
-      fallback: Icon.CLEFT,
+      thumbnail: config.image,
+      fallback: Thumbnail.CLEFT,
       data: {
         type: 'section',
         subtype: 'custom',
@@ -361,12 +361,12 @@ export class MediaBrowser extends LitElement {
           appearance="plain"
           variant="brand"
           size="medium"
-          class="button-back"
+          class="button-back button-min ${this.useExpressive ? `button-expressive` : ``}"
           @click=${this.onBack}
         >
           <ha-svg-icon
-            .path=${mdiArrowLeft}
-            style="height: 2rem; width: 2rem;"
+            .path=${this.Icons.ARROW_LEFT}
+            class="header-icon"
           ></ha-svg-icon>
         </ha-button>
       </span>
@@ -382,12 +382,12 @@ export class MediaBrowser extends LitElement {
           appearance="plain"
           variant="brand"
           size="medium"
-          class="button-search"
+          class="button-search button-min ${this.useExpressive ? `button-expressive` : ``}"
           @click=${this.onSearchPress}
         >
           <ha-svg-icon
-            .path=${mdiMagnify}
-            style="height: 2rem; width: 2rem;"
+            .path=${this.Icons.SEARCH}
+            class="header-icon"
           ></ha-svg-icon>
         </ha-button>
       </span>
@@ -403,12 +403,14 @@ export class MediaBrowser extends LitElement {
   }
   protected renderSearchMediaTypesButton() {
     if (this.activeSection == 'search') {
+      const icons = getSearchMediaButtons(this.Icons);
       return html`
         <mass-menu-button
           id="search-media-type-menu"
           .iconPath=${this._searchMediaTypeIcon}
-          .items=${SEARCH_MEDIA_TYPE_BUTTONS}
+          .items=${icons}
           .onSelectAction=${this.onSearchMediaTypeSelect}
+          fixedMenuPosition
         ></mass-menu-button>
       `
     }
@@ -425,7 +427,7 @@ export class MediaBrowser extends LitElement {
           @click=${this.onSearchLibrarySelect}
         >
           <ha-svg-icon
-            .path=${this._searchLibrary ? mdiLibrary : mdiLibraryOutline}
+            .path=${this._searchLibrary ? this.Icons.LIBRARY : this.Icons.LIBRARY_OUTLINED}
             style="height: 1.5rem; width: 1.5rem;"
           ></ha-svg-icon>
         </ha-button>
@@ -444,7 +446,7 @@ export class MediaBrowser extends LitElement {
         <sl-input
           placeholder="Search"
           type="search"
-          class="${this.hass.themes.darkMode ? 'sl-theme-dark' : 'sl-theme-light'}
+          class="${this.hass.themes.darkMode ? 'sl-theme-dark' : 'sl-theme-light'}"
           inputmode="search"
           size="medium"
           clearable
@@ -460,7 +462,7 @@ export class MediaBrowser extends LitElement {
   }
   protected renderSearchHeader() {
     return html`
-      <mass-section-header>
+      <mass-section-header id="search">
         ${this.renderBackButton()}
         ${this.renderSearchBar()}
       </mass-section-header>
@@ -509,12 +511,23 @@ export class MediaBrowser extends LitElement {
       return;
     }
     return html`
-      <ha-card>
+      <div
+        id="container"
+        class="${this.useExpressive ? `container-expressive` : ``}"
+      >
         ${this.renderHeader()}
-        <div class="mass-browser">
-          ${this.renderBrowserCards()}
-        </div>
-      </ha-card>
+        <wa-animation 
+          name="fadeIn"
+          easing="ease-in"
+          iterations=1
+          play=${this.checkVisibility()}
+          playback-rate=4
+        >
+          <div class="mass-browser ${this.useExpressive ? `mass-browser-expressive` : ``}">
+            ${this.renderBrowserCards()}
+          </div>
+        </wa-animation>
+      </div>
     `;
   }
   protected updated() {

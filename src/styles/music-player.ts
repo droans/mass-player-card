@@ -3,118 +3,190 @@ import { css } from 'lit';
 // Styles belonging to the card
 // https://lit.dev/docs/components/styles/
 export default css`
-  .hoverable:focus,
-  .hoverable:hover {
-    color: var(--accent-color);
-  }
-
-  .hoverable:active {
-    color: var(--primary-color);
-  }
-
-  .container {
-    display: grid;
-    grid-template-rows: 'min-content' 'min-content' 'auto' 'min-content';
-    grid-template-areas:
-      'header'
-      'progress'
-      'artwork'
-      'controls';
-  }
-  .header {
-    grid-area: header;
-    margin: 0.75em 1.75em 0em 1.75em;
-    text-align: center;
-    overflow: hidden;
-    height: 7.5em;
-  }
-  .player-name {
-    font-size: 0.8rem;
-    color: var(--player-name-color);
-  }
-  .player-track-title {
-    font-size: 1.5rem;
-    color: var(--player-track-color);
-    white-space: nowrap;
-    text-overflow: clip;
-  }
-  .player-track-artist {
-    font-size: 1em;
-  }
-  .progress {
-    padding-left: 36px;
-    padding-right: 36px;
-    padding-bottom: 8px;
-  }
-  .time {
-    justify-self: center;
-    padding-bottom: 4px;
-  }
-  .controls {
-    grid-area: controls;
-    overflow-y: auto;
-    margin: 0.25rem;
-    padding: 0.5rem;
-    display: flex;
-    flex-direction: row;
-    align-items: center;
-    justify-content: center;
-  }
-  .controls-left {
-    display: flex;
-    flex-direction: column;
-    align-items: end;
-    justify-content: center;
-  }
-  .controls-right {
-    display: flex;
-    flex-direction: column;
-    align-items: start;
-    justify-content: center;
-  }
-  .controls-previous-next::part(base) {
-    height: 30px;
-    width: 60px;
-  }
-  .button-play-pause::part(base) {
-    box-shadow: rgba(0, 0, 0, 0.16) 0px 2px 4px 0px;
-  }
-  .player-controls {
-    width: var(--player-control-icon-width);
-    height: var(--player-control-icon-width);
-  }
-  .track-previous {
-    margin: 0px 0px 4px 0px;
-  }
-  .track-next {
-    margin: 0px 0px 4px 0px;
-  }
-  .play-pause {
-    --ha-button-height: var(--player-play-pause-icon-size);
-    margin: 0px 6px 0px 6px;
-    --ha-button-border-radius: 50%;
-    border-radius: 50%;
-  }
-  .shuffle {
-  }
-  .repeat {
-  }
-  .artwork {
-    background-size: 100%;
-    height: 300px;
-    width: 300px;
-    justify-self: center;
-    border-radius: 36px;
-    background-repeat: no-repeat;
-  }
   *[hide] {
     display: none;
   }
 
   *[background] {
-    background-color: rgba(var(--rgb-card-background-color), 0.9);
+    background-color: rgba(var(--player-blur-color), 0.9);
     border-radius: 10px;
   }
+
+  #active-track-lg {
+    position: absolute;
+    top: 0;
+    width: 100%;
+  }
+  #active-track-med {
+    position: absolute;
+    top: 0;
+    width: 100%;
+  }
+  #active-track-sm {
+    position: relative;
+    width: 100%;
+  }
+
+  #active-track-text {
+    background: var(--player-blur-color);
+    z-index: 1;
+    position: relative;
+    backdrop-filter: blur(3px);
+  }
+  .active-track-text-expressive {
+    background: var(--expressive-player-blur-color) !important;
+  }
+  .active-track-text-rounded {
+    border-radius: 8px 8px 0px 0px;
+  }
+
+  #artwork-img {
+    border-radius: var(--ha-card-border-radius);
+    max-width: 100%;
+    justify-self: center;
+    display: block;
+  }
+
+  .artwork-large {
+    max-height: 35em !important;
+  }
+  .artwork-med {
+    max-height: 22em !important;
+
+  }
+  .artwork-sm {
+
+  }
+  #artwork-div-lg {
+    position: absolute;
+    aspect-ratio: 1;
+    justify-self: center;
+    height: var(--mass-player-card-height);
+    width: 100%;
+    place-content: center;
+    top: -3em;
+    
+  }
+  #artwork-div-med {
+    aspect-ratio: 1;
+    justify-self: center;
+    place-content: center;
+    height: 100%;
+    top: -2em;
+    position: absolute;
+  }
+  #artwork-div-sm {
+    position: relative;
+    height: 10em;
+    display: flex;
+    justify-self: center;
+  }
+
+  .bg-art-lg {
+    z-index: 1;
+  }
+  .bg-art-med {
+
+  }
+  .bg-art-sm {
+
+  }
+
+  #container {
+    height: var(--mass-player-card-height);
+  }
+  .container-expressive {
+    border-radius: var(--expressive-border-radius-container);
+  }
+
+  .controls-art-lg {
+
+  }
+  .controls-art-med {
+    
+  }
+  .controls-art-sm {
+    
+  }
+
+  .divider {
+    margin-top: 4px;
+  }
+  .divider::before {
+    content: " ";
+    display: block;
+    height: 1px;
+    background-color: var(--divider-color);
+    margin-left: 8px;
+    margin-right: 8px;
+  }
+
+  .header-art-lg {
+    z-index: 1;
+    position: relative;
+  }
+  .header-art-lg::part(header) {
+    background: var(--player-blur-color);
+    backdrop-filter: var(--player-blur);
+    z-index: 0;
+  }
+  .header-art-med {
+
+  }
+  .header-art-sm {
+    position: relative;
+  }
+
+  .header-expressive::part(header) {
+    background: var(--expressive-player-blur-color);
+  }
+
+  #grouped-players-menu {
+    --control-select-menu-height: 2.5em;
+    --control-select-thickness: 2.5em;
+    max-width: var(--control-select-menu-height);
+  }
+  #grouped-players-menu::part(menu-button) {
+    --ha-ripple-color: rgba(0,0,0,0);
+  }
+  #grouped-players-menu::part(menu-select-menu) {
+    height: 2.5em;
+    width: 2.5em;
+    --control-select-menu-padding: 7px;
+    --mdc-icon-size: 1.5em;
+    --control-select-menu-height: 2.5em;
+    box-shadow: var(--md-sys-elevation-level1);
+    border-radius: 12px;
+  }
+  #grouped-players-menu::part(menu-svg) {
+    color: var(--md-sys-color-primary);
+    border-radius: 50%;
+  }
+
+
+  .grouped-players-item {
+    height: calc(var(--control-select-menu-height) * 2);
+    display: contents;
+  }
+  .grouped-players-select-item {
+    height: 2.5em;
+  }
+  .grouped-players-select-item-icon {
+    height: 2em;
+    width: 2em;
+    color: var(--md-sys-color-primary);
+  }
+
+  .grouped-players-volume-slider {
+    display: contents;
+  }
+  .grouped-players-volume-slider::part(slider) {
+    position: relative;
+    width: 96%;
+    left: 2%;
+    height: 2.5em;
+  }
+
   .marquee-pause-end {
     left: var(--marquee-left-offset);
     position: relative;
@@ -124,17 +196,122 @@ export default css`
     animation-iteration-count: infinite;
     position: relative;
   }
-  #players-select-menu {
-    --control-select-menu-height: 2.5em;
+
+  .media-controls {
+    backdrop-filter: blur(3px);
+    background: var(--player-blur-color);
+    position: absolute;
+    bottom: calc(40px + 0.5em);
+    width: 100%;
   }
+  .media-controls-expressive {
+    background: var(--expressive-player-blur-color);
+  }
+
+  .menu-header-expressive::part(menu-select-menu) {
+    background-color: var(--md-sys-color-secondary-container);
+    box-shadow: var(--md-sys-elevation-level1);
+    border-radius: 12px;
+  }
+  .menu-header-expressive::part(menu-svg) {
+    color: var(--md-sys-color-secondary-on-container);
+  }
+
+  #player-card {
+    z-index: 0;
+    height: calc(var(--mass-player-card-height) - 3em);
+    background-repeat: no-repeat;
+    background-position: center;
+    background-size: 22em;
+    position: relative;
+  }
+  .player-card-expressive {
+    background-color: var(--md-sys-color-background);
+    border-radius: 8px 8px 0px 0px;
+  }
+
+  .player-header {
+    margin: 0em 1.75em 0em 1.75em;
+    text-align: center;
+    overflow: hidden;
+    height: 5em;
+  }
+
+  .player-name {
+    font-size: 0.8rem;
+    color: var(--player-name-color);
+  }
+
   .players-select-item {
     height: 2.5em;
   }
   .players-select-item-icon {
     height: 2em;
     width: 2em;
-    color: var(--mdc-theme-primary);
+    color: var(--md-sys-color-primary);
   }
+  #players-select-menu {
+    --control-select-menu-height: 2.5em;
+  }
+
+  .player-track-artist {
+    font-size: 1em;
+  }
+  .player-track-title {
+    font-size: 1.5rem;
+    color: var(--player-track-color, var(--md-sys-color-primary));
+    white-space: nowrap;
+    text-overflow: clip;
+  }
+
+  #players-select-menu::part(menu-button) {
+    --ha-ripple-color: rgba(0,0,0,0);
+  }
+  #players-select-menu::part(menu-list-item) {
+  }
+  #players-select-menu::part(menu-list-item-svg) {
+    height: 2em;
+    width: 2em;
+  }
+  #players-select-menu::part(menu-select-menu) {
+    height: 2.5em;
+    width: 2.5em;
+    --control-select-menu-padding: 7px;
+    --mdc-icon-size: 1.5em;
+    --control-select-menu-height: 2.5em;
+  }
+  #players-select-menu::part(menu-svg) {
+    color: var(--md-sys-color-primary);
+    border-radius: 50%;
+  }
+
+  #volume {
+    position: absolute;
+    bottom: 8px;
+    width: 100%;
+  }
+
+  .volume-expressive::part(volume-div) {
+    background: var(--expressive-player-blur-color);
+    padding-bottom: 12px;
+    bottom: -8px;
+    position: relative;
+  }
+
+  .vol-art-lg {
+    z-index: 1;
+    position: relative;
+  }
+  .vol-art-lg::part(volume-div) {
+    backdrop-filter: blur(3px);
+    z-index: 0;
+  }
+  .vol-art-med {
+  }
+  .vol-art-sm {
+
+  }
+
   @keyframes marquee {
     from {
       left: 0px;

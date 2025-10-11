@@ -1,16 +1,17 @@
 
 import { consume } from "@lit/context";
-import { mdiPlayCircle } from "@mdi/js";
 import {
   CSSResultGroup,
-  html,
   LitElement,
   TemplateResult
 } from "lit";
+import { 
+  html } from "lit/static-html.js";
 import {
   property,
   state
 } from "lit/decorators.js";
+import '@awesome.me/webawesome/dist/components/card/card.js';
 
 import './menu-button'
 
@@ -22,12 +23,17 @@ import {
 import { ExtendedHass } from "../const/common";
 import {
   activeEntityConf,
+  activeSectionContext,
   EntityConfig,
   hassExt,
-  mediaBrowserConfigContext
+  IconsContext,
+  mediaBrowserConfigContext,
+  useExpressiveContext
 } from "../const/context";
 import {
-  ENQUEUE_BUTTONS,
+  getEnqueueButtons,
+  getSearchMediaButtons,
+  ListItems,
   MediaCardItem
 } from "../const/media-browser";
 
@@ -35,8 +41,8 @@ import styles from '../styles/media-card';
 
 import {
   backgroundImageFallback,
-  getFallbackImage,
-} from "../utils/icons";
+  getFallbackBackgroundImage,
+} from "../utils/thumbnails";
 import { testMixedContent } from "../utils/util";
 import {
   DEFAULT_MEDIA_BROWSER_HIDDEN_ELEMENTS_CONFIG,
@@ -44,24 +50,41 @@ import {
   MediaBrowserConfig,
   MediaBrowserHiddenElementsConfig
 } from "../config/media-browser";
+import { Sections } from "../const/card";
+import { Icons } from "../const/icons.js";
 
 class MediaCard extends LitElement {
   @property({ type: Boolean }) queueable = false;
   @state() code!: TemplateResult;
-  @state() private _enqueue_buttons = ENQUEUE_BUTTONS;
+  @state() private _enqueue_buttons!: ListItems;
+  @state() private _search_buttons!: ListItems;
+  private _icons!: Icons;
 
   @consume({context: hassExt})
   public hass!: ExtendedHass;
+
+  @consume({ context: useExpressiveContext })
+  private useExpressive!: boolean;
 
   public onSelectAction!: CardSelectedService;
   public onEnqueueAction!: CardEnqueueService;
 
   private _cardConfig!: MediaBrowserConfig;
+  private _activeSection!: Sections;
+  private _play = false;
 
   private _config!: MediaCardItem;
   private _entityConfig!: EntityConfig;
   private hide: MediaBrowserHiddenElementsConfig = DEFAULT_MEDIA_BROWSER_HIDDEN_ELEMENTS_CONFIG;
-
+  @consume({ context: activeSectionContext, subscribe: true })
+  public set activeSection(section: Sections) {
+    this._play = section == Sections.MEDIA_BROWSER;
+    this._activeSection = section;
+    this.generateCode();
+  }
+  public get activeSection() {
+    return this._activeSection;
+  }
   public set config(config: MediaCardItem) {
     if (!config) {
       return;
@@ -82,11 +105,20 @@ class MediaCard extends LitElement {
   public get cardConfig() {
     return this._cardConfig;
   }
+  @consume({ context: IconsContext, subscribe: true}) 
+  public set Icons(icons: Icons) {
+    this._icons = icons;
+  }
+  public get Icons() {
+    return this._icons;
+  }
+
 
   @consume( { context: activeEntityConf, subscribe: true})
   public set entityConfig(config: EntityConfig) {
     this._entityConfig = config;
     this.updateHiddenElements();
+    this._search_buttons = getSearchMediaButtons(this.Icons)
   }
   public get entityConfig() {
     return this._entityConfig;
@@ -113,7 +145,7 @@ class MediaCard extends LitElement {
     this.generateCode();
   }
   private updateEnqueueButtons() {
-    const default_buttons = ENQUEUE_BUTTONS;
+    const default_buttons = getEnqueueButtons(this.Icons);
     const button_mapping = HIDDEN_BUTTON_VALUE;
     const opts = default_buttons.filter(
       (item) => {
@@ -154,18 +186,20 @@ class MediaCard extends LitElement {
     `
   }
   private artworkStyle() {
-    const img = this.config.icon;
+    const img = this.config.thumbnail;
     if (!testMixedContent(img)) {
-      return getFallbackImage(this.hass, this.config.fallback);
+      return getFallbackBackgroundImage(this.hass, this.config.fallback);
     }
     return backgroundImageFallback(this.hass, img, this.config.fallback);
   }
-  protected renderThumbnailFromIcon() {
+  protected renderThumbnailFromThumbnail() {
     const thumbnail = this.artworkStyle() || "";
     return html`
       <div
         id="thumbnail-div"
-        style="${thumbnail}; padding-bottom: 2em;"
+        slot="media"
+        class="wa-grid"
+        style="${thumbnail}; height: 100%; aspect-ratio: 1; width: 100%;"
       ></div>
     `
   }
@@ -173,7 +207,7 @@ class MediaCard extends LitElement {
     if (this.config.background) {
       return this.renderThumbnailFromBackground();
     }
-    return this.renderThumbnailFromIcon();
+    return this.renderThumbnailFromThumbnail();
   }
   protected renderTitle() {
     if (this.hide.titles) {
@@ -194,28 +228,45 @@ class MediaCard extends LitElement {
     return html`
       <mass-menu-button
         id="enqueue-button-div"
-        .iconPath=${mdiPlayCircle}
+        .iconPath=${this.Icons.PLAY_CIRCLE}
         .items=${this._enqueue_buttons}
         .onSelectAction=${this.onEnqueue}
+        fixedMenuPosition
       ></mass-menu-button>
     `
   }
   private generateCode() {
+    if (
+      !this._enqueue_buttons
+      || !this.hass
+      || !this.activeSection
+      || !this.cardConfig
+      || !this.Icons
+      || !this.entityConfig
+    ) {
+      return;
+    }
     this.code = html`
-      <ha-card
+      <wa-animation
+        name="pulse"
+        easing="ease"
+        iterations=1
+        play=${this._play}
+        playback-rate=1
       >
         <div id="container">
-          <div id="card-button-div">
-            <ha-control-button
-              @click=${this.onSelect}
-            >
+          <wa-card
+            class="media-card ${this.useExpressive ? `media-card-expressive` : ``}"
+            @click=${this.onSelect}
+          >
+            <div slot="media" id="media">
               ${this.renderThumbnail()}
-              ${this.renderTitle()}
-            </ha-control-button>
-          </div>
-            ${this.renderEnqueueButton()}
+            </div>
+            ${this.renderTitle()}
+          </wa-card>
+          ${this.renderEnqueueButton()}
         </div>
-      </ha-card>
+      </wa-animation>
     `
   }
   protected render() {

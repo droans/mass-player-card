@@ -1,53 +1,56 @@
 import { css } from 'lit';
 export default css`
- ha-card {
-    --mass-player-card-height: 42em;
-    --expansion-panel-content-padding: 0px;
-    --md-list-container-color: rgba(0,0,0,0) !important;
-    --md-list-item-leading-space: 0px;
-    --md-list-item-two-line-container-height: 48px;
-    --md-ripple-hover-color: var(--mdc-theme-primary);
-    --mdc-ripple-hover-color: var(--mdc-theme-primary);
-    --mdc-ripple-color: var(--mdc-theme-primary);
-    --md-ripple-color: var(--mdc-theme-primary);
+  :host {
+  --mass-player-card-height: 40em;
 
-    --media-row-background-color: var(--card-background-color);
-    --media-row-height: 48px;
-    --media-row-icon-width: 30px;
-    --media-row-background-color-active: rgba(from var(--accent-color) r g b / 0.2);
-    --media-row-thumbnail-height: var(--media-row-height);
+  --expressive-border-radius-container: 20px 20px 0px 0px;
 
-   --player-control-icon-width: 30px;
-   --player-play-pause-color: var(--secondary-background-color);
-   --player-play-pause-icon-size: 6rem;
-   --player-track-color: var(--ha-color-text-link);
-   --player-name-color: var(--ha-color-text-secondary);
- }
-  wa-tab-group {
-    --track-width: 0px;
-    display: flex;
-    justify-content: center;
+  --expressive-color-container: var(--md-sys-color-primary-container);
+  --expressive-card-color: var(--md-sys-color-background);
+
+  --expressive-media-row-color: var(--md-sys-color-surface);
+  --expressive-media-row-color-text: var(--md-sys-color-on-surface);
+
+  --expressive-media-row-color-active: var(--md-sys-color-secondary-container);
+  --expressive-media-row-color-text-active: var(--md-sys-color-on-secondary-container);
+
+  --md-list-container-color: rgba(0,0,0,0) !important;
+  --md-list-item-leading-space: 0px;
+  --md-list-item-two-line-container-height: 48px;
+
+  --media-row-height: 48px;
+  --media-row-thumbnail-height: var(--media-row-height);
+
+  --player-blur: blur(3px);
+  --player-blur-color: rgba(from var(--ha-card-background) r g b / 0.6);;
+  --expressive-player-blur-color: rgba(from var(--md-sys-color-primary-container) r g b / 0.6) !important;
+
+  --player-control-icon-width: 30px;
+
+  --player-name-color: var(--ha-color-text-secondary);
+
+  --player-play-pause-color: var(--secondary-background-color);
+  --player-play-pause-icon-size: 6rem;
+
   }
-  .action-button::part(base) {
-    height: 48px;
-    width: 48px;
+
+  ha-card {
+    border-radius: 20px 20px 28px 28px;
   }
-  .action-button-active::part(base) {
-    height: 48px;
-    width: 48px;
+  ha-card#expressive {
+    background-color: var(--md-sys-color-background);
   }
-.action-button-active {
-  background: rgba(from var(--md-ripple-color) r g b / 0.2);
-  border-radius: 50%;
-}
-.action-button-svg-inactive {
-  --icon-primary-color: var(--md-sys-color-on-surface-variant);
-}
-wa-tab-panel {
-  height: var(--mass-player-card-height);
-  display: block;
-}
-.section-hidden {
-  display: none;
-}
+  sl-tab-panel {
+    height: var(--mass-player-card-height);
+    display: block;
+  }
+
+  #navbar-expressive {
+    background-color: var(--expressive-player-blur-color);
+    border-radius: 0px 0px 28px 28px;
+  }
+
+  .section-hidden {
+    display: none;
+  }
 `

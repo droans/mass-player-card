@@ -1,3 +1,4 @@
+import { hiddenElementsConfigItem } from "../utils/config.js";
 import { Config } from "./config";
 
 export interface PlayerQueueHiddenElementsConfig {
@@ -35,9 +36,18 @@ export const DEFAULT_QUEUE_CONFIG: QueueConfig = {
   hide: DEFAULT_PLAYER_QUEUE_HIDDEN_ELEMENTS_CONFIG,
 }
 
+const PLAYER_QUEUE_HIDDEN_ITEMS = [
+  'action_buttons',
+  'move_down_button',
+  'move_next_button',
+  'move_up_button',
+  'remove_button',
+  'album_covers',
+  'artist_names'
+]
 export function queueConfigForm() {
   return [
-    { name: "enabled", selector: { boolean: {} } },
+    { name: "enabled", selector: { boolean: {} }, default: true },
     {
       name: "",
       type: "grid",
@@ -47,7 +57,8 @@ export function queueConfigForm() {
         { name: "show_album_covers", selector: { boolean: {} } },
         { name: "show_artist_names", selector: { boolean: {} } },
       ]
-    }
+    },
+    hiddenElementsConfigItem(PLAYER_QUEUE_HIDDEN_ITEMS)
   ]
 }
 

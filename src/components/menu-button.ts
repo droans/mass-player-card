@@ -1,8 +1,11 @@
 import {
   html,
-  LitElement
+  LitElement,
+  TemplateResult,
 } from "lit";
-import { property } from "lit/decorators.js";
+import {
+  property,
+} from "lit/decorators.js";
 
 import { ServiceCustomEvent } from "../const/common";
 import { ListItems } from "../const/media-browser";
@@ -10,7 +13,7 @@ import { ListItems } from "../const/media-browser";
 class MassMenuButton extends LitElement {
   @property( { attribute: false }) public iconPath!: string;
   @property( { attribute: false }) private _items!: ListItems;
-
+  @property( { type: Boolean, attribute: "fixedMenuPosition" }) public fixedMenuPosition!: boolean;
   public onSelectAction!: ServiceCustomEvent;
 
   public set items(items: ListItems) {
@@ -19,8 +22,10 @@ class MassMenuButton extends LitElement {
   public get items() {
     return this._items;
   }
-
-  protected renderMenuItems() {
+  protected renderMenuItems(): TemplateResult|TemplateResult[] {
+    if (!this.items) {
+      return html``
+    }
     return this._items.map(
       (item) => {
         return html`
@@ -45,23 +50,24 @@ class MassMenuButton extends LitElement {
 
   protected render() {
     return html`
-      <div id="menu-button" part="menu-button">
-        <ha-control-select-menu
-          id="menu-select-menu"
-          part="menu-select-menu"
-          fixedMenuPosition
-          naturalMenuWidth
-          @selected=${this.onSelectAction}
-        >
-          <ha-svg-icon
-            slot="icon"
-            id="menu-svg"
-            part="menu-svg"
-            .path=${this.iconPath}
-          ></ha-svg-icon>
-          ${this.renderMenuItems()}
-        </ha-control-select-menu>
-      </div>
+        <div id="menu-button" part="menu-button">
+          <ha-control-select-menu
+            id="menu-select-menu"
+            part="menu-select-menu"
+            naturalMenuWidth
+            ?fixedMenuPosition=${this.fixedMenuPosition}
+            @selected=${this.onSelectAction}
+          >
+            <ha-svg-icon
+              slot="icon"
+              id="menu-svg"
+              part="menu-svg"
+              .path=${this.iconPath}
+            ></ha-svg-icon>
+            ${this.renderMenuItems()}
+            <slot></slot>
+          </ha-control-select-menu>
+        </div>
     `
   }
 }

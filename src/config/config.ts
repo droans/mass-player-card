@@ -58,6 +58,7 @@ export interface Config {
   player: PlayerConfig;
   media_browser: MediaBrowserConfig;
   players: PlayersConfig;
+  expressive: boolean;
 }
 
 interface HiddenElementsConfig {
@@ -67,11 +68,13 @@ interface HiddenElementsConfig {
   players: PlayersHiddenElementsConfig
 };
 
-export const DEFAULT_CONFIG = {
+export const DEFAULT_CONFIG: Config = {
   queue: DEFAULT_QUEUE_CONFIG,
   player: DEFAULT_PLAYER_CONFIG,
   players: DEFAULT_PLAYERS_CONFIG,
-  media_browser: DEFAULT_MEDIA_BROWSER_CONFIG
+  media_browser: DEFAULT_MEDIA_BROWSER_CONFIG,
+  expressive: true,
+  entities: []
 }
 
 const ENTITY_DEFAULT_HIDDEN_ITEM_CONFIG: HiddenElementsConfig = {
@@ -112,6 +115,17 @@ export function createConfigForm() {
         },
       },
       {
+        "name": "expressive",
+        required: false,
+        selector: { boolean: {}, default: true }
+      },
+      {
+        name: "player",
+        type: "expandable",
+        iconPath: mdiMusic,
+        schema: playerConfigForm()
+      },
+      {
         name: "queue",
         type: "expandable",
         iconPath: mdiPlaylistMusic,
@@ -128,12 +142,6 @@ export function createConfigForm() {
         type: "expandable",
         iconPath: mdiSpeakerMultiple,
         schema: playersConfigForm()
-      },
-      {
-        name: "player",
-        type: "expandable",
-        iconPath: mdiMusic,
-        schema: playerConfigForm()
       },
     ]
   }

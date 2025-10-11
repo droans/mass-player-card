@@ -106,6 +106,7 @@ class PlayersCard extends LitElement {
       (entity) => entity.entity_id == target_player
     )!
     this.activePlayerEntity = player;
+    this.selectedPlayerService(target_player);
   }
   private setEntities(hass: ExtendedHass) {
     if (!this._config) {
@@ -149,17 +150,29 @@ class PlayersCard extends LitElement {
     )
   }
   protected render() {
+    const expressive = this.config.expressive;
     return html`
-      <ha-card>
+      <div
+        id="container"
+        class="${expressive ? `container-expressive` : ``}"
+      >
         <mass-section-header>
           <span slot="label" id="title">
             Players
           </span>
         </mass-section-header>
-        <ha-md-list class="list">
-          ${this.renderPlayerRows()}
-        </ha-md-list>
-      </ha-card>
+        <wa-animation 
+          name="fadeIn"
+          easing="ease-in"
+          iterations=1
+          play=${this.checkVisibility()}
+          playback-rate=4
+        >
+          <ha-md-list class="list ${expressive ? `list-expressive` : ``}">
+            ${this.renderPlayerRows()}
+          </ha-md-list>
+        </wa-animation>
+      </div>
     `
   }
   static get styles(): CSSResultGroup {

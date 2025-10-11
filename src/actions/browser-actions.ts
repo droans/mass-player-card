@@ -3,10 +3,16 @@ import { ExtendedHass, MediaTypes } from "../const/common";
 import { DEFAULT_SEARCH_LIMIT, MediaLibraryItem } from "../const/media-browser";
 
 export default class BrowserActions {
-    private hass: ExtendedHass;
+    private _hass!: ExtendedHass;
 
     constructor(hass: ExtendedHass) {
       this.hass = hass;
+    }
+    public set hass(hass: ExtendedHass) {
+      this._hass = hass;
+    }
+    public get hass() {
+      return this._hass;
     }
 
     async actionPlayMedia(entity_id: string, content_id: string, content_type: string) {

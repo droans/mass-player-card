@@ -1,25 +1,11 @@
-
-import {
-  mdiAccountMusic,
-  mdiAlbum,
-  mdiBook,
-  mdiMusic,
-  mdiPlayCircle,
-  mdiPlayCircleOutline,
-  mdiPlaylistMusic,
-  mdiPlaylistPlus,
-  mdiPodcast,
-  mdiRadio,
-  mdiSkipNextCircle,
-  mdiSkipNextCircleOutline
-} from "@mdi/js";
 import { TemplateResult } from "lit";
 
 import { EnqueueOptions } from "./actions";
 import {
-  Icon,
+  Thumbnail,
   MediaTypes
 } from "./common";
+import { Icons } from "./icons.js";
 
 export interface MediaBrowserItem {
   name: string,
@@ -40,8 +26,8 @@ export interface FavoriteItems {
 export type MediaCardData = Record<string, any>
 export interface MediaCardItem {
   title: string,
-  icon: string,
-  fallback: Icon,
+  thumbnail: string,
+  fallback: Thumbnail,
   data: MediaCardData,
   background?: TemplateResult
 }
@@ -56,14 +42,14 @@ export interface MediaLibraryItem {
   media_type: string
 }
 
-export const MediaTypeIcons = {
-  'album': Icon.DISC,
-  'artist': Icon.PERSON,
-  'audiobook': Icon.BOOK,
-  'playlist': Icon.PLAYLIST,
-  'podcast': Icon.MICROPHONE_MAGIC,
-  'track': Icon.CLEFT,
-  'radio': Icon.RADIO,
+export const MediaTypeThumbnails = {
+  'album': Thumbnail.DISC,
+  'artist': Thumbnail.PERSON,
+  'audiobook': Thumbnail.BOOK,
+  'playlist': Thumbnail.PLAYLIST,
+  'podcast': Thumbnail.MICROPHONE_MAGIC,
+  'track': Thumbnail.CLEFT,
+  'radio': Thumbnail.RADIO,
 }
 
 export interface ListItemData {
@@ -74,72 +60,75 @@ export interface ListItemData {
 
 export type ListItems = ListItemData[];
 
-export const ENQUEUE_BUTTONS: ListItems = [
-  {
-    option: EnqueueOptions.PLAY_NOW,
-    icon: mdiPlayCircleOutline,
-    title: "Play Now"
-  },
-  {
-    option: EnqueueOptions.PLAY_NEXT,
-    icon: mdiSkipNextCircleOutline,
-    title: "Play Next"
-  },
-  {
-    option: EnqueueOptions.PLAY_NOW_CLEAR_QUEUE,
-    icon: mdiPlayCircle,
-    title: "Play Now & Clear Queue"
-  },
-  {
-    option: EnqueueOptions.PLAY_NEXT_CLEAR_QUEUE,
-    icon: mdiSkipNextCircle,
-    title: "Play Next & Clear Queue"
-  },
-  {
-    option: EnqueueOptions.ADD_TO_QUEUE,
-    icon: mdiPlaylistPlus,
-    title: "Add to Queue"
-  },
-]
+export function getEnqueueButtons(icons: Icons): ListItems {
+  return [
+    {
+      option: EnqueueOptions.PLAY_NOW,
+      icon: icons.PLAY_CIRCLE_OUTLINE,
+      title: "Play Now"
+    },
+    {
+      option: EnqueueOptions.PLAY_NEXT,
+      icon: icons.SKIP_NEXT_CIRCLE_OUTLINED,
+      title: "Play Next"
+    },
+    {
+      option: EnqueueOptions.PLAY_NOW_CLEAR_QUEUE,
+      icon: icons.PLAY_CIRCLE,
+      title: "Play Now & Clear Queue"
+    },
+    {
+      option: EnqueueOptions.PLAY_NEXT_CLEAR_QUEUE,
+      icon: icons.SKIP_NEXT_CIRCLE,
+      title: "Play Next & Clear Queue"
+    },
+    {
+      option: EnqueueOptions.ADD_TO_QUEUE,
+      icon: icons.PLAYLIST_PLUS,
+      title: "Add to Queue"
+    },
+  ]
+}
+export function getSearchMediaButtons(icons: Icons): ListItems {
+  return [
+    {
+      option: MediaTypes.ALBUM,
+      icon: icons.ALBUM,
+      title: 'Albums'
+    },
+    {
+      option: MediaTypes.ARTIST,
+      icon: icons.ARTIST,
+      title: 'Artists'
+    },
+    {
+      option: MediaTypes.AUDIOBOOK,
+      icon: icons.BOOK,
+      title: 'Audiobooks'
+    },
+    {
+      option: MediaTypes.PLAYLIST,
+      icon: icons.PLAYLIST,
+      title: 'Playlists'
+    },
+    {
+      option: MediaTypes.PODCAST,
+      icon: icons.PODCAST,
+      title: 'Podcasts'
+    },
+    {
+      option: MediaTypes.RADIO,
+      icon: icons.RADIO,
+      title: 'Radio'
+    },
+    {
+      option: MediaTypes.TRACK,
+      icon: icons.MUSIC,
+      title: 'Tracks'
+    },
 
-export const SEARCH_MEDIA_TYPE_BUTTONS: ListItems = [
-  {
-    option: MediaTypes.ALBUM,
-    icon: mdiAlbum,
-    title: 'Albums'
-  },
-  {
-    option: MediaTypes.ARTIST,
-    icon: mdiAccountMusic,
-    title: 'Artists'
-  },
-  {
-    option: MediaTypes.AUDIOBOOK,
-    icon: mdiBook,
-    title: 'Audiobooks'
-  },
-  {
-    option: MediaTypes.PLAYLIST,
-    icon: mdiPlaylistMusic,
-    title: 'Playlists'
-  },
-  {
-    option: MediaTypes.PODCAST,
-    icon: mdiPodcast,
-    title: 'Podcasts'
-  },
-  {
-    option: MediaTypes.RADIO,
-    icon: mdiRadio,
-    title: 'Radio'
-  },
-  {
-    option: MediaTypes.TRACK,
-    icon: mdiMusic,
-    title: 'Tracks'
-  },
-
-]
+  ]
+}
 
 export const SEARCH_UPDATE_DELAY = 1000;
 export const DEFAULT_SEARCH_LIMIT = 20;
