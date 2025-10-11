@@ -21,6 +21,8 @@ import { ActionsController } from '../controller/actions';
 import { MassCardController } from '../controller/controller';
 import { Theme } from '@material/material-color-utilities';
 import { Icons } from './icons';
+import { QueueItem, QueueItems } from './player-queue.js';
+import { QueueController } from '../controller/queue.js';
 export type {
   EntityConfig
 } from '../config/config';
@@ -45,7 +47,10 @@ export const mediaCardDisplayContext = createContext<boolean>('media-card-displa
 export const activePlayerControllerContext = createContext<ActivePlayerController>('active-player-controller');
 export const actionsControllerContext = createContext<ActionsController>('actions-controller');
 export const controllerContext = createContext<MassCardController>('controller');
+export const queueControllerContext = createContext<QueueController>('queue-controller');
 
 export const expressiveThemeContext = createContext<Theme | undefined>('expressive-theme');
 export const useExpressiveContext = createContext<boolean>('use-expressive');
 export const IconsContext = createContext<Icons>('icons');
+
+export const queueContext = createContext<QueueItems | null>('queue');

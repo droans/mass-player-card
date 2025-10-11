@@ -20,6 +20,8 @@ export interface QueueSection {
   hass: ExtendedHass;
 }
 
+export type QueueItems = QueueItem[];
+
 export interface MassQueueEvent {
   data: {
     type: string,
@@ -28,3 +30,7 @@ export interface MassQueueEvent {
     }
   }
 }
+
+export const MAX_GET_QUEUE_FAILURES = 6;
+export const MUSIC_ASSISTANT_APP_NAME = 'music_assistant';
+export const TIMED_LISTENER_DELAY_MS = 10000;

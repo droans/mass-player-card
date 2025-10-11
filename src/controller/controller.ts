@@ -5,12 +5,14 @@ import {
   actionsControllerContext,
   activePlayerControllerContext,
   activeSectionContext,
-  hassExt
+  hassExt,
+  queueControllerContext
 } from "../const/context";
 import { MassCardConfigController } from "./config";
 import { ActivePlayerController } from "./active-player";
 import { Sections } from "../const/card";
 import { ActionsController } from "./actions";
+import { QueueController } from "./queue.js";
 
 export class MassCardController {
   private _hass = new ContextProvider(document.body, { context: hassExt });
@@ -19,6 +21,7 @@ export class MassCardController {
   private configController: MassCardConfigController;
   private activePlayerController!: ContextProvider<typeof activePlayerControllerContext>;
   private actionsController!: ContextProvider<typeof actionsControllerContext>;
+  private queueController!: ContextProvider<typeof queueControllerContext>;
   
   private _activeSection = new ContextProvider(document.body, { context: activeSectionContext});
 
@@ -35,6 +38,7 @@ export class MassCardController {
   private setupIfReady() {
     this._setupActiveController();      
     this._setupActionsController();
+    this._setupQueueController();
   }
   private _setupActiveController() {
     if (this.hass && this.config && !this.activePlayerController) {
@@ -54,12 +58,23 @@ export class MassCardController {
       this.actionsController.setValue(new ActionsController(this.host, this.hass, this.ActivePlayer.activeEntityConfig));
     }
   }
+  private _setupQueueController() {
+    if (this.hass
+      && this.activeEntity
+      && this.config
+      && !this.queueController
+    ) {
+      this.queueController = new ContextProvider(this.host, { context: queueControllerContext});
+      this.queueController.setValue(new QueueController(this.hass, this.activeEntity, this.config));
+    }
+  }
 
   public set hass(hass: ExtendedHass) {
     this._hass.value = hass;
     this.setupIfReady();
     this.ActivePlayer.hass = hass;
     this.Actions.hass = hass;
+    this.Queue.hass = hass;
   }
   public get hass() {
     return this._hass.value;
@@ -78,6 +93,7 @@ export class MassCardController {
   public set activeEntityId(entity: string) {
     this.ActivePlayer.setActivePlayer(entity);
     this.Actions.setEntityConfig(this.ActivePlayer.activeEntityConfig);
+    this.Queue.setActiveEntityId(entity);
   }
   public get activeEntityId() {
     return this.ActivePlayer.activeEntityID;
@@ -99,5 +115,9 @@ export class MassCardController {
   }
   public get Actions() {
     return this.actionsController.value;
+  }
+
+  public get Queue() {
+    return this.queueController.value;
   }
 }
