@@ -111,6 +111,7 @@ class MassPlayerProgressBar extends LitElement {
     if (!playing) {
       return;
     }
+    this._listener = setInterval(this.tickProgress, this._tick_duration_ms);    
     const t = new Date().getTime()
     if ((t - this._lastUpdate) >= this._refreshMilliseconds) {
       this._lastUpdate = t;
@@ -119,7 +120,6 @@ class MassPlayerProgressBar extends LitElement {
     }
     const pos = (this.media_position ?? 0) + (this._tick_duration_ms / 1000);
     this.media_position = Math.min(pos, (this.media_duration));
-    this._listener = setInterval(this.tickProgress, this._tick_duration_ms);    
   }
   private onSeek = async (e: MouseEvent) => {
     const progress_element = this.shadowRoot?.getElementById('progress-div');

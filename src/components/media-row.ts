@@ -113,7 +113,7 @@ class MediaRow extends LitElement {
     this.removeService(this.media_item.queue_item_id);
   }
   private callOnQueueItemSelectedService() {
-    this.selectedService(this.media_item.queue_item_id, this.media_item.media_content_id);
+    this.selectedService(this.media_item.queue_item_id);
   }
   protected shouldUpdate(_changedProperties: PropertyValues<this>): boolean {
     if (_changedProperties.has('media_item')) {

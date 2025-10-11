@@ -11,7 +11,7 @@ import {
 } from "../const/context";
 import { Config, EntityConfig } from "../config/config";
 import { PlayerData } from "../const/music-player";
-import { QueueItem } from "../const/player-queue";
+import { MUSIC_ASSISTANT_APP_NAME, QueueItem } from "../const/player-queue";
 import { applyTheme, themeFromImage, Theme } from "@material/material-color-utilities";
 import { getThumbnail } from "../utils/thumbnails.js";
 import { playerHasUpdated } from "../utils/util.js";
@@ -23,6 +23,7 @@ export class ActivePlayerController {
   private _volumeMediaPlayer: ContextProvider<typeof volumeMediaPlayer>;
   private _expressiveTheme = new ContextProvider(document.body, { context: expressiveThemeContext});
   private _useExpressive = new ContextProvider(document.body, { context: useExpressiveContext });
+  private _initialExpressiveLoad = false;
   
   private _hass!: ExtendedHass;
   private _config!: Config;
@@ -88,10 +89,12 @@ export class ActivePlayerController {
     if (playerHasUpdated(this.activeMediaPlayer, player)) {
       this._activeMediaPlayer.setValue(player);
       if (old_track != new_track && this.config.expressive) {
+        this._initialExpressiveLoad = true;
         void this.applyExpressiveTheme();
+        return;
       }
     }
-    if (this.config.expressive && !this.expressiveTheme) {
+    if (this.config.expressive && !this._initialExpressiveLoad) {
       void this.applyExpressiveTheme();
     }
   }
@@ -184,18 +187,32 @@ export class ActivePlayerController {
       favorite: current_item?.favorite ?? false,
     }
   }
+  public isActive() {
+    // Returns if a player is active.
+    // An active player is not off, using Music Assistant, and has a queue set.
+    const player = this.activeMediaPlayer;
+    const not_off = player.state != 'off';
+    const is_mass = player.attributes.app_id == MUSIC_ASSISTANT_APP_NAME;
+    const has_queue = player.attributes?.active_queue;
+    return not_off && is_mass && has_queue;
+  }
   public async getPlayerProgress(): Promise<number> {
     /* eslint-disable
       @typescript-eslint/no-unsafe-assignment,
       @typescript-eslint/no-unsafe-member-access,
       @typescript-eslint/no-unsafe-return,
     */
+   if (!this.isActive()) {
+    return 0;
+   }
     const current_queue = await this.actionGetCurrentQueue();
     const elapsed = current_queue?.elapsed_time ?? 0;
     return elapsed;
   }
   public async getPlayerActiveItemDuration(): Promise<number> {
-    
+    if (!this.isActive()) {
+      return 1;
+    }
     const current_queue = await this.actionGetCurrentQueue();
     return current_queue?.current_item?.duration ?? 1;
     /* eslint-enable
