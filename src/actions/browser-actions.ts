@@ -44,6 +44,32 @@ export default class BrowserActions {
         args
       )
     }
+    async actionGetLibraryRecents(player_entity_id: string, media_type: MediaTypes, limit = 25): Promise<MediaLibraryItem[]> {
+      const config_id = await this.getPlayerConfigEntry(player_entity_id);
+      /* eslint-disable-next-line
+        @typescript-eslint/no-explicit-any,
+        @typescript-eslint/no-unsafe-assignment,
+      */
+      const response = await this.hass.callWS<any>(
+        {
+            type: 'call_service',
+            domain: 'music_assistant',
+            service: 'get_library',
+            service_data: {
+                limit: limit,
+                config_entry_id: config_id,
+                media_type: media_type,
+                order_by: 'last_played_desc'
+            },
+            return_response: true
+        }
+      )
+      /* eslint-disable-next-line
+        @typescript-eslint/no-unsafe-return,
+        @typescript-eslint/no-unsafe-member-access
+      */
+      return response.response.items;
+    }
     async actionGetLibrary(player_entity_id: string, media_type: MediaTypes, limit = 25, favorite=true): Promise<MediaLibraryItem[]> {
       const config_id = await this.getPlayerConfigEntry(player_entity_id);
       /* eslint-disable-next-line

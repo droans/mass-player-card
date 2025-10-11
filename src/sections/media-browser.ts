@@ -58,7 +58,8 @@ import { getMediaTypeSvg } from "../utils/thumbnails";
 import {
   generateCustomSectionCards,
   generateFavoriteCard,
-  generateFavoritesSectionCards
+  generateFavoritesSectionCards,
+  generateRecentsCard
 } from '../utils/media-browser';
 import { Icons } from '../const/icons.js';
 
@@ -66,7 +67,7 @@ export class MediaBrowser extends LitElement {
   @provide( { context: mediaBrowserConfigContext })
   @property({attribute: false}) 
   private _config!: MediaBrowserConfig;
-  @state() private cards: MediaBrowserItemsConfig = {main: []};
+  @state() private cards: MediaBrowserItemsConfig = {main: [], recents: []};
   @state() private _searchLibrary= false;
   @state() private _searchMediaTypeIcon: string = mdiMusic;
   @consume({ context: IconsContext}) private Icons!: Icons;
@@ -181,6 +182,12 @@ export class MediaBrowser extends LitElement {
       this._searchMediaType = section;
       this._searchMediaTypeIcon = getMediaTypeSvg((section as MediaTypes), this.Icons);
     }
+    if (subtype == 'recents') {
+      const recent_section = section.split('-')[1]
+      this._searchMediaType = recent_section;
+      this._searchMediaTypeIcon = getMediaTypeSvg((recent_section as MediaTypes), this.Icons);
+      
+    }
     this.activeSection = data.section;
   }
   private onServiceSelect = (data: MediaCardData) => {
@@ -215,11 +222,15 @@ export class MediaBrowser extends LitElement {
     );
   }
   private onBack = () => {
-    if (this.activeSection == 'search' && this.previousSection.length) {
+    if (['search', 'recents'].includes(this.activeSection)  && this.previousSection.length) {
       this.activeSection = this.previousSection;
       return;
     }
     this.activeSection = 'main';
+  }
+  private onRecentsPress = () => {
+    this.previousSection = this.activeSection;
+    this.activeSection = 'recents';
   }
   private onSearchPress = () => {
     this._searchMediaTerm = '';
@@ -306,6 +317,15 @@ export class MediaBrowser extends LitElement {
       this.cards.main.push(card);
     }
   }
+  private generateRecentsData = async (config: FavoriteItemConfig, media_type: MediaTypes) => {
+    const hide = this.config.hide.recents || this.playerConfig.hide.media_browser.recents;
+    if (config.enabled && !hide) {
+      const result = await this.getRecentSection(media_type, config.limit)
+      this.cards[`recents-${media_type}`] = result;
+      const card = generateRecentsCard(this.hass, media_type, result);
+      this.cards.recents.push(card);
+    }
+  }
   private generateCustomSectionData = (config: customSection) => {
     const section_card = {
       title: config.name,
@@ -328,6 +348,7 @@ export class MediaBrowser extends LitElement {
       }
     )
   }
+
   private generateCards = async () => {
     const favorites = this.config.favorites;
     const promises = Promise.all( [
@@ -338,6 +359,14 @@ export class MediaBrowser extends LitElement {
         this.generateFavoriteData(favorites.podcasts, MediaTypes.PODCAST),
         this.generateFavoriteData(favorites.radios, MediaTypes.RADIO),
         this.generateFavoriteData(favorites.tracks, MediaTypes.TRACK),
+        
+        this.generateRecentsData(favorites.albums, MediaTypes.ALBUM),
+        this.generateRecentsData(favorites.artists, MediaTypes.ARTIST),
+        this.generateRecentsData(favorites.audiobooks, MediaTypes.AUDIOBOOK),
+        this.generateRecentsData(favorites.playlists, MediaTypes.PLAYLIST),
+        this.generateRecentsData(favorites.podcasts, MediaTypes.PODCAST),
+        this.generateRecentsData(favorites.radios, MediaTypes.RADIO),
+        this.generateRecentsData(favorites.tracks, MediaTypes.TRACK),
 
     ]);
     await promises;
@@ -345,11 +374,24 @@ export class MediaBrowser extends LitElement {
     this.activeCards = this.cards[this.activeSection];
     this.requestUpdate();
   }
-  private getFavoriteSection = async (media_type: MediaTypes, limit: number, custom_items: customItem[], favorites_only = true) => {
+  private getFavoriteSection = async (
+    media_type: MediaTypes,
+    limit: number,
+    custom_items: customItem[],
+    favorites_only = true
+  ) => {
     const response: MediaLibraryItem[] = await this.actions.actionGetLibrary(this.activePlayer, media_type, limit, favorites_only);
     const items = generateFavoritesSectionCards(response, media_type);
     const customs = generateCustomSectionCards(custom_items);
     return [...items, ...customs];
+  }
+  private getRecentSection = async (
+    media_type: MediaTypes,
+    limit: number,
+  ) => {
+    const response: MediaLibraryItem[] = await this.actions.actionGetLibraryRecents(this.activePlayer, media_type, limit);
+    const items = generateFavoritesSectionCards(response, media_type);
+    return [...items];
   }
   protected renderBackButton() {
     if (this._hideBackButton) {
@@ -372,26 +414,52 @@ export class MediaBrowser extends LitElement {
       </span>
     `
   }
+  protected renderRecentsButton() {
+    if (this.config.hide.recents || this.playerConfig.hide.media_browser.recents) {
+      return html``
+    }
+    return html`
+      <ha-button
+        appearance="plain"
+        variant="brand"
+        size="medium"
+        class="button-recents button-min ${this.useExpressive ? `button-expressive` : ``}"
+        @click=${this.onRecentsPress}
+      >
+        <ha-svg-icon
+          .path=${this.Icons.RECENTS}
+          class="header-icon"
+        ></ha-svg-icon>
+      </ha-button>
+    `
+  }
   protected renderSearchButton() {
     if (this._hideSearch) {
       return html``
     }
     return html`
+      <ha-button
+        appearance="plain"
+        variant="brand"
+        size="medium"
+        class="button-search button-min ${this.useExpressive ? `button-expressive` : ``}"
+        @click=${this.onSearchPress}
+      >
+        <ha-svg-icon
+          .path=${this.Icons.SEARCH}
+          class="header-icon"
+        ></ha-svg-icon>
+      </ha-button>
+    `
+  }
+  protected renderEndButtons() {
+    return html`
       <span slot="end" id="search-button">
-        <ha-button
-          appearance="plain"
-          variant="brand"
-          size="medium"
-          class="button-search button-min ${this.useExpressive ? `button-expressive` : ``}"
-          @click=${this.onSearchPress}
-        >
-          <ha-svg-icon
-            .path=${this.Icons.SEARCH}
-            class="header-icon"
-          ></ha-svg-icon>
-        </ha-button>
+        ${this.renderRecentsButton()}
+        ${this.renderSearchButton()}
       </span>
     `
+
   }
   protected renderTitle() {
     const title = this.activeSection == 'main' ? 'Media Browser' : this.activeSection;
@@ -473,7 +541,7 @@ export class MediaBrowser extends LitElement {
       <mass-section-header>
         ${this.renderBackButton()}
         ${this.renderTitle()}
-        ${this.renderSearchButton()}
+        ${this.renderEndButtons()}
       </mass-section-header>
     `
   }
@@ -481,7 +549,7 @@ export class MediaBrowser extends LitElement {
     return html`
       <mass-section-header>
         ${this.renderTitle()}
-        ${this.renderSearchButton()}
+        ${this.renderEndButtons()}
       </mass-section-header>
     `
   }

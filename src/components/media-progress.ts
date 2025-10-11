@@ -128,7 +128,7 @@ class MassPlayerProgressBar extends LitElement {
     const pos = Math.floor(seek * this.media_duration);
     this.media_position = pos;
     this.entity_position = pos;
-    await this.actions.actionSeek(pos);
+    void this.actions.actionSeek(pos);
   }
   protected renderTime() {
     const pos = secondsToTime(this.media_position);
