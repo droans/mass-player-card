@@ -3,6 +3,13 @@ import { css } from 'lit';
 // Styles belonging to the card
 // https://lit.dev/docs/components/styles/
 export default css`
+  *[selected] {
+    color: var(--accent-color)
+  }
+  *[hide] {
+  display: none;
+  }
+
   #container {
     overflow: hidden;
     width: 100%;
@@ -14,6 +21,18 @@ export default css`
     border-radius: var(--expressive-border-radius-container);
     background-color: var(--expressive-color-container);
   }
+
+  .header {
+    display: flex;
+    flex-direction: column;
+    height: 100%;
+    font-size: 1.5rem;
+    text-align: center;
+    font-weight: 600;
+    padding-top: 12px;
+    height: auto;
+  }
+
   .main {
     display: flex;
     height: 100%;
@@ -25,25 +44,7 @@ export default css`
     -ms-overflow-style: none; /* IE and Edge */
     scrollbar-width: none; /* Firefox */
   }
-  .name {
-    font-weight: 300;
-    font-size: var(--fontSize);
-    line-height: var(--fontSize);
-    cursor: pointer;
-  }
-  .header {
-    display: flex;
-    flex-direction: column;
-    height: 100%;
-  }
-  .title {
-    text-align: center;
-    font-size: 1.2rem;
-    font-weight: bold;
-    align-items: center;
-    justify-content: center;
-    padding: 0.5rem;
-  }
+
   .list {
     overflow-y: scroll;
     -ms-overflow-style: none;
@@ -53,17 +54,19 @@ export default css`
     background-color: var(--md-sys-color-background);
     border-radius: var(--expressive-border-radius-container);
   }
-  *[selected] {
-    color: var(--accent-color)
+
+  .name {
+    font-weight: 300;
+    font-size: var(--fontSize);
+    line-height: var(--fontSize);
+    cursor: pointer;
   }
-  *[hide] {
-  display: none;
+  .title {
+    text-align: center;
+    font-size: 1.2rem;
+    font-weight: bold;
+    align-items: center;
+    justify-content: center;
+    padding: 0.5rem;
   }
-.header {
-  font-size: 1.5rem;
-  text-align: center;
-  font-weight: 600;
-  padding-top: 12px;
-  height: auto;
-}
 `;
