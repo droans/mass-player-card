@@ -188,24 +188,6 @@ class MassPlayerArtwork extends LitElement {
     )
     return html`${result}`
   }
-  // protected renderPreviousItem() {
-  //   if (!this._previousQueueItem) {
-  //     this._curSlideIdx = 0;
-  //     return html``
-  //   }
-  //   this._curSlideIdx = 1;
-  //   return this.renderCarouselItem(this._previousQueueItem.media_image);
-  // }
-  // protected renderCurrentItem() {
-  //   const img = this.playerData?.track_artwork;
-  //   return this.renderCarouselItem(img);
-  // }
-  // protected renderNextItem() {
-  //   if (!this._nextQueueItem) {
-  //     return html``
-  //   }
-  //   return this.renderCarouselItem(this._nextQueueItem.media_image);
-  // }
   
   protected render(): TemplateResult {
     const size = this.playerConfig.layout.artwork_size;
