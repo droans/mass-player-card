@@ -54,3 +54,6 @@ export const useExpressiveContext = createContext<boolean>('use-expressive');
 export const IconsContext = createContext<Icons>('icons');
 
 export const queueContext = createContext<QueueItems | null>('queue');
+export const currentQueueItemContext = createContext<QueueItem | null>('current-queue-item');
+export const nextQueueItemContext = createContext<QueueItem | null>('next-queue-item');
+export const previousQueueItemContext = createContext<QueueItem | null>('previous-queue-item');

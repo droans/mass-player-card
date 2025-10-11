@@ -15,6 +15,7 @@ import { html } from "lit/static-html.js";
 
 import '../components/media-progress';
 import '../components/menu-button';
+import '../components/player-artwork';
 import '../components/player-controls';
 import '../components/player-controls-expressive';
 import '../components/section-header';
@@ -26,10 +27,8 @@ import PlayerActions from "../actions/player-actions";
 import {
   ExtendedHass,
   ExtendedHassEntity,
-  Thumbnail,
 } from '../const/common';
 import {
-  actionsControllerContext,
   activeEntityConf,
   activeMediaPlayer,
   activePlayerControllerContext,
@@ -47,21 +46,13 @@ import {
 import {
   MARQUEE_DELAY_MS,
   PlayerData,
-  SWIPE_MIN_X,
 } from "../const/music-player";
 
 import styles from '../styles/music-player';
 
-import {
-  getThumbnail,
-} from "../utils/thumbnails";
-import {
-  testMixedContent
-} from "../utils/util";
 import { PlayerSelectedService } from "../const/actions";
 import { ArtworkSize, PlayerConfig } from "../config/player";
 import { ActivePlayerController } from "../controller/active-player";
-import { ActionsController } from "../controller/actions";
 import { Config } from "../config/config.js";
 import { Icons } from "../const/icons.js";
 
@@ -86,9 +77,6 @@ class MusicPlayerCard extends LitElement {
   @state()
   private activePlayerController!: ActivePlayerController;
   
-  @consume({ context: actionsControllerContext, subscribe: true})
-  private actionsController!: ActionsController;
-
   private _activeEntityConfig!: EntityConfig;
   private _activeEntity!: ExtendedHassEntity;
 
@@ -98,14 +86,8 @@ class MusicPlayerCard extends LitElement {
   private groupedPlayers!: EntityConfig[];
   private actions!: PlayerActions;
   private marquee_x_dist = 0;
-  private touchStartX = 0;
-  private touchEndX = 0;
-  private touchStartY = 0;
-  private touchEndY = 0;
   private _artworkHeaderClass!: string;
   private _artworkProgressClass!: string;
-  private _artworkArtworkClass!: string;
-  private _artworkArtworkDivClass!: string;
   private _artworkVolumeClass!: string;
   private _artworkMediaControlsClass!: string;
   private _artworkActiveTrackClass!: string;
@@ -153,28 +135,22 @@ class MusicPlayerCard extends LitElement {
       case ArtworkSize.LARGE:
         this._artworkHeaderClass = 'header-art-lg';
         this._artworkProgressClass = 'bg-art-lg';
-        this._artworkArtworkClass = 'artwork-large';
         this._artworkVolumeClass = 'vol-art-lg';
         this._artworkMediaControlsClass = 'controls-art-lg';
-        this._artworkArtworkDivClass = 'artwork-div-lg';
         this._artworkActiveTrackClass = 'active-track-lg';
         break;
       case ArtworkSize.MEDIUM:
         this._artworkHeaderClass = 'header-art-med';
         this._artworkProgressClass = 'bg-art-med';
-        this._artworkArtworkClass = 'artwork-med';
         this._artworkVolumeClass = 'vol-art-med';
         this._artworkMediaControlsClass = 'controls-art-med';
-        this._artworkArtworkDivClass = 'artwork-div-med';
         this._artworkActiveTrackClass = 'active-track-med';
         break;
       case ArtworkSize.SMALL: 
         this._artworkHeaderClass = 'header-art-sm';
         this._artworkProgressClass = 'bg-art-sm';
-        this._artworkArtworkClass = 'artwork-sm';
         this._artworkVolumeClass = 'vol-art-sm';
         this._artworkMediaControlsClass = 'controls-art-sm';
-        this._artworkArtworkDivClass = 'artwork-div-sm';
         this._artworkActiveTrackClass = 'active-track-sm';
     }
   }
@@ -200,28 +176,6 @@ class MusicPlayerCard extends LitElement {
     const current_item = (await this.actions.actionGetCurrentItem(this.activeMediaPlayer));
     const new_player_data = this.activePlayerController.getactivePlayerData(current_item);
     this.player_data = new_player_data;
-  }
-  private onSwipeStart = (e: TouchEvent) => {
-    const touches = e.changedTouches[0];
-    this.touchStartX = touches.screenX;
-    this.touchStartY = touches.screenY;
-  }
-  private onSwipeEnd = (e: TouchEvent) => {
-    const touches = e.changedTouches[0];
-    this.touchEndX = touches.screenX;
-    this.touchEndY = touches.screenY;
-    const x_swipe = this.touchEndX - this.touchStartX;
-    const y_swipe = this.touchEndY - this.touchStartY;
-    if (Math.abs(x_swipe) > Math.abs(y_swipe)) {
-      if (Math.abs(x_swipe) < SWIPE_MIN_X) {
-        return;
-      }
-      if (x_swipe > 0) {
-        void this.actionsController.actionPlayPrevious();
-      } else {
-        void this.actionsController.actionPlayNext();
-      }
-    }
   }
   private onPlayerSelect = (ev: CustomEvent) => {
     ev.stopPropagation();
@@ -257,11 +211,7 @@ class MusicPlayerCard extends LitElement {
         this.shouldMarqueeTitle = false;
       }
     }
-    const element = this.shadowRoot?.getElementById('artwork-div');
-    element?.addEventListener('touchstart', this.onSwipeStart);
-    element?.addEventListener('touchend', this.onSwipeEnd);
   }
-
   protected updated() {
     this.marqueeTitleWhenUpdated();
   }
@@ -444,29 +394,9 @@ class MusicPlayerCard extends LitElement {
     `
   }
   protected renderArtwork() {
-    const img = this.player_data?.track_artwork || "";
-    const fallback = getThumbnail(this.hass, Thumbnail.CLEFT);
-    if (!this.player_data.track_artist || !testMixedContent(img)) {
-      return html`
-        <div id="${this._artworkArtworkDivClass}">
-          <img 
-            id="artwork-img"
-            class="${this._artworkArtworkClass}"
-            src="${fallback}">
-        </div>
-      `
-    } else {
-      return html`
-        <div id="${this._artworkArtworkDivClass}">
-          <img 
-            id="artwork-img"
-            class="${this._artworkArtworkClass}"
-            src="${img}" 
-            onerror="this.src='${fallback}';"
-          >
-        </div>
-      `
-    }
+    return html`
+      <mass-artwork></mass-artwork>
+    `
   }
   protected renderVolumeRow() {
     return html`
