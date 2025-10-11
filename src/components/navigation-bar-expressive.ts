@@ -64,7 +64,7 @@ class MassNavBar extends LitElement {
     const section = Sections.MUSIC_PLAYER;
     const icon = this.Icons.MUSIC;
     if (this.config.player.enabled){
-      return this.renderTab(section, icon, "Music Player")
+      return this.renderTab(section, icon)
     }
     return html``
   }
@@ -72,7 +72,7 @@ class MassNavBar extends LitElement {
     const section = Sections.QUEUE;
     const icon = this.Icons.PLAYLIST;
     if (this.config.queue.enabled){
-      return this.renderTab(section, icon, "Queue")
+      return this.renderTab(section, icon)
     }
     return html``
   }
@@ -80,7 +80,7 @@ class MassNavBar extends LitElement {
     const section = Sections.MEDIA_BROWSER;
     const icon = this.Icons.ALBUM;
     if (this.config.media_browser.enabled){
-      return this.renderTab(section, icon, "Media Browser")
+      return this.renderTab(section, icon)
     }
     return html``
   }
@@ -88,11 +88,11 @@ class MassNavBar extends LitElement {
     const section = Sections.PLAYERS;
     const icon = this.Icons.SPEAKER_MULTIPLE;
     if (this.config.players.enabled){
-      return this.renderTab(section, icon, "Players")
+      return this.renderTab(section, icon)
     }
     return html``
   }
-  private renderTab(section: Sections, icon: string, title: string): TemplateResult {
+  private renderTab(section: Sections, icon: string): TemplateResult {
     const active = this.active_section == section;
     return html`
       <a 
@@ -105,7 +105,6 @@ class MassNavBar extends LitElement {
             class="action-button-svg${active ? "" : "-inactive"}"
           ></ha-svg-icon>
         </i>
-        <span style="width: 100%">${title}</span> 
       </a>
     `
     
