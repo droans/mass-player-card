@@ -321,9 +321,11 @@ export class MediaBrowser extends LitElement {
     const hide = this.config.hide.recents || this.playerConfig.hide.media_browser.recents;
     if (config.enabled && !hide) {
       const result = await this.getRecentSection(media_type, config.limit)
-      this.cards[`recents-${media_type}`] = result;
       const card = generateRecentsCard(this.hass, media_type, result);
-      this.cards.recents.push(card);
+      if (result.length) {
+        this.cards[`recents-${media_type}`] = result;
+        this.cards.recents.push(card)
+      };
     }
   }
   private generateCustomSectionData = (config: customSection) => {
