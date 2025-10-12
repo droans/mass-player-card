@@ -36,15 +36,10 @@ class MassPlayerArtwork extends LitElement {
 
 
   @state() public _playerData!: PlayerData;
-  private _currentQueueItem!: QueueItem;
   private _queue!: QueueItems;
-  @state() public _previousQueueItem!: QueueItem;
-  @state() public _nextQueueItem!: QueueItem;
   @state() public _queueItems!: QueueItems;
 
-  private _artworkClass = `artwork-large`;
   private _curSlideIdx = 1;
-  private _curItemIdx = 0;
   private _shouldSetIndex = true;
 
   @consume({ context: activePlayerDataContext, subscribe: true })
@@ -96,45 +91,6 @@ class MassPlayerArtwork extends LitElement {
     }
     const cur_idx = this.queue?.findIndex( (i) => i.playing);
     this.setQueueItemsFromIndex(cur_idx);
-  }
-
-  public set currentQueueItem(item: QueueItem | null) {
-    if (!item) {
-      return;
-    }
-    const cur_item = this._currentQueueItem;
-    if (cur_item?.media_content_id != item?.media_content_id) {
-      this._currentQueueItem = item;
-    }
-  }
-  public get currentQueueItem() {
-    return this._currentQueueItem;
-  }
-  
-  public set previousQueueItem(item: QueueItem | null) {
-    if (!item) {
-      return;
-    }
-    const cur_item = this._previousQueueItem;
-    if (cur_item?.media_content_id != item?.media_content_id) {
-      this._previousQueueItem = item;
-    }
-  }
-  public get previousQueueItem() {
-    return this._previousQueueItem;
-  }
-  
-  public set nextQueueItem(item: QueueItem | null) {
-    if (!item) {
-      return;
-    }
-    const cur_item = this._nextQueueItem;
-    if (cur_item?.media_content_id != item?.media_content_id) {
-      this._nextQueueItem = item;
-    }
-  }
-  public get nextQueueItem() {
-    return this._nextQueueItem;
   }
 
   private onCarouselSwipe = (ev: SLSwipeEvent) => {
