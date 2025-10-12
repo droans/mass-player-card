@@ -36,7 +36,7 @@ class MassPlayerArtwork extends LitElement {
 
 
   @state() public _playerData!: PlayerData;
-  private _queue!: QueueItems;
+  @state() private _queue!: QueueItems;
   @state() public _queueItems!: QueueItems;
 
   private _curSlideIdx = 1;
