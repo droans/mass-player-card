@@ -19,7 +19,7 @@ export default css`
   --md-list-item-leading-space: 0px;
   --md-list-item-two-line-container-height: 48px;
 
-  --media-row-height: 48px;
+  --media-row-height: 56px;
   --media-row-thumbnail-height: var(--media-row-height);
 
   --player-blur: blur(3px);
