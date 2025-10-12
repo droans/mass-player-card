@@ -79,8 +79,9 @@ class MassPlayerArtwork extends LitElement {
       return;
     }
     const queue = this.queue;
-    const idx_before = idx - SWIPE_QUEUE_ITEMS_BEFORE;
-    const idx_after = idx + SWIPE_QUEUE_ITEMS_AFTER + 1; 
+    const queue_len = queue.length;
+    const idx_before = Math.max(idx - SWIPE_QUEUE_ITEMS_BEFORE,0);
+    const idx_after = Math.min(idx + SWIPE_QUEUE_ITEMS_AFTER + 1, queue_len); 
     const queueItems = queue.slice(idx_before, idx_after);
     this._queueItems = queueItems;
   }
