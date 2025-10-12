@@ -28,6 +28,11 @@ export default css`
     border-radius: var(--expressive-border-radius-container);
     background-color: var(--expressive-color-container);
   }
+  
+  #header-buttons-end {
+    display: flex;
+    gap: 8px;
+  }
 
   .header-icon {
     height: 2rem;

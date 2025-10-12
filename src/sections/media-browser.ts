@@ -455,8 +455,10 @@ export class MediaBrowser extends LitElement {
   protected renderEndButtons() {
     return html`
       <span slot="end" id="search-button">
-        ${this.renderRecentsButton()}
-        ${this.renderSearchButton()}
+        <div id="header-buttons-end">
+          ${this.renderRecentsButton()}
+          ${this.renderSearchButton()}
+        </div>
       </span>
     `
 
