@@ -96,7 +96,7 @@ class MassPlayerArtwork extends LitElement {
   private onCarouselSwipe = (ev: SLSwipeEvent) => {
     const slide_idx = ev.detail.index;
     const queue_item = this._queueItems[slide_idx];
-    if (queue_item.playing) {
+    if (queue_item?.playing || !queue_item) {
       return;
     }
     void this.controller.Queue.playQueueItem(queue_item.queue_item_id);
@@ -135,7 +135,23 @@ class MassPlayerArtwork extends LitElement {
       `
     )
   }
+  protected renderInactive() {
+    const img = getThumbnail(this.hass, Thumbnail.CLEFT);
+    const size = this.playerConfig.layout.artwork_size;
+    return html`
+      <sl-carousel-item>
+        <img
+          class="artwork artwork-${size}"
+          src="${img}"
+          onerror="this.src='${img}';"
+        >
+      </sl-carousel-item>
+    `
+  }
   protected renderCarouselItems() {
+    if (!this.queue || !this.controller.ActivePlayer.isActive()) {
+      return this.renderInactive();
+    }
     const items = this._queueItems;
     const result = items.map(
       (item, idx) => {
