@@ -9,11 +9,11 @@ import styles from '../styles/player-artwork';
 import { getThumbnail } from "../utils/thumbnails.js";
 import {
   activePlayerDataContext,
+  controllerContext,
   ExtendedHass,
   hassExt,
   musicPlayerConfigContext,
   queueContext,
-  queueControllerContext
 } from "../const/context.js";
 import { Thumbnail } from "../const/common.js";
 import { query, state } from "lit/decorators.js";
@@ -21,14 +21,14 @@ import { QueueItem, QueueItems } from "../const/player-queue.js";
 import { PlayerData, SLSwipeEvent, SWIPE_QUEUE_ITEMS_AFTER, SWIPE_QUEUE_ITEMS_BEFORE } from "../const/music-player.js";
 import SlCarousel from "@shoelace-style/shoelace/dist/components/carousel/carousel.js";
 import { PlayerConfig } from "../config/player.js";
-import { QueueController } from "../controller/queue.js";
 import { keyed } from "lit/directives/keyed.js";
+import { MassCardController } from "../controller/controller.js";
 
 class MassPlayerArtwork extends LitElement {
   @consume({ context: hassExt, subscribe: true })
   private hass!: ExtendedHass;
-  @consume({ context: queueControllerContext, subscribe: true})
-  private queueController!: QueueController;
+  @consume({ context: controllerContext, subscribe: true})
+  private controller!: MassCardController;
   @consume({ context: musicPlayerConfigContext, subscribe: true})
   @state()
   private playerConfig!: PlayerConfig;
@@ -99,7 +99,7 @@ class MassPlayerArtwork extends LitElement {
     if (queue_item.playing) {
       return;
     }
-    void this.queueController.playQueueItem(queue_item.queue_item_id);
+    void this.controller.Queue.playQueueItem(queue_item.queue_item_id);
     this._queueItems[slide_idx].playing = true;
     this._shouldSetIndex = false;
     this.setQueueItemsFromIndex(slide_idx);
