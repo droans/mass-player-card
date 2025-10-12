@@ -193,7 +193,7 @@ export class ActivePlayerController {
     const player = this.activeMediaPlayer;
     const not_off = player.state != 'off';
     const is_mass = player.attributes.app_id == MUSIC_ASSISTANT_APP_NAME;
-    const has_queue = player.attributes?.active_queue;
+    const has_queue = !!(player.attributes?.active_queue);
     return not_off && is_mass && has_queue;
   }
   public async getPlayerProgress(): Promise<number> {
