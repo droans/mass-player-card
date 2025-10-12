@@ -16,7 +16,7 @@ export default css`
   }
   .button-expressive::part(base) {
     box-shadow: var(--md-sys-elevation-level1);
-    border-radius: 12px;
+    border-radius: var(--button-small-border-radius) !important;
     background-color: var(--md-sys-color-secondary-container);
   }
   

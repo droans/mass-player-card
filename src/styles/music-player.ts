@@ -156,7 +156,7 @@ export default css`
     --mdc-icon-size: 1.5em;
     --control-select-menu-height: 2.5em;
     box-shadow: var(--md-sys-elevation-level1);
-    border-radius: 12px;
+    border-radius: var(--button-small-border-radius);
   }
   #grouped-players-menu::part(menu-svg) {
     color: var(--md-sys-color-primary);
@@ -211,7 +211,7 @@ export default css`
   .menu-header-expressive::part(menu-select-menu) {
     background-color: var(--md-sys-color-secondary-container);
     box-shadow: var(--md-sys-elevation-level1);
-    border-radius: 12px;
+    border-radius: var(--button-small-border-radius);
   }
   .menu-header-expressive::part(menu-svg) {
     color: var(--md-sys-color-secondary-on-container);

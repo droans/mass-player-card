@@ -3,6 +3,7 @@ export default css`
   :host {
   --mass-player-card-height: 40em;
 
+  --button-small-border-radius: 12px;
   --expressive-border-radius-container: 20px 20px 0px 0px;
 
   --expressive-color-container: var(--md-sys-color-primary-container);
