@@ -39,7 +39,7 @@ class MassPlayerArtwork extends LitElement {
   @state() private _queue!: QueueItems;
   @state() public _queueItems!: QueueItems;
 
-  private _curSlideIdx = 1;
+  private _curSlideIdx = 0;
   private _shouldSetIndex = true;
 
   @consume({ context: activePlayerDataContext, subscribe: true })
