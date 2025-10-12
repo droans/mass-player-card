@@ -187,7 +187,7 @@ class MassPlayerArtwork extends LitElement {
     const carousel = this.carouselElement;
     const slide = carousel.activeSlide;
     if (slide != this._curSlideIdx && this._shouldSetIndex){
-      carousel.goToSlide(this._curSlideIdx)
+      carousel.goToSlide(this._curSlideIdx, 'instant');
     };
   }
   static get styles() {
