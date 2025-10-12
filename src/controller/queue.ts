@@ -133,8 +133,8 @@ export class QueueController {
 
   private setActiveTrack(queue: QueueItems) {
     const active_track = this.activeMediaPlayer.attributes.media_content_id;
-    const active_idx = queue.findIndex( (i) => i.media_content_id == active_track);
-    if (active_idx && active_idx > 0){
+    const active_idx = queue.findIndex( (i) => i.media_content_id == active_track) ?? -1;
+    if (active_idx >= 0){
       queue[active_idx].playing = true;
     }
       return queue;
