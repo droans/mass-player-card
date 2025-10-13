@@ -16,11 +16,10 @@ import {
   musicPlayerConfigContext,
   nextQueueItemContext,
   previousQueueItemContext,
-  queueContext,
 } from "../const/context.js";
 import { Thumbnail } from "../const/common.js";
 import { query, state } from "lit/decorators.js";
-import { QueueItem, QueueItems } from "../const/player-queue.js";
+import { QueueItem } from "../const/player-queue.js";
 import { PlayerData, SLSwipeEvent, SWIPE_MIN_DELAY } from "../const/music-player.js";
 import SlCarousel from "@shoelace-style/shoelace/dist/components/carousel/carousel.js";
 import { PlayerConfig } from "../config/player.js";
@@ -41,8 +40,6 @@ class MassPlayerArtwork extends LitElement {
   @query('#carousel-img-next') private nextCarouselImage!: HTMLImageElement;
 
   @state() public _playerData!: PlayerData;
-  // private _queue!: QueueItems;
-  // public _queueItems!: QueueItems;
 
   private _previousQueueItem!: QueueItem;
   private _currentQueueItem!: QueueItem;
@@ -136,32 +133,13 @@ class MassPlayerArtwork extends LitElement {
     return this._nextItemImage;
   }
 
-  // @consume({ context: queueContext, subscribe: true})
-  // public set queue(queue: QueueItems | null) {
-  //   if (!queue) {
-  //     return;
-  //   }
-  //   if (!this._queue) {
-  //     this._queue = queue;
-  //   }
-  //   const cur_js = JSON.stringify(this._queue);
-  //   const new_js = JSON.stringify(queue);
-  //   if (cur_js != new_js) {
-  //     this._queue = queue;
-  //   }
-  // }
-  // public get queue() {
-  //   return this._queue
-  // }
   private onCarouselSwipe = (ev: SLSwipeEvent) => {
     const slide_idx = ev.detail.index;
-    console.log(`Received swipe event`);
-    console.log(ev);
     const last_ts = this._lastSwipedTS;
     const cur_ts = ev.timeStamp;
     this._lastSwipedTS = cur_ts;
     const delay_since = cur_ts - last_ts;
-    if (cur_ts - last_ts <= SWIPE_MIN_DELAY) {
+    if (delay_since <= SWIPE_MIN_DELAY) {
       return;
     }
     if (slide_idx == 0) {
