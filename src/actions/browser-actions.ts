@@ -128,6 +128,29 @@ export default class BrowserActions {
       */
       return response.response[response_media_type];
     }
+  async actionGetRecommendations(
+    player_entity_id: string,
+    providers: string | null
+  ) {
+    const _providers = providers ? {providers: providers} : {};
+    const data = {
+      type: 'call_service',
+      domain: 'mass_queue',
+      service: 'get_recommendations',
+      service_data: {
+        entity: player_entity_id,
+        ..._providers
+      },
+      return_response: true
+    }
+      /* eslint-disable-next-line
+      @typescript-eslint/no-explicit-any,
+      @typescript-eslint/no-unsafe-return,
+      */
+    return await this.hass.callWS<any>(
+      data
+    )
+  }
     private async getPlayerConfigEntry(entity_id: string): Promise<string> {
       /* eslint-disable
         @typescript-eslint/no-explicit-any,
