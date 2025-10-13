@@ -52,6 +52,9 @@ export default css`
   #search::part(end) {
     width: calc(100% - 3em - 40px);
   }
+  .search-favorite-button::part(base) {
+    width: 36px;
+  }
   #search-input {
     height: 40px;
     position: relative;
@@ -62,6 +65,7 @@ export default css`
     display: inline-block;
   }
   #search-media-type-menu::part(menu-button) {
+    width: 36px;
   }
   #search-media-type-menu::part(menu-list-item) {
   }
@@ -75,8 +79,7 @@ export default css`
     --control-select-menu-background-color: unset;
   }
   #search-media-type-menu::part(menu-svg) {
-    color: var(--md-sys-color-primary);
-    border-radius: 50%;
+    color: var(--md-sys-color-on-background);
   }
   #title {
     text-indent: var(--title-indent);
