@@ -3,7 +3,8 @@ export enum EnqueueOptions {
   PLAY_NOW_CLEAR_QUEUE = "replace",
   PLAY_NEXT = "next",
   PLAY_NEXT_CLEAR_QUEUE = "replace_next",
-  ADD_TO_QUEUE = "add"
+  ADD_TO_QUEUE = "add",
+  RADIO = 'radio'
 }
 
 export type QueueService = (

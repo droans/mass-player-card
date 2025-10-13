@@ -87,6 +87,11 @@ export function getEnqueueButtons(icons: Icons): ListItems {
       icon: icons.PLAYLIST_PLUS,
       title: "Add to Queue"
     },
+    {
+      option: EnqueueOptions.RADIO,
+      icon: icons.RADIO,
+      title: "Play Radio"
+    }
   ]
 }
 export function getSearchMediaButtons(icons: Icons): ListItems {
