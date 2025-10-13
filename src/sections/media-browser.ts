@@ -177,15 +177,15 @@ export class MediaBrowser extends LitElement {
   }
   private onSectionSelect = (data: MediaCardData) => {
     const subtype: string = data?.subtype ?? 'custom';
-    const section = data.section;
+    const section = data.section as MediaTypes;
     if (subtype == 'favorite') {
       this._searchMediaType = section;
-      this._searchMediaTypeIcon = getMediaTypeSvg((section as MediaTypes), this.Icons);
+      this._searchMediaTypeIcon = getMediaTypeSvg(section, this.Icons);
     }
     if (subtype == 'recents') {
-      const recent_section = section.split('-')[1]
+      const recent_section = section.split('-')[1] as MediaTypes;
       this._searchMediaType = recent_section;
-      this._searchMediaTypeIcon = getMediaTypeSvg((recent_section as MediaTypes), this.Icons);
+      this._searchMediaTypeIcon = getMediaTypeSvg(recent_section, this.Icons);
       
     }
     this.activeSection = data.section;

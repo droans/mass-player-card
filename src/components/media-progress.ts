@@ -121,7 +121,7 @@ class MassPlayerProgressBar extends LitElement {
     const pos = (this.media_position ?? 0) + (this._tick_duration_ms / 1000);
     this.media_position = Math.min(pos, (this.media_duration));
   }
-  private onSeek = async (e: MouseEvent) => {
+  private onSeek = (e: MouseEvent) => {
     const progress_element = this.shadowRoot?.getElementById('progress-div');
     const prog_width = progress_element?.offsetWidth ?? 1;
     const seek = e.offsetX / prog_width;
