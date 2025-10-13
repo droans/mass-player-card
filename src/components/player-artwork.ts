@@ -16,12 +16,11 @@ import {
   musicPlayerConfigContext,
   nextQueueItemContext,
   previousQueueItemContext,
-  queueContext,
 } from "../const/context.js";
 import { Thumbnail } from "../const/common.js";
 import { query, state } from "lit/decorators.js";
-import { QueueItem, QueueItems } from "../const/player-queue.js";
-import { PlayerData, SLSwipeEvent } from "../const/music-player.js";
+import { QueueItem } from "../const/player-queue.js";
+import { PlayerData, SLSwipeEvent, SWIPE_MIN_DELAY } from "../const/music-player.js";
 import SlCarousel from "@shoelace-style/shoelace/dist/components/carousel/carousel.js";
 import { PlayerConfig } from "../config/player.js";
 import { MassCardController } from "../controller/controller.js";
@@ -41,8 +40,6 @@ class MassPlayerArtwork extends LitElement {
   @query('#carousel-img-next') private nextCarouselImage!: HTMLImageElement;
 
   @state() public _playerData!: PlayerData;
-  @state() private _queue!: QueueItems;
-  @state() public _queueItems!: QueueItems;
 
   private _previousQueueItem!: QueueItem;
   private _currentQueueItem!: QueueItem;
@@ -50,15 +47,14 @@ class MassPlayerArtwork extends LitElement {
   private _previousItemImage!: string;
   private _currentItemImage!: string;
   private _nextItemImage!: string;
-  private _curSlideIdx = 0;
-  private _shouldSetIndex = true;
+  private _lastSwipedTS = 0;
 
   @consume({ context: activePlayerDataContext, subscribe: true })
   public set playerData(playerData: PlayerData) {
     const cur_data = this.playerData;
     if (cur_data?.track_artwork != playerData?.track_artwork) {
-      this._playerData = playerData
-      this._shouldSetIndex = true;
+      this._playerData = playerData;
+      this.currentItemImage = playerData.track_artwork;
     }
   }
   public get playerData() {
@@ -137,36 +133,23 @@ class MassPlayerArtwork extends LitElement {
     return this._nextItemImage;
   }
 
-  @consume({ context: queueContext, subscribe: true})
-  public set queue(queue: QueueItems | null) {
-    if (!queue) {
-      return;
-    }
-    if (!this._queue) {
-      this._queue = queue;
-    }
-    const cur_js = JSON.stringify(this._queue);
-    const new_js = JSON.stringify(queue);
-    if (cur_js != new_js) {
-      this._queue = queue;
-    }
-  }
-  public get queue() {
-    return this._queue
-  }
   private onCarouselSwipe = (ev: SLSwipeEvent) => {
     const slide_idx = ev.detail.index;
+    const last_ts = this._lastSwipedTS;
+    const cur_ts = ev.timeStamp;
+    this._lastSwipedTS = cur_ts;
+    const delay_since = cur_ts - last_ts;
+    if (delay_since <= SWIPE_MIN_DELAY) {
+      return;
+    }
     if (slide_idx == 0) {
       if (this.previousItemImage) {
-        
         this.currentItemImage = this.previousItemImage;
-        this.carouselElement.goToSlide(1, 'instant');
         void this.controller.Actions.actionPlayPrevious();
       }
     } else if (slide_idx == 2) {
       if (this.nextItemImage) {
         this.currentItemImage = this.nextItemImage;
-        this.carouselElement.goToSlide(1, 'instant');
         void this.controller.Actions.actionPlayNext()
       };
     }
@@ -218,7 +201,7 @@ class MassPlayerArtwork extends LitElement {
     return this.renderCarouselItem(img, `carousel-img-prior`);
   }
   protected renderCarouselItems() {
-    if (!this.queue || !this.controller.ActivePlayer.isActive()) {
+    if (!this.controller.ActivePlayer.isActive()) {
       return this.renderInactive();
     }
     return html`
@@ -245,7 +228,7 @@ class MassPlayerArtwork extends LitElement {
   protected shouldUpdate(_changedProperties: PropertyValues): boolean {  
     return _changedProperties.size > 0;
   }
-  protected firstUpdated(): void {
+  protected updated(): void {
     this.carouselElement.goToSlide(1, 'instant');
   }
   static get styles() {
