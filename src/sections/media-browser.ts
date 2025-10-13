@@ -214,12 +214,21 @@ export class MediaBrowser extends LitElement {
   private onEnqueue = (data: MediaCardData, enqueue: EnqueueOptions) => {
     const content_id: string = data.media_content_id;
     const content_type: string = data.media_content_type;
-    void this.actions.actionEnqueueMedia(
-      this.activePlayer,
-      content_id,
-      content_type,
-      enqueue
-    );
+    if (enqueue == EnqueueOptions.RADIO) {
+      void this.actions.actionPlayRadio(
+        this.activePlayer,
+        content_id,
+        content_type
+      );
+      this.onMediaSelectedAction();
+    } else {
+      void this.actions.actionEnqueueMedia(
+        this.activePlayer,
+        content_id,
+        content_type,
+        enqueue
+      );
+    }
   }
   private onBack = () => {
     if (['search', 'recents'].includes(this.activeSection)  && this.previousSection.length) {

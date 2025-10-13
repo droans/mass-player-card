@@ -151,6 +151,17 @@ export default class BrowserActions {
       data
     )
   }
+  async actionPlayRadio(entity_id: string, content_id: string, content_type: string) {
+    await this.hass.callService(
+      'music_assistant', 'play_media',
+      {
+        entity_id: entity_id,
+        media_id: content_id,
+        media_type: content_type,
+        radio_mode: true
+      }
+    )
+  }
     private async getPlayerConfigEntry(entity_id: string): Promise<string> {
       /* eslint-disable
         @typescript-eslint/no-explicit-any,
