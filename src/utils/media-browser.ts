@@ -57,6 +57,20 @@ export function generateFavoriteCard(hass: ExtendedHass, media_type: MediaTypes,
     }
   }
 }
+export function generateRecentsCard(hass: ExtendedHass, media_type: MediaTypes, cards: MediaCardItem[]): MediaCardItem {
+  const thumbnail: Thumbnail = MediaTypeThumbnails[media_type];
+  return {
+    title: media_type,
+    background: generateSectionBackground(hass, cards, thumbnail),
+    thumbnail: thumbnail,
+    fallback: thumbnail,
+    data: {
+      type: 'section',
+      subtype: 'recents',
+      section: `recents-${media_type}`
+    }
+  }
+}
 export function generateCustomSectionCards(config: customItem[]) {
   return config.map(
     (item) => {

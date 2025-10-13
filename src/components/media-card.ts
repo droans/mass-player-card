@@ -140,6 +140,7 @@ class MediaCard extends LitElement {
       play_now_button: entity.play_now_button|| card.play_now_button,
       play_next_clear_queue_button: entity.play_next_clear_queue_button|| card.play_next_clear_queue_button,
       play_now_clear_queue_button: entity.play_now_clear_queue_button|| card.play_now_clear_queue_button,
+      recents: entity.recents || card.recents,
     }
     this.updateEnqueueButtons();
     this.generateCode();

@@ -3,6 +3,7 @@ export default css`
   :host {
   --mass-player-card-height: 40em;
 
+  --button-small-border-radius: 12px;
   --expressive-border-radius-container: 20px 20px 0px 0px;
 
   --expressive-color-container: var(--md-sys-color-primary-container);
@@ -18,7 +19,7 @@ export default css`
   --md-list-item-leading-space: 0px;
   --md-list-item-two-line-container-height: 48px;
 
-  --media-row-height: 48px;
+  --media-row-height: 56px;
   --media-row-thumbnail-height: var(--media-row-height);
 
   --player-blur: blur(3px);

@@ -16,10 +16,11 @@ export default css`
   .action-button::part(base) {
     height: 30px;
     width: 30px;
+    border-radius: 25%
   }
   .action-button-expressive::part(base) {
     box-shadow: var(--md-sys-elevation-level1);
-    border-radius: 25%;
+    --ha-button-border-radius: var(--button-small-border-radius) !important;
   }
   .action-button-expressive::part(base):hover {
     --inherited-background-color: var(--md-sys-color-primary-container) !important;

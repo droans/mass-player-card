@@ -6,6 +6,7 @@ import { hiddenElementsConfigItem } from "../utils/config.js";
 export interface MediaBrowserHiddenElementsConfig {
   back_button: boolean;
   search: boolean;
+  recents: boolean;
   titles: boolean;
   enqueue_menu: boolean;
   add_to_queue_button: boolean;
@@ -18,6 +19,7 @@ export interface MediaBrowserHiddenElementsConfig {
 export const DEFAULT_MEDIA_BROWSER_HIDDEN_ELEMENTS_CONFIG: MediaBrowserHiddenElementsConfig = {
   back_button: false,
   search: false,
+  recents: false,
   titles: false,
   enqueue_menu: false,
   add_to_queue_button: false,
