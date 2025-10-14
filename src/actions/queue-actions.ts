@@ -119,4 +119,17 @@ export default class QueueActions {
       console.error('Error moving queue item down', e)
     }
   }
+  async getLocalImage(url: string) {
+    try {
+      const result = await this.hass.callWS(
+        {
+          type: 'mass_queue/download_and_encode_image',
+          url: url
+        }
+      )
+    } catch (e) {
+      /* eslint-disable-next-line no-console */
+      console.error('Error getting image', e)
+    } 
+  }
 }
