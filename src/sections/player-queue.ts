@@ -180,6 +180,7 @@ class QueueCard extends LitElement {
   }
   public connectedCallback(): void {
     if (this.queueController) {
+      void this.queueController.getQueue();
       void this.queueController.subscribeUpdates();
     }
     super.connectedCallback();

@@ -133,7 +133,7 @@ export class MediaBrowser extends LitElement {
     @typescript-eslint/no-unsafe-argument,
     @typescript-eslint/no-unsafe-assignment,
   */
-  private setActiveCards() {
+  public setActiveCards() {
     const section = this.activeSection;
     const subsection = this.activeSubSection;
     // eslint-disable-next-line @typescript-eslint/no-unsafe-member-access
