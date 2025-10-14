@@ -10,8 +10,8 @@ import { PlayerData } from "../const/music-player.js";
 import { secondsToTime } from "../utils/util.js";
 import { MassCardController } from "../controller/controller.js";
 class MassPlayerProgressBar extends LitElement {
-  @state() private _media_duration = 1;
-  @state() private _media_position = 0;
+  @state() private _media_duration!: number;
+  @state() private _media_position!: number;
   private entity_duration = 1;
   private entity_position = 0;
   private _prog_pct = 0;
@@ -38,11 +38,17 @@ class MassPlayerProgressBar extends LitElement {
     this._prog_pct = prog;
   }
   private get media_position() {
+    if (!this._media_position) {
+      this.requestProgress();
+    }
     return this._media_position;
   }
 
   private set media_duration(dur: number) {
     this._media_duration = dur;
+    if (!this._media_duration) {
+      this.requestProgress();
+    }
     const prog = Math.min(1, this._media_position / (dur ?? 1));
     this._prog_pct = prog;
   }
@@ -83,7 +89,7 @@ class MassPlayerProgressBar extends LitElement {
   private requestProgress() {
     void this.activePlayerController.getPlayerProgress().then( 
       (progress) => {
-        progress = Math.min(progress, this.entity_duration ?? progress);
+        progress = Math.min(progress, this.entity_duration ?? progress, 1);
         this.media_position = progress ?? this.media_position;
         this.entity_position = progress ?? this.entity_position;
       }
