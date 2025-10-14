@@ -8,6 +8,7 @@ import '@shoelace-style/shoelace/dist/components/carousel-item/carousel-item.js'
 import styles from '../styles/player-artwork';
 import { getThumbnail } from "../utils/thumbnails.js";
 import {
+  activeMediaPlayer,
   activePlayerDataContext,
   controllerContext,
   currentQueueItemContext,
@@ -17,7 +18,7 @@ import {
   nextQueueItemContext,
   previousQueueItemContext,
 } from "../const/context.js";
-import { Thumbnail } from "../const/common.js";
+import { ExtendedHassEntity, Thumbnail } from "../const/common.js";
 import { query, state } from "lit/decorators.js";
 import { QueueItem } from "../const/player-queue.js";
 import { PlayerData, SLSwipeEvent, SWIPE_MIN_DELAY } from "../const/music-player.js";
@@ -33,6 +34,8 @@ class MassPlayerArtwork extends LitElement {
   @consume({ context: musicPlayerConfigContext, subscribe: true})
   @state()
   private playerConfig!: PlayerConfig;
+  @consume({ context: activeMediaPlayer, subscribe: true})
+  private activePlayer!: ExtendedHassEntity;
   @query('#carousel') private carouselElement!: SlCarousel;
 
   @query('#carousel-img-prior') private previousCarouselImage!: HTMLImageElement;
@@ -206,7 +209,7 @@ class MassPlayerArtwork extends LitElement {
     }
     return html`
       ${this.renderCarouselItem(this.previousItemImage, `carousel-img-prior`)}
-      ${this.renderCarouselItem(this.currentItemImage, `carousel-img-cur`)}
+      ${this.renderCarouselItem(this.activePlayer.attributes.entity_picture_local ?? this.currentItemImage, `carousel-img-cur`)}
       ${this.renderCarouselItem(this.nextItemImage, `carousel-img-next`)}
     `
   }

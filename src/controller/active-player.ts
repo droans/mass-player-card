@@ -281,6 +281,8 @@ export class ActivePlayerController {
     const def = getThumbnail(this.hass, Thumbnail.CLEFT);
     const url = player_data.playing ? attrs.entity_picture_local ?? attrs.entity_picture ?? def : def; 
     const elem = document.createElement('img');
+    elem.height = 75;
+    elem.width = 75;
     elem.src = url;
     return elem;
   }

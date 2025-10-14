@@ -186,7 +186,7 @@ class QueueCard extends LitElement {
   }
   private onQueueItemSelected = async (queue_item_id: string) => {
     await this.queueController.playQueueItem(queue_item_id);
-    await this.queueController.getQueue();
+    void this.queueController.getQueue();
   }
   private onQueueItemRemoved = async (queue_item_id: string) => {
     await this.queueController.removeQueueItem(queue_item_id);

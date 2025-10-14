@@ -1,6 +1,6 @@
 import { EnqueueOptions } from "../const/actions";
 import { ExtendedHass, MediaTypes } from "../const/common";
-import { DEFAULT_SEARCH_LIMIT, MediaLibraryItem } from "../const/media-browser";
+import { DEFAULT_SEARCH_LIMIT, MediaLibraryItem, RecommendationResponse } from "../const/media-browser";
 
 export default class BrowserActions {
     private _hass!: ExtendedHass;
@@ -131,7 +131,7 @@ export default class BrowserActions {
   async actionGetRecommendations(
     player_entity_id: string,
     providers: string | null
-  ) {
+  ): Promise<RecommendationResponse> {
     const _providers = providers ? {providers: providers} : {};
     const data = {
       type: 'call_service',

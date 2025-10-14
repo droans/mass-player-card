@@ -1,411 +1,416 @@
 import '@shoelace-style/shoelace/dist/components/input/input';
-
-import { consume, provide } from "@lit/context";
-import {
-  mdiMusic
-} from "@mdi/js";
 import {
   CSSResultGroup,
   html,
   LitElement,
+  PropertyValues,
+  TemplateResult
 } from "lit";
 import {
-  property,
-  state
-} from "lit/decorators.js";
-
-import BrowserActions from "../actions/browser-actions";
-
-import '../components/media-browser-cards';
-import '../components/section-header';
-
-import {
-  customItem,
-  customSection,
-  FavoriteItemConfig,
-  MediaBrowserConfig,
-} from "../config/media-browser";
-
-import { EnqueueOptions } from "../const/actions";
-import {
   ExtendedHass,
-  Thumbnail,
-  MediaTypes
-} from "../const/common";
-import {
-  activeEntityConf,
-  activeEntityID,
-  EntityConfig,
-  hassExt,
-  IconsContext,
-  mediaBrowserConfigContext,
-  useExpressiveContext
-} from "../const/context";
+  MediaTypes,
+  TargetValEvent,
+} from "../const/common.js";
+import { MediaBrowserConfig } from "../config/media-browser.js";
+import { customElement, property, state } from "lit/decorators.js";
 import {
   DEFAULT_SEARCH_LIMIT,
+  getFilterButtons,
   getSearchMediaButtons,
-  MediaBrowserItemsConfig,
   MediaCardData,
   MediaCardItem,
-  MediaLibraryItem,
+  newMediaBrowserItemsConfig,
   SEARCH_TERM_MIN_LENGTH,
   SEARCH_UPDATE_DELAY
-} from "../const/media-browser";
+} from "../const/media-browser.js";
+import { consume, provide } from "@lit/context";
 
-import styles from '../styles/media-browser';
 
-import { getMediaTypeSvg } from "../utils/thumbnails";
+import '../components/media-browser-cards.js';
+import '../components/section-header.js';
+import styles from '../styles/media-browser.js'
+
 import {
-  generateCustomSectionCards,
-  generateFavoriteCard,
-  generateFavoritesSectionCards,
-  generateRecentsCard
-} from '../utils/media-browser';
-import { Icons } from '../const/icons.js';
+  activeEntityConf,
+  activeMediaBrowserCardsContext,
+  browserControllerContext,
+  EntityConfig,
+  hassExt, 
+  IconsContext,
+  mediaBrowserCardsContext,
+  mediaBrowserConfigContext,
+  useExpressiveContext
+} from "../const/context.js";
+import { Icons } from "../const/icons.js";
+import { MediaBrowserController } from "../controller/browser.js";
+import BrowserActions from "../actions/browser-actions.js";
+import { EnqueueOptions } from "../const/actions.js";
+import { getMediaTypeSvg } from "../utils/thumbnails.js";
 
+@customElement(`mass-media-browser`)
 export class MediaBrowser extends LitElement {
-  @provide( { context: mediaBrowserConfigContext })
-  @property({attribute: false}) 
-  private _config!: MediaBrowserConfig;
-  @state() private cards: MediaBrowserItemsConfig = {main: [], recents: []};
-  @state() private _searchLibrary= false;
-  @state() private _searchMediaTypeIcon: string = mdiMusic;
-  @consume({ context: IconsContext}) private Icons!: Icons;
-  @consume({ context: useExpressiveContext}) private useExpressive!: boolean;
-
-  @consume( { context: activeEntityID, subscribe: true})
-  public activePlayer!: string;
-  @consume( { context: activeEntityConf, subscribe: true})
-  public playerConfig!: EntityConfig;
-
-  public onMediaSelectedAction!: () => void;
-
-  private _activeCards: MediaCardItem[] = [];
-  private _activeSection = 'main';
   private _hass!: ExtendedHass;
-  private _lastSearchInputTs= 0;
-  private _searchMediaTerm = "";
-  private _searchMediaType: MediaTypes = MediaTypes.TRACK;
+  @property({ attribute: false }) private _config!: MediaBrowserConfig;
+  @property({ attribute: false }) public onMediaSelectedAction!: () => void;
+
+  @state() private _cards!: newMediaBrowserItemsConfig
+  @provide({ context: activeMediaBrowserCardsContext })
+  private _activeCards!: MediaCardItem[];
+  
+  @state() 
+  public set activeCards(cards: MediaCardItem[]) {
+    this._activeCards = cards;
+  }
+  public get activeCards() {
+    return this._activeCards;
+  }
+  @consume({ context: useExpressiveContext, subscribe: true}) private useExpressive!: boolean;
+  @consume({ context: IconsContext}) private Icons!: Icons;
+  @consume({ context: activeEntityConf, subscribe: true}) private activeEntityConfig!: EntityConfig;
+  
+  public activeSection = 'favorites'
+  public activeSubSection = 'main'
+  private previousSection!: string;
+  private previousSubSection!: string;
+
+  private _browserController!: MediaBrowserController;
   private actions!: BrowserActions;
-  private previousSection = '';
-  private _hideBackButton!: boolean;
-  private _hideSearch!: boolean;
 
-  public set config(config: MediaBrowserConfig) {
-    if (!config) {
-      return;
-    }
-    this._config = config;
-    this.setupIfReady();
-  }
-  public get config() {
-    return this._config;
-  }
+  @state() private searchMediaTypeIcon!: string;
+  @state() private searchMediaType: MediaTypes = MediaTypes.TRACK; 
+  @state() private searchLibrary = false;
+  private searchTerm = '';
+  private lastSearchInputTs!: number;
+  private _searchTimeout!: number;
 
-  @consume({context: hassExt, subscribe: true})
+  @state() private filterMenuIcon!: string;
+
+  @consume({ context: hassExt, subscribe: true})
   public set hass(hass: ExtendedHass) {
-    if (!hass) {
-      return;
-    }
-    const hassUnset = !this._hass
     this._hass = hass;
-    if (hassUnset) {
-      this.setupIfReady();
+    if (!this.actions) {
+      this.actions = new BrowserActions(hass);
     }
   }
   public get hass() {
     return this._hass;
   }
-  public set activeSection(section: string) {
-    if (!section) {
+
+  @consume({ context: browserControllerContext, subscribe: true})
+  public set browserController(controller: MediaBrowserController) {
+    this._browserController = controller;
+    // this.cards = controller.items;
+  }
+  public get browserController() {
+    return this._browserController;
+  }
+
+  @consume({ context: mediaBrowserConfigContext, subscribe: true})
+  public set config(config: MediaBrowserConfig) {
+    this._config = config;
+  }
+  public get config() {
+    return this._config;
+  }
+
+  @consume({ context: mediaBrowserCardsContext, subscribe: true}) 
+  public set cards(cards: newMediaBrowserItemsConfig) {
+    this._cards = cards;
+    if (this.activeSection == 'search') {
+      this.activeCards = [];
       return;
-    }
-    this._activeSection = section;
-    this.activeCards = this.cards[section];
-    this.setupIfReady();
+    } 
+    this.setActiveCards();
   }
-  public get activeSection() {
-    return this._activeSection;
+  public get cards() {
+     return this._cards
   }
-  private set activeCards(activeCards: MediaCardItem[]) {
-    if (!activeCards?.length && this.activeSection != 'search') {
-      return;
-    }
-    this._activeCards = activeCards;
-    this.requestUpdate();
+  private setPreviousSection() {
+    this.previousSection = this.activeSection;
+    this.previousSubSection = this.activeSubSection;
   }
-  public get activeCards() {
-    return this._activeCards;
-  }
-  private setupIfReady(regenerate=false) {
-    if (
-      !this.config
-      || !this.hass
-    ) {
-      return;
+  /* eslint-disable 
+    @typescript-eslint/no-unsafe-argument,
+    @typescript-eslint/no-unsafe-assignment,
+  */
+  private setActiveCards() {
+    const section = this.activeSection;
+    const subsection = this.activeSubSection;
+    // eslint-disable-next-line @typescript-eslint/no-unsafe-member-access
+    const new_cards = [...this.cards[section][subsection]];
+    const cur_cards = this.activeCards;
+    if (JSON.stringify(new_cards) != JSON.stringify(cur_cards)) {
+      this.activeCards = new_cards
     }
-    if (!this.actions){
-      this.actions = new BrowserActions(this.hass)
-    };
-    if (!this.cards.main.length) {
-      this.generateCards().catch( () => {return});
-      this.requestUpdate();
-    }
-    this.cards.search = [];
-    if (regenerate) {
-      this.generateCards().catch( () => {return});
-      this.activeCards = this.cards[this.activeSection]
-      this.requestUpdate();
-    }
-    this.setHiddenElements();
-  }
-  private setHiddenElements() {
-    if (!this.config || !this.playerConfig) {
-      return;
-    }
-    const card = this.config.hide;
-    const entity = this.playerConfig.hide.media_browser;
-    this._hideBackButton = card.back_button || entity.back_button;
-    this._hideSearch = card.search || entity.search;
-  }
-  /* eslint-disable @typescript-eslint/no-unsafe-assignment */
-  private onFavoriteItemSelected = (data: MediaCardData) => {
-    const content_id: string = data.media_content_id;
-    const content_type: string = data.media_content_type;
-    void this.actions.actionPlayMedia(this.activePlayer, content_id, content_type);
-    this.onMediaSelectedAction();
-  }
-  private onSectionSelect = (data: MediaCardData) => {
-    const subtype: string = data?.subtype ?? 'custom';
-    const section = data.section as MediaTypes;
-    if (subtype == 'favorite') {
-      this._searchMediaType = section;
-      this._searchMediaTypeIcon = getMediaTypeSvg(section, this.Icons);
-    }
-    if (subtype == 'recents') {
-      const recent_section = section.split('-')[1] as MediaTypes;
-      this._searchMediaType = recent_section;
-      this._searchMediaTypeIcon = getMediaTypeSvg(recent_section, this.Icons);
-      
-    }
-    this.activeSection = data.section;
   }
   private onServiceSelect = (data: MediaCardData) => {
     if (data.service) {
-    /* eslint-disable @typescript-eslint/no-unsafe-argument */
-      void this.actions.actionPlayMediaFromService(data.service, this.activePlayer);
-    } else {
-      void this.actions.actionPlayMedia(this.activePlayer, data.media_content_id, data.media_content_type);
-    /* eslint-enable @typescript-eslint/no-unsafe-argument */
+      void this.actions.actionPlayMediaFromService(
+        data.service, 
+        this.activeEntityConfig.entity_id
+      )
+      return;
     }
+    void this.actions.actionPlayMedia(
+      this.activeEntityConfig.entity_id,
+      data.media_content_id,
+      data.media_content_type
+    )
     this.onMediaSelectedAction();
   }
+  private onSectionSelect = (data: MediaCardData) => {
+    this.setPreviousSection();
+    this.activeSection = data.subtype;
+    this.activeSubSection = data.section;
+    this.setActiveCards();
+  }
+  private onItemSelect = (data: MediaCardData) => {
+    void this.actions.actionPlayMedia(
+      this.activeEntityConfig.entity_id,
+      data.media_content_id,
+      data.media_content_type
+    )
+  }
+  /* eslint-enable 
+    @typescript-eslint/no-unsafe-argument
+  */
   private onSelect = (data: MediaCardData) => {
     const funcs = {
       section: this.onSectionSelect,
-      favorites: this.onFavoriteItemSelected,
-      service: this.onServiceSelect,
+      item: this.onItemSelect,
+      service: this.onServiceSelect
     }
-  /* eslint-disable-next-line @typescript-eslint/no-unsafe-member-access */
+    /* eslint-disable
+      @typescript-eslint/no-unsafe-member-access,
+      @typescript-eslint/no-unsafe-call,
+    */
     const func = funcs[data.type];
-  /* eslint-disable-next-line @typescript-eslint/no-unsafe-call */
     func(data);
+    /* eslint-enable
+      @typescript-eslint/no-unsafe-member-access,
+      @typescript-eslint/no-unsafe-call,
+      @typescript-eslint/no-unsafe-assignment,
+    */
   }
   private onEnqueue = (data: MediaCardData, enqueue: EnqueueOptions) => {
+    /* eslint-disable
+      @typescript-eslint/no-unsafe-assignment
+    */
     const content_id: string = data.media_content_id;
     const content_type: string = data.media_content_type;
+    /* eslint-enable
+      @typescript-eslint/no-unsafe-assignment
+    */
     if (enqueue == EnqueueOptions.RADIO) {
       void this.actions.actionPlayRadio(
-        this.activePlayer,
+        this.activeEntityConfig.entity_id,
         content_id,
         content_type
       );
-      this.onMediaSelectedAction();
-    } else {
-      void this.actions.actionEnqueueMedia(
-        this.activePlayer,
-        content_id,
-        content_type,
-        enqueue
-      );
-    }
-  }
-  private onBack = () => {
-    if (['search', 'recents'].includes(this.activeSection)  && this.previousSection.length) {
-      this.activeSection = this.previousSection;
       return;
     }
-    this.activeSection = 'main';
+    void this.actions.actionEnqueueMedia(
+      this.activeEntityConfig.entity_id,
+      content_id,
+      content_type,
+      enqueue
+    )
   }
-  private onRecentsPress = () => {
-    this.previousSection = this.activeSection;
-    this.activeSection = 'recents';
+  private onBack = () => {
+    this.activeSection = this.previousSection;
+    this.activeSubSection = this.previousSubSection;
+    this.setActiveCards();
   }
-  private onSearchPress = () => {
-    this._searchMediaTerm = '';
-    this.cards.search = [];
-    this.previousSection = this.activeSection;
+  private onSearchButtonPress = () => {
+    this.setPreviousSection();
+    if (!this.searchMediaTypeIcon) {
+      this.searchMediaTypeIcon = getMediaTypeSvg(MediaTypes.TRACK, this.Icons);
+    }
+    this.searchTerm = '';
     this.activeSection = 'search';
+    this.cards.search = [];
+    this.activeCards = this.cards.search;
+    
   }
-  private onSearchInput = (ev: Event) => {
-    // eslint-disable-next-line @typescript-eslint/no-explicit-any, @typescript-eslint/no-unsafe-member-access
-    const val = ((ev.target as any).value as string).trim();
+  private onSearchMediaTypeSelect = async (ev: TargetValEvent) => {
+    const val = ev.target.value as MediaTypes;
+    if (!val) {
+      return;
+    }
+    ev.target.value = '';
+    this.searchMediaType = val;
+    this.searchMediaTypeIcon = getMediaTypeSvg(val, this.Icons);
+    await this.searchMedia()
+  }
+  private onSearchLibrarySelect = async () => {
+    this.searchLibrary = !this.searchLibrary;
+    await this.searchMedia()
+  }
+  private onSearchInput = (ev: TargetValEvent) => {
+    const val = ev.target.value.trim();
     if (val.length < SEARCH_TERM_MIN_LENGTH) {
       return;
     }
     const cur_ts = Date.now();
-    this._lastSearchInputTs = cur_ts;
-    this._searchMediaTerm = val;
-    setTimeout(
-      async () => {
-        await this.searchIfNotUpdated(cur_ts, val, this._searchMediaType);
+    this.lastSearchInputTs = cur_ts;
+    this.searchTerm = val;
+    if (this._searchTimeout) {
+      clearTimeout(this._searchTimeout)
+      this._searchTimeout = 0;
+    }
+    this._searchTimeout = setTimeout(
+      () => {
+        this._searchTimeout = 0;
+        void this.searchMedia()
       },
       SEARCH_UPDATE_DELAY
     )
   }
-  private onSearchMediaTypeSelect = async (ev: CustomEvent) => {
-    /* eslint-disable
-      @typescript-eslint/no-explicit-any,
-      @typescript-eslint/no-unsafe-member-access,
-    */
-    const target = ev.target as any;
-    const value = target.value as MediaTypes;
-    if (!value) {
+  private onFilterType = (ev: TargetValEvent) => {
+    const val = ev.target.value;
+    if (!val.length) {
       return;
     }
-    target.value = "";
-    /* eslint-enable
-      @typescript-eslint/no-explicit-any,
-      @typescript-eslint/no-unsafe-member-access,
-    */
-    this._searchMediaType = value;
-    this._searchMediaTypeIcon = getMediaTypeSvg(value, this.Icons);
-    await this.generateSearchResults(this._searchMediaTerm, this._searchMediaType, this._searchLibrary);
-    this.activeCards = this.cards.search;
-  }
-  private onSearchLibrarySelect = async () => {
-    this._searchLibrary = !this._searchLibrary;
-    await this.generateSearchResults(this._searchMediaTerm, this._searchMediaType, this._searchLibrary);
-    this.activeCards = this.cards.search;
-
-  }
-  private async searchIfNotUpdated(last_ts: number, search_term: string, media_type: MediaTypes) {
-    if (last_ts != this._lastSearchInputTs) {
+    ev.target.value = ``;
+    if (!Object.keys(this.cards).includes(val)) {
       return;
     }
-    await this.generateSearchResults(search_term, media_type, this._searchLibrary);
-    this.activeCards = this.cards.search;
+    this.activeSection = val;
+    this.activeSubSection = 'main';
+    /* eslint-disable-next-line
+      @typescript-eslint/no-unsafe-assignment,
+      @typescript-eslint/no-unsafe-member-access
+    */
+    this.activeCards = this.cards[val].main;
   }
-  private async generateSearchResults(
-    search_term: string,
-    media_type: MediaTypes,
-    library_only = false as boolean,
-    limit: number = DEFAULT_SEARCH_LIMIT
-  ) {
+  private async searchMedia() {
+    const search_term = this.searchTerm;
     if (search_term.length < SEARCH_TERM_MIN_LENGTH) {
       return;
     }
-    const search_result = await this.actions.actionSearchMedia(
-      this.activePlayer,
+    const cards = await this.browserController.search(
+      this.activeEntityConfig.entity_id,
       search_term,
-      media_type,
-      library_only,
-      limit
-    );
-    const items = generateFavoritesSectionCards(search_result, media_type);
-    this.cards.search = items;
-  }
-  private generateFavoriteData = async (config: FavoriteItemConfig, media_type: MediaTypes) => {
-    if (config.enabled) {
-      const result = await this.getFavoriteSection(media_type, config.limit, config.items, config.favorites_only);
-      if (!result.length) {
-        return;
-      }
-      this.cards[media_type] = result;
-      const card = generateFavoriteCard(this.hass, media_type, result);
-      this.cards.main.push(card);
-    }
-  }
-  private generateRecentsData = async (config: FavoriteItemConfig, media_type: MediaTypes) => {
-    const hide = this.config.hide.recents || this.playerConfig.hide.media_browser.recents;
-    if (config.enabled && !hide) {
-      const result = await this.getRecentSection(media_type, config.limit)
-      const card = generateRecentsCard(this.hass, media_type, result);
-      if (result.length) {
-        this.cards[`recents-${media_type}`] = result;
-        this.cards.recents.push(card)
-      };
-    }
-  }
-  private generateCustomSectionData = (config: customSection) => {
-    const section_card = {
-      title: config.name,
-      thumbnail: config.image,
-      fallback: Thumbnail.CLEFT,
-      data: {
-        type: 'section',
-        subtype: 'custom',
-        section: config.name
-      }
-    };
-    const cards = generateCustomSectionCards(config.items);
-    this.cards[config.name] = cards;
-    this.cards.main.push(section_card);
-  }
-  private generateCustomSectionsData = (config: customSection[]) => {
-    config.forEach(
-      (item) => {
-        this.generateCustomSectionData(item);
-      }
+      this.searchMediaType,
+      this.searchLibrary,
+      DEFAULT_SEARCH_LIMIT
     )
+    this.activeCards = cards;    
   }
-
-  private generateCards = async () => {
-    const favorites = this.config.favorites;
-    const promises = Promise.all( [
-        this.generateFavoriteData(favorites.albums, MediaTypes.ALBUM),
-        this.generateFavoriteData(favorites.artists, MediaTypes.ARTIST),
-        this.generateFavoriteData(favorites.audiobooks, MediaTypes.AUDIOBOOK),
-        this.generateFavoriteData(favorites.playlists, MediaTypes.PLAYLIST),
-        this.generateFavoriteData(favorites.podcasts, MediaTypes.PODCAST),
-        this.generateFavoriteData(favorites.radios, MediaTypes.RADIO),
-        this.generateFavoriteData(favorites.tracks, MediaTypes.TRACK),
-        
-        this.generateRecentsData(favorites.albums, MediaTypes.ALBUM),
-        this.generateRecentsData(favorites.artists, MediaTypes.ARTIST),
-        this.generateRecentsData(favorites.audiobooks, MediaTypes.AUDIOBOOK),
-        this.generateRecentsData(favorites.playlists, MediaTypes.PLAYLIST),
-        this.generateRecentsData(favorites.podcasts, MediaTypes.PODCAST),
-        this.generateRecentsData(favorites.radios, MediaTypes.RADIO),
-        this.generateRecentsData(favorites.tracks, MediaTypes.TRACK),
-
-    ]);
-    await promises;
-    this.generateCustomSectionsData(this.config.sections);
-    this.activeCards = this.cards[this.activeSection];
-    this.requestUpdate();
+  protected renderBrowserCards(): TemplateResult {
+    return html`
+      <mass-browser-cards
+        .onSelectAction=${this.onSelect}
+        .onEnqueueAction=${this.onEnqueue}
+      ></mass-browser-cards>
+    `
   }
-  private getFavoriteSection = async (
-    media_type: MediaTypes,
-    limit: number,
-    custom_items: customItem[],
-    favorites_only = true
-  ) => {
-    const response: MediaLibraryItem[] = await this.actions.actionGetLibrary(this.activePlayer, media_type, limit, favorites_only);
-    const items = generateFavoritesSectionCards(response, media_type);
-    const customs = generateCustomSectionCards(custom_items);
-    return [...items, ...customs];
+  protected renderTitle(): TemplateResult {
+    const title = `Media Browser - ${this.activeSection}`
+    return html`
+      <span slot="label" id="title">
+        ${title}
+      </span>
+    `
   }
-  private getRecentSection = async (
-    media_type: MediaTypes,
-    limit: number,
-  ) => {
-    const response: MediaLibraryItem[] = await this.actions.actionGetLibraryRecents(this.activePlayer, media_type, limit);
-    const items = generateFavoritesSectionCards(response, media_type);
-    return [...items];
+  protected renderSearchMediaTypeButton(): TemplateResult {
+    if (this.activeSection == 'search') {
+      const icons = getSearchMediaButtons(this.Icons);
+      return html`
+        <mass-menu-button
+          id="search-media-type-menu"
+          class="${this.useExpressive ? `search-media-type-menu-expressive` : ``}"
+          .iconPath=${this.searchMediaTypeIcon}
+          .items=${icons}
+          .onSelectAction=${this.onSearchMediaTypeSelect}
+          fixedMenuPosition
+        ></mass-menu-button>
+      `
+    }
+    return html``
   }
-  protected renderBackButton() {
-    if (this._hideBackButton) {
+  protected renderSearchLibraryButton(): TemplateResult {
+    if (this.activeSection == 'search') {
+      return html`
+        <ha-button
+          appearance="plain"
+          variant="brand"
+          size="medium"
+          id="search-favorite-button"
+          @click=${this.onSearchLibrarySelect}
+          class="button-min"
+        >
+          <ha-svg-icon
+            .path=${this.searchLibrary ? this.Icons.LIBRARY : this.Icons.LIBRARY_OUTLINED}
+            class="svg-xs ${this.useExpressive ? `svg-menu-expressive`: ``}"
+          ></ha-svg-icon>
+        </ha-button>
+      `
+    }
+    return html``
+  }
+  protected renderSearchBar() {
+    const styles_base_url = 'https://cdn.jsdelivr.net/npm/@shoelace-style/shoelace@2.20.1/cdn/themes/';
+    const darkMode = this.hass.themes.darkMode;
+    const styles_url = styles_base_url + (darkMode ? 'dark.css' : 'light.css');
+    return html`
+      <span slot="end" id="search-input"
+      >
+        <link rel="stylesheet" href="${styles_url}">
+        <sl-input
+          placeholder="Search"
+          type="search"
+          class="${darkMode ? `sl-theme-dark` : `sl-theme-light`}"
+          inputmode="search"
+          size="medium"
+          clearable
+          pill
+          @sl-input=${this.onSearchInput}
+        >
+          <span slot="suffix">
+            <div id="search-options">
+              ${this.renderSearchMediaTypeButton()}
+              ${this.renderSearchLibraryButton()}
+            </div>
+          </span>
+        </sl-input>
+      </span>
+    `
+  }
+  protected renderEndButtons(): TemplateResult {
+    return html`
+      <span slot="end" id="buttons-end">
+        <div id="header-buttons-end">
+          ${this.renderFilterButton()}
+          ${this.renderSearchButton()}
+        </div>
+      </span>
+    `
+  }
+  protected renderSearchButton(): TemplateResult {
+    const hide = this.config.hide.search || this.activeEntityConfig.hide.media_browser.search;
+    if (hide) {
+      return html``
+    }
+    return html`
+      <ha-button
+        appearance="plain"
+        variant="brand"
+        size="medium"
+        id="button-search"
+        class="button-min ${this.useExpressive ? `button-expressive` : ``}"
+        @click=${this.onSearchButtonPress}
+      >
+        <ha-svg-icon
+          .path=${this.Icons.SEARCH}
+          class="header-icon"
+        ></ha-svg-icon>
+      </ha-button>
+    `  
+  }
+  protected renderBackButton(): TemplateResult {
+    const hide = this.config.hide.back_button || this.activeEntityConfig.hide.media_browser.back_button;
+    if (hide) {
       return html``
     }
     return html`
@@ -414,7 +419,8 @@ export class MediaBrowser extends LitElement {
           appearance="plain"
           variant="brand"
           size="medium"
-          class="button-back button-min ${this.useExpressive ? `button-expressive` : ``}"
+          id="button-back"
+          class="button-min ${this.useExpressive ? `button-expressive` : ``}"
           @click=${this.onBack}
         >
           <ha-svg-icon
@@ -424,124 +430,23 @@ export class MediaBrowser extends LitElement {
         </ha-button>
       </span>
     `
-  }
-  protected renderRecentsButton() {
-    if (this.config.hide.recents || this.playerConfig.hide.media_browser.recents) {
-      return html``
-    }
-    return html`
-      <ha-button
-        appearance="plain"
-        variant="brand"
-        size="medium"
-        class="button-recents button-min ${this.useExpressive ? `button-expressive` : ``}"
-        @click=${this.onRecentsPress}
-      >
-        <ha-svg-icon
-          .path=${this.Icons.RECENTS}
-          class="header-icon"
-        ></ha-svg-icon>
-      </ha-button>
-    `
-  }
-  protected renderSearchButton() {
-    if (this._hideSearch) {
-      return html``
-    }
-    return html`
-      <ha-button
-        appearance="plain"
-        variant="brand"
-        size="medium"
-        class="button-search button-min ${this.useExpressive ? `button-expressive` : ``}"
-        @click=${this.onSearchPress}
-      >
-        <ha-svg-icon
-          .path=${this.Icons.SEARCH}
-          class="header-icon"
-        ></ha-svg-icon>
-      </ha-button>
-    `
-  }
-  protected renderEndButtons() {
-    return html`
-      <span slot="end" id="search-button">
-        <div id="header-buttons-end">
-          ${this.renderRecentsButton()}
-          ${this.renderSearchButton()}
-        </div>
-      </span>
-    `
 
   }
-  protected renderTitle() {
-    const title = this.activeSection == 'main' ? 'Media Browser' : this.activeSection;
+  protected renderFilterButton(): TemplateResult {
+    const icons = getFilterButtons(this.Icons);
+    const icon = this.Icons.FILTER
     return html`
-      <span slot="label" id="title">
-        ${title}
-      </span>
+      <mass-menu-button
+        id="filter-menu"
+        class="hdr-menu ${this.useExpressive ? `filter-menu-expressive` : ``}"
+        .iconPath=${icon}
+        .items=${icons}
+        .onSelectAction=${this.onFilterType}
+        fixedMenuPosition
+      ></mass-menu-button>
     `
   }
-  protected renderSearchMediaTypesButton() {
-    if (this.activeSection == 'search') {
-      const icons = getSearchMediaButtons(this.Icons);
-      return html`
-        <mass-menu-button
-          id="search-media-type-menu"
-          .iconPath=${this._searchMediaTypeIcon}
-          .items=${icons}
-          .onSelectAction=${this.onSearchMediaTypeSelect}
-          fixedMenuPosition
-        ></mass-menu-button>
-      `
-    }
-    return html``
-  }
-  protected renderSearchLibraryButton() {
-    if (this.activeSection == 'search') {
-      return html`
-        <ha-button
-          appearance="plain"
-          variant="brand"
-          size="medium"
-          class="search-favorite-button"
-          @click=${this.onSearchLibrarySelect}
-        >
-          <ha-svg-icon
-            .path=${this._searchLibrary ? this.Icons.LIBRARY : this.Icons.LIBRARY_OUTLINED}
-            style="height: 1.5rem; width: 1.5rem;"
-          ></ha-svg-icon>
-        </ha-button>
-      `
-    } return html``
-  }
-  protected renderSearchBar() {
-    const styles_base_url = 'https://cdn.jsdelivr.net/npm/@shoelace-style/shoelace@2.20.1/cdn/themes/';
-    const styles_url = styles_base_url + (this.hass.themes.darkMode ? 'dark.css' : 'light.css');
-    return html`
-      <span
-        slot="end"
-        id="search-input"
-      >
-        <link rel="stylesheet" href="${styles_url}" />
-        <sl-input
-          placeholder="Search"
-          type="search"
-          class="${this.hass.themes.darkMode ? 'sl-theme-dark' : 'sl-theme-light'}"
-          inputmode="search"
-          size="medium"
-          clearable
-          pill
-        >
-          <span slot="suffix" id="search-options">
-            ${this.renderSearchMediaTypesButton()}
-            ${this.renderSearchLibraryButton()}
-          </span>
-        </sl-input>
-      </span>
-    `
-  }
-  protected renderSearchHeader() {
+  protected renderSearchHeader(): TemplateResult {
     return html`
       <mass-section-header id="search">
         ${this.renderBackButton()}
@@ -549,7 +454,7 @@ export class MediaBrowser extends LitElement {
       </mass-section-header>
     `
   }
-  protected renderSectionHeader() {
+  protected renderSubsectionHeader(): TemplateResult {
     return html`
       <mass-section-header>
         ${this.renderBackButton()}
@@ -558,68 +463,61 @@ export class MediaBrowser extends LitElement {
       </mass-section-header>
     `
   }
-  protected renderMainHeader() {
+  protected renderMainHeader(): TemplateResult {
     return html`
       <mass-section-header>
         ${this.renderTitle()}
         ${this.renderEndButtons()}
       </mass-section-header>
     `
+
   }
-  protected renderBrowserCards() {
-    const activeCards = this.cards[this.activeSection];
-    return html`
-      <mass-browser-cards
-        .items=${activeCards}
-        .onSelectAction=${this.onSelect}
-        .onEnqueueAction=${this.onEnqueue}
-      >
-      </mass-browser-cards>
-    `
+  protected shouldUpdate(_changedProperties: PropertyValues): boolean {
+    return _changedProperties.size > 0;
   }
-  protected renderHeader() {
-    switch (this.activeSection) {
-      case "main":
-        return this.renderMainHeader();
-      case "search":
-        return this.renderSearchHeader();
-    default:
-      return this.renderSectionHeader();
+  // protected getSectionHeader(): TemplateResult {
+    // switch (this.activeSubSection) {
+    //   case "favorites":
+    //     return this.renderMainHeader();
+    //   case "search":
+    //     return this.renderSearchHeader();
+    //   default:
+    //     return this.renderSubsectionHeader();
+    // }
+  // }
+  protected renderHeader(): TemplateResult {
+    if (this.activeSection == "search") {
+      return this.renderSearchHeader();
     }
-  }
-  protected render() {
-    if (!this.cards) {
-      return;
+    if (this.activeSection == "favorites" && this.activeSubSection == "main") {
+      return this.renderMainHeader();
     }
+    return this.renderSubsectionHeader();
+    // return html`
+    //   <mass-section-header>
+    //     ${this.getSectionHeader()}
+    //   </mass-section-header>
+    // `
+  }
+  protected render(): TemplateResult {
     return html`
-      <div
-        id="container"
-        class="${this.useExpressive ? `container-expressive` : ``}"
-      >
+      <div id="container" class="${this.useExpressive ? `container-expressive` : ``}">
         ${this.renderHeader()}
-        <wa-animation 
+        <wa-animation
           name="fadeIn"
           easing="ease-in"
           iterations=1
           play=${this.checkVisibility()}
           playback-rate=4
         >
-          <div class="mass-browser ${this.useExpressive ? `mass-browser-expressive` : ``}">
-            ${this.renderBrowserCards()}
-          </div>
+        <div id="mass-browser" class="${this.useExpressive ? `mass-browser-expressive` : ``}">
+          ${this.renderBrowserCards()}
+        </div>
         </wa-animation>
       </div>
-    `;
-  }
-  protected updated() {
-    if (!(this.activeSection == 'search')) {
-      return;
-    }
-    const element = this.shadowRoot?.getElementById('search-input');
-    element?.addEventListener('sl-input', this.onSearchInput);
+    `
   }
   static get styles(): CSSResultGroup {
     return styles;
   }
 }
-customElements.define('mass-media-browser', MediaBrowser);

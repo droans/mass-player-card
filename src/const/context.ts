@@ -23,6 +23,8 @@ import { Theme } from '@material/material-color-utilities';
 import { Icons } from './icons';
 import { QueueItem, QueueItems } from './player-queue.js';
 import { QueueController } from '../controller/queue.js';
+import { MediaBrowserController } from '../controller/browser.js';
+import { MediaCardItem, newMediaBrowserItemsConfig } from './media-browser.js';
 export type {
   EntityConfig
 } from '../config/config';
@@ -39,7 +41,7 @@ export const configContext = createContext<Config>('config');
 export const entitiesConfigContext = createContext<EntityConfig[]>('entities-config');
 export const musicPlayerConfigContext = createContext<PlayerConfig>('music-player-config');
 export const playerQueueConfigContext = createContext<QueueConfig>('player-queue-config');
-export const mediaBrowserConfigContext = createContext<MediaBrowserConfig>('media-browser-config');
+export const mediaBrowserConfigContext = createContext<MediaBrowserConfig>('mass-browser-config');
 export const playersConfigContext = createContext<PlayersConfig>('players-config');
 
 export const activeSectionContext = createContext<Sections>('active-section');
@@ -48,6 +50,7 @@ export const activePlayerControllerContext = createContext<ActivePlayerControlle
 export const actionsControllerContext = createContext<ActionsController>('actions-controller');
 export const controllerContext = createContext<MassCardController>('controller');
 export const queueControllerContext = createContext<QueueController>('queue-controller');
+export const browserControllerContext = createContext<MediaBrowserController>('browser-controller');
 
 export const expressiveThemeContext = createContext<Theme | undefined>('expressive-theme');
 export const useExpressiveContext = createContext<boolean>('use-expressive');
@@ -57,3 +60,6 @@ export const queueContext = createContext<QueueItems | null>('queue');
 export const currentQueueItemContext = createContext<QueueItem | null>('current-queue-item');
 export const nextQueueItemContext = createContext<QueueItem | null>('next-queue-item');
 export const previousQueueItemContext = createContext<QueueItem | null>('previous-queue-item');
+
+export const mediaBrowserCardsContext = createContext<newMediaBrowserItemsConfig>('browser-cards');
+export const activeMediaBrowserCardsContext = createContext<MediaCardItem[]>('active-browser-items');

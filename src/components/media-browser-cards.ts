@@ -18,7 +18,7 @@ import {
   EnqueueOptions
 } from "../const/actions";
 import { ExtendedHass } from "../const/common";
-import { hassExt, mediaBrowserConfigContext } from "../const/context";
+import { activeMediaBrowserCardsContext, hassExt, mediaBrowserConfigContext } from "../const/context";
 import {
   MediaCardData,
   MediaCardItem
@@ -26,22 +26,32 @@ import {
 
 import styles from '../styles/media-browser-cards';
 import { MediaBrowserConfig } from "../config/media-browser.js";
-import { cache } from "lit/directives/cache.js";
 
 class MediaBrowserCards extends LitElement {
   @state() private code!: TemplateResult;
 
-  @consume({context: hassExt})
+  @consume({context: hassExt, subscribe: true})
   public hass!: ExtendedHass;
 
-  @consume({ context: mediaBrowserConfigContext})
-  private browserConfig!: MediaBrowserConfig;
+  private _browserConfig!: MediaBrowserConfig;
+  @consume({ context: mediaBrowserConfigContext, subscribe: true})
+  public set browserConfig(conf: MediaBrowserConfig) {
+    this._browserConfig = conf
+    if (this.items) {
+      this.generateCode();
+    }
+  }
+  public get browserConfig() {
+    return this._browserConfig;
+  }
 
   public onEnqueueAction!: CardEnqueueService;
   public onSelectAction!: CardSelectedService;
 
-  private _items!: MediaCardItem[];
+  @state() private _items!: MediaCardItem[];
 
+  @consume({ context: activeMediaBrowserCardsContext, subscribe: true})
+  @state()
   public set items(items: MediaCardItem[]) {
     if (!items?.length) {
       return;
@@ -50,7 +60,9 @@ class MediaBrowserCards extends LitElement {
     const new_items = JSON.stringify(items);
     if (cur_items != new_items){
       this._items = items;
-      this.generateCode();
+      if (this.browserConfig) {
+        this.generateCode();
+      }
     }
   }
   public get items() {
@@ -69,7 +81,7 @@ class MediaBrowserCards extends LitElement {
         // eslint-disable-next-line @typescript-eslint/no-unsafe-member-access
         const queueable = (item.data?.media_content_id?.length > 0 && item.data?.media_content_type?.length > 0) ? literal`queueable` : literal``;
         const width = ((1 / this.browserConfig.columns) * 100) - 2
-        return cache(html`
+        return html`
           <mass-media-card
             style="max-width: ${width.toString()}%"
             .config=${item}
@@ -78,7 +90,7 @@ class MediaBrowserCards extends LitElement {
             ${queueable}
           >
           </mass-media-card>
-        `)
+        `
       }
     )
     this.code = html`

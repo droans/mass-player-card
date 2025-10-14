@@ -3,7 +3,7 @@ import { css } from 'lit';
 // Styles belonging to the card
 // https://lit.dev/docs/components/styles/
 export default css`
-  .button-min {
+  .button-min, filter-menu::part(menu-button) {
     height: 35px;
     width: 35px;
     --wa-color-fill-quiet: rgba(from var(--md-sys-color-primary) r g b / 0.1);
@@ -14,7 +14,7 @@ export default css`
     height: 35px;
     width: 35px;
   }
-  .button-expressive::part(base) {
+  .button-expressive::part(base), .filter-menu-expressive::part(menu-select-menu) {
     box-shadow: var(--md-sys-elevation-level1);
     border-radius: var(--button-small-border-radius) !important;
     background-color: var(--md-sys-color-secondary-container);
@@ -28,7 +28,35 @@ export default css`
     border-radius: var(--expressive-border-radius-container);
     background-color: var(--expressive-color-container);
   }
-  
+  #filter-menu {
+
+  }
+  #filter-menu::part(menu-button) {
+  }
+  #filter-menu::part(menu-list-item) {
+  }
+  #filter-menu::part(menu-list-item-svg) {
+    height: 2em;
+    width: 2em;
+  }
+  #filter-menu::part(menu-select-menu) {
+    --mdc-icon-size: 1.5em;
+    --control-select-menu-padding: 0px;
+    --control-select-menu-background-color: unset;
+    --control-select-menu-height: 35px;
+    width: 35px;
+  }
+  #filter-menu::part(menu-svg) {
+    height: 30px;
+    width: 30px;
+    position: absolute;
+    top: 2.5px;
+    left: 2.5px;
+  }
+  #filter-menu-expressive::part(menu-svg) {
+    color: var(--md-sys-color-on-background);
+  }
+
   #header-buttons-end {
     display: flex;
     gap: 8px;
@@ -40,7 +68,7 @@ export default css`
     color: var(--md-sys-color-on-secondary-container);
   }
 
-  .mass-browser {
+  #mass-browser {
     padding-top: 8px;
   }
   .mass-browser-expressive {
@@ -52,8 +80,9 @@ export default css`
   #search::part(end) {
     width: calc(100% - 3em - 40px);
   }
-  .search-favorite-button::part(base) {
+  #search-favorite-button::part(base) {
     width: 36px;
+    vertical-align: top;
   }
   #search-input {
     height: 40px;
@@ -62,10 +91,8 @@ export default css`
     z-index: 2;
   }
   #search-media-type-menu {
-    display: inline-block;
   }
   #search-media-type-menu::part(menu-button) {
-    width: 36px;
   }
   #search-media-type-menu::part(menu-list-item) {
   }
@@ -77,10 +104,33 @@ export default css`
     --mdc-icon-size: 1.5em;
     --control-select-menu-padding: 0px;
     --control-select-menu-background-color: unset;
+    height: 35px;
+    width: 35px;
   }
   #search-media-type-menu::part(menu-svg) {
+    height: 30px;
+    width: 30px;
+    position: absolute;
+    top: 2.5px;
+    left: 2.5px;
+  }
+  #search-media-type-menu-expressive::part(menu-svg) {
     color: var(--md-sys-color-on-background);
   }
+  #search-options {
+    height: 35px;
+    display: flex;
+  }
+
+  .svg-menu-expressive {
+    color: var(--md-sys-color-on-background);
+  }
+  .svg-xs {
+    height: 30px;
+    width: 30px;
+  }
+  
+
   #title {
     text-indent: var(--title-indent);
     text-transform: capitalize;

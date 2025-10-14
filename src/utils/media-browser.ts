@@ -1,7 +1,7 @@
 import { html, TemplateResult } from "lit"
 import { ExtendedHass, Thumbnail, MediaTypes } from "../const/common"
 import { backgroundImageFallback } from "./thumbnails"
-import { MediaCardItem, MediaLibraryItem, MediaTypeThumbnails } from "../const/media-browser"
+import { MediaCardItem, MediaLibraryItem, MediaTypeThumbnails, RecommendationSection } from "../const/media-browser"
 import { testMixedContent } from "./util"
 import { customItem } from "../config/media-browser"
 
@@ -52,7 +52,7 @@ export function generateFavoriteCard(hass: ExtendedHass, media_type: MediaTypes,
     fallback: thumbnail,
     data: {
       type: 'section',
-      subtype: 'favorite',
+      subtype: 'favorites',
       section: media_type
     }
   }
@@ -67,9 +67,41 @@ export function generateRecentsCard(hass: ExtendedHass, media_type: MediaTypes, 
     data: {
       type: 'section',
       subtype: 'recents',
-      section: `recents-${media_type}`
+      section: media_type
     }
   }
+}
+export function generateRecommendationsCard(hass: ExtendedHass, section: RecommendationSection, cards: MediaCardItem[]): MediaCardItem {
+  const thumbnail: Thumbnail = Thumbnail.CLEFT;
+  return {
+    title: section.name,
+    background: generateSectionBackground(hass, cards, thumbnail),
+    thumbnail: thumbnail,
+    fallback: thumbnail,
+    data: {
+      type: 'section',
+      subtype: 'recommendations',
+      section: section.name
+    }
+  }
+}
+export function generateRecommendationSectionCards(section: RecommendationSection) {
+  const items = section.items;
+  return items.map(
+    (item) => {
+      const r: MediaCardItem = {
+        title: item.name,
+        thumbnail: item.image,
+        fallback: Thumbnail.CLEFT,
+        data: {
+          type: 'service',
+          media_content_id: item.item_id,
+          media_content_type: item.media_type
+        }
+      };
+      return r
+    }
+  )
 }
 export function generateCustomSectionCards(config: customItem[]) {
   return config.map(

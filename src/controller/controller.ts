@@ -5,6 +5,7 @@ import {
   actionsControllerContext,
   activePlayerControllerContext,
   activeSectionContext,
+  browserControllerContext,
   hassExt,
   queueControllerContext
 } from "../const/context";
@@ -13,6 +14,7 @@ import { ActivePlayerController } from "./active-player";
 import { Sections } from "../const/card";
 import { ActionsController } from "./actions";
 import { QueueController } from "./queue.js";
+import { MediaBrowserController } from "./browser.js";
 
 export class MassCardController {
   private _hass = new ContextProvider(document.body, { context: hassExt });
@@ -22,7 +24,7 @@ export class MassCardController {
   private activePlayerController!: ContextProvider<typeof activePlayerControllerContext>;
   private actionsController!: ContextProvider<typeof actionsControllerContext>;
   private queueController!: ContextProvider<typeof queueControllerContext>;
-  
+  private browserController!: ContextProvider<typeof browserControllerContext>;
   private _activeSection = new ContextProvider(document.body, { context: activeSectionContext});
 
   constructor(host: HTMLElement) {
@@ -39,6 +41,7 @@ export class MassCardController {
     this._setupActiveController();      
     this._setupActionsController();
     this._setupQueueController();
+    this._setupBrowserController();
   }
   private _setupActiveController() {
     if (this.hass && this.config && !this.activePlayerController) {
@@ -68,6 +71,17 @@ export class MassCardController {
       this.queueController.setValue(new QueueController(this.hass, this.activeEntity, this.config));
     }
   }
+  private _setupBrowserController() {
+    if (
+      this.hass 
+      && this.config
+      && this.activeEntityId
+      && !this.browserController
+    ) {
+      this.browserController = new ContextProvider(this.host, { context: browserControllerContext});
+      this.browserController.setValue(new MediaBrowserController(this.hass, this.config, this.activeEntityId));
+    }
+  }
 
   public set hass(hass: ExtendedHass) {
     this._hass.value = hass;
@@ -94,6 +108,7 @@ export class MassCardController {
     this.ActivePlayer.setActivePlayer(entity);
     this.Actions.setEntityConfig(this.ActivePlayer.activeEntityConfig);
     this.Queue.setActiveEntityId(entity);
+    this.Browser.activeEntityId = entity;
   }
   public get activeEntityId() {
     return this.ActivePlayer.activeEntityID;
@@ -119,5 +134,9 @@ export class MassCardController {
 
   public get Queue() {
     return this.queueController.value;
+  }
+
+  public get Browser() {
+    return this.browserController.value;
   }
 }

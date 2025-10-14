@@ -31,6 +31,17 @@ export interface MediaCardItem {
   data: MediaCardData,
   background?: TemplateResult
 }
+
+export interface mediaBrowserSectionConfig {
+  main: MediaCardItem[],
+  [str: string]: MediaCardItem[],
+}
+export interface newMediaBrowserItemsConfig {
+  favorites: mediaBrowserSectionConfig,
+  recents: mediaBrowserSectionConfig,
+  recommendations: mediaBrowserSectionConfig,
+  search: MediaCardItem[],
+}
 export interface MediaBrowserItemsConfig {
   main: MediaCardItem[],
   [str: string]: MediaCardItem[]
@@ -56,6 +67,29 @@ export interface ListItemData {
   option: string,
   icon: string,
   title: string
+}
+
+export interface RecommendationItem {
+  item_id: string;
+  name: string;
+  sort_name: string;
+  uri: string;
+  media_type: string;
+  image: string
+}
+export type RecommendationItems = RecommendationItem[]
+export interface RecommendationSection {
+  item_id: string;
+  provider: string;
+  sort_name: string;
+  name: string;
+  uri: string;
+  icon: string;
+  image: string | null;
+  items: RecommendationItems;
+}
+export interface RecommendationResponse {
+  response: {response: RecommendationSection[]}
 }
 
 export type ListItems = ListItemData[];
@@ -132,6 +166,23 @@ export function getSearchMediaButtons(icons: Icons): ListItems {
       title: 'Tracks'
     },
 
+  ]
+}
+export function getFilterButtons(icons: Icons): ListItems {
+  return [
+    {
+      option: "favorites",
+      icon: icons.HEART,
+      title: "Favorites"
+    },{
+      option: "recents",
+      icon: icons.RECENTS,
+      title: "Recents"
+    },{
+      option: "recommendations",
+      icon: icons.SUGGESTIONS,
+      title: "Recommendations"
+    },
   ]
 }
 
