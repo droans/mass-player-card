@@ -42,7 +42,11 @@ export class ActivePlayerController {
   }
   public set hass(hass: ExtendedHass) {
     this._hass = hass;
-    this.setActivePlayer(this.activeEntityID);
+    const cur_entity = this.activeMediaPlayer;
+    const new_entity = hass.states[this.activeEntityID];
+    if (playerHasUpdated(cur_entity, new_entity)) {
+      this.setActivePlayer(this.activeEntityID);
+    }
   }  
   public get hass() {
     return this._hass;
@@ -276,14 +280,15 @@ export class ActivePlayerController {
     return this.generateExpressiveThemeFromImage();
   }
   public generateImageElement(): HTMLImageElement|undefined {
-    const player_data = this.getactivePlayerData(null);
     const attrs = this.activeMediaPlayer.attributes;
     const def = getThumbnail(this.hass, Thumbnail.CLEFT);
-    const url = player_data.playing ? attrs.entity_picture_local ?? attrs.entity_picture ?? def : def; 
+    
+    const url = this.isActive() ? attrs.entity_picture_local ?? attrs.entity_picture ?? def : def; 
     const elem = document.createElement('img');
     elem.height = 75;
     elem.width = 75;
     elem.src = url;
+    elem.onerror = () => {elem.src=def};
     return elem;
   }
   public async generateExpressiveThemeFromImage() {
