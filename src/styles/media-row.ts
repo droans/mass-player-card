@@ -4,8 +4,8 @@ import { css } from 'lit';
 // https://lit.dev/docs/components/styles/
 export default css`
   :host {
-    --me-font-color: var(--md-sys-color-primary);
-    --me-icon-color: var(--md-sys-color-primary);
+    --me-font-color: var(--md-sys-color-on-primary-container);
+    --me-icon-color: var(--md-sys-color-primary-container);
   }
 
   .action-button {
@@ -16,11 +16,12 @@ export default css`
   .action-button::part(base) {
     height: 30px;
     width: 30px;
-    border-radius: 25%
+    border-radius: 25%;
   }
   .action-button-expressive::part(base) {
     box-shadow: var(--md-sys-elevation-level1);
     --ha-button-border-radius: var(--button-small-border-radius) !important;
+    background-color: var(--me-icon-color);
   }
   .action-button-expressive::part(base):hover {
     background-color: var(--md-sys-color-primary-container) !important;
@@ -88,7 +89,9 @@ export default css`
   .svg-action-button {
     height: 1.5rem;
     width: 1.5rem;
-    color: var(--me-icon-color);
+  }
+  .svg-action-button-expressive {
+    color: var(--me-font-color);
   }
 
   .thumbnail {

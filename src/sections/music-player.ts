@@ -250,7 +250,7 @@ class MusicPlayerCard extends LitElement {
   }
   protected renderPlayerName() {
     return html`
-      <div class="player-name">
+      <div class="player-name ${this.cardConfig.expressive ? `player-name-expressive` : ``}">
         ${this.player_data?.player_name ?? this.activePlayerController.activePlayerName}
       </div>
       `;
@@ -315,7 +315,10 @@ class MusicPlayerCard extends LitElement {
     if (!this.player_data?.track_artist) {
       return html``
     }
-    return html`<div class="player-track-artist"> ${this.player_data.track_artist} </div>`;
+    return html`
+      <div class="player-track-artist ${this.cardConfig.expressive ? `player-track-artist-expressive` : ``}">
+        ${this.player_data.track_artist} 
+      </div>`;
   }
   protected renderPlayerItems() {
     return this.playerEntities.map( 

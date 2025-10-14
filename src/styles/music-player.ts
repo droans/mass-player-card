@@ -241,6 +241,9 @@ export default css`
     font-size: 0.8rem;
     color: var(--player-name-color);
   }
+  .player-name-expressive {
+    color: var(--md-sys-color-on-primary-container) !important;
+  }
 
   .players-select-item {
     height: 2.5em;
@@ -256,6 +259,10 @@ export default css`
 
   .player-track-artist {
     font-size: 1em;
+  }
+  .player-track-artist-expressive {
+    font-size: 1em;
+    color: var(--md-sys-color-on-primary-container) !important;
   }
   .player-track-title {
     font-size: 1.5rem;

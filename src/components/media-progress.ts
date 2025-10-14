@@ -155,7 +155,7 @@ class MassPlayerProgressBar extends LitElement {
     const cls = !(this.player_data.playing && this.controller.config.expressive) ? `medium progress-plain` : `wavy medium`;
     return html`
       <div class="progress">
-        <div id="time">
+        <div id="time" class="${this.controller.config.expressive ? `time-expressive` : ``}">
             ${this.renderTime()}
         </div>
         <div id="progress-div">

@@ -173,7 +173,7 @@ class PlayerRow extends LitElement {
       >
         <ha-svg-icon
           .path=${this.Icons.SWAP}
-          class="svg-action-button"
+          class="svg-action-button ${this.useExpressive ? `svg-action-button-expressive` : ``}"
         ></ha-svg-icon>
     `
   }
@@ -194,7 +194,7 @@ class PlayerRow extends LitElement {
       >
         <ha-svg-icon
           .path=${this.joined ? this.Icons.LINK_OFF : this.Icons.LINK}
-          class="svg-action-button"
+          class="svg-action-button ${this.useExpressive ? `svg-action-button-expressive` : ``}"
         ></ha-svg-icon>
     `
   }
