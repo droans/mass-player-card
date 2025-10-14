@@ -234,6 +234,18 @@ class MassPlayerArtwork extends LitElement {
   protected updated(): void {
     this.carouselElement.goToSlide(1, 'instant');
   }
+
+  disconnectedCallback(): void {
+    this._disconnected = true;
+    super.disconnectedCallback();
+  }
+  connectedCallback(): void {
+    if (this._disconnected) {
+      this.carouselElement.goToSlide(1, 'instant');
+    }
+    this._disconnected = false;
+    super.connectedCallback();
+  }
   static get styles() {
     return styles;
   }
