@@ -64,9 +64,6 @@ class MassPlayerProgressBar extends LitElement {
     this.media_duration = cur_dur;
     this.entity_position = cur_pos;
     this.media_position = cur_pos;
-    if (this._listener) {
-      clearInterval(this._listener);
-    }
     this._listener = undefined;
     this.requestProgress();
   }
@@ -84,10 +81,6 @@ class MassPlayerProgressBar extends LitElement {
   }
   
   private requestProgress() {
-    if (this._listener) {
-      clearInterval(this._listener)
-      this._listener = undefined;
-    }
     void this.activePlayerController.getPlayerProgress().then( 
       (progress) => {
         progress = Math.min(progress, this.entity_duration ?? progress);
@@ -101,19 +94,17 @@ class MassPlayerProgressBar extends LitElement {
         this.entity_duration = duration ?? this.entity_duration;
       }
     )
-    this._listener = setInterval(this.tickProgress, this._tick_duration_ms);    
   }
   private tickProgress = () => {
-    if (this._listener) {
-      clearInterval(this._listener);
-    }
     const playing = this.player_data?.playing;
     if (!playing) {
       return;
     }
-    this._listener = setInterval(this.tickProgress, this._tick_duration_ms);    
     const t = new Date().getTime()
-    if ((t - this._lastUpdate) >= this._refreshMilliseconds) {
+    if (
+      (!this.media_duration || !this.media_position)
+      || (t - this._lastUpdate) >= this._refreshMilliseconds
+    ) {
       this._lastUpdate = t;
       this.requestProgress();
       return;
@@ -177,10 +168,21 @@ class MassPlayerProgressBar extends LitElement {
     `
   }
 
+  connectedCallback(): void {
+    if (!this._listener) {
+      if (this.activePlayerController) {
+        this.requestProgress();
+      }
+      this._listener = setInterval(this.tickProgress, this._tick_duration_ms);
+    }
+    super.connectedCallback();
+  }
   disconnectedCallback(): void {
     if (this._listener) {
-      clearInterval(this._listener)
+      this._listener = undefined;
+      clearInterval(this._listener);
     }
+    super.disconnectedCallback();
   }
 
   static get styles(): CSSResultGroup {
