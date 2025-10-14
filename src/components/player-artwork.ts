@@ -44,13 +44,14 @@ class MassPlayerArtwork extends LitElement {
 
   @state() public _playerData!: PlayerData;
 
-  private _previousQueueItem!: QueueItem;
-  private _currentQueueItem!: QueueItem;
-  private _nextQueueItem!: QueueItem;
+  private _previousQueueItem!: QueueItem | undefined;
+  private _currentQueueItem!: QueueItem | undefined;
+  private _nextQueueItem!: QueueItem  | undefined;
   private _previousItemImage!: string;
   private _currentItemImage!: string;
   private _nextItemImage!: string;
   private _lastSwipedTS = 0;
+  private _disconnected = false;
 
   @consume({ context: activePlayerDataContext, subscribe: true })
   public set playerData(playerData: PlayerData) {
@@ -65,12 +66,9 @@ class MassPlayerArtwork extends LitElement {
   }
 
   @consume({ context: previousQueueItemContext, subscribe: true})
-  public set previousQueueItem(item: QueueItem | null) {
-    if (!item) {
-      return;
-    }
-    this.previousItemImage = item.media_image;
-    this._previousQueueItem = item
+  public set previousQueueItem(item: QueueItem | null | undefined) {
+    this.previousItemImage = item?.media_image ?? ``;
+    this._previousQueueItem = item ?? undefined;
   }
   public get previousQueueItem() {
     return this._previousQueueItem;
@@ -87,17 +85,14 @@ class MassPlayerArtwork extends LitElement {
   public get previousItemImage() {
     return this._previousItemImage;
   }
-  
+
   @consume({ context: currentQueueItemContext, subscribe: true})
-  public set currentQueueItem(item: QueueItem | null) {
-    if (!item) {
-      return;
-    }
-    this.currentItemImage = item.media_image;
-    this._currentQueueItem = item
+  public set currentQueueItem(item: QueueItem | null | undefined) {
+    this.currentItemImage = item?.media_image ?? ``;
+    this._currentQueueItem = item ?? undefined;
   }
   public get currentQueueItem() {
-    return this._nextQueueItem;
+    return this._currentQueueItem;
   }
   public set currentItemImage(img: string) {
     if (img == this._currentItemImage) {
@@ -113,12 +108,9 @@ class MassPlayerArtwork extends LitElement {
   }
   
   @consume({ context: nextQueueItemContext, subscribe: true})
-  public set nextQueueItem(item: QueueItem | null) {
-    if (!item) {
-      return;
-    }
-    this.nextItemImage = item.media_image;
-    this._nextQueueItem = item
+  public set nextQueueItem(item: QueueItem | null | undefined) {
+    this.nextItemImage = item?.media_image ?? ``;
+    this._nextQueueItem = item ?? undefined;
   }
   public get nextQueueItem() {
     return this._nextQueueItem;
@@ -180,6 +172,7 @@ class MassPlayerArtwork extends LitElement {
     `
   }
   protected renderCarouselItem(img: string | undefined, artwork_id: string) {
+    img = img ?? Thumbnail.CLEFT;
     return  html`
       <sl-carousel-item>
         ${this.renderItemArtwork(img, artwork_id)}
@@ -200,7 +193,7 @@ class MassPlayerArtwork extends LitElement {
     `
   }
   protected renderPriorItem() {
-    const img = this.previousItemImage;
+    const img = this.previousItemImage ?? Thumbnail.CLEFT;
     return this.renderCarouselItem(img, `carousel-img-prior`);
   }
   protected renderCarouselItems() {
@@ -215,8 +208,7 @@ class MassPlayerArtwork extends LitElement {
   }
   
   protected render(): TemplateResult {
-    const size = this.playerConfig.layout.artwork_size;
-    
+    const size = this.playerConfig.layout.artwork_size;    
     return html`
       <sl-carousel
         id="carousel"
@@ -233,6 +225,18 @@ class MassPlayerArtwork extends LitElement {
   }
   protected updated(): void {
     this.carouselElement.goToSlide(1, 'instant');
+  }
+
+  disconnectedCallback(): void {
+    this._disconnected = true;
+    super.disconnectedCallback();
+  }
+  connectedCallback(): void {
+    if (this._disconnected) {
+      this.carouselElement.goToSlide(1, 'instant');
+    }
+    this._disconnected = false;
+    super.connectedCallback();
   }
   static get styles() {
     return styles;

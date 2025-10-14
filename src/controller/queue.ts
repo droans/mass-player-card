@@ -127,6 +127,7 @@ export class QueueController {
     if (app_is_mass) {
       return this._getQueue();
     }
+    this.queue = [];
     return [];
 
   }

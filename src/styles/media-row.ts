@@ -23,7 +23,10 @@ export default css`
     --ha-button-border-radius: var(--button-small-border-radius) !important;
   }
   .action-button-expressive::part(base):hover {
+    background-color: var(--md-sys-color-primary-container) !important;
     --inherited-background-color: var(--md-sys-color-primary-container) !important;
+    box-shadow: var(--md-sys-elevation-level1);
+    --ha-button-border-radius: var(--button-small-border-radius) !important;
   }
 
   .button {

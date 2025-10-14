@@ -25,6 +25,10 @@ export default css`
     box-shadow: var(--md-sys-elevation-level1);
     --ha-button-border-radius: var(--button-small-border-radius) !important;
   }
+  .action-button-expressive::part(base) {
+    box-shadow: var(--md-sys-elevation-level1);
+    --ha-button-border-radius: var(--button-small-border-radius) !important;
+  }
 
   .button-group {
     display: flex;

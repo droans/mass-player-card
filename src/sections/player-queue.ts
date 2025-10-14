@@ -59,7 +59,7 @@ class QueueCard extends LitElement {
   public set queue(queue: QueueItems | null) {
     if (queue) {
       if (!this.queue?.length) {
-        this._queue = queue;
+        this._queue = this.processQueue(queue);
         return;
       }
       const new_queue = JSON.stringify(queue);
@@ -180,6 +180,7 @@ class QueueCard extends LitElement {
   }
   public connectedCallback(): void {
     if (this.queueController) {
+      void this.queueController.getQueue();
       void this.queueController.subscribeUpdates();
     }
     super.connectedCallback();
