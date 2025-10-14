@@ -58,7 +58,8 @@ class MassNavBar extends LitElement {
       return;
     }
     el.activeSection = 'favorites';    
-    el.activeSubSection = 'main';    
+    el.activeSubSection = 'main';
+    el.setActiveCards();
   }
 
   protected renderMusicPlayerTab(): TemplateResult {
