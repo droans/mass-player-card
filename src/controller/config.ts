@@ -33,6 +33,7 @@ export class MassCardConfigController {
     this._playerQueueConfig.value = conf.queue;
     this._musicPlayerConfig.value = conf.player;
     this._playersConfig.value = conf.players;
+    this._mediaBrowserConfig.value = conf.media_browser;
     this.Icons = getIcons(config.expressive);
   }
   public get config() {
