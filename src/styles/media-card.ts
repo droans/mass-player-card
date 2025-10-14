@@ -109,7 +109,8 @@ export default css`
     width: 100%;
     line-height: 160%;
     bottom: 0;
-    background-color: rgba(from var(--ha-card-background) r g b / 0.9);
+    background-color: rgba(from var(--md-sys-color-primary-container) r g b / 0.9);
+    color: var(--md-sys-color-on-primary-container);
     border-radius: 0px 0px 28px 28px;
   }
 `;
