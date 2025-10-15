@@ -160,31 +160,6 @@ class QueueCard extends LitElement {
     }
     return QueueConfigErrors.OK;
   }
-  protected shouldUpdate(_changedProperties: PropertyValues): boolean {
-    if (!_changedProperties.size) {
-      return false;
-    }
-    if (
-      _changedProperties.has('_config')
-      || _changedProperties.has('queue')
-    ) {
-      return true;
-    }
-    return super.shouldUpdate(_changedProperties);
-  }
-
-  public disconnectedCallback(): void {
-    super.disconnectedCallback();
-    if (this?.queueController?.isSubscribed) this.queueController.unsubscribeUpdates();
-    super.disconnectedCallback();
-  }
-  public connectedCallback(): void {
-    if (this.queueController) {
-      void this.queueController.getQueue();
-      void this.queueController.subscribeUpdates();
-    }
-    super.connectedCallback();
-  }
   private onQueueItemSelected = async (queue_item_id: string) => {
     await this.queueController.playQueueItem(queue_item_id);
     void this.queueController.getQueue();
@@ -254,6 +229,31 @@ class QueueCard extends LitElement {
         </ha-md-list>
       </div>
     `
+  }
+  protected shouldUpdate(_changedProperties: PropertyValues): boolean {
+    if (!_changedProperties.size) {
+      return false;
+    }
+    if (
+      _changedProperties.has('_config')
+      || _changedProperties.has('queue')
+    ) {
+      return true;
+    }
+    return super.shouldUpdate(_changedProperties);
+  }
+
+  public disconnectedCallback(): void {
+    super.disconnectedCallback();
+    if (this?.queueController?.isSubscribed) this.queueController.unsubscribeUpdates();
+    super.disconnectedCallback();
+  }
+  public connectedCallback(): void {
+    if (this.queueController) {
+      void this.queueController.getQueue();
+      void this.queueController.subscribeUpdates();
+    }
+    super.connectedCallback();
   }
   static get styles(): CSSResultGroup {
     return styles;

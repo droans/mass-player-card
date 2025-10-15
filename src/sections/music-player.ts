@@ -212,9 +212,6 @@ class MusicPlayerCard extends LitElement {
       }
     }
   }
-  protected updated() {
-    this.marqueeTitleWhenUpdated();
-  }
   private onAnimationEnd = async () => {
     if (this._track_title.className !== 'player-track-title marquee') {
       return;
@@ -421,12 +418,6 @@ class MusicPlayerCard extends LitElement {
       </div>
     `
   }
-  protected shouldUpdate(_changedProperties: PropertyValues): boolean {
-    if (!this.player_data) {
-      return false
-    }
-    return super.shouldUpdate(_changedProperties);
-  }
   protected render() {
     const expressive = this.cardConfig.expressive;
     return html`
@@ -454,6 +445,15 @@ class MusicPlayerCard extends LitElement {
         </wa-animation>
       </div>
     `
+  }
+  protected updated() {
+    this.marqueeTitleWhenUpdated();
+  }
+  protected shouldUpdate(_changedProperties: PropertyValues): boolean {
+    if (!this.player_data) {
+      return false
+    }
+    return super.shouldUpdate(_changedProperties);
   }
   static get styles(): CSSResultGroup {
     return styles;
