@@ -42,7 +42,7 @@ export default css`
     height: 14em;
     display: flex;
     aspect-ratio: 1;
-    left: calc(50% - (14em/2));
-    top: calc(50% - (14em/2) - 2.25em);
+    left: calc(50% - 7em);
+    top: calc(50% - 7em);
   }
 `
