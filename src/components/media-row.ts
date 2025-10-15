@@ -223,7 +223,7 @@ class MediaRow extends LitElement {
       >
         <ha-svg-icon
           .path=${this.Icons.ARROW_PLAY_NEXT}
-          class="svg-action-button"
+          class="svg-action-button ${this.useExpressive ? `svg-action-button-expressive` : ``}"
         ></ha-svg-icon>
       </ha-button>
     `
@@ -242,7 +242,7 @@ class MediaRow extends LitElement {
       >
         <ha-svg-icon
           .path=${this.Icons.ARROW_UP}
-          class="svg-action-button"
+          class="svg-action-button ${this.useExpressive ? `svg-action-button-expressive` : ``}"
         ></ha-svg-icon>
       </ha-button>
     `
@@ -261,7 +261,7 @@ class MediaRow extends LitElement {
       >
         <ha-svg-icon
           .path=${this.Icons.ARROW_DOWN}
-          class="svg-action-button"
+          class="svg-action-button ${this.useExpressive ? `svg-action-button-expressive` : ``}"
         ></ha-svg-icon>
       </ha-button>
     `
@@ -280,7 +280,7 @@ class MediaRow extends LitElement {
         >
         <ha-svg-icon
           .path=${this.Icons.CLOSE}
-        class="svg-action-button"
+        class="svg-action-button ${this.useExpressive ? `svg-action-button-expressive` : ``}"
         ></ha-svg-icon>
       </ha-button>
     `

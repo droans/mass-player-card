@@ -10,8 +10,8 @@ import { PlayerData } from "../const/music-player.js";
 import { secondsToTime } from "../utils/util.js";
 import { MassCardController } from "../controller/controller.js";
 class MassPlayerProgressBar extends LitElement {
-  @state() private _media_duration = 1;
-  @state() private _media_position = 0;
+  @state() private _media_duration!: number;
+  @state() private _media_position!: number;
   private entity_duration = 1;
   private entity_position = 0;
   private _prog_pct = 0;
@@ -38,11 +38,17 @@ class MassPlayerProgressBar extends LitElement {
     this._prog_pct = prog;
   }
   private get media_position() {
+    if (!this._media_position) {
+      this.requestProgress();
+    }
     return this._media_position;
   }
 
   private set media_duration(dur: number) {
     this._media_duration = dur;
+    if (!this._media_duration) {
+      this.requestProgress();
+    }
     const prog = Math.min(1, this._media_position / (dur ?? 1));
     this._prog_pct = prog;
   }
@@ -64,9 +70,6 @@ class MassPlayerProgressBar extends LitElement {
     this.media_duration = cur_dur;
     this.entity_position = cur_pos;
     this.media_position = cur_pos;
-    if (this._listener) {
-      clearInterval(this._listener);
-    }
     this._listener = undefined;
     this.requestProgress();
   }
@@ -84,13 +87,9 @@ class MassPlayerProgressBar extends LitElement {
   }
   
   private requestProgress() {
-    if (this._listener) {
-      clearInterval(this._listener)
-      this._listener = undefined;
-    }
     void this.activePlayerController.getPlayerProgress().then( 
       (progress) => {
-        progress = Math.min(progress, this.entity_duration ?? progress);
+        progress = Math.min(progress, this.entity_duration ?? progress, 1);
         this.media_position = progress ?? this.media_position;
         this.entity_position = progress ?? this.entity_position;
       }
@@ -101,19 +100,17 @@ class MassPlayerProgressBar extends LitElement {
         this.entity_duration = duration ?? this.entity_duration;
       }
     )
-    this._listener = setInterval(this.tickProgress, this._tick_duration_ms);    
   }
   private tickProgress = () => {
-    if (this._listener) {
-      clearInterval(this._listener);
-    }
     const playing = this.player_data?.playing;
     if (!playing) {
       return;
     }
-    this._listener = setInterval(this.tickProgress, this._tick_duration_ms);    
     const t = new Date().getTime()
-    if ((t - this._lastUpdate) >= this._refreshMilliseconds) {
+    if (
+      (!this.media_duration || !this.media_position)
+      || (t - this._lastUpdate) >= this._refreshMilliseconds
+    ) {
       this._lastUpdate = t;
       this.requestProgress();
       return;
@@ -155,7 +152,7 @@ class MassPlayerProgressBar extends LitElement {
     const cls = !(this.player_data.playing && this.controller.config.expressive) ? `medium progress-plain` : `wavy medium`;
     return html`
       <div class="progress">
-        <div id="time">
+        <div id="time" class="${this.controller.config.expressive ? `time-expressive` : ``}">
             ${this.renderTime()}
         </div>
         <div id="progress-div">
@@ -177,10 +174,21 @@ class MassPlayerProgressBar extends LitElement {
     `
   }
 
+  connectedCallback(): void {
+    if (!this._listener) {
+      if (this.activePlayerController) {
+        this.requestProgress();
+      }
+      this._listener = setInterval(this.tickProgress, this._tick_duration_ms);
+    }
+    super.connectedCallback();
+  }
   disconnectedCallback(): void {
     if (this._listener) {
-      clearInterval(this._listener)
+      this._listener = undefined;
+      clearInterval(this._listener);
     }
+    super.disconnectedCallback();
   }
 
   static get styles(): CSSResultGroup {

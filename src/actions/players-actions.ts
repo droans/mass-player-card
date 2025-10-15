@@ -1,3 +1,4 @@
+/* eslint-disable no-console */
 import { ExtendedHass } from "../const/common";
 
 export default class PlayersActions {
@@ -22,7 +23,6 @@ export default class PlayersActions {
         }
       )
     } catch (e) {
-      /* eslint-disable-next-line no-console */
       console.error(`Error calling transfer player`, e)
     }
   }
@@ -36,7 +36,6 @@ export default class PlayersActions {
         }
       )
     } catch (e) {
-      /* eslint-disable-next-line no-console */
       console.error(`Error joining players`, e)
     }
   }
@@ -49,7 +48,6 @@ export default class PlayersActions {
         }
       )
     } catch (e) {
-      /* eslint-disable-next-line no-console */
       console.error(`Error unjoining players`, e)
     }
   }

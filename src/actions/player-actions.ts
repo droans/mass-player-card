@@ -1,3 +1,4 @@
+/* eslint-disable no-console */
 import { HassEntity } from "home-assistant-js-websocket";
 import {
   ExtendedHass,
@@ -27,7 +28,6 @@ export default class PlayerActions {
         }
       )
     } catch (e) {
-      /* eslint-disable-next-line no-console */
       console.error(`Error calling play/pause`, e)
     }
   }
@@ -45,7 +45,6 @@ export default class PlayerActions {
         }
       )
     } catch (e) {
-      /* eslint-disable-next-line no-console */
       console.error(`Error calling mute`, e)
     }
   }
@@ -58,7 +57,6 @@ export default class PlayerActions {
         }
       )
     } catch (e) {
-      /* eslint-disable-next-line no-console */
       console.error(`Error calling play next`, e)
     }
   }
@@ -71,7 +69,6 @@ export default class PlayerActions {
         }
       )
     } catch (e) {
-      /* eslint-disable-next-line no-console */
       console.error(`Error calling play previous`, e)
     }
   }
@@ -86,7 +83,6 @@ export default class PlayerActions {
         }
       )
     } catch (e) {
-      /* eslint-disable-next-line no-console */
       console.error(`Error calling shuffle`, e)
     }
   }
@@ -100,7 +96,6 @@ export default class PlayerActions {
         }
       )
     } catch (e) {
-      /* eslint-disable-next-line no-console */
       console.error(`Error calling repeat`, e)
     }
   }
@@ -114,7 +109,6 @@ export default class PlayerActions {
         }
       )
     } catch (e) {
-      /* eslint-disable-next-line no-console */
       console.error(`Error setting volume`, e)
     }
   }
@@ -128,7 +122,6 @@ export default class PlayerActions {
         }
       )
     } catch (e) {
-      /* eslint-disable-next-line no-console */
       console.error(`Error calling repeat`, e)
     }
   }
@@ -141,7 +134,6 @@ export default class PlayerActions {
         }
       )
     } catch (e) {
-      /* eslint-disable-next-line no-console */
       console.error(`Error calling repeat`, e)
     }
   }
@@ -170,9 +162,12 @@ export default class PlayerActions {
         }
       )
       return result;
-      /* eslint-enable */
+      /* eslint-enable
+        @typescript-eslint/no-explicit-any,
+        @typescript-eslint/no-unsafe-assignment,
+        @typescript-eslint/no-unsafe-member-access
+      */
     } catch (e) {
-      /* eslint-disable-next-line no-console */
       console.error('Error getting queue', e);
       return null;
     }
@@ -187,7 +182,6 @@ export default class PlayerActions {
         }
       )
     } catch (e) {
-      /* eslint-disable-next-line no-console */
       console.error(`Error setting favorite`, e)
     }
   }
@@ -200,7 +194,6 @@ export default class PlayerActions {
         }
       )
     } catch (e) {
-      /* eslint-disable-next-line no-console */
       console.error(`Error unfavoriting item for entity.`, e)
     }
   }

@@ -18,7 +18,7 @@ export default css`
 
   #carousel {
     --aspect-ratio: 1;
-    justify-self: center;
+    position: absolute;
   }
   .carousel-large {
     height: var(--mass-player-card-height) !important;
@@ -35,7 +35,6 @@ export default css`
     aspect-ratio: 1;
     place-content: center;
     position: absolute;
-    left: 0;
     top: calc(50% - (22em / 2) - 2em);
   }
   .carousel-small {

@@ -27,6 +27,7 @@ import PlayerActions from "../actions/player-actions";
 import {
   ExtendedHass,
   ExtendedHassEntity,
+  WaAnimation,
 } from '../const/common';
 import {
   activeEntityConf,
@@ -60,6 +61,9 @@ class MusicPlayerCard extends LitElement {
   @state() private shouldMarqueeTitle = false;
 
   @query('.player-track-title') _track_title!: LitElement;
+  @query('#animation') _animation!: WaAnimation;
+  private _firstLoaded = false;
+
   @consume({ context: IconsContext}) private Icons!: Icons;
 
   @consume({ context: entitiesConfigContext, subscribe: true })
@@ -68,7 +72,6 @@ class MusicPlayerCard extends LitElement {
   @consume({ context: configContext, subscribe: true})
   private cardConfig!: Config;
 
-  private _config!: PlayerConfig;
   @provide({ context: activePlayerDataContext})
   @state()
   private player_data!: PlayerData;
@@ -79,6 +82,7 @@ class MusicPlayerCard extends LitElement {
   
   private _activeEntityConfig!: EntityConfig;
   private _activeEntity!: ExtendedHassEntity;
+  private _config!: PlayerConfig;
 
   public selectedPlayerService!: PlayerSelectedService;
   private _animationListener  = async () => this.onAnimationEnd();
@@ -86,6 +90,7 @@ class MusicPlayerCard extends LitElement {
   private groupedPlayers!: EntityConfig[];
   private actions!: PlayerActions;
   private marquee_x_dist = 0;
+
   private _artworkHeaderClass!: string;
   private _artworkProgressClass!: string;
   private _artworkVolumeClass!: string;
@@ -212,9 +217,6 @@ class MusicPlayerCard extends LitElement {
       }
     }
   }
-  protected updated() {
-    this.marqueeTitleWhenUpdated();
-  }
   private onAnimationEnd = async () => {
     if (this._track_title.className !== 'player-track-title marquee') {
       return;
@@ -250,7 +252,7 @@ class MusicPlayerCard extends LitElement {
   }
   protected renderPlayerName() {
     return html`
-      <div class="player-name">
+      <div class="player-name ${this.cardConfig.expressive ? `player-name-expressive` : ``}">
         ${this.player_data?.player_name ?? this.activePlayerController.activePlayerName}
       </div>
       `;
@@ -315,7 +317,10 @@ class MusicPlayerCard extends LitElement {
     if (!this.player_data?.track_artist) {
       return html``
     }
-    return html`<div class="player-track-artist"> ${this.player_data.track_artist} </div>`;
+    return html`
+      <div class="player-track-artist ${this.cardConfig.expressive ? `player-track-artist-expressive` : ``}">
+        ${this.player_data.track_artist} 
+      </div>`;
   }
   protected renderPlayerItems() {
     return this.playerEntities.map( 
@@ -415,14 +420,9 @@ class MusicPlayerCard extends LitElement {
           html`<mass-player-controls-expressive></mass-player-controls-expressive>`
         : html`<mass-player-controls></mass-player-controls>`
         }
+            ${this.renderVolumeRow()}
       </div>
     `
-  }
-  protected shouldUpdate(_changedProperties: PropertyValues): boolean {
-    if (!this.player_data) {
-      return false
-    }
-    return super.shouldUpdate(_changedProperties);
   }
   protected render() {
     const expressive = this.cardConfig.expressive;
@@ -433,6 +433,7 @@ class MusicPlayerCard extends LitElement {
       >
         ${this.renderHeader()}
         <wa-animation 
+          id="animation"
           name="fadeIn"
           easing="ease-in"
           iterations=1
@@ -446,11 +447,31 @@ class MusicPlayerCard extends LitElement {
             ${this.renderActiveItemSection()}
             ${this.renderArtwork()}
             ${this.renderControls()}
-            ${this.renderVolumeRow()}
           </div>
         </wa-animation>
       </div>
     `
+  }
+  connectedCallback(): void {
+    if (this._animation && this._firstLoaded) {
+      this._animation.play = true;
+    }
+    super.connectedCallback();
+  }
+  disconnectedCallback(): void {
+    super.disconnectedCallback();
+  }
+  protected updated() {
+    this.marqueeTitleWhenUpdated();
+  }
+  protected firstUpdated(): void {
+      this._firstLoaded = true;
+  }
+  protected shouldUpdate(_changedProperties: PropertyValues): boolean {
+    if (!this.player_data) {
+      return false
+    }
+    return super.shouldUpdate(_changedProperties);
   }
   static get styles(): CSSResultGroup {
     return styles;

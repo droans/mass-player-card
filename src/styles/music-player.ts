@@ -12,6 +12,11 @@ export default css`
     border-radius: 10px;
   }
 
+  mass-artwork {
+    display: flex;
+    justify-content: center;
+  }
+
   #active-track-lg {
     position: absolute;
     top: 0;
@@ -28,7 +33,7 @@ export default css`
   }
 
   #active-track-text {
-    background: var(--player-blur-color);
+    background: linear-gradient(var(--expressive-player-blur-color) 90%, transparent) !important;
     z-index: 1;
     position: relative;
     backdrop-filter: blur(3px);
@@ -201,11 +206,11 @@ export default css`
     backdrop-filter: blur(3px);
     background: var(--player-blur-color);
     position: absolute;
-    bottom: calc(40px + 0.5em);
+    bottom: 8px;
     width: 100%;
   }
   .media-controls-expressive {
-    background: var(--expressive-player-blur-color);
+    background: linear-gradient(transparent, var(--expressive-player-blur-color) 10%) !important;
   }
 
   .menu-header-expressive::part(menu-select-menu) {
@@ -241,6 +246,9 @@ export default css`
     font-size: 0.8rem;
     color: var(--player-name-color);
   }
+  .player-name-expressive {
+    color: var(--md-sys-color-on-primary-container) !important;
+  }
 
   .players-select-item {
     height: 2.5em;
@@ -256,6 +264,10 @@ export default css`
 
   .player-track-artist {
     font-size: 1em;
+  }
+  .player-track-artist-expressive {
+    font-size: 1em;
+    color: var(--md-sys-color-on-primary-container) !important;
   }
   .player-track-title {
     font-size: 1.5rem;
@@ -286,15 +298,11 @@ export default css`
   }
 
   #volume {
-    position: absolute;
-    bottom: 8px;
     width: 100%;
   }
 
   .volume-expressive::part(volume-div) {
-    background: var(--expressive-player-blur-color);
     padding-bottom: 12px;
-    bottom: -8px;
     position: relative;
   }
 
@@ -303,7 +311,6 @@ export default css`
     position: relative;
   }
   .vol-art-lg::part(volume-div) {
-    backdrop-filter: blur(3px);
     z-index: 0;
   }
   .vol-art-med {

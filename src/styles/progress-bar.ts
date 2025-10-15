@@ -48,6 +48,9 @@ export default css`
     justify-self: center;
     padding-bottom: 4px;
   }
+  .time-expressive {
+    color: var(--md-sys-color-on-primary-container) !important;
+  }
   
   .wavy {
   }

@@ -1,4 +1,5 @@
 import {
+  CSSResultGroup,
   html,
   LitElement,
   TemplateResult,
@@ -7,14 +8,18 @@ import {
   property,
 } from "lit/decorators.js";
 
-import { ServiceCustomEvent } from "../const/common";
+import { TargetValEvent } from "../const/common";
 import { ListItems } from "../const/media-browser";
+import { consume } from "@lit/context";
+import { useExpressiveContext } from "../const/context.js";
+import styles from '../styles/menu-button';
 
 class MassMenuButton extends LitElement {
   @property( { attribute: false }) public iconPath!: string;
   @property( { attribute: false }) private _items!: ListItems;
   @property( { type: Boolean, attribute: "fixedMenuPosition" }) public fixedMenuPosition!: boolean;
-  public onSelectAction!: ServiceCustomEvent;
+  @consume({ context: useExpressiveContext, subscribe: true }) private useExpressive!: boolean;
+  public onSelectAction!: TargetValEvent; 
 
   public set items(items: ListItems) {
     this._items = items;
@@ -36,7 +41,7 @@ class MassMenuButton extends LitElement {
             .graphic=${item.icon}
           >
             <ha-svg-icon
-              class="menu-list-item-svg"
+              class="menu-list-item-svg ${this.useExpressive ? `svg-expressive` : ``}"
               part="menu-list-item-svg"
               slot="graphic"
               .path=${item.icon}
@@ -53,6 +58,7 @@ class MassMenuButton extends LitElement {
         <div id="menu-button" part="menu-button">
           <ha-control-select-menu
             id="menu-select-menu"
+            class="${this.useExpressive ? `menu-expressive` : ``}"
             part="menu-select-menu"
             naturalMenuWidth
             ?fixedMenuPosition=${this.fixedMenuPosition}
@@ -60,7 +66,7 @@ class MassMenuButton extends LitElement {
           >
             <ha-svg-icon
               slot="icon"
-              id="menu-svg"
+              class="${this.useExpressive ? `svg-menu-expressive` : `svg-menu`}"
               part="menu-svg"
               .path=${this.iconPath}
             ></ha-svg-icon>
@@ -69,6 +75,9 @@ class MassMenuButton extends LitElement {
           </ha-control-select-menu>
         </div>
     `
+  }
+  static get styles(): CSSResultGroup {
+    return styles;
   }
 }
 

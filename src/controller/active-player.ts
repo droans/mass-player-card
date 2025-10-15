@@ -282,8 +282,11 @@ export class ActivePlayerController {
   public generateImageElement(): HTMLImageElement|undefined {
     const attrs = this.activeMediaPlayer.attributes;
     const def = getThumbnail(this.hass, Thumbnail.CLEFT);
-    
-    const url = this.isActive() ? attrs.entity_picture_local ?? attrs.entity_picture ?? def : def; 
+    const origin = window.location.origin;
+    const local = attrs.entity_picture_local;
+    const non_local = attrs.entity_picture;
+    const pic = `${origin}${local ?? non_local}`;
+    const url: string = this.isActive() ? pic ?? def : def; 
     const elem = document.createElement('img');
     elem.height = 75;
     elem.width = 75;
