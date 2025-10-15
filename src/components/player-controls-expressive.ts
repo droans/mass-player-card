@@ -157,7 +157,7 @@ class MassPlayerControlsExpressive extends LitElement {
         @click=${this.onShuffle}
         size="small"
         id="button-shuffle"
-        class="button-lower${shuffle ? `-active` : ``}"
+        class="button-lower ${shuffle ? `button-lower-active` : ``}"
       >
         <ha-svg-icon
           slot="start"
@@ -179,7 +179,7 @@ class MassPlayerControlsExpressive extends LitElement {
         @click=${this.onRepeat}
         size="small"
         id="button-repeat"
-        class="button-lower${repeat_on ? `-active` : ``}"
+        class="button-lower ${repeat_on ? `button-lower-active` : ``}"
       >
         <ha-svg-icon
           slot="start"
@@ -199,7 +199,7 @@ class MassPlayerControlsExpressive extends LitElement {
         @click=${this.onFavorite}
         size="small"
         id="button-favorite"
-        class="button-lower${favorite ? `-active` : ``}"
+        class="button-lower ${favorite ? `button-lower-active` : ``}"
       >
         <ha-svg-icon
           slot="start"
