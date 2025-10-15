@@ -22,6 +22,11 @@ class MassMenuButton extends LitElement {
   public onSelectAction!: TargetValEvent; 
 
   public set items(items: ListItems) {
+    const cur_items = JSON.stringify(this._items);
+    const new_items = JSON.stringify(items);
+    if (cur_items == new_items) {
+      return;
+    }
     this._items = items;
   }
   public get items() {
