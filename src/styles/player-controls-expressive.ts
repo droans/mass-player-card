@@ -105,8 +105,8 @@ export default css`
   #div-controls {
     row-gap: 6px;
     display: grid;
-    margin-top: 8px;
-    margin-bottom: 12px;
+    margin-top: 12px;
+    margin-bottom: 6px;
   }
 
   .icons-lower {
