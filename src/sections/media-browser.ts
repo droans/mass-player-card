@@ -9,7 +9,7 @@ import {
 import {
   ExtendedHass,
   MediaTypes,
-  TargetValEvent,
+  TargetValEventData,
 } from "../const/common.js";
 import { MediaBrowserConfig } from "../config/media-browser.js";
 import { customElement, property, state } from "lit/decorators.js";
@@ -67,7 +67,7 @@ export class MediaBrowser extends LitElement {
   @consume({ context: useExpressiveContext, subscribe: true}) private useExpressive!: boolean;
   @consume({ context: IconsContext}) private Icons!: Icons;
   @consume({ context: activeEntityConf, subscribe: true}) private activeEntityConfig!: EntityConfig;
-  
+
   public activeSection = 'favorites'
   public activeSubSection = 'main'
   private previousSection!: string;
@@ -99,7 +99,6 @@ export class MediaBrowser extends LitElement {
   @consume({ context: browserControllerContext, subscribe: true})
   public set browserController(controller: MediaBrowserController) {
     this._browserController = controller;
-    // this.cards = controller.items;
   }
   public get browserController() {
     return this._browserController;
@@ -232,7 +231,7 @@ export class MediaBrowser extends LitElement {
     this.activeCards = this.cards.search;
     
   }
-  private onSearchMediaTypeSelect = async (ev: TargetValEvent) => {
+  private onSearchMediaTypeSelect = async (ev: TargetValEventData) => {
     const val = ev.target.value as MediaTypes;
     if (!val) {
       return;
@@ -246,7 +245,7 @@ export class MediaBrowser extends LitElement {
     this.searchLibrary = !this.searchLibrary;
     await this.searchMedia()
   }
-  private onSearchInput = (ev: TargetValEvent) => {
+  private onSearchInput = (ev: TargetValEventData) => {
     const val = ev.target.value.trim();
     if (val.length < SEARCH_TERM_MIN_LENGTH) {
       return;
@@ -266,7 +265,7 @@ export class MediaBrowser extends LitElement {
       SEARCH_UPDATE_DELAY
     )
   }
-  private onFilterType = (ev: TargetValEvent) => {
+  private onFilterType = (ev: TargetValEventData) => {
     const val = ev.target.value;
     if (!val.length) {
       return;
@@ -475,16 +474,6 @@ export class MediaBrowser extends LitElement {
   protected shouldUpdate(_changedProperties: PropertyValues): boolean {
     return _changedProperties.size > 0;
   }
-  // protected getSectionHeader(): TemplateResult {
-    // switch (this.activeSubSection) {
-    //   case "favorites":
-    //     return this.renderMainHeader();
-    //   case "search":
-    //     return this.renderSearchHeader();
-    //   default:
-    //     return this.renderSubsectionHeader();
-    // }
-  // }
   protected renderHeader(): TemplateResult {
     if (this.activeSection == "search") {
       return this.renderSearchHeader();
@@ -493,11 +482,6 @@ export class MediaBrowser extends LitElement {
       return this.renderMainHeader();
     }
     return this.renderSubsectionHeader();
-    // return html`
-    //   <mass-section-header>
-    //     ${this.getSectionHeader()}
-    //   </mass-section-header>
-    // `
   }
   protected render(): TemplateResult {
     return html`

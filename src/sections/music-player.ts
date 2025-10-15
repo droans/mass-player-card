@@ -63,6 +63,7 @@ class MusicPlayerCard extends LitElement {
   @query('.player-track-title') _track_title!: LitElement;
   @query('#animation') _animation!: WaAnimation;
   private _firstLoaded = false;
+
   @consume({ context: IconsContext}) private Icons!: Icons;
 
   @consume({ context: entitiesConfigContext, subscribe: true })
@@ -71,7 +72,6 @@ class MusicPlayerCard extends LitElement {
   @consume({ context: configContext, subscribe: true})
   private cardConfig!: Config;
 
-  private _config!: PlayerConfig;
   @provide({ context: activePlayerDataContext})
   @state()
   private player_data!: PlayerData;
@@ -82,6 +82,7 @@ class MusicPlayerCard extends LitElement {
   
   private _activeEntityConfig!: EntityConfig;
   private _activeEntity!: ExtendedHassEntity;
+  private _config!: PlayerConfig;
 
   public selectedPlayerService!: PlayerSelectedService;
   private _animationListener  = async () => this.onAnimationEnd();

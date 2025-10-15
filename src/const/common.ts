@@ -78,14 +78,14 @@ export interface ExtendedHass extends HomeAssistant {
   themes: ExtendedThemes
 }
 
-export type ServiceCustomEvent = (
-  ev: CustomEvent
+export type TargetValEvent = (
+  ev: TargetValEventData
 ) => void
 
 export type ServiceNoParams = (
 ) => void
 
-export interface TargetValEvent {
+export interface TargetValEventData {
   target: {
     value: string
   }
