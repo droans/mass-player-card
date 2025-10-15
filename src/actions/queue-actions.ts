@@ -1,3 +1,4 @@
+/* eslint-disable no-console */
 import { QueueItems } from "../const/player-queue";
 import { ExtendedHass } from "../const/common";
 
@@ -42,9 +43,11 @@ export default class QueueActions {
       /* eslint-disable-next-line @typescript-eslint/no-unsafe-member-access */
       const result: QueueItems = ret.response[this.player_entity];
       return result;
-      /* eslint-enable */
+      /* eslint-enable
+        @typescript-eslint/no-explicit-any,
+        @typescript-eslint/no-unsafe-assignment,
+      */
     } catch (e) {
-      /* eslint-disable-next-line no-console */
       console.error('Error getting queue', e);
       return null;
     }
@@ -59,7 +62,6 @@ export default class QueueActions {
         }
       )
     } catch (e) {
-      /* eslint-disable-next-line no-console */
       console.error('Error selecting queue item', e)
     }
   }
@@ -73,7 +75,6 @@ export default class QueueActions {
         }
       )
     } catch (e) {
-      /* eslint-disable-next-line no-console */
       console.error('Error removing queue item', e)
     }
   }
@@ -87,7 +88,6 @@ export default class QueueActions {
         }
       )
     } catch (e) {
-      /* eslint-disable-next-line no-console */
       console.error('Error moving queue item next', e)
     }
   }
@@ -101,7 +101,6 @@ export default class QueueActions {
         }
       )
     } catch (e) {
-      /* eslint-disable-next-line no-console */
       console.error('Error moving queue item up', e)
     }
   }
@@ -115,7 +114,6 @@ export default class QueueActions {
         }
       )
     } catch (e) {
-      /* eslint-disable-next-line no-console */
       console.error('Error moving queue item down', e)
     }
   }
@@ -127,9 +125,10 @@ export default class QueueActions {
           url: url
         }
       )
+      return result;
     } catch (e) {
-      /* eslint-disable-next-line no-console */
       console.error('Error getting image', e)
+      return '';
     } 
   }
 }
