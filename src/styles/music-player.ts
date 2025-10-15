@@ -12,6 +12,11 @@ export default css`
     border-radius: 10px;
   }
 
+  mass-artwork {
+    display: flex;
+    justify-content: center;
+  }
+
   #active-track-lg {
     position: absolute;
     top: 0;
@@ -201,7 +206,7 @@ export default css`
     backdrop-filter: blur(3px);
     background: var(--player-blur-color);
     position: absolute;
-    bottom: calc(40px + 0.5em);
+    bottom: 8px;
     width: 100%;
   }
   .media-controls-expressive {
