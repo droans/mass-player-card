@@ -5,8 +5,9 @@ export default css`
     --me-menu-text-color: var(--md-sys-color-on-secondary-container);
   }
   .menu-expressive {
-  --mdc-theme-text-primary-on-background: var(--me-menu-background-color);
+  --mdc-theme-text-primary-on-background: var(--me-menu-text-color);
   --mdc-theme-text-icon-on-background: var(--me-menu-text-color);
+  --mdc-theme-surface: var(--me-menu-background-color);
   }
   .svg-menu {
     color: var(--md-sys-color-primary);
