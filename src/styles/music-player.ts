@@ -298,15 +298,11 @@ export default css`
   }
 
   #volume {
-    position: absolute;
-    bottom: 8px;
     width: 100%;
   }
 
   .volume-expressive::part(volume-div) {
-    background: var(--expressive-player-blur-color);
     padding-bottom: 12px;
-    bottom: -8px;
     position: relative;
   }
 
@@ -315,7 +311,6 @@ export default css`
     position: relative;
   }
   .vol-art-lg::part(volume-div) {
-    backdrop-filter: blur(3px);
     z-index: 0;
   }
   .vol-art-med {

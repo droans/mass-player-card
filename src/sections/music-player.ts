@@ -420,6 +420,7 @@ class MusicPlayerCard extends LitElement {
           html`<mass-player-controls-expressive></mass-player-controls-expressive>`
         : html`<mass-player-controls></mass-player-controls>`
         }
+            ${this.renderVolumeRow()}
       </div>
     `
   }
@@ -446,7 +447,6 @@ class MusicPlayerCard extends LitElement {
             ${this.renderActiveItemSection()}
             ${this.renderArtwork()}
             ${this.renderControls()}
-            ${this.renderVolumeRow()}
           </div>
         </wa-animation>
       </div>
