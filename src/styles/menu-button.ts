@@ -3,15 +3,29 @@ export default css`
   :host {
     --me-menu-background-color: var(--md-sys-color-secondary-container);
     --me-menu-text-color: var(--md-sys-color-on-secondary-container);
+    --mass-menu-selected-background-color: var(--md-sys-color-secondary);
+    --mass-menu-selected-text-color: var(--md-sys-color-on-secondary);
   }
   .menu-expressive {
   --mdc-theme-text-primary-on-background: var(--me-menu-text-color);
   --mdc-theme-text-icon-on-background: var(--me-menu-text-color);
   --mdc-theme-surface: var(--me-menu-background-color);
   }
+  .menu-list-item {
+    /* --mdc-ripple-color: rgba(0,0,0,0); */
+  }
   .svg-menu {
     color: var(--md-sys-color-primary);
     background-color: var(--ha-card-background,var(--card-background-color,#fff));
     border-radius: 50%;
+  }
+  .inactive-item {
+    background-color: var(--mdc-theme-surface);
+  }
+  .selected-item {
+    --mdc-theme-text-icon-on-background: var(--mass-menu-selected-text-color);
+    --mdc-theme-text-primary-on-background: var(--mass-menu-selected-text-color);
+    background-color: var(--mass-menu-selected-background-color);
+    border-radius: 24px;
   }
 `

@@ -341,14 +341,21 @@ class MusicPlayerCard extends LitElement {
     `
   }
   protected renderHeader(): TemplateResult {
+    const expressive = this.cardConfig.expressive;
     return html`
-      <mass-section-header
-        class="${this._artworkHeaderClass} ${this.cardConfig.expressive ? `header-expressive` : ``}"
+      <div 
+        id="player-card-header"
+        class="player-card-header${expressive ? `-expressive` : ``}"
       >
-          ${this.renderPlayerSelector()}
-          ${this.renderSectionTitle()}
-          ${this.renderGrouped()}
-      </mass-section-header>
+        <mass-section-header
+          class="${this._artworkHeaderClass} ${this.cardConfig.expressive ? `header-expressive` : ``}"
+        >
+            ${this.renderPlayerSelector()}
+            ${this.renderSectionTitle()}
+            ${this.renderGrouped()}
+        </mass-section-header>
+        ${this.renderActiveItemSection()}
+      </div>
     `
   }
   protected renderPlayerSelector(): TemplateResult {
@@ -444,7 +451,6 @@ class MusicPlayerCard extends LitElement {
             id="player-card"
             class="${expressive ? `player-card-expressive` : ``}"
           >
-            ${this.renderActiveItemSection()}
             ${this.renderArtwork()}
             ${this.renderControls()}
           </div>

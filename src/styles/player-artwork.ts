@@ -22,13 +22,13 @@ export default css`
   }
   .carousel-large {
     height: var(--mass-player-card-height) !important;
-    position: absolute;
+    /* position: absolute; */
     aspect-ratio: 1;
     height: var(--mass-player-card-height);
     width: 100%;
-    place-content: center;
-    top: -3em;
-    left: 0;
+    /* place-content: center; */
+    /* top: -3em; */
+    /* left: 0; */
   }
   .carousel-medium {
     height: 22em !important;
