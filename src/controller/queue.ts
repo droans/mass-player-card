@@ -17,7 +17,7 @@ import {
 } from "../const/player-queue.js";
 import { Config } from "../config/config.js";
 import QueueActions from "../actions/queue-actions.js";
-import { playerHasUpdated } from "../utils/util.js";
+import { isActive, playerHasUpdated } from "../utils/util.js";
 
 export class QueueController {
   private _queue = new ContextProvider(document.body, { context: queueContext});
@@ -123,8 +123,7 @@ export class QueueController {
     console.error(`Reached max failures getting queue, check your browser and HA logs!`);
   }
   public async getQueue() {
-    const app_is_mass = this.activeMediaPlayer?.attributes?.app_id == MUSIC_ASSISTANT_APP_NAME;
-    if (app_is_mass) {
+    if (isActive(this.activeMediaPlayer)) {
       return this._getQueue();
     }
     this.queue = [];
