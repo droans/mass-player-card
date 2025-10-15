@@ -187,7 +187,7 @@ class PlayersCard extends LitElement {
     }
     super.connectedCallback();
   }
-  protected firstUpdated(_changedProperties: PropertyValues): void {
+  protected firstUpdated(): void {
     this._firstLoaded = true;
   }
   static get styles(): CSSResultGroup {

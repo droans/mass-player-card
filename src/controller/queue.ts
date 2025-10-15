@@ -10,7 +10,6 @@ import {
 import {
   MassQueueEvent,
   MAX_GET_QUEUE_FAILURES,
-  MUSIC_ASSISTANT_APP_NAME,
   QueueItem,
   QueueItems,
   TIMED_LISTENER_DELAY_MS

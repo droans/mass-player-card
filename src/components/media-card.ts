@@ -280,7 +280,7 @@ class MediaCard extends LitElement {
   protected render() {
     return this.code;
   }
-  protected firstUpdated(_changedProperties: PropertyValues): void {
+  protected firstUpdated(): void {
     this._firstLoaded = true;
   }
   connectedCallback(): void {

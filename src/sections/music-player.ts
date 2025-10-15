@@ -453,7 +453,6 @@ class MusicPlayerCard extends LitElement {
     `
   }
   connectedCallback(): void {
-    console.log(`Connected`);
     if (this._animation && this._firstLoaded) {
       this._animation.play = true;
     }
