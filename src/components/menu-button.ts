@@ -6,9 +6,10 @@ import {
 } from "lit";
 import {
   property,
+  state,
 } from "lit/decorators.js";
 
-import { TargetValEvent } from "../const/common";
+import { TargetValEvent, TargetValEventData } from "../const/common";
 import { ListItems } from "../const/media-browser";
 import { consume } from "@lit/context";
 import { useExpressiveContext } from "../const/context.js";
@@ -20,6 +21,7 @@ class MassMenuButton extends LitElement {
   @property( { type: Boolean, attribute: "fixedMenuPosition" }) public fixedMenuPosition!: boolean;
   @consume({ context: useExpressiveContext, subscribe: true }) private useExpressive!: boolean;
   public onSelectAction!: TargetValEvent; 
+  @state() private _selectedItem!: string;
 
   public set items(items: ListItems) {
     const cur_items = JSON.stringify(this._items);
@@ -28,19 +30,32 @@ class MassMenuButton extends LitElement {
       return;
     }
     this._items = items;
+    if (!this._selectedItem) {
+      this._selectedItem = items[0].option;
+    }
   }
   public get items() {
     return this._items;
   }
+  private onSelect = (ev: TargetValEventData) => {
+    const val = ev.target.value;
+    if (val == '') {
+      return;
+    }
+    this._selectedItem = ev.target.value;
+    this.onSelectAction(ev);
+  }
+
   protected renderMenuItems(): TemplateResult|TemplateResult[] {
     if (!this.items) {
       return html``
     }
+
     return this._items.map(
       (item) => {
         return html`
           <ha-list-item
-            class="menu-list-item"
+            class="menu-list-item ${this._selectedItem == item.option ? `selected-item` : `inactive-item`}"
             part="menu-list-item"
             .value="${item.option}"
             .graphic=${item.icon}
@@ -67,7 +82,7 @@ class MassMenuButton extends LitElement {
             part="menu-select-menu"
             naturalMenuWidth
             ?fixedMenuPosition=${this.fixedMenuPosition}
-            @selected=${this.onSelectAction}
+            @selected=${this.onSelect}
           >
             <ha-svg-icon
               slot="icon"
