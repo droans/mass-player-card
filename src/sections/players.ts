@@ -3,9 +3,10 @@ import { consume, provide } from "@lit/context";
 import {
   CSSResultGroup,
   html,
-  LitElement
+  LitElement,
+  PropertyValues
 } from "lit";
-import { property } from "lit/decorators.js";
+import { property, query } from "lit/decorators.js";
 import { keyed } from "lit/directives/keyed.js";
 
 import '../components/player-row'
@@ -23,7 +24,8 @@ import { DEFAULT_PLAYERS_CONFIG, PlayersConfig } from "../config/players";
 import { PlayerSelectedService } from "../const/actions";
 import {
   ExtendedHass,
-  ExtendedHassEntity
+  ExtendedHassEntity,
+  WaAnimation
 } from "../const/common";
 import {
   activeEntityConf,
@@ -39,6 +41,9 @@ class PlayersCard extends LitElement {
   @consume( { context: activeEntityConf, subscribe: true})
   @property({ attribute: false })
   public activePlayerEntity!: EntityConfig;
+
+  @query('#animation') _animation!: WaAnimation;
+  private _firstLoaded = false;
 
   private _config!: Config;
 
@@ -162,6 +167,7 @@ class PlayersCard extends LitElement {
           </span>
         </mass-section-header>
         <wa-animation 
+          id="animation"
           name="fadeIn"
           easing="ease-in"
           iterations=1
@@ -174,6 +180,15 @@ class PlayersCard extends LitElement {
         </wa-animation>
       </div>
     `
+  }
+  connectedCallback(): void {
+    if (this._animation && this._firstLoaded) {
+      this._animation.play = true;
+    }
+    super.connectedCallback();
+  }
+  protected firstUpdated(_changedProperties: PropertyValues): void {
+    this._firstLoaded = true;
   }
   static get styles(): CSSResultGroup {
     return styles;

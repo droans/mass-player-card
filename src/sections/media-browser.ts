@@ -503,17 +503,9 @@ export class MediaBrowser extends LitElement {
     return html`
       <div id="container" class="${this.useExpressive ? `container-expressive` : ``}">
         ${this.renderHeader()}
-        <wa-animation
-          name="fadeIn"
-          easing="ease-in"
-          iterations=1
-          play=${this.checkVisibility()}
-          playback-rate=4
-        >
         <div id="mass-browser" class="${this.useExpressive ? `mass-browser-expressive` : ``}">
           ${this.renderBrowserCards()}
         </div>
-        </wa-animation>
       </div>
     `
   }

@@ -27,6 +27,7 @@ import PlayerActions from "../actions/player-actions";
 import {
   ExtendedHass,
   ExtendedHassEntity,
+  WaAnimation,
 } from '../const/common';
 import {
   activeEntityConf,
@@ -60,6 +61,8 @@ class MusicPlayerCard extends LitElement {
   @state() private shouldMarqueeTitle = false;
 
   @query('.player-track-title') _track_title!: LitElement;
+  @query('#animation') _animation!: WaAnimation;
+  private _firstLoaded = false;
   @consume({ context: IconsContext}) private Icons!: Icons;
 
   @consume({ context: entitiesConfigContext, subscribe: true })
@@ -86,6 +89,7 @@ class MusicPlayerCard extends LitElement {
   private groupedPlayers!: EntityConfig[];
   private actions!: PlayerActions;
   private marquee_x_dist = 0;
+
   private _artworkHeaderClass!: string;
   private _artworkProgressClass!: string;
   private _artworkVolumeClass!: string;
@@ -427,6 +431,7 @@ class MusicPlayerCard extends LitElement {
       >
         ${this.renderHeader()}
         <wa-animation 
+          id="animation"
           name="fadeIn"
           easing="ease-in"
           iterations=1
@@ -446,8 +451,21 @@ class MusicPlayerCard extends LitElement {
       </div>
     `
   }
+  connectedCallback(): void {
+    console.log(`Connected`);
+    if (this._animation && this._firstLoaded) {
+      this._animation.play = true;
+    }
+    super.connectedCallback();
+  }
+  disconnectedCallback(): void {
+    super.disconnectedCallback();
+  }
   protected updated() {
     this.marqueeTitleWhenUpdated();
+  }
+  protected firstUpdated(): void {
+      this._firstLoaded = true;
   }
   protected shouldUpdate(_changedProperties: PropertyValues): boolean {
     if (!this.player_data) {

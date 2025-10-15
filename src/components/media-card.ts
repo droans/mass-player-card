@@ -3,12 +3,14 @@ import { consume } from "@lit/context";
 import {
   CSSResultGroup,
   LitElement,
+  PropertyValues,
   TemplateResult
 } from "lit";
 import { 
   html } from "lit/static-html.js";
 import {
   property,
+  query,
   state
 } from "lit/decorators.js";
 import '@awesome.me/webawesome/dist/components/card/card.js';
@@ -20,7 +22,7 @@ import {
   CardSelectedService,
   EnqueueOptions,
 } from "../const/actions";
-import { ExtendedHass } from "../const/common";
+import { ExtendedHass, WaAnimation } from "../const/common";
 import {
   activeEntityConf,
   activeSectionContext,
@@ -58,6 +60,10 @@ class MediaCard extends LitElement {
   @state() code!: TemplateResult;
   @state() private _enqueue_buttons!: ListItems;
   @state() private _search_buttons!: ListItems;
+
+  @query('#animation') _animation!: WaAnimation;
+  private _firstLoaded = false;
+
   private _icons!: Icons;
 
   @consume({context: hassExt})
@@ -249,6 +255,7 @@ class MediaCard extends LitElement {
     }
     this.code = html`
       <wa-animation
+        id="animation"
         name="pulse"
         easing="ease"
         iterations=1
@@ -272,6 +279,15 @@ class MediaCard extends LitElement {
   }
   protected render() {
     return this.code;
+  }
+  protected firstUpdated(_changedProperties: PropertyValues): void {
+    this._firstLoaded = true;
+  }
+  connectedCallback(): void {
+    if (this._firstLoaded) {
+      this._animation.play = true;
+    }
+    super.connectedCallback();
   }
   static get styles(): CSSResultGroup {
     return styles;

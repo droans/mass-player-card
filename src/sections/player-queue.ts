@@ -1,7 +1,7 @@
 import { consume, provide } from '@lit/context';
 import { LovelaceCard } from 'custom-card-helpers';
 import { LitElement, html, type CSSResultGroup, PropertyValues, TemplateResult } from 'lit';
-import { property, state } from 'lit/decorators.js';
+import { property, queryAll, state } from 'lit/decorators.js';
 import '../components/media-row'
 import '../components/section-header';
 
@@ -11,7 +11,7 @@ import {
   QueueConfigErrors,
 } from '../config/player-queue';
 
-import { ExtendedHass } from '../const/common';
+import { ExtendedHass, WaAnimation } from '../const/common';
 import {
   activeEntityConf,
   activeEntityID,
@@ -46,6 +46,9 @@ class QueueCard extends LitElement {
   public _config!: QueueConfig;
   @state() private _queue: QueueItems = [];
   private _queueController!: QueueController;
+
+  @queryAll('#animation') _animations!: WaAnimation[];
+  private _firstLoaded = false;
 
   @consume({ context: queueControllerContext, subscribe: true})
   public set queueController(controller: QueueController) {
@@ -186,6 +189,7 @@ class QueueCard extends LitElement {
         const result = 
           html`
             <wa-animation
+              id="animation"
               name="fadeIn"
               delay=${delay_add * i}
               duration=${delay_add * 2}
@@ -253,7 +257,13 @@ class QueueCard extends LitElement {
       void this.queueController.getQueue();
       void this.queueController.subscribeUpdates();
     }
+    if (this._animations && this._firstLoaded) {
+      this._animations.forEach(animation => animation.play = true)
+    }
     super.connectedCallback();
+  }
+  protected firstUpdated(): void {
+      this._firstLoaded = true;
   }
   static get styles(): CSSResultGroup {
     return styles;

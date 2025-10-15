@@ -6,6 +6,7 @@ import {
   HassEntity,
   HassEntityAttributeBase
 } from "home-assistant-js-websocket";
+import { LitElement } from "lit";
 
 export enum RepeatMode {
   OFF = 'off',
@@ -88,6 +89,10 @@ export interface TargetValEvent {
   target: {
     value: string
   }
+}
+
+export interface WaAnimation extends LitElement {
+  play: boolean;
 }
 
 export const DarkModeThumbnails: Record<string, string> = {
