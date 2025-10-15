@@ -33,7 +33,7 @@ export default css`
   }
 
   #active-track-text {
-    background: var(--player-blur-color);
+    background: linear-gradient(var(--expressive-player-blur-color) 90%, transparent) !important;
     z-index: 1;
     position: relative;
     backdrop-filter: blur(3px);
@@ -210,7 +210,7 @@ export default css`
     width: 100%;
   }
   .media-controls-expressive {
-    background: var(--expressive-player-blur-color);
+    background: linear-gradient(transparent, var(--expressive-player-blur-color) 10%) !important;
   }
 
   .menu-header-expressive::part(menu-select-menu) {
