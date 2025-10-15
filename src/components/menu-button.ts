@@ -8,7 +8,7 @@ import {
   property,
 } from "lit/decorators.js";
 
-import { ServiceCustomEvent } from "../const/common";
+import { TargetValEvent } from "../const/common";
 import { ListItems } from "../const/media-browser";
 import { consume } from "@lit/context";
 import { useExpressiveContext } from "../const/context.js";
@@ -19,7 +19,7 @@ class MassMenuButton extends LitElement {
   @property( { attribute: false }) private _items!: ListItems;
   @property( { type: Boolean, attribute: "fixedMenuPosition" }) public fixedMenuPosition!: boolean;
   @consume({ context: useExpressiveContext, subscribe: true }) private useExpressive!: boolean;
-  public onSelectAction!: ServiceCustomEvent;
+  public onSelectAction!: TargetValEvent; 
 
   public set items(items: ListItems) {
     this._items = items;
