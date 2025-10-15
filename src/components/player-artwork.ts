@@ -52,6 +52,7 @@ class MassPlayerArtwork extends LitElement {
   private _nextItemImage!: string;
   private _lastSwipedTS = 0;
   private _disconnected = false;
+  private _playerLoadedTS = 0;
 
   @consume({ context: activePlayerDataContext, subscribe: true })
   public set playerData(playerData: PlayerData) {
@@ -60,6 +61,7 @@ class MassPlayerArtwork extends LitElement {
       this._playerData = playerData;
       this.currentItemImage = playerData.track_artwork;
     }
+    this._playerLoadedTS = new Date().getTime();
   }
   public get playerData() {
     return this._playerData;
@@ -132,9 +134,11 @@ class MassPlayerArtwork extends LitElement {
     const slide_idx = ev.detail.index;
     const last_ts = this._lastSwipedTS;
     const cur_ts = ev.timeStamp;
+    const cur_time = new Date().getTime();
     this._lastSwipedTS = cur_ts;
-    const delay_since = cur_ts - last_ts;
-    if (delay_since <= SWIPE_MIN_DELAY) {
+    const delay_since_swipe = cur_ts - last_ts;
+    const delay_since_load = cur_time - this._playerLoadedTS;
+    if (delay_since_swipe <= SWIPE_MIN_DELAY || delay_since_load <= SWIPE_MIN_DELAY) {
       return;
     }
     if (slide_idx == 0) {

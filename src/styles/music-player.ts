@@ -18,28 +18,20 @@ export default css`
   }
 
   #active-track-lg {
-    position: absolute;
-    top: 0;
     width: 100%;
   }
   #active-track-med {
-    position: absolute;
-    top: 0;
     width: 100%;
   }
   #active-track-sm {
-    position: relative;
     width: 100%;
   }
 
   #active-track-text {
-    background: linear-gradient(var(--expressive-player-blur-color) 90%, transparent) !important;
     z-index: 1;
     position: relative;
-    backdrop-filter: blur(3px);
   }
   .active-track-text-expressive {
-    background: var(--expressive-player-blur-color) !important;
   }
   .active-track-text-rounded {
     border-radius: 8px 8px 0px 0px;
@@ -127,12 +119,10 @@ export default css`
   }
 
   .header-art-lg {
-    z-index: 1;
+    z-index: 2;
     position: relative;
   }
   .header-art-lg::part(header) {
-    background: var(--player-blur-color);
-    backdrop-filter: var(--player-blur);
     z-index: 0;
   }
   .header-art-med {
@@ -141,10 +131,10 @@ export default css`
   .header-art-sm {
     position: relative;
   }
-
+/* 
   .header-expressive::part(header) {
     background: var(--expressive-player-blur-color);
-  }
+  } */
 
   #grouped-players-menu {
     --control-select-menu-height: 2.5em;
@@ -204,9 +194,9 @@ export default css`
 
   .media-controls {
     backdrop-filter: blur(3px);
-    background: var(--player-blur-color);
+    background: linear-gradient(transparent, var(--player-blur-color) 10%) !important;
     position: absolute;
-    bottom: 8px;
+    bottom: 0;
     width: 100%;
   }
   .media-controls-expressive {
@@ -224,7 +214,7 @@ export default css`
 
   #player-card {
     z-index: 0;
-    height: calc(var(--mass-player-card-height) - 3em);
+    height: var(--mass-player-card-height);
     background-repeat: no-repeat;
     background-position: center;
     background-size: 22em;
@@ -234,7 +224,22 @@ export default css`
     background-color: var(--md-sys-color-background);
     border-radius: 8px 8px 0px 0px;
   }
-
+  #player-card-header {
+    position: absolute;
+    top: 0;
+    width: 100%;
+    z-index: 1;
+    border-radius: 28px 28px 0px 0px;
+  }
+  .player-card-header {
+    background: linear-gradient(var(--player-blur-color) 90%, transparent) !important;
+  }
+  .player-card-header-expressive {
+    background: linear-gradient(var(--expressive-player-blur-color) 90%, transparent) !important;
+  }
+  .player-card-header, .player-card-header-expressive {
+    backdrop-filter: blur(3px);
+  }
   .player-header {
     margin: 0em 1.75em 0em 1.75em;
     text-align: center;

@@ -37,10 +37,11 @@ export default css`
 
   #volume-slider {
     --control-slider-thickness: 2.25em;
-    --control-slider-color: var(--md-sys-color-primary);
     border-radius: 10px;
+    --disabled-color: var(--control-slider-color);
   } 
   .volume-slider-expressive {
+    --control-slider-color: var(--md-sys-color-primary);
     box-shadow: var(--md-sys-elevation-level1);
   }
 `

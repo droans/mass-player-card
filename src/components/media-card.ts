@@ -3,7 +3,6 @@ import { consume } from "@lit/context";
 import {
   CSSResultGroup,
   LitElement,
-  PropertyValues,
   TemplateResult
 } from "lit";
 import { 

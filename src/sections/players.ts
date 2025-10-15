@@ -4,7 +4,6 @@ import {
   CSSResultGroup,
   html,
   LitElement,
-  PropertyValues
 } from "lit";
 import { property, query } from "lit/decorators.js";
 import { keyed } from "lit/directives/keyed.js";
