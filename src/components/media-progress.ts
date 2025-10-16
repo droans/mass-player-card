@@ -89,7 +89,7 @@ class MassPlayerProgressBar extends LitElement {
   private requestProgress() {
     void this.activePlayerController.getPlayerProgress().then( 
       (progress) => {
-        progress = Math.min(progress, this.entity_duration ?? progress, 1);
+        progress = Math.min(progress ?? 1, this.entity_duration ?? progress);
         this.media_position = progress ?? this.media_position;
         this.entity_position = progress ?? this.entity_position;
       }
@@ -185,8 +185,8 @@ class MassPlayerProgressBar extends LitElement {
   }
   disconnectedCallback(): void {
     if (this._listener) {
-      this._listener = undefined;
       clearInterval(this._listener);
+      this._listener = undefined;
     }
     super.disconnectedCallback();
   }

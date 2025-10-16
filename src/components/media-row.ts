@@ -124,7 +124,7 @@ class MediaRow extends LitElement {
     return true;
   }
   private artworkStyle() {
-    const img = this.media_item.media_image || "";
+    const img = this.media_item.local_image_encoded ?? this.media_item.media_image ?? "";
     if (!testMixedContent(img)) {
       return getFallbackBackgroundImage(this.hass, Thumbnail.CLEFT);
     }
@@ -132,7 +132,8 @@ class MediaRow extends LitElement {
   }
   private renderThumbnail(): TemplateResult {
     const played = !this.media_item.show_action_buttons  && !this.media_item.playing;
-    if (this.media_item.media_image && this.showAlbumCovers && !this.hide.album_covers) {
+    const img = this.media_item.local_image_encoded ?? this.media_item.media_image;
+    if (img && this.showAlbumCovers && !this.hide.album_covers) {
       return html`
         <span
           class="thumbnail${played ? '-disabled' : ''}"

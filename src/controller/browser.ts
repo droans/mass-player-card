@@ -40,16 +40,10 @@ export class MediaBrowserController {
   constructor(hass: ExtendedHass, config: Config, activeEntityId: string) {
     this.hass = hass;
     this.config = config;
-    this.activeEntityId = activeEntityId;
     this.actions = new BrowserActions(hass);
     this.browserConfig = config.media_browser;
-    this.items = {
-      favorites: {main: []},
-      recents: {main: []},
-      recommendations: {main: []},
-      search: []
-    }
-    this.generateAllSections()
+    this.activeEntityId = activeEntityId;
+    this.resetAndGenerateSections()
   }
   private set items(items: newMediaBrowserItemsConfig) {
     const x = {...items}
@@ -61,6 +55,15 @@ export class MediaBrowserController {
   }
   public get items() {
     return this._items.value;
+  }
+  private resetAndGenerateSections() {
+    this.items = {
+      favorites: {main: []},
+      recents: {main: []},
+      recommendations: {main: []},
+      search: []
+    }
+    this.generateAllSections();    
   }
   public generateAllSections() {
     const promises = [
@@ -74,7 +77,11 @@ export class MediaBrowserController {
   }
 
   public set activeEntityId(entityId: string) {
+    if (entityId == this._activeEntityId) {
+      return;
+    }
     this._activeEntityId = entityId;
+    this.resetAndGenerateSections();
   }
   public get activeEntityId() {
     return this._activeEntityId;
@@ -138,7 +145,7 @@ export class MediaBrowserController {
     const i = {...this.items};
     i.favorites[media_type] = items;
     i.favorites.main = [
-      generateFavoriteCard(this.hass, media_type, items),
+      await generateFavoriteCard(this.hass, media_type, items),
       ...i.favorites.main
     ]
     this.items = {...i};
@@ -170,7 +177,7 @@ export class MediaBrowserController {
     
     const items = await this.getRecentSection(config, media_type);
     if (items.length) {
-      const card = generateRecentsCard(this.hass, media_type, items);
+      const card = await generateRecentsCard(this.hass, media_type, items);
       const i = {...this.items};
       i.recents.main.push(card);
       i.recents[media_type] = items;
@@ -179,10 +186,10 @@ export class MediaBrowserController {
   }
 
   //Recommendations
-  private generateRecommendationSection(section: RecommendationSection) {
+  private async generateRecommendationSection(section: RecommendationSection) {
     const items = generateRecommendationSectionCards(section);
     if (items.length) {
-      const card = generateRecommendationsCard(this.hass, section, items);
+      const card = await generateRecommendationsCard(this.hass, section, items);
       const i = {...this.items};
       i.recommendations.main.push(card)
       i.recommendations[section.name] = items
@@ -195,7 +202,7 @@ export class MediaBrowserController {
     const resp = data.response.response;
     resp.forEach(
       (item) => {
-        this.generateRecommendationSection(item)
+        void this.generateRecommendationSection(item)
       }
     )
   }

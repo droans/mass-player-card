@@ -25,6 +25,7 @@ import { ExtendedHass, WaAnimation } from "../const/common";
 import {
   activeEntityConf,
   activeSectionContext,
+  configContext,
   EntityConfig,
   hassExt,
   IconsContext,
@@ -41,6 +42,7 @@ import {
 import styles from '../styles/media-card';
 
 import {
+  asyncBackgroundImageFallback,
   backgroundImageFallback,
   getFallbackBackgroundImage,
 } from "../utils/thumbnails";
@@ -53,12 +55,14 @@ import {
 } from "../config/media-browser";
 import { Sections } from "../const/card";
 import { Icons } from "../const/icons.js";
+import { Config } from "../config/config.js";
 
 class MediaCard extends LitElement {
   @property({ type: Boolean }) queueable = false;
   @state() code!: TemplateResult;
   @state() private _enqueue_buttons!: ListItems;
   @state() private _search_buttons!: ListItems;
+  @state() private artwork!: string;
 
   @query('#animation') _animation!: WaAnimation;
   private _firstLoaded = false;
@@ -71,10 +75,13 @@ class MediaCard extends LitElement {
   @consume({ context: useExpressiveContext })
   private useExpressive!: boolean;
 
+  @consume({ context: configContext, subscribe: true})
+  private cardConfig!: Config;
+
   public onSelectAction!: CardSelectedService;
   public onEnqueueAction!: CardEnqueueService;
 
-  private _cardConfig!: MediaBrowserConfig;
+  private _sectionConfig!: MediaBrowserConfig;
   private _activeSection!: Sections;
   private _play = false;
 
@@ -96,6 +103,7 @@ class MediaCard extends LitElement {
     }
     this._config = config;
     this.updateHiddenElements();
+    void this.generateArtworkStyle();
     this.generateCode();
   }
   public get config() {
@@ -103,12 +111,12 @@ class MediaCard extends LitElement {
   }
   
   @consume( { context: mediaBrowserConfigContext, subscribe: true})
-  public set cardConfig(config: MediaBrowserConfig) {
-    this._cardConfig = config;
+  public set sectionConfig(config: MediaBrowserConfig) {
+    this._sectionConfig = config;
     this.updateHiddenElements();
   }
-  public get cardConfig() {
-    return this._cardConfig;
+  public get sectionConfig() {
+    return this._sectionConfig;
   }
   @consume({ context: IconsContext, subscribe: true}) 
   public set Icons(icons: Icons) {
@@ -130,11 +138,11 @@ class MediaCard extends LitElement {
   }
 
   private updateHiddenElements() {
-    if (!this.config || !this.entityConfig || !this.cardConfig) {
+    if (!this.config || !this.entityConfig || !this.sectionConfig) {
       return;
     }
     const entity = this.entityConfig.hide.media_browser;
-    const card = this.cardConfig.hide;
+    const card = this.sectionConfig.hide;
     this.hide = {
       back_button: entity.back_button || card.back_button,
       search: entity.search || card.search,
@@ -191,6 +199,10 @@ class MediaCard extends LitElement {
       ${this.config.background}
     `
   }
+  private async generateArtworkStyle() {
+    const img = this.config.thumbnail;
+    this.artwork = await asyncBackgroundImageFallback(this.hass, img, this.config.fallback, this.cardConfig.download_local);
+  }
   private artworkStyle() {
     const img = this.config.thumbnail;
     if (!testMixedContent(img)) {
@@ -199,7 +211,7 @@ class MediaCard extends LitElement {
     return backgroundImageFallback(this.hass, img, this.config.fallback);
   }
   protected renderThumbnailFromThumbnail() {
-    const thumbnail = this.artworkStyle() || "";
+    const thumbnail = this.artwork || "";
     return html`
       <div
         id="thumbnail-div"
@@ -246,7 +258,7 @@ class MediaCard extends LitElement {
       !this._enqueue_buttons
       || !this.hass
       || !this.activeSection
-      || !this.cardConfig
+      || !this.sectionConfig
       || !this.Icons
       || !this.entityConfig
     ) {

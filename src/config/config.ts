@@ -59,6 +59,7 @@ export interface Config {
   media_browser: MediaBrowserConfig;
   players: PlayersConfig;
   expressive: boolean;
+  download_local: boolean;
 }
 
 interface HiddenElementsConfig {
@@ -74,7 +75,8 @@ export const DEFAULT_CONFIG: Config = {
   players: DEFAULT_PLAYERS_CONFIG,
   media_browser: DEFAULT_MEDIA_BROWSER_CONFIG,
   expressive: true,
-  entities: []
+  entities: [],
+  download_local: false,
 }
 
 const ENTITY_DEFAULT_HIDDEN_ITEM_CONFIG: HiddenElementsConfig = {
@@ -118,6 +120,11 @@ export function createConfigForm() {
         "name": "expressive",
         required: false,
         selector: { boolean: {}, default: true }
+      },
+      {
+        "name": "download_local",
+        required: false,
+        selector: { boolean: {}, default: false }
       },
       {
         name: "player",

@@ -307,7 +307,7 @@ export default css`
   }
 
   .volume-expressive::part(volume-div) {
-    padding-bottom: 12px;
+    padding-bottom: 6px;
     position: relative;
   }
 

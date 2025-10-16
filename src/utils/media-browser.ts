@@ -1,33 +1,26 @@
 import { html, TemplateResult } from "lit"
 import { ExtendedHass, Thumbnail, MediaTypes } from "../const/common"
-import { backgroundImageFallback } from "./thumbnails"
+import { asyncBackgroundImageFallback } from "./thumbnails"
 import { MediaCardItem, MediaLibraryItem, MediaTypeThumbnails, RecommendationSection } from "../const/media-browser"
-import { testMixedContent } from "./util"
 import { customItem } from "../config/media-browser"
 
-function generateSectionBackgroundPart(hass: ExtendedHass, thumbnail: string, fallback: Thumbnail = Thumbnail.DISC) {
-  const image = backgroundImageFallback(hass, thumbnail, fallback)
+async function generateSectionBackgroundPart(hass: ExtendedHass, thumbnail: string, fallback: Thumbnail = Thumbnail.DISC) {
+  const image = await asyncBackgroundImageFallback(hass, thumbnail, fallback)
   return html`
     <div class="thumbnail-section" style="${image}"></div>
   `
 }
-function generateSectionBackground(hass: ExtendedHass, cards: MediaCardItem[], fallback: Thumbnail) {
+async function generateSectionBackground(hass: ExtendedHass, cards: MediaCardItem[], fallback: Thumbnail) {
   const rng = [...Array(4).keys()];
-  const thumbnails: TemplateResult[] = []
-  const filteredCards = cards.filter(
-    (item) =>{
-      if (item.thumbnail) {
-        return testMixedContent(item.thumbnail || "")
-      }
-      return false;
-    }
-  )
+  const _thumbs: Promise<TemplateResult>[] = [];
+  
   rng.forEach(
     (i) => {
-      const idx = i % filteredCards.length;
-      thumbnails.push(generateSectionBackgroundPart(hass, filteredCards[idx]?.thumbnail ?? fallback, fallback));
+      const idx = i % cards.length;
+      _thumbs.push(generateSectionBackgroundPart(hass, cards[idx]?.thumbnail ?? fallback, fallback));
     }
   )
+  const thumbnails = await Promise.all(_thumbs);
   let thumbnail_html = html``;
   thumbnails.forEach(
     (thumbnail) => {
@@ -43,11 +36,11 @@ function generateSectionBackground(hass: ExtendedHass, cards: MediaCardItem[], f
     </div>
   `
 }
-export function generateFavoriteCard(hass: ExtendedHass, media_type: MediaTypes, cards: MediaCardItem[]): MediaCardItem {
+export async function generateFavoriteCard(hass: ExtendedHass, media_type: MediaTypes, cards: MediaCardItem[]): Promise<MediaCardItem> {
   const thumbnail: Thumbnail = MediaTypeThumbnails[media_type];
   return {
     title: media_type,
-    background: generateSectionBackground(hass, cards, thumbnail),
+    background: await generateSectionBackground(hass, cards, thumbnail),
     thumbnail: thumbnail,
     fallback: thumbnail,
     data: {
@@ -57,11 +50,11 @@ export function generateFavoriteCard(hass: ExtendedHass, media_type: MediaTypes,
     }
   }
 }
-export function generateRecentsCard(hass: ExtendedHass, media_type: MediaTypes, cards: MediaCardItem[]): MediaCardItem {
+export async function generateRecentsCard(hass: ExtendedHass, media_type: MediaTypes, cards: MediaCardItem[]): Promise<MediaCardItem> {
   const thumbnail: Thumbnail = MediaTypeThumbnails[media_type];
   return {
     title: media_type,
-    background: generateSectionBackground(hass, cards, thumbnail),
+    background: await generateSectionBackground(hass, cards, thumbnail),
     thumbnail: thumbnail,
     fallback: thumbnail,
     data: {
@@ -71,11 +64,11 @@ export function generateRecentsCard(hass: ExtendedHass, media_type: MediaTypes, 
     }
   }
 }
-export function generateRecommendationsCard(hass: ExtendedHass, section: RecommendationSection, cards: MediaCardItem[]): MediaCardItem {
+export async function generateRecommendationsCard(hass: ExtendedHass, section: RecommendationSection, cards: MediaCardItem[]): Promise<MediaCardItem> {
   const thumbnail: Thumbnail = Thumbnail.CLEFT;
   return {
     title: section.name,
-    background: generateSectionBackground(hass, cards, thumbnail),
+    background: await generateSectionBackground(hass, cards, thumbnail),
     thumbnail: thumbnail,
     fallback: thumbnail,
     data: {

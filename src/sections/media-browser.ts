@@ -305,7 +305,7 @@ export class MediaBrowser extends LitElement {
     `
   }
   protected renderTitle(): TemplateResult {
-    const title = `Media Browser - ${this.activeSection}`
+    const title = `${this.activeSection}`
     return html`
       <span slot="label" id="title">
         ${title}

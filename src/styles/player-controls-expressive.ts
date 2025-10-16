@@ -65,7 +65,6 @@ export default css`
     --wa-color-fill-normal: var(--lower-button-background-color-active);
     --inherited-background-color: var(--lower-button-background-color-active);
     --ha-button-border-radius: var(--lower-button-border-radius);
-    border-radius: var(--ha-button-border-radius);
   }
   .button-lower-active::part(label) {
     color: var(--lower-button-icon-color-active);
@@ -106,8 +105,8 @@ export default css`
   #div-controls {
     row-gap: 6px;
     display: grid;
-    margin-top: 8px;
-    margin-bottom: 12px;
+    margin-top: 12px;
+    margin-bottom: 6px;
   }
 
   .icons-lower {

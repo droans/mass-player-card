@@ -189,6 +189,8 @@ media_browser:
 
 ```yaml
 type: custom:mass-player-card
+expressive: true
+download_local: false
 entities:
   - media_player.kitchen_player_music_assistant
   - entity_id: media_player.bedroom_player_music_assistant
@@ -296,15 +298,16 @@ media_browser:
 </details>
 
 ## Base Config
-| Parameter     | Type                                             | Required | Default | Description                                        |
-|---------------|--------------------------------------------------|----------|---------|----------------------------------------------------|
-| type          | str                                              | Yes      | n/a     | Use `custom:mass-player-card`                      |
-| expressive    | boolean                                          | No       | true    | Enables Material Expressive theme                  |
-| entities      | list of string or [EntityConfig](#entity-config) | Yes      | n/a     | The Music Assistant `media_player` entities to use |
-| player        | [MusicPlayerConfig](#music-player-config)        | No       | 5       | See Below                                          |
-| queue         | [QueueConfig](#queue-config)                     | No       | 5       | See Below                                          |
-| media_browser | [MediaBrowserConfig](#media-browser-config)      | No       | 5       | See Below                                          |
-| players       | [PlayersConfig](#players-config)                 | No       | 5       | See Below                                          |
+| Parameter      | Type                                             | Required | Default | Description                                           |
+|----------------|--------------------------------------------------|----------|---------|-------------------------------------------------------|
+| type           | str                                              | Yes      | n/a     | Use `custom:mass-player-card`                         |
+| expressive     | boolean                                          | No       | true    | Enables Material Expressive theme                     |
+| download_local | boolean                                          | No       | false   | Download and encode images if not remotely accessible |
+| entities       | list of string or [EntityConfig](#entity-config) | Yes      | n/a     | The Music Assistant `media_player` entities to use    |
+| player         | [MusicPlayerConfig](#music-player-config)        | No       | 5       | See Below                                             |
+| queue          | [QueueConfig](#queue-config)                     | No       | 5       | See Below                                             |
+| media_browser  | [MediaBrowserConfig](#media-browser-config)      | No       | 5       | See Below                                             |
+| players        | [PlayersConfig](#players-config)                 | No       | 5       | See Below                                             |
 
 ## Entity Config
 For each entity, you can either provide the Entity ID by itself or you can provide the Music Assistant media player Entity ID, the media player Entity ID for volume control, and/or the name of the player. Below is the config if you would like to provide the additional details.
