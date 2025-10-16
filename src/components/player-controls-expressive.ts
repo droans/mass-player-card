@@ -28,6 +28,11 @@ class MassPlayerControlsExpressive extends LitElement {
 
   @consume({ context: activePlayerDataContext, subscribe: true })
   public set playerData(playerData: PlayerData) {
+    const cur_item = JSON.stringify(this._playerData);
+    const new_item = JSON.stringify(playerData);
+    if (cur_item == new_item) {
+      return;
+    }
     this._playerData = playerData;
     this.playing = playerData.playing;
     this.repeat = playerData.repeat;

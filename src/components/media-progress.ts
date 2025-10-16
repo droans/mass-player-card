@@ -80,7 +80,11 @@ class MassPlayerProgressBar extends LitElement {
   @consume({ context: activePlayerDataContext, subscribe: true})
   @state()
   public set player_data(player_data: PlayerData) {
-    this._player_data = player_data;
+    const cur_data = JSON.stringify(this._player_data);
+    const new_data = JSON.stringify(player_data);
+    if (cur_data != new_data) {
+      this._player_data = player_data;
+    }
     this.requestProgress();
   }
   public get player_data() {

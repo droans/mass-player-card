@@ -69,6 +69,11 @@ class MassPlayerArtwork extends LitElement {
 
   @consume({ context: previousQueueItemContext, subscribe: true})
   public set previousQueueItem(item: QueueItem | null | undefined) {
+    const cur_item = JSON.stringify(this.previousQueueItem);
+    const new_item = JSON.stringify(item);
+    if (cur_item == new_item) {
+      return;
+    }
     this.previousItemImage = item?.media_image ?? ``;
     this._previousQueueItem = item ?? undefined;
   }
@@ -90,6 +95,11 @@ class MassPlayerArtwork extends LitElement {
 
   @consume({ context: currentQueueItemContext, subscribe: true})
   public set currentQueueItem(item: QueueItem | null | undefined) {
+    const cur_item = JSON.stringify(this.currentQueueItem);
+    const new_item = JSON.stringify(item);
+    if (cur_item == new_item) {
+      return;
+    }
     this.currentItemImage = item?.media_image ?? ``;
     this._currentQueueItem = item ?? undefined;
   }
@@ -111,6 +121,11 @@ class MassPlayerArtwork extends LitElement {
   
   @consume({ context: nextQueueItemContext, subscribe: true})
   public set nextQueueItem(item: QueueItem | null | undefined) {
+    const cur_item = JSON.stringify(this.nextQueueItem);
+    const new_item = JSON.stringify(item);
+    if (cur_item == new_item) {
+      return;
+    }
     this.nextItemImage = item?.media_image ?? ``;
     this._nextQueueItem = item ?? undefined;
   }

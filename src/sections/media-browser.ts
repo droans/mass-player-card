@@ -61,6 +61,11 @@ export class MediaBrowser extends LitElement {
   
   @state() 
   public set activeCards(cards: MediaCardItem[]) {
+    const cur_item = JSON.stringify(this._activeCards);
+    const new_item = JSON.stringify(cards);
+    if (cur_item == new_item) {
+      return;
+    }
     this._activeCards = cards;
   }
   public get activeCards() {
@@ -82,10 +87,7 @@ export class MediaBrowser extends LitElement {
   @state() private searchMediaType: MediaTypes = MediaTypes.TRACK; 
   @state() private searchLibrary = false;
   private searchTerm = '';
-  private lastSearchInputTs!: number;
   private _searchTimeout!: number;
-
-  @state() private filterMenuIcon!: string;
 
   @consume({ context: hassExt, subscribe: true})
   public set hass(hass: ExtendedHass) {
@@ -116,6 +118,11 @@ export class MediaBrowser extends LitElement {
 
   @consume({ context: mediaBrowserCardsContext, subscribe: true}) 
   public set cards(cards: newMediaBrowserItemsConfig) {
+    const cur_item = JSON.stringify(this._cards);
+    const new_item = JSON.stringify(cards);
+    if (cur_item == new_item) {
+      return;
+    }
     this._cards = cards;
     if (this.activeSection == 'search') {
       this.activeCards = [];
@@ -259,8 +266,6 @@ export class MediaBrowser extends LitElement {
     if (val.length < SEARCH_TERM_MIN_LENGTH) {
       return;
     }
-    const cur_ts = Date.now();
-    this.lastSearchInputTs = cur_ts;
     this.searchTerm = val;
     if (this._searchTimeout) {
       clearTimeout(this._searchTimeout)

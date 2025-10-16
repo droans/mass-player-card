@@ -64,6 +64,11 @@ class MediaRow extends LitElement {
   
   @consume({ context: playerQueueConfigContext, subscribe: true})
   public set config(config: QueueConfig) {
+    const cur_conf = JSON.stringify(this._config);
+    const new_conf = JSON.stringify(config)
+    if (cur_conf == new_conf) {
+      return;
+    }
     this._config = config;
     this.updateHiddenElements();
   }
@@ -73,6 +78,11 @@ class MediaRow extends LitElement {
 
   @consume({ context: activeEntityConf, subscribe: true})
   public set entityConfig(config: EntityConfig) {
+    const cur_conf = JSON.stringify(this._entityConfig);
+    const new_conf = JSON.stringify(config)
+    if (cur_conf == new_conf) {
+      return;
+    }
     this._entityConfig = config;
     this.updateHiddenElements();
   }

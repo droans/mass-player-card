@@ -27,6 +27,11 @@ export class MassCardConfigController {
     this._host = host;
   }
   public set config(config: Config) {
+    const cur_item = JSON.stringify(this._config);
+    const new_item = JSON.stringify(config);
+    if (cur_item == new_item) {
+      return;
+    }
     const conf = processConfig(config);
     this._config = conf;
     this._entitiesConfig.value = conf.entities;

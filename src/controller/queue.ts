@@ -47,6 +47,11 @@ export class QueueController {
   }
 
   private set queue(queue_items: QueueItems | null) {
+    const cur_item = JSON.stringify(this._queue.value);
+    const new_item = JSON.stringify(queue_items);
+    if (cur_item == new_item) {
+      return;
+    }
     this._queue.setValue(queue_items);
   }
   public get queue() {
@@ -94,6 +99,11 @@ export class QueueController {
   }
 
   private set currentQueueItem(queue_item: QueueItem | null) {
+    const cur_item = JSON.stringify(this._currentQueueItem.value);
+    const new_item = JSON.stringify(queue_item);
+    if (cur_item == new_item) {
+      return;
+    }
     this._currentQueueItem.setValue(queue_item);
   }
   public get currentQueueItem() {
@@ -101,6 +111,11 @@ export class QueueController {
   }
   
   private set nextQueueItem(queue_item: QueueItem | null) {
+    const cur_item = JSON.stringify(this._nextQueueItem.value);
+    const new_item = JSON.stringify(queue_item);
+    if (cur_item == new_item) {
+      return;
+    }
     this._nextQueueItem.setValue(queue_item);
   }
   public get nextQueueItem() {
@@ -108,6 +123,11 @@ export class QueueController {
   }
   
   private set previousQueueItem(queue_item: QueueItem | null) {
+    const cur_item = JSON.stringify(this._previousQueueItem.value);
+    const new_item = JSON.stringify(queue_item);
+    if (cur_item == new_item) {
+      return;
+    }
     this._previousQueueItem.setValue(queue_item);
   }
   public get previousQueueItem() {

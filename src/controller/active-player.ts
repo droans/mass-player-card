@@ -172,6 +172,7 @@ export class ActivePlayerController {
     if (player_config) {
       this.activeEntityConfig = player_config
     }
+    
   }
 
   public getactivePlayerData(current_item: QueueItem | null): PlayerData {

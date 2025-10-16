@@ -42,6 +42,11 @@ class VolumeRow extends LitElement {
   
   @consume({ context: musicPlayerConfigContext, subscribe: true })
   public set config(config: PlayerConfig) {
+    const cur_item = JSON.stringify(this._config);
+    const new_item = JSON.stringify(config);
+    if (cur_item == new_item) {
+      return;
+    }
     this._config = config;
     if (this._config && this._entityConfig) {
       this.updateHiddenElements();
@@ -53,6 +58,11 @@ class VolumeRow extends LitElement {
 
   @consume({ context: activeEntityConf, subscribe: true})
   public set entityConfig(config: EntityConfig) {
+    const cur_item = JSON.stringify(this._entityConfig);
+    const new_item = JSON.stringify(config);
+    if (cur_item == new_item) {
+      return;
+    }
     this._entityConfig = config;
     this.maxVolume = config.max_volume;
     if (this._config && this._entityConfig) {
@@ -65,6 +75,11 @@ class VolumeRow extends LitElement {
 
   @consume({ context: activePlayerDataContext, subscribe: true})
   public set player_data(player_data: PlayerData) {
+    const cur_item = JSON.stringify(this._player_data);
+    const new_item = JSON.stringify(player_data);
+    if (cur_item == new_item) {
+      return;
+    }
     this._player_data = player_data;
   }
   public get player_data() {
