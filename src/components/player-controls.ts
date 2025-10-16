@@ -3,7 +3,7 @@ import { CSSResultGroup, html, TemplateResult } from "lit";
 import { state } from "lit/decorators.js";
 import { MassPlayerControlsBase } from "./player-controls-base";
 import { PlayerConfig, PlayerControlsLayout, PlayerIconSize, PlayerLayoutConfig } from "../config/player";
-import { activePlayerDataContext, musicPlayerConfigContext } from "../const/context";
+import { musicPlayerConfigContext } from "../const/context";
 import { generateControlLabelHtml, generateControlSlotHtml, getRepeatIcon } from "../utils/music-player";
 import { RepeatMode } from "../const/common";
 import styles from '../styles/player-controls';
