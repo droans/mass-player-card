@@ -21,9 +21,17 @@ export default css`
     background-color: var(--mdc-theme-surface);
   }
   .selected-item {
+    --mdc-theme-text-icon-on-background: var(--mdc-theme-on-primary);
+    --mdc-theme-text-primary-on-background: var(--mdc-theme-on-primary);
+    background-color: var(--mdc-theme-primary);
+  }
+  .selected-item-expressive {
     --mdc-theme-text-icon-on-background: var(--mass-menu-selected-text-color);
     --mdc-theme-text-primary-on-background: var(--mass-menu-selected-text-color);
     background-color: var(--mass-menu-selected-background-color);
     border-radius: 24px;
+  }
+  .svg-menu-expressive {
+    color: var(--md-sys-color-on-background);
   }
 `

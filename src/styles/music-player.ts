@@ -273,7 +273,7 @@ export default css`
     --mdc-icon-size: 1.5em;
     --control-select-menu-height: 2.5em;
   }
-  #players-select-menu::part(menu-svg),  #grouped-players-menu::part(menu-svg) {
+  #players-select-menu::part(menu-svg):not(.svg-menu-expressive),  #grouped-players-menu::part(menu-svg):not(.svg-menu-expressive) {
     color: var(--wa-color-brand-on-loud, var(--wa-color-neutral-on-loud)) !important;
     border-radius: 50%;
   }
