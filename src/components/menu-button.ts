@@ -22,7 +22,16 @@ class MassMenuButton extends LitElement {
   @consume({ context: useExpressiveContext, subscribe: true }) private useExpressive!: boolean;
   public onSelectAction!: TargetValEvent; 
   @state() private _selectedItem!: string;
-
+  private _initialSelection?: string;
+  
+  @property({ attribute: false })
+  public set initialSelection(selection: string) {
+    this._initialSelection = selection;
+    this._selectedItem = selection;
+  }
+  public get initialSelection() {
+    return this._initialSelection ?? ``;
+  }
   public set items(items: ListItems) {
     const cur_items = JSON.stringify(this._items);
     const new_items = JSON.stringify(items);
@@ -55,7 +64,7 @@ class MassMenuButton extends LitElement {
       (item) => {
         return html`
           <ha-list-item
-            class="menu-list-item ${this._selectedItem == item.option ? `selected-item` : `inactive-item`}"
+            class="menu-list-item ${this._selectedItem == item.option ? `selected-item` : `inactive-item`}${this.useExpressive ? `-expressive`: ``}"
             part="menu-list-item"
             .value="${item.option}"
             .graphic=${item.icon}

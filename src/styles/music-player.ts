@@ -131,45 +131,15 @@ export default css`
   .header-art-sm {
     position: relative;
   }
-/* 
-  .header-expressive::part(header) {
-    background: var(--expressive-player-blur-color);
-  } */
 
   #grouped-players-menu {
-    --control-select-menu-height: 2.5em;
     --control-select-thickness: 2.5em;
     max-width: var(--control-select-menu-height);
   }
-  #grouped-players-menu::part(menu-button) {
-    --ha-ripple-color: rgba(0,0,0,0);
-  }
-  #grouped-players-menu::part(menu-select-menu) {
-    height: 2.5em;
-    width: 2.5em;
-    --control-select-menu-padding: 7px;
-    --mdc-icon-size: 1.5em;
-    --control-select-menu-height: 2.5em;
-    box-shadow: var(--md-sys-elevation-level1);
-    border-radius: var(--button-small-border-radius);
-  }
-  #grouped-players-menu::part(menu-svg) {
-    color: var(--md-sys-color-primary);
-    border-radius: 50%;
-  }
-
 
   .grouped-players-item {
     height: calc(var(--control-select-menu-height) * 2);
     display: contents;
-  }
-  .grouped-players-select-item {
-    height: 2.5em;
-  }
-  .grouped-players-select-item-icon {
-    height: 2em;
-    width: 2em;
-    color: var(--md-sys-color-primary);
   }
 
   .grouped-players-volume-slider {
@@ -194,7 +164,7 @@ export default css`
 
   .media-controls {
     backdrop-filter: blur(3px);
-    background: linear-gradient(transparent, var(--player-blur-color) 10%) !important;
+    background: var(--player-blur-color);
     position: absolute;
     bottom: 0;
     width: 100%;
@@ -203,6 +173,10 @@ export default css`
     background: linear-gradient(transparent, var(--expressive-player-blur-color) 10%) !important;
   }
 
+  .menu-header::part(menu-select-menu) {
+    background-color: var(--wa-color-brand-fill-loud, var(--wa-color-neutral-fill-loud));
+    border-radius: 50%; 
+  }
   .menu-header-expressive::part(menu-select-menu) {
     background-color: var(--md-sys-color-secondary-container);
     box-shadow: var(--md-sys-elevation-level1);
@@ -232,7 +206,7 @@ export default css`
     border-radius: 28px 28px 0px 0px;
   }
   .player-card-header {
-    background: linear-gradient(var(--player-blur-color) 90%, transparent) !important;
+    background: var(--player-blur-color);
   }
   .player-card-header-expressive {
     background: linear-gradient(var(--expressive-player-blur-color) 90%, transparent) !important;
@@ -255,15 +229,15 @@ export default css`
     color: var(--md-sys-color-on-primary-container) !important;
   }
 
-  .players-select-item {
+  .players-select-item, .grouped-players-select-item {
     height: 2.5em;
   }
-  .players-select-item-icon {
+  .players-select-item-icon,  .grouped-players-select-item-icon {
     height: 2em;
     width: 2em;
     color: var(--md-sys-color-primary);
   }
-  #players-select-menu {
+  #players-select-menu, #grouped-players-menu {
     --control-select-menu-height: 2.5em;
   }
 
@@ -283,7 +257,7 @@ export default css`
     text-shadow: 0px 0px var(--md-sys-color-primary);
   }
 
-  #players-select-menu::part(menu-button) {
+  #players-select-menu::part(menu-button), #grouped-players-menu::part(menu-button) {
     --ha-ripple-color: rgba(0,0,0,0);
   }
   #players-select-menu::part(menu-list-item) {
@@ -292,15 +266,15 @@ export default css`
     height: 2em;
     width: 2em;
   }
-  #players-select-menu::part(menu-select-menu) {
+  #players-select-menu::part(menu-select-menu),  #grouped-players-menu::part(menu-select-menu) {
     height: 2.5em;
     width: 2.5em;
     --control-select-menu-padding: 7px;
     --mdc-icon-size: 1.5em;
     --control-select-menu-height: 2.5em;
   }
-  #players-select-menu::part(menu-svg) {
-    color: var(--md-sys-color-primary);
+  #players-select-menu::part(menu-svg):not(.svg-menu-expressive),  #grouped-players-menu::part(menu-svg):not(.svg-menu-expressive) {
+    color: var(--wa-color-brand-on-loud, var(--wa-color-neutral-on-loud)) !important;
     border-radius: 50%;
   }
 

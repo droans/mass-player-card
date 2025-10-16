@@ -334,6 +334,7 @@ export class MediaBrowser extends LitElement {
           id="search-media-type-menu"
           class="${this.useExpressive ? `search-media-type-menu-expressive` : ``}"
           .iconPath=${this.searchMediaTypeIcon}
+          .initialSelection=${this.searchMediaType}
           .items=${icons}
           .onSelectAction=${this.onSearchMediaTypeSelect}
           fixedMenuPosition
@@ -453,6 +454,7 @@ export class MediaBrowser extends LitElement {
         id="filter-menu"
         class="hdr-menu ${this.useExpressive ? `filter-menu-expressive` : ``}"
         .iconPath=${icon}
+        .initialSelection=${this.activeSection}
         .items=${icons}
         .onSelectAction=${this.onFilterType}
         fixedMenuPosition

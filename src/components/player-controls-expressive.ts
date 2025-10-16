@@ -1,84 +1,11 @@
-import { CSSResultGroup, html, LitElement, TemplateResult } from "lit";
-
+import { CSSResultGroup, html, TemplateResult } from "lit";
+import { MassPlayerControlsBase } from "./player-controls-base";
+import { RepeatMode } from "../const/common";
+import { getRepeatIcon } from "../utils/music-player";
 import styles from '../styles/player-controls-expressive'
-import { consume } from "@lit/context";
-import {
-  actionsControllerContext,
-  activePlayerDataContext,
-  IconsContext
-} from "../const/context.js";
-import { ActionsController } from "../controller/actions.js";
-import { PlayerData } from "../const/music-player.js";
-import { RepeatMode } from "../const/common.js";
-import { getIteratedRepeatMode, getRepeatIcon } from "../utils/music-player.js";
-import { state } from "lit/decorators.js";
-import { Icons } from "../const/icons.js";
 
-class MassPlayerControlsExpressive extends LitElement {
-  @consume({ context: actionsControllerContext, subscribe: true })
-  private actions!: ActionsController;
-  @state()
-  private _playerData!: PlayerData;
-  @consume({ context: IconsContext}) private Icons!: Icons;
-
-  private playing = false;
-  private repeat = RepeatMode.OFF;
-  private shuffle = false;
-  private favorite = false;
-
-  @consume({ context: activePlayerDataContext, subscribe: true })
-  public set playerData(playerData: PlayerData) {
-    const cur_item = JSON.stringify(this._playerData);
-    const new_item = JSON.stringify(playerData);
-    if (cur_item == new_item) {
-      return;
-    }
-    this._playerData = playerData;
-    this.playing = playerData.playing;
-    this.repeat = playerData.repeat;
-    this.shuffle = playerData.shuffle;
-    this.favorite = playerData.favorite;
-  }
-  public get playerData() {
-    return this._playerData;
-  }
+class MassPlayerControlsExpressive extends MassPlayerControlsBase {
   
-  private onPrevious = async () => {
-    await this.actions.actionPlayPrevious();
-  }
-  private onNext = async () => {
-    await this.actions.actionPlayNext();
-  }
-  private onPlayPause = async () => {
-    this.playing = !this.playing;
-    this.requestUpdate();
-    await this.actions.actionPlayPause();
-  }
-  private onShuffle = async () => {
-    this.shuffle = !this.shuffle;
-    this.requestUpdate();
-    await this.actions.actionToggleShuffle();
-  }
-  private onRepeat = async () => {
-    const cur_repeat = this.playerData.repeat;
-    const repeat = getIteratedRepeatMode(cur_repeat);
-    this.repeat = repeat;
-    this.requestUpdate();
-    await this.actions.actionSetRepeat(repeat);
-  }
-  private onPower = async () => {
-    await this.actions.actionTogglePower();
-  }
-  private onFavorite = async () => {
-    this.favorite = !this.favorite;
-    this.requestUpdate();
-    if (this.playerData.favorite) {
-      await this.actions.actionRemoveFavorite();
-    } else {
-      await this.actions.actionAddFavorite();
-    }
-  }
-
   protected renderPrevious(): TemplateResult {
     return html`
       <ha-button
