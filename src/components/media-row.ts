@@ -179,18 +179,18 @@ class MediaRow extends LitElement {
     `
   }
   private renderArtist(): TemplateResult {
-    if (this.media_item.show_artist_name && !this.hide.artist_names ) {
-      return html`
-        <span
-          slot="supporting-text"
-          class="title"
-          style="width: ${this._calculateTitleWidth()}"
-        >
-          ${this.media_item.media_artist}
-        </span>
-      `
+    if (this.hide.artist_names) {
+      return html``
     }
-    return html``
+    return html`
+      <span
+        slot="supporting-text"
+        class="title"
+        style="width: ${this._calculateTitleWidth()}"
+      >
+        ${this.media_item.media_artist}
+      </span>
+    `
   }
   private renderActionButtons(): TemplateResult {
     if (this.hide.action_buttons || !this.media_item.show_action_buttons) {
