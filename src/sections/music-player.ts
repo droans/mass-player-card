@@ -371,6 +371,7 @@ class MusicPlayerCard extends LitElement {
           class="menu-header ${this.cardConfig.expressive ? `menu-header-expressive` : ``}"
           .iconPath=${this.Icons.SPEAKER}
           .onSelectAction=${this.onPlayerSelect}
+          .initialSelection=${this.activeEntity.entity_id}
           .items=${this.renderPlayerItems()}
         ></mass-menu-button>
       </span>
