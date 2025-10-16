@@ -75,8 +75,7 @@ class MediaCard extends LitElement {
   @consume({ context: useExpressiveContext })
   private useExpressive!: boolean;
 
-  @consume({ context: configContext, subscribe: true})
-  private cardConfig!: Config;
+  private _cardConfig!: Config;
 
   public onSelectAction!: CardSelectedService;
   public onEnqueueAction!: CardEnqueueService;
@@ -103,11 +102,23 @@ class MediaCard extends LitElement {
     }
     this._config = config;
     this.updateHiddenElements();
-    void this.generateArtworkStyle();
+    if (this.cardConfig) {
+      void this.generateArtworkStyle();
+    }
     this.generateCode();
   }
   public get config() {
     return this._config;
+  }
+  @consume({ context: configContext, subscribe: true})
+  public set cardConfig(config: Config) {
+    this._cardConfig = config;
+    if (this.config) {
+      this.generateArtworkStyle();
+    }
+  }
+  public get cardConfig() {
+    return this._cardConfig;
   }
   
   @consume( { context: mediaBrowserConfigContext, subscribe: true})
