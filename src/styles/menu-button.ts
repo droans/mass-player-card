@@ -16,8 +16,6 @@ export default css`
   }
   .svg-menu {
     color: var(--md-sys-color-primary);
-    background-color: var(--ha-card-background,var(--card-background-color,#fff));
-    border-radius: 50%;
   }
   .inactive-item {
     background-color: var(--mdc-theme-surface);
