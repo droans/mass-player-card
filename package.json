@@ -26,7 +26,6 @@
     "@material/material-color-utilities": "^0.3.0",
     "@material/web": "2.4.0",
     "@mdi/js": "7.4.47",
-    "@mdi/react": "1.6.1",
     "@shoelace-style/shoelace": "^2.20.1",
     "custom-card-helpers": "1.9.0",
     "home-assistant-js-websocket": "9.5.0",
