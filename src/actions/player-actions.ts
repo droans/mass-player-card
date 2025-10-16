@@ -13,7 +13,9 @@ export default class PlayerActions {
     this.hass = hass;
   }
   public set hass(hass: ExtendedHass) {
-    this._hass = hass;
+    if (hass) {
+      this._hass = hass;
+    }
   }
   public get hass() {
     return this._hass;

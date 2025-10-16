@@ -9,7 +9,9 @@ export default class BrowserActions {
       this.hass = hass;
     }
     public set hass(hass: ExtendedHass) {
+    if (hass) {
       this._hass = hass;
+    }
     }
     public get hass() {
       return this._hass;

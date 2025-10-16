@@ -11,7 +11,9 @@ export default class QueueActions {
     this.player_entity = player_entity;
   }
   public set hass(hass: ExtendedHass) {
-    this._hass = hass;
+    if (hass) {
+      this._hass = hass;
+    }
   }
   public get hass() {
     return this._hass;
