@@ -14,6 +14,8 @@ import {
 import { MediaBrowserConfig } from "../config/media-browser.js";
 import { customElement, property, state } from "lit/decorators.js";
 import {
+  DEFAULT_ACTIVE_SECTION,
+  DEFAULT_ACTIVE_SUBSECTION,
   DEFAULT_SEARCH_LIMIT,
   getFilterButtons,
   getSearchMediaButtons,
@@ -68,10 +70,10 @@ export class MediaBrowser extends LitElement {
   @consume({ context: IconsContext}) private Icons!: Icons;
   @consume({ context: activeEntityConf, subscribe: true}) private activeEntityConfig!: EntityConfig;
 
-  public activeSection = 'favorites'
-  public activeSubSection = 'main'
-  private previousSection!: string;
-  private previousSubSection!: string;
+  public activeSection = DEFAULT_ACTIVE_SECTION
+  public activeSubSection = DEFAULT_ACTIVE_SUBSECTION
+  private previousSections: string[] = [];
+  private previousSubSections: string[] = [];
 
   private _browserController!: MediaBrowserController;
   private actions!: BrowserActions;
@@ -125,8 +127,8 @@ export class MediaBrowser extends LitElement {
      return this._cards
   }
   private setPreviousSection() {
-    this.previousSection = this.activeSection;
-    this.previousSubSection = this.activeSubSection;
+    this.previousSections.push(this.activeSection);
+    this.previousSubSections.push(this.activeSubSection);
   }
   /* eslint-disable 
     @typescript-eslint/no-unsafe-argument,
@@ -141,6 +143,13 @@ export class MediaBrowser extends LitElement {
     if (JSON.stringify(new_cards) != JSON.stringify(cur_cards)) {
       this.activeCards = new_cards
     }
+  }
+  public resetActiveSections() {
+    this.activeSection = DEFAULT_ACTIVE_SECTION;
+    this.activeSubSection = DEFAULT_ACTIVE_SUBSECTION;
+    this.previousSections = [];
+    this.previousSubSections = [];
+    this.setActiveCards();
   }
   private onServiceSelect = (data: MediaCardData) => {
     if (data.service) {
@@ -216,8 +225,8 @@ export class MediaBrowser extends LitElement {
     )
   }
   private onBack = () => {
-    this.activeSection = this.previousSection;
-    this.activeSubSection = this.previousSubSection;
+    this.activeSection = this.previousSections.pop() ?? DEFAULT_ACTIVE_SECTION;
+    this.activeSubSection = this.previousSubSections.pop() ?? DEFAULT_ACTIVE_SUBSECTION;
     this.setActiveCards();
   }
   private onSearchButtonPress = () => {
@@ -305,7 +314,7 @@ export class MediaBrowser extends LitElement {
     `
   }
   protected renderTitle(): TemplateResult {
-    const title = `${this.activeSection}`
+    const title = this.activeSection;
     return html`
       <span slot="label" id="title">
         ${title}
@@ -478,7 +487,7 @@ export class MediaBrowser extends LitElement {
     if (this.activeSection == "search") {
       return this.renderSearchHeader();
     }
-    if (this.activeSection == "favorites" && this.activeSubSection == "main") {
+    if (this.activeSection == DEFAULT_ACTIVE_SECTION && this.activeSubSection == DEFAULT_ACTIVE_SUBSECTION) {
       return this.renderMainHeader();
     }
     return this.renderSubsectionHeader();
