@@ -53,6 +53,9 @@ export async function encodeImageIfLocal(hass: ExtendedHass, image_url: string):
 }
 
 async function getLocalImage(hass: ExtendedHass, url: string): Promise<string> {
+  if (typeof(url) != "string") {
+    return '';
+  }
   try {
     const result: string = await hass.callWS(
       {

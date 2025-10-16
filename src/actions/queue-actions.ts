@@ -120,6 +120,9 @@ export default class QueueActions {
     }
   }
   async getLocalImage(url: string) {
+  if (typeof(url) != "string") {
+    return '';
+  }
     try {
       const result = await this.hass.callWS(
         {
