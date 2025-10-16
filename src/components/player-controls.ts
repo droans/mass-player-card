@@ -36,6 +36,11 @@ class MassPlayerControls extends LitElement {
   @consume({ context: musicPlayerConfigContext, subscribe: true})
   @state()
   private set config(config: PlayerConfig) {
+    const cur_item = JSON.stringify(this._config);
+    const new_item = JSON.stringify(config);
+    if (cur_item == new_item) {
+      return;
+    }
     this._config = config;
     this.layoutConfig = config.layout;
   }

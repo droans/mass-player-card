@@ -64,6 +64,11 @@ class MediaRow extends LitElement {
   
   @consume({ context: playerQueueConfigContext, subscribe: true})
   public set config(config: QueueConfig) {
+    const cur_conf = JSON.stringify(this._config);
+    const new_conf = JSON.stringify(config)
+    if (cur_conf == new_conf) {
+      return;
+    }
     this._config = config;
     this.updateHiddenElements();
   }
@@ -73,6 +78,11 @@ class MediaRow extends LitElement {
 
   @consume({ context: activeEntityConf, subscribe: true})
   public set entityConfig(config: EntityConfig) {
+    const cur_conf = JSON.stringify(this._entityConfig);
+    const new_conf = JSON.stringify(config)
+    if (cur_conf == new_conf) {
+      return;
+    }
     this._entityConfig = config;
     this.updateHiddenElements();
   }
@@ -179,18 +189,18 @@ class MediaRow extends LitElement {
     `
   }
   private renderArtist(): TemplateResult {
-    if (this.media_item.show_artist_name && !this.hide.artist_names ) {
-      return html`
-        <span
-          slot="supporting-text"
-          class="title"
-          style="width: ${this._calculateTitleWidth()}"
-        >
-          ${this.media_item.media_artist}
-        </span>
-      `
+    if (this.hide.artist_names) {
+      return html``
     }
-    return html``
+    return html`
+      <span
+        slot="supporting-text"
+        class="title"
+        style="width: ${this._calculateTitleWidth()}"
+      >
+        ${this.media_item.media_artist}
+      </span>
+    `
   }
   private renderActionButtons(): TemplateResult {
     if (this.hide.action_buttons || !this.media_item.show_action_buttons) {

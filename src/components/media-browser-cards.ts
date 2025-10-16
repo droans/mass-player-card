@@ -36,9 +36,13 @@ class MediaBrowserCards extends LitElement {
   private _browserConfig!: MediaBrowserConfig;
   @consume({ context: mediaBrowserConfigContext, subscribe: true})
   public set browserConfig(conf: MediaBrowserConfig) {
-    this._browserConfig = conf
-    if (this.items) {
-      this.generateCode();
+    const cur_conf = JSON.stringify(this._browserConfig)
+    const new_conf = JSON.stringify(conf)
+    if (cur_conf != new_conf) {
+      this._browserConfig = conf
+      if (this.items) {
+        this.generateCode();
+      }
     }
   }
   public get browserConfig() {
@@ -48,7 +52,7 @@ class MediaBrowserCards extends LitElement {
   public onEnqueueAction!: CardEnqueueService;
   public onSelectAction!: CardSelectedService;
 
-  @state() private _items!: MediaCardItem[];
+  private _items!: MediaCardItem[];
 
   @consume({ context: activeMediaBrowserCardsContext, subscribe: true})
   @state()

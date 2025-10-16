@@ -60,9 +60,9 @@ import { Config } from "../config/config.js";
 class MediaCard extends LitElement {
   @property({ type: Boolean }) queueable = false;
   @state() code!: TemplateResult;
-  @state() private _enqueue_buttons!: ListItems;
-  @state() private _search_buttons!: ListItems;
-  @state() private artwork!: string;
+  private _enqueue_buttons!: ListItems;
+  private _search_buttons!: ListItems;
+  private _artwork!: string;
 
   @query('#animation') _animation!: WaAnimation;
   private _firstLoaded = false;
@@ -75,8 +75,7 @@ class MediaCard extends LitElement {
   @consume({ context: useExpressiveContext })
   private useExpressive!: boolean;
 
-  @consume({ context: configContext, subscribe: true})
-  private cardConfig!: Config;
+  private _cardConfig!: Config;
 
   public onSelectAction!: CardSelectedService;
   public onEnqueueAction!: CardEnqueueService;
@@ -101,17 +100,47 @@ class MediaCard extends LitElement {
     if (!config) {
       return;
     }
+    const cur_conf = JSON.stringify(this._config);
+    const new_conf = JSON.stringify(config)
+    if (cur_conf == new_conf) {
+      return;
+    }
     this._config = config;
     this.updateHiddenElements();
-    void this.generateArtworkStyle();
+    if (this.cardConfig) {
+      void this.generateArtworkStyle();
+    }
     this.generateCode();
   }
   public get config() {
     return this._config;
   }
+  @consume({ context: configContext, subscribe: true})
+  public set cardConfig(config: Config) {
+    if (!config) {
+      return;
+    }
+    const cur_conf = JSON.stringify(this._cardConfig);
+    const new_conf = JSON.stringify(config)
+    if (cur_conf == new_conf) {
+      return;
+    }
+    this._cardConfig = config;
+    if (this.config) {
+      void this.generateArtworkStyle();
+    }
+  }
+  public get cardConfig() {
+    return this._cardConfig;
+  }
   
   @consume( { context: mediaBrowserConfigContext, subscribe: true})
   public set sectionConfig(config: MediaBrowserConfig) {
+    const cur_conf = JSON.stringify(this._sectionConfig);
+    const new_conf = JSON.stringify(config)
+    if (cur_conf == new_conf) {
+      return;
+    }
     this._sectionConfig = config;
     this.updateHiddenElements();
   }
@@ -120,6 +149,11 @@ class MediaCard extends LitElement {
   }
   @consume({ context: IconsContext, subscribe: true}) 
   public set Icons(icons: Icons) {
+    const cur_ico = JSON.stringify(this._icons);
+    const new_ico = JSON.stringify(icons);
+    if (cur_ico == new_ico) {
+      return;
+    }
     this._icons = icons;
   }
   public get Icons() {
@@ -129,6 +163,11 @@ class MediaCard extends LitElement {
 
   @consume( { context: activeEntityConf, subscribe: true})
   public set entityConfig(config: EntityConfig) {
+    const cur_conf = JSON.stringify(this._entityConfig);
+    const new_conf = JSON.stringify(config)
+    if (cur_conf == new_conf) {
+      return;
+    }
     this._entityConfig = config;
     this.updateHiddenElements();
     this._search_buttons = getSearchMediaButtons(this.Icons)
@@ -137,6 +176,16 @@ class MediaCard extends LitElement {
     return this._entityConfig;
   }
 
+  private set artwork(artwork: string) {
+    if (artwork == this._artwork) {
+      return;
+    }
+    this._artwork = artwork;
+    this.generateCode();
+  }
+  private get artwork() {
+    return this._artwork;
+  }
   private updateHiddenElements() {
     if (!this.config || !this.entityConfig || !this.sectionConfig) {
       return;

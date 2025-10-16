@@ -20,6 +20,9 @@ export default css`
     --_dark: unset;
   }
 
+  #progress-div {
+    margin-bottom: 4px;
+  }
   .prog-incomplete {
     position: absolute;
     left: var(--incomplete-progress-start-pct);
@@ -46,7 +49,8 @@ export default css`
   
   #time {
     justify-self: center;
-    padding-bottom: 4px;
+    margin-bottom: 4px;
+    padding-top: 4px
   }
   .time-expressive {
     color: var(--md-sys-color-on-primary-container) !important;

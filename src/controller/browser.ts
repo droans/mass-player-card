@@ -46,6 +46,11 @@ export class MediaBrowserController {
     this.resetAndGenerateSections()
   }
   private set items(items: newMediaBrowserItemsConfig) {
+    const cur_item = JSON.stringify(this._items.value);
+    const new_item = JSON.stringify(items);
+    if (cur_item == new_item) {
+      return;
+    }
     const x = {...items}
     const old_items = JSON.stringify(this._items);
     const new_items = JSON.stringify(items);

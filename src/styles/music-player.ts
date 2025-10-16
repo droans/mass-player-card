@@ -269,6 +269,7 @@ export default css`
 
   .player-track-artist {
     font-size: 1em;
+    text-shadow: 0 0 var(--md-sys-color-on-primary-container);
   }
   .player-track-artist-expressive {
     font-size: 1em;
@@ -279,6 +280,7 @@ export default css`
     color: var(--player-track-color, var(--md-sys-color-primary));
     white-space: nowrap;
     text-overflow: clip;
+    text-shadow: 0px 0px var(--md-sys-color-primary);
   }
 
   #players-select-menu::part(menu-button) {

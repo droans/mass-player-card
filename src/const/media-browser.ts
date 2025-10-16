@@ -189,3 +189,6 @@ export function getFilterButtons(icons: Icons): ListItems {
 export const SEARCH_UPDATE_DELAY = 1000;
 export const DEFAULT_SEARCH_LIMIT = 20;
 export const SEARCH_TERM_MIN_LENGTH = 3;
+
+export const DEFAULT_ACTIVE_SECTION = 'favorites'
+export const DEFAULT_ACTIVE_SUBSECTION = 'main'
