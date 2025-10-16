@@ -37,7 +37,6 @@ export default css`
 
   ha-card {
     border-radius: 28px;
-    overflow: hidden;
   }
   ha-card#expressive {
     background-color: var(--md-sys-color-background);
