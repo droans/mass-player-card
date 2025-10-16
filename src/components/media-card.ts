@@ -114,7 +114,7 @@ class MediaCard extends LitElement {
   public set cardConfig(config: Config) {
     this._cardConfig = config;
     if (this.config) {
-      this.generateArtworkStyle();
+      void this.generateArtworkStyle();
     }
   }
   public get cardConfig() {
