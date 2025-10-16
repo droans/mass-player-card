@@ -138,7 +138,7 @@ export class MediaBrowserController {
     const i = {...this.items};
     i.favorites[media_type] = items;
     i.favorites.main = [
-      generateFavoriteCard(this.hass, media_type, items),
+      await generateFavoriteCard(this.hass, media_type, items),
       ...i.favorites.main
     ]
     this.items = {...i};
@@ -170,7 +170,7 @@ export class MediaBrowserController {
     
     const items = await this.getRecentSection(config, media_type);
     if (items.length) {
-      const card = generateRecentsCard(this.hass, media_type, items);
+      const card = await generateRecentsCard(this.hass, media_type, items);
       const i = {...this.items};
       i.recents.main.push(card);
       i.recents[media_type] = items;
@@ -179,10 +179,10 @@ export class MediaBrowserController {
   }
 
   //Recommendations
-  private generateRecommendationSection(section: RecommendationSection) {
+  private async generateRecommendationSection(section: RecommendationSection) {
     const items = generateRecommendationSectionCards(section);
     if (items.length) {
-      const card = generateRecommendationsCard(this.hass, section, items);
+      const card = await generateRecommendationsCard(this.hass, section, items);
       const i = {...this.items};
       i.recommendations.main.push(card)
       i.recommendations[section.name] = items
@@ -195,7 +195,7 @@ export class MediaBrowserController {
     const resp = data.response.response;
     resp.forEach(
       (item) => {
-        this.generateRecommendationSection(item)
+        void this.generateRecommendationSection(item)
       }
     )
   }
