@@ -275,15 +275,11 @@ export default css`
     height: 2em;
     width: 2em;
   }
-  #players-select-menu::part(menu-select-menu),  #grouped-players-menu::part(menu-select-menu) {
-    height: 2.5em;
-    width: 2.5em;
-    --control-select-menu-padding: 7px;
-    --mdc-icon-size: 1.5em;
-    --control-select-menu-height: 2.5em;
+  .menu-header::part(menu-select-menu) {
+    background-color: var(--wa-color-brand-fill-normal, var(--wa-color-neutral-fill-normal));
   }
-  #players-select-menu::part(menu-svg):not(.svg-menu-expressive),  #grouped-players-menu::part(menu-svg):not(.svg-menu-expressive) {
-    color: var(--wa-color-brand-on-loud, var(--wa-color-neutral-on-loud)) !important;
+  .menu-header::part(menu-svg):not(.svg-menu-expressive) {
+    color: var(--wa-color-brand-on-normal, var(--wa-color-neutral-on-normal));
     border-radius: 50%;
   }
 
