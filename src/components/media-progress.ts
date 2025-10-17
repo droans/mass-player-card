@@ -20,7 +20,7 @@ class MassPlayerProgressBar extends LitElement {
   private _handleBarWidth = 8;
   private _refreshMilliseconds = 5000;
   private _tick_duration_ms = 250;
-  
+
   @consume({ context: activePlayerControllerContext, subscribe: true})
   private activePlayerController!: ActivePlayerController
   @consume({ context: actionsControllerContext, subscribe: true})

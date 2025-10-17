@@ -52,7 +52,6 @@ interface ExtendedHassEntityAttributes extends HassEntityAttributeBase {
   repeat: RepeatMode,
   shuffle: boolean,
   volume_level: number,
-  // [key:string]: any
 }
 
 export interface ExtendedHassEntity extends HassEntity {

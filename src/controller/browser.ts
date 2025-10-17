@@ -32,7 +32,6 @@ export class MediaBrowserController {
   private hass!: ExtendedHass
   private config!: Config;
   private browserConfig!: MediaBrowserConfig;
-  // public _items!: newMediaBrowserItemsConfig;
   private actions!: BrowserActions;
   private _activeEntityId!: string;
   private _items = new ContextProvider(document.body, { context: mediaBrowserCardsContext })
