@@ -151,7 +151,7 @@ export default css`
     margin-top: unset;
     row-gap: unset;
   }
-  @container controls (width <= 410px) {
+  @container controls (width <= 30em) {
     #player-controls-lower {
       --md-sys-typescale-label-large-size: 10px;
       --icon-height: 16px;
@@ -161,7 +161,7 @@ export default css`
       --icon-height: 16px;
     }
   }
-  @container controls (width > 410px) {
+  @container controls (width > 30em) {
     #player-controls-lower {
       --md-sys-typescale-label-large-size: 14px;
       --icon-height: 24px;
