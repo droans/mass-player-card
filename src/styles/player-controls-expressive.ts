@@ -103,6 +103,8 @@ export default css`
   }
 
   #div-controls {
+    container-name: controls;
+    container-type: inline-size;
     row-gap: 6px;
     display: grid;
     margin-top: 12px;
@@ -110,8 +112,8 @@ export default css`
   }
 
   .icons-lower {
-    height: 24px;
-    width: 24px;
+    height: var(--icon-height);
+    width: var(--icon-height);
    color: var(--lower-button-icon-color);
   }
   .icons-lower-active {
@@ -148,5 +150,25 @@ export default css`
     column-gap: 4px;
     margin-top: unset;
     row-gap: unset;
+  }
+  @container controls (width <= 410px) {
+    #player-controls-lower {
+      --md-sys-typescale-label-large-size: 10px;
+      --icon-height: 16px;
+    }
+    .button-lower::part(label) {
+      --md-sys-typescale-label-large-size: 10px;
+      --icon-height: 16px;
+    }
+  }
+  @container controls (width > 410px) {
+    #player-controls-lower {
+      --md-sys-typescale-label-large-size: 14px;
+      --icon-height: 24px;
+    }
+    .button-lower::part(label) {
+      --md-sys-typescale-label-large-size: 14px;
+      --icon-height: 24px;
+    }
   }
 `;
