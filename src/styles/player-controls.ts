@@ -75,10 +75,8 @@ export default css`
   }
 
   .icon-outlined {
-    color: var(--md-sys-color-on-secondary-container);
   }
   .icon-outlined::part(label) {
-    color: var(--md-sys-color-on-surface-variant);
   }
 
   .icon-plain {
