@@ -299,11 +299,11 @@ class MediaRow extends LitElement {
 
   render(): TemplateResult {
     const playing = this.media_item.playing ? `-active` : ``;
-    const expressive = this.useExpressive ? `button-expressive` : ``;
+    const expressive = this.useExpressive ? `button-expressive${playing}` : ``;
     return html`
         <ha-md-list-item
           style="${this.display? "" : "display: none;"}"
-          class="button${playing} ${expressive}${playing}"
+          class="button${playing} ${expressive}"
           @click=${this.callOnQueueItemSelectedService}
           type="button"
         >

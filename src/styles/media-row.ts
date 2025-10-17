@@ -41,8 +41,6 @@ export default css`
     border-radius: 0.7rem;
     background-color: var(--media-row-background-color-active, var(--md-sys-color-secondary-container));
     height: var(--media-row-height);
-    --primary-text-color: var(--me-font-color) !important;
-    --font-color: var(--me-font-color) !important;
     padding-inline-start: 0px;
     padding-inline-end: 8px;
     color: var(--accent-color);
@@ -59,6 +57,8 @@ export default css`
   }
 
   .button-expressive-active {
+    --primary-text-color: var(--me-font-color) !important;
+    --font-color: var(--me-font-color) !important;
     background-color: var(--expressive-media-row-color-active) !important;
   }
   .button-expressive-active > .title {
