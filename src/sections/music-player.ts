@@ -218,9 +218,10 @@ class MusicPlayerCard extends LitElement {
     target.value = "";
   }
   private onUnjoinSelect = (ev) => {
-    console.log(ev);
-    console.log(ev.target);
-    console.log(ev?.target?.entity)
+    const ent = ev?.target?.entity;
+    if (ev) {
+      this.actions.actionUnjoinPlayers(ent)
+    }
   }
   private onGroupVolumeChange = (ev: DetailValEventData) => {
     const volume_level = ev.detail.value;
