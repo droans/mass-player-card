@@ -35,6 +35,7 @@ export default css`
   }
 
   ha-card {
+    font-family: 'Roboto Flex', var(--ha-font-family-body), 'Roboto', !important;
     border-radius: 28px;
   }
   ha-card#expressive {

@@ -40,6 +40,7 @@ import {
 import { version } from '../package.json';
 
 import styles from './styles/main';
+import head_styles from './styles/head';
 
 import { getDefaultSection } from './utils/util';
 import { MassCardController } from './controller/controller';
@@ -301,6 +302,12 @@ export class MusicAssistantPlayerCard extends LitElement {
         e.play = true;
       }
     );
+  }
+  protected firstUpdated(): void {
+    if (this.config.expressive) {
+      const stylesheet = head_styles.styleSheet!;
+      document.adoptedStyleSheets.push(stylesheet);
+    }
   }
   public getCardSize() {
     return 3;
