@@ -41,7 +41,7 @@ class PlayerRow extends LitElement {
   @property({ type: Boolean }) player_entity!: ExtendedHassEntity;
   @property({ type: Boolean }) selected = false;
   @consume({ context: IconsContext}) private Icons!: Icons;
-  @consume({ context: useExpressiveContext })
+  @consume({ context: useExpressiveContext, subscribe: true })
   private useExpressive!: boolean;
 
   @consume({context: hassExt})

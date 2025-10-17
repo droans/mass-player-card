@@ -48,7 +48,7 @@ class MediaRow extends LitElement {
   @state()
   public display!: boolean;
 
-  @consume({ context: useExpressiveContext})
+  @consume({ context: useExpressiveContext, subscribe: true})
   private useExpressive!: boolean;
 
   public moveQueueItemDownService!: QueueService;
