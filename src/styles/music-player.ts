@@ -169,21 +169,29 @@ export default css`
     bottom: 0;
     width: 100%;
   }
+  
+  .media-controls:not(.media-controls-expressive) {
+    background: linear-gradient(transparent, var(--player-blur-color) 10%) !important;
+  }
   .media-controls-expressive {
     background: linear-gradient(transparent, var(--expressive-player-blur-color) 10%) !important;
   }
 
   .menu-header::part(menu-select-menu) {
-    background-color: var(--wa-color-brand-fill-loud, var(--wa-color-neutral-fill-loud));
     border-radius: 50%; 
+    height: 2.5em;
+    width: 2.5em;
+    --control-select-menu-padding: 7px;
+    --mdc-icon-size: 1.5em;
+    --control-select-menu-height: 2.5em;
   }
   .menu-header-expressive::part(menu-select-menu) {
-    background-color: var(--md-sys-color-secondary-container);
+    background-color: var(--md-sys-color-secondary-container) !important;
     box-shadow: var(--md-sys-elevation-level1);
     border-radius: var(--button-small-border-radius);
   }
   .menu-header-expressive::part(menu-svg) {
-    color: var(--md-sys-color-secondary-on-container);
+    color: var(--md-sys-color-secondary-on-container) !important;
   }
 
   #player-card {
@@ -206,10 +214,11 @@ export default css`
     border-radius: 28px 28px 0px 0px;
   }
   .player-card-header {
-    background: var(--player-blur-color);
+    background: linear-gradient(var(--player-blur-color) 90%, transparent) !important;
   }
   .player-card-header-expressive {
     background: linear-gradient(var(--expressive-player-blur-color) 90%, transparent) !important;
+
   }
   .player-card-header, .player-card-header-expressive {
     backdrop-filter: blur(3px);
