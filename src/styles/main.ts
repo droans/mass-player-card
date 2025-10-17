@@ -9,17 +9,21 @@ export default css`
     --expressive-color-container: var(--md-sys-color-primary-container);
     --expressive-card-color: var(--md-sys-color-background);
 
-    --expressive-media-row-color: var(--md-sys-color-surface);
-    --expressive-media-row-color-text: var(--md-sys-color-on-surface);
+    --expressive-row-color: var(--md-sys-color-background);
+    --expressive-row-color-text: var(--md-sys-color-on-background);
+    --expressive-row-active-color: var(--md-sys-color-secondary-container);
+    --expressive-row-active-color-text: var(--md-sys-color-on-secondary-container);
 
-    --expressive-media-row-color-active: var(--md-sys-color-secondary-container);
-    --expressive-media-row-color-text-active: var(--md-sys-color-on-secondary-container);
-
+    --expressive-row-button-color: var(--md-sys-color-primary-container);
+    --expressive-row-button-color-text: var(--md-sys-color-on-primary-container);
+    --expressive-row-button-color-hover: var(--md-sys-color-tertiary-container);
+    --expressive-row-button-color-text-hover: var(--md-sys-color-on-tertiary-container);
+    
     --md-list-container-color: rgba(0,0,0,0) !important;
     --md-list-item-leading-space: 0px;
     --md-list-item-two-line-container-height: 48px;
 
-    --media-row-background-color-active: var(--table-row-alternative-background-color);
+    --media-row-active-background-color: var(--table-row-alternative-background-color);
     --media-row-height: 56px;
     --media-row-thumbnail-height: var(--media-row-height);
 
@@ -33,6 +37,8 @@ export default css`
 
     --player-play-pause-color: var(--secondary-background-color);
     --player-play-pause-icon-size: 6rem;
+
+    --row-icon-button-height: 1.5rem;
   }
 
   ha-card {
