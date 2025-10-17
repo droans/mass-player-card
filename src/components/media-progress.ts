@@ -138,16 +138,14 @@ class MassPlayerProgressBar extends LitElement {
     return `${pos} - ${dur}`;
   }
   protected renderVolumeBarHandle(): TemplateResult {
-    const progress_element = this.shadowRoot?.getElementById('progress-div');
-    const prog_width = progress_element?.offsetWidth ?? 1;
-    const pos = Math.floor(prog_width * this._prog_pct) - (this._handleBarWidth / 2);
+    const pos = Math.floor(this._prog_pct * 100)
     return html`
       <div
         id="progress-handle"
         style="
           width: ${this._handleBarWidth.toString()}px; 
           position: absolute;
-          left: ${pos}px;
+          left: calc(${(this._prog_pct * 100).toString()}% - (${this._handleBarWidth.toString()}px / 2));
         "
       >
     </div>
