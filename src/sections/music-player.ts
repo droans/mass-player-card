@@ -217,6 +217,11 @@ class MusicPlayerCard extends LitElement {
     //eslint-disable-next-line @typescript-eslint/no-unsafe-member-access
     target.value = "";
   }
+  private onUnjoinSelect = (ev) => {
+    console.log(ev);
+    console.log(ev.target);
+    console.log(ev?.target?.entity)
+  }
   private onGroupVolumeChange = (ev: DetailValEventData) => {
     const volume_level = ev.detail.value;
     void this.activePlayerController.setActiveGroupVolume(volume_level);
@@ -316,15 +321,18 @@ class MusicPlayerCard extends LitElement {
     `
   }
   protected renderGroupedPlayers() {
+    const players = this.groupedPlayers;
+    const ct = players.length;
+    const expressive = this.cardConfig.expressive;
     return this.groupedPlayers.map(
-      (item) => {
+      (item, idx) => {
         const name = item.name.length > 0 ? item.name : this.hass.states[item.entity_id].attributes.friendly_name;
         return html`
           <div 
             class="grouped-players-item"
           >
             <div class="player-name-icon">
-              <ha-list-item
+              <ha-md-list-item
                 class="grouped-players-select-item"
                 .graphic=${this.Icons.SPEAKER}
                 noninteractive
@@ -332,18 +340,42 @@ class MusicPlayerCard extends LitElement {
               >
                 <ha-svg-icon
                   class="grouped-players-select-item-icon"
-                  slot="graphic"
+                  slot="start"
                   .path=${this.Icons.SPEAKER}
                 ></ha-svg-icon>
-                ${name}
-              </ha-list-item>
+                <span
+                  slot="headline"
+                  class="grouped-title"
+                >
+                  ${name}
+                </span>
+                <span
+                  slot="end"
+                >
+                  <ha-button
+                    appearance="plain"
+                    variant="brand"
+                    size="medium"
+                    class="grouped-button-unjoin ${expressive ? `grouped-button-unjoin-expressive` : ``}"
+                    @click=${this.onUnjoinSelect}
+                  >
+                    <ha-svg-icon
+                      .path=${this.Icons.LINK_OFF}
+                      class="grouped-svg-unjoin ${expressive ? `grouped-svg-unjoin-expressive` : ``}"
+                      .entity="${item.entity_id}"
+                    ></ha-svg-icon>
+                  </ha-button>
+                </span>
+              </ha-md-list-item>
             </div>
-            <mass-volume-slider
-              class="grouped-players-volume-slider"
-              maxVolume=${item.max_volume}
-              .entityId=${item.volume_entity_id}
-            ></mass-volume-slider>
-            <div class="divider"></div>
+            <ha-md-list-item>
+              <mass-volume-slider
+                class="grouped-players-volume-slider"
+                maxVolume=${item.max_volume}
+                .entityId=${item.volume_entity_id}
+              ></mass-volume-slider>
+            </ha-md-list-item>
+            ${idx < ct - 1 ? html`<div class="divider"></div>` : ``}
           </div>
         `
       }
@@ -358,6 +390,7 @@ class MusicPlayerCard extends LitElement {
           id="grouped-players-menu"
           class="menu-header ${this.cardConfig.expressive ? `menu-header-expressive` : ``}"
           .iconPath=${this.Icons.SPEAKER_MULTIPLE}
+          naturalMenuWidth
         >
         ${this.renderGroupedVolume()}
         ${this.renderGroupedPlayers()}
