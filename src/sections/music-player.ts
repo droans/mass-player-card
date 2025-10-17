@@ -25,6 +25,7 @@ import '../components/volume-slider';
 import PlayerActions from "../actions/player-actions";
 
 import {
+  DetailValEventData,
   ExtendedHass,
   ExtendedHassEntity,
   WaAnimation,
@@ -37,6 +38,7 @@ import {
   configContext,
   entitiesConfigContext,
   EntityConfig,
+  groupVolumeContext,
   hassExt,
   IconsContext,
   musicPlayerConfigContext,
@@ -80,6 +82,9 @@ class MusicPlayerCard extends LitElement {
   @state()
   private activePlayerController!: ActivePlayerController;
   
+  @state()
+  private _groupVolumeLevel!: number;
+
   private _activeEntityConfig!: EntityConfig;
   private _activeEntity!: ExtendedHassEntity;
   private _config!: PlayerConfig;
@@ -162,6 +167,15 @@ class MusicPlayerCard extends LitElement {
   public get config() {
     return this._config;
   }
+  @consume({ context: groupVolumeContext, subscribe: true})
+  public set groupVolumeLevel(volume_level: number) {
+    if (volume_level != this._groupVolumeLevel) {
+      this._groupVolumeLevel = volume_level;
+    }
+  }
+  public get groupVolumeLevel() {
+    return this._groupVolumeLevel;
+  }
 
   private updatePlayerData() {
     if (!this.hass) {
@@ -202,6 +216,10 @@ class MusicPlayerCard extends LitElement {
     this.selectedPlayerService(player);
     //eslint-disable-next-line @typescript-eslint/no-unsafe-member-access
     target.value = "";
+  }
+  private onGroupVolumeChange = (ev: DetailValEventData) => {
+    const volume_level = ev.detail.value;
+    void this.activePlayerController.setActiveGroupVolume(volume_level);
   }
 
   private marqueeTitleWhenUpdated() {
@@ -263,6 +281,40 @@ class MusicPlayerCard extends LitElement {
     }
     return this.wrapTitleMarquee();
   }
+  protected renderGroupedVolume() {
+    const vol_level = this._groupVolumeLevel;
+    return html`
+      <div 
+        class="grouped-players-item grouped-volume"
+      >
+        <div class="player-name-icon">
+          <ha-md-list-item
+            class="grouped-players-select-item"
+            .graphic=${this.Icons.SPEAKER_MULTIPLE}
+            noninteractive
+            hide-label
+          >
+            <ha-svg-icon
+              class="grouped-players-select-item-icon"
+              slot="start"
+              .path=${this.Icons.SPEAKER_MULTIPLE}
+            ></ha-svg-icon>
+            <ha-control-slider
+              part="slider"
+              style="--control-slider-color: var(--md-sys-color-primary) !important"
+              id="grouped-volume"
+              .unit="%"
+              .min=0
+              .max=100
+              .value=${vol_level}
+              @value-changed=${this.onGroupVolumeChange}
+            ></ha-control-slider>
+          </ha-md-list-item>
+        </div>
+        <div class="divider"></div>
+      </div>
+    `
+  }
   protected renderGroupedPlayers() {
     return this.groupedPlayers.map(
       (item) => {
@@ -307,6 +359,7 @@ class MusicPlayerCard extends LitElement {
           class="menu-header ${this.cardConfig.expressive ? `menu-header-expressive` : ``}"
           .iconPath=${this.Icons.SPEAKER_MULTIPLE}
         >
+        ${this.renderGroupedVolume()}
         ${this.renderGroupedPlayers()}
         </mass-menu-button>
       `

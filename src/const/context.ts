@@ -36,6 +36,8 @@ export const activePlayerName = createContext<string>('active-player-name');
 export const activeMediaPlayer = createContext<ExtendedHassEntity>('active-entity');
 export const volumeMediaPlayer = createContext<ExtendedHassEntity>('volume-entity');
 export const activePlayerDataContext = createContext<PlayerData>('active-player-data');
+export const groupedPlayersContext = createContext<string[]>('group-members')
+export const groupVolumeContext = createContext<number>('group-volume')
 
 export const configContext = createContext<Config>('config');
 export const entitiesConfigContext = createContext<EntityConfig[]>('entities-config');

@@ -145,11 +145,46 @@ export default css`
   .grouped-players-volume-slider {
     display: contents;
   }
-  .grouped-players-volume-slider::part(slider) {
+  #grouped-volume, .grouped-players-volume-slider::part(slider) {
     position: relative;
     width: 96%;
     left: 2%;
     height: 2.5em;
+  }
+  .grouped-button-unjoin {
+    width: var(--media-row-icon-width);
+    align-content: center;
+  }
+  .grouped-button-unjoin::part(base) {
+    height: 30px;
+    width: 30px;
+    border-radius: 25%;
+  }
+  .grouped-button-unjoin-expressive::part(base) {
+    box-shadow: var(--md-sys-elevation-level1);
+    --ha-button-border-radius: var(--button-small-border-radius) !important;
+    background-color: var(--expressive-row-button-color);
+    --inherited-background-color: var(--expressive-row-button-color);
+  }
+  .grouped-button-unjoin-expressive::part(base):hover {
+    background-color: var(--expressive-row-button-color-hover) !important;
+    --inherited-background-color: var(--expressive-row-button-color-hover) !important;
+    box-shadow: var(--md-sys-elevation-level1);
+    --ha-button-border-radius: var(--button-small-border-radius) !important;
+  }
+
+  .grouped-button-unjoin-expressive > .title {
+    color: var(--expressive-row-color-text);
+  }
+  .grouped-svg-unjoin {
+    height: var(--row-icon-button-height);
+    width: var(--row-icon-button-height);
+  }
+  .grouped-svg-unjoin-expressive {
+    color: var(--expressive-row-button-color-text);
+  }
+  .grouped-svg-unjoin-expressive:hover {
+    color: var(--expressive-row-button-color-text-hover)
   }
 
   .marquee-pause-end {
@@ -238,8 +273,11 @@ export default css`
     color: var(--md-sys-color-on-primary-container) !important;
   }
 
-  .players-select-item, .grouped-players-select-item {
-    height: 2.5em;
+  .grouped-players-select-item, #players-select-menu::part(menu-list-item) {
+    height: 3.5em;
+  }
+  .grouped-players-select-item {
+    width: 320px;
   }
   .players-select-item-icon,  .grouped-players-select-item-icon {
     height: 2em;

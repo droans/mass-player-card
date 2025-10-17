@@ -89,6 +89,11 @@ export interface TargetValEventData {
     value: string
   }
 }
+export interface DetailValEventData {
+  detail: {
+    value: number
+  }
+}
 
 export interface WaAnimation extends LitElement {
   play: boolean;
