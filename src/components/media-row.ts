@@ -42,14 +42,14 @@ class MediaRow extends LitElement {
 
   @consume({context: hassExt, subscribe: true})
   public hass!: ExtendedHass;
-  @consume({ context: IconsContext}) private Icons!: Icons;
+  @consume({ context: IconsContext}) public Icons!: Icons;
 
   @consume({ context: mediaCardDisplayContext, subscribe: true })
   @state()
   public display!: boolean;
 
-  @consume({ context: useExpressiveContext})
-  private useExpressive!: boolean;
+  @consume({ context: useExpressiveContext, subscribe: true})
+  public useExpressive!: boolean;
 
   public moveQueueItemDownService!: QueueService;
   public moveQueueItemNextService!: QueueService;
@@ -131,7 +131,7 @@ class MediaRow extends LitElement {
       const oldItem: QueueItem = _changedProperties.get('media_item')!;
       return queueItemhasUpdated(oldItem, this.media_item);
     }
-    return true;
+    return _changedProperties.size > 0;
   }
   private artworkStyle() {
     const img = this.media_item.local_image_encoded ?? this.media_item.media_image ?? "";
@@ -299,11 +299,11 @@ class MediaRow extends LitElement {
 
   render(): TemplateResult {
     const playing = this.media_item.playing ? `-active` : ``;
-    const expressive = this.useExpressive ? `button-expressive` : ``;
+    const expressive = this.useExpressive ? `button-expressive${playing}` : ``;
     return html`
         <ha-md-list-item
           style="${this.display? "" : "display: none;"}"
-          class="button${playing} ${expressive}${playing}"
+          class="button${playing} ${expressive}"
           @click=${this.callOnQueueItemSelectedService}
           type="button"
         >

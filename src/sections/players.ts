@@ -4,6 +4,7 @@ import {
   CSSResultGroup,
   html,
   LitElement,
+  PropertyValues,
 } from "lit";
 import { property, query } from "lit/decorators.js";
 import { keyed } from "lit/directives/keyed.js";
@@ -188,6 +189,9 @@ class PlayersCard extends LitElement {
   }
   protected firstUpdated(): void {
     this._firstLoaded = true;
+  }
+  protected shouldUpdate(_changedProperties: PropertyValues): boolean {
+    return _changedProperties.size > 0;
   }
   static get styles(): CSSResultGroup {
     return styles;

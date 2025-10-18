@@ -1,4 +1,4 @@
-import { CSSResultGroup, html, LitElement, TemplateResult } from "lit";
+import { CSSResultGroup, html, LitElement, PropertyValues, TemplateResult } from "lit";
 import styles from '../styles/progress-bar'
 import { state } from "lit/decorators.js";
 import { consume } from "@lit/context";
@@ -20,7 +20,7 @@ class MassPlayerProgressBar extends LitElement {
   private _handleBarWidth = 8;
   private _refreshMilliseconds = 5000;
   private _tick_duration_ms = 250;
-  
+
   @consume({ context: activePlayerControllerContext, subscribe: true})
   private activePlayerController!: ActivePlayerController
   @consume({ context: actionsControllerContext, subscribe: true})
@@ -138,16 +138,13 @@ class MassPlayerProgressBar extends LitElement {
     return `${pos} - ${dur}`;
   }
   protected renderVolumeBarHandle(): TemplateResult {
-    const progress_element = this.shadowRoot?.getElementById('progress-div');
-    const prog_width = progress_element?.offsetWidth ?? 1;
-    const pos = Math.floor(prog_width * this._prog_pct) - (this._handleBarWidth / 2);
     return html`
       <div
         id="progress-handle"
         style="
           width: ${this._handleBarWidth.toString()}px; 
           position: absolute;
-          left: ${pos}px;
+          left: calc(${(this._prog_pct * 100).toString()}% - (${this._handleBarWidth.toString()}px / 2));
         "
       >
     </div>
@@ -190,10 +187,16 @@ class MassPlayerProgressBar extends LitElement {
   }
   disconnectedCallback(): void {
     if (this._listener) {
-      clearInterval(this._listener);
-      this._listener = undefined;
+      try {
+        clearInterval(this._listener);
+      } finally {
+        this._listener = undefined;
+      }
     }
     super.disconnectedCallback();
+  }
+  protected shouldUpdate(_changedProperties: PropertyValues): boolean {
+    return _changedProperties.size > 0;
   }
 
   static get styles(): CSSResultGroup {

@@ -52,7 +52,6 @@ interface ExtendedHassEntityAttributes extends HassEntityAttributeBase {
   repeat: RepeatMode,
   shuffle: boolean,
   volume_level: number,
-  // [key:string]: any
 }
 
 export interface ExtendedHassEntity extends HassEntity {
@@ -88,6 +87,11 @@ export type ServiceNoParams = (
 export interface TargetValEventData {
   target: {
     value: string
+  }
+}
+export interface DetailValEventData {
+  detail: {
+    value: number
   }
 }
 

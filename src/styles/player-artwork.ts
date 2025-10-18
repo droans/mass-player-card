@@ -15,6 +15,13 @@ export default css`
   .artwork-small {
 
   }
+  .asleep {
+    height: 100%;
+    width: 100%;
+  } 
+  .asleep-expressive {
+    color: rgba(from var(--md-sys-color-primary) r g b / 0.7);
+  }
 
   #carousel {
     --aspect-ratio: 1;
@@ -22,13 +29,9 @@ export default css`
   }
   .carousel-large {
     height: var(--mass-player-card-height) !important;
-    /* position: absolute; */
     aspect-ratio: 1;
     height: var(--mass-player-card-height);
     width: 100%;
-    /* place-content: center; */
-    /* top: -3em; */
-    /* left: 0; */
   }
   .carousel-medium {
     height: 22em !important;

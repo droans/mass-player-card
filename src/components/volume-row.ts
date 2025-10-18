@@ -3,6 +3,7 @@ import {
   CSSResultGroup,
   html,
   LitElement,
+  PropertyValues,
   TemplateResult
 } from "lit";
 
@@ -212,6 +213,9 @@ class VolumeRow extends LitElement {
         ${this.renderFavorite()}
       </div>
     `
+  }
+  protected shouldUpdate(_changedProperties: PropertyValues): boolean {
+    return _changedProperties.size > 0;
   }
   static get styles(): CSSResultGroup {
     return styles;

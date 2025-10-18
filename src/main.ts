@@ -40,6 +40,7 @@ import {
 import { version } from '../package.json';
 
 import styles from './styles/main';
+import head_styles from './styles/head';
 
 import { getDefaultSection } from './utils/util';
 import { MassCardController } from './controller/controller';
@@ -174,8 +175,7 @@ export class MusicAssistantPlayerCard extends LitElement {
       return true;
     }
     if (_changedProperties.has('hass')) {
-      // eslint-disable-next-line @typescript-eslint/no-non-null-assertion
-      const oldHass = _changedProperties.get('hass')! as ExtendedHass;
+      const oldHass = _changedProperties.get('hass') as ExtendedHass;
       if (!oldHass) {
         return true;
       }
@@ -301,6 +301,17 @@ export class MusicAssistantPlayerCard extends LitElement {
         e.play = true;
       }
     );
+      if (this._controller) {
+        this._controller.Queue.resetQueueFailures(); 
+        void this._controller.Queue.subscribeUpdates(); 
+      }
+  }
+  protected firstUpdated(): void {
+    if (this.config.expressive) {
+      //eslint-disable-next-line @typescript-eslint/no-non-null-assertion
+      const stylesheet = head_styles.styleSheet!;
+      document.adoptedStyleSheets.push(stylesheet);
+    }
   }
   public getCardSize() {
     return 3;

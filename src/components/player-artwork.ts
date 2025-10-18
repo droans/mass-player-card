@@ -14,6 +14,7 @@ import {
   currentQueueItemContext,
   ExtendedHass,
   hassExt,
+  IconsContext,
   musicPlayerConfigContext,
   nextQueueItemContext,
   previousQueueItemContext,
@@ -25,6 +26,7 @@ import { PlayerData, SLSwipeEvent, SWIPE_MIN_DELAY } from "../const/music-player
 import SlCarousel from "@shoelace-style/shoelace/dist/components/carousel/carousel.js";
 import { PlayerConfig } from "../config/player.js";
 import { MassCardController } from "../controller/controller.js";
+import { Icons } from "../const/icons.js";
 
 class MassPlayerArtwork extends LitElement {
   @consume({ context: hassExt, subscribe: true })
@@ -36,6 +38,10 @@ class MassPlayerArtwork extends LitElement {
   private playerConfig!: PlayerConfig;
   @consume({ context: activeMediaPlayer, subscribe: true})
   private activePlayer!: ExtendedHassEntity;
+
+  @consume({ context: IconsContext})
+  private Icons!: Icons;
+
   @query('#carousel') private carouselElement!: SlCarousel;
 
   @query('#carousel-img-prior') private previousCarouselImage!: HTMLImageElement;
@@ -190,6 +196,17 @@ class MassPlayerArtwork extends LitElement {
       >
     `
   }
+  protected renderAsleep() {
+    const expressive = this.controller.config.expressive ? `-expressive` : ``;
+    return html`
+    <ha-svg-icon
+      .path=${this.Icons.ASLEEP}
+      class="asleep asleep${expressive}"
+    >
+
+    </ha-svg-icon>
+    `
+  }
   protected renderCarouselItem(img: string | undefined, artwork_id: string) {
     img = img ?? Thumbnail.CLEFT;
     return  html`
@@ -217,7 +234,7 @@ class MassPlayerArtwork extends LitElement {
   }
   protected renderCarouselItems() {
     if (!this.controller.ActivePlayer.isActive()) {
-      return this.renderInactive();
+      return this.renderAsleep();
     }
     return html`
       ${this.renderCarouselItem(this.previousItemImage, `carousel-img-prior`)}

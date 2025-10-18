@@ -6,6 +6,8 @@ import {
   activeMediaPlayer,
   activePlayerName,
   expressiveThemeContext,
+  groupedPlayersContext,
+  groupVolumeContext,
   useExpressiveContext,
   volumeMediaPlayer
 } from "../const/context";
@@ -24,6 +26,8 @@ export class ActivePlayerController {
   private _expressiveTheme = new ContextProvider(document.body, { context: expressiveThemeContext});
   private _useExpressive = new ContextProvider(document.body, { context: useExpressiveContext });
   private _initialExpressiveLoad = false;
+  private _groupMembers = new ContextProvider(document.body, { context: groupedPlayersContext});
+  private _groupVolume = new ContextProvider(document.body, { context: groupVolumeContext});
   
   private _hass!: ExtendedHass;
   private _config!: Config;
@@ -92,6 +96,9 @@ export class ActivePlayerController {
     const new_track = player?.attributes?.media_content_id;
     if (playerHasUpdated(this.activeMediaPlayer, player)) {
       this._activeMediaPlayer.setValue(player);
+      if (player.attributes?.group_members) {
+        this.setGroupAttributes();
+      }
       if (old_track != new_track && this.config.expressive) {
         this._initialExpressiveLoad = true;
         void this.applyExpressiveTheme();
@@ -115,6 +122,26 @@ export class ActivePlayerController {
   }
   public get activePlayerName() {
     return this._activePlayerName.value;
+  }
+  private set groupMembers(members: string[]) {
+    const cur_members = JSON.stringify(this._groupMembers.value);
+    const new_members = JSON.stringify(members)
+    if (cur_members == new_members) {
+      return;
+    }
+    this._groupMembers.setValue(members)
+  }
+  public get groupMembers() {
+    return this._groupMembers.value;
+  }
+  private set groupVolume(volume: number) {
+    if (this._groupVolume.value == volume) {
+      return;
+    }
+    this._groupVolume.setValue(volume)
+  }
+  public get groupVolume() {
+    return this._groupVolume.value;
   }
 
   private set volumeMediaPlayer(player: ExtendedHassEntity) {
@@ -141,6 +168,14 @@ export class ActivePlayerController {
     return this._expressiveTheme.value;
   }
   
+  private setGroupAttributes() {
+    this.groupMembers = this.getGroupedPlayers().map(
+      (item) => {
+        return item.entity_id
+      }
+    );
+    void this._getAndSetGroupedVolume();
+  }
   public getGroupedPlayers() {
     const activeQueue = this.activeMediaPlayer.attributes.active_queue;
     const ents = this.config.entities;
@@ -199,7 +234,8 @@ export class ActivePlayerController {
     const not_off = player.state != 'off';
     const is_mass = player.attributes.app_id == MUSIC_ASSISTANT_APP_NAME;
     const has_queue = !!(player.attributes?.active_queue);
-    return not_off && is_mass && has_queue;
+    const connected = this.hass.connected;
+    return not_off && is_mass && has_queue && connected;
   }
   public async getPlayerProgress(): Promise<number> {
     /* eslint-disable
@@ -304,5 +340,43 @@ export class ActivePlayerController {
     this.expressiveTheme = theme;
     return theme;
   }
-
+  private async _getAndSetGroupedVolume() {
+    const entity = this.activeMediaPlayer.entity_id;
+    const vol = await this.getGroupedVolume(entity)
+    this.groupVolume = vol;
+  }
+  public async setGroupedVolume(entity_id: string, volume_level: number): Promise<void> {
+    await this.hass.callWS({
+      type: 'call_service',
+      domain: 'mass_queue',
+      service: 'set_group_volume',
+      service_data: {
+        entity: entity_id,
+        volume_level: volume_level
+      }
+    })
+  }
+  public async setActiveGroupVolume(volume_level: number): Promise<void> {
+    await this.setGroupedVolume(this.activeMediaPlayer.entity_id, volume_level)
+    this.groupVolume = volume_level;
+  }
+  public async getActiveGroupVolume(): Promise<number> {
+    return await this.getGroupedVolume(this.activeMediaPlayer.entity_id);
+  }
+  public async getGroupedVolume(entity_id: string): Promise<number> {
+    // eslint-disable-next-line @typescript-eslint/no-unsafe-assignment, @typescript-eslint/no-explicit-any
+    const ret = await this.hass.callWS<any>({
+      type: 'call_service',
+      domain: 'mass_queue',
+      service: 'get_group_volume',
+      service_data: {
+        entity: entity_id
+      },
+      return_response: true
+    })
+    // eslint-disable-next-line @typescript-eslint/no-unsafe-assignment, @typescript-eslint/no-unsafe-member-access
+    const vol = ret.response.volume_level ?? 0;
+    // eslint-disable-next-line @typescript-eslint/no-unsafe-return
+    return vol;
+  }
 }

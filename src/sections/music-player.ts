@@ -25,6 +25,7 @@ import '../components/volume-slider';
 import PlayerActions from "../actions/player-actions";
 
 import {
+  DetailValEventData,
   ExtendedHass,
   ExtendedHassEntity,
   WaAnimation,
@@ -37,6 +38,7 @@ import {
   configContext,
   entitiesConfigContext,
   EntityConfig,
+  groupVolumeContext,
   hassExt,
   IconsContext,
   musicPlayerConfigContext,
@@ -45,6 +47,7 @@ import {
   ListItemData
 } from "../const/media-browser";
 import {
+  INACTIVE_MESSAGES,
   MARQUEE_DELAY_MS,
   PlayerData,
 } from "../const/music-player";
@@ -56,6 +59,7 @@ import { ArtworkSize, PlayerConfig } from "../config/player";
 import { ActivePlayerController } from "../controller/active-player";
 import { Config } from "../config/config.js";
 import { Icons } from "../const/icons.js";
+import { isActive, playerHasUpdated } from "../utils/util.js";
 
 class MusicPlayerCard extends LitElement {
   @state() private shouldMarqueeTitle = false;
@@ -76,10 +80,10 @@ class MusicPlayerCard extends LitElement {
   @state()
   private player_data!: PlayerData;
 
-  @consume({ context: activePlayerControllerContext, subscribe: true})
-  @state()
-  private activePlayerController!: ActivePlayerController;
   
+  @state()
+  private _groupVolumeLevel!: number;
+
   private _activeEntityConfig!: EntityConfig;
   private _activeEntity!: ExtendedHassEntity;
   private _config!: PlayerConfig;
@@ -96,6 +100,8 @@ class MusicPlayerCard extends LitElement {
   private _artworkVolumeClass!: string;
   private _artworkMediaControlsClass!: string;
   private _artworkActiveTrackClass!: string;
+  @state()
+  private _activePlayerController!: ActivePlayerController;
   
   @consume({ context: activeEntityConf, subscribe: true})
   public set activeEntityConfig(entity: EntityConfig) {
@@ -105,12 +111,15 @@ class MusicPlayerCard extends LitElement {
     return this._activeEntityConfig;
   }
   public get activeMediaPlayer() {
-    return this.activePlayerController.activeMediaPlayer;
+    return this?.activePlayerController?.activeMediaPlayer;
   }
 
   @consume({ context: activeMediaPlayer, subscribe: true})
   @state()
   private set activeEntity(entity: ExtendedHassEntity) {
+    if (!playerHasUpdated(this._activeEntity, entity)) {
+      return;
+    }
     this._activeEntity = entity;
     this.updatePlayerData();
   }
@@ -135,6 +144,11 @@ class MusicPlayerCard extends LitElement {
 
   @consume({ context: musicPlayerConfigContext, subscribe: true})
   public set config(config: PlayerConfig) {
+    const cur_config = JSON.stringify(this._config);
+    const new_config = JSON.stringify(config);
+    if (cur_config == new_config) {
+      return;
+    }
     this._config = config;
     switch (config.layout.artwork_size) {
       case ArtworkSize.LARGE:
@@ -162,12 +176,42 @@ class MusicPlayerCard extends LitElement {
   public get config() {
     return this._config;
   }
+  
+  private async _getGroupedVolume() {
+    if (this.activePlayerController) {
+      this.groupVolumeLevel = await this.activePlayerController.getActiveGroupVolume();
+    }
+  }
+  @consume({ context: activePlayerControllerContext, subscribe: true})
+  private set activePlayerController(controller: ActivePlayerController) {
+    if (!controller) {
+      return;
+    }
+    this._activePlayerController = controller;
+    if (!this.player_data) {
+      this.updatePlayerData();
+    }
+    if (!this.groupVolumeLevel) {
+      void this._getGroupedVolume();
+    }
+  }
+  private get activePlayerController() {
+    return this._activePlayerController;
+  }
+  @consume({ context: groupVolumeContext, subscribe: true})
+  public set groupVolumeLevel(volume_level: number) {
+    if (volume_level != this._groupVolumeLevel) {
+      this._groupVolumeLevel = volume_level;
+    }
+  }
+  public get groupVolumeLevel() {
+    return this._groupVolumeLevel;
+  }
 
   private updatePlayerData() {
     if (!this.hass) {
       return;
     }
-    this.groupedPlayers = this.activePlayerController.getGroupedPlayers();
     this._updatePlayerData().catch( () => {return});
   }
   private async _updatePlayerData() {
@@ -180,6 +224,11 @@ class MusicPlayerCard extends LitElement {
     }
     const current_item = (await this.actions.actionGetCurrentItem(this.activeMediaPlayer));
     const new_player_data = this.activePlayerController.getactivePlayerData(current_item);
+    const cur_data = JSON.stringify(this.player_data);
+    const new_data = JSON.stringify(new_player_data);
+    if (cur_data == new_data) {
+      return;
+    }
     this.player_data = new_player_data;
   }
   private onPlayerSelect = (ev: CustomEvent) => {
@@ -202,6 +251,18 @@ class MusicPlayerCard extends LitElement {
     this.selectedPlayerService(player);
     //eslint-disable-next-line @typescript-eslint/no-unsafe-member-access
     target.value = "";
+  }
+  private onUnjoinSelect = (ev) => {
+    //eslint-disable-next-line @typescript-eslint/no-unsafe-assignment, @typescript-eslint/no-unsafe-member-access
+    const ent = ev?.target?.entity;
+    if (ev) {
+      //eslint-disable-next-line @typescript-eslint/no-floating-promises, @typescript-eslint/no-unsafe-argument
+      this.actions.actionUnjoinPlayers(ent)
+    }
+  }
+  private onGroupVolumeChange = (ev: DetailValEventData) => {
+    const volume_level = ev.detail.value;
+    void this.activePlayerController.setActiveGroupVolume(volume_level);
   }
 
   private marqueeTitleWhenUpdated() {
@@ -258,21 +319,62 @@ class MusicPlayerCard extends LitElement {
       `;
   }
   protected renderTitle() {
-    if(!this.player_data?.track_title) {
-      return html``
+    if(!isActive(this.hass, this.activeMediaPlayer)) {
+      return html`
+        <div class="player-track-title">
+          Nothing is currently active!
+        </div>
+      `
     }
     return this.wrapTitleMarquee();
   }
+  protected renderGroupedVolume() {
+    const vol_level = this._groupVolumeLevel;
+    return html`
+      <div 
+        class="grouped-players-item grouped-volume"
+      >
+        <div class="player-name-icon">
+          <ha-md-list-item
+            class="grouped-players-select-item"
+            .graphic=${this.Icons.SPEAKER_MULTIPLE}
+            noninteractive
+            hide-label
+          >
+            <ha-svg-icon
+              class="grouped-players-select-item-icon"
+              slot="start"
+              .path=${this.Icons.SPEAKER_MULTIPLE}
+            ></ha-svg-icon>
+            <ha-control-slider
+              part="slider"
+              style="--control-slider-color: var(--md-sys-color-primary) !important"
+              id="grouped-volume"
+              .unit="%"
+              .min=0
+              .max=100
+              .value=${vol_level}
+              @value-changed=${this.onGroupVolumeChange}
+            ></ha-control-slider>
+          </ha-md-list-item>
+        </div>
+        <div class="divider"></div>
+      </div>
+    `
+  }
   protected renderGroupedPlayers() {
+    const players = this.groupedPlayers;
+    const ct = players.length;
+    const expressive = this.cardConfig.expressive;
     return this.groupedPlayers.map(
-      (item) => {
+      (item, idx) => {
         const name = item.name.length > 0 ? item.name : this.hass.states[item.entity_id].attributes.friendly_name;
         return html`
           <div 
             class="grouped-players-item"
           >
             <div class="player-name-icon">
-              <ha-list-item
+              <ha-md-list-item
                 class="grouped-players-select-item"
                 .graphic=${this.Icons.SPEAKER}
                 noninteractive
@@ -280,18 +382,42 @@ class MusicPlayerCard extends LitElement {
               >
                 <ha-svg-icon
                   class="grouped-players-select-item-icon"
-                  slot="graphic"
+                  slot="start"
                   .path=${this.Icons.SPEAKER}
                 ></ha-svg-icon>
-                ${name}
-              </ha-list-item>
+                <span
+                  slot="headline"
+                  class="grouped-title"
+                >
+                  ${name}
+                </span>
+                <span
+                  slot="end"
+                >
+                  <ha-button
+                    appearance="plain"
+                    variant="brand"
+                    size="medium"
+                    class="grouped-button-unjoin ${expressive ? `grouped-button-unjoin-expressive` : ``}"
+                    @click=${this.onUnjoinSelect}
+                  >
+                    <ha-svg-icon
+                      .path=${this.Icons.LINK_OFF}
+                      class="grouped-svg-unjoin ${expressive ? `grouped-svg-unjoin-expressive` : ``}"
+                      .entity="${item.entity_id}"
+                    ></ha-svg-icon>
+                  </ha-button>
+                </span>
+              </ha-md-list-item>
             </div>
-            <mass-volume-slider
-              class="grouped-players-volume-slider"
-              maxVolume=${item.max_volume}
-              .entityId=${item.volume_entity_id}
-            ></mass-volume-slider>
-            <div class="divider"></div>
+            <ha-md-list-item>
+              <mass-volume-slider
+                class="grouped-players-volume-slider"
+                maxVolume=${item.max_volume}
+                .entityId=${item.volume_entity_id}
+              ></mass-volume-slider>
+            </ha-md-list-item>
+            ${idx < ct - 1 ? html`<div class="divider"></div>` : ``}
           </div>
         `
       }
@@ -299,14 +425,16 @@ class MusicPlayerCard extends LitElement {
   }
   protected renderGrouped() {
     const hide = this.config.hide.group_volume || this.activeEntityConfig.hide.player.group_volume;
-    if (this.groupedPlayers.length > 1 && !hide) {
+    if (this?.groupedPlayers?.length > 1 && !hide) {
       return html`
         <mass-menu-button
           slot="end"
           id="grouped-players-menu"
           class="menu-header ${this.cardConfig.expressive ? `menu-header-expressive` : ``}"
           .iconPath=${this.Icons.SPEAKER_MULTIPLE}
+          naturalMenuWidth
         >
+        ${this.renderGroupedVolume()}
         ${this.renderGroupedPlayers()}
         </mass-menu-button>
       `
@@ -314,8 +442,14 @@ class MusicPlayerCard extends LitElement {
     return html``;
   }
   protected renderArtist() {
-    if (!this.player_data?.track_artist) {
-      return html``
+    if (!isActive(this.hass, this.activeMediaPlayer)) {
+      const msgs = INACTIVE_MESSAGES;
+      const i = Math.floor(Math.random() * msgs.length);
+      return html`
+      <div class="player-track-artist ${this.cardConfig.expressive ? `player-track-artist-expressive` : ``}">
+          ${msgs[i]}
+      </div>;
+      ` 
     }
     return html`
       <div class="player-track-artist ${this.cardConfig.expressive ? `player-track-artist-expressive` : ``}">
@@ -403,6 +537,7 @@ class MusicPlayerCard extends LitElement {
     return html`
       <mass-progress-bar
         class="${this._artworkProgressClass}"
+        style="${isActive(this.hass, this.activeMediaPlayer) ? `` : `opacity: 0;`}"
       ></mass-progress-bar>
     `
   }
@@ -460,10 +595,10 @@ class MusicPlayerCard extends LitElement {
     `
   }
   connectedCallback(): void {
+    super.connectedCallback();
     if (this._animation && this._firstLoaded) {
       this._animation.play = true;
     }
-    super.connectedCallback();
   }
   disconnectedCallback(): void {
     super.disconnectedCallback();
@@ -475,7 +610,7 @@ class MusicPlayerCard extends LitElement {
       this._firstLoaded = true;
   }
   protected shouldUpdate(_changedProperties: PropertyValues): boolean {
-    if (!this.player_data) {
+    if (!this.player_data || !_changedProperties.size) {
       return false
     }
     return super.shouldUpdate(_changedProperties);

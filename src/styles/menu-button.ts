@@ -11,9 +11,6 @@ export default css`
   --mdc-theme-text-icon-on-background: var(--me-menu-text-color);
   --mdc-theme-surface: var(--me-menu-background-color);
   }
-  .menu-list-item {
-    /* --mdc-ripple-color: rgba(0,0,0,0); */
-  }
   .svg-menu {
     color: var(--md-sys-color-primary);
   }

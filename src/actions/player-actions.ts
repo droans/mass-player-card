@@ -199,4 +199,16 @@ export default class PlayerActions {
       console.error(`Error unfavoriting item for entity.`, e)
     }
   }
+  async actionUnjoinPlayers(player_entity: string) {
+    try {
+      await this.hass.callService(
+        'media_player', 'unjoin',
+        {
+          'entity_id': player_entity
+        }
+      )
+    } catch (e) {
+      console.error(`Error unjoining players`, e)
+    }
+  }
 }

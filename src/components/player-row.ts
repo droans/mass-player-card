@@ -41,7 +41,7 @@ class PlayerRow extends LitElement {
   @property({ type: Boolean }) player_entity!: ExtendedHassEntity;
   @property({ type: Boolean }) selected = false;
   @consume({ context: IconsContext}) private Icons!: Icons;
-  @consume({ context: useExpressiveContext })
+  @consume({ context: useExpressiveContext, subscribe: true })
   private useExpressive!: boolean;
 
   @consume({context: hassExt})
@@ -100,10 +100,7 @@ class PlayerRow extends LitElement {
     this.selectedService(this.player_entity.entity_id);
   }
   protected shouldUpdate(_changedProperties: PropertyValues<this>): boolean {
-    if (_changedProperties.has('selected')) {
-      return true;
-    }
-    return true;
+    return _changedProperties.size > 0;
   }
   private onJoinPressed(e: Event) {
     e.stopPropagation()

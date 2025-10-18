@@ -34,7 +34,7 @@ export class QueueController {
   /* eslint-disable-next-line @typescript-eslint/no-explicit-any */
   private _unsubscribe!: any;
   private _listening = false;
-  private _interval!: number;
+  private _interval!: number | undefined;
   private _timedListening = false;
 
   constructor(hass: ExtendedHass, active_player: ExtendedHassEntity, config: Config) {
@@ -142,14 +142,13 @@ export class QueueController {
     console.error(`Reached max failures getting queue, check your browser and HA logs!`);
   }
   public async getQueue() {
-    if (isActive(this.activeMediaPlayer)) {
+    if (isActive(this.hass, this.activeMediaPlayer)) {
       return this._getQueue();
     }
     this.queue = [];
     return [];
 
   }
-
   private setActiveTrack(queue: QueueItems) {
     const active_track = this.activeMediaPlayer.attributes.media_content_id;
     const active_idx = queue.findIndex( (i) => i.media_content_id == active_track) ?? -1;
@@ -157,6 +156,10 @@ export class QueueController {
       queue[active_idx].playing = true;
     }
       return queue;
+  }
+  public resetQueueFailures() {
+    this._fails = 0;
+    void this.getQueue();
   }
   public async _getQueue() {
     const limit_before = this.config.queue.limit_before;
@@ -182,7 +185,11 @@ export class QueueController {
   }
 
   private timedListener =  () => {
-    clearInterval(this._interval);
+      try {
+        clearInterval(this._interval);
+      } finally {
+        this._interval = undefined;
+      }
     this._interval = setInterval(this.timedListener, TIMED_LISTENER_DELAY_MS);
     void this.getQueue()
   }
@@ -220,8 +227,11 @@ export class QueueController {
       this._unsubscribe = undefined;
     }
     if (this._interval) {
-      clearInterval(this._interval);
-      this._unsubscribe = undefined;
+      try {
+        clearInterval(this._interval);
+      } finally {
+        this._interval = undefined;
+      }
     }
   }
 

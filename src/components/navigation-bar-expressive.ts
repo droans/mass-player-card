@@ -126,7 +126,7 @@ class MassNavBar extends LitElement {
     if (!this.config) {
       return false;
     }
-    return super.shouldUpdate(_changedProperties);
+    return _changedProperties.size > 0;
   }
   static get styles(): CSSResultGroup {
     return styles;

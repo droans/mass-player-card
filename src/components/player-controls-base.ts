@@ -1,5 +1,5 @@
 import { consume } from "@lit/context";
-import { LitElement } from "lit";
+import { LitElement, PropertyValues } from "lit";
 import { state } from "lit/decorators.js";
 import { actionsControllerContext, activePlayerDataContext, IconsContext } from "../const/context";
 import { ActionsController } from "../controller/actions";
@@ -71,5 +71,8 @@ export class MassPlayerControlsBase extends LitElement {
     } else {
       await this.actions.actionAddFavorite();
     }
+  }
+  protected shouldUpdate(_changedProperties: PropertyValues): boolean {
+    return _changedProperties.size > 0;
   }
 }

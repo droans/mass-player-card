@@ -3,6 +3,7 @@ import { consume } from "@lit/context";
 import {
   CSSResultGroup,
   LitElement,
+  PropertyValues,
   TemplateResult
 } from "lit";
 import { 
@@ -342,6 +343,9 @@ class MediaCard extends LitElement {
   }
   protected firstUpdated(): void {
     this._firstLoaded = true;
+  }
+  protected shouldUpdate(_changedProperties: PropertyValues): boolean {
+    return _changedProperties.size > 0;
   }
   connectedCallback(): void {
     if (this._firstLoaded) {
