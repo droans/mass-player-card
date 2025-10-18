@@ -80,9 +80,6 @@ class MusicPlayerCard extends LitElement {
   @state()
   private player_data!: PlayerData;
 
-  @consume({ context: activePlayerControllerContext, subscribe: true})
-  @state()
-  private activePlayerController!: ActivePlayerController;
   
   @state()
   private _groupVolumeLevel!: number;
@@ -103,6 +100,8 @@ class MusicPlayerCard extends LitElement {
   private _artworkVolumeClass!: string;
   private _artworkMediaControlsClass!: string;
   private _artworkActiveTrackClass!: string;
+  @state()
+  private _activePlayerController!: ActivePlayerController;
   
   @consume({ context: activeEntityConf, subscribe: true})
   public set activeEntityConfig(entity: EntityConfig) {
@@ -118,6 +117,9 @@ class MusicPlayerCard extends LitElement {
   @consume({ context: activeMediaPlayer, subscribe: true})
   @state()
   private set activeEntity(entity: ExtendedHassEntity) {
+    if (!playerHasUpdated(this._activeEntity, entity)) {
+      return;
+    }
     this._activeEntity = entity;
     this.updatePlayerData();
   }
@@ -142,6 +144,11 @@ class MusicPlayerCard extends LitElement {
 
   @consume({ context: musicPlayerConfigContext, subscribe: true})
   public set config(config: PlayerConfig) {
+    const cur_config = JSON.stringify(this._config);
+    const new_config = JSON.stringify(config);
+    if (cur_config == new_config) {
+      return;
+    }
     this._config = config;
     switch (config.layout.artwork_size) {
       case ArtworkSize.LARGE:
@@ -169,6 +176,28 @@ class MusicPlayerCard extends LitElement {
   public get config() {
     return this._config;
   }
+  
+  private async _getGroupedVolume() {
+    if (this.activePlayerController) {
+      this.groupVolumeLevel = await this.activePlayerController.getActiveGroupVolume();
+    }
+  }
+  @consume({ context: activePlayerControllerContext, subscribe: true})
+  private set activePlayerController(controller: ActivePlayerController) {
+    if (!controller) {
+      return;
+    }
+    this._activePlayerController = controller;
+    if (!this.player_data) {
+      this.updatePlayerData();
+    }
+    if (!this.groupVolumeLevel) {
+      void this._getGroupedVolume();
+    }
+  }
+  private get activePlayerController() {
+    return this._activePlayerController;
+  }
   @consume({ context: groupVolumeContext, subscribe: true})
   public set groupVolumeLevel(volume_level: number) {
     if (volume_level != this._groupVolumeLevel) {
@@ -195,6 +224,11 @@ class MusicPlayerCard extends LitElement {
     }
     const current_item = (await this.actions.actionGetCurrentItem(this.activeMediaPlayer));
     const new_player_data = this.activePlayerController.getactivePlayerData(current_item);
+    const cur_data = JSON.stringify(this.player_data);
+    const new_data = JSON.stringify(new_player_data);
+    if (cur_data == new_data) {
+      return;
+    }
     this.player_data = new_player_data;
   }
   private onPlayerSelect = (ev: CustomEvent) => {
