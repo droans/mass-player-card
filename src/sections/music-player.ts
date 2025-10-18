@@ -47,6 +47,7 @@ import {
   ListItemData
 } from "../const/media-browser";
 import {
+  INACTIVE_MESSAGES,
   MARQUEE_DELAY_MS,
   PlayerData,
 } from "../const/music-player";
@@ -58,6 +59,7 @@ import { ArtworkSize, PlayerConfig } from "../config/player";
 import { ActivePlayerController } from "../controller/active-player";
 import { Config } from "../config/config.js";
 import { Icons } from "../const/icons.js";
+import { isActive, playerHasUpdated } from "../utils/util.js";
 
 class MusicPlayerCard extends LitElement {
   @state() private shouldMarqueeTitle = false;
@@ -284,8 +286,12 @@ class MusicPlayerCard extends LitElement {
       `;
   }
   protected renderTitle() {
-    if(!this.player_data?.track_title) {
-      return html``
+    if(!isActive(this.hass, this.activeMediaPlayer)) {
+      return html`
+        <div class="player-track-title">
+          Nothing is currently active!
+        </div>
+      `
     }
     return this.wrapTitleMarquee();
   }
@@ -403,8 +409,14 @@ class MusicPlayerCard extends LitElement {
     return html``;
   }
   protected renderArtist() {
-    if (!this.player_data?.track_artist) {
-      return html``
+    if (!isActive(this.hass, this.activeMediaPlayer)) {
+      const msgs = INACTIVE_MESSAGES;
+      const i = Math.floor(Math.random() * msgs.length);
+      return html`
+      <div class="player-track-artist ${this.cardConfig.expressive ? `player-track-artist-expressive` : ``}">
+          ${msgs[i]}
+      </div>;
+      ` 
     }
     return html`
       <div class="player-track-artist ${this.cardConfig.expressive ? `player-track-artist-expressive` : ``}">
@@ -492,6 +504,7 @@ class MusicPlayerCard extends LitElement {
     return html`
       <mass-progress-bar
         class="${this._artworkProgressClass}"
+        style="${isActive(this.hass, this.activeMediaPlayer) ? `` : `opacity: 0;`}"
       ></mass-progress-bar>
     `
   }

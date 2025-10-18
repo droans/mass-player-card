@@ -15,6 +15,13 @@ export default css`
   .artwork-small {
 
   }
+  .asleep {
+    height: 100%;
+    width: 100%;
+  } 
+  .asleep-expressive {
+    color: rgba(from var(--md-sys-color-primary) r g b / 0.7);
+  }
 
   #carousel {
     --aspect-ratio: 1;
