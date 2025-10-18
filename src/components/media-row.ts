@@ -1,18 +1,12 @@
 import { consume } from '@lit/context';
 import {
-  mdiClose,
-  mdiArrowCollapseUp,
-  mdiArrowUp,
-  mdiArrowDown
-} from '@mdi/js';
-import {
   html,
   type CSSResultGroup,
   LitElement,
   PropertyValues,
   TemplateResult
 } from 'lit';
-import { property } from 'lit/decorators.js'
+import { property, state } from 'lit/decorators.js'
 
 import {
   QueueItemSelectedService,
@@ -20,26 +14,42 @@ import {
 } from '../const/actions';
 import {
   ExtendedHass,
-  Icon
+  Thumbnail
 } from '../const/common';
-import { activeEntityConf, EntityConfig, hassExt, playerQueueConfigContext } from '../const/context';
+import {
+  activeEntityConf,
+  EntityConfig,
+  hassExt,
+  IconsContext,
+  mediaCardDisplayContext,
+  playerQueueConfigContext,
+  useExpressiveContext,
+} from '../const/context';
 import { QueueItem } from '../const/player-queue';
 
 import styles from '../styles/media-row';
 
 import {
   backgroundImageFallback,
-  getFallbackImage
-} from '../utils/icons';
-import { testMixedContent } from '../utils/util';
+  getFallbackBackgroundImage
+} from '../utils/thumbnails';
+import { jsonMatch, queueItemhasUpdated, testMixedContent } from '../utils/util';
 import { DEFAULT_PLAYER_QUEUE_HIDDEN_ELEMENTS_CONFIG, PlayerQueueHiddenElementsConfig, QueueConfig } from '../config/player-queue';
+import { Icons } from '../const/icons.js';
 
 class MediaRow extends LitElement {
   @property({ attribute: false }) media_item!: QueueItem;
-  @property({ type: Boolean }) selected = false;
 
-  @consume({context: hassExt})
+  @consume({context: hassExt, subscribe: true})
   public hass!: ExtendedHass;
+  @consume({ context: IconsContext}) public Icons!: Icons;
+
+  @consume({ context: mediaCardDisplayContext, subscribe: true })
+  @state()
+  public display!: boolean;
+
+  @consume({ context: useExpressiveContext, subscribe: true})
+  public useExpressive!: boolean;
 
   public moveQueueItemDownService!: QueueService;
   public moveQueueItemNextService!: QueueService;
@@ -54,6 +64,9 @@ class MediaRow extends LitElement {
   
   @consume({ context: playerQueueConfigContext, subscribe: true})
   public set config(config: QueueConfig) {
+    if (jsonMatch(this._config, config)) {
+      return;
+    }
     this._config = config;
     this.updateHiddenElements();
   }
@@ -63,6 +76,9 @@ class MediaRow extends LitElement {
 
   @consume({ context: activeEntityConf, subscribe: true})
   public set entityConfig(config: EntityConfig) {
+    if (jsonMatch(this._entityConfig, config)) {
+      return;
+    }
     this._entityConfig = config;
     this.updateHiddenElements();
   }
@@ -103,34 +119,27 @@ class MediaRow extends LitElement {
     this.removeService(this.media_item.queue_item_id);
   }
   private callOnQueueItemSelectedService() {
-    this.selectedService(this.media_item.queue_item_id, this.media_item.media_content_id);
+    this.selectedService(this.media_item.queue_item_id);
   }
   protected shouldUpdate(_changedProperties: PropertyValues<this>): boolean {
-    if (_changedProperties.has('selected')) {
-      return true;
-    }
     if (_changedProperties.has('media_item')) {
       // eslint-disable-next-line @typescript-eslint/no-non-null-assertion
       const oldItem: QueueItem = _changedProperties.get('media_item')!;
-      return oldItem.media_title !== this.media_item.media_title
-        || oldItem.media_artist !== this.media_item.media_artist
-        || oldItem.media_image !== this.media_item.media_image
-        || oldItem.playing !== this.media_item.playing
-        || oldItem.show_action_buttons !== this.media_item.show_action_buttons
-        || oldItem.show_move_up_next !== this.media_item.show_move_up_next
+      return queueItemhasUpdated(oldItem, this.media_item);
     }
-    return true;
+    return _changedProperties.size > 0;
   }
   private artworkStyle() {
-    const img = this.media_item.media_image || "";
+    const img = this.media_item.local_image_encoded ?? this.media_item.media_image ?? "";
     if (!testMixedContent(img)) {
-      return getFallbackImage(this.hass, Icon.CLEFT);
+      return getFallbackBackgroundImage(this.hass, Thumbnail.CLEFT);
     }
-    return backgroundImageFallback(this.hass, img, Icon.CLEFT);
+    return backgroundImageFallback(this.hass, img, Thumbnail.CLEFT);
   }
   private renderThumbnail(): TemplateResult {
     const played = !this.media_item.show_action_buttons  && !this.media_item.playing;
-    if (this.media_item.media_image && this.showAlbumCovers && !this.hide.album_covers) {
+    const img = this.media_item.local_image_encoded ?? this.media_item.media_image;
+    if (img && this.showAlbumCovers && !this.hide.album_covers) {
       return html`
         <span
           class="thumbnail${played ? '-disabled' : ''}"
@@ -142,28 +151,52 @@ class MediaRow extends LitElement {
     }
     return html``
   }
+  private _calculateTitleWidth() {
+    let button_ct = 0;
+    const hide = this.config.hide;
+    const media_item = this.media_item
+    if (media_item.show_move_up_next && !hide.move_next_button) {
+      button_ct += 1
+    }
+    if (media_item.show_move_up_next && !hide.move_up_button) {
+      button_ct +=1
+    }
+    if (!hide.move_down_button) {
+      button_ct += 1
+    }
+    if (!hide.remove_button) {
+      button_ct += 1
+    }
+    if (button_ct == 0 || !media_item.show_action_buttons || hide.action_buttons) {
+      return `100%`;
+    }
+    const gap_ct = button_ct - 1;
+    return `calc(100% - ((32px * ${button_ct.toString()}) + (8px * ${gap_ct.toString()}) + 16px));`
+  }
   private renderTitle(): TemplateResult {
     return html`
       <span
         slot="headline"
         class="title"
+        style="width: ${this._calculateTitleWidth()}"
       >
         ${this.media_item.media_title}
       </span>
     `
   }
   private renderArtist(): TemplateResult {
-    if (this.media_item.show_artist_name && !this.hide.artist_names ) {
-      return html`
-        <span
-          slot="supporting-text"
-          class="title"
-        >
-          ${this.media_item.media_artist}
-        </span>
-      `
+    if (this.hide.artist_names) {
+      return html``
     }
-    return html``
+    return html`
+      <span
+        slot="supporting-text"
+        class="title"
+        style="width: ${this._calculateTitleWidth()}"
+      >
+        ${this.media_item.media_artist}
+      </span>
+    `
   }
   private renderActionButtons(): TemplateResult {
     if (this.hide.action_buttons || !this.media_item.show_action_buttons) {
@@ -173,6 +206,7 @@ class MediaRow extends LitElement {
       <span
         slot="end"
         class="button-group"
+        @click=${(e: Event) => {e.stopPropagation()}}
       >
         ${this.renderMoveNextButton()}
         ${this.renderMoveUpButton()}
@@ -191,12 +225,12 @@ class MediaRow extends LitElement {
         appearance="plain"
         variant="brand"
         size="medium"
-        class="action-button"
+        class="action-button ${this.useExpressive ? `action-button-expressive` : ``}"
         @click=${this.callMoveItemNextService}
       >
         <ha-svg-icon
-          .path=${mdiArrowCollapseUp}
-          style="height: 1.5rem; width: 1.5rem;"
+          .path=${this.Icons.ARROW_PLAY_NEXT}
+          class="svg-action-button ${this.useExpressive ? `svg-action-button-expressive` : ``}"
         ></ha-svg-icon>
       </ha-button>
     `
@@ -210,12 +244,12 @@ class MediaRow extends LitElement {
         appearance="plain"
         variant="brand"
         size="medium"
-        class="action-button"
+        class="action-button ${this.useExpressive ? `action-button-expressive` : ``}"
         @click=${this.callMoveItemUpService}
       >
         <ha-svg-icon
-          .path=${mdiArrowUp}
-          style="height: 1.5rem; width: 1.5rem;"
+          .path=${this.Icons.ARROW_UP}
+          class="svg-action-button ${this.useExpressive ? `svg-action-button-expressive` : ``}"
         ></ha-svg-icon>
       </ha-button>
     `
@@ -225,18 +259,18 @@ class MediaRow extends LitElement {
       return html``
     };
     return html`
-        <ha-button
-          appearance="plain"
-          variant="brand"
-          size="medium"
-          class="action-button"
-          @click=${this.callMoveItemDownService}
-        >
-          <ha-svg-icon
-            .path=${mdiArrowDown}
-            style="height: 1.5rem; width: 1.5rem;"
-          ></ha-svg-icon>
-        </ha-button>
+      <ha-button
+        appearance="plain"
+        variant="brand"
+        size="medium"
+        class="action-button ${this.useExpressive ? `action-button-expressive` : ``}"
+        @click=${this.callMoveItemDownService}
+      >
+        <ha-svg-icon
+          .path=${this.Icons.ARROW_DOWN}
+          class="svg-action-button ${this.useExpressive ? `svg-action-button-expressive` : ``}"
+        ></ha-svg-icon>
+      </ha-button>
     `
   }
   private renderRemoveButton(): TemplateResult {
@@ -248,30 +282,33 @@ class MediaRow extends LitElement {
           appearance="plain"
           variant="brand"
           size="medium"
-          class="action-button"
+          class="action-button ${this.useExpressive ? `action-button-expressive` : ``}"
           @click=${this.callRemoveItemService}
         >
-          <ha-svg-icon
-            .path=${mdiClose}
-            style="height: 1.5rem; width: 1.5rem;"
-          ></ha-svg-icon>
-        </ha-button>
+        <ha-svg-icon
+          .path=${this.Icons.CLOSE}
+        class="svg-action-button ${this.useExpressive ? `svg-action-button-expressive` : ``}"
+        ></ha-svg-icon>
+      </ha-button>
     `
   }
 
   render(): TemplateResult {
+    const playing = this.media_item.playing ? `-active` : ``;
+    const expressive = this.useExpressive ? `button-expressive${playing}` : ``;
     return html`
-      <ha-md-list-item
-        class="button${this.media_item.playing ? '-active' : ''}"
-		    @click=${this.callOnQueueItemSelectedService}
-        type="button"
-      >
-        ${this.renderThumbnail()}
-        ${this.renderTitle()}
-        ${this.renderArtist()}
-        ${this.renderActionButtons()}
-      </ha-md-list-item>
-      <div class="divider"</div>
+        <ha-md-list-item
+          style="${this.display? "" : "display: none;"}"
+          class="button${playing} ${expressive}"
+          @click=${this.callOnQueueItemSelectedService}
+          type="button"
+        >
+          ${this.renderThumbnail()}
+          ${this.renderTitle()}
+          ${this.renderArtist()}
+          ${this.renderActionButtons()}
+        </ha-md-list-item>
+        <div class="divider"></div>
     `
   }
   static get styles(): CSSResultGroup {

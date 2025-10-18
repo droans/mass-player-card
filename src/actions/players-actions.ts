@@ -1,9 +1,18 @@
+/* eslint-disable no-console */
 import { ExtendedHass } from "../const/common";
 
 export default class PlayersActions {
-  private hass: ExtendedHass;
+  private _hass!: ExtendedHass;
   constructor(hass: ExtendedHass) {
     this.hass = hass;
+  }
+  public set hass(hass: ExtendedHass) {
+    if (hass) {
+      this._hass = hass;
+    }
+  }
+  public get hass() {
+    return this._hass;
   }
 
   async actionTransferQueue(source_player: string, target_players: string) {
@@ -16,7 +25,6 @@ export default class PlayersActions {
         }
       )
     } catch (e) {
-      /* eslint-disable-next-line no-console */
       console.error(`Error calling transfer player`, e)
     }
   }
@@ -30,7 +38,6 @@ export default class PlayersActions {
         }
       )
     } catch (e) {
-      /* eslint-disable-next-line no-console */
       console.error(`Error joining players`, e)
     }
   }
@@ -43,7 +50,6 @@ export default class PlayersActions {
         }
       )
     } catch (e) {
-      /* eslint-disable-next-line no-console */
       console.error(`Error unjoining players`, e)
     }
   }

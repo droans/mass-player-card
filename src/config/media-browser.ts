@@ -1,10 +1,12 @@
 import { mdiHeart } from "@mdi/js";
 
 import { Config } from "./config";
+import { hiddenElementsConfigItem } from "../utils/config.js";
 
 export interface MediaBrowserHiddenElementsConfig {
   back_button: boolean;
   search: boolean;
+  recents: boolean;
   titles: boolean;
   enqueue_menu: boolean;
   add_to_queue_button: boolean;
@@ -17,6 +19,7 @@ export interface MediaBrowserHiddenElementsConfig {
 export const DEFAULT_MEDIA_BROWSER_HIDDEN_ELEMENTS_CONFIG: MediaBrowserHiddenElementsConfig = {
   back_button: false,
   search: false,
+  recents: false,
   titles: false,
   enqueue_menu: false,
   add_to_queue_button: false,
@@ -38,6 +41,7 @@ export interface MediaBrowserConfig {
   favorites: FavoritesConfig;
   sections: customSection[];
   hide: MediaBrowserHiddenElementsConfig
+  columns: number;
 }
 
 export interface customSection {
@@ -93,8 +97,21 @@ export const DEFAULT_MEDIA_BROWSER_CONFIG: MediaBrowserConfig = {
   enabled: true,
   favorites: DEFAULT_FAVORITES_CONFIG,
   sections: DEFAULT_CUSTOM_SECTION_CONFIG,
-  hide: DEFAULT_MEDIA_BROWSER_HIDDEN_ELEMENTS_CONFIG
+  hide: DEFAULT_MEDIA_BROWSER_HIDDEN_ELEMENTS_CONFIG,
+  columns: 2
 }
+
+const MEDIA_BROWSER_HIDDEN_ITEMS = [
+  "back_button",
+  "search",
+  "titles",
+  "enqueue_menu",
+  "add_to_queue_button",
+  "play_now_button",
+  "play_now_clear_queue_button",
+  "play_next_button",
+  "play_next_clear_queue_button",
+]
 
 function favoritesConfigForm(section: string) {
   return {
@@ -112,9 +129,11 @@ function favoritesConfigForm(section: string) {
     ]
   }
 }
+
 export function mediaBrowserConfigForm() {
   return [
-    { name: "enabled", selector: { boolean: {} } },
+    { name: "enabled", selector: { boolean: {} }, default: true },
+    { name: "columns", selector: { number: { min: 1, max: 10, mode: "box" } } },
     {
       name: "favorites",
       type: "expandable",
@@ -128,7 +147,8 @@ export function mediaBrowserConfigForm() {
         favoritesConfigForm("radios"),
         favoritesConfigForm("tracks"),
       ]
-    }
+    },
+    hiddenElementsConfigItem(MEDIA_BROWSER_HIDDEN_ITEMS)
   ]
 }
 

@@ -90,16 +90,65 @@ entities:
         volume: false
 queue:
   enabled: true
+  hide:
+    action_buttons: false
+    move_down_button: false
+    move_next_button: false
+    move_up_button: false
+    remove_button: false
+    album_covers: false
+    artist_names: false
   limit_before: 5
   limit_after: 100
   show_album_covers: true
   show_artist_names: true
 player:
   enabled: true
+  hide:
+    favorite: false
+    mute: false
+    player_selector: false
+    power: false
+    repeat: false
+    shuffle: false
+    volume: false
+    group_volume: false
+  layout:
+    controls_layout: compact
+    icons:
+      shuffle:
+        size: small
+        box_shadow: false
+      previous:
+        size: small
+        box_shadow: false
+      play_pause:
+        size: large
+        box_shadow: true
+      next:
+        size: small
+        box_shadow: false
+      repeat:
+        size: small
+        box_shadow: false
 players:
   enabled: true
+  hide:
+    action_buttons: false
+    join_button: false
+    transfer_button: false
 media_browser:
   enabled: true
+  hidden:
+    back_button: false
+    search: false
+    titles: false
+    enqueue_menu: false
+    add_to_queue_button: false
+    play_next_button: false
+    play_next_clear_queue_button: false
+    play_now_button: false
+    play_now_clear_queue_button: false
   favorites:
     albums:
       enabled: true
@@ -140,6 +189,8 @@ media_browser:
 
 ```yaml
 type: custom:mass-player-card
+expressive: true
+download_local: false
 entities:
   - media_player.kitchen_player_music_assistant
   - entity_id: media_player.bedroom_player_music_assistant
@@ -182,10 +233,17 @@ queue:
   show_artist_names: true
 player:
   enabled: true
+  layout:
+    controls_layout: spaced
+    icons:
+      play_pause:
+        size: small
+        box_shadow: true
 players:
   enabled: true
 media_browser:
   enabled: true
+  columns: 2
   favorites:
     albums:
       enabled: true
@@ -240,14 +298,16 @@ media_browser:
 </details>
 
 ## Base Config
-| Parameter     | Type                                             | Required | Default | Description                                        |
-|---------------|--------------------------------------------------|----------|---------|----------------------------------------------------|
-| type          | str                                              | Yes      | n/a     | Use `custom:mass-player-card`                      |
-| entities      | list of string or [EntityConfig](#entity-config) | Yes      | n/a     | The Music Assistant `media_player` entities to use |
-| player        | [MusicPlayerConfig](#music-player-config)        | No       | 5       | See Below                                          |
-| queue         | [QueueConfig](#queue-config)                     | No       | 5       | See Below                                          |
-| media_browser | [MediaBrowserConfig](#media-browser-config)      | No       | 5       | See Below                                          |
-| players       | [PlayersConfig](#players-config)                 | No       | 5       | See Below                                          |
+| Parameter      | Type                                             | Required | Default | Description                                           |
+|----------------|--------------------------------------------------|----------|---------|-------------------------------------------------------|
+| type           | str                                              | Yes      | n/a     | Use `custom:mass-player-card`                         |
+| expressive     | boolean                                          | No       | true    | Enables Material Expressive theme                     |
+| download_local | boolean                                          | No       | false   | Download and encode images if not remotely accessible |
+| entities       | list of string or [EntityConfig](#entity-config) | Yes      | n/a     | The Music Assistant `media_player` entities to use    |
+| player         | [MusicPlayerConfig](#music-player-config)        | No       | 5       | See Below                                             |
+| queue          | [QueueConfig](#queue-config)                     | No       | 5       | See Below                                             |
+| media_browser  | [MediaBrowserConfig](#media-browser-config)      | No       | 5       | See Below                                             |
+| players        | [PlayersConfig](#players-config)                 | No       | 5       | See Below                                             |
 
 ## Entity Config
 For each entity, you can either provide the Entity ID by itself or you can provide the Music Assistant media player Entity ID, the media player Entity ID for volume control, and/or the name of the player. Below is the config if you would like to provide the additional details.
@@ -277,23 +337,70 @@ Certain elements across the different sections can be hidden or displayed depend
 <img src="https://github.com/droans/mass-player-card/blob/main/static/music_player/desktop.png" alt="Player Card Example">
 </details>
 
-| Parameter | Type | Required | Default | Description                     |
-|-----------|------|----------|---------|---------------------------------|
-| enabled   | bool | No       | true    | Enable/disable music player tab |
+| Parameter | Type                                                                    | Required | Default | Description                     |
+|-----------|-------------------------------------------------------------------------|----------|---------|---------------------------------|
+| enabled   | bool                                                                    | No       | true    | Enable/disable music player tab |
+| hide      | [MusicPlayerHiddenElementsConfig](#music-player-hidden-elements-config) | No       | N/A     | See below                       |
+| layout    | [MusicPlayerLayoutConfig](#music-player-hidden-elements-config)         | No       | N/A     | See below                       |
 
 
 ## Music Player Hidden Elements Config
 Multiple elements on the Music Player tab can be hidden. By default, all elements are visible
 
-| Parameter       | Type | Required | Default     | Description                       |
-|-----------------|------|----------|-------------|-----------------------------------|
-| favorite        | bool  | No       | false       | Hides the favorite button        |
-| mute            | bool  | No       | false       | Hides the mute button            |
-| player_selector | bool  | No       | false       | Hides the player selector button |
-| power           | bool  | No       | false       | Hides the power button           |
-| repeat          | bool  | No       | false       | Hides the repeat button          |
-| shuffle         | bool  | No       | false       | Hides the shuffle button         |
-| volume          | bool  | No       | false       | Hides the volume button          |
+| Parameter       | Type | Required | Default     | Description                           |
+|-----------------|------|----------|-------------|---------------------------------------|
+| favorite        | bool  | No       | false       | Hides the favorite button            |
+| mute            | bool  | No       | false       | Hides the mute button                |
+| player_selector | bool  | No       | false       | Hides the player selector button     |
+| power           | bool  | No       | false       | Hides the power button               |
+| repeat          | bool  | No       | false       | Hides the repeat button              |
+| shuffle         | bool  | No       | false       | Hides the shuffle button             |
+| volume          | bool  | No       | false       | Hides the volume button              |
+| group_volume    | bool  | No       | false       | Hides the grouped player volume menu |
+
+## Music Player Layout Config
+The layout of the control buttons can be adjusted to your liking. Use the full default configuration below as an example.
+
+<detail>
+<summary>Full Default Configuration</summary>
+
+```yaml
+type: custom:mass-player-card
+player:
+  layout:
+    controls_layout: compact          # Options: compact or spaced (default: compact)
+    artwork_size: large               # Options: small, medium, large (default: large)
+                                      # Note: Medium/Large will display in the background behind the header and player controls. Small will display on its own.
+    icons:
+      shuffle:
+        size: small                   # Options: small or large (default: small)
+        box_shadow: false             # Options: True/False (default: false)
+        label: true                   # Options: True/False (default: false)
+                                      # Note: Label will never show if size is large
+      previous:
+        size: small                   # Options: small or large (default: small)
+        box_shadow: false             # Options: True/False (default: false)
+        label: false                  # Options: True/False (default: false)
+                                      # Note: Label will never show if size is large
+      next:
+        size: small                   # Options: small or large (default: small)
+        box_shadow: false             # Options: True/False (default: false)
+        label: false                  # Options: True/False (default: false)
+                                      # Note: Label will never show if size is large
+      repeat:
+        size: small                   # Options: small or large (default: small)
+        box_shadow: false             # Options: True/False (default: false)
+        label: true                   # Options: True/False (default: false)
+                                      # Note: Label will never show if size is large
+      play_pause:
+        size: large                   # Options: small or large (default: small)
+        box_shadow: true              # Options: True/False (default: false)
+        label: false                  # Options: True/False (default: false)
+                                      # Note: Label will never show if size is large
+      
+```
+
+</detail>
 
 ## Queue Config
 Display and interact with the player's queue.
@@ -332,12 +439,13 @@ Multiple elements on the queue tab can be hidden. By default, all elements are v
 <img src="https://github.com/droans/mass-player-card/blob/main/static/media_browser/desktop.png" alt="Player Card Media Browser Section Example">
 </details>
 
-| Parameter | Type                                                                       | Required | Default     | Description                      |
-|-----------|----------------------------------------------------------------------------|----------|-------------|----------------------------------|
-| enabled   | bool                                                                       | No       | true        | Enable/disable media browser tab |
-| favorites | [FavoritesConfig](#favorites-config)                                       | No       | -           | See below                        |
-| sections  | list of [SectionsConfig](#sections-config)                                 | No       | -           | See below                        |
-| hide      | [MediaBrowserHiddenElementsConfig](#media-browser-hidden-elements-config)  | No       | See below   | See Below                                |
+| Parameter | Type                                                                      | Required | Default     | Description                      |
+|-----------|---------------------------------------------------------------------------|----------|-------------|----------------------------------|
+| enabled   | bool                                                                      | No       | true        | Enable/disable media browser tab |
+| columns   | number                                                                    | No       | 2           | Number of columns for each row.  |
+| favorites | [FavoritesConfig](#favorites-config)                                      | No       | -           | See below                        |
+| sections  | list of [SectionsConfig](#sections-config)                                | No       | -           | See below                        |
+| hide      | [MediaBrowserHiddenElementsConfig](#media-browser-hidden-elements-config) | No       | See below   | See Below                        |
 
 ## Media Browser Hidden Elements Config
 Multiple elements on the media browser tab can be hidden. By default, all elements are visible
