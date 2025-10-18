@@ -192,7 +192,6 @@ class VolumeRow extends LitElement {
     }
     return html`
       <ha-control-slider
-        .disabled=${this.player_data.muted}
         .unit="%"
         .value=${this.player_data.volume}
         .min=0
