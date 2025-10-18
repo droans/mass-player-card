@@ -302,6 +302,10 @@ export class MusicAssistantPlayerCard extends LitElement {
         e.play = true;
       }
     );
+      if (this._controller) {
+        this._controller.Queue.resetQueueFailures(); 
+        void this._controller.Queue.subscribeUpdates(); 
+      }
   }
   protected firstUpdated(): void {
     if (this.config.expressive) {

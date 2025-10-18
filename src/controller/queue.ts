@@ -158,6 +158,10 @@ export class QueueController {
     }
       return queue;
   }
+  public resetQueueFailures() {
+    this._fails = 0;
+    void this.getQueue();
+  }
   public async _getQueue() {
     const limit_before = this.config.queue.limit_before;
     const limit_after = this.config.queue.limit_after;
