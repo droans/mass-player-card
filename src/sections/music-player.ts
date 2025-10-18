@@ -38,6 +38,7 @@ import {
   configContext,
   entitiesConfigContext,
   EntityConfig,
+  groupedPlayersContext,
   groupVolumeContext,
   hassExt,
   IconsContext,
@@ -95,7 +96,7 @@ class MusicPlayerCard extends LitElement {
   public selectedPlayerService!: PlayerSelectedService;
   private _animationListener  = async () => this.onAnimationEnd();
   private _hass!: ExtendedHass;
-  private groupedPlayers!: EntityConfig[];
+  private _groupedPlayers!: EntityConfig[];
   private actions!: PlayerActions;
   private marquee_x_dist = 0;
 
@@ -208,6 +209,19 @@ class MusicPlayerCard extends LitElement {
   }
   public get groupVolumeLevel() {
     return this._groupVolumeLevel;
+  }
+  
+  @consume({ context: groupedPlayersContext, subscribe: true})
+  private set groupedPlayersList(players: string[]) {
+    const card_players = this.playerEntities.filter(entity => players.includes(entity.entity_id));
+    if (jsonMatch(this._groupedPlayers, card_players)) {
+      return;
+    }
+    this._groupedPlayers = card_players;
+  }
+
+  private get groupedPlayers() {
+    return this._groupedPlayers;
   }
 
   private updatePlayerData() {
