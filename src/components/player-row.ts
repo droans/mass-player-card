@@ -30,7 +30,7 @@ import {
   backgroundImageFallback,
   getFallbackBackgroundImage
 } from '../utils/thumbnails';
-import { testMixedContent } from '../utils/util';
+import { jsonMatch, testMixedContent } from '../utils/util';
 
 import styles from '../styles/player-row';
 import { DEFAULT_PLAYERS_HIDDEN_ELEMENTS_CONFIG, PlayersConfig, PlayersHiddenElementsConfig } from '../config/players';
@@ -60,9 +60,7 @@ class PlayerRow extends LitElement {
 
   @consume({ context: playersConfigContext, subscribe: true})
   public set config(config: PlayersConfig) {
-    const cur_item = JSON.stringify(this._config);
-    const new_item = JSON.stringify(config);
-    if (cur_item == new_item) {
+    if (jsonMatch(this._config, config)) {
       return;
     }
     this._config = config;
@@ -73,9 +71,7 @@ class PlayerRow extends LitElement {
   }
   @consume({ context: activeEntityConf, subscribe: true})
   public set entityConfig(config: EntityConfig) {
-    const cur_item = JSON.stringify(this._entityConfig);
-    const new_item = JSON.stringify(config);
-    if (cur_item == new_item) {
+    if (jsonMatch(this._entityConfig, config)) {
       return;
     }
     this._entityConfig = config;

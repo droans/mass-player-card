@@ -27,6 +27,7 @@ import {
 
 import styles from '../styles/media-browser-cards';
 import { MediaBrowserConfig } from "../config/media-browser.js";
+import { jsonMatch } from "../utils/util.js";
 
 class MediaBrowserCards extends LitElement {
   @state() public code!: TemplateResult;
@@ -37,9 +38,7 @@ class MediaBrowserCards extends LitElement {
   private _browserConfig!: MediaBrowserConfig;
   @consume({ context: mediaBrowserConfigContext, subscribe: true})
   public set browserConfig(conf: MediaBrowserConfig) {
-    const cur_conf = JSON.stringify(this._browserConfig)
-    const new_conf = JSON.stringify(conf)
-    if (cur_conf != new_conf) {
+    if (!jsonMatch(this._browserConfig, conf)) {
       this._browserConfig = conf
       if (this.items) {
         this.generateCode();
@@ -60,9 +59,7 @@ class MediaBrowserCards extends LitElement {
     if (!items?.length) {
       return;
     }
-    const cur_items = JSON.stringify(this._items);
-    const new_items = JSON.stringify(items);
-    if (cur_items != new_items){
+    if (!jsonMatch(this._items, items)){
       this._items = items;
       if (this.browserConfig) {
         this.generateCode();

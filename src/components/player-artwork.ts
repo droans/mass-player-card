@@ -27,6 +27,7 @@ import SlCarousel from "@shoelace-style/shoelace/dist/components/carousel/carous
 import { PlayerConfig } from "../config/player.js";
 import { MassCardController } from "../controller/controller.js";
 import { Icons } from "../const/icons.js";
+import { jsonMatch } from "../utils/util.js";
 
 class MassPlayerArtwork extends LitElement {
   @consume({ context: hassExt, subscribe: true })
@@ -75,9 +76,7 @@ class MassPlayerArtwork extends LitElement {
 
   @consume({ context: previousQueueItemContext, subscribe: true})
   public set previousQueueItem(item: QueueItem | null | undefined) {
-    const cur_item = JSON.stringify(this.previousQueueItem);
-    const new_item = JSON.stringify(item);
-    if (cur_item == new_item) {
+    if (jsonMatch(this.previousQueueItem, item)) {
       return;
     }
     this.previousItemImage = item?.media_image ?? ``;
@@ -101,9 +100,7 @@ class MassPlayerArtwork extends LitElement {
 
   @consume({ context: currentQueueItemContext, subscribe: true})
   public set currentQueueItem(item: QueueItem | null | undefined) {
-    const cur_item = JSON.stringify(this.currentQueueItem);
-    const new_item = JSON.stringify(item);
-    if (cur_item == new_item) {
+    if (jsonMatch(this.currentQueueItem, item)) {
       return;
     }
     this.currentItemImage = item?.media_image ?? ``;
@@ -127,9 +124,7 @@ class MassPlayerArtwork extends LitElement {
   
   @consume({ context: nextQueueItemContext, subscribe: true})
   public set nextQueueItem(item: QueueItem | null | undefined) {
-    const cur_item = JSON.stringify(this.nextQueueItem);
-    const new_item = JSON.stringify(item);
-    if (cur_item == new_item) {
+    if (jsonMatch(this.nextQueueItem, item)) {
       return;
     }
     this.nextItemImage = item?.media_image ?? ``;

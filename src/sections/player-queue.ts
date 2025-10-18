@@ -33,6 +33,7 @@ import styles from '../styles/player-queue';
 import { Sections } from '../const/card';
 import { ActivePlayerController } from '../controller/active-player.js';
 import { QueueController } from '../controller/queue.js';
+import { jsonMatch } from '../utils/util.js';
 
 class QueueCard extends LitElement {
   
@@ -65,9 +66,7 @@ class QueueCard extends LitElement {
         this._queue = this.processQueue(queue);
         return;
       }
-      const new_queue = JSON.stringify(queue);
-      const old_queue = JSON.stringify(this.queue);
-      if (new_queue != old_queue) {
+      if (!jsonMatch(this.queue, queue)) {
         this._queue = this.processQueue(queue);
       }
       return;

@@ -16,7 +16,7 @@ import { PlayerData } from "../const/music-player";
 import { MUSIC_ASSISTANT_APP_NAME, QueueItem } from "../const/player-queue";
 import { applyTheme, themeFromImage, Theme } from "@material/material-color-utilities";
 import { getThumbnail } from "../utils/thumbnails.js";
-import { playerHasUpdated } from "../utils/util.js";
+import { jsonMatch, playerHasUpdated } from "../utils/util.js";
 export class ActivePlayerController {
   private _activeEntityConfig: ContextProvider<typeof activeEntityConf>;
   private _activeEntityID: ContextProvider<typeof activeEntityID>;
@@ -124,9 +124,7 @@ export class ActivePlayerController {
     return this._activePlayerName.value;
   }
   private set groupMembers(members: string[]) {
-    const cur_members = JSON.stringify(this._groupMembers.value);
-    const new_members = JSON.stringify(members)
-    if (cur_members == new_members) {
+    if (jsonMatch(this._groupMembers.value, members)) {
       return;
     }
     this._groupMembers.setValue(members)

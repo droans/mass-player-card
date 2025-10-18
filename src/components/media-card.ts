@@ -47,7 +47,7 @@ import {
   backgroundImageFallback,
   getFallbackBackgroundImage,
 } from "../utils/thumbnails";
-import { testMixedContent } from "../utils/util";
+import { jsonMatch, testMixedContent } from "../utils/util";
 import {
   DEFAULT_MEDIA_BROWSER_HIDDEN_ELEMENTS_CONFIG,
   HIDDEN_BUTTON_VALUE,
@@ -101,9 +101,7 @@ class MediaCard extends LitElement {
     if (!config) {
       return;
     }
-    const cur_conf = JSON.stringify(this._config);
-    const new_conf = JSON.stringify(config)
-    if (cur_conf == new_conf) {
+    if (jsonMatch(this._config, config)) {
       return;
     }
     this._config = config;
@@ -121,9 +119,7 @@ class MediaCard extends LitElement {
     if (!config) {
       return;
     }
-    const cur_conf = JSON.stringify(this._cardConfig);
-    const new_conf = JSON.stringify(config)
-    if (cur_conf == new_conf) {
+    if (jsonMatch(this._cardConfig, config)) {
       return;
     }
     this._cardConfig = config;
@@ -137,9 +133,7 @@ class MediaCard extends LitElement {
   
   @consume( { context: mediaBrowserConfigContext, subscribe: true})
   public set sectionConfig(config: MediaBrowserConfig) {
-    const cur_conf = JSON.stringify(this._sectionConfig);
-    const new_conf = JSON.stringify(config)
-    if (cur_conf == new_conf) {
+    if (jsonMatch(this._sectionConfig, config)) {
       return;
     }
     this._sectionConfig = config;
@@ -150,9 +144,7 @@ class MediaCard extends LitElement {
   }
   @consume({ context: IconsContext, subscribe: true}) 
   public set Icons(icons: Icons) {
-    const cur_ico = JSON.stringify(this._icons);
-    const new_ico = JSON.stringify(icons);
-    if (cur_ico == new_ico) {
+    if (jsonMatch(this._icons, icons)) {
       return;
     }
     this._icons = icons;
@@ -164,9 +156,7 @@ class MediaCard extends LitElement {
 
   @consume( { context: activeEntityConf, subscribe: true})
   public set entityConfig(config: EntityConfig) {
-    const cur_conf = JSON.stringify(this._entityConfig);
-    const new_conf = JSON.stringify(config)
-    if (cur_conf == new_conf) {
+    if (jsonMatch(this._entityConfig, config)) {
       return;
     }
     this._entityConfig = config;

@@ -104,3 +104,10 @@ export function isActive(hass: ExtendedHass, entity: ExtendedHassEntity): boolea
     const connected = hass.connected;
     return not_off && is_mass && has_queue && connected;
 }
+
+// eslint-disable-next-line @typescript-eslint/no-explicit-any
+export function jsonMatch(objectA: any, objectB: any) {
+  const jsonA = JSON.stringify(objectA);
+  const jsonB = JSON.stringify(objectB);
+  return jsonA == jsonB;
+}

@@ -33,7 +33,7 @@ import {
   backgroundImageFallback,
   getFallbackBackgroundImage
 } from '../utils/thumbnails';
-import { queueItemhasUpdated, testMixedContent } from '../utils/util';
+import { jsonMatch, queueItemhasUpdated, testMixedContent } from '../utils/util';
 import { DEFAULT_PLAYER_QUEUE_HIDDEN_ELEMENTS_CONFIG, PlayerQueueHiddenElementsConfig, QueueConfig } from '../config/player-queue';
 import { Icons } from '../const/icons.js';
 
@@ -64,9 +64,7 @@ class MediaRow extends LitElement {
   
   @consume({ context: playerQueueConfigContext, subscribe: true})
   public set config(config: QueueConfig) {
-    const cur_conf = JSON.stringify(this._config);
-    const new_conf = JSON.stringify(config)
-    if (cur_conf == new_conf) {
+    if (jsonMatch(this._config, config)) {
       return;
     }
     this._config = config;
@@ -78,9 +76,7 @@ class MediaRow extends LitElement {
 
   @consume({ context: activeEntityConf, subscribe: true})
   public set entityConfig(config: EntityConfig) {
-    const cur_conf = JSON.stringify(this._entityConfig);
-    const new_conf = JSON.stringify(config)
-    if (cur_conf == new_conf) {
+    if (jsonMatch(this._entityConfig, config)) {
       return;
     }
     this._entityConfig = config;
