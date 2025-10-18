@@ -42,14 +42,14 @@ class MediaRow extends LitElement {
 
   @consume({context: hassExt, subscribe: true})
   public hass!: ExtendedHass;
-  @consume({ context: IconsContext}) private Icons!: Icons;
+  @consume({ context: IconsContext}) public Icons!: Icons;
 
   @consume({ context: mediaCardDisplayContext, subscribe: true })
   @state()
   public display!: boolean;
 
   @consume({ context: useExpressiveContext, subscribe: true})
-  private useExpressive!: boolean;
+  public useExpressive!: boolean;
 
   public moveQueueItemDownService!: QueueService;
   public moveQueueItemNextService!: QueueService;
