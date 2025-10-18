@@ -175,8 +175,7 @@ export class MusicAssistantPlayerCard extends LitElement {
       return true;
     }
     if (_changedProperties.has('hass')) {
-      // eslint-disable-next-line @typescript-eslint/no-non-null-assertion
-      const oldHass = _changedProperties.get('hass')! as ExtendedHass;
+      const oldHass = _changedProperties.get('hass') as ExtendedHass;
       if (!oldHass) {
         return true;
       }
