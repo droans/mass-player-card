@@ -1,4 +1,4 @@
-import { CSSResultGroup, html, LitElement, TemplateResult } from "lit";
+import { CSSResultGroup, html, LitElement, PropertyValues, TemplateResult } from "lit";
 import styles from '../styles/progress-bar'
 import { state } from "lit/decorators.js";
 import { consume } from "@lit/context";
@@ -194,6 +194,9 @@ class MassPlayerProgressBar extends LitElement {
       }
     }
     super.disconnectedCallback();
+  }
+  protected shouldUpdate(_changedProperties: PropertyValues): boolean {
+    return _changedProperties.size > 0;
   }
 
   static get styles(): CSSResultGroup {

@@ -100,10 +100,7 @@ class PlayerRow extends LitElement {
     this.selectedService(this.player_entity.entity_id);
   }
   protected shouldUpdate(_changedProperties: PropertyValues<this>): boolean {
-    if (_changedProperties.has('selected')) {
-      return true;
-    }
-    return true;
+    return _changedProperties.size > 0;
   }
   private onJoinPressed(e: Event) {
     e.stopPropagation()

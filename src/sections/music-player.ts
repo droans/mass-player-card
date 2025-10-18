@@ -564,7 +564,7 @@ class MusicPlayerCard extends LitElement {
       this._firstLoaded = true;
   }
   protected shouldUpdate(_changedProperties: PropertyValues): boolean {
-    if (!this.player_data) {
+    if (!this.player_data || !_changedProperties.size) {
       return false
     }
     return super.shouldUpdate(_changedProperties);

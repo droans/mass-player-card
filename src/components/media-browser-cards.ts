@@ -2,6 +2,7 @@ import { consume } from "@lit/context";
 import {
   CSSResultGroup,
   LitElement,
+  PropertyValues,
   TemplateResult
 } from "lit";
 import { state } from "lit/decorators.js";
@@ -28,7 +29,7 @@ import styles from '../styles/media-browser-cards';
 import { MediaBrowserConfig } from "../config/media-browser.js";
 
 class MediaBrowserCards extends LitElement {
-  @state() private code!: TemplateResult;
+  @state() public code!: TemplateResult;
 
   @consume({context: hassExt, subscribe: true})
   public hass!: ExtendedHass;
@@ -55,7 +56,6 @@ class MediaBrowserCards extends LitElement {
   private _items!: MediaCardItem[];
 
   @consume({ context: activeMediaBrowserCardsContext, subscribe: true})
-  @state()
   public set items(items: MediaCardItem[]) {
     if (!items?.length) {
       return;
@@ -106,6 +106,9 @@ class MediaBrowserCards extends LitElement {
 
   protected render() {
     return this.code;
+  }
+  protected shouldUpdate(_changedProperties: PropertyValues): boolean {
+    return _changedProperties.size > 0;
   }
   static get styles(): CSSResultGroup {
     return styles;

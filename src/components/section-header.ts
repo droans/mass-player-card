@@ -1,6 +1,7 @@
 import {
   html,
-  LitElement
+  LitElement,
+  PropertyValues
 } from "lit";
 
 import styles from '../styles/section-header';
@@ -23,6 +24,9 @@ class MassSectionHeader extends LitElement {
         <slot name="end" part="end" class="end"></slot>
       </div>
     `
+  }
+  protected shouldUpdate(_changedProperties: PropertyValues): boolean {
+    return _changedProperties.size > 0;
   }
   static get styles() {
     return styles;

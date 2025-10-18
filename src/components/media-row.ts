@@ -131,7 +131,7 @@ class MediaRow extends LitElement {
       const oldItem: QueueItem = _changedProperties.get('media_item')!;
       return queueItemhasUpdated(oldItem, this.media_item);
     }
-    return true;
+    return _changedProperties.size > 0;
   }
   private artworkStyle() {
     const img = this.media_item.local_image_encoded ?? this.media_item.media_image ?? "";

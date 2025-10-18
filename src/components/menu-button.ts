@@ -2,6 +2,7 @@ import {
   CSSResultGroup,
   html,
   LitElement,
+  PropertyValues,
   TemplateResult,
 } from "lit";
 import {
@@ -104,6 +105,9 @@ class MassMenuButton extends LitElement {
           </ha-control-select-menu>
         </div>
     `
+  }
+  protected shouldUpdate(_changedProperties: PropertyValues): boolean {
+    return _changedProperties.size > 0;
   }
   static get styles(): CSSResultGroup {
     return styles;

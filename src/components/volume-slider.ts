@@ -3,6 +3,7 @@ import {
   CSSResultGroup,
   html,
   LitElement,
+  PropertyValues,
 } from 'lit'
 import {
   property,
@@ -65,6 +66,9 @@ class VolumeSlider extends LitElement {
         @value-changed=${this.onVolumeChange}
       ></ha-control-slider>
     `
+  }
+  protected shouldUpdate(_changedProperties: PropertyValues): boolean {
+    return _changedProperties.size > 0;
   }
   protected styles(): CSSResultGroup {
     return styles;
