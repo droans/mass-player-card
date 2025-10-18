@@ -1,10 +1,5 @@
 import { consume } from '@lit/context';
 import {
-  mdiLink,
-  mdiLinkOff,
-  mdiSwapHorizontal
-} from '@mdi/js';
-import {
   html,
   type CSSResultGroup,
   LitElement,
@@ -21,23 +16,33 @@ import {
 import {
   ExtendedHass,
   ExtendedHassEntity,
-  Icon
+  Thumbnail
 } from '../const/common';
-import { activeEntityConf, EntityConfig, hassExt, playersConfigContext } from '../const/context';
+import {
+  activeEntityConf,
+  EntityConfig,
+  hassExt,
+  IconsContext,
+  playersConfigContext, 
+  useExpressiveContext} from '../const/context';
 
 import {
   backgroundImageFallback,
-  getFallbackImage
-} from '../utils/icons';
-import { testMixedContent } from '../utils/util';
+  getFallbackBackgroundImage
+} from '../utils/thumbnails';
+import { jsonMatch, testMixedContent } from '../utils/util';
 
 import styles from '../styles/player-row';
 import { DEFAULT_PLAYERS_HIDDEN_ELEMENTS_CONFIG, PlayersConfig, PlayersHiddenElementsConfig } from '../config/players';
+import { Icons } from '../const/icons.js';
 
 class PlayerRow extends LitElement {
   @property({ type: Boolean }) joined = false;
   @property({ type: Boolean }) player_entity!: ExtendedHassEntity;
   @property({ type: Boolean }) selected = false;
+  @consume({ context: IconsContext}) private Icons!: Icons;
+  @consume({ context: useExpressiveContext, subscribe: true })
+  private useExpressive!: boolean;
 
   @consume({context: hassExt})
   public hass!: ExtendedHass;
@@ -55,6 +60,9 @@ class PlayerRow extends LitElement {
 
   @consume({ context: playersConfigContext, subscribe: true})
   public set config(config: PlayersConfig) {
+    if (jsonMatch(this._config, config)) {
+      return;
+    }
     this._config = config;
     this.updateHiddenElements();
   }
@@ -63,6 +71,9 @@ class PlayerRow extends LitElement {
   }
   @consume({ context: activeEntityConf, subscribe: true})
   public set entityConfig(config: EntityConfig) {
+    if (jsonMatch(this._entityConfig, config)) {
+      return;
+    }
     this._entityConfig = config;
     this.updateHiddenElements();
   }
@@ -85,10 +96,7 @@ class PlayerRow extends LitElement {
     this.selectedService(this.player_entity.entity_id);
   }
   protected shouldUpdate(_changedProperties: PropertyValues<this>): boolean {
-    if (_changedProperties.has('selected')) {
-      return true;
-    }
-    return true;
+    return _changedProperties.size > 0;
   }
   private onJoinPressed(e: Event) {
     e.stopPropagation()
@@ -106,9 +114,9 @@ class PlayerRow extends LitElement {
   private artworkStyle() {
     const img: string = this.player_entity?.attributes?.entity_picture_local ?? "";
     if (!testMixedContent(img)) {
-      return getFallbackImage(this.hass, Icon.HEADPHONES);
+      return getFallbackBackgroundImage(this.hass, Thumbnail.HEADPHONES);
     }
-    return backgroundImageFallback(this.hass, img, Icon.HEADPHONES);
+    return backgroundImageFallback(this.hass, img, Thumbnail.HEADPHONES);
   }
   private renderThumbnail() {
     return html`
@@ -120,6 +128,21 @@ class PlayerRow extends LitElement {
       </span>
     `
   }
+  private _calculateTitleWidth() {
+    let button_ct = 0;
+    const hide = this.config.hide;
+    if (!hide.join_button && this.player_entity.attributes?.group_members && this.allowJoin) {
+      button_ct += 1;
+    }
+    if (!hide.transfer_button) {
+      button_ct += 1;
+    }
+    if (this.selected || hide.action_buttons) {
+      return `100%;`;
+    }
+    const gap_ct = button_ct - 1;
+    return `calc(100% - ( (32px * ${button_ct.toString()}) + (8px * ${gap_ct.toString()}) + 16px));`
+  }
   private renderTitle() {
     let title = this.playerName;
     if (!title.length) {
@@ -129,6 +152,7 @@ class PlayerRow extends LitElement {
       <span
         slot="headline"
         class="title"
+        style="width: ${this._calculateTitleWidth()}"
       >
         ${title}
       </span>
@@ -147,12 +171,12 @@ class PlayerRow extends LitElement {
         appearance="plain"
         variant="brand"
         size="medium"
-        class="action-button"
+        class="action-button ${this.useExpressive ? `action-button-expressive` : ``}"
         @click=${this.onTransferPressed}
       >
         <ha-svg-icon
-          .path=${mdiSwapHorizontal}
-          style="height: 1.5rem; width: 1.5rem;"
+          .path=${this.Icons.SWAP}
+          class="svg-action-button ${this.useExpressive ? `svg-action-button-expressive` : ``}"
         ></ha-svg-icon>
     `
   }
@@ -168,12 +192,12 @@ class PlayerRow extends LitElement {
         appearance="plain"
         variant="brand"
         size="medium"
-        class="action-button"
+        class="action-button ${this.useExpressive ? `action-button-expressive` : ``}"
         @click=${this.onJoinPressed}
       >
         <ha-svg-icon
-          .path=${this.joined ? mdiLinkOff : mdiLink}
-          style="height: 1.5rem; width: 1.5rem;"
+          .path=${this.joined ? this.Icons.LINK_OFF : this.Icons.LINK}
+          class="svg-action-button ${this.useExpressive ? `svg-action-button-expressive` : ``}"
         ></ha-svg-icon>
     `
   }
@@ -183,6 +207,7 @@ class PlayerRow extends LitElement {
         <span
           slot="end"
           class="button-group"
+          @click=${ (ev: Event) => {ev.stopPropagation()}}
         >
           ${this.renderJoinButon()}
           ${this.renderTransferButton()}
@@ -192,9 +217,11 @@ class PlayerRow extends LitElement {
     return html``;
   }
   render() {
+    const active = this.selected ? `-active` : ``;
+    const expressive = this.useExpressive ? `button-expressive`: ``;
     return html`
       <ha-md-list-item
-        class="button${this.selected ? '-active' : ''}"
+        class="button${active} ${expressive}${active}"
 		    @click=${this.callOnPlayerSelectedService}
         type="button"
       >
@@ -202,7 +229,7 @@ class PlayerRow extends LitElement {
         ${this.renderTitle()}
         ${this.renderActionButtons()}
       </ha-md-list-item>
-      <div class="divider"</div>
+      <div class="divider"></div>
     `
   }
   /* eslint-enable @typescript-eslint/unbound-method */

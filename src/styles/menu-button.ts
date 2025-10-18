@@ -1,18 +1,34 @@
 import { css } from 'lit';
 export default css`
-  #menu-button {
+  :host {
+    --me-menu-background-color: var(--md-sys-color-secondary-container);
+    --me-menu-text-color: var(--md-sys-color-on-secondary-container);
+    --mass-menu-selected-background-color: var(--md-sys-color-secondary);
+    --mass-menu-selected-text-color: var(--md-sys-color-on-secondary);
   }
-  #menu-select-menu {
+  .menu-expressive {
+  --mdc-theme-text-primary-on-background: var(--me-menu-text-color);
+  --mdc-theme-text-icon-on-background: var(--me-menu-text-color);
+  --mdc-theme-surface: var(--me-menu-background-color);
   }
-  #menu-svg {
-    color: var(--mdc-theme-primary);
-    background-color: var(--ha-card-background,var(--card-background-color,#fff));
-    border-radius: 50%;
+  .svg-menu {
+    color: var(--md-sys-color-primary);
   }
-  .menu-list-item {
+  .inactive-item {
+    background-color: var(--mdc-theme-surface);
   }
-  .menu-list-item-svg {
-    height: 2em;
-    width: 2em;
+  .selected-item {
+    --mdc-theme-text-icon-on-background: var(--mdc-theme-on-primary);
+    --mdc-theme-text-primary-on-background: var(--mdc-theme-on-primary);
+    background-color: var(--mdc-theme-primary);
+  }
+  .selected-item-expressive {
+    --mdc-theme-text-icon-on-background: var(--mass-menu-selected-text-color);
+    --mdc-theme-text-primary-on-background: var(--mass-menu-selected-text-color);
+    background-color: var(--mass-menu-selected-background-color);
+    border-radius: 24px;
+  }
+  .svg-menu-expressive {
+    color: var(--md-sys-color-on-background);
   }
 `

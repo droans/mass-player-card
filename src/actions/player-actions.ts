@@ -1,3 +1,4 @@
+/* eslint-disable no-console */
 import { HassEntity } from "home-assistant-js-websocket";
 import {
   ExtendedHass,
@@ -7,10 +8,19 @@ import {
 import { QueueItem } from "../const/player-queue";
 
 export default class PlayerActions {
-  private hass: ExtendedHass;
+  private _hass!: ExtendedHass;
   constructor(hass: ExtendedHass) {
     this.hass = hass;
   }
+  public set hass(hass: ExtendedHass) {
+    if (hass) {
+      this._hass = hass;
+    }
+  }
+  public get hass() {
+    return this._hass;
+  }
+
   async actionPlayPause(entity: HassEntity) {
     try {
       await this.hass.callService(
@@ -20,12 +30,14 @@ export default class PlayerActions {
         }
       )
     } catch (e) {
-      /* eslint-disable-next-line no-console */
       console.error(`Error calling play/pause`, e)
     }
   }
   async actionMuteToggle(entity: HassEntity) {
-    const mute = !entity.attributes.is_volume_muted;
+    // Assume that entity might not be updated
+    const e = this.hass.states[entity.entity_id];
+    const is_muted = e.attributes.is_volume_muted;
+    const mute = !is_muted;
     try {
       await this.hass.callService(
         'media_player', 'volume_mute',
@@ -35,7 +47,6 @@ export default class PlayerActions {
         }
       )
     } catch (e) {
-      /* eslint-disable-next-line no-console */
       console.error(`Error calling mute`, e)
     }
   }
@@ -48,7 +59,6 @@ export default class PlayerActions {
         }
       )
     } catch (e) {
-      /* eslint-disable-next-line no-console */
       console.error(`Error calling play next`, e)
     }
   }
@@ -61,7 +71,6 @@ export default class PlayerActions {
         }
       )
     } catch (e) {
-      /* eslint-disable-next-line no-console */
       console.error(`Error calling play previous`, e)
     }
   }
@@ -76,7 +85,6 @@ export default class PlayerActions {
         }
       )
     } catch (e) {
-      /* eslint-disable-next-line no-console */
       console.error(`Error calling shuffle`, e)
     }
   }
@@ -90,7 +98,6 @@ export default class PlayerActions {
         }
       )
     } catch (e) {
-      /* eslint-disable-next-line no-console */
       console.error(`Error calling repeat`, e)
     }
   }
@@ -104,8 +111,7 @@ export default class PlayerActions {
         }
       )
     } catch (e) {
-      /* eslint-disable-next-line no-console */
-      console.error(`Error calling repeat`, e)
+      console.error(`Error setting volume`, e)
     }
   }
   async actionSeek(entity: HassEntity, position: number) {
@@ -118,7 +124,6 @@ export default class PlayerActions {
         }
       )
     } catch (e) {
-      /* eslint-disable-next-line no-console */
       console.error(`Error calling repeat`, e)
     }
   }
@@ -131,7 +136,6 @@ export default class PlayerActions {
         }
       )
     } catch (e) {
-      /* eslint-disable-next-line no-console */
       console.error(`Error calling repeat`, e)
     }
   }
@@ -160,9 +164,12 @@ export default class PlayerActions {
         }
       )
       return result;
-      /* eslint-enable */
+      /* eslint-enable
+        @typescript-eslint/no-explicit-any,
+        @typescript-eslint/no-unsafe-assignment,
+        @typescript-eslint/no-unsafe-member-access
+      */
     } catch (e) {
-      /* eslint-disable-next-line no-console */
       console.error('Error getting queue', e);
       return null;
     }
@@ -177,7 +184,6 @@ export default class PlayerActions {
         }
       )
     } catch (e) {
-      /* eslint-disable-next-line no-console */
       console.error(`Error setting favorite`, e)
     }
   }
@@ -190,8 +196,19 @@ export default class PlayerActions {
         }
       )
     } catch (e) {
-      /* eslint-disable-next-line no-console */
       console.error(`Error unfavoriting item for entity.`, e)
+    }
+  }
+  async actionUnjoinPlayers(player_entity: string) {
+    try {
+      await this.hass.callService(
+        'media_player', 'unjoin',
+        {
+          'entity_id': player_entity
+        }
+      )
+    } catch (e) {
+      console.error(`Error unjoining players`, e)
     }
   }
 }

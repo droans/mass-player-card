@@ -9,8 +9,9 @@ export interface QueueItem {
   playing: boolean;
   queue_item_id: string;
   media_image: string;
+  local_image_encoded?: string;
   show_action_buttons: boolean;
-  show_artist_name: boolean
+  show_artist_name: boolean;
   show_move_up_next: boolean;
   favorite: boolean;
 }
@@ -20,6 +21,8 @@ export interface QueueSection {
   hass: ExtendedHass;
 }
 
+export type QueueItems = QueueItem[];
+
 export interface MassQueueEvent {
   data: {
     type: string,
@@ -28,3 +31,7 @@ export interface MassQueueEvent {
     }
   }
 }
+
+export const MAX_GET_QUEUE_FAILURES = 6;
+export const MUSIC_ASSISTANT_APP_NAME = 'music_assistant';
+export const TIMED_LISTENER_DELAY_MS = 10000;

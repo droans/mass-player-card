@@ -2,6 +2,7 @@ import { consume } from "@lit/context";
 import {
   CSSResultGroup,
   LitElement,
+  PropertyValues,
   TemplateResult
 } from "lit";
 import { state } from "lit/decorators.js";
@@ -18,31 +19,52 @@ import {
   EnqueueOptions
 } from "../const/actions";
 import { ExtendedHass } from "../const/common";
-import { hassExt } from "../const/context";
+import { activeMediaBrowserCardsContext, hassExt, mediaBrowserConfigContext } from "../const/context";
 import {
   MediaCardData,
   MediaCardItem
 } from "../const/media-browser";
 
 import styles from '../styles/media-browser-cards';
+import { MediaBrowserConfig } from "../config/media-browser.js";
+import { jsonMatch } from "../utils/util.js";
 
 class MediaBrowserCards extends LitElement {
-  @state() private code!: TemplateResult;
+  @state() public code!: TemplateResult;
 
-  @consume({context: hassExt})
+  @consume({context: hassExt, subscribe: true})
   public hass!: ExtendedHass;
+
+  private _browserConfig!: MediaBrowserConfig;
+  @consume({ context: mediaBrowserConfigContext, subscribe: true})
+  public set browserConfig(conf: MediaBrowserConfig) {
+    if (!jsonMatch(this._browserConfig, conf)) {
+      this._browserConfig = conf
+      if (this.items) {
+        this.generateCode();
+      }
+    }
+  }
+  public get browserConfig() {
+    return this._browserConfig;
+  }
 
   public onEnqueueAction!: CardEnqueueService;
   public onSelectAction!: CardSelectedService;
 
   private _items!: MediaCardItem[];
 
+  @consume({ context: activeMediaBrowserCardsContext, subscribe: true})
   public set items(items: MediaCardItem[]) {
     if (!items?.length) {
       return;
     }
-    this._items = items;
-    this.generateCode();
+    if (!jsonMatch(this._items, items)){
+      this._items = items;
+      if (this.browserConfig) {
+        this.generateCode();
+      }
+    }
   }
   public get items() {
     return this._items;
@@ -59,8 +81,10 @@ class MediaBrowserCards extends LitElement {
       (item) => {
         // eslint-disable-next-line @typescript-eslint/no-unsafe-member-access
         const queueable = (item.data?.media_content_id?.length > 0 && item.data?.media_content_type?.length > 0) ? literal`queueable` : literal``;
+        const width = ((1 / this.browserConfig.columns) * 100) - 2
         return html`
           <mass-media-card
+            style="max-width: ${width.toString()}%"
             .config=${item}
             .onSelectAction=${this.onItemSelected}
             .onEnqueueAction=${this.onEnqueue}
@@ -71,16 +95,17 @@ class MediaBrowserCards extends LitElement {
       }
     )
     this.code = html`
-      <ha-card>
-        <div class="icons">
+        <div class="icons wa-grid">
           ${result}
         </div>
-      </ha-card>
     `
   }
 
   protected render() {
     return this.code;
+  }
+  protected shouldUpdate(_changedProperties: PropertyValues): boolean {
+    return _changedProperties.size > 0;
   }
   static get styles(): CSSResultGroup {
     return styles;

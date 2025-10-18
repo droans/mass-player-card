@@ -3,15 +3,47 @@ import { css } from 'lit';
 // Styles belonging to the card
 // https://lit.dev/docs/components/styles/
 export default css`
-  ha-card {
+  *[selected] {
+    color: var(--accent-color)
+  }
+  *[hide] {
+  display: none;
+  }
+
+  #container {
     overflow: hidden;
     width: 100%;
     justify-content: center;
-    background: unset;
     box-shadow: unset;
-    border-radius: unset;
     height: var(--mass-player-card-height);
   }
+  .container-expressive {
+    border-radius: var(--expressive-border-radius-container);
+    background-color: var(--expressive-color-container);
+  }
+
+  .header {
+    display: flex;
+    flex-direction: column;
+    font-size: 1.5rem;
+    text-align: center;
+    font-weight: 600;
+    padding-top: 12px;
+    height: auto;
+  }
+
+  .list {
+    height: calc(var(--mass-player-card-height) - 4em);
+    overflow-y: scroll;
+    -ms-overflow-style: none;
+    scrollbar-width: none;
+    border-radius: var(--ha-card-border-radius,12px);
+  }
+  .list-expressive {
+    background-color: var(--md-sys-color-background);
+    border-radius: var(--expressive-border-radius-container);
+  }
+
   .main {
     display: flex;
     height: 100%;
@@ -23,17 +55,14 @@ export default css`
     -ms-overflow-style: none; /* IE and Edge */
     scrollbar-width: none; /* Firefox */
   }
+
   .name {
     font-weight: 300;
     font-size: var(--fontSize);
     line-height: var(--fontSize);
     cursor: pointer;
   }
-  .header {
-    display: flex;
-    flex-direction: column;
-    height: 100%;
-  }
+
   .title {
     text-align: center;
     font-size: 1.2rem;
@@ -42,24 +71,4 @@ export default css`
     justify-content: center;
     padding: 0.5rem;
   }
-  .list {
-    height: calc(var(--mass-player-card-height) - 4em);
-    overflow-y: scroll;
-    -ms-overflow-style: none;
-    scrollbar-width: none;
-    border-radius: var(--ha-card-border-radius,12px);
-  }
-  *[selected] {
-    color: var(--accent-color)
-  }
-  *[hide] {
-  display: none;
-  }
-.header {
-  font-size: 1.5rem;
-  text-align: center;
-  font-weight: 600;
-  padding-top: 12px;
-  height: auto;
-}
 `;

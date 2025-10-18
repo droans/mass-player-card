@@ -3,9 +3,10 @@ import { consume, provide } from "@lit/context";
 import {
   CSSResultGroup,
   html,
-  LitElement
+  LitElement,
+  PropertyValues,
 } from "lit";
-import { property } from "lit/decorators.js";
+import { property, query } from "lit/decorators.js";
 import { keyed } from "lit/directives/keyed.js";
 
 import '../components/player-row'
@@ -23,7 +24,8 @@ import { DEFAULT_PLAYERS_CONFIG, PlayersConfig } from "../config/players";
 import { PlayerSelectedService } from "../const/actions";
 import {
   ExtendedHass,
-  ExtendedHassEntity
+  ExtendedHassEntity,
+  WaAnimation
 } from "../const/common";
 import {
   activeEntityConf,
@@ -39,6 +41,9 @@ class PlayersCard extends LitElement {
   @consume( { context: activeEntityConf, subscribe: true})
   @property({ attribute: false })
   public activePlayerEntity!: EntityConfig;
+
+  @query('#animation') _animation!: WaAnimation;
+  private _firstLoaded = false;
 
   private _config!: Config;
 
@@ -106,6 +111,7 @@ class PlayersCard extends LitElement {
       (entity) => entity.entity_id == target_player
     )!
     this.activePlayerEntity = player;
+    this.selectedPlayerService(target_player);
   }
   private setEntities(hass: ExtendedHass) {
     if (!this._config) {
@@ -149,18 +155,43 @@ class PlayersCard extends LitElement {
     )
   }
   protected render() {
+    const expressive = this.config.expressive;
     return html`
-      <ha-card>
+      <div
+        id="container"
+        class="${expressive ? `container-expressive` : ``}"
+      >
         <mass-section-header>
           <span slot="label" id="title">
             Players
           </span>
         </mass-section-header>
-        <ha-md-list class="list">
-          ${this.renderPlayerRows()}
-        </ha-md-list>
-      </ha-card>
+        <wa-animation 
+          id="animation"
+          name="fadeIn"
+          easing="ease-in"
+          iterations=1
+          play=${this.checkVisibility()}
+          playback-rate=4
+        >
+          <ha-md-list class="list ${expressive ? `list-expressive` : ``}">
+            ${this.renderPlayerRows()}
+          </ha-md-list>
+        </wa-animation>
+      </div>
     `
+  }
+  connectedCallback(): void {
+    if (this._animation && this._firstLoaded) {
+      this._animation.play = true;
+    }
+    super.connectedCallback();
+  }
+  protected firstUpdated(): void {
+    this._firstLoaded = true;
+  }
+  protected shouldUpdate(_changedProperties: PropertyValues): boolean {
+    return _changedProperties.size > 0;
   }
   static get styles(): CSSResultGroup {
     return styles;
