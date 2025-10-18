@@ -345,7 +345,7 @@ export class ActivePlayerController {
     this.groupVolume = vol;
   }
   public async setGroupedVolume(entity_id: string, volume_level: number): Promise<void> {
-    const ret = await this.hass.callWS<any>({
+    await this.hass.callWS({
       type: 'call_service',
       domain: 'mass_queue',
       service: 'set_group_volume',
@@ -355,7 +355,7 @@ export class ActivePlayerController {
       }
     })
   }
-  public async setActiveGroupVolume(volume_level): Promise<void> {
+  public async setActiveGroupVolume(volume_level: number): Promise<void> {
     await this.setGroupedVolume(this.activeMediaPlayer.entity_id, volume_level)
     this.groupVolume = volume_level;
   }
@@ -363,6 +363,7 @@ export class ActivePlayerController {
     return await this.getGroupedVolume(this.activeMediaPlayer.entity_id);
   }
   public async getGroupedVolume(entity_id: string): Promise<number> {
+    // eslint-disable-next-line @typescript-eslint/no-unsafe-assignment, @typescript-eslint/no-explicit-any
     const ret = await this.hass.callWS<any>({
       type: 'call_service',
       domain: 'mass_queue',
@@ -372,7 +373,9 @@ export class ActivePlayerController {
       },
       return_response: true
     })
+    // eslint-disable-next-line @typescript-eslint/no-unsafe-assignment, @typescript-eslint/no-unsafe-member-access
     const vol = ret.response.volume_level ?? 0;
+    // eslint-disable-next-line @typescript-eslint/no-unsafe-return
     return vol;
   }
 }

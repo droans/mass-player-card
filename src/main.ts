@@ -305,6 +305,7 @@ export class MusicAssistantPlayerCard extends LitElement {
   }
   protected firstUpdated(): void {
     if (this.config.expressive) {
+      //eslint-disable-next-line @typescript-eslint/no-non-null-assertion
       const stylesheet = head_styles.styleSheet!;
       document.adoptedStyleSheets.push(stylesheet);
     }

@@ -218,8 +218,10 @@ class MusicPlayerCard extends LitElement {
     target.value = "";
   }
   private onUnjoinSelect = (ev) => {
+    //eslint-disable-next-line @typescript-eslint/no-unsafe-assignment, @typescript-eslint/no-unsafe-member-access
     const ent = ev?.target?.entity;
     if (ev) {
+      //eslint-disable-next-line @typescript-eslint/no-floating-promises, @typescript-eslint/no-unsafe-argument
       this.actions.actionUnjoinPlayers(ent)
     }
   }
