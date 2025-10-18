@@ -375,7 +375,7 @@ export class MediaBrowser extends LitElement {
       >
         <link rel="stylesheet" href="${styles_url}">
         <sl-input
-          placeholder="Search"
+          placeholder="Search Music Assistant"
           type="search"
           class="${darkMode ? `sl-theme-dark` : `sl-theme-light`}"
           inputmode="search"
