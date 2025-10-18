@@ -11,6 +11,7 @@ import { useExpressiveContext } from "../const/context.js";
 class MassSectionHeader extends LitElement {
   @consume({ context: useExpressiveContext, subscribe: true })
   private useExpressive!: boolean;
+  private _initialUpdate = false;
 
   protected render() {
     return html`
@@ -26,7 +27,10 @@ class MassSectionHeader extends LitElement {
     `
   }
   protected shouldUpdate(_changedProperties: PropertyValues): boolean {
-    return _changedProperties.size > 0;
+    return !this._initialUpdate || _changedProperties.size > 0;
+  }
+  protected firstUpdated(): void {
+    this._initialUpdate = true;
   }
   static get styles() {
     return styles;
