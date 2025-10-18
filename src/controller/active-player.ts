@@ -234,7 +234,8 @@ export class ActivePlayerController {
     const not_off = player.state != 'off';
     const is_mass = player.attributes.app_id == MUSIC_ASSISTANT_APP_NAME;
     const has_queue = !!(player.attributes?.active_queue);
-    return not_off && is_mass && has_queue;
+    const connected = this.hass.connected;
+    return not_off && is_mass && has_queue && connected;
   }
   public async getPlayerProgress(): Promise<number> {
     /* eslint-disable

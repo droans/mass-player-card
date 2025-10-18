@@ -3,7 +3,7 @@ import {
   DEFAULT_SECTION_PRIORITY,
   Sections
 } from "../const/card";
-import { ExtendedHassEntity } from "../const/common.js";
+import { ExtendedHass, ExtendedHassEntity } from "../const/common.js";
 import { MUSIC_ASSISTANT_APP_NAME, QueueItem } from "../const/player-queue.js";
 
 export function testMixedContent(url: string) {
@@ -97,9 +97,10 @@ export function queueItemhasUpdated(old_item: QueueItem, new_item: QueueItem): b
       || old_item?.show_move_up_next !== new_item?.show_move_up_next
   )
 }
-export function isActive(entity: ExtendedHassEntity): boolean {
+export function isActive(hass: ExtendedHass, entity: ExtendedHassEntity): boolean {
     const not_off = !(['off', 'idle'].includes(entity.state));
     const is_mass = entity.attributes.app_id == MUSIC_ASSISTANT_APP_NAME;
     const has_queue = !!(entity.attributes?.active_queue);
-    return not_off && is_mass && has_queue;
+    const connected = hass.connected;
+    return not_off && is_mass && has_queue && connected;
 }

@@ -34,7 +34,7 @@ export class QueueController {
   /* eslint-disable-next-line @typescript-eslint/no-explicit-any */
   private _unsubscribe!: any;
   private _listening = false;
-  private _interval!: number;
+  private _interval!: number | undefined;
   private _timedListening = false;
 
   constructor(hass: ExtendedHass, active_player: ExtendedHassEntity, config: Config) {
@@ -142,14 +142,13 @@ export class QueueController {
     console.error(`Reached max failures getting queue, check your browser and HA logs!`);
   }
   public async getQueue() {
-    if (isActive(this.activeMediaPlayer)) {
+    if (isActive(this.hass, this.activeMediaPlayer)) {
       return this._getQueue();
     }
     this.queue = [];
     return [];
 
   }
-
   private setActiveTrack(queue: QueueItems) {
     const active_track = this.activeMediaPlayer.attributes.media_content_id;
     const active_idx = queue.findIndex( (i) => i.media_content_id == active_track) ?? -1;
