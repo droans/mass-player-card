@@ -112,7 +112,7 @@ class MusicPlayerCard extends LitElement {
     return this._activeEntityConfig;
   }
   public get activeMediaPlayer() {
-    return this.activePlayerController.activeMediaPlayer;
+    return this?.activePlayerController?.activeMediaPlayer;
   }
 
   @consume({ context: activeMediaPlayer, subscribe: true})
@@ -183,7 +183,6 @@ class MusicPlayerCard extends LitElement {
     if (!this.hass) {
       return;
     }
-    this.groupedPlayers = this.activePlayerController.getGroupedPlayers();
     this._updatePlayerData().catch( () => {return});
   }
   private async _updatePlayerData() {
@@ -392,7 +391,7 @@ class MusicPlayerCard extends LitElement {
   }
   protected renderGrouped() {
     const hide = this.config.hide.group_volume || this.activeEntityConfig.hide.player.group_volume;
-    if (this.groupedPlayers.length > 1 && !hide) {
+    if (this?.groupedPlayers?.length > 1 && !hide) {
       return html`
         <mass-menu-button
           slot="end"
@@ -562,10 +561,10 @@ class MusicPlayerCard extends LitElement {
     `
   }
   connectedCallback(): void {
+    super.connectedCallback();
     if (this._animation && this._firstLoaded) {
       this._animation.play = true;
     }
-    super.connectedCallback();
   }
   disconnectedCallback(): void {
     super.disconnectedCallback();
