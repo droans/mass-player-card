@@ -187,8 +187,11 @@ class MassPlayerProgressBar extends LitElement {
   }
   disconnectedCallback(): void {
     if (this._listener) {
-      clearInterval(this._listener);
-      this._listener = undefined;
+      try {
+        clearInterval(this._listener);
+      } finally {
+        this._listener = undefined;
+      }
     }
     super.disconnectedCallback();
   }

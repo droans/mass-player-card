@@ -268,8 +268,11 @@ export class MediaBrowser extends LitElement {
     }
     this.searchTerm = val;
     if (this._searchTimeout) {
-      clearTimeout(this._searchTimeout)
-      this._searchTimeout = 0;
+      try {
+        clearTimeout(this._searchTimeout)
+      } finally {
+        this._searchTimeout = 0;
+      }
     }
     this._searchTimeout = setTimeout(
       () => {

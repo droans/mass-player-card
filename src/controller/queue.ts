@@ -182,7 +182,11 @@ export class QueueController {
   }
 
   private timedListener =  () => {
-    clearInterval(this._interval);
+      try {
+        clearInterval(this._interval);
+      } finally {
+        this._interval = undefined;
+      }
     this._interval = setInterval(this.timedListener, TIMED_LISTENER_DELAY_MS);
     void this.getQueue()
   }
@@ -220,8 +224,11 @@ export class QueueController {
       this._unsubscribe = undefined;
     }
     if (this._interval) {
-      clearInterval(this._interval);
-      this._unsubscribe = undefined;
+      try {
+        clearInterval(this._interval);
+      } finally {
+        this._interval = undefined;
+      }
     }
   }
 
