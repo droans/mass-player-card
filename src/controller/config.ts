@@ -12,6 +12,7 @@ import {
   getIcons,
   Icons
 } from "../const/icons.js";
+import { jsonMatch } from "../utils/util.js";
 
 export class MassCardConfigController {
   private _config!: Config;
@@ -27,9 +28,7 @@ export class MassCardConfigController {
     this._host = host;
   }
   public set config(config: Config) {
-    const cur_item = JSON.stringify(this._config);
-    const new_item = JSON.stringify(config);
-    if (cur_item == new_item) {
+    if (jsonMatch(this._config, config)) {
       return;
     }
     const conf = processConfig(config);

@@ -15,6 +15,7 @@ import { ListItems } from "../const/media-browser";
 import { consume } from "@lit/context";
 import { useExpressiveContext } from "../const/context.js";
 import styles from '../styles/menu-button';
+import { jsonMatch } from "../utils/util.js";
 
 class MassMenuButton extends LitElement {
   @property( { attribute: false }) public iconPath!: string;
@@ -34,9 +35,7 @@ class MassMenuButton extends LitElement {
     return this._initialSelection ?? ``;
   }
   public set items(items: ListItems) {
-    const cur_items = JSON.stringify(this._items);
-    const new_items = JSON.stringify(items);
-    if (cur_items == new_items) {
+    if (jsonMatch(this._items, items)) {
       return;
     }
     this._items = items;

@@ -38,6 +38,7 @@ import {
   configContext,
   entitiesConfigContext,
   EntityConfig,
+  groupedPlayersContext,
   groupVolumeContext,
   hassExt,
   IconsContext,
@@ -59,7 +60,11 @@ import { ArtworkSize, PlayerConfig } from "../config/player";
 import { ActivePlayerController } from "../controller/active-player";
 import { Config } from "../config/config.js";
 import { Icons } from "../const/icons.js";
-import { isActive, playerHasUpdated } from "../utils/util.js";
+import {
+  isActive,
+  jsonMatch,
+  playerHasUpdated
+} from "../utils/util.js";
 
 class MusicPlayerCard extends LitElement {
   @state() private shouldMarqueeTitle = false;
@@ -91,7 +96,7 @@ class MusicPlayerCard extends LitElement {
   public selectedPlayerService!: PlayerSelectedService;
   private _animationListener  = async () => this.onAnimationEnd();
   private _hass!: ExtendedHass;
-  private groupedPlayers!: EntityConfig[];
+  private _groupedPlayers!: EntityConfig[];
   private actions!: PlayerActions;
   private marquee_x_dist = 0;
 
@@ -144,9 +149,7 @@ class MusicPlayerCard extends LitElement {
 
   @consume({ context: musicPlayerConfigContext, subscribe: true})
   public set config(config: PlayerConfig) {
-    const cur_config = JSON.stringify(this._config);
-    const new_config = JSON.stringify(config);
-    if (cur_config == new_config) {
+    if (jsonMatch(this._config, config)) {
       return;
     }
     this._config = config;
@@ -207,6 +210,19 @@ class MusicPlayerCard extends LitElement {
   public get groupVolumeLevel() {
     return this._groupVolumeLevel;
   }
+  
+  @consume({ context: groupedPlayersContext, subscribe: true})
+  private set groupedPlayersList(players: string[]) {
+    const card_players = this.playerEntities.filter(entity => players.includes(entity.entity_id));
+    if (jsonMatch(this._groupedPlayers, card_players)) {
+      return;
+    }
+    this._groupedPlayers = card_players;
+  }
+
+  private get groupedPlayers() {
+    return this._groupedPlayers;
+  }
 
   private updatePlayerData() {
     if (!this.hass) {
@@ -224,9 +240,7 @@ class MusicPlayerCard extends LitElement {
     }
     const current_item = (await this.actions.actionGetCurrentItem(this.activeMediaPlayer));
     const new_player_data = this.activePlayerController.getactivePlayerData(current_item);
-    const cur_data = JSON.stringify(this.player_data);
-    const new_data = JSON.stringify(new_player_data);
-    if (cur_data == new_data) {
+    if (jsonMatch(this.player_data, new_player_data)) {
       return;
     }
     this.player_data = new_player_data;

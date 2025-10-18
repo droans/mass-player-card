@@ -42,7 +42,7 @@ import { version } from '../package.json';
 import styles from './styles/main';
 import head_styles from './styles/head';
 
-import { getDefaultSection } from './utils/util';
+import { getDefaultSection, jsonMatch } from './utils/util';
 import { MassCardController } from './controller/controller';
 
 const DEV = false;
@@ -102,10 +102,10 @@ export class MusicAssistantPlayerCard extends LitElement {
     const new_ents: HassEntity[] = [];
     ents.forEach(
       (entity) => {
-        const old_state = JSON.stringify(this.hass.states[entity.entity_id]);
-        const new_state = JSON.stringify(hass.states[entity.entity_id]);
+        const old_state = this.hass.states[entity.entity_id];
+        const new_state = hass.states[entity.entity_id];
         new_ents.push(hass.states[entity.entity_id]);
-        if (old_state !== new_state) {
+        if (!jsonMatch(old_state, new_state)) {
           should_update = true;
         }
       }

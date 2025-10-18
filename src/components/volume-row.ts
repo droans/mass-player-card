@@ -24,6 +24,7 @@ import styles from '../styles/volume-row';
 import { ActionsController } from "../controller/actions.js";
 import { MassCardController } from "../controller/controller.js";
 import { Icons } from "../const/icons.js";
+import { jsonMatch } from "../utils/util.js";
 
 class VolumeRow extends LitElement {
 
@@ -43,9 +44,7 @@ class VolumeRow extends LitElement {
   
   @consume({ context: musicPlayerConfigContext, subscribe: true })
   public set config(config: PlayerConfig) {
-    const cur_item = JSON.stringify(this._config);
-    const new_item = JSON.stringify(config);
-    if (cur_item == new_item) {
+    if (jsonMatch(this._config, config)) {
       return;
     }
     this._config = config;
@@ -59,9 +58,7 @@ class VolumeRow extends LitElement {
 
   @consume({ context: activeEntityConf, subscribe: true})
   public set entityConfig(config: EntityConfig) {
-    const cur_item = JSON.stringify(this._entityConfig);
-    const new_item = JSON.stringify(config);
-    if (cur_item == new_item) {
+    if (jsonMatch(this._entityConfig, config)) {
       return;
     }
     this._entityConfig = config;
@@ -76,9 +73,7 @@ class VolumeRow extends LitElement {
 
   @consume({ context: activePlayerDataContext, subscribe: true})
   public set player_data(player_data: PlayerData) {
-    const cur_item = JSON.stringify(this._player_data);
-    const new_item = JSON.stringify(player_data);
-    if (cur_item == new_item) {
+    if (jsonMatch(this._player_data, player_data)) {
       return;
     }
     this._player_data = player_data;
@@ -192,7 +187,6 @@ class VolumeRow extends LitElement {
     }
     return html`
       <ha-control-slider
-        .disabled=${this.player_data.muted}
         .unit="%"
         .value=${this.player_data.volume}
         .min=0

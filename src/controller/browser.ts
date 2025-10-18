@@ -27,6 +27,7 @@ import {
   generateRecommendationSectionCards
 } from "../utils/media-browser.js";
 import { mediaBrowserCardsContext } from "../const/context.js";
+import { jsonMatch } from "../utils/util.js";
 
 export class MediaBrowserController {
   private hass!: ExtendedHass
@@ -45,17 +46,11 @@ export class MediaBrowserController {
     this.resetAndGenerateSections()
   }
   private set items(items: newMediaBrowserItemsConfig) {
-    const cur_item = JSON.stringify(this._items.value);
-    const new_item = JSON.stringify(items);
-    if (cur_item == new_item) {
+    if (jsonMatch(this._items.value, items)) {
       return;
     }
     const x = {...items}
-    const old_items = JSON.stringify(this._items);
-    const new_items = JSON.stringify(items);
-    if (old_items != new_items){
-      this._items.setValue(x);
-    }
+    this._items.setValue(x)
   }
   public get items() {
     return this._items.value;

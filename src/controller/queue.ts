@@ -16,7 +16,7 @@ import {
 } from "../const/player-queue.js";
 import { Config } from "../config/config.js";
 import QueueActions from "../actions/queue-actions.js";
-import { isActive, playerHasUpdated } from "../utils/util.js";
+import { isActive, jsonMatch, playerHasUpdated } from "../utils/util.js";
 
 export class QueueController {
   private _queue = new ContextProvider(document.body, { context: queueContext});
@@ -47,9 +47,7 @@ export class QueueController {
   }
 
   private set queue(queue_items: QueueItems | null) {
-    const cur_item = JSON.stringify(this._queue.value);
-    const new_item = JSON.stringify(queue_items);
-    if (cur_item == new_item) {
+    if (jsonMatch(this._queue.value, queue_items)) {
       return;
     }
     this._queue.setValue(queue_items);
@@ -99,9 +97,7 @@ export class QueueController {
   }
 
   private set currentQueueItem(queue_item: QueueItem | null) {
-    const cur_item = JSON.stringify(this._currentQueueItem.value);
-    const new_item = JSON.stringify(queue_item);
-    if (cur_item == new_item) {
+    if (jsonMatch(this._currentQueueItem.value, queue_item)) {
       return;
     }
     this._currentQueueItem.setValue(queue_item);
@@ -111,9 +107,7 @@ export class QueueController {
   }
   
   private set nextQueueItem(queue_item: QueueItem | null) {
-    const cur_item = JSON.stringify(this._nextQueueItem.value);
-    const new_item = JSON.stringify(queue_item);
-    if (cur_item == new_item) {
+    if (jsonMatch(this._nextQueueItem.value, queue_item)) {
       return;
     }
     this._nextQueueItem.setValue(queue_item);
@@ -123,9 +117,7 @@ export class QueueController {
   }
   
   private set previousQueueItem(queue_item: QueueItem | null) {
-    const cur_item = JSON.stringify(this._previousQueueItem.value);
-    const new_item = JSON.stringify(queue_item);
-    if (cur_item == new_item) {
+    if (jsonMatch(this._previousQueueItem.value, queue_item)) {
       return;
     }
     this._previousQueueItem.setValue(queue_item);

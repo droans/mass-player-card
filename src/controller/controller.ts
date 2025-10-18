@@ -15,6 +15,7 @@ import { Sections } from "../const/card";
 import { ActionsController } from "./actions";
 import { QueueController } from "./queue.js";
 import { MediaBrowserController } from "./browser.js";
+import { jsonMatch } from "../utils/util.js";
 
 export class MassCardController {
   private _hass = new ContextProvider(document.body, { context: hassExt });
@@ -95,9 +96,7 @@ export class MassCardController {
   }
 
   public set config(config: Config) {
-    const cur_item = JSON.stringify(this.configController.config);
-    const new_item = JSON.stringify(config);
-    if (cur_item == new_item) {
+    if (jsonMatch(this.configController.config, config)) {
       return;
     }
     this.configController.config = config;

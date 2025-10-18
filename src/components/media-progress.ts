@@ -5,7 +5,7 @@ import { consume } from "@lit/context";
 import { ActivePlayerController } from "../controller/active-player.js";
 import { actionsControllerContext, activeMediaPlayer, activePlayerControllerContext, activePlayerDataContext, controllerContext, ExtendedHassEntity } from "../const/context.js";
 import { ActionsController } from "../controller/actions.js";
-import { playerHasUpdated } from "../utils/util.js";
+import { jsonMatch, playerHasUpdated } from "../utils/util.js";
 import { PlayerData } from "../const/music-player.js";
 import { secondsToTime } from "../utils/util.js";
 import { MassCardController } from "../controller/controller.js";
@@ -80,9 +80,7 @@ class MassPlayerProgressBar extends LitElement {
   @consume({ context: activePlayerDataContext, subscribe: true})
   @state()
   public set player_data(player_data: PlayerData) {
-    const cur_data = JSON.stringify(this._player_data);
-    const new_data = JSON.stringify(player_data);
-    if (cur_data != new_data) {
+    if (!jsonMatch(this._player_data, player_data)) {
       this._player_data = player_data;
     }
     this.requestProgress();

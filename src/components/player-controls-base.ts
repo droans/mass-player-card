@@ -7,6 +7,7 @@ import { PlayerData } from "../const/music-player";
 import { Icons } from "../const/icons";
 import { getIteratedRepeatMode } from "../utils/music-player";
 import { RepeatMode } from "../const/common";
+import { jsonMatch } from "../utils/util.js";
 
 export class MassPlayerControlsBase extends LitElement {
   @consume({ context: actionsControllerContext})
@@ -24,9 +25,7 @@ export class MassPlayerControlsBase extends LitElement {
 
   @consume({ context: activePlayerDataContext, subscribe: true })
   public set playerData(playerData: PlayerData) {
-    const cur_item = JSON.stringify(this._playerData);
-    const new_item = JSON.stringify(playerData);
-    if (cur_item == new_item) {
+    if (jsonMatch(this._playerData, playerData)) {
       return;
     }
     this._playerData = playerData;

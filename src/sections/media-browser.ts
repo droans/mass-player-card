@@ -48,6 +48,7 @@ import { MediaBrowserController } from "../controller/browser.js";
 import BrowserActions from "../actions/browser-actions.js";
 import { EnqueueOptions } from "../const/actions.js";
 import { getMediaTypeSvg } from "../utils/thumbnails.js";
+import { jsonMatch } from '../utils/util.js';
 
 @customElement(`mass-media-browser`)
 export class MediaBrowser extends LitElement {
@@ -61,9 +62,7 @@ export class MediaBrowser extends LitElement {
   
   @state() 
   public set activeCards(cards: MediaCardItem[]) {
-    const cur_item = JSON.stringify(this._activeCards);
-    const new_item = JSON.stringify(cards);
-    if (cur_item == new_item) {
+    if (jsonMatch(this._activeCards, cards)) {
       return;
     }
     this._activeCards = cards;
@@ -118,9 +117,7 @@ export class MediaBrowser extends LitElement {
 
   @consume({ context: mediaBrowserCardsContext, subscribe: true}) 
   public set cards(cards: newMediaBrowserItemsConfig) {
-    const cur_item = JSON.stringify(this._cards);
-    const new_item = JSON.stringify(cards);
-    if (cur_item == new_item) {
+    if (jsonMatch(this._cards, cards)) {
       return;
     }
     this._cards = cards;
@@ -147,7 +144,7 @@ export class MediaBrowser extends LitElement {
     // eslint-disable-next-line @typescript-eslint/no-unsafe-member-access
     const new_cards = [...this.cards[section][subsection]];
     const cur_cards = this.activeCards;
-    if (JSON.stringify(new_cards) != JSON.stringify(cur_cards)) {
+    if (!jsonMatch(new_cards, cur_cards)) {
       this.activeCards = new_cards
     }
   }

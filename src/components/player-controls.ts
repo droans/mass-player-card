@@ -7,6 +7,7 @@ import { musicPlayerConfigContext } from "../const/context";
 import { generateControlLabelHtml, generateControlSlotHtml, getRepeatIcon } from "../utils/music-player";
 import { RepeatMode } from "../const/common";
 import styles from '../styles/player-controls';
+import { jsonMatch } from "../utils/util.js";
 
 class MassPlayerControls extends MassPlayerControlsBase {
   private layoutConfig!: PlayerLayoutConfig;
@@ -14,9 +15,7 @@ class MassPlayerControls extends MassPlayerControlsBase {
   @consume({ context: musicPlayerConfigContext, subscribe: true})
   @state()
   private set config(config: PlayerConfig) {
-    const cur_item = JSON.stringify(this._config);
-    const new_item = JSON.stringify(config);
-    if (cur_item == new_item) {
+    if (jsonMatch(this._config, config)) {
       return;
     }
     this._config = config;
