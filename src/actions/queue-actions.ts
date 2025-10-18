@@ -26,33 +26,28 @@ export default class QueueActions {
   }
 
   async getQueue(limit_before: number, limit_after: number): Promise<QueueItems|null> {
-    try {
-      /* eslint-disable
-        @typescript-eslint/no-explicit-any,
-        @typescript-eslint/no-unsafe-assignment,
-      */
-      const ret = await this.hass.callWS<any>({
-        type: 'call_service',
-        domain: 'mass_queue',
-        service: 'get_queue_items',
-        service_data: {
-          entity: this.player_entity,
-          limit_before: limit_before,
-          limit_after: limit_after,
-        },
-        return_response: true
-      });
-      /* eslint-disable-next-line @typescript-eslint/no-unsafe-member-access */
-      const result: QueueItems = ret.response[this.player_entity];
-      return result;
-      /* eslint-enable
-        @typescript-eslint/no-explicit-any,
-        @typescript-eslint/no-unsafe-assignment,
-      */
-    } catch (e) {
-      console.error('Error getting queue', e);
-      return null;
-    }
+    /* eslint-disable
+      @typescript-eslint/no-explicit-any,
+      @typescript-eslint/no-unsafe-assignment,
+    */
+    const ret = await this.hass.callWS<any>({
+      type: 'call_service',
+      domain: 'mass_queue',
+      service: 'get_queue_items',
+      service_data: {
+        entity: this.player_entity,
+        limit_before: limit_before,
+        limit_after: limit_after,
+      },
+      return_response: true
+    });
+    /* eslint-disable-next-line @typescript-eslint/no-unsafe-member-access */
+    const result: QueueItems = ret.response[this.player_entity];
+    return result;
+    /* eslint-enable
+      @typescript-eslint/no-explicit-any,
+      @typescript-eslint/no-unsafe-assignment,
+    */
   }
   async playQueueItem(queue_item_id: string) {
     try {
