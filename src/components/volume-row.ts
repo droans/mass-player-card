@@ -25,6 +25,7 @@ import { ActionsController } from "../controller/actions.js";
 import { MassCardController } from "../controller/controller.js";
 import { Icons } from "../const/icons.js";
 import { jsonMatch } from "../utils/util.js";
+import { state } from "lit/decorators.js";
 
 class VolumeRow extends LitElement {
 
@@ -36,8 +37,10 @@ class VolumeRow extends LitElement {
   private controller!: MassCardController;
   @consume({ context: IconsContext}) private Icons!: Icons;
 
+  private _initialUpdate!: boolean;
+
   private hide: PlayerHiddenElementsConfig = DEFAULT_PLAYER_HIDDEN_ELEMENTS_CONFIG;
-  private _player_data!: PlayerData;
+  @state() private _player_data!: PlayerData;
 
   @consume({ context: actionsControllerContext, subscribe: true})
   private actions!: ActionsController
@@ -209,7 +212,10 @@ class VolumeRow extends LitElement {
     `
   }
   protected shouldUpdate(_changedProperties: PropertyValues): boolean {
-    return _changedProperties.size > 0;
+    return _changedProperties.size > 0 || !this._initialUpdate;
+  }
+  protected firstUpdated(): void {
+    this._initialUpdate = true;
   }
   static get styles(): CSSResultGroup {
     return styles;
