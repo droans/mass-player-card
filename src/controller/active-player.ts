@@ -175,11 +175,12 @@ export class ActivePlayerController {
     void this._getAndSetGroupedVolume();
   }
   public getGroupedPlayers() {
-    const entity_id = this.activeMediaPlayer.entity_id
+    const active_queue = this.activeMediaPlayer.attributes.active_queue;
     const ents = this.config.entities;
     return ents.filter(
       (item) => {
-        return this.hass.states[item.entity_id].attributes?.group_members?.includes(entity_id);
+        const attrs = this.hass.states[item.entity_id]?.attributes;
+        return attrs?.active_queue == active_queue && attrs.mass_player_type != "group"
       }
     )
   }
