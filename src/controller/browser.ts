@@ -136,7 +136,9 @@ export class MediaBrowserController {
     media_type: MediaTypes,
     favorites_only = true
   ) {
-    
+    if (this.items.favorites[media_type]) {
+      return;
+    }
     const items = await this.getFavoriteSection(config, media_type, favorites_only);
     if (!items.length) {
       return;
@@ -173,6 +175,9 @@ export class MediaBrowserController {
 
   }
   private async generateRecentsData(config: FavoriteItemConfig, media_type: MediaTypes) {
+    if (this.items.recents[media_type]) {
+      return;
+    }
     
     const items = await this.getRecentSection(config, media_type);
     if (items.length) {
@@ -186,6 +191,9 @@ export class MediaBrowserController {
 
   //Recommendations
   private async generateRecommendationSection(section: RecommendationSection) {
+    if (this.items.recommendations[section.name]) {
+      return;
+    }
     const items = generateRecommendationSectionCards(section);
     if (items.length) {
       const card = await generateRecommendationsCard(this.hass, section, items);
