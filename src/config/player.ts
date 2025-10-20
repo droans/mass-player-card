@@ -17,13 +17,16 @@ export enum ArtworkSize {
   LARGE = "large"
 }
 
-export interface PlayerHiddenElementsConfig {
-  favorite: boolean,
-  mute: boolean,
-  player_selector: boolean,
+export interface PlayerControlsHiddenElementsConfig {
   power: boolean,
   repeat: boolean,
   shuffle: boolean,
+  favorite: boolean,
+}
+
+export interface PlayerHiddenElementsConfig extends PlayerControlsHiddenElementsConfig {
+  mute: boolean,
+  player_selector: boolean,
   volume: boolean,
   group_volume: boolean,
 }

@@ -32,14 +32,17 @@ import { jsonMatch } from "../utils/util.js";
 export class MediaBrowserController {
   private hass!: ExtendedHass
   private config!: Config;
+  private _host!: HTMLElement;
   private browserConfig!: MediaBrowserConfig;
   private actions!: BrowserActions;
   private _activeEntityId!: string;
-  private _items = new ContextProvider(document.body, { context: mediaBrowserCardsContext })
+  private _items!: ContextProvider<typeof mediaBrowserCardsContext>;
 
-  constructor(hass: ExtendedHass, config: Config, activeEntityId: string) {
+  constructor(hass: ExtendedHass, config: Config, activeEntityId: string, host: HTMLElement) {
     this.hass = hass;
     this.config = config;
+    this._host = host;
+    this._items = new ContextProvider(host, { context: mediaBrowserCardsContext })
     this.actions = new BrowserActions(hass);
     this.browserConfig = config.media_browser;
     this.activeEntityId = activeEntityId;
