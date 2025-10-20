@@ -124,7 +124,7 @@ export class ActivePlayerController {
     return this._activePlayerName.value;
   }
   private set groupMembers(members: string[]) {
-    if (jsonMatch(this._groupMembers.value, members)) {
+    if (jsonMatch(this._groupMembers.value, members) || !members) {
       return;
     }
     this._groupMembers.setValue(members)
