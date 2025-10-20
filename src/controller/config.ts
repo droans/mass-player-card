@@ -16,16 +16,22 @@ import { jsonMatch } from "../utils/util.js";
 
 export class MassCardConfigController {
   private _config!: Config;
-  private _entitiesConfig = new ContextProvider(document.body, { context: entitiesConfigContext});
-  private _mediaBrowserConfig = new ContextProvider(document.body, { context: mediaBrowserConfigContext});
-  private _playerQueueConfig = new ContextProvider(document.body, { context: playerQueueConfigContext});
-  private _musicPlayerConfig = new ContextProvider(document.body, { context: musicPlayerConfigContext});
-  private _playersConfig = new ContextProvider(document.body, { context: playersConfigContext});
-  private _icons = new ContextProvider(document.body, { context: IconsContext});
+  private _entitiesConfig!: ContextProvider<typeof entitiesConfigContext>;
+  private _mediaBrowserConfig!: ContextProvider<typeof mediaBrowserConfigContext>;
+  private _playerQueueConfig!: ContextProvider<typeof playerQueueConfigContext>;
+  private _musicPlayerConfig!: ContextProvider<typeof musicPlayerConfigContext>;
+  private _playersConfig!: ContextProvider<typeof playersConfigContext>;
+  private _icons!: ContextProvider<typeof IconsContext>;
   private _host: HTMLElement;
   
   constructor(host: HTMLElement) {
     this._host = host;
+    this._entitiesConfig = new ContextProvider(host, { context: entitiesConfigContext});
+    this._mediaBrowserConfig = new ContextProvider(host, { context: mediaBrowserConfigContext});
+    this._playerQueueConfig = new ContextProvider(host, { context: playerQueueConfigContext});
+    this._musicPlayerConfig = new ContextProvider(host, { context: musicPlayerConfigContext});
+    this._playersConfig = new ContextProvider(host, { context: playersConfigContext});
+    this._icons = new ContextProvider(host, { context: IconsContext});
   }
   public set config(config: Config) {
     if (jsonMatch(this._config, config)) {

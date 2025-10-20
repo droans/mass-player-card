@@ -23,25 +23,29 @@ export class ActivePlayerController {
   private _activeMediaPlayer: ContextProvider<typeof activeMediaPlayer>;
   private _activePlayerName: ContextProvider<typeof activePlayerName>;
   private _volumeMediaPlayer: ContextProvider<typeof volumeMediaPlayer>;
-  private _expressiveTheme = new ContextProvider(document.body, { context: expressiveThemeContext});
-  private _useExpressive = new ContextProvider(document.body, { context: useExpressiveContext });
   private _initialExpressiveLoad = false;
-  private _groupMembers = new ContextProvider(document.body, { context: groupedPlayersContext});
-  private _groupVolume = new ContextProvider(document.body, { context: groupVolumeContext});
+  private _expressiveTheme!: ContextProvider<typeof expressiveThemeContext>;
+  private _useExpressive!: ContextProvider<typeof useExpressiveContext>;
+  private _groupMembers!: ContextProvider<typeof groupedPlayersContext>;
+  private _groupVolume!: ContextProvider<typeof groupVolumeContext>;
   
   private _hass!: ExtendedHass;
   private _config!: Config;
   private _host: HTMLElement;
 
   constructor(hass: ExtendedHass, config: Config, host: HTMLElement) {
-    this._hass = hass;
-    this.config = config;
-    this._host = host;
+    this._expressiveTheme = new ContextProvider(host, { context: expressiveThemeContext});
+    this._useExpressive = new ContextProvider(host, { context: useExpressiveContext });
+    this._groupMembers = new ContextProvider(host, { context: groupedPlayersContext});
+    this._groupVolume = new ContextProvider(host, { context: groupVolumeContext});
     this._activeEntityConfig = new ContextProvider(host, {context: activeEntityConf})
     this._activeEntityID = new ContextProvider(host, {context: activeEntityID})
     this._activeMediaPlayer = new ContextProvider(host, {context: activeMediaPlayer})
     this._activePlayerName = new ContextProvider(host, {context: activePlayerName})
     this._volumeMediaPlayer = new ContextProvider(host, {context: volumeMediaPlayer})
+    this._hass = hass;
+    this.config = config;
+    this._host = host;
     this.setDefaultActivePlayer();
   }
   public set hass(hass: ExtendedHass) {

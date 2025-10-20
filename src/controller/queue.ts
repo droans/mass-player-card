@@ -19,10 +19,11 @@ import QueueActions from "../actions/queue-actions.js";
 import { isActive, jsonMatch, playerHasUpdated } from "../utils/util.js";
 
 export class QueueController {
-  private _queue = new ContextProvider(document.body, { context: queueContext});
-  private _currentQueueItem = new ContextProvider(document.body, { context: currentQueueItemContext});
-  private _nextQueueItem = new ContextProvider(document.body, { context: nextQueueItemContext});
-  private _previousQueueItem = new ContextProvider(document.body, { context: previousQueueItemContext});
+  private _host!: HTMLElement;
+  private _queue!: ContextProvider<typeof queueContext>;
+  private _currentQueueItem!: ContextProvider<typeof currentQueueItemContext>;
+  private _nextQueueItem!: ContextProvider<typeof nextQueueItemContext>;
+  private _previousQueueItem!: ContextProvider<typeof previousQueueItemContext>;
   private _currentItem!: QueueItem;
   private _hass!: ExtendedHass;
   private _activeMediaPlayer!: ExtendedHassEntity;
@@ -37,9 +38,14 @@ export class QueueController {
   private _interval!: number | undefined;
   private _timedListening = false;
 
-  constructor(hass: ExtendedHass, active_player: ExtendedHassEntity, config: Config) {
+  constructor(hass: ExtendedHass, active_player: ExtendedHassEntity, config: Config, host: HTMLElement) {
     this.hass = hass;
     this.config = config
+    this._host = host;
+    this._queue = new ContextProvider(host, { context: queueContext});
+    this._currentQueueItem = new ContextProvider(host, { context: currentQueueItemContext});
+    this._nextQueueItem = new ContextProvider(host, { context: nextQueueItemContext});
+    this._previousQueueItem = new ContextProvider(host, { context: previousQueueItemContext});
     this._actions = new QueueActions(hass, active_player.entity_id);
     this.activeMediaPlayer = active_player;
     void this.getQueue();

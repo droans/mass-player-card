@@ -70,7 +70,7 @@ export class MassCardController {
       && !this.queueController
     ) {
       this.queueController = new ContextProvider(this.host, { context: queueControllerContext});
-      this.queueController.setValue(new QueueController(this.hass, this.activeEntity, this.config));
+      this.queueController.setValue(new QueueController(this.hass, this.activeEntity, this.config, this.host));
     }
   }
   private _setupBrowserController() {
@@ -81,7 +81,7 @@ export class MassCardController {
       && !this.browserController
     ) {
       this.browserController = new ContextProvider(this.host, { context: browserControllerContext});
-      this.browserController.setValue(new MediaBrowserController(this.hass, this.config, this.activeEntityId));
+      this.browserController.setValue(new MediaBrowserController(this.hass, this.config, this.activeEntityId, this.host));
     }
   }
 
