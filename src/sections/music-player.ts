@@ -213,7 +213,7 @@ class MusicPlayerCard extends LitElement {
   
   @consume({ context: groupedPlayersContext, subscribe: true})
   private set groupedPlayersList(players: string[]) {
-    const card_players = this.playerEntities.filter(entity => players.includes(entity.entity_id));
+    const card_players = this.playerEntities.filter(entity => players?.includes(entity.entity_id));
     if (jsonMatch(this._groupedPlayers, card_players)) {
       return;
     }
