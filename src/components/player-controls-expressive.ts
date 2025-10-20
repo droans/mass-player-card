@@ -9,13 +9,6 @@ import { musicPlayerConfigContext } from "../const/context.js";
 import { state } from "lit/decorators.js";
 
 class MassPlayerControlsExpressive extends MassPlayerControlsBase {
-  @state()
-  private _hidden!: PlayerHiddenElementsConfig;
-
-  @consume({ context: musicPlayerConfigContext, subscribe: true})
-  public set config(config: PlayerConfig) {
-    this._hidden = config.hide;
-  }
   
   protected renderPrevious(): TemplateResult {
     return html`
@@ -73,7 +66,7 @@ class MassPlayerControlsExpressive extends MassPlayerControlsBase {
     `
   }
   protected renderPower(): TemplateResult {
-    if (this._hidden.power) {
+    if (this.hiddenElements.power) {
       return html``
     }
     return html`
@@ -95,7 +88,7 @@ class MassPlayerControlsExpressive extends MassPlayerControlsBase {
     `
   }
   protected renderShuffle(): TemplateResult {
-    if (this._hidden.shuffle) {
+    if (this.hiddenElements.shuffle) {
       return html``
     }
     const shuffle = this.shuffle;
@@ -118,7 +111,7 @@ class MassPlayerControlsExpressive extends MassPlayerControlsBase {
     `
   }
   protected renderRepeat(): TemplateResult {
-    if (this._hidden.repeat) {
+    if (this.hiddenElements.repeat) {
       return html``
     }
     const repeat = this.repeat;
@@ -143,7 +136,7 @@ class MassPlayerControlsExpressive extends MassPlayerControlsBase {
     `
   }
   protected renderFavorite(): TemplateResult {
-    if (this._hidden.favorite) {
+    if (this.hiddenElements.favorite) {
       return html``
     }
     const favorite = this.favorite;
@@ -178,7 +171,7 @@ class MassPlayerControlsExpressive extends MassPlayerControlsBase {
     `
   }
   protected renderLowerControls(): TemplateResult {
-    const h = this._hidden;
+    const h = this.hiddenElements;
     const all_hidden = h.power && h.shuffle && h.repeat && h.favorite;
     if (all_hidden) {
       return html``
