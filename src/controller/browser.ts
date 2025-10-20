@@ -46,7 +46,9 @@ export class MediaBrowserController {
     this.actions = new BrowserActions(hass);
     this.browserConfig = config.media_browser;
     this.activeEntityId = activeEntityId;
-    this.resetAndGenerateSections()
+    if (!this.items) {
+      this.resetAndGenerateSections()
+    }
   }
   private set items(items: newMediaBrowserItemsConfig) {
     if (jsonMatch(this._items.value, items)) {
@@ -148,10 +150,7 @@ export class MediaBrowserController {
     }
     const i = {...this.items};
     i.favorites[media_type] = items;
-    i.favorites.main = [
-      await generateFavoriteCard(this.hass, media_type, items),
-      ...i.favorites.main
-    ]
+    i.favorites.main.push(await generateFavoriteCard(this.hass, media_type, items)),
     this.items = {...i};
   }
 
