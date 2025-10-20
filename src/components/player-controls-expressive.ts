@@ -3,10 +3,6 @@ import { MassPlayerControlsBase } from "./player-controls-base";
 import { RepeatMode } from "../const/common";
 import { getRepeatIcon } from "../utils/music-player";
 import styles from '../styles/player-controls-expressive'
-import { PlayerConfig, PlayerHiddenElementsConfig } from "../config/player.js";
-import { consume } from "@lit/context";
-import { musicPlayerConfigContext } from "../const/context.js";
-import { state } from "lit/decorators.js";
 
 class MassPlayerControlsExpressive extends MassPlayerControlsBase {
   

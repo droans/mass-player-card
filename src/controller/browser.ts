@@ -150,7 +150,8 @@ export class MediaBrowserController {
     }
     const i = {...this.items};
     i.favorites[media_type] = items;
-    i.favorites.main.push(await generateFavoriteCard(this.hass, media_type, items)),
+    const card = await generateFavoriteCard(this.hass, media_type, items);
+    i.favorites.main.push(card);
     this.items = {...i};
   }
 
