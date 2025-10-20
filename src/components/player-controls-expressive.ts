@@ -3,8 +3,19 @@ import { MassPlayerControlsBase } from "./player-controls-base";
 import { RepeatMode } from "../const/common";
 import { getRepeatIcon } from "../utils/music-player";
 import styles from '../styles/player-controls-expressive'
+import { PlayerConfig, PlayerHiddenElementsConfig } from "../config/player.js";
+import { consume } from "@lit/context";
+import { musicPlayerConfigContext } from "../const/context.js";
+import { state } from "lit/decorators.js";
 
 class MassPlayerControlsExpressive extends MassPlayerControlsBase {
+  @state()
+  private _hidden!: PlayerHiddenElementsConfig;
+
+  @consume({ context: musicPlayerConfigContext, subscribe: true})
+  public set config(config: PlayerConfig) {
+    this._hidden = config.hide;
+  }
   
   protected renderPrevious(): TemplateResult {
     return html`
@@ -62,6 +73,9 @@ class MassPlayerControlsExpressive extends MassPlayerControlsBase {
     `
   }
   protected renderPower(): TemplateResult {
+    if (this._hidden.power) {
+      return html``
+    }
     return html`
       <ha-button
         appearance="filled"
@@ -81,6 +95,9 @@ class MassPlayerControlsExpressive extends MassPlayerControlsBase {
     `
   }
   protected renderShuffle(): TemplateResult {
+    if (this._hidden.shuffle) {
+      return html``
+    }
     const shuffle = this.shuffle;
     return html`
       <ha-button
@@ -101,6 +118,9 @@ class MassPlayerControlsExpressive extends MassPlayerControlsBase {
     `
   }
   protected renderRepeat(): TemplateResult {
+    if (this._hidden.repeat) {
+      return html``
+    }
     const repeat = this.repeat;
     const repeat_on = repeat != RepeatMode.OFF;
     const icon = getRepeatIcon(repeat, this.Icons);
@@ -123,6 +143,9 @@ class MassPlayerControlsExpressive extends MassPlayerControlsBase {
     `
   }
   protected renderFavorite(): TemplateResult {
+    if (this._hidden.favorite) {
+      return html``
+    }
     const favorite = this.favorite;
     return html`
       <ha-button
@@ -155,6 +178,11 @@ class MassPlayerControlsExpressive extends MassPlayerControlsBase {
     `
   }
   protected renderLowerControls(): TemplateResult {
+    const h = this._hidden;
+    const all_hidden = h.power && h.shuffle && h.repeat && h.favorite;
+    if (all_hidden) {
+      return html``
+    }
     return html`
       <div
         id="player-controls-lower"
