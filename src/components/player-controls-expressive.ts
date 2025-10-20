@@ -12,7 +12,7 @@ class MassPlayerControlsExpressive extends MassPlayerControlsBase {
   @state()
   private _hidden!: PlayerHiddenElementsConfig;
 
-  @consume({ context: musicPlayerConfigContext})
+  @consume({ context: musicPlayerConfigContext, subscribe: true})
   public set config(config: PlayerConfig) {
     this._hidden = config.hide;
   }
