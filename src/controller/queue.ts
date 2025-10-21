@@ -314,5 +314,8 @@ export class QueueController {
     this.queue = this.queue.filter( (i) => i.queue_item_id !== queue_item_id);
     await this.actions.removeQueueItem(queue_item_id);
   }
+  public async clearQueue(entity_id: string = this.activeMediaPlayer.entity_id) {
+    await this.actions.clearQueue(entity_id);
+  }
 
 }
