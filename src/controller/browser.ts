@@ -119,8 +119,8 @@ export class MediaBrowserController {
     this.generateFavoriteData(favorites.podcasts, MediaTypes.PODCAST),
     this.generateFavoriteData(favorites.radios, MediaTypes.RADIO),
     this.generateFavoriteData(favorites.tracks, MediaTypes.TRACK),
-  ];
-  await Promise.all(promises);
+    ];
+    await Promise.all(promises);
   }
   private async getFavoriteSection(
     config: FavoriteItemConfig,
