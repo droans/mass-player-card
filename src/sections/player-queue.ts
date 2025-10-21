@@ -56,6 +56,8 @@ class QueueCard extends LitElement {
   @queryAll('#animation') _animations!: WaAnimation[];
   private _firstLoaded = false;
 
+  @state() public _tabSwitchFirstUpdate = false;
+
   @consume({ context: queueControllerContext, subscribe: true})
   public set queueController(controller: QueueController) {
     this._queueController = controller;
@@ -186,11 +188,16 @@ class QueueCard extends LitElement {
   private onClearQueue = async () => {
     await this.queueController.clearQueue(this.active_player_entity);
   }
+  private onTabSwitch = (ev: Event) => {
+    if ((ev as CustomEvent).detail == Sections.QUEUE) {
+      this._tabSwitchFirstUpdate = true;
+    }
+  }
   private renderQueueItems() {
     const show_album_covers = this._config.show_album_covers;
     const delay_add = 62.5;
     let i = 1;
-    const visibility = this.checkVisibility();
+    const play = this._tabSwitchFirstUpdate;
     return this.queue?.map(
       (item) => {
         const result = 
@@ -201,7 +208,7 @@ class QueueCard extends LitElement {
               delay=${delay_add * i}
               duration=${delay_add * 2}
               fill="forwards"
-              play=${visibility}
+              play=${play}
               iterations=1
             >
               <mass-player-media-row
@@ -291,6 +298,10 @@ class QueueCard extends LitElement {
   }
   protected firstUpdated(): void {
       this._firstLoaded = true;
+      this.queueController._host.addEventListener('section-changed', this.onTabSwitch);
+  }
+  protected updated(): void {
+    this._tabSwitchFirstUpdate = false;
   }
   static get styles(): CSSResultGroup {
     return styles;
