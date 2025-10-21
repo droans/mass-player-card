@@ -114,6 +114,14 @@ export default class QueueActions {
       console.error('Error moving queue item down', e)
     }
   }
+  async clearQueue(entity_id: string = this.player_entity) {
+    await this.hass.callService(
+      'media_player', 'clear_playlist',
+      {
+        entity_id: entity_id,
+      }
+    )
+  }
   async getLocalImage(url: string) {
   if (typeof(url) != "string") {
     return '';
