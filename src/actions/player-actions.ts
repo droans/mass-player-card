@@ -140,7 +140,6 @@ export default class PlayerActions {
     }
   }
   async actionGetCurrentItem(entity: ExtendedHassEntity): Promise<QueueItem|null> {
-    try {
       /* eslint-disable
         @typescript-eslint/no-explicit-any,
         @typescript-eslint/no-unsafe-assignment,
@@ -169,10 +168,6 @@ export default class PlayerActions {
         @typescript-eslint/no-unsafe-assignment,
         @typescript-eslint/no-unsafe-member-access
       */
-    } catch (e) {
-      console.error('Error getting queue', e);
-      return null;
-    }
   }
   async actionAddFavorite(entity: HassEntity) {
     const dev_id = this.hass.entities[entity.entity_id].device_id;
