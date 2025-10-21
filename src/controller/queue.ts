@@ -19,7 +19,7 @@ import QueueActions from "../actions/queue-actions.js";
 import { isActive, jsonMatch, playerHasUpdated } from "../utils/util.js";
 
 export class QueueController {
-  private _host!: HTMLElement;
+  public _host!: HTMLElement;
   private _queue!: ContextProvider<typeof queueContext>;
   private _currentQueueItem!: ContextProvider<typeof currentQueueItemContext>;
   private _nextQueueItem!: ContextProvider<typeof nextQueueItemContext>;
