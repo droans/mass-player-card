@@ -34,6 +34,7 @@ import { Sections } from '../const/card';
 import { ActivePlayerController } from '../controller/active-player.js';
 import { QueueController } from '../controller/queue.js';
 import { jsonMatch } from '../utils/util.js';
+import { getTranslation } from '../utils/translations.js';
 
 class QueueCard extends LitElement {
   
@@ -217,6 +218,7 @@ class QueueCard extends LitElement {
   }
   protected render() {
     const expressive = this.activePlayerController.useExpressive;
+    const label = getTranslation("queue.header", this.hass) as string;
     return this.error ?? html`
       <div
         id="container"
@@ -224,7 +226,7 @@ class QueueCard extends LitElement {
       >
         <mass-section-header>
           <span slot="label" id="title">
-            Queue
+            ${label}
           </span>
         </mass-section-header>
         <ha-md-list class="list ${expressive ? `list-expressive` : ``}">

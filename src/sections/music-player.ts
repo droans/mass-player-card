@@ -36,6 +36,7 @@ import {
   activePlayerControllerContext,
   activePlayerDataContext,
   configContext,
+  controllerContext,
   entitiesConfigContext,
   EntityConfig,
   groupedPlayersContext,
@@ -48,7 +49,6 @@ import {
   ListItemData
 } from "../const/media-browser";
 import {
-  INACTIVE_MESSAGES,
   MARQUEE_DELAY_MS,
   PlayerData,
 } from "../const/music-player";
@@ -65,6 +65,7 @@ import {
   jsonMatch,
   playerHasUpdated
 } from "../utils/util.js";
+import { MassCardController } from "../controller/controller.js";
 
 class MusicPlayerCard extends LitElement {
   @state() private shouldMarqueeTitle = false;
@@ -80,6 +81,9 @@ class MusicPlayerCard extends LitElement {
   
   @consume({ context: configContext, subscribe: true})
   private cardConfig!: Config;
+
+  @consume({ context: controllerContext, subscribe: true})
+  private controller!: MassCardController;
 
   @provide({ context: activePlayerDataContext})
   @state()
@@ -185,6 +189,7 @@ class MusicPlayerCard extends LitElement {
       this.groupVolumeLevel = await this.activePlayerController.getActiveGroupVolume();
     }
   }
+
   @consume({ context: activePlayerControllerContext, subscribe: true})
   private set activePlayerController(controller: ActivePlayerController) {
     if (!controller) {
@@ -457,7 +462,7 @@ class MusicPlayerCard extends LitElement {
   }
   protected renderArtist() {
     if (!isActive(this.hass, this.activeMediaPlayer)) {
-      const msgs = INACTIVE_MESSAGES;
+      const msgs: string[] = this.controller.translate('player.messages.inactive') as string[];
       const i = Math.floor(Math.random() * msgs.length);
       return html`
       <div class="player-track-artist ${this.cardConfig.expressive ? `player-track-artist-expressive` : ``}">
@@ -484,8 +489,9 @@ class MusicPlayerCard extends LitElement {
     )
   }
   protected renderSectionTitle() {
+    const label = this.controller.translate("player.header") as string;
     return html`
-      <span slot="label">Music Player</span>
+      <span slot="label">${label}</span>
     `
   }
   protected renderHeader(): TemplateResult {

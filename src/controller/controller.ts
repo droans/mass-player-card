@@ -16,6 +16,7 @@ import { ActionsController } from "./actions";
 import { QueueController } from "./queue.js";
 import { MediaBrowserController } from "./browser.js";
 import { jsonMatch } from "../utils/util.js";
+import { getTranslation } from "../utils/translations.js";
 
 export class MassCardController {
   private _hass = new ContextProvider(document.body, { context: hassExt });
@@ -147,5 +148,9 @@ export class MassCardController {
 
   public get Browser() {
     return this.browserController.value;
+  }
+  public translate(key: string) {
+    // eslint-disable-next-line @typescript-eslint/no-unsafe-return
+    return getTranslation(key, this.hass);
   }
 }

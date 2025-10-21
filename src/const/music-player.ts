@@ -28,13 +28,3 @@ export const SWIPE_MIN_X = 100;
 export const DEFAULT_MAX_VOLUME = 100;
 export const MARQUEE_DELAY_MS = 2000;
 export const SWIPE_MIN_DELAY = 300;
-
-export const INACTIVE_MESSAGES = [
-  `Except the sound of silence.`,
-  `It's just so quiet in here.`,
-  `Are you seeing other players?`,
-  `Please don't leave me alone with my thoughts.`,
-  `I hope you don't have tinnitus.`,
-  `Why not do something productive instead?`,
-  `Let's use our imagination instead.`
-]
