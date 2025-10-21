@@ -260,33 +260,27 @@ export class ActivePlayerController {
   }
   async actionGetCurrentQueue() {
     const entity_id = this.activeEntityID;
-    try {
-      /* eslint-disable
-        @typescript-eslint/no-explicit-any,
-        @typescript-eslint/no-unsafe-assignment,
-        @typescript-eslint/no-unsafe-member-access
-      */
-      const data = {
-        type: 'call_service',
-        domain: 'music_assistant',
-        service: 'get_queue',
-        service_data: {
-          entity_id: entity_id,
-        },
-        return_response: true
-      }
-      const ret = await this.hass.callWS<any>(data);
-      /* eslint-disable
-        @typescript-eslint/no-unsafe-return
-      */
-      const result = ret.response[entity_id]
-      return result;
-      /* eslint-enable */
-    } catch (e) {
-      /* eslint-disable-next-line no-console */
-      console.error('Error getting queue', e);
-      return null;
+    /* eslint-disable
+      @typescript-eslint/no-explicit-any,
+      @typescript-eslint/no-unsafe-assignment,
+      @typescript-eslint/no-unsafe-member-access
+    */
+    const data = {
+      type: 'call_service',
+      domain: 'music_assistant',
+      service: 'get_queue',
+      service_data: {
+        entity_id: entity_id,
+      },
+      return_response: true
     }
+    const ret = await this.hass.callWS<any>(data);
+    /* eslint-disable
+      @typescript-eslint/no-unsafe-return
+    */
+    const result = ret.response[entity_id]
+    return result;
+    /* eslint-enable */
   }
 
   public applyExpressiveThemeTo(host: HTMLElement) {

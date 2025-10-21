@@ -177,7 +177,7 @@ export class QueueController {
     } catch (e) {
       this._fails ++;
       // eslint-disable-next-line no-console
-      console.error(`Received error`, e);
+      console.error(`Error getting queue`, e);
     };
     return [];
   }

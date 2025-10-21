@@ -129,7 +129,6 @@ export class MediaBrowserController {
   ) {
     const limit = config.limit;
     const custom_items = config.items;
-
     const resp: MediaLibraryItem[] = await this.actions.actionGetLibrary(this.activeEntityId, media_type, limit, favorites_only);
     return [
       ...generateFavoritesSectionCards(resp, media_type),
@@ -141,7 +140,7 @@ export class MediaBrowserController {
     media_type: MediaTypes,
     favorites_only = true
   ) {
-    if (this.items.favorites[media_type]) {
+    if (this.items.favorites[media_type] || !config.enabled) {
       return;
     }
     const items = await this.getFavoriteSection(config, media_type, favorites_only);
@@ -178,7 +177,7 @@ export class MediaBrowserController {
 
   }
   private async generateRecentsData(config: FavoriteItemConfig, media_type: MediaTypes) {
-    if (this.items.recents[media_type]) {
+    if (this.items.recents[media_type] || !config.enabled) {
       return;
     }
     
