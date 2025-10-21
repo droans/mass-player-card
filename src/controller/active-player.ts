@@ -13,10 +13,10 @@ import {
 } from "../const/context";
 import { Config, EntityConfig } from "../config/config";
 import { PlayerData } from "../const/music-player";
-import { MUSIC_ASSISTANT_APP_NAME, QueueItem } from "../const/player-queue";
+import { QueueItem } from "../const/player-queue";
 import { applyTheme, themeFromImage, Theme } from "@material/material-color-utilities";
 import { getThumbnail } from "../utils/thumbnails.js";
-import { jsonMatch, playerHasUpdated } from "../utils/util.js";
+import { isActive, jsonMatch, playerHasUpdated } from "../utils/util.js";
 export class ActivePlayerController {
   private _activeEntityConfig: ContextProvider<typeof activeEntityConf>;
   private _activeEntityID: ContextProvider<typeof activeEntityID>;
@@ -192,7 +192,10 @@ export class ActivePlayerController {
     const states = this.hass.states;
     const players = this._config.entities
     const active_players = players.filter(
-      (entity) => ["playing", "paused"].includes(states[entity.entity_id].state) && states[entity.entity_id].attributes.app_id == 'music_assistant'
+      (entity) => {
+        const ent = states[entity.entity_id];
+        return isActive(this.hass, ent)
+      }
     );
     if (active_players.length) {
       this.activeEntityConfig = active_players[0];
@@ -230,23 +233,13 @@ export class ActivePlayerController {
       favorite: current_item?.favorite ?? false,
     }
   }
-  public isActive() {
-    // Returns if a player is active.
-    // An active player is not off, using Music Assistant, and has a queue set.
-    const player = this.activeMediaPlayer;
-    const not_off = player.state != 'off';
-    const is_mass = player.attributes.app_id == MUSIC_ASSISTANT_APP_NAME;
-    const has_queue = !!(player.attributes?.active_queue);
-    const connected = this.hass.connected;
-    return not_off && is_mass && has_queue && connected;
-  }
   public async getPlayerProgress(): Promise<number> {
     /* eslint-disable
       @typescript-eslint/no-unsafe-assignment,
       @typescript-eslint/no-unsafe-member-access,
       @typescript-eslint/no-unsafe-return,
     */
-   if (!this.isActive()) {
+   if (!isActive(this.hass, this.activeMediaPlayer)) {
     return 0;
    }
     const current_queue = await this.actionGetCurrentQueue();
@@ -254,7 +247,7 @@ export class ActivePlayerController {
     return elapsed;
   }
   public async getPlayerActiveItemDuration(): Promise<number> {
-    if (!this.isActive()) {
+    if (!isActive(this.hass, this.activeMediaPlayer)) {
       return 1;
     }
     const current_queue = await this.actionGetCurrentQueue();
@@ -326,7 +319,7 @@ export class ActivePlayerController {
     const local = attrs.entity_picture_local;
     const non_local = attrs.entity_picture;
     const pic = `${origin}${local ?? non_local}`;
-    const url: string = this.isActive() ? pic ?? def : def; 
+    const url: string = isActive(this.hass, this.activeMediaPlayer) ? pic ?? def : def; 
     const elem = document.createElement('img');
     elem.height = 75;
     elem.width = 75;
