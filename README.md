@@ -444,6 +444,7 @@ Multiple elements on the queue tab can be hidden. By default, all elements are v
 | enabled   | bool                                                                      | No       | true        | Enable/disable media browser tab |
 | columns   | number                                                                    | No       | 2           | Number of columns for each row.  |
 | favorites | [FavoritesConfig](#favorites-config)                                      | No       | -           | See below                        |
+| recents   | [FavoritesConfig](#favorites-config)                                      | No       | -           | See below                        |
 | sections  | list of [SectionsConfig](#sections-config)                                | No       | -           | See below                        |
 | hide      | [MediaBrowserHiddenElementsConfig](#media-browser-hidden-elements-config) | No       | See below   | See Below                        |
 

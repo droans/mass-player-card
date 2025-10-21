@@ -447,7 +447,7 @@ export class MediaBrowser extends LitElement {
 
   }
   protected renderFilterButton(): TemplateResult {
-    const icons = getFilterButtons(this.Icons);
+    const icons = getFilterButtons(this.Icons, this.config);
     const icon = this.Icons.FILTER
     return html`
       <mass-menu-button

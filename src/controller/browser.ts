@@ -156,15 +156,15 @@ export class MediaBrowserController {
 
   // Recents
   private async generateAllRecents() {
-   const favorites = this.browserConfig.favorites;
+   const recents = this.browserConfig.recents;
    const promises = [
-    this.generateRecentsData(favorites.albums, MediaTypes.ALBUM),
-    this.generateRecentsData(favorites.artists, MediaTypes.ARTIST),
-    this.generateRecentsData(favorites.audiobooks, MediaTypes.AUDIOBOOK),
-    this.generateRecentsData(favorites.playlists, MediaTypes.PLAYLIST),
-    this.generateRecentsData(favorites.podcasts, MediaTypes.PODCAST),
-    this.generateRecentsData(favorites.radios, MediaTypes.RADIO),
-    this.generateRecentsData(favorites.tracks, MediaTypes.TRACK),
+    this.generateRecentsData(recents.albums, MediaTypes.ALBUM),
+    this.generateRecentsData(recents.artists, MediaTypes.ARTIST),
+    this.generateRecentsData(recents.audiobooks, MediaTypes.AUDIOBOOK),
+    this.generateRecentsData(recents.playlists, MediaTypes.PLAYLIST),
+    this.generateRecentsData(recents.podcasts, MediaTypes.PODCAST),
+    this.generateRecentsData(recents.radios, MediaTypes.RADIO),
+    this.generateRecentsData(recents.tracks, MediaTypes.TRACK),
    ]
    await Promise.all(promises);
     

@@ -1,4 +1,4 @@
-import { mdiHeart } from "@mdi/js";
+import { mdiCreation, mdiHeart, mdiHistory } from "@mdi/js";
 
 import { Config } from "./config";
 import { hiddenElementsConfigItem } from "../utils/config.js";
@@ -39,6 +39,8 @@ export const HIDDEN_BUTTON_VALUE = {
 export interface MediaBrowserConfig {
   enabled: boolean;
   favorites: FavoritesConfig;
+  recents: FavoritesConfig;
+  recommendations: {enabled: boolean};
   sections: customSection[];
   hide: MediaBrowserHiddenElementsConfig
   columns: number;
@@ -93,9 +95,15 @@ const DEFAULT_FAVORITES_CONFIG: FavoritesConfig = {
 }
 const DEFAULT_CUSTOM_SECTION_CONFIG = []
 
+const DEFAULT_RECOMMENDATIONS_CONFIG = {
+  enabled: true
+}
+
 export const DEFAULT_MEDIA_BROWSER_CONFIG: MediaBrowserConfig = {
   enabled: true,
   favorites: DEFAULT_FAVORITES_CONFIG,
+  recents: DEFAULT_FAVORITES_CONFIG,
+  recommendations: DEFAULT_RECOMMENDATIONS_CONFIG,
   sections: DEFAULT_CUSTOM_SECTION_CONFIG,
   hide: DEFAULT_MEDIA_BROWSER_HIDDEN_ELEMENTS_CONFIG,
   columns: 2
@@ -146,6 +154,32 @@ export function mediaBrowserConfigForm() {
         favoritesConfigForm("podcasts"),
         favoritesConfigForm("radios"),
         favoritesConfigForm("tracks"),
+      ]
+    },
+    {
+      name: "recents",
+      type: "expandable",
+      iconPath: mdiHistory,
+      schema: [
+        favoritesConfigForm("album"),
+        favoritesConfigForm("artists"),
+        favoritesConfigForm("audiobooks"),
+        favoritesConfigForm("playlists"),
+        favoritesConfigForm("podcasts"),
+        favoritesConfigForm("radios"),
+        favoritesConfigForm("tracks"),
+      ]
+    },
+    {
+      name: "recommendations",
+      type: "expandable",
+      iconPath: mdiCreation,
+      schema: [
+        {
+          name: "enabled", 
+          selector: { boolean: {} }, 
+          default: true
+        }
       ]
     },
     hiddenElementsConfigItem(MEDIA_BROWSER_HIDDEN_ITEMS)

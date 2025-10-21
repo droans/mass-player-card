@@ -6,6 +6,7 @@ import {
   MediaTypes
 } from "./common";
 import { Icons } from "./icons.js";
+import { MediaBrowserConfig } from "../config/media-browser.js";
 
 export interface MediaBrowserItem {
   name: string,
@@ -168,22 +169,30 @@ export function getSearchMediaButtons(icons: Icons): ListItems {
 
   ]
 }
-export function getFilterButtons(icons: Icons): ListItems {
-  return [
-    {
+export function getFilterButtons(icons: Icons, config: MediaBrowserConfig): ListItems {
+  const result: ListItems = [];
+  if (config.favorites.enabled) {
+    result.push({
       option: "favorites",
       icon: icons.HEART,
       title: "Favorites"
-    },{
+    })
+  }
+  if (config.recents.enabled) {
+    result.push({
       option: "recents",
       icon: icons.RECENTS,
       title: "Recents"
-    },{
+    })
+  }
+  if (config.recommendations.enabled) {
+    result.push({
       option: "recommendations",
       icon: icons.SUGGESTIONS,
       title: "Recommendations"
-    },
-  ]
+    })
+  }
+  return result;
 }
 
 export const SEARCH_UPDATE_DELAY = 1000;
