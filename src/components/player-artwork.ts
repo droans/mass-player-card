@@ -27,7 +27,7 @@ import SlCarousel from "@shoelace-style/shoelace/dist/components/carousel/carous
 import { PlayerConfig } from "../config/player.js";
 import { MassCardController } from "../controller/controller.js";
 import { Icons } from "../const/icons.js";
-import { jsonMatch } from "../utils/util.js";
+import { isActive, jsonMatch } from "../utils/util.js";
 
 class MassPlayerArtwork extends LitElement {
   @consume({ context: hassExt, subscribe: true })
@@ -228,7 +228,7 @@ class MassPlayerArtwork extends LitElement {
     return this.renderCarouselItem(img, `carousel-img-prior`);
   }
   protected renderCarouselItems() {
-    if (!this.controller.ActivePlayer.isActive()) {
+    if (!isActive(this.hass, this.activePlayer)) {
       return this.renderAsleep();
     }
     return html`
