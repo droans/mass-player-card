@@ -94,6 +94,8 @@ export default css`
     background-size: 100%;
     background-repeat: no-repeat;
     background-position: center;
+    height: 100%;
+    aspect-ratio: 1;
   }
   .thumbnail-section {
     background-repeat: no-repeat;
