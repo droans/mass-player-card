@@ -59,7 +59,7 @@ export class MediaBrowser extends LitElement {
   @state() private _cards!: newMediaBrowserItemsConfig
   @provide({ context: activeMediaBrowserCardsContext })
   private _activeCards!: MediaCardItem[];
-  
+
   @state() 
   public set activeCards(cards: MediaCardItem[]) {
     if (jsonMatch(this._activeCards, cards)) {
@@ -310,6 +310,11 @@ export class MediaBrowser extends LitElement {
     )
     this.activeCards = cards;    
   }
+  private onCardsUpdated = () => {
+    if (!this?.activeCards?.length) {
+      this.setActiveCards();
+    }
+  }
   protected renderBrowserCards(): TemplateResult {
     return html`
       <mass-browser-cards
@@ -498,6 +503,9 @@ export class MediaBrowser extends LitElement {
       return this.renderMainHeader();
     }
     return this.renderSubsectionHeader();
+  }
+  protected firstUpdated(_changedProperties: PropertyValues): void {
+    this.browserController._host.addEventListener('cards-updated', this.onCardsUpdated)
   }
   protected render(): TemplateResult {
     return html`

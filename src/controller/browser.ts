@@ -32,7 +32,7 @@ import { jsonMatch } from "../utils/util.js";
 export class MediaBrowserController {
   private hass!: ExtendedHass
   private config!: Config;
-  private _host!: HTMLElement;
+  public _host!: HTMLElement;
   private browserConfig!: MediaBrowserConfig;
   private actions!: BrowserActions;
   private _activeEntityId!: string;
@@ -119,8 +119,10 @@ export class MediaBrowserController {
     this.generateFavoriteData(favorites.podcasts, MediaTypes.PODCAST),
     this.generateFavoriteData(favorites.radios, MediaTypes.RADIO),
     this.generateFavoriteData(favorites.tracks, MediaTypes.TRACK),
-  ];
-  await Promise.all(promises);
+    ];
+    await Promise.all(promises);
+    const ev = new CustomEvent('cards-updated', {detail: 'favorites'})
+    this._host.dispatchEvent(ev);
   }
   private async getFavoriteSection(
     config: FavoriteItemConfig,
@@ -165,8 +167,10 @@ export class MediaBrowserController {
     this.generateRecentsData(recents.podcasts, MediaTypes.PODCAST),
     this.generateRecentsData(recents.radios, MediaTypes.RADIO),
     this.generateRecentsData(recents.tracks, MediaTypes.TRACK),
-   ]
-   await Promise.all(promises);
+    ]
+    await Promise.all(promises);
+    const ev = new CustomEvent('cards-updated', {detail: 'recents'})
+    this._host.dispatchEvent(ev);
     
   }
   private async getRecentSection(config: FavoriteItemConfig, media_type: MediaTypes) {
@@ -214,6 +218,8 @@ export class MediaBrowserController {
         void this.generateRecommendationSection(item)
       }
     )
+    const ev = new CustomEvent('cards-updated', {detail: 'recommendations'})
+    this._host.dispatchEvent(ev);
   }
 
   //Custom Sections
