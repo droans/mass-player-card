@@ -199,6 +199,7 @@ export class MusicAssistantPlayerCard extends LitElement {
   private browserItemSelected = () => {
     if (this.config.player.enabled){
       this.active_section = Sections.MUSIC_PLAYER;
+      this._controller.activeSection = Sections.MUSIC_PLAYER;
     }
   }
   private playerSelected = (entity_id: string) => {
