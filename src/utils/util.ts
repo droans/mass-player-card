@@ -3,8 +3,15 @@ import {
   DEFAULT_SECTION_PRIORITY,
   Sections
 } from "../const/card";
-import { ExtendedHass, ExtendedHassEntity } from "../const/common.js";
-import { MUSIC_ASSISTANT_APP_NAME, QueueItem } from "../const/player-queue.js";
+import {
+  ExtendedHass,
+  ExtendedHassEntity,
+  MAX_ACTIVE_LAST_ACTIVE_DURATION
+} from "../const/common.js";
+import {
+  MUSIC_ASSISTANT_APP_NAME,
+  QueueItem
+} from "../const/player-queue.js";
 
 export function testMixedContent(url: string) {
   try {
