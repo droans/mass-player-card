@@ -504,7 +504,7 @@ export class MediaBrowser extends LitElement {
     }
     return this.renderSubsectionHeader();
   }
-  protected firstUpdated(_changedProperties: PropertyValues): void {
+  protected firstUpdated(): void {
     this.browserController._host.addEventListener('cards-updated', this.onCardsUpdated)
   }
   protected render(): TemplateResult {

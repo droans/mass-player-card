@@ -176,7 +176,7 @@ export class QueueController {
       this.queue = queue;
       this.getCurNextPrQueueItems();
       return queue;
-    } catch (e) {
+    } catch {
       this._fails ++;
     } finally {
       this._updatingQueue = false;
