@@ -46,6 +46,7 @@ export class ActivePlayerController {
     this._hass = hass;
     this.config = config;
     this._host = host;
+    host.addEventListener('artwork-updated', this.onActiveTrackChange);
     this.setDefaultActivePlayer();
   }
   public set hass(hass: ExtendedHass) {
@@ -103,14 +104,6 @@ export class ActivePlayerController {
       if (player.attributes?.group_members) {
         this.setGroupAttributes();
       }
-      if (old_track != new_track && this.config.expressive) {
-        this._initialExpressiveLoad = true;
-        void this.applyExpressiveTheme();
-        return;
-      }
-    }
-    if (this.config.expressive && !this._initialExpressiveLoad) {
-      void this.applyExpressiveTheme();
     }
   }
   public get activeMediaPlayer() {
@@ -289,6 +282,47 @@ export class ActivePlayerController {
       applyTheme(this.expressiveTheme, {dark: this.hass.themes.darkMode, target: host})
     }
   }
+  public onActiveTrackChange = (ev: Event) => {
+    const detail = (ev as CustomEvent).detail;
+    if (detail.type != 'current') {
+      return;
+    }
+    const img = detail.image;
+    void this.applyExpressiveThemeFromImage(img);
+  }
+  public async applyExpressiveThemeFromImage(img: string) {
+    if (!this.config.expressive) {
+      return;
+    }
+    const _theme = this.generateExpressiveThemeFromImage(img);
+    const options = {
+      dark: this.hass.themes.darkMode,
+      target: this._host
+    }
+    const theme = await _theme;
+    if (theme) {
+      applyTheme(theme, options)
+    }
+  }
+  public async generateExpressiveThemeFromImage(img: string) {
+    const elem = this.generateImageElementFromImage(img);
+    if (!elem) {
+      return;
+    }
+    const theme = await themeFromImage(elem);
+    this.expressiveTheme = theme;
+    return theme;
+  }
+  public generateImageElementFromImage(img: string): HTMLImageElement | undefined {
+    const elem = document.createElement('img');
+    const def = getThumbnail(this.hass, Thumbnail.CLEFT);
+    elem.height = 75;
+    elem.width = 75;
+    elem.src = img;
+    elem.crossOrigin = "Anonymous";
+    elem.onerror = () => {elem.src = def}
+    return elem;
+  }
   public async applyExpressiveTheme() { 
     if (!this.config.expressive) {
       return;
@@ -305,9 +339,9 @@ export class ActivePlayerController {
   }
   public async generateExpressiveTheme() {
 
-    return this.generateExpressiveThemeFromImage();
+    return this.generateExpressiveThemeFromActiveImage();
   }
-  public generateImageElement(): HTMLImageElement|undefined {
+  public generateImageElementFromActiveImage(): HTMLImageElement|undefined {
     const attrs = this.activeMediaPlayer.attributes;
     const def = getThumbnail(this.hass, Thumbnail.CLEFT);
     const origin = window.location.origin;
@@ -322,8 +356,8 @@ export class ActivePlayerController {
     elem.onerror = () => {elem.src=def};
     return elem;
   }
-  public async generateExpressiveThemeFromImage() {
-    const elem = this.generateImageElement();
+  public async generateExpressiveThemeFromActiveImage() {
+    const elem = this.generateImageElementFromActiveImage();
     if (!elem) {
       return;
     }
