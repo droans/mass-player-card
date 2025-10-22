@@ -27,8 +27,8 @@ export default css`
   }
 
   wa-card {
-    --inner-border-radius: var(--ha-card-border-radius);
-    --wa-panel-border-radius: var(--ha-card-border-radius);
+    --inner-border-radius: var(--browser-card-border-radius);
+    --wa-panel-border-radius: var(--browser-card-border-radius);
     --wa-panel-border-style: var(--ha-card-border-style);
     --wa-color-surface-border: var(--ha-color-border-neutral-normal);
     --wa-panel-border-width: var(--ha-card-border-width);
@@ -41,7 +41,7 @@ export default css`
     width: 100%;
     position: relative;
     display: flex;
-    border-radius: var(--ha-card-border-radius) !important;
+    border-radius: var(--browser-card-border-radius) !important;
     overflow: visible !important;
     margin: 0px 3px 3px 3px;
     aspect-ratio: 1;
@@ -75,7 +75,7 @@ export default css`
   }
 
   .media-card {
-    border-radius: var(--ha-card-border-radius) !important;
+    border-radius: var(--browser-card-border-radius) !important;
     overflow: hidden;
   }
   .media-card::part(body) {
@@ -94,6 +94,8 @@ export default css`
     background-size: 100%;
     background-repeat: no-repeat;
     background-position: center;
+    height: 100%;
+    aspect-ratio: 1;
   }
   .thumbnail-section {
     background-repeat: no-repeat;

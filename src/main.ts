@@ -87,6 +87,7 @@ console.info(
 export class MusicAssistantPlayerCard extends LitElement {
   @state() private entities!: HassEntity[];
   @state() private error?: TemplateResult;
+  @state() private _activeSection!: Sections;
 
   @provide({ context: controllerContext})
   private _controller = new MassCardController(this);
@@ -127,12 +128,15 @@ export class MusicAssistantPlayerCard extends LitElement {
   }
 
   @consume({ context: activeSectionContext, subscribe: true}) 
-  @state() 
-  private set active_section(section: Sections) {
-    this._controller.activeSection = section;
+  @state()
+  public set active_section(section: Sections) {
+    this._activeSection = section;
   }
   public get active_section() {
-    return this._controller.activeSection;
+    return this._activeSection ?? this._controller.activeSection;
+  }
+  public setActiveSection(section: Sections) {
+    this._controller.activeSection = section;
   }
   static getConfigForm() {
     return createConfigForm();
@@ -195,6 +199,7 @@ export class MusicAssistantPlayerCard extends LitElement {
   private browserItemSelected = () => {
     if (this.config.player.enabled){
       this.active_section = Sections.MUSIC_PLAYER;
+      this._controller.activeSection = Sections.MUSIC_PLAYER;
     }
   }
   private playerSelected = (entity_id: string) => {
@@ -203,6 +208,10 @@ export class MusicAssistantPlayerCard extends LitElement {
       this.active_section = Sections.MUSIC_PLAYER;
     }
   }
+  private onSectionChangedEvent = (ev: Event) => {
+    this.active_section = (ev as CustomEvent).detail as Sections;
+  }
+
   protected renderPlayers() {
     if (this.config.players.enabled) {
       return cache(html`
@@ -281,6 +290,7 @@ export class MusicAssistantPlayerCard extends LitElement {
       ${this.renderPlayers()}
     `
   }
+  
   protected render() {
     return this.error ?? html`
       <ha-card id="${this.config.expressive ? `expressive` : ``}">
@@ -312,10 +322,12 @@ export class MusicAssistantPlayerCard extends LitElement {
       const stylesheet = head_styles.styleSheet!;
       document.adoptedStyleSheets.push(stylesheet);
     }
+    this.addEventListener('section-changed', this.onSectionChangedEvent);
   }
   public getCardSize() {
     return 3;
   }
+  
   private createError(errorString: string): Error {
     const error = new Error(errorString);
     /* eslint-disable-next-line

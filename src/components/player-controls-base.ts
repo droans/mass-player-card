@@ -1,17 +1,64 @@
 import { consume } from "@lit/context";
 import { LitElement, PropertyValues } from "lit";
 import { state } from "lit/decorators.js";
-import { actionsControllerContext, activePlayerDataContext, IconsContext } from "../const/context";
+import { actionsControllerContext, activeEntityConf, activePlayerDataContext, EntityConfig, IconsContext, musicPlayerConfigContext } from "../const/context";
 import { ActionsController } from "../controller/actions";
 import { PlayerData } from "../const/music-player";
 import { Icons } from "../const/icons";
 import { getIteratedRepeatMode } from "../utils/music-player";
 import { RepeatMode } from "../const/common";
 import { jsonMatch } from "../utils/util.js";
+import { PlayerConfig, PlayerControlsHiddenElementsConfig } from "../config/player.js";
 
 export class MassPlayerControlsBase extends LitElement {
   @consume({ context: actionsControllerContext})
   private actions!: ActionsController
+  private _entityHiddenElements!: PlayerControlsHiddenElementsConfig;
+  private _configHiddenElements!: PlayerControlsHiddenElementsConfig;
+  @state() private _hiddenElements!: PlayerControlsHiddenElementsConfig;
+
+  @consume({ context: musicPlayerConfigContext, subscribe: true})
+  private set _base_player_config(config: PlayerConfig) {
+    const c = config.hide;
+    this._configHiddenElements = {
+      power: c.power,
+      repeat: c.repeat,
+      shuffle: c.shuffle,
+      favorite: c.favorite
+    }
+    this.setHiddenElements();
+  }
+
+  @consume({ context: activeEntityConf, subscribe: true})
+  private set activeEntityConfig(config: EntityConfig) {
+    const c = config.hide.player;
+    this._entityHiddenElements = {
+      power: c.power,
+      repeat: c.repeat,
+      shuffle: c.shuffle,
+      favorite: c.favorite
+    }
+    this.setHiddenElements();
+  }
+  
+  private setHiddenElements() {
+    const e = this?._entityHiddenElements;
+    const c= this?._configHiddenElements;
+    const result: PlayerControlsHiddenElementsConfig = {
+      power: e?.power || c?.power || false,
+      repeat: e?.repeat || c?.repeat || false,
+      shuffle: e?.shuffle || c?.shuffle || false,
+      favorite: e?.favorite || c?.favorite || false,
+    }
+    if (jsonMatch(result, this._hiddenElements)) {
+      return;
+    }
+    this._hiddenElements = result;
+  }
+
+  protected get hiddenElements() {
+    return this._hiddenElements;
+  }
 
   @state()
   protected _playerData!: PlayerData;

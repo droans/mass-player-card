@@ -26,11 +26,12 @@ export class MassCardController {
   private actionsController!: ContextProvider<typeof actionsControllerContext>;
   private queueController!: ContextProvider<typeof queueControllerContext>;
   private browserController!: ContextProvider<typeof browserControllerContext>;
-  private _activeSection = new ContextProvider(document.body, { context: activeSectionContext});
+  private _activeSection!: ContextProvider<typeof activeSectionContext>;
 
   constructor(host: HTMLElement) {
     this.host = host;
     this.configController = new MassCardConfigController(host);
+    this._activeSection = new ContextProvider(this.host, { context: activeSectionContext});
   }
   public set host(host: HTMLElement) {
     this._host = host;
@@ -69,7 +70,7 @@ export class MassCardController {
       && !this.queueController
     ) {
       this.queueController = new ContextProvider(this.host, { context: queueControllerContext});
-      this.queueController.setValue(new QueueController(this.hass, this.activeEntity, this.config));
+      this.queueController.setValue(new QueueController(this.hass, this.activeEntity, this.config, this.host));
     }
   }
   private _setupBrowserController() {
@@ -80,7 +81,7 @@ export class MassCardController {
       && !this.browserController
     ) {
       this.browserController = new ContextProvider(this.host, { context: browserControllerContext});
-      this.browserController.setValue(new MediaBrowserController(this.hass, this.config, this.activeEntityId));
+      this.browserController.setValue(new MediaBrowserController(this.hass, this.config, this.activeEntityId, this.host));
     }
   }
 
@@ -124,7 +125,11 @@ export class MassCardController {
     return this.ActivePlayer.volumeMediaPlayer;
   }
   public set activeSection(section: Sections) {
-    this._activeSection.setValue(section);
+    if (section != this.activeSection) {
+      this._activeSection.setValue(section)
+      const ev = new CustomEvent('section-changed', {detail: section})
+      this.host.dispatchEvent(ev);
+    };
   }
   public get activeSection() {
     return this._activeSection.value;

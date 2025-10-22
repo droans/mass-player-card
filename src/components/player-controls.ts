@@ -23,6 +23,9 @@ class MassPlayerControls extends MassPlayerControlsBase {
   }
 
   protected renderShuffle(): TemplateResult {
+    if (this.hiddenElements.shuffle) {
+      return html``
+    }
     const icon_style = this.layoutConfig.icons.shuffle;
     const icon_size = icon_style.size == PlayerIconSize.LARGE ? "medium" : "small";
     const slotHtml = generateControlSlotHtml(icon_style);
@@ -126,6 +129,9 @@ class MassPlayerControls extends MassPlayerControlsBase {
     `
   }
   protected renderRepeat(): TemplateResult {
+    if (this.hiddenElements.repeat) {
+      return html``
+    }
     const icon = getRepeatIcon(this._playerData.repeat, this.Icons);
     const div_layout= this.layoutConfig.controls_layout == PlayerControlsLayout.COMPACT ? "div-compact" : "div-spaced";
     const icon_style = this.layoutConfig.icons.repeat;

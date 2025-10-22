@@ -213,7 +213,7 @@ class MusicPlayerCard extends LitElement {
   
   @consume({ context: groupedPlayersContext, subscribe: true})
   private set groupedPlayersList(players: string[]) {
-    const card_players = this.playerEntities.filter(entity => players.includes(entity.entity_id));
+    const card_players = this.playerEntities.filter(entity => players?.includes(entity.entity_id));
     if (jsonMatch(this._groupedPlayers, card_players)) {
       return;
     }
@@ -233,10 +233,6 @@ class MusicPlayerCard extends LitElement {
   private async _updatePlayerData() {
     if (!this.activeMediaPlayer) {
       return
-    }
-    let player_name = this.activeEntityConfig.name;
-    if (!player_name.length) {
-      player_name = this.activeMediaPlayer.attributes?.friendly_name ?? "Media Player";
     }
     const current_item = (await this.actions.actionGetCurrentItem(this.activeMediaPlayer));
     const new_player_data = this.activePlayerController.getactivePlayerData(current_item);

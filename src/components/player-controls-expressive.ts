@@ -62,6 +62,9 @@ class MassPlayerControlsExpressive extends MassPlayerControlsBase {
     `
   }
   protected renderPower(): TemplateResult {
+    if (this.hiddenElements.power) {
+      return html``
+    }
     return html`
       <ha-button
         appearance="filled"
@@ -81,6 +84,9 @@ class MassPlayerControlsExpressive extends MassPlayerControlsBase {
     `
   }
   protected renderShuffle(): TemplateResult {
+    if (this.hiddenElements.shuffle) {
+      return html``
+    }
     const shuffle = this.shuffle;
     return html`
       <ha-button
@@ -101,6 +107,9 @@ class MassPlayerControlsExpressive extends MassPlayerControlsBase {
     `
   }
   protected renderRepeat(): TemplateResult {
+    if (this.hiddenElements.repeat) {
+      return html``
+    }
     const repeat = this.repeat;
     const repeat_on = repeat != RepeatMode.OFF;
     const icon = getRepeatIcon(repeat, this.Icons);
@@ -123,6 +132,9 @@ class MassPlayerControlsExpressive extends MassPlayerControlsBase {
     `
   }
   protected renderFavorite(): TemplateResult {
+    if (this.hiddenElements.favorite) {
+      return html``
+    }
     const favorite = this.favorite;
     return html`
       <ha-button
@@ -155,6 +167,11 @@ class MassPlayerControlsExpressive extends MassPlayerControlsBase {
     `
   }
   protected renderLowerControls(): TemplateResult {
+    const h = this.hiddenElements;
+    const all_hidden = h.power && h.shuffle && h.repeat && h.favorite;
+    if (all_hidden) {
+      return html``
+    }
     return html`
       <div
         id="player-controls-lower"

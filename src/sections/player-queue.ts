@@ -19,6 +19,7 @@ import {
   activeSectionContext,
   EntityConfig,
   hassExt,
+  IconsContext,
   mediaCardDisplayContext,
   playerQueueConfigContext,
   queueContext,
@@ -34,6 +35,7 @@ import { Sections } from '../const/card';
 import { ActivePlayerController } from '../controller/active-player.js';
 import { QueueController } from '../controller/queue.js';
 import { jsonMatch } from '../utils/util.js';
+import { Icons } from '../const/icons.js';
 
 class QueueCard extends LitElement {
   
@@ -43,6 +45,9 @@ class QueueCard extends LitElement {
   @consume({ context: activeEntityConf, subscribe: true})
   private entityConf!: EntityConfig;
 
+  @consume({ context: IconsContext, subscribe: true })
+  private Icons!: Icons;
+
   @provide({context: playerQueueConfigContext})
   public _config!: QueueConfig;
   @state() private _queue: QueueItems = [];
@@ -50,6 +55,8 @@ class QueueCard extends LitElement {
 
   @queryAll('#animation') _animations!: WaAnimation[];
   private _firstLoaded = false;
+
+  @state() public _tabSwitchFirstUpdate = false;
 
   @consume({ context: queueControllerContext, subscribe: true})
   public set queueController(controller: QueueController) {
@@ -178,11 +185,19 @@ class QueueCard extends LitElement {
   private onQueueItemMoveDown = async (queue_item_id: string) => {
     await this.queueController.moveQueueItemDown(queue_item_id);
   }
+  private onClearQueue = async () => {
+    await this.queueController.clearQueue(this.active_player_entity);
+  }
+  private onTabSwitch = (ev: Event) => {
+    if ((ev as CustomEvent).detail == Sections.QUEUE) {
+      this._tabSwitchFirstUpdate = true;
+    }
+  }
   private renderQueueItems() {
     const show_album_covers = this._config.show_album_covers;
     const delay_add = 62.5;
     let i = 1;
-    const visibility = this.checkVisibility();
+    const play = this._tabSwitchFirstUpdate;
     return this.queue?.map(
       (item) => {
         const result = 
@@ -193,7 +208,7 @@ class QueueCard extends LitElement {
               delay=${delay_add * i}
               duration=${delay_add * 2}
               fill="forwards"
-              play=${visibility}
+              play=${play}
               iterations=1
             >
               <mass-player-media-row
@@ -215,6 +230,30 @@ class QueueCard extends LitElement {
       }
     );
   }
+  protected renderHeader(): TemplateResult {
+    const expressive = this.activePlayerController.useExpressive;
+    return html`
+      <mass-section-header>
+        <span slot="label" id="title">
+          Queue
+        </span>
+        <span slot="end" id="clear-queue">
+          <ha-button
+            appearance="plain"
+            variant="brand"
+            size="medium"
+            id="button-back"
+            class="button-min ${expressive ? `button-expressive` : ``}"
+            @click=${this.onClearQueue}
+          >
+            <ha-svg-icon
+              .path=${this.Icons.CLEAR}
+              class="header-icon"
+            ></ha-svg-icon>
+        </span>
+      </mass-section-header>
+    `
+  }
   protected render() {
     const expressive = this.activePlayerController.useExpressive;
     return this.error ?? html`
@@ -222,11 +261,7 @@ class QueueCard extends LitElement {
         id="container"
         class="${expressive ? `container-expressive` : ``}"
       >
-        <mass-section-header>
-          <span slot="label" id="title">
-            Queue
-          </span>
-        </mass-section-header>
+        ${this.renderHeader()}
         <ha-md-list class="list ${expressive ? `list-expressive` : ``}">
           ${this.renderQueueItems()}
         </ha-md-list>
@@ -263,6 +298,10 @@ class QueueCard extends LitElement {
   }
   protected firstUpdated(): void {
       this._firstLoaded = true;
+      this.queueController._host.addEventListener('section-changed', this.onTabSwitch);
+  }
+  protected updated(): void {
+    this._tabSwitchFirstUpdate = false;
   }
   static get styles(): CSSResultGroup {
     return styles;

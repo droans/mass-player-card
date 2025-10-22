@@ -10,6 +10,23 @@ export default css`
   display: none;
   }
 
+  .button-min {
+    height: 35px;
+    width: 35px;
+    --wa-color-fill-quiet: rgba(from var(--md-sys-color-primary) r g b / 0.1);
+    position: relative;
+  }
+  .button-min::part(base) {
+    --wa-form-control-padding-inline: 0px;
+    height: 35px;
+    width: 35px;
+  }
+  .button-expressive::part(base) {
+    box-shadow: var(--md-sys-elevation-level1);
+    border-radius: var(--button-small-border-radius) !important;
+    background-color: var(--md-sys-color-secondary-container);
+  }
+
   #container {
     overflow: hidden;
     width: 100%;
@@ -37,7 +54,7 @@ export default css`
     overflow-y: scroll;
     -ms-overflow-style: none;
     scrollbar-width: none;
-    border-radius: var(--ha-card-border-radius,12px);
+    border-radius: var(--queue-border-radius,12px);
   }
   .list-expressive {
     background-color: var(--md-sys-color-background);
