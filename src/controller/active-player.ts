@@ -120,6 +120,7 @@ export class ActivePlayerController {
   private set activePlayerName(name: string) {
     if (name.length) {
       this._activePlayerName.setValue(name);
+      return;
     }
     const ent = this.hass.states[this.activeEntityConfig.entity_id];
     this._activePlayerName.setValue(ent.attributes.friendly_name ?? "");
