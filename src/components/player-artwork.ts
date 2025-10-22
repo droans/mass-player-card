@@ -117,6 +117,12 @@ class MassPlayerArtwork extends LitElement {
     if (this.currentCarouselImage) {
       this.currentCarouselImage.src = img;
     }
+    const detail = {
+      type: 'current',
+      image: img
+    }
+    const ev = new CustomEvent('artwork-updated', {detail: detail})
+    this.controller.host.dispatchEvent(ev);
   }
   public get currentItemImage() {
     return this._currentItemImage;
@@ -147,6 +153,7 @@ class MassPlayerArtwork extends LitElement {
   }
 
   private onCarouselSwipe = (ev: SLSwipeEvent) => {
+    ev.stopPropagation();
     const slide_idx = ev.detail.index;
     const last_ts = this._lastSwipedTS;
     const cur_ts = ev.timeStamp;
