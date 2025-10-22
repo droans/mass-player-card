@@ -321,8 +321,8 @@ export class MusicAssistantPlayerCard extends LitElement {
       //eslint-disable-next-line @typescript-eslint/no-non-null-assertion
       const stylesheet = head_styles.styleSheet!;
       document.adoptedStyleSheets.push(stylesheet);
-      this.addEventListener('section-changed', this.onSectionChangedEvent);
     }
+    this.addEventListener('section-changed', this.onSectionChangedEvent);
   }
   public getCardSize() {
     return 3;
