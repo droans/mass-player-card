@@ -34,8 +34,8 @@ export function getThumbnail(hass: ExtendedHass, thumbnail: Thumbnail): string {
   }
   return LightModeThumbnails[thumbnail]
 }
-export function getMediaTypeSvg(media_type: MediaTypes, icons: Icons) {
-  const data = getSearchMediaButtons(icons);
+export function getMediaTypeSvg(media_type: MediaTypes, icons: Icons, hass: ExtendedHass) {
+  const data = getSearchMediaButtons(icons, hass);
   const result = data.find(
     (item) => {
       return (item.option as MediaTypes) == media_type;

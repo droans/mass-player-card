@@ -237,7 +237,7 @@ export class MediaBrowser extends LitElement {
   private onSearchButtonPress = () => {
     this.setPreviousSection();
     if (!this.searchMediaTypeIcon) {
-      this.searchMediaTypeIcon = getMediaTypeSvg(MediaTypes.TRACK, this.Icons);
+      this.searchMediaTypeIcon = getMediaTypeSvg(MediaTypes.TRACK, this.Icons, this.hass);
     }
     this.searchTerm = '';
     this.activeSection = 'search';
@@ -252,7 +252,7 @@ export class MediaBrowser extends LitElement {
     }
     ev.target.value = '';
     this.searchMediaType = val;
-    this.searchMediaTypeIcon = getMediaTypeSvg(val, this.Icons);
+    this.searchMediaTypeIcon = getMediaTypeSvg(val, this.Icons, this.hass);
     await this.searchMedia()
   }
   private onSearchLibrarySelect = async () => {
