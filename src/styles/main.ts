@@ -2,9 +2,12 @@ import { css } from 'lit';
 export default css`
   :host {
     --mass-player-card-height: 40em;
-
-    --browser-card-border-radius: 28px;
     
+    --default-border-radius: 28px;
+    --artwork-border-radius: var(--default-border-radius);
+    --browser-card-border-radius: var(--default-border-radius);
+    --queue-border-radius: var(--artwork-border-radius);
+
     --button-small-border-radius: 12px;
 
     --expressive-border-radius-container: 20px 20px 0px 0px;
@@ -46,7 +49,7 @@ export default css`
 
   ha-card {
     font-family: 'Roboto Flex', var(--ha-font-family-body), 'Roboto', !important;
-    border-radius: 28px;
+    border-radius: var(--default-border-radius);
   }
   ha-card#expressive {
     background-color: var(--md-sys-color-background);
@@ -58,7 +61,7 @@ export default css`
 
   #navbar-expressive {
     background-color: var(--expressive-player-blur-color);
-    border-radius: 0px 0px 28px 28px;
+    border-radius: 0px 0px var(--default-border-radius) var(--default-border-radius);
   }
 
   .section-hidden {

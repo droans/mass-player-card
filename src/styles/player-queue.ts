@@ -54,7 +54,7 @@ export default css`
     overflow-y: scroll;
     -ms-overflow-style: none;
     scrollbar-width: none;
-    border-radius: var(--ha-card-border-radius,12px);
+    border-radius: var(--queue-border-radius,12px);
   }
   .list-expressive {
     background-color: var(--md-sys-color-background);

@@ -37,13 +37,6 @@ export default css`
     border-radius: 8px 8px 0px 0px;
   }
 
-  #artwork-img {
-    border-radius: var(--ha-card-border-radius);
-    max-width: 100%;
-    justify-self: center;
-    display: block;
-  }
-
   .artwork-large {
     max-height: 35em !important;
   }
