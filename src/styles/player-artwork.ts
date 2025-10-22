@@ -2,7 +2,7 @@ import { css } from "lit";
 
 export default css`
   .artwork {
-    border-radius: var(--ha-card-border-radius);
+    border-radius: var(--artwork-border-radius);
     max-width: 100%;
     justify-self: center;
     display: block;
