@@ -48,6 +48,9 @@ export class ActivePlayerController {
     this._host = host;
     host.addEventListener('artwork-updated', this.onActiveTrackChange);
     this.setDefaultActivePlayer();
+    if (!isActive(hass, this.activeMediaPlayer)) {
+      this.applyExpressiveTheme();
+    }
   }
   public set hass(hass: ExtendedHass) {
     this._hass = hass;
