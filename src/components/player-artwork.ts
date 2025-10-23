@@ -175,6 +175,10 @@ class MassPlayerArtwork extends LitElement {
         void this.controller.Actions.actionPlayNext()
       };
     }
+    this.goToCurrentSlide('instant');
+  }
+  private goToCurrentSlide(behavior: ScrollBehavior = 'instant') {
+    this.carouselElement.goToSlide(1, behavior);
   }
 
   protected renderItemArtwork(img: string | undefined, artwork_id: string) {
@@ -262,7 +266,7 @@ class MassPlayerArtwork extends LitElement {
     return _changedProperties.size > 0;
   }
   protected updated(): void {
-    this.carouselElement.goToSlide(1, 'instant');
+    this.goToCurrentSlide();
   }
 
   disconnectedCallback(): void {
@@ -271,7 +275,7 @@ class MassPlayerArtwork extends LitElement {
   }
   connectedCallback(): void {
     if (this._disconnected) {
-      this.carouselElement.goToSlide(1, 'instant');
+      this.goToCurrentSlide();
     }
     this._disconnected = false;
     super.connectedCallback();
