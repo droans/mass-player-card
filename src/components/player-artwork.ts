@@ -117,6 +117,12 @@ class MassPlayerArtwork extends LitElement {
     if (this.currentCarouselImage) {
       this.currentCarouselImage.src = img;
     }
+    const detail = {
+      type: 'current',
+      image: img
+    }
+    const ev = new CustomEvent('artwork-updated', {detail: detail})
+    this.controller.host.dispatchEvent(ev);
   }
   public get currentItemImage() {
     return this._currentItemImage;
@@ -147,6 +153,7 @@ class MassPlayerArtwork extends LitElement {
   }
 
   private onCarouselSwipe = (ev: SLSwipeEvent) => {
+    ev.stopPropagation();
     const slide_idx = ev.detail.index;
     const last_ts = this._lastSwipedTS;
     const cur_ts = ev.timeStamp;
@@ -168,6 +175,10 @@ class MassPlayerArtwork extends LitElement {
         void this.controller.Actions.actionPlayNext()
       };
     }
+    this.goToCurrentSlide('instant');
+  }
+  private goToCurrentSlide(behavior: ScrollBehavior = 'instant') {
+    this.carouselElement.goToSlide(1, behavior);
   }
 
   protected renderItemArtwork(img: string | undefined, artwork_id: string) {
@@ -255,7 +266,7 @@ class MassPlayerArtwork extends LitElement {
     return _changedProperties.size > 0;
   }
   protected updated(): void {
-    this.carouselElement.goToSlide(1, 'instant');
+    this.goToCurrentSlide();
   }
 
   disconnectedCallback(): void {
@@ -264,7 +275,7 @@ class MassPlayerArtwork extends LitElement {
   }
   connectedCallback(): void {
     if (this._disconnected) {
-      this.carouselElement.goToSlide(1, 'instant');
+      this.goToCurrentSlide();
     }
     this._disconnected = false;
     super.connectedCallback();

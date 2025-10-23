@@ -21,7 +21,8 @@ export interface SLSwipeEvent {
     index: number,
     slide: SlCarouselItem
   },
-  timeStamp: number
+  timeStamp: number,
+  stopPropagation(): void,
 }
 
 export const SWIPE_MIN_X = 100;
