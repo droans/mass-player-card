@@ -38,7 +38,7 @@ class MassPlayerArtwork extends LitElement {
   @state()
   private playerConfig!: PlayerConfig;
   @consume({ context: activeMediaPlayer, subscribe: true})
-  private activePlayer!: ExtendedHassEntity;
+  @state() public activePlayer!: ExtendedHassEntity;
 
   @consume({ context: IconsContext})
   private Icons!: Icons;
