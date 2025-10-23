@@ -48,6 +48,9 @@ export class ActivePlayerController {
     this._host = host;
     host.addEventListener('artwork-updated', this.onActiveTrackChange);
     this.setDefaultActivePlayer();
+    if (!isActive(hass, this.activeMediaPlayer)) {
+      void this.applyExpressiveTheme();
+    }
   }
   public set hass(hass: ExtendedHass) {
     this._hass = hass;
@@ -97,8 +100,6 @@ export class ActivePlayerController {
   }
   
   private set activeMediaPlayer(player: ExtendedHassEntity) {
-    const old_track = this?.activeMediaPlayer?.attributes?.media_content_id;
-    const new_track = player?.attributes?.media_content_id;
     if (playerHasUpdated(this.activeMediaPlayer, player)) {
       this._activeMediaPlayer.setValue(player);
       if (player.attributes?.group_members) {
@@ -283,12 +284,22 @@ export class ActivePlayerController {
     }
   }
   public onActiveTrackChange = (ev: Event) => {
+    /* eslint-disable
+      @typescript-eslint/no-unsafe-assignment,
+      @typescript-eslint/no-unsafe-argument,
+      @typescript-eslint/no-unsafe-member-access
+    */
     const detail = (ev as CustomEvent).detail;
     if (detail.type != 'current') {
       return;
     }
     const img = detail.image;
     void this.applyExpressiveThemeFromImage(img);
+    /* eslint-enable
+      @typescript-eslint/no-unsafe-assignment,
+      @typescript-eslint/no-unsafe-argument,
+      @typescript-eslint/no-unsafe-member-access
+    */
   }
   public async applyExpressiveThemeFromImage(img: string) {
     if (!this.config.expressive) {

@@ -28,7 +28,9 @@ export default css`
   }
 
   #active-track-text {
-    z-index: 1;
+    z-index: 0;
+    transform: translate3d(0, 0, -1px);
+    -webkit-transform: translate3d(0, 0, -1px);
     position: relative;
   }
   .active-track-text-expressive {
@@ -214,7 +216,8 @@ export default css`
     --control-select-menu-height: 2.5em;
   }
   .menu-header-expressive::part(menu-select-menu) {
-    background-color: var(--md-sys-color-secondary-container) !important;
+    --control-select-menu-background-color: var(--md-sys-color-secondary-container) !important;
+    background-color: unset !important;
     box-shadow: var(--md-sys-elevation-level1);
     border-radius: var(--button-small-border-radius);
   }
