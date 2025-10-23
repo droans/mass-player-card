@@ -10,6 +10,8 @@ export default css`
   --mdc-theme-text-primary-on-background: var(--me-menu-text-color);
   --mdc-theme-text-icon-on-background: var(--me-menu-text-color);
   --mdc-theme-surface: var(--me-menu-background-color);
+  --mdc-shape-medium: 24px;
+  --mdc-list-vertical-padding: 0px;
   }
   .svg-menu {
     color: var(--md-sys-color-primary);
