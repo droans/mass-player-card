@@ -28,7 +28,9 @@ export default css`
   }
 
   #active-track-text {
-    z-index: 1;
+    z-index: 0;
+    transform: translate3d(0, 0, -1px);
+    -webkit-transform: translate3d(0, 0, -1px);
     position: relative;
   }
   .active-track-text-expressive {
