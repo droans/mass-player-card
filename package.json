@@ -61,7 +61,8 @@
     "start": "rollup -c rollup.config.dev.js --watch",
     "build": "yarn rollup",
     "lint": "eslint **/*.ts --max-warnings 0 --no-warn-ignored",
-    "rollup": "rollup -c"
+    "rollup": "rollup -c",
+    "docs": "doctoc ./README.md"
   },
   "packageManager": "yarn@4.9.1"
 }

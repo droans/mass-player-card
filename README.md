@@ -32,6 +32,47 @@ A Home Assistant media player card built for Music Assistant players.
 
 [![My Home Assistant](https://my.home-assistant.io/badges/hacs_repository.svg)](https://my.home-assistant.io/redirect/hacs_repository/?repository=mass-player-card&owner=droans&category=Plugin)
 
+<!-- START doctoc generated TOC please keep comment here to allow auto update -->
+<!-- DON'T EDIT THIS SECTION, INSTEAD RE-RUN doctoc TO UPDATE -->
+
+  - [Installation](#installation)
+    - [Prequisites](#prequisites)
+    - [HACS Installation](#hacs-installation)
+    - [Manual Installation](#manual-installation)
+- [Configuration](#configuration)
+    - [Minimal Config](#minimal-config)
+    - [Default Configuration](#default-configuration)
+    - [Full Example Configuration](#full-example-configuration)
+  - [Base Config](#base-config)
+  - [Entity Config](#entity-config)
+  - [Entity Hidden Elements Config](#entity-hidden-elements-config)
+  - [Music Player Config](#music-player-config)
+  - [Music Player Hidden Elements Config](#music-player-hidden-elements-config)
+  - [Music Player Layout Config](#music-player-layout-config)
+  - [Queue Config](#queue-config)
+  - [Queue Hidden Elements Config](#queue-hidden-elements-config)
+  - [Media Browser Config](#media-browser-config)
+  - [Media Browser Hidden Elements Config](#media-browser-hidden-elements-config)
+  - [Favorites Config](#favorites-config)
+    - [Favorite Items](#favorite-items)
+    - [WARNING:](#warning)
+  - [Sections Config](#sections-config)
+  - [Section Item Config](#section-item-config)
+  - [Players Config](#players-config)
+  - [Players Hidden Elements Config](#players-hidden-elements-config)
+- [FAQs](#faqs)
+  - [The card won't display at all or won't display properly!](#the-card-wont-display-at-all-or-wont-display-properly)
+  - [The media browser won't display any items for:](#the-media-browser-wont-display-any-items-for)
+    - [Favorites](#favorites)
+    - [Recommendations](#recommendations)
+    - [Recents](#recents)
+  - [I'm not seeing any artwork in the queue or media browser!](#im-not-seeing-any-artwork-in-the-queue-or-media-browser)
+  - [How do I theme the card?](#how-do-i-theme-the-card)
+  - [Can this card work in my local language?](#can-this-card-work-in-my-local-language)
+  - [I have other questions or issues not addressed](#i-have-other-questions-or-issues-not-addressed)
+
+<!-- END doctoc generated TOC please keep comment here to allow auto update -->
+
 ## Installation
 
 ### Prequisites
@@ -545,7 +586,52 @@ Multiple elements on the players tab can be hidden. By default, all elements are
 | join_button     | bool  | No       | false       | Hides the join button     |
 | transfer_button | bool  | No       | false       | Hides the transfer button |
 
-## Translation Support
+# FAQs
+
+## The card won't display at all or won't display properly!
+1. Check to ensure you have [Music Assistant Queue Actions](https://github.com/droans/mass_queue) fully installed - including setting up the integration and creating config entries for your MA instances.
+2. Check the other FAQs and [repository issues](https://github.com/droans/mass-player-card/issues) to see if they answer your issue.
+3. If you still can't figure it out, [submit a new issue](https://github.com/droans/mass-player-card/issues/new).
+
+## The media browser won't display any items for:
+
+### Favorites
+Usually, this issue is because you are looking at the Favorites section but don't have any favorites added in Music Assistant or your providers. If you don't want to favorite anything, consider adding [your own items](#favorite-items) instead.
+
+### Recommendations
+Ensure your music provider actually provides recommendations. 
+
+### Recents
+Have you tried listening to music?
+
+## I'm not seeing any artwork in the queue or media browser!
+If you are using a local provider, Music Assistant sends back a path which usually can't be accessed. Fortunately, this is something that we can easily work around. Music Assistant Queue Actions has the ability to download images for local providers and send them back to the card. This can cause a slowdown as downloading and encoding each image may take some time. Some of this is avoided - for ecample, images for queue items are usually only downloaded when HA first starts up, the integration is reloaded, or when the queue changes. 
+
+To enable this feature:
+1. Navigate to the Devices & Servies section in Home Assistant settings. 
+2. Locate and select the Music Assistant Queue Actions integration. 
+3. Click on the cog next to the config entry. 
+4. Check the box titled either "download_local" or "Attempt fallback support for local media images" and click "Submit".
+
+If you are using a non-local provider, [submit a new issue](https://github.com/droans/mass-player-card/issues/new). 
+
+## How do I theme the card?
+
+This card has initial support for custom themes. All tokens are listed in [src/styles/main.ts](https://github.com/droans/mass-player-card/blob/main/src/styles/main.ts) and are prefixed with `mass-player-card`. 
+
+For example, the border radius for the sections and cards are set in the file as:
+
+```css
+--default-border-radius: var(--mass-player-card-default-border-radius, 28px);
+```
+
+If you would like to set the border radius to 12px instead, you would add this line to your theme:
+
+```yaml
+mass-player-card-default-border-radius: 12px;
+```
+
+## Can this card work in my local language?
 
 This card currently has complete support for English and majority support for Dutch. 
 
@@ -560,3 +646,7 @@ If you would like to add new translations for other languages:
 6. Submit a pull request to this repository. The target branch should be `dev`. 
 
 The instructions are rather similar for improving existing language support. However, you do not need to make a clone of `en.ts` (instead, use the existing translation file) and you do not need to follow Step #4.
+
+## I have other questions or issues not addressed
+
+Check the [repository issues](https://github.com/droans/mass-player-card/issues) to see if your question has already been asked. If not, feel free to [submit a new issue](https://github.com/droans/mass-player-card/issues/new). 
