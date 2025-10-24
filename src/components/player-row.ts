@@ -148,7 +148,7 @@ class PlayerRow extends LitElement {
     if (!title.length) {
       title = this.player_entity.attributes?.friendly_name ?? "Media Player"
     };
-    const active_style = isActive(this.hass, this.player_entity, this._entityConfig) ? `audio-bars` : `audio-bars-inactive`;
+    const active_style = isActive(this.hass, this.player_entity, this._entityConfig) && this.player_entity.state == 'playing' ? `audio-bars` : `audio-bars-inactive`;
     const active_expressive_style =  this.useExpressive ? `audio-bars-expressive` : `audio-bars-normal`;
     return html`
       <span
