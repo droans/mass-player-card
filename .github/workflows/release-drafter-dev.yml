@@ -32,6 +32,8 @@ jobs:
       - name: Run Release Drafter
         uses: release-drafter/release-drafter@v6.1.0
         with:
+          tag: ${{ steps.version.outputs.pkg_version }}
+          version: ${{ steps.version.outputs.pkg_version }}
           config-name: release-drafter-dev.yml
         env:
           GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
