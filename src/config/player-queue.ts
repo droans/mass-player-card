@@ -1,6 +1,15 @@
 import { hiddenElementsConfigItem } from "../utils/config.js";
 import { Config } from "./config";
 
+export interface QueueConfig {
+  enabled: boolean;
+  limit_before: number;
+  limit_after: number;
+  show_album_covers: boolean;
+  show_artist_names: boolean;
+  hide: PlayerQueueHiddenElementsConfig;
+}
+
 export interface PlayerQueueHiddenElementsConfig {
   action_buttons: boolean;
   move_down_button: boolean;
@@ -10,6 +19,7 @@ export interface PlayerQueueHiddenElementsConfig {
   album_covers: boolean;
   artist_names: boolean;
 }
+
 export const DEFAULT_PLAYER_QUEUE_HIDDEN_ELEMENTS_CONFIG: PlayerQueueHiddenElementsConfig = {
   action_buttons: false,
   move_down_button: false,
@@ -18,14 +28,6 @@ export const DEFAULT_PLAYER_QUEUE_HIDDEN_ELEMENTS_CONFIG: PlayerQueueHiddenEleme
   remove_button: false,
   album_covers: false,
   artist_names: false
-}
-export interface QueueConfig {
-  enabled: boolean;
-  limit_before: number;
-  limit_after: number;
-  show_album_covers: boolean;
-  show_artist_names: boolean;
-  hide: PlayerQueueHiddenElementsConfig;
 }
 export const DEFAULT_QUEUE_CONFIG: QueueConfig = {
   enabled: true,
