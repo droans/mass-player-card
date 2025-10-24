@@ -32,6 +32,47 @@ A Home Assistant media player card built for Music Assistant players.
 
 [![My Home Assistant](https://my.home-assistant.io/badges/hacs_repository.svg)](https://my.home-assistant.io/redirect/hacs_repository/?repository=mass-player-card&owner=droans&category=Plugin)
 
+<!-- START doctoc generated TOC please keep comment here to allow auto update -->
+<!-- DON'T EDIT THIS SECTION, INSTEAD RE-RUN doctoc TO UPDATE -->
+
+  - [Installation](#installation)
+    - [Prequisites](#prequisites)
+    - [HACS Installation](#hacs-installation)
+    - [Manual Installation](#manual-installation)
+- [Configuration](#configuration)
+    - [Minimal Config](#minimal-config)
+    - [Default Configuration](#default-configuration)
+    - [Full Example Configuration](#full-example-configuration)
+  - [Base Config](#base-config)
+  - [Entity Config](#entity-config)
+  - [Entity Hidden Elements Config](#entity-hidden-elements-config)
+  - [Music Player Config](#music-player-config)
+  - [Music Player Hidden Elements Config](#music-player-hidden-elements-config)
+  - [Music Player Layout Config](#music-player-layout-config)
+  - [Queue Config](#queue-config)
+  - [Queue Hidden Elements Config](#queue-hidden-elements-config)
+  - [Media Browser Config](#media-browser-config)
+  - [Media Browser Hidden Elements Config](#media-browser-hidden-elements-config)
+  - [Favorites Config](#favorites-config)
+    - [Favorite Items](#favorite-items)
+    - [WARNING:](#warning)
+  - [Sections Config](#sections-config)
+  - [Section Item Config](#section-item-config)
+  - [Players Config](#players-config)
+  - [Players Hidden Elements Config](#players-hidden-elements-config)
+- [FAQs](#faqs)
+  - [The card won't display at all or won't display properly!](#the-card-wont-display-at-all-or-wont-display-properly)
+  - [The media browser won't display any items for:](#the-media-browser-wont-display-any-items-for)
+    - [Favorites](#favorites)
+    - [Recommendations](#recommendations)
+    - [Recents](#recents)
+  - [I'm not seeing any artwork in the queue or media browser!](#im-not-seeing-any-artwork-in-the-queue-or-media-browser)
+  - [How do I theme the card?](#how-do-i-theme-the-card)
+  - [Can this card work in my local language?](#can-this-card-work-in-my-local-language)
+  - [I have other questions or issues not addressed](#i-have-other-questions-or-issues-not-addressed)
+
+<!-- END doctoc generated TOC please keep comment here to allow auto update -->
+
 ## Installation
 
 ### Prequisites
