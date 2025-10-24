@@ -52,7 +52,9 @@ jobs:
       - name: Install dependencies
         run: yarn install --frozen-lockfile
       - name: Build the project
-        run: yarn rollup
+        run: |
+          npm version ${{ github.event.release.tag_name }}
+          yarn rollup
       - name: Upload built source
         uses: softprops/action-gh-release@v2
         with:
