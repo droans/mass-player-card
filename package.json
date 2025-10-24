@@ -60,8 +60,9 @@
   "scripts": {
     "start": "rollup -c rollup.config.dev.js --watch",
     "build": "yarn rollup",
-    "lint": "eslint **/*.ts --max-warnings 0 --no-warn-ignored && doctoc ./README.md",
-    "rollup": "rollup -c"
+    "lint": "eslint **/*.ts --max-warnings 0 --no-warn-ignored",
+    "rollup": "rollup -c",
+    "docs": "doctoc ./README.md"
   },
   "packageManager": "yarn@4.9.1"
 }
