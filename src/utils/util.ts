@@ -107,13 +107,14 @@ export function queueItemhasUpdated(old_item: QueueItem, new_item: QueueItem): b
 export function isActive(hass: ExtendedHass, entity: ExtendedHassEntity, entity_config: EntityConfig): boolean {
     const inactive_states = entity_config.inactive_when_idle ? ['off', 'idle'] : ['off'];
     const not_off = !(inactive_states.includes(entity.state));
+    const has_item = !!(entity?.attributes?.media_content_id)
     const is_mass = entity.attributes.app_id == MUSIC_ASSISTANT_APP_NAME;
     const has_queue = !!(entity.attributes?.active_queue);
     const connected = hass.connected;
     const updated_ms =  new Date(entity.last_updated).getTime();
     const now_ms = new Date().getTime();
     const updated_recently = now_ms - updated_ms <= MAX_ACTIVE_LAST_ACTIVE_DURATION
-    return not_off && is_mass && has_queue && connected && updated_recently;
+    return not_off && is_mass && has_queue && connected && updated_recently && has_item;
 }
 
 // eslint-disable-next-line @typescript-eslint/no-explicit-any

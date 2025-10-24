@@ -1,20 +1,10 @@
 import { hiddenElementsConfigItem } from "../utils/config.js";
 import { Config } from "./config";
 
-export enum PlayerControlsLayout {
-  COMPACT = "compact",
-  SPACED = "spaced"
-}
-
-export enum PlayerIconSize {
-  SMALL = "small",
-  LARGE = "large"
-}
-
-export enum ArtworkSize {
-  SMALL = "small",
-  MEDIUM = "medium",
-  LARGE = "large"
+export interface PlayerConfig {
+  enabled: boolean;
+  hide: PlayerHiddenElementsConfig;
+  layout: PlayerLayoutConfig;
 }
 
 export interface PlayerControlsHiddenElementsConfig {
@@ -30,6 +20,40 @@ export interface PlayerHiddenElementsConfig extends PlayerControlsHiddenElements
   volume: boolean,
   group_volume: boolean,
 }
+
+export interface PlayerLayoutConfig {
+  controls_layout: PlayerControlsLayout
+  icons: PlayerIcons
+  artwork_size: ArtworkSize
+}
+export enum PlayerControlsLayout {
+  COMPACT = "compact",
+  SPACED = "spaced"
+}
+export interface PlayerIcons {
+  shuffle: PlayerIcon;
+  previous: PlayerIcon;
+  play_pause: PlayerIcon;
+  next: PlayerIcon;
+  repeat: PlayerIcon;
+}
+export interface PlayerIcon {
+  size: PlayerIconSize;
+  box_shadow: boolean;
+  label: boolean;
+}
+export enum ArtworkSize {
+  SMALL = "small",
+  MEDIUM = "medium",
+  LARGE = "large"
+}
+
+export enum PlayerIconSize {
+  SMALL = "small",
+  LARGE = "large"
+}
+
+
 export const DEFAULT_PLAYER_HIDDEN_ELEMENTS_CONFIG: PlayerHiddenElementsConfig = {
   favorite: false,
   mute: false,
@@ -40,7 +64,6 @@ export const DEFAULT_PLAYER_HIDDEN_ELEMENTS_CONFIG: PlayerHiddenElementsConfig =
   volume: false,
   group_volume: false,
 }
-
 export const DEFAULT_PLAYER_ICON_CONFIG: PlayerIcons = {
   shuffle: {
     size: PlayerIconSize.SMALL,
@@ -68,7 +91,6 @@ export const DEFAULT_PLAYER_ICON_CONFIG: PlayerIcons = {
     label: true,
   },
 }
-
 export const DEFAULT_PLAYER_LAYOUT_CONFIG: PlayerLayoutConfig = {
   controls_layout: PlayerControlsLayout.COMPACT,
   icons: DEFAULT_PLAYER_ICON_CONFIG,
@@ -80,31 +102,6 @@ export const DEFAULT_PLAYER_CONFIG: PlayerConfig = {
   layout: DEFAULT_PLAYER_LAYOUT_CONFIG,
 }
 
-export interface PlayerIcon {
-  size: PlayerIconSize;
-  box_shadow: boolean;
-  label: boolean;
-}
-
-export interface PlayerIcons {
-  shuffle: PlayerIcon;
-  previous: PlayerIcon;
-  play_pause: PlayerIcon;
-  next: PlayerIcon;
-  repeat: PlayerIcon;
-}
-
-export interface PlayerLayoutConfig {
-  controls_layout: PlayerControlsLayout
-  icons: PlayerIcons
-  artwork_size: ArtworkSize
-}
-
-export interface PlayerConfig {
-  enabled: boolean;
-  hide: PlayerHiddenElementsConfig;
-  layout: PlayerLayoutConfig;
-}
 const PLAYER_HIDDEN_ITEMS = [
   'favorite',
   'mute',
