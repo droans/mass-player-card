@@ -18,8 +18,8 @@ export default {
   "browser.sections.track": "Nummers",
 
 
-  "player.controls.power": "Aan/Uit",
-  "player.controls.shuffle": "Willekeurig",
+  "player.controls.power": "Power",
+  "player.controls.shuffle": "Random",
   "player.controls.repeat": "Herhalen",
   "player.controls.favorite": "Favoriet",
   "player.controls.previous": "Vorige",
