@@ -51,9 +51,25 @@ jobs:
             ${{ runner.OS }}-
       - name: Install dependencies
         run: yarn install --frozen-lockfile
+      - name: Cache dependencies
+        uses: actions/cache@v3
+        with:
+          path: ~/node_modules
+          key: ${{ runner.OS }}-node-modules-${{ matrix.node-version }}-${{ hashFiles('**/yarn.lock') }}
+          restore-keys: |
+            ${{ runner.OS }}-node-modules-${{ matrix.node-version }}
+            ${{ runner.OS }}-
+      - name: Set version in release, repo based on tag
+        run: |
+          npm config set git-tag-version false
+          npm version ${{ github.event.release.tag_name }} -m "beep boop version bump"
+          git config --local user.email "github-actions[bot]@users.noreply.github.com"
+          git config --local user.name "github-actions[bot]"
+          git add .
+          git commit -m "beep boop version bump"
+          git push 
       - name: Build the project
         run: |
-          npm version ${{ github.event.release.tag_name }}
           yarn rollup
       - name: Upload built source
         uses: softprops/action-gh-release@v2
