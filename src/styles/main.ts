@@ -7,6 +7,11 @@ export default css`
     --artwork-medium-height: var(--mass-player-card-artwork-medium-height, 22em) !important;
     --artwork-small-height: var(--mass-player-card-artwork-small-height, 14em) !important;
 
+    --audio-bars-color: var(--mass-player-card-audio-bars-color, var(--secondary-text-color));
+    --expressive-audio-bars-initial-color: var(--mass-player-card-audio-bars-initial-color, var(--md-sys-color-tertiary));
+    --expressive-audio-bars-middle-color: var(--mass-player-card-audio-bars-middle-color, var(--md-sys-color-secondary));
+    --expressive-audio-bars-max-color: var(--mass-player-card-audio-bars-max-color, var(--md-sys-color-primary));
+
     --default-border-radius: var(--mass-player-card-default-border-radius, 28px);
     --artwork-border-radius: var(--mass-player-card-artwork-border-radius, var(--default-border-radius));
     --browser-card-border-radius: var(--mass-player-card-browser-card-border-radius, var(--default-border-radius));
