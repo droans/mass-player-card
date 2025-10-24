@@ -558,3 +558,5 @@ If you would like to add new translations for other languages:
   * Under `const TRANSLATIONS`, add an entry for your translations.
 5. Commit and push the changes to your forked copy of this repo.
 6. Submit a pull request to this repository. The target branch should be `dev`. 
+
+The instructions are rather similar for improving existing language support. However, you do not need to make a clone of `en.ts` (instead, use the existing translation file) and you do not need to follow Step #4.
