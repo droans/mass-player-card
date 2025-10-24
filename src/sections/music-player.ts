@@ -341,7 +341,7 @@ class MusicPlayerCard extends LitElement {
     if(!isActive(this.hass, this.activeMediaPlayer)) {
       return html`
         <div class="player-track-title">
-          Nothing is currently active!
+          ${this.controller.translate('player.title.inactive')}
         </div>
       `
     }
