@@ -4,6 +4,8 @@ on:
   release:
     types:
       - published
+    branch:
+      - main
 permissions:
   contents: write
 
