@@ -36,6 +36,11 @@ class MediaBrowserCards extends LitElement {
   public hass!: ExtendedHass;
 
   private _browserConfig!: MediaBrowserConfig;
+
+  public onEnqueueAction!: CardEnqueueService;
+  public onSelectAction!: CardSelectedService;
+  private _items!: MediaCardItem[];
+
   @consume({ context: mediaBrowserConfigContext, subscribe: true})
   public set browserConfig(conf: MediaBrowserConfig) {
     if (!jsonMatch(this._browserConfig, conf)) {
@@ -48,11 +53,6 @@ class MediaBrowserCards extends LitElement {
   public get browserConfig() {
     return this._browserConfig;
   }
-
-  public onEnqueueAction!: CardEnqueueService;
-  public onSelectAction!: CardSelectedService;
-
-  private _items!: MediaCardItem[];
 
   @consume({ context: activeMediaBrowserCardsContext, subscribe: true})
   public set items(items: MediaCardItem[]) {
