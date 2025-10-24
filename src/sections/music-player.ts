@@ -334,7 +334,7 @@ class MusicPlayerCard extends LitElement {
       `;
   }
   protected renderTitle() {
-    if(!isActive(this.hass, this.activeMediaPlayer)) {
+    if(!isActive(this.hass, this.activeMediaPlayer, this.activeEntityConfig)) {
       return html`
         <div class="player-track-title">
           ${this.controller.translate('player.title.inactive')}
@@ -457,7 +457,7 @@ class MusicPlayerCard extends LitElement {
     return html``;
   }
   protected renderArtist() {
-    if (!isActive(this.hass, this.activeMediaPlayer)) {
+    if (!isActive(this.hass, this.activeMediaPlayer, this.activeEntityConfig)) {
       const msgs: string[] = this.controller.translate('player.messages.inactive') as string[];
       const i = Math.floor(Math.random() * msgs.length);
       return html`
@@ -553,7 +553,7 @@ class MusicPlayerCard extends LitElement {
     return html`
       <mass-progress-bar
         class="${this._artworkProgressClass}"
-        style="${isActive(this.hass, this.activeMediaPlayer) ? `` : `opacity: 0;`}"
+        style="${isActive(this.hass, this.activeMediaPlayer, this.activeEntityConfig) ? `` : `opacity: 0;`}"
       ></mass-progress-bar>
     `
   }

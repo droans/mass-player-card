@@ -50,6 +50,7 @@ export interface EntityConfig {
   max_volume: number;
   name: string;
   hide: HiddenElementsConfig;
+  inactive_when_idle: boolean;
 }
 
 export interface Config {
@@ -174,7 +175,8 @@ function entityConfigFromEntityID(entity_id: string): EntityConfig {
     volume_entity_id: entity_id,
     name: "",
     max_volume: DEFAULT_MAX_VOLUME,
-    hide: ENTITY_DEFAULT_HIDDEN_ITEM_CONFIG
+    hide: ENTITY_DEFAULT_HIDDEN_ITEM_CONFIG,
+    inactive_when_idle: false
   }
 }
 
@@ -189,6 +191,7 @@ function processEntityConfig(config: string|EntityConfig): EntityConfig {
     name: config?.name ?? "",
     max_volume: config?.max_volume ?? DEFAULT_MAX_VOLUME,
     hide: HIDDEN_ELEMENTS,
+    inactive_when_idle: config?.inactive_when_idle ?? false,
   }
   return r;
 }

@@ -1,4 +1,4 @@
-import {Config } from "../config/config";
+import {Config, EntityConfig } from "../config/config";
 import {
   DEFAULT_SECTION_PRIORITY,
   Sections
@@ -104,8 +104,9 @@ export function queueItemhasUpdated(old_item: QueueItem, new_item: QueueItem): b
       || old_item?.show_move_up_next !== new_item?.show_move_up_next
   )
 }
-export function isActive(hass: ExtendedHass, entity: ExtendedHassEntity): boolean {
-    const not_off = !(['off', 'idle'].includes(entity.state));
+export function isActive(hass: ExtendedHass, entity: ExtendedHassEntity, entity_config: EntityConfig): boolean {
+    const inactive_states = entity_config.inactive_when_idle ? ['off', 'idle'] : ['off'];
+    const not_off = !(inactive_states.includes(entity.state));
     const is_mass = entity.attributes.app_id == MUSIC_ASSISTANT_APP_NAME;
     const has_queue = !!(entity.attributes?.active_queue);
     const connected = hass.connected;

@@ -239,7 +239,7 @@ class MassPlayerArtwork extends LitElement {
     return this.renderCarouselItem(img, `carousel-img-prior`);
   }
   protected renderCarouselItems() {
-    if (!isActive(this.hass, this.activePlayer)) {
+    if (!isActive(this.hass, this.activePlayer, this.controller.ActivePlayer.activeEntityConfig)) {
       return this.renderAsleep();
     }
     return html`

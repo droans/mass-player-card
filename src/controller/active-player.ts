@@ -48,7 +48,7 @@ export class ActivePlayerController {
     this._host = host;
     host.addEventListener('artwork-updated', this.onActiveTrackChange);
     this.setDefaultActivePlayer();
-    if (!isActive(hass, this.activeMediaPlayer)) {
+    if (!isActive(hass, this.activeMediaPlayer, this.activeEntityConfig)) {
       void this.applyExpressiveTheme();
     }
   }
@@ -189,7 +189,7 @@ export class ActivePlayerController {
     const active_players = players.filter(
       (entity) => {
         const ent = states[entity.entity_id];
-        return isActive(this.hass, ent)
+        return isActive(this.hass, ent, entity)
       }
     );
     if (active_players.length) {
@@ -234,7 +234,7 @@ export class ActivePlayerController {
       @typescript-eslint/no-unsafe-member-access,
       @typescript-eslint/no-unsafe-return,
     */
-   if (!isActive(this.hass, this.activeMediaPlayer)) {
+   if (!isActive(this.hass, this.activeMediaPlayer, this.activeEntityConfig)) {
     return 0;
    }
     const current_queue = await this.actionGetCurrentQueue();
@@ -242,7 +242,7 @@ export class ActivePlayerController {
     return elapsed;
   }
   public async getPlayerActiveItemDuration(): Promise<number> {
-    if (!isActive(this.hass, this.activeMediaPlayer)) {
+    if (!isActive(this.hass, this.activeMediaPlayer, this.activeEntityConfig)) {
       return 1;
     }
     const current_queue = await this.actionGetCurrentQueue();
@@ -359,7 +359,7 @@ export class ActivePlayerController {
     const local = attrs.entity_picture_local;
     const non_local = attrs.entity_picture;
     const pic = `${origin}${local ?? non_local}`;
-    const url: string = isActive(this.hass, this.activeMediaPlayer) ? pic ?? def : def; 
+    const url: string = isActive(this.hass, this.activeMediaPlayer, this.activeEntityConfig) ? pic ?? def : def; 
     const elem = document.createElement('img');
     elem.height = 75;
     elem.width = 75;
