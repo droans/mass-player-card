@@ -35,6 +35,7 @@ import { Sections } from '../const/card';
 import { ActivePlayerController } from '../controller/active-player.js';
 import { QueueController } from '../controller/queue.js';
 import { jsonMatch } from '../utils/util.js';
+import { getTranslation } from '../utils/translations.js';
 import { Icons } from '../const/icons.js';
 
 class QueueCard extends LitElement {
@@ -231,11 +232,12 @@ class QueueCard extends LitElement {
     );
   }
   protected renderHeader(): TemplateResult {
+    const label = getTranslation("queue.header", this.hass) as string;
     const expressive = this.activePlayerController.useExpressive;
     return html`
       <mass-section-header>
         <span slot="label" id="title">
-          Queue
+          ${label}
         </span>
         <span slot="end" id="clear-queue">
           <ha-button

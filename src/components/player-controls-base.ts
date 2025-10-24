@@ -1,7 +1,7 @@
 import { consume } from "@lit/context";
 import { LitElement, PropertyValues } from "lit";
 import { state } from "lit/decorators.js";
-import { actionsControllerContext, activeEntityConf, activePlayerDataContext, EntityConfig, IconsContext, musicPlayerConfigContext } from "../const/context";
+import { actionsControllerContext, activeEntityConf, activePlayerDataContext, controllerContext, EntityConfig, IconsContext, musicPlayerConfigContext } from "../const/context";
 import { ActionsController } from "../controller/actions";
 import { PlayerData } from "../const/music-player";
 import { Icons } from "../const/icons";
@@ -9,6 +9,7 @@ import { getIteratedRepeatMode } from "../utils/music-player";
 import { RepeatMode } from "../const/common";
 import { jsonMatch } from "../utils/util.js";
 import { PlayerConfig, PlayerControlsHiddenElementsConfig } from "../config/player.js";
+import { MassCardController } from "../controller/controller.js";
 
 export class MassPlayerControlsBase extends LitElement {
   @consume({ context: actionsControllerContext})
@@ -16,6 +17,9 @@ export class MassPlayerControlsBase extends LitElement {
   private _entityHiddenElements!: PlayerControlsHiddenElementsConfig;
   private _configHiddenElements!: PlayerControlsHiddenElementsConfig;
   @state() private _hiddenElements!: PlayerControlsHiddenElementsConfig;
+
+  @consume({context: controllerContext, subscribe: true})
+  public controller!: MassCardController;
 
   @consume({ context: musicPlayerConfigContext, subscribe: true})
   private set _base_player_config(config: PlayerConfig) {

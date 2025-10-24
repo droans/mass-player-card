@@ -3,6 +3,7 @@ import { ExtendedHass, Thumbnail, MediaTypes } from "../const/common"
 import { asyncBackgroundImageFallback } from "./thumbnails"
 import { MediaCardItem, MediaLibraryItem, MediaTypeThumbnails, RecommendationSection } from "../const/media-browser"
 import { customItem } from "../config/media-browser"
+import { getTranslation } from "./translations.js"
 
 async function generateSectionBackgroundPart(hass: ExtendedHass, thumbnail: string, fallback: Thumbnail = Thumbnail.DISC) {
   const image = await asyncBackgroundImageFallback(hass, thumbnail, fallback)
@@ -38,8 +39,13 @@ async function generateSectionBackground(hass: ExtendedHass, cards: MediaCardIte
 }
 export async function generateFavoriteCard(hass: ExtendedHass, media_type: MediaTypes, cards: MediaCardItem[]): Promise<MediaCardItem> {
   const thumbnail: Thumbnail = MediaTypeThumbnails[media_type];
+  const translate_key = `browser.sections.${media_type}`;
+  /* eslint-disable 
+    @typescript-eslint/no-unsafe-assignment
+  */
+  const title = getTranslation(translate_key, hass);
   return {
-    title: media_type,
+    title: title,
     background: await generateSectionBackground(hass, cards, thumbnail),
     thumbnail: thumbnail,
     fallback: thumbnail,
@@ -52,8 +58,10 @@ export async function generateFavoriteCard(hass: ExtendedHass, media_type: Media
 }
 export async function generateRecentsCard(hass: ExtendedHass, media_type: MediaTypes, cards: MediaCardItem[]): Promise<MediaCardItem> {
   const thumbnail: Thumbnail = MediaTypeThumbnails[media_type];
+  const translate_key = `browser.sections.${media_type}`;
+  const title = getTranslation(translate_key, hass);
   return {
-    title: media_type,
+    title: title,
     background: await generateSectionBackground(hass, cards, thumbnail),
     thumbnail: thumbnail,
     fallback: thumbnail,
@@ -63,6 +71,7 @@ export async function generateRecentsCard(hass: ExtendedHass, media_type: MediaT
       section: media_type
     }
   }
+  // eslint-enable @typescript-eslint/no-unsafe-assignment
 }
 export async function generateRecommendationsCard(hass: ExtendedHass, section: RecommendationSection, cards: MediaCardItem[]): Promise<MediaCardItem> {
   const thumbnail: Thumbnail = Thumbnail.CLEFT;

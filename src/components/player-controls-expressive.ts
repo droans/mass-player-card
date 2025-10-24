@@ -5,7 +5,6 @@ import { getRepeatIcon } from "../utils/music-player";
 import styles from '../styles/player-controls-expressive'
 
 class MassPlayerControlsExpressive extends MassPlayerControlsBase {
-  
   protected renderPrevious(): TemplateResult {
     return html`
       <ha-button
@@ -79,7 +78,7 @@ class MassPlayerControlsExpressive extends MassPlayerControlsBase {
           .path=${this.Icons.POWER}
           class="icons-power icons-lower"
         ></ha-svg-icon>
-        Power
+        ${this.controller.translate("player.controls.power")}
       </ha-button>
     `
   }
@@ -102,7 +101,7 @@ class MassPlayerControlsExpressive extends MassPlayerControlsBase {
           .path=${shuffle ? this.Icons.SHUFFLE : this.Icons.SHUFFLE_DISABLED}
           class="icons-shuffle icons-lower${shuffle ? `-active` : ``}"
         ></ha-svg-icon>
-        Shuffle
+        ${this.controller.translate("player.controls.shuffle")}
       </ha-button>
     `
   }
@@ -127,7 +126,7 @@ class MassPlayerControlsExpressive extends MassPlayerControlsBase {
           .path=${icon}
           class="icons-repeat icons-lower${repeat_on ? `-active` : ``}"
         ></ha-svg-icon>
-        Repeat
+        ${this.controller.translate("player.controls.repeat")}
       </ha-button>
     `
   }
@@ -150,7 +149,7 @@ class MassPlayerControlsExpressive extends MassPlayerControlsBase {
           .path=${favorite ? this.Icons.HEART : this.Icons.HEART_PLUS}
           class="icons-favorite icons-lower${favorite ? `-active` : ``}"
         ></ha-svg-icon>
-        Favorite
+        ${this.controller.translate("player.controls.favorite")}
       </ha-button>
     `
   }

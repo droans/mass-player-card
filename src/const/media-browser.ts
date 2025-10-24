@@ -3,9 +3,11 @@ import { TemplateResult } from "lit";
 import { EnqueueOptions } from "./actions";
 import {
   Thumbnail,
-  MediaTypes
+  MediaTypes,
+  ExtendedHass
 } from "./common";
 import { Icons } from "./icons.js";
+import { getTranslation } from "../utils/translations.js";
 import { MediaBrowserConfig } from "../config/media-browser.js";
 
 export interface MediaBrowserItem {
@@ -94,106 +96,111 @@ export interface RecommendationResponse {
 }
 
 export type ListItems = ListItemData[];
-
-export function getEnqueueButtons(icons: Icons): ListItems {
+/* eslint-disable
+  @typescript-eslint/no-unsafe-assignment
+*/
+export function getEnqueueButtons(icons: Icons, hass: ExtendedHass): ListItems {
   return [
     {
       option: EnqueueOptions.PLAY_NOW,
       icon: icons.PLAY_CIRCLE_OUTLINE,
-      title: "Play Now"
+      title: getTranslation("browser.enqueue.play", hass)
     },
     {
       option: EnqueueOptions.PLAY_NEXT,
       icon: icons.SKIP_NEXT_CIRCLE_OUTLINED,
-      title: "Play Next"
+      title: getTranslation("browser.enqueue.next", hass)
     },
     {
       option: EnqueueOptions.PLAY_NOW_CLEAR_QUEUE,
       icon: icons.PLAY_CIRCLE,
-      title: "Play Now & Clear Queue"
+      title: getTranslation("browser.enqueue.play_clear", hass)
     },
     {
       option: EnqueueOptions.PLAY_NEXT_CLEAR_QUEUE,
       icon: icons.SKIP_NEXT_CIRCLE,
-      title: "Play Next & Clear Queue"
+      title: getTranslation("browser.enqueue.next_clear", hass)
     },
     {
       option: EnqueueOptions.ADD_TO_QUEUE,
       icon: icons.PLAYLIST_PLUS,
-      title: "Add to Queue"
+      title: getTranslation("browser.enqueue.queue", hass)
     },
     {
       option: EnqueueOptions.RADIO,
       icon: icons.RADIO,
-      title: "Play Radio"
+      title: getTranslation("browser.enqueue.radio", hass)
     }
   ]
 }
-export function getSearchMediaButtons(icons: Icons): ListItems {
+export function getSearchMediaButtons(icons: Icons, hass: ExtendedHass): ListItems {
   return [
     {
       option: MediaTypes.ALBUM,
       icon: icons.ALBUM,
-      title: 'Albums'
+      title: getTranslation("browser.sections.album", hass)
     },
     {
       option: MediaTypes.ARTIST,
       icon: icons.ARTIST,
-      title: 'Artists'
+      title: getTranslation("browser.sections.artist", hass)
     },
     {
       option: MediaTypes.AUDIOBOOK,
       icon: icons.BOOK,
-      title: 'Audiobooks'
+      title: getTranslation("browser.sections.audiobook", hass)
     },
     {
       option: MediaTypes.PLAYLIST,
       icon: icons.PLAYLIST,
-      title: 'Playlists'
+      title: getTranslation("browser.sections.playlist", hass)
     },
     {
       option: MediaTypes.PODCAST,
       icon: icons.PODCAST,
-      title: 'Podcasts'
+      title: getTranslation("browser.sections.podcast", hass)
     },
     {
       option: MediaTypes.RADIO,
       icon: icons.RADIO,
-      title: 'Radio'
+      title: getTranslation("browser.sections.radio", hass)
     },
     {
       option: MediaTypes.TRACK,
       icon: icons.MUSIC,
-      title: 'Tracks'
+      title: getTranslation("browser.sections.track", hass)
     },
 
   ]
 }
-export function getFilterButtons(icons: Icons, config: MediaBrowserConfig): ListItems {
+export function getFilterButtons(icons: Icons, hass: ExtendedHass, config: MediaBrowserConfig): ListItems {
   const result: ListItems = [];
   if (config.favorites.enabled) {
     result.push({
       option: "favorites",
       icon: icons.HEART,
-      title: "Favorites"
+      title: getTranslation("browser.card.favorites", hass)
     })
   }
   if (config.recents.enabled) {
     result.push({
       option: "recents",
       icon: icons.RECENTS,
-      title: "Recents"
+      title: getTranslation("browser.card.recents", hass)
     })
   }
   if (config.recommendations.enabled) {
     result.push({
       option: "recommendations",
       icon: icons.SUGGESTIONS,
-      title: "Recommendations"
+      title: getTranslation("browser.card.recommendations", hass)
     })
   }
   return result;
 }
+/* eslint-enable
+  @typescript-eslint/no-unsafe-assignment
+*/
 
 export const SEARCH_UPDATE_DELAY = 1000;
 export const DEFAULT_SEARCH_LIMIT = 20;
