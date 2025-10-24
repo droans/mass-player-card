@@ -8,6 +8,7 @@ import {
 } from "./common";
 import { Icons } from "./icons.js";
 import { getTranslation } from "../utils/translations.js";
+import { MediaBrowserConfig } from "../config/media-browser.js";
 
 export interface MediaBrowserItem {
   name: string,
@@ -172,22 +173,30 @@ export function getSearchMediaButtons(icons: Icons, hass: ExtendedHass): ListIte
 
   ]
 }
-export function getFilterButtons(icons: Icons, hass: ExtendedHass): ListItems {
-  return [
-    {
+export function getFilterButtons(icons: Icons, hass: ExtendedHass, config: MediaBrowserConfig): ListItems {
+  const result: ListItems = [];
+  if (config.favorites.enabled) {
+    result.push({
       option: "favorites",
       icon: icons.HEART,
       title: getTranslation("browser.card.favorites", hass)
-    },{
+    })
+  }
+  if (config.recents.enabled) {
+    result.push({
       option: "recents",
       icon: icons.RECENTS,
       title: getTranslation("browser.card.recents", hass)
-    },{
+    })
+  }
+  if (config.recommendations.enabled) {
+    result.push({
       option: "recommendations",
       icon: icons.SUGGESTIONS,
       title: getTranslation("browser.card.recommendations", hass)
-    },
-  ]
+    })
+  }
+  return result;
 }
 /* eslint-enable
   @typescript-eslint/no-unsafe-assignment

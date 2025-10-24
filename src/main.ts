@@ -199,6 +199,7 @@ export class MusicAssistantPlayerCard extends LitElement {
   private browserItemSelected = () => {
     if (this.config.player.enabled){
       this.active_section = Sections.MUSIC_PLAYER;
+      this._controller.activeSection = Sections.MUSIC_PLAYER;
     }
   }
   private playerSelected = (entity_id: string) => {
@@ -277,7 +278,7 @@ export class MusicAssistantPlayerCard extends LitElement {
   protected renderTabs() {
     return html`
       <div id="navbar${this.config.expressive && this.active_section == Sections.MUSIC_PLAYER ? `-expressive` : ``}">
-        <mass-nav-bar-expressive></mass-nav-bar-expressive>
+        ${this.config.expressive ? html`<mass-nav-bar-expressive></mass-nav-bar-expressive>` : html`<mass-nav-bar></mass-nav-bar>` }
       </div>
     `
   }
@@ -320,8 +321,8 @@ export class MusicAssistantPlayerCard extends LitElement {
       //eslint-disable-next-line @typescript-eslint/no-non-null-assertion
       const stylesheet = head_styles.styleSheet!;
       document.adoptedStyleSheets.push(stylesheet);
-      this.addEventListener('section-changed', this.onSectionChangedEvent);
     }
+    this.addEventListener('section-changed', this.onSectionChangedEvent);
   }
   public getCardSize() {
     return 3;

@@ -16,6 +16,7 @@ import { Icons } from "../const/icons.js";
 class MassNavBar extends LitElement {
   private _controller!: MassCardController;
   private _config!: Config;
+  private _activeSection!: Sections;
   @consume({ context: IconsContext}) private Icons!: Icons;
 
   @consume({ context: activeSectionContext, subscribe: true}) 
@@ -24,15 +25,16 @@ class MassNavBar extends LitElement {
     if (!this.controller) {
       return;
     }
-    this.controller.activeSection = section;
+    this._activeSection = section;
   }
   public get active_section() {
-    return this.controller?.activeSection;
+    return this._activeSection;
   }
 
   @consume({ context: controllerContext, subscribe: true})
   private set controller(controller: MassCardController) {
     this._controller = controller;
+    this.active_section = controller.activeSection
     this.config = controller.config;
   }
   private get controller() {
@@ -46,10 +48,7 @@ class MassNavBar extends LitElement {
   }
 
   private handleTabChanged = (section: Sections) => {
-    this.active_section = section;
-    if (section == Sections.MEDIA_BROWSER) {
-      this.returnMediaBrowserToHome();
-    }
+    this.controller.activeSection = section;
   }
   protected returnMediaBrowserToHome = () => {
     const host = this.controller.host;

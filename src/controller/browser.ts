@@ -32,7 +32,7 @@ import { jsonMatch } from "../utils/util.js";
 export class MediaBrowserController {
   private hass!: ExtendedHass
   private config!: Config;
-  private _host!: HTMLElement;
+  public _host!: HTMLElement;
   private browserConfig!: MediaBrowserConfig;
   private actions!: BrowserActions;
   private _activeEntityId!: string;
@@ -119,8 +119,10 @@ export class MediaBrowserController {
     this.generateFavoriteData(favorites.podcasts, MediaTypes.PODCAST),
     this.generateFavoriteData(favorites.radios, MediaTypes.RADIO),
     this.generateFavoriteData(favorites.tracks, MediaTypes.TRACK),
-  ];
-  await Promise.all(promises);
+    ];
+    await Promise.all(promises);
+    const ev = new CustomEvent('cards-updated', {detail: 'favorites'})
+    this._host.dispatchEvent(ev);
   }
   private async getFavoriteSection(
     config: FavoriteItemConfig,
@@ -129,7 +131,6 @@ export class MediaBrowserController {
   ) {
     const limit = config.limit;
     const custom_items = config.items;
-
     const resp: MediaLibraryItem[] = await this.actions.actionGetLibrary(this.activeEntityId, media_type, limit, favorites_only);
     return [
       ...generateFavoritesSectionCards(resp, media_type),
@@ -141,7 +142,7 @@ export class MediaBrowserController {
     media_type: MediaTypes,
     favorites_only = true
   ) {
-    if (this.items.favorites[media_type]) {
+    if (this.items.favorites[media_type] || !config.enabled) {
       return;
     }
     const items = await this.getFavoriteSection(config, media_type, favorites_only);
@@ -157,17 +158,19 @@ export class MediaBrowserController {
 
   // Recents
   private async generateAllRecents() {
-   const favorites = this.browserConfig.favorites;
+   const recents = this.browserConfig.recents;
    const promises = [
-    this.generateRecentsData(favorites.albums, MediaTypes.ALBUM),
-    this.generateRecentsData(favorites.artists, MediaTypes.ARTIST),
-    this.generateRecentsData(favorites.audiobooks, MediaTypes.AUDIOBOOK),
-    this.generateRecentsData(favorites.playlists, MediaTypes.PLAYLIST),
-    this.generateRecentsData(favorites.podcasts, MediaTypes.PODCAST),
-    this.generateRecentsData(favorites.radios, MediaTypes.RADIO),
-    this.generateRecentsData(favorites.tracks, MediaTypes.TRACK),
-   ]
-   await Promise.all(promises);
+    this.generateRecentsData(recents.albums, MediaTypes.ALBUM),
+    this.generateRecentsData(recents.artists, MediaTypes.ARTIST),
+    this.generateRecentsData(recents.audiobooks, MediaTypes.AUDIOBOOK),
+    this.generateRecentsData(recents.playlists, MediaTypes.PLAYLIST),
+    this.generateRecentsData(recents.podcasts, MediaTypes.PODCAST),
+    this.generateRecentsData(recents.radios, MediaTypes.RADIO),
+    this.generateRecentsData(recents.tracks, MediaTypes.TRACK),
+    ]
+    await Promise.all(promises);
+    const ev = new CustomEvent('cards-updated', {detail: 'recents'})
+    this._host.dispatchEvent(ev);
     
   }
   private async getRecentSection(config: FavoriteItemConfig, media_type: MediaTypes) {
@@ -178,7 +181,7 @@ export class MediaBrowserController {
 
   }
   private async generateRecentsData(config: FavoriteItemConfig, media_type: MediaTypes) {
-    if (this.items.recents[media_type]) {
+    if (this.items.recents[media_type] || !config.enabled) {
       return;
     }
     
@@ -215,6 +218,8 @@ export class MediaBrowserController {
         void this.generateRecommendationSection(item)
       }
     )
+    const ev = new CustomEvent('cards-updated', {detail: 'recommendations'})
+    this._host.dispatchEvent(ev);
   }
 
   //Custom Sections

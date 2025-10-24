@@ -19,7 +19,7 @@ import QueueActions from "../actions/queue-actions.js";
 import { isActive, jsonMatch, playerHasUpdated } from "../utils/util.js";
 
 export class QueueController {
-  private _host!: HTMLElement;
+  public _host!: HTMLElement;
   private _queue!: ContextProvider<typeof queueContext>;
   private _currentQueueItem!: ContextProvider<typeof currentQueueItemContext>;
   private _nextQueueItem!: ContextProvider<typeof nextQueueItemContext>;
@@ -37,6 +37,7 @@ export class QueueController {
   private _listening = false;
   private _interval!: number | undefined;
   private _timedListening = false;
+  private _updatingQueue = false;
 
   constructor(hass: ExtendedHass, active_player: ExtendedHassEntity, config: Config, host: HTMLElement) {
     this.hass = hass;
@@ -160,6 +161,7 @@ export class QueueController {
     void this.getQueue();
   }
   public async _getQueue() {
+    this._updatingQueue = true;
     const limit_before = this.config.queue.limit_before;
     const limit_after = this.config.queue.limit_after;
     if (this._fails >= MAX_GET_QUEUE_FAILURES) {
@@ -174,10 +176,10 @@ export class QueueController {
       this.queue = queue;
       this.getCurNextPrQueueItems();
       return queue;
-    } catch (e) {
+    } catch {
       this._fails ++;
-      // eslint-disable-next-line no-console
-      console.error(`Received error`, e);
+    } finally {
+      this._updatingQueue = false;
     };
     return [];
   }
@@ -196,6 +198,9 @@ export class QueueController {
     const event_data = event.data;
     const queue_id = event_data.data?.queue_id;
     if (event_data.type == 'queue_updated' && queue_id == this._activeQueueID) {
+      if (this._updatingQueue) {
+        return;
+      }
       void this.getQueue();
     }
   }
@@ -242,8 +247,16 @@ export class QueueController {
       (i) => i.playing
     )
     this.currentQueueItem = queue[idx];
-    this.nextQueueItem = queue[idx + 1];
-    this.previousQueueItem = queue[idx - 1];
+    if (idx > 0) {
+      this.previousQueueItem = queue[idx - 1];    
+    } else {
+      this.previousQueueItem = null;
+    }
+    if (idx < queue.length - 1) {
+      this.nextQueueItem = queue[idx + 1];
+    } else {
+      this.nextQueueItem = null;
+    }
   }
 
   private setItemActive(queue_item_id: string) {
@@ -313,6 +326,9 @@ export class QueueController {
     if (!this.queue) return;
     this.queue = this.queue.filter( (i) => i.queue_item_id !== queue_item_id);
     await this.actions.removeQueueItem(queue_item_id);
+  }
+  public async clearQueue(entity_id: string = this.activeMediaPlayer.entity_id) {
+    await this.actions.clearQueue(entity_id);
   }
 
 }

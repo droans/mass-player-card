@@ -46,7 +46,11 @@ export class ActivePlayerController {
     this._hass = hass;
     this.config = config;
     this._host = host;
+    host.addEventListener('artwork-updated', this.onActiveTrackChange);
     this.setDefaultActivePlayer();
+    if (!isActive(hass, this.activeMediaPlayer)) {
+      void this.applyExpressiveTheme();
+    }
   }
   public set hass(hass: ExtendedHass) {
     this._hass = hass;
@@ -96,21 +100,11 @@ export class ActivePlayerController {
   }
   
   private set activeMediaPlayer(player: ExtendedHassEntity) {
-    const old_track = this?.activeMediaPlayer?.attributes?.media_content_id;
-    const new_track = player?.attributes?.media_content_id;
     if (playerHasUpdated(this.activeMediaPlayer, player)) {
       this._activeMediaPlayer.setValue(player);
       if (player.attributes?.group_members) {
         this.setGroupAttributes();
       }
-      if (old_track != new_track && this.config.expressive) {
-        this._initialExpressiveLoad = true;
-        void this.applyExpressiveTheme();
-        return;
-      }
-    }
-    if (this.config.expressive && !this._initialExpressiveLoad) {
-      void this.applyExpressiveTheme();
     }
   }
   public get activeMediaPlayer() {
@@ -120,6 +114,7 @@ export class ActivePlayerController {
   private set activePlayerName(name: string) {
     if (name.length) {
       this._activePlayerName.setValue(name);
+      return;
     }
     const ent = this.hass.states[this.activeEntityConfig.entity_id];
     this._activePlayerName.setValue(ent.attributes.friendly_name ?? "");
@@ -260,39 +255,84 @@ export class ActivePlayerController {
   }
   async actionGetCurrentQueue() {
     const entity_id = this.activeEntityID;
-    try {
-      /* eslint-disable
-        @typescript-eslint/no-explicit-any,
-        @typescript-eslint/no-unsafe-assignment,
-        @typescript-eslint/no-unsafe-member-access
-      */
-      const data = {
-        type: 'call_service',
-        domain: 'music_assistant',
-        service: 'get_queue',
-        service_data: {
-          entity_id: entity_id,
-        },
-        return_response: true
-      }
-      const ret = await this.hass.callWS<any>(data);
-      /* eslint-disable
-        @typescript-eslint/no-unsafe-return
-      */
-      const result = ret.response[entity_id]
-      return result;
-      /* eslint-enable */
-    } catch (e) {
-      /* eslint-disable-next-line no-console */
-      console.error('Error getting queue', e);
-      return null;
+    /* eslint-disable
+      @typescript-eslint/no-explicit-any,
+      @typescript-eslint/no-unsafe-assignment,
+      @typescript-eslint/no-unsafe-member-access
+    */
+    const data = {
+      type: 'call_service',
+      domain: 'music_assistant',
+      service: 'get_queue',
+      service_data: {
+        entity_id: entity_id,
+      },
+      return_response: true
     }
+    const ret = await this.hass.callWS<any>(data);
+    /* eslint-disable
+      @typescript-eslint/no-unsafe-return
+    */
+    const result = ret.response[entity_id]
+    return result;
+    /* eslint-enable */
   }
 
   public applyExpressiveThemeTo(host: HTMLElement) {
     if (this.expressiveTheme) {
       applyTheme(this.expressiveTheme, {dark: this.hass.themes.darkMode, target: host})
     }
+  }
+  public onActiveTrackChange = (ev: Event) => {
+    /* eslint-disable
+      @typescript-eslint/no-unsafe-assignment,
+      @typescript-eslint/no-unsafe-argument,
+      @typescript-eslint/no-unsafe-member-access
+    */
+    const detail = (ev as CustomEvent).detail;
+    if (detail.type != 'current') {
+      return;
+    }
+    const img = detail.image;
+    void this.applyExpressiveThemeFromImage(img);
+    /* eslint-enable
+      @typescript-eslint/no-unsafe-assignment,
+      @typescript-eslint/no-unsafe-argument,
+      @typescript-eslint/no-unsafe-member-access
+    */
+  }
+  public async applyExpressiveThemeFromImage(img: string) {
+    if (!this.config.expressive) {
+      return;
+    }
+    const _theme = this.generateExpressiveThemeFromImage(img);
+    const options = {
+      dark: this.hass.themes.darkMode,
+      target: this._host
+    }
+    const theme = await _theme;
+    if (theme) {
+      applyTheme(theme, options)
+    }
+  }
+  public async generateExpressiveThemeFromImage(img: string) {
+    const elem = this.generateImageElementFromImage(img);
+    if (!elem) {
+      return;
+    }
+    const theme = await themeFromImage(elem);
+    this.expressiveTheme = theme;
+    return theme;
+  }
+  public generateImageElementFromImage(img: string): HTMLImageElement | undefined {
+    const elem = document.createElement('img');
+    const def = getThumbnail(this.hass, Thumbnail.CLEFT);
+    elem.height = 75;
+    elem.width = 75;
+    elem.src = img;
+    elem.crossOrigin = "Anonymous";
+    elem.onerror = () => {elem.src = def}
+    return elem;
   }
   public async applyExpressiveTheme() { 
     if (!this.config.expressive) {
@@ -310,9 +350,9 @@ export class ActivePlayerController {
   }
   public async generateExpressiveTheme() {
 
-    return this.generateExpressiveThemeFromImage();
+    return this.generateExpressiveThemeFromActiveImage();
   }
-  public generateImageElement(): HTMLImageElement|undefined {
+  public generateImageElementFromActiveImage(): HTMLImageElement|undefined {
     const attrs = this.activeMediaPlayer.attributes;
     const def = getThumbnail(this.hass, Thumbnail.CLEFT);
     const origin = window.location.origin;
@@ -327,8 +367,8 @@ export class ActivePlayerController {
     elem.onerror = () => {elem.src=def};
     return elem;
   }
-  public async generateExpressiveThemeFromImage() {
-    const elem = this.generateImageElement();
+  public async generateExpressiveThemeFromActiveImage() {
+    const elem = this.generateImageElementFromActiveImage();
     if (!elem) {
       return;
     }
