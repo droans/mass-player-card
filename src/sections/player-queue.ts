@@ -258,7 +258,6 @@ class QueueCard extends LitElement {
   }
   protected render() {
     const expressive = this.activePlayerController.useExpressive;
-    const label = getTranslation("queue.header", this.hass) as string;
     return this.error ?? html`
       <div
         id="container"
