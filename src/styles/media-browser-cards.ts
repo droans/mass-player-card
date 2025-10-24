@@ -9,7 +9,7 @@ export default css`
   mass-media-card {
     max-height: 100%;
     aspect-ratio: 1;
-    width: 30em;
+    width: 100%;
     justify-content: center;
   }
   .icons {

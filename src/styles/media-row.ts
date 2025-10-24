@@ -6,7 +6,6 @@ export default css`
 
   .action-button {
     width: var(--media-row-icon-width);
-    transform: scale(1);
     align-content: center;
   }
   .action-button::part(base) {
@@ -29,13 +28,13 @@ export default css`
 
   .button {
     margin: 0.15rem;
-    border-radius: 0.7rem;
+    border-radius: --media-row-border-radius;
     background: var(--media-row-background-color);
     height: var(--media-row-height);
   }
   .button-active {
     margin: 0.15rem;
-    border-radius: 0.7rem;
+    border-radius: --media-row-border-radius;
     background-color: var(--media-row-active-background-color, var(--md-sys-color-secondary-container));
     height: var(--media-row-height);
     padding-inline-start: 0px;
@@ -100,7 +99,7 @@ export default css`
     background-size: contain;
     background-repeat: no-repeat;
     background-position: left;
-    border-radius: 0.7rem;
+    border-radius: var(--media-row-border-radius);
   }
   .thumbnail-disabled {
     width: var(--media-row-thumbnail-height);
@@ -108,7 +107,7 @@ export default css`
     background-size: contain;
     background-repeat: no-repeat;
     background-position: left;
-    border-radius: 0.7rem;
+    border-radius: var(--media-row-border-radius);
     filter: opacity(0.5);
   }
 

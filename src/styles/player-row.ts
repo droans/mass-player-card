@@ -46,14 +46,14 @@ export default css`
 
   .button {
     margin: 0.15rem;
-    border-radius: 0.7rem;
+    border-radius: var(--player-row-border-radius);
     background: var(--media-row-background-color);
     height: var(--media-row-height);
   }
 
   .button-active {
     margin: 0.15rem;
-    border-radius: 0.7rem;
+    border-radius: var(--player-row-border-radius);
     background-color: var(--media-row-active-background-color, var(--md-sys-color-secondary-container));
     height: var(--media-row-height);
     padding-inline-start: 0px;

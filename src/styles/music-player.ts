@@ -39,41 +39,6 @@ export default css`
     border-radius: 8px 8px 0px 0px;
   }
 
-  .artwork-large {
-    max-height: 35em !important;
-  }
-  .artwork-med {
-    max-height: 22em !important;
-
-  }
-  .artwork-sm {
-
-  }
-  #artwork-div-lg {
-    position: absolute;
-    aspect-ratio: 1;
-    justify-self: center;
-    height: var(--mass-player-card-height);
-    width: 100%;
-    place-content: center;
-    top: -3em;
-    
-  }
-  #artwork-div-med {
-    aspect-ratio: 1;
-    justify-self: center;
-    place-content: center;
-    height: 100%;
-    top: -2em;
-    position: absolute;
-  }
-  #artwork-div-sm {
-    position: relative;
-    height: 10em;
-    display: flex;
-    justify-self: center;
-  }
-
   .bg-art-lg {
     z-index: 1;
   }
@@ -242,7 +207,7 @@ export default css`
     top: 0;
     width: 100%;
     z-index: 1;
-    border-radius: 28px 28px 0px 0px;
+    border-radius: var(--default-border-radius) var(--default-border-radius) 0px 0px;
   }
   .player-card-header {
     background: linear-gradient(var(--player-blur-color) 90%, transparent) !important;
