@@ -544,3 +544,17 @@ Multiple elements on the players tab can be hidden. By default, all elements are
 | action_buttons  | bool  | No       | false       | Hides the action buttons  |
 | join_button     | bool  | No       | false       | Hides the join button     |
 | transfer_button | bool  | No       | false       | Hides the transfer button |
+
+## Translation Support
+
+This card currently has complete support for English and majority support for Dutch. 
+
+If you would like to add new translations for other languages:
+1. Fork this repository and clone it locally.
+2. Navigate to `src/translations`. Make a copy of `en.ts` and save it with the name of your language code.
+3. Set the strings for each key so they are correct for your language. The `player.messages.inactive` and `player.title.inactive` items do not need to match the English translation if they don't make sense or other strings make more sense for your language.
+4. Make the following edits to `src/utils/translations.ts`. Use the existing translations as reference.
+  * At the top, import your translations file - eg `import en from '../translations/en`
+  * Under `const TRANSLATIONS`, add an entry for your translations.
+5. Commit and push the changes to your forked copy of this repo.
+6. Submit a pull request to this repository. The target branch should be `dev`. 
