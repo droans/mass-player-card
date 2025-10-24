@@ -87,7 +87,7 @@ export default css`
   }
 
   .thumbnail {
-    border-radius: 28px;
+    border-radius: var(--browser-card-border-radius);
     overflow: hidden !important
   }
   #thumbnail-div {
@@ -113,6 +113,6 @@ export default css`
     bottom: 0;
     background-color: rgba(from var(--md-sys-color-primary-container) r g b / 0.9);
     color: var(--md-sys-color-on-primary-container);
-    border-radius: 0px 0px 28px 28px;
+    border-radius: 0px 0px var(--default-border-radius) var(--default-border-radius);
   }
 `;
