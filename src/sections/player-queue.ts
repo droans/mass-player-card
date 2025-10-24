@@ -1,7 +1,7 @@
 import { consume, provide } from '@lit/context';
 import { LovelaceCard } from 'custom-card-helpers';
 import { LitElement, html, type CSSResultGroup, PropertyValues, TemplateResult } from 'lit';
-import { property, queryAll, state } from 'lit/decorators.js';
+import { property, query, queryAll, state } from 'lit/decorators.js';
 import '../components/media-row'
 import '../components/section-header';
 
@@ -55,6 +55,9 @@ class QueueCard extends LitElement {
   private _queueController!: QueueController;
 
   @queryAll('#animation') _animations!: WaAnimation[];
+  @query('.media-active') _activeElement!: HTMLElement;
+  @query('.list') _items!: HTMLElement;
+
   private _firstLoaded = false;
 
   @state() public _tabSwitchFirstUpdate = false;
@@ -170,9 +173,16 @@ class QueueCard extends LitElement {
     }
     return QueueConfigErrors.OK;
   }
+  private scrollToActive() {
+    const item_offset = this._activeElement.offsetTop;
+    const padding = this._activeElement.offsetHeight * 2;
+    const scroll = item_offset - padding;
+    this._items.scrollTop = scroll;
+  }
   private onQueueItemSelected = async (queue_item_id: string) => {
     await this.queueController.playQueueItem(queue_item_id);
     void this.queueController.getQueue();
+    this.scrollToActive();
   }
   private onQueueItemRemoved = async (queue_item_id: string) => {
     await this.queueController.removeQueueItem(queue_item_id);
@@ -192,6 +202,7 @@ class QueueCard extends LitElement {
   private onTabSwitch = (ev: Event) => {
     if ((ev as CustomEvent).detail == Sections.QUEUE) {
       this._tabSwitchFirstUpdate = true;
+      this.scrollToActive();
     }
   }
   private renderQueueItems() {
@@ -214,6 +225,7 @@ class QueueCard extends LitElement {
             >
               <mass-player-media-row
                 style="opacity: 0%;"
+                class="${item.playing ? `media-active`: ``}"
                 .media_item=${item}
                 .showAlbumCovers=${show_album_covers}
                 .selectedService=${this.onQueueItemSelected}
@@ -304,6 +316,7 @@ class QueueCard extends LitElement {
   }
   protected updated(): void {
     this._tabSwitchFirstUpdate = false;
+    // this.scrollToActive();
   }
   static get styles(): CSSResultGroup {
     return styles;
