@@ -5,7 +5,7 @@ import {
   PropertyValues,
   TemplateResult
 } from "lit";
-import { state } from "lit/decorators.js";
+import { query, state } from "lit/decorators.js";
 import {
   html,
   literal
@@ -35,7 +35,14 @@ class MediaBrowserCards extends LitElement {
   @consume({context: hassExt, subscribe: true})
   public hass!: ExtendedHass;
 
+  @query('.icons') private _iconsElement!: HTMLDivElement;
+
   private _browserConfig!: MediaBrowserConfig;
+
+  public onEnqueueAction!: CardEnqueueService;
+  public onSelectAction!: CardSelectedService;
+  private _items!: MediaCardItem[];
+
   @consume({ context: mediaBrowserConfigContext, subscribe: true})
   public set browserConfig(conf: MediaBrowserConfig) {
     if (!jsonMatch(this._browserConfig, conf)) {
@@ -48,11 +55,6 @@ class MediaBrowserCards extends LitElement {
   public get browserConfig() {
     return this._browserConfig;
   }
-
-  public onEnqueueAction!: CardEnqueueService;
-  public onSelectAction!: CardSelectedService;
-
-  private _items!: MediaCardItem[];
 
   @consume({ context: activeMediaBrowserCardsContext, subscribe: true})
   public set items(items: MediaCardItem[]) {
@@ -71,10 +73,14 @@ class MediaBrowserCards extends LitElement {
   }
 
   private onItemSelected = (data: MediaCardData) => {
+    this.resetScroll();
     this.onSelectAction(data);
   }
   private onEnqueue = (data: MediaCardData, enqueue: EnqueueOptions) => {
     this.onEnqueueAction(data, enqueue);
+  }
+  public resetScroll() {
+    this._iconsElement.scrollTop = 0;
   }
   private generateCode() {
     const result = this.items.map(

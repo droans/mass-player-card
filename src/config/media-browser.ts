@@ -3,6 +3,46 @@ import { mdiCreation, mdiHeart, mdiHistory } from "@mdi/js";
 import { Config } from "./config";
 import { hiddenElementsConfigItem } from "../utils/config.js";
 
+export interface MediaBrowserConfig {
+  enabled: boolean;
+  favorites: FavoritesConfig;
+  recents: FavoritesConfig;
+  recommendations: {enabled: boolean};
+  sections: customSection[];
+  hide: MediaBrowserHiddenElementsConfig
+  columns: number;
+}
+
+export interface FavoritesConfig {
+  enabled: boolean;
+  albums: FavoriteItemConfig;
+  artists: FavoriteItemConfig;
+  audiobooks: FavoriteItemConfig;
+  playlists: FavoriteItemConfig;
+  podcasts: FavoriteItemConfig;
+  radios: FavoriteItemConfig;
+  tracks: FavoriteItemConfig;
+}
+export interface FavoriteItemConfig {
+  enabled: boolean;
+  limit: number;
+  favorites_only: boolean;
+  items: customItem[];
+}
+export interface customItem {
+  name: string;
+  image: string;
+  media_content_id: never;
+  media_content_type: never;
+  service: never;
+}
+
+export interface customSection {
+  name: string;
+  image: string;
+  items: customItem[];
+}
+
 export interface MediaBrowserHiddenElementsConfig {
   back_button: boolean;
   search: boolean;
@@ -16,66 +56,6 @@ export interface MediaBrowserHiddenElementsConfig {
   play_now_clear_queue_button: boolean;
 }
 
-export const DEFAULT_MEDIA_BROWSER_HIDDEN_ELEMENTS_CONFIG: MediaBrowserHiddenElementsConfig = {
-  back_button: false,
-  search: false,
-  recents: false,
-  titles: false,
-  enqueue_menu: false,
-  add_to_queue_button: false,
-  play_next_button: false,
-  play_next_clear_queue_button: false,
-  play_now_button: false,
-  play_now_clear_queue_button: false,
-}
-export const HIDDEN_BUTTON_VALUE = {
-  add: 'add_to_queue_button',
-  play: 'play_now_button',
-  next: 'play_next_button',
-  replace: 'play_now_clear_queue_button',
-  replace_next: 'play_next_clear_queue_button',
-}
-
-export interface MediaBrowserConfig {
-  enabled: boolean;
-  favorites: FavoritesConfig;
-  recents: FavoritesConfig;
-  recommendations: {enabled: boolean};
-  sections: customSection[];
-  hide: MediaBrowserHiddenElementsConfig
-  columns: number;
-}
-
-export interface customSection {
-  name: string;
-  image: string;
-  items: customItem[];
-}
-export interface customItem {
-  name: string;
-  image: string;
-  media_content_id: never;
-  media_content_type: never;
-  service: never;
-}
-
-export interface FavoritesConfig {
-  enabled: boolean;
-  albums: FavoriteItemConfig;
-  artists: FavoriteItemConfig;
-  audiobooks: FavoriteItemConfig;
-  playlists: FavoriteItemConfig;
-  podcasts: FavoriteItemConfig;
-  radios: FavoriteItemConfig;
-  tracks: FavoriteItemConfig;
-}
-
-export interface FavoriteItemConfig {
-  enabled: boolean;
-  limit: number;
-  favorites_only: boolean;
-  items: customItem[];
-}
 export const DEFAULT_FAVORITE_ITEM_CONFIG: FavoriteItemConfig = {
   enabled: true,
   limit: 25,
@@ -93,6 +73,28 @@ const DEFAULT_FAVORITES_CONFIG: FavoritesConfig = {
   radios: DEFAULT_FAVORITE_ITEM_CONFIG,
   tracks: DEFAULT_FAVORITE_ITEM_CONFIG,
 }
+
+export const DEFAULT_MEDIA_BROWSER_HIDDEN_ELEMENTS_CONFIG: MediaBrowserHiddenElementsConfig = {
+  back_button: false,
+  search: false,
+  recents: false,
+  titles: false,
+  enqueue_menu: false,
+  add_to_queue_button: false,
+  play_next_button: false,
+  play_next_clear_queue_button: false,
+  play_now_button: false,
+  play_now_clear_queue_button: false,
+}
+
+export const HIDDEN_BUTTON_VALUE = {
+  add: 'add_to_queue_button',
+  play: 'play_now_button',
+  next: 'play_next_button',
+  replace: 'play_now_clear_queue_button',
+  replace_next: 'play_next_clear_queue_button',
+}
+
 const DEFAULT_CUSTOM_SECTION_CONFIG = []
 
 const DEFAULT_RECOMMENDATIONS_CONFIG = {

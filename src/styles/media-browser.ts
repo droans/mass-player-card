@@ -14,10 +14,13 @@ export default css`
     height: 35px;
     width: 35px;
   }
+  .button-expressive::part(base) {
+    background-color: var(--md-sys-color-secondary-container);
+
+  }
   .button-expressive::part(base), .filter-menu-expressive::part(menu-select-menu) {
     box-shadow: var(--md-sys-elevation-level1);
     border-radius: var(--button-small-border-radius) !important;
-    background-color: var(--md-sys-color-secondary-container);
   }
   
   #container {
@@ -52,6 +55,9 @@ export default css`
     position: absolute;
     top: 2.5px;
     left: 2.5px;
+  }
+  #filter-menu-expressive::part(menu-select-menu) {
+    --control-select-menu-background-color: var(--md-sys-color-secondary-container);
   }
   #filter-menu-expressive::part(menu-svg) {
     color: var(--md-sys-color-on-background);

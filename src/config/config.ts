@@ -44,14 +44,6 @@ import {
   queueConfigForm
 } from "./player-queue";
 
-export interface EntityConfig {
-  entity_id: string;
-  volume_entity_id: string;
-  max_volume: number;
-  name: string;
-  hide: HiddenElementsConfig;
-}
-
 export interface Config {
   entities: EntityConfig[];
   queue: QueueConfig;
@@ -68,6 +60,15 @@ interface HiddenElementsConfig {
   media_browser: MediaBrowserHiddenElementsConfig;
   players: PlayersHiddenElementsConfig
 };
+
+export interface EntityConfig {
+  entity_id: string;
+  volume_entity_id: string;
+  max_volume: number;
+  name: string;
+  hide: HiddenElementsConfig;
+  inactive_when_idle: boolean;
+}
 
 export const DEFAULT_CONFIG: Config = {
   queue: DEFAULT_QUEUE_CONFIG,
@@ -174,7 +175,8 @@ function entityConfigFromEntityID(entity_id: string): EntityConfig {
     volume_entity_id: entity_id,
     name: "",
     max_volume: DEFAULT_MAX_VOLUME,
-    hide: ENTITY_DEFAULT_HIDDEN_ITEM_CONFIG
+    hide: ENTITY_DEFAULT_HIDDEN_ITEM_CONFIG,
+    inactive_when_idle: false
   }
 }
 
@@ -189,6 +191,7 @@ function processEntityConfig(config: string|EntityConfig): EntityConfig {
     name: config?.name ?? "",
     max_volume: config?.max_volume ?? DEFAULT_MAX_VOLUME,
     hide: HIDDEN_ELEMENTS,
+    inactive_when_idle: config?.inactive_when_idle ?? false,
   }
   return r;
 }

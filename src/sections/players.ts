@@ -34,6 +34,7 @@ import {
 } from "../const/context";
 
 import styles from '../styles/player-queue';
+import { getTranslation } from "../utils/translations.js";
 
 class PlayersCard extends LitElement {
   @property({ attribute: false }) private entities: ExtendedHassEntity[] = [];
@@ -155,6 +156,7 @@ class PlayersCard extends LitElement {
     )
   }
   protected render() {
+    const label = getTranslation("players.header", this.hass) as string;
     const expressive = this.config.expressive;
     return html`
       <div
@@ -163,7 +165,7 @@ class PlayersCard extends LitElement {
       >
         <mass-section-header>
           <span slot="label" id="title">
-            Players
+            ${label}
           </span>
         </mass-section-header>
         <wa-animation 

@@ -49,6 +49,7 @@ import BrowserActions from "../actions/browser-actions.js";
 import { EnqueueOptions } from "../const/actions.js";
 import { getMediaTypeSvg } from "../utils/thumbnails.js";
 import { jsonMatch } from '../utils/util.js';
+import { getTranslation } from '../utils/translations.js';
 
 @customElement(`mass-media-browser`)
 export class MediaBrowser extends LitElement {
@@ -236,7 +237,7 @@ export class MediaBrowser extends LitElement {
   private onSearchButtonPress = () => {
     this.setPreviousSection();
     if (!this.searchMediaTypeIcon) {
-      this.searchMediaTypeIcon = getMediaTypeSvg(MediaTypes.TRACK, this.Icons);
+      this.searchMediaTypeIcon = getMediaTypeSvg(MediaTypes.TRACK, this.Icons, this.hass);
     }
     this.searchTerm = '';
     this.activeSection = 'search';
@@ -251,7 +252,7 @@ export class MediaBrowser extends LitElement {
     }
     ev.target.value = '';
     this.searchMediaType = val;
-    this.searchMediaTypeIcon = getMediaTypeSvg(val, this.Icons);
+    this.searchMediaTypeIcon = getMediaTypeSvg(val, this.Icons, this.hass);
     await this.searchMedia()
   }
   private onSearchLibrarySelect = async () => {
@@ -333,7 +334,7 @@ export class MediaBrowser extends LitElement {
   }
   protected renderSearchMediaTypeButton(): TemplateResult {
     if (this.activeSection == 'search') {
-      const icons = getSearchMediaButtons(this.Icons);
+      const icons = getSearchMediaButtons(this.Icons, this.hass);
       return html`
         <mass-menu-button
           id="search-media-type-menu"
@@ -372,12 +373,13 @@ export class MediaBrowser extends LitElement {
     const styles_base_url = 'https://cdn.jsdelivr.net/npm/@shoelace-style/shoelace@2.20.1/cdn/themes/';
     const darkMode = this.hass.themes.darkMode;
     const styles_url = styles_base_url + (darkMode ? 'dark.css' : 'light.css');
+    const placeholder = getTranslation("browser.search.placeholder", this.hass) as string;
     return html`
       <span slot="end" id="search-input"
       >
         <link rel="stylesheet" href="${styles_url}">
         <sl-input
-          placeholder="Search Music Assistant"
+          placeholder="${placeholder}"
           type="search"
           class="${darkMode ? `sl-theme-dark` : `sl-theme-light`}"
           inputmode="search"
@@ -452,7 +454,7 @@ export class MediaBrowser extends LitElement {
 
   }
   protected renderFilterButton(): TemplateResult {
-    const icons = getFilterButtons(this.Icons, this.config);
+    const icons = getFilterButtons(this.Icons, this.hass, this.config);
     const icon = this.Icons.FILTER
     return html`
       <mass-menu-button

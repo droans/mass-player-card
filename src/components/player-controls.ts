@@ -29,7 +29,8 @@ class MassPlayerControls extends MassPlayerControlsBase {
     const icon_style = this.layoutConfig.icons.shuffle;
     const icon_size = icon_style.size == PlayerIconSize.LARGE ? "medium" : "small";
     const slotHtml = generateControlSlotHtml(icon_style);
-    const labelHtml = generateControlLabelHtml(icon_style, 'Shuffle');
+    const label = this.controller.translate("player.controls.shuffle") as string;
+    const labelHtml = generateControlLabelHtml(icon_style, label);
     const div_layout= this.layoutConfig.controls_layout == PlayerControlsLayout.COMPACT ? "div-compact" : "div-spaced";
     const appearance = this._playerData.shuffle ? "accent" : "plain";
     return html`
@@ -56,7 +57,8 @@ class MassPlayerControls extends MassPlayerControlsBase {
     const icon_size = icon_style.size == PlayerIconSize.LARGE ? "medium" : "small";
     const div_layout= this.layoutConfig.controls_layout == PlayerControlsLayout.COMPACT ? "div-compact" : "div-spaced";
     const slotHtml = generateControlSlotHtml(icon_style);
-    const labelHtml = generateControlLabelHtml(icon_style, 'Previous');
+    const label = this.controller.translate("player.controls.previous") as string;
+    const labelHtml = generateControlLabelHtml(icon_style, label);
     return html`
       <div class="track-previous div-${icon_size} ${div_layout}">
         <ha-button
@@ -80,7 +82,8 @@ class MassPlayerControls extends MassPlayerControlsBase {
     const icon_size = icon_style.size == PlayerIconSize.LARGE ? "medium" : "small";
     const div_layout= this.layoutConfig.controls_layout == PlayerControlsLayout.COMPACT ? "div-compact" : "div-spaced";
     const slotHtml = generateControlSlotHtml(icon_style);
-    const label = this._playerData.playing ? 'Playing' : 'Paused';
+    const key = this._playerData.playing ? 'player.controls.play' : 'player.controls.pause';
+    const label = this.controller.translate(key) as string;
     const labelHtml = generateControlLabelHtml(icon_style, label);
     const appearance = this._playerData.playing ? "filled" : "outlined";
     return html`
@@ -107,7 +110,8 @@ class MassPlayerControls extends MassPlayerControlsBase {
     const icon_size = icon_style.size == PlayerIconSize.LARGE ? "medium" : "small";
     const div_layout= this.layoutConfig.controls_layout == PlayerControlsLayout.COMPACT ? "div-compact" : "div-spaced";
     const slotHtml = generateControlSlotHtml(icon_style);
-    const labelHtml = generateControlLabelHtml(icon_style, 'Next');
+    const label = this.controller.translate("player.controls.next") as string;
+    const labelHtml = generateControlLabelHtml(icon_style, label);
     return html`
       <div class="track-next div-${icon_size} ${div_layout}">
         <ha-button
@@ -137,7 +141,8 @@ class MassPlayerControls extends MassPlayerControlsBase {
     const icon_style = this.layoutConfig.icons.repeat;
     const icon_size = icon_style.size == PlayerIconSize.LARGE ? "medium" : "small";
     const slotHtml = generateControlSlotHtml(icon_style);
-    const labelHtml = generateControlLabelHtml(icon_style, 'Repeat');
+    const label = this.controller.translate("player.controls.repeat") as string;
+    const labelHtml = generateControlLabelHtml(icon_style, label);
     const appearance = this._playerData.repeat == RepeatMode.OFF ? "accent" : "plain";
     return html`
       <div class="repeat div-${icon_size} ${div_layout}">

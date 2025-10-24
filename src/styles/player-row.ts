@@ -31,6 +31,48 @@ export default css`
     box-shadow: var(--md-sys-elevation-level1);
     --ha-button-border-radius: var(--button-small-border-radius) !important;
   }
+  
+  .audio-bars {
+    width: 0.55rem;
+    position: absolute;
+    right: 1rem;
+    height: 100%;
+    margin-left: 1rem;
+  }
+  .audio-bars > div {
+    bottom: 0.05rem;
+    height: 0.15rem;
+    position: absolute;
+    width: 0.15rem;
+    display: block;
+    animation: player-active 0ms -800ms linear infinite alternate;
+  }
+  .audio-bars-normal > div {
+    --start-color: var(--audio-bars-color);
+    --mid-color: var(--audio-bars-color);
+    --end-color: var(--audio-bars-color);
+  }
+  .audio-bars-expressive > div {
+    --start-color: var(--expressive-audio-bars-initial-color);
+    --mid-color: var(--expressive-audio-bars-middle-color);
+    --max-color: var(--expressive-audio-bars-max-color);
+  }
+  .audio-bars > div:first-child {
+    left: 8px;
+    animation-duration: 474ms;
+  }
+  .audio-bars > div:nth-child(2) {
+    left: 12px;
+    animation-duration: 433ms;
+  }
+  .audio-bars > div:nth-child(3) {
+    left: 16px;
+    animation-duration: 407ms;
+  }
+  .audio-bars > div:last-child {
+    left: 20px;
+    animation-duration: 375ms;
+  }
 
   .button-group {
     display: flex;
@@ -46,14 +88,14 @@ export default css`
 
   .button {
     margin: 0.15rem;
-    border-radius: 0.7rem;
+    border-radius: var(--player-row-border-radius);
     background: var(--media-row-background-color);
     height: var(--media-row-height);
   }
 
   .button-active {
     margin: 0.15rem;
-    border-radius: 0.7rem;
+    border-radius: var(--player-row-border-radius);
     background-color: var(--media-row-active-background-color, var(--md-sys-color-secondary-container));
     height: var(--media-row-height);
     padding-inline-start: 0px;
@@ -128,5 +170,26 @@ export default css`
     white-space: nowrap;
     min-width: 0;
     color: var(--font-color);
+    width: fit-content;
+  }
+  .title-bars {
+    display: flex;
+    flex-direction: row;
+    position: relative;
+  }
+
+  @keyframes player-active {
+    0% {
+      height: 4px;
+      background-color: var(--start-color);
+    }
+    50% {
+      height: 14px;
+      background-color: var(--mid-color);
+    }
+    100% {
+      height: 24px;
+      background-color: var(--max-color);
+    }
   }
 `;

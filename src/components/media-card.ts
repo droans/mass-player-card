@@ -161,7 +161,7 @@ class MediaCard extends LitElement {
     }
     this._entityConfig = config;
     this.updateHiddenElements();
-    this._search_buttons = getSearchMediaButtons(this.Icons)
+    this._search_buttons = getSearchMediaButtons(this.Icons, this.hass)
   }
   public get entityConfig() {
     return this._entityConfig;
@@ -199,7 +199,7 @@ class MediaCard extends LitElement {
     this.generateCode();
   }
   private updateEnqueueButtons() {
-    const default_buttons = getEnqueueButtons(this.Icons);
+    const default_buttons = getEnqueueButtons(this.Icons, this.hass);
     const button_mapping = HIDDEN_BUTTON_VALUE;
     const opts = default_buttons.filter(
       (item) => {

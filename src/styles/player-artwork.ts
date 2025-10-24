@@ -8,6 +8,7 @@ export default css`
     display: block;
   }
   .artwork-large {
+    border-radius: var(--artwork-border-radius) var(--artwork-border-radius) 0px 0px;
   }
   .artwork-medium {
 
@@ -30,22 +31,21 @@ export default css`
   .carousel-large {
     height: var(--mass-player-card-height) !important;
     aspect-ratio: 1;
-    height: var(--mass-player-card-height);
     width: 100%;
   }
   .carousel-medium {
-    height: 22em !important;
+    height: var(--artwork-medium-height);
     aspect-ratio: 1;
     place-content: center;
     position: absolute;
-    top: calc(50% - (22em / 2) - 2em);
+    top: calc(50% - (var(--artwork-medium-height) / 2) - 2em);
   }
   .carousel-small {
     position: absolute;
-    height: 14em;
+    height: var(--artwork-small-height);
     display: flex;
     aspect-ratio: 1;
-    left: calc(50% - 7em);
-    top: calc(50% - 7em);
+    left: calc(50% - (var(--artwork-small-height) / 2));
+    top: calc(50% - (var(--artwork-small-height) / 2));
   }
 `

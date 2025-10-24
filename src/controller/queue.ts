@@ -141,7 +141,13 @@ export class QueueController {
     console.error(`Reached max failures getting queue, check your browser and HA logs!`);
   }
   public async getQueue() {
-    if (isActive(this.hass, this.activeMediaPlayer)) {
+    const ents = this.config.entities;
+    const ent_id = this.activeMediaPlayer.entity_id;
+    const activeEntityConfig = ents.find(
+      (item) => item.entity_id == ent_id
+    );
+    // eslint-disable-next-line @typescript-eslint/no-non-null-assertion
+    if (isActive(this.hass, this.activeMediaPlayer, activeEntityConfig!)) {
       return this._getQueue();
     }
     this.queue = [];

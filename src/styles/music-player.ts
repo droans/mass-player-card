@@ -28,48 +28,15 @@ export default css`
   }
 
   #active-track-text {
-    z-index: 1;
+    z-index: 0;
+    transform: translate3d(0, 0, -1px);
+    -webkit-transform: translate3d(0, 0, -1px);
     position: relative;
   }
   .active-track-text-expressive {
   }
   .active-track-text-rounded {
     border-radius: 8px 8px 0px 0px;
-  }
-
-  .artwork-large {
-    max-height: 35em !important;
-  }
-  .artwork-med {
-    max-height: 22em !important;
-
-  }
-  .artwork-sm {
-
-  }
-  #artwork-div-lg {
-    position: absolute;
-    aspect-ratio: 1;
-    justify-self: center;
-    height: var(--mass-player-card-height);
-    width: 100%;
-    place-content: center;
-    top: -3em;
-    
-  }
-  #artwork-div-med {
-    aspect-ratio: 1;
-    justify-self: center;
-    place-content: center;
-    height: 100%;
-    top: -2em;
-    position: absolute;
-  }
-  #artwork-div-sm {
-    position: relative;
-    height: 10em;
-    display: flex;
-    justify-self: center;
   }
 
   .bg-art-lg {
@@ -214,7 +181,8 @@ export default css`
     --control-select-menu-height: 2.5em;
   }
   .menu-header-expressive::part(menu-select-menu) {
-    background-color: var(--md-sys-color-secondary-container) !important;
+    --control-select-menu-background-color: var(--md-sys-color-secondary-container) !important;
+    background-color: unset !important;
     box-shadow: var(--md-sys-elevation-level1);
     border-radius: var(--button-small-border-radius);
   }
@@ -239,7 +207,7 @@ export default css`
     top: 0;
     width: 100%;
     z-index: 1;
-    border-radius: 28px 28px 0px 0px;
+    border-radius: var(--default-border-radius) var(--default-border-radius) 0px 0px;
   }
   .player-card-header {
     background: linear-gradient(var(--player-blur-color) 90%, transparent) !important;
