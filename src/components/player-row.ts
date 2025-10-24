@@ -30,7 +30,7 @@ import {
   backgroundImageFallback,
   getFallbackBackgroundImage
 } from '../utils/thumbnails';
-import { jsonMatch, testMixedContent } from '../utils/util';
+import { isActive, jsonMatch, testMixedContent } from '../utils/util';
 
 import styles from '../styles/player-row';
 import { DEFAULT_PLAYERS_HIDDEN_ELEMENTS_CONFIG, PlayersConfig, PlayersHiddenElementsConfig } from '../config/players';
@@ -148,13 +148,23 @@ class PlayerRow extends LitElement {
     if (!title.length) {
       title = this.player_entity.attributes?.friendly_name ?? "Media Player"
     };
+    const active_style = isActive(this.hass, this.player_entity, this._entityConfig) ? `audio-bars` : `audio-bars-inactive`;
+    const active_expressive_style =  this.useExpressive ? `audio-bars-expressive` : `audio-bars-normal`;
     return html`
       <span
         slot="headline"
-        class="title"
-        style="width: ${this._calculateTitleWidth()}"
       >
-        ${title}
+        <div class="title-bars" style="max-width: ${this._calculateTitleWidth()}">
+          <div class="title">
+            ${title}
+          </div>
+          <div class="${active_style} ${active_expressive_style}">
+            <div></div>
+            <div></div>
+            <div></div>
+            <div></div>
+          </div>
+        </div>
       </span>
       <span slot="supporting-text">
       </span>
