@@ -206,6 +206,7 @@ export class MusicAssistantPlayerCard extends LitElement {
     this.setActivePlayer(entity_id);
     if (this.config.player.enabled){
       this.active_section = Sections.MUSIC_PLAYER;
+      this._controller.activeSection = Sections.MUSIC_PLAYER;
     }
   }
   private onSectionChangedEvent = (ev: Event) => {
