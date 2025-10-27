@@ -624,6 +624,7 @@ class MusicPlayerCard extends LitElement {
   }
   protected firstUpdated(): void {
       this._firstLoaded = true;
+      this.controller.host.addEventListener('artwork-updated', () => this.updatePlayerData())
   }
   protected shouldUpdate(_changedProperties: PropertyValues): boolean {
     if (!this.player_data || !_changedProperties.size) {
