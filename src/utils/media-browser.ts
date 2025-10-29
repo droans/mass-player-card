@@ -97,7 +97,7 @@ export function generateRecommendationSectionCards(section: RecommendationSectio
         fallback: Thumbnail.CLEFT,
         data: {
           type: 'service',
-          media_content_id: item.item_id,
+          media_content_id: item.uri ?? item.item_id,
           media_content_type: item.media_type
         }
       };
