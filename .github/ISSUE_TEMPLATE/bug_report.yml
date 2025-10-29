@@ -1,0 +1,204 @@
+name: Report a bug with the card
+description: Report a bug you are experiencing with the card.
+labels: bug
+body:
+  - type: markdown
+    attributes:
+      value: |
+        ## Troubleshooting
+
+        Before submitting a bug report, please ensure you have followed all troubleshooting steps first:
+        * Ensure you are running the latest version of Home Assistant, Music Assistant, Music Assistant Queue Actions, and this card
+        * [Read through the FAQ](https://github.com/droans/mass-player-card#faqs)
+        * Search [the existing issues](https://github.com/droans/mass-player-card/issues?q=is%3Aissue) to see if someone else has reported a similar problem.
+        * Check through all your logs for possible issues:
+          * Home Assistant logs
+          * Music Assistant logs
+          * Your browser console logs
+        * Ensure that Music Assistant and the Music Assistant/Music Assistant Queue Actions are properly set up
+        * If a beta is available, verify that it won't fix your issue.
+  - type: checkboxes
+    attributes:
+      label: Troubleshooting Checklist
+      description: 'Please verify that the following steps have been taken:'
+      options:
+        - label: I am running the latest version of Home Assistant.
+          required: true
+        - label: I am running the latest version of Music Assistant.
+          required: true
+        - label: I am running the latest version of Music Assistant Queue Actions.
+          required: true
+        - label: I am running the latest version of this card.
+          required: true
+        - label: Music Assistant and the Music Assistant Queue Actions integration are set up and pointing at the same instance. 
+          required: true
+        - label: This is not a a network issue (subnet, NAT, etc.).
+          required: true
+        - label: The beta version of this card (if available) does not address my issue.
+          required: true
+        - label: I believe this is an issue with the card and not with HA, MA, and/or Music Assistant Queue Actions.
+          required: true
+  - type: markdown
+    attributes:
+      value: |
+        ## Environment
+  - type: markdown
+    attributes:
+      value: |
+        ### Background
+  - type: input
+    validations:
+      required: true
+    attributes:
+      label: Music Assistant Player Card version
+      description: >
+        Can be found in HACS and in your browser logs.
+  - type: checkboxes
+    attributes:
+      label: Browser
+      description: 'What browser(s) are you experiencing this issue in?'
+      options:
+        - label: Chrome
+          required: true
+        - label: Chrome (Mobile)
+          required: true
+        - label: Firefox
+          required: true
+        - label: Firefox (Mobile)
+          required: true
+        - label: Safari
+          required: true
+        - label: Safari (Mobile)
+          required: true
+        - label: Home Assistant Android App
+          required: true
+        - label: Home Assistant iOS App
+          required: true
+        - label: Edge
+          required: true
+        - label: Other (Please input below.)
+          required: true
+  - type: input
+    validations:
+      required: true
+    attributes:
+      label: What browser version are you running?
+  - type: input
+    validations:
+      required: true
+    attributes:
+      label: What device are you experiencing the issue on?
+      placeholder: Fire Tablet, Pixel 9, iPhone 17, Windows laptop, etc.
+  - type: input
+    validations:
+      required: true
+    attributes:
+      label: What OS and OS version are you experiencing the issue on?
+      placeholder: Android 17, macOS Big Sur 1.11, Windows 11 25H2, etc.
+  - type: textarea
+    validations:
+      required: true
+    attributes:
+      label: Card config
+      description: Paste your card config below. If necessary, scrub any identifying information
+      render: yaml
+
+  - type: markdown
+    attributes:
+      value: |
+        ### Home Assistant
+  - type: input
+    validations:
+      required: true
+    attributes:
+      label: Home Assistant Version
+      description: >
+        Can be found in: [Settings -> About](https://my.home-assistant.io/redirect/info/).
+  - type: input
+    validations:
+      required: true
+    attributes:
+      label: Music Assistant Queue Actions version 
+      description:
+        Can be found in HACS.
+
+  - type: markdown
+    attributes:
+      value: |
+        ### Music Assistant
+  - type: input
+    validations:
+      required: true
+    attributes:
+      label: Music Assistant version 
+  - type: input
+    validations:
+      required: true
+    attributes:
+      label: What music provider(s) are you using?
+      placeholder: Plex, Spotify, Tidal, Jellyfin
+  - type: input
+    validations:
+      required: true
+    attributes:
+      label: What player provider(s) are you using?
+      placeholder: Snapcast, Cast, Sonos, Airplay      
+
+  - type: markdown
+    attributes:
+      value: |
+        ## The problem
+  - type: textarea
+    validations:
+      required: true
+    attributes:
+      label: Describe the issue you are experiencing
+      description: Provide a clear and concise description of what the bug is.
+  - type: textarea
+    validations:
+      required: true
+    attributes:
+      label: Describe the behavior you expected
+      description: Describe what you expected to happen or it should look/behave.
+  - type: textarea
+    validations:
+      required: true
+    attributes:
+      label: Steps to reproduce the issue
+      description: |
+        Please tell us exactly how to reproduce your issue.
+        Provide clear and concise step by step instructions and add code snippets if needed.
+      value: |
+        1.
+        2.
+        3.
+        ...
+  - type: markdown
+    attributes:
+      value: |
+        # Details
+  - type: textarea
+    attributes:
+      label: Additional Details
+      description: >
+        Provide any additional relevant details you may have.
+  - type: textarea
+    attributes:
+      label: Browser Logs
+      description: >
+        If relevant, paste any logs from your browser here
+  - type: textarea
+    attributes:
+      label: Music Assistant Logs
+      description: >
+        If relevant, paste any logs from Music Assistant here
+  - type: textarea
+    attributes:
+      label: Home Assistant Logs
+      description: >
+        If relevant, paste any logs from Home Assistant here
+  - type: textarea
+    attributes:
+      label: Screenshots/clips
+      description: >
+        If relevant, paste any screenshots and/or screen recordings here.

@@ -90,3 +90,7 @@
 - name: no-changelog
   description: Don't add to release changelog
   color: 0e8a16
+
+- name: "bug"
+  color: ee0701
+  description: "Inconsistencies or issues which will cause a problem for users or implementors."
