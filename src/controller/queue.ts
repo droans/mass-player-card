@@ -341,9 +341,9 @@ export class QueueController {
   }
   public reconnected(hass: ExtendedHass) {
     this.hass = hass;
-    this.subscribeUpdates();
+    void this.subscribeUpdates();
     this.resetQueueFailures();
-    this.getQueue();
+    void this.getQueue();
   }
 
 }

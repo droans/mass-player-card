@@ -327,8 +327,6 @@ export class ActivePlayerController {
   public generateImageElementFromImage(img: string): HTMLImageElement | undefined {
     const elem = document.createElement('img');
     const def = getThumbnail(this.hass, Thumbnail.CLEFT);
-    elem.height = 75;
-    elem.width = 75;
     elem.src = img;
     elem.crossOrigin = "Anonymous";
     elem.onerror = () => {elem.src = def}

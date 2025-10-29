@@ -122,7 +122,7 @@ export class ActionsController {
     return this._queueActions;
   }
   public disconnected() {
-
+    return;
   }
   public reconnected(hass: ExtendedHass) {
     this.hass = hass;

@@ -248,7 +248,7 @@ export class MediaBrowserController {
     this.items = {...i};
   }
   public disconnected() {
-
+    return;
   }
   public reconnected(hass: ExtendedHass) {
     this.hass = hass;

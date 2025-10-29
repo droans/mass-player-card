@@ -53,14 +53,36 @@ import { getTranslation } from '../utils/translations.js';
 
 @customElement(`mass-media-browser`)
 export class MediaBrowser extends LitElement {
-  private _hass!: ExtendedHass;
   @property({ attribute: false }) private _config!: MediaBrowserConfig;
   @property({ attribute: false }) public onMediaSelectedAction!: () => void;
 
   @state() private _cards!: newMediaBrowserItemsConfig
-  @provide({ context: activeMediaBrowserCardsContext })
-  private _activeCards!: MediaCardItem[];
+  @state() private searchMediaTypeIcon!: string;
+  @state() private searchMediaType: MediaTypes = MediaTypes.TRACK; 
+  @state() private searchLibrary = false;
 
+  @provide({ context: activeMediaBrowserCardsContext }) private _activeCards!: MediaCardItem[];
+
+  @consume({ context: useExpressiveContext, subscribe: true}) private useExpressive!: boolean;
+  @consume({ context: IconsContext}) private Icons!: Icons;
+  @consume({ context: activeEntityConf, subscribe: true}) private activeEntityConfig!: EntityConfig;
+
+  public activeSection = DEFAULT_ACTIVE_SECTION
+  public activeSubSection = DEFAULT_ACTIVE_SUBSECTION
+  private previousSections: string[] = [];
+  private previousSubSections: string[] = [];
+
+  private _hass!: ExtendedHass;
+  private _browserController!: MediaBrowserController;
+  private actions!: BrowserActions;
+  private searchTerm = '';
+  private _searchTimeout!: number;
+
+  constructor() {
+    super();
+    this.browserController._host.addEventListener('cards-updated', this.onCardsUpdated)
+  }
+  
   @state() 
   public set activeCards(cards: MediaCardItem[]) {
     if (jsonMatch(this._activeCards, cards)) {
@@ -71,23 +93,6 @@ export class MediaBrowser extends LitElement {
   public get activeCards() {
     return this._activeCards;
   }
-  @consume({ context: useExpressiveContext, subscribe: true}) private useExpressive!: boolean;
-  @consume({ context: IconsContext}) private Icons!: Icons;
-  @consume({ context: activeEntityConf, subscribe: true}) private activeEntityConfig!: EntityConfig;
-
-  public activeSection = DEFAULT_ACTIVE_SECTION
-  public activeSubSection = DEFAULT_ACTIVE_SUBSECTION
-  private previousSections: string[] = [];
-  private previousSubSections: string[] = [];
-
-  private _browserController!: MediaBrowserController;
-  private actions!: BrowserActions;
-
-  @state() private searchMediaTypeIcon!: string;
-  @state() private searchMediaType: MediaTypes = MediaTypes.TRACK; 
-  @state() private searchLibrary = false;
-  private searchTerm = '';
-  private _searchTimeout!: number;
 
   @consume({ context: hassExt, subscribe: true})
   public set hass(hass: ExtendedHass) {
@@ -507,7 +512,7 @@ export class MediaBrowser extends LitElement {
     return this.renderSubsectionHeader();
   }
   protected firstUpdated(): void {
-    this.browserController._host.addEventListener('cards-updated', this.onCardsUpdated)
+    return;
   }
   protected render(): TemplateResult {
     return html`

@@ -87,7 +87,7 @@ class MusicPlayerCard extends LitElement {
 
   @provide({ context: activePlayerDataContext})
   @state()
-  private player_data!: PlayerData;
+  public player_data!: PlayerData;
 
   
   @state()
@@ -612,7 +612,11 @@ class MusicPlayerCard extends LitElement {
   }
   connectedCallback(): void {
     super.connectedCallback();
-    if (this._animation && this._firstLoaded) {
+    if (!this._firstLoaded) {
+      return;
+    }
+    this.updatePlayerData();
+    if (this._animation) {
       this._animation.play = true;
     }
   }
@@ -624,7 +628,7 @@ class MusicPlayerCard extends LitElement {
   }
   protected firstUpdated(): void {
       this._firstLoaded = true;
-      this.controller.host.addEventListener('artwork-updated', () => this.updatePlayerData())
+      this.controller.host.addEventListener('artwork-updated', () => {this.updatePlayerData()})
   }
   protected shouldUpdate(_changedProperties: PropertyValues): boolean {
     if (!this.player_data || !_changedProperties.size) {
