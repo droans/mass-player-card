@@ -121,8 +121,6 @@ export class MediaBrowser extends LitElement {
 
   @consume({ context: mediaBrowserCardsContext, subscribe: true}) 
   public set cards(cards: newMediaBrowserItemsConfig) {
-    console.log(`Got cards`);
-    console.log(cards);
     if (jsonMatch(this._cards, cards)) {
       return;
     }
@@ -323,10 +321,7 @@ export class MediaBrowser extends LitElement {
     const _ev = ev as CardsUpdatedEvent;
     const detail = _ev.detail;
     const section = detail.section;
-    console.log(`Got updated cards event`);
-    console.log(detail);
     if (section == 'all') {
-      console.log(`Setting cards`);
       this._cards = detail.cards as newMediaBrowserItemsConfig;
     }
     if (!this.cards) {

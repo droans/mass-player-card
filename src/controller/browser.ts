@@ -76,7 +76,7 @@ export class MediaBrowserController {
       this.generateAllRecents(),
       this.generateAllRecommendations(),
     ]
-    Promise.all(promises).then(
+    void Promise.all(promises).then(
       () => {
         this.generateCustomSections();
         const data: CardsUpdatedEventDetail = {section: 'all', cards: this.items}
