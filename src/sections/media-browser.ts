@@ -88,7 +88,10 @@ export class MediaBrowser extends LitElement {
   @state() private searchLibrary = false;
   private searchTerm = '';
   private _searchTimeout!: number;
-
+  constructor() {
+    super();
+    this.browserController._host.addEventListener('cards-updated', this.onCardsUpdated)
+  }
   @consume({ context: hassExt, subscribe: true})
   public set hass(hass: ExtendedHass) {
     this._hass = hass;
@@ -507,7 +510,7 @@ export class MediaBrowser extends LitElement {
     return this.renderSubsectionHeader();
   }
   protected firstUpdated(): void {
-    this.browserController._host.addEventListener('cards-updated', this.onCardsUpdated)
+    return;
   }
   protected render(): TemplateResult {
     return html`
