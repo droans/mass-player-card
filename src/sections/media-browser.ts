@@ -56,12 +56,14 @@ export class MediaBrowser extends LitElement {
   @property({ attribute: false }) private _config!: MediaBrowserConfig;
   @property({ attribute: false }) public onMediaSelectedAction!: () => void;
 
-  @state() private _cards!: newMediaBrowserItemsConfig
+  @state() public _cards!: newMediaBrowserItemsConfig
   @state() private searchMediaTypeIcon!: string;
   @state() private searchMediaType: MediaTypes = MediaTypes.TRACK; 
   @state() private searchLibrary = false;
 
-  @provide({ context: activeMediaBrowserCardsContext }) private _activeCards!: MediaCardItem[];
+  @provide({ context: activeMediaBrowserCardsContext }) 
+  @state() 
+  public _activeCards!: MediaCardItem[];
 
   @consume({ context: useExpressiveContext, subscribe: true}) private useExpressive!: boolean;
   @consume({ context: IconsContext}) private Icons!: Icons;
