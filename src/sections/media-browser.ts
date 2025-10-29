@@ -7,6 +7,7 @@ import {
   TemplateResult
 } from "lit";
 import {
+  CardsUpdatedEvent,
   ExtendedHass,
   MediaTypes,
   TargetValEventData,
@@ -79,11 +80,6 @@ export class MediaBrowser extends LitElement {
   private actions!: BrowserActions;
   private searchTerm = '';
   private _searchTimeout!: number;
-
-  constructor() {
-    super();
-    this.browserController._host.addEventListener('cards-updated', this.onCardsUpdated)
-  }
   
   @state() 
   public set activeCards(cards: MediaCardItem[]) {
@@ -149,6 +145,9 @@ export class MediaBrowser extends LitElement {
   public setActiveCards() {
     const section = this.activeSection;
     const subsection = this.activeSubSection;
+    if (!this.cards) {
+      return;
+    }
     // eslint-disable-next-line @typescript-eslint/no-unsafe-member-access
     const new_cards = [...this.cards[section][subsection]];
     const cur_cards = this.activeCards;
@@ -318,8 +317,20 @@ export class MediaBrowser extends LitElement {
     )
     this.activeCards = cards;    
   }
-  private onCardsUpdated = () => {
-    if (!this?.activeCards?.length) {
+  private onCardsUpdated = (ev: Event) => {
+    const _ev = ev as CardsUpdatedEvent;
+    const detail = _ev.detail;
+    const section = detail.section;
+    if (section == 'all') {
+      this._cards = detail.cards as newMediaBrowserItemsConfig;
+    }
+    if (!this.cards) {
+      return;
+    }
+    if (
+        !this?.activeCards?.length
+        && (section == 'all' || section == this.activeSection)
+      ) {
       this.setActiveCards();
     }
   }
@@ -514,7 +525,7 @@ export class MediaBrowser extends LitElement {
     return this.renderSubsectionHeader();
   }
   protected firstUpdated(): void {
-    return;
+    this.browserController._host.addEventListener('cards-updated', this.onCardsUpdated);
   }
   protected render(): TemplateResult {
     return html`

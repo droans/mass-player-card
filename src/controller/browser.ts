@@ -7,6 +7,7 @@ import {
   MediaBrowserConfig
 } from "../config/media-browser.js";
 import {
+  CardsUpdatedEventDetail,
   ExtendedHass,
   MediaTypes,
   Thumbnail
@@ -75,8 +76,14 @@ export class MediaBrowserController {
       this.generateAllRecents(),
       this.generateAllRecommendations(),
     ]
-    void Promise.all(promises);
-    this.generateCustomSections();
+    void Promise.all(promises).then(
+      () => {
+        this.generateCustomSections();
+        const data: CardsUpdatedEventDetail = {section: 'all', cards: this.items}
+        const ev = new CustomEvent('cards-updated', {detail: data});
+        this._host.dispatchEvent(ev);
+      }
+    );
     
   }
 
@@ -121,7 +128,8 @@ export class MediaBrowserController {
     this.generateFavoriteData(favorites.tracks, MediaTypes.TRACK),
     ];
     await Promise.all(promises);
-    const ev = new CustomEvent('cards-updated', {detail: 'favorites'})
+    const data: CardsUpdatedEventDetail = {section: 'favorites', cards: this.items.favorites}
+    const ev = new CustomEvent('cards-updated', {detail: data})
     this._host.dispatchEvent(ev);
   }
   private async getFavoriteSection(
@@ -169,7 +177,8 @@ export class MediaBrowserController {
     this.generateRecentsData(recents.tracks, MediaTypes.TRACK),
     ]
     await Promise.all(promises);
-    const ev = new CustomEvent('cards-updated', {detail: 'recents'})
+    const data: CardsUpdatedEventDetail = {section: 'recents', cards: this.items.recents}
+    const ev = new CustomEvent('cards-updated', {detail: data})
     this._host.dispatchEvent(ev);
     
   }
@@ -218,7 +227,8 @@ export class MediaBrowserController {
         void this.generateRecommendationSection(item)
       }
     )
-    const ev = new CustomEvent('cards-updated', {detail: 'recommendations'})
+    const detail: CardsUpdatedEventDetail = {section: 'recommendations', cards: this.items.recommendations}
+    const ev = new CustomEvent('cards-updated', {detail: detail})
     this._host.dispatchEvent(ev);
   }
 
@@ -226,7 +236,7 @@ export class MediaBrowserController {
   private generateCustomSections() {
     this.browserConfig.sections.forEach(
       (item) => {
-        this.generateCustomSectionData(item)
+        this.generateCustomSectionData(item);
       }
     )
   }
