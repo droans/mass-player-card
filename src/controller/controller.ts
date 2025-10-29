@@ -163,8 +163,6 @@ export class MassCardController {
     this._connected = false;
   }
   public connected() {
-    console.log('Connected');
-    console.log(this.hass);
     this._connected = true;
     this._reconnected = true;
   }
