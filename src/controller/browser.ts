@@ -247,4 +247,11 @@ export class MediaBrowserController {
     i.favorites.main.push(section_card);
     this.items = {...i};
   }
+  public disconnected() {
+
+  }
+  public reconnected(hass: ExtendedHass) {
+    this.hass = hass;
+    this.resetAndGenerateSections();
+  }
 }

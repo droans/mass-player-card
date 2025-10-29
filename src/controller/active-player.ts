@@ -415,4 +415,12 @@ export class ActivePlayerController {
     // eslint-disable-next-line @typescript-eslint/no-unsafe-return
     return vol;
   }
+  public disconnected() {
+    this._host.removeEventListener('artwork-updated', this.onActiveTrackChange);
+  }
+  public reconnected(hass: ExtendedHass) {
+    this.hass = hass; 
+    this._host.addEventListener('artwork-updated', this.onActiveTrackChange);
+    this.setActivePlayer(this.activeEntityID)
+  }
 }
