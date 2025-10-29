@@ -315,7 +315,14 @@ export class MusicAssistantPlayerCard extends LitElement {
       if (this._controller) {
         this._controller.Queue.resetQueueFailures(); 
         void this._controller.Queue.subscribeUpdates(); 
+        if (this.hasUpdated) {
+          this._controller.connected();
+        }
       }
+  }
+  disconnectedCallback(): void {
+    super.disconnectedCallback();
+    this._controller.disconnected();
   }
   protected firstUpdated(): void {
     if (this.config.expressive) {

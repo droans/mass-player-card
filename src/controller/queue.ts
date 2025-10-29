@@ -336,5 +336,14 @@ export class QueueController {
   public async clearQueue(entity_id: string = this.activeMediaPlayer.entity_id) {
     await this.actions.clearQueue(entity_id);
   }
+  public disconnected() {
+    this.unsubscribeUpdates();
+  }
+  public reconnected(hass: ExtendedHass) {
+    this.hass = hass;
+    this.subscribeUpdates();
+    this.resetQueueFailures();
+    this.getQueue();
+  }
 
 }

@@ -174,6 +174,9 @@ class QueueCard extends LitElement {
     return QueueConfigErrors.OK;
   }
   private scrollToActive() {
+    if (!this.queue?.length) {
+      return;
+    }
     const item_offset = this._activeElement.offsetTop;
     const padding = this._activeElement.offsetHeight * 2;
     const scroll = item_offset - padding;
