@@ -181,6 +181,10 @@ media_browser:
     play_next_clear_queue_button: false
     play_now_button: false
     play_now_clear_queue_button: false
+  recents:
+    enabled: true
+  recommendations:
+    enabled: true
   favorites:
     albums:
       enabled: true
@@ -326,6 +330,13 @@ media_browser:
           image: https://resources.tidal.com/images/b15ef956/5eed/43ba/9bba/d1ea1c3e48a4/750x750.jpg
           media_content_id: tidal://track/222419939
           media_content_type: track
+  recents:
+    enabled: true
+  recommendations:
+    enabled: true
+    providers:
+      - plex
+      - tidal
 ```
 
 </details>
@@ -473,14 +484,15 @@ Multiple elements on the queue tab can be hidden. By default, all elements are v
 <img src="https://github.com/droans/mass-player-card/blob/main/static/media_browser/desktop.png" alt="Player Card Media Browser Section Example">
 </details>
 
-| Parameter | Type                                                                      | Required | Default     | Description                      |
-|-----------|---------------------------------------------------------------------------|----------|-------------|----------------------------------|
-| enabled   | bool                                                                      | No       | true        | Enable/disable media browser tab |
-| columns   | number                                                                    | No       | 2           | Number of columns for each row.  |
-| favorites | [FavoritesConfig](#favorites-config)                                      | No       | -           | See below                        |
-| recents   | [FavoritesConfig](#favorites-config)                                      | No       | -           | See below                        |
-| sections  | list of [SectionsConfig](#sections-config)                                | No       | -           | See below                        |
-| hide      | [MediaBrowserHiddenElementsConfig](#media-browser-hidden-elements-config) | No       | See below   | See Below                        |
+| Parameter       | Type                                                                      | Required | Default     | Description                      |
+|-----------------|---------------------------------------------------------------------------|----------|-------------|----------------------------------|
+| enabled         | bool                                                                      | No       | true        | Enable/disable media browser tab |
+| columns         | number                                                                    | No       | 2           | Number of columns for each row.  |
+| favorites       | [FavoritesConfig](#favorites-config)                                      | No       | -           | See below                        |
+| recents         | [FavoritesConfig](#favorites-config)                                      | No       | -           | See below                        |
+| recommendations | [RecommendationsConfig](#recommendations-config)                          | No       | -           | See below                        |
+| sections        | list of [SectionsConfig](#sections-config)                                | No       | -           | See below                        |
+| hide            | [MediaBrowserHiddenElementsConfig](#media-browser-hidden-elements-config) | No       | See below   | See Below                        |
 
 ## Media Browser Hidden Elements Config
 Multiple elements on the media browser tab can be hidden. By default, all elements are visible
@@ -508,6 +520,14 @@ Multiple elements on the media browser tab can be hidden. By default, all elemen
 | podcasts   | [FavoriteItem](#favorite-items) | No       | true    | See below                       |
 | radios     | [FavoriteItem](#favorite-items) | No       | true    | See below                       |
 | tracks     | [FavoriteItem](#favorite-items) | No       | true    | See below                       |
+
+## Recommendations Config
+Recommendations can be enabled/disabled. You can also choose which providers can supply recommendations.
+
+| Parameter | Type            | Required | Default | Description                                       |
+|-----------|-----------------|----------|---------|---------------------------------------------------|
+| enabled   | bool            | No       | true    | Enable/disable music player tab                   |
+| providers | list of strings | No       | true    | Choose whcih providers to use for recommendations |
 
 ### Favorite Items
 You can select which favorite items you'd like to display in the media browser. Use the example below to help set it up. By default, all favorites are enabled. If no favorites exist for a category, the section will not be displayed. You can also add your own custom items to the favorite section by specifying it under `items`.
