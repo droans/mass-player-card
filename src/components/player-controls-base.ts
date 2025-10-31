@@ -3,7 +3,7 @@ import { LitElement, PropertyValues } from "lit";
 import { state } from "lit/decorators.js";
 import { actionsControllerContext, activeEntityConf, activePlayerDataContext, controllerContext, EntityConfig, IconsContext, musicPlayerConfigContext } from "../const/context";
 import { ActionsController } from "../controller/actions";
-import { PlayerData } from "../const/music-player";
+import { ForceUpdatePlayerDataEventData, PlayerData } from "../const/music-player";
 import { Icons } from "../const/icons";
 import { getIteratedRepeatMode } from "../utils/music-player";
 import { RepeatMode } from "../const/common";
@@ -76,9 +76,6 @@ export class MassPlayerControlsBase extends LitElement {
 
   @consume({ context: activePlayerDataContext, subscribe: true })
   public set playerData(playerData: PlayerData) {
-    if (jsonMatch(this._playerData, playerData)) {
-      return;
-    }
     this._playerData = playerData;
     this.playing = playerData.playing;
     this.repeat = playerData.repeat;
@@ -88,15 +85,40 @@ export class MassPlayerControlsBase extends LitElement {
   public get playerData() {
     return this._playerData;
   }
-  
+  /* 
+    eslint-disable 
+      @typescript-eslint/no-explicit-any,
+      @typescript-eslint/no-unsafe-assignment
+  */
+  private forceUpdatePlayerData(key: string, value: any) {
+    const data: ForceUpdatePlayerDataEventData = {
+      key: key,
+      value: value
+    }
+    const ev = new CustomEvent('force-update-player', {detail: data})
+    this.controller.host.dispatchEvent(ev);
+  }
+  /* 
+    eslint-enable 
+      @typescript-eslint/no-explicit-any,
+      @typescript-eslint/no-unsafe-assignment
+  */
+  private requestPlayerDataUpdate() {
+    const ev = new Event('request-player-data-update');
+    this.controller.host.dispatchEvent(ev);    
+  }
   protected onPrevious = async () => {
     await this.actions.actionPlayPrevious();
+    this.requestPlayerDataUpdate();
   }
   protected onNext = async () => {
     await this.actions.actionPlayNext();
+    this.requestPlayerDataUpdate();
   }
   protected onPlayPause = async () => {
     await this.actions.actionPlayPause();
+    this.playing = !this.playing;
+    this.forceUpdatePlayerData('playing', !this.playing);
   }
   protected onShuffle = async () => {
     this.shuffle = !this.shuffle;

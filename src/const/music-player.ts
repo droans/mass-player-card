@@ -1,7 +1,14 @@
 import { SlCarouselItem } from "@shoelace-style/shoelace";
 import { RepeatMode } from "./common";
 
-
+export interface ForceUpdatePlayerDataEvent extends CustomEvent {
+  detail: ForceUpdatePlayerDataEventData
+}
+export interface ForceUpdatePlayerDataEventData {
+  key: string,
+  // eslint-disable-next-line @typescript-eslint/no-explicit-any,
+  value: any
+}
 export interface PlayerData {
   playing: boolean;
   muted: boolean;

@@ -28,6 +28,8 @@ export class MassCardController {
   private queueController!: ContextProvider<typeof queueControllerContext>;
   private browserController!: ContextProvider<typeof browserControllerContext>;
   private _activeSection!: ContextProvider<typeof activeSectionContext>;
+  private _connected = true;
+  private _reconnected = false;
 
   constructor(host: HTMLElement) {
     this.host = host;
@@ -92,6 +94,10 @@ export class MassCardController {
     this.ActivePlayer.hass = hass;
     this.Actions.hass = hass;
     this.Queue.hass = hass;
+    if (this._reconnected) {
+      this._reconnected = false;
+      this.hassReconnected();
+    }
   }
   public get hass() {
     return this._hass.value;
@@ -148,6 +154,24 @@ export class MassCardController {
 
   public get Browser() {
     return this.browserController.value;
+  }
+  public disconnected() {
+    this.ActivePlayer.disconnected();
+    this.Actions.disconnected();
+    this.Queue.disconnected();
+    this.Browser.disconnected();
+    this._connected = false;
+  }
+  public connected() {
+    this._connected = true;
+    this._reconnected = true;
+  }
+  private hassReconnected() {
+    this.ActivePlayer.reconnected(this.hass);
+    this.Actions.reconnected(this.hass);
+    this.Queue.reconnected(this.hass);
+    this.Browser.reconnected(this.hass);
+
   }
   public translate(key: string) {
     // eslint-disable-next-line @typescript-eslint/no-unsafe-return

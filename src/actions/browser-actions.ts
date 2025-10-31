@@ -132,7 +132,7 @@ export default class BrowserActions {
     }
   async actionGetRecommendations(
     player_entity_id: string,
-    providers: string | null
+    providers: string[] | null
   ): Promise<RecommendationResponse> {
     const _providers = providers ? {providers: providers} : {};
     const data = {

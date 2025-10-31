@@ -7,6 +7,7 @@ import {
   MediaBrowserConfig
 } from "../config/media-browser.js";
 import {
+  CardsUpdatedEventDetail,
   ExtendedHass,
   MediaTypes,
   Thumbnail
@@ -75,8 +76,14 @@ export class MediaBrowserController {
       this.generateAllRecents(),
       this.generateAllRecommendations(),
     ]
-    void Promise.all(promises);
-    this.generateCustomSections();
+    void Promise.all(promises).then(
+      () => {
+        this.generateCustomSections();
+        const data: CardsUpdatedEventDetail = {section: 'all', cards: this.items}
+        const ev = new CustomEvent('cards-updated', {detail: data});
+        this._host.dispatchEvent(ev);
+      }
+    );
     
   }
 
@@ -121,7 +128,8 @@ export class MediaBrowserController {
     this.generateFavoriteData(favorites.tracks, MediaTypes.TRACK),
     ];
     await Promise.all(promises);
-    const ev = new CustomEvent('cards-updated', {detail: 'favorites'})
+    const data: CardsUpdatedEventDetail = {section: 'favorites', cards: this.items.favorites}
+    const ev = new CustomEvent('cards-updated', {detail: data})
     this._host.dispatchEvent(ev);
   }
   private async getFavoriteSection(
@@ -169,7 +177,8 @@ export class MediaBrowserController {
     this.generateRecentsData(recents.tracks, MediaTypes.TRACK),
     ]
     await Promise.all(promises);
-    const ev = new CustomEvent('cards-updated', {detail: 'recents'})
+    const data: CardsUpdatedEventDetail = {section: 'recents', cards: this.items.recents}
+    const ev = new CustomEvent('cards-updated', {detail: data})
     this._host.dispatchEvent(ev);
     
   }
@@ -211,14 +220,16 @@ export class MediaBrowserController {
     
   }
   private async generateAllRecommendations() {
-    const data = await this.actions.actionGetRecommendations(this.activeEntityId, null);
+    const providers = this.browserConfig.recommendations.providers ?? null
+    const data = await this.actions.actionGetRecommendations(this.activeEntityId, providers);
     const resp = data.response.response;
     resp.forEach(
       (item) => {
         void this.generateRecommendationSection(item)
       }
     )
-    const ev = new CustomEvent('cards-updated', {detail: 'recommendations'})
+    const detail: CardsUpdatedEventDetail = {section: 'recommendations', cards: this.items.recommendations}
+    const ev = new CustomEvent('cards-updated', {detail: detail})
     this._host.dispatchEvent(ev);
   }
 
@@ -226,7 +237,7 @@ export class MediaBrowserController {
   private generateCustomSections() {
     this.browserConfig.sections.forEach(
       (item) => {
-        this.generateCustomSectionData(item)
+        this.generateCustomSectionData(item);
       }
     )
   }
@@ -246,5 +257,12 @@ export class MediaBrowserController {
     i.favorites[`custom-${config.name}`] = cards;
     i.favorites.main.push(section_card);
     this.items = {...i};
+  }
+  public disconnected() {
+    return;
+  }
+  public reconnected(hass: ExtendedHass) {
+    this.hass = hass;
+    this.resetAndGenerateSections();
   }
 }

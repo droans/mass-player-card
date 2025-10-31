@@ -140,7 +140,7 @@ export class QueueController {
     // eslint-disable-next-line no-console
     console.error(`Reached max failures getting queue, check your browser and HA logs!`);
   }
-  public async getQueue() {
+  public getQueue = async () => {
     const ents = this.config.entities;
     const ent_id = this.activeMediaPlayer.entity_id;
     const activeEntityConfig = ents.find(
@@ -148,7 +148,9 @@ export class QueueController {
     );
     // eslint-disable-next-line @typescript-eslint/no-non-null-assertion
     if (isActive(this.hass, this.activeMediaPlayer, activeEntityConfig!)) {
-      return this._getQueue();
+      const queue = this._getQueue();
+      return queue;
+
     }
     this.queue = [];
     return [];
@@ -167,20 +169,28 @@ export class QueueController {
     void this.getQueue();
   }
   public async _getQueue() {
+    if (this._updatingQueue) {
+      return;
+    }
     this._updatingQueue = true;
     const limit_before = this.config.queue.limit_before;
     const limit_after = this.config.queue.limit_after;
     if (this._fails >= MAX_GET_QUEUE_FAILURES) {
       this.raiseQueueFailure();
+      this._updatingQueue = false;
       return;
     }
     try {
       let queue = await this.actions.getQueue(limit_before, limit_after);
-      if (!queue) return;
+      if (!queue) {
+        this._updatingQueue = false;
+        return
+      };
       this._fails = 0;
       queue = this.setActiveTrack(queue);
       this.queue = queue;
       this.getCurNextPrQueueItems();
+      this._updatingQueue = false;
       return queue;
     } catch {
       this._fails ++;
@@ -335,6 +345,15 @@ export class QueueController {
   }
   public async clearQueue(entity_id: string = this.activeMediaPlayer.entity_id) {
     await this.actions.clearQueue(entity_id);
+  }
+  public disconnected() {
+    this.unsubscribeUpdates();
+  }
+  public reconnected(hass: ExtendedHass) {
+    this.hass = hass;
+    void this.subscribeUpdates();
+    this.resetQueueFailures();
+    void this.getQueue();
   }
 
 }

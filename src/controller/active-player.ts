@@ -32,6 +32,7 @@ export class ActivePlayerController {
   private _hass!: ExtendedHass;
   private _config!: Config;
   private _host: HTMLElement;
+  private _updatingTheme = false;
 
   constructor(hass: ExtendedHass, config: Config, host: HTMLElement) {
     this._expressiveTheme = new ContextProvider(host, { context: expressiveThemeContext});
@@ -302,7 +303,7 @@ export class ActivePlayerController {
     */
   }
   public async applyExpressiveThemeFromImage(img: string) {
-    if (!this.config.expressive) {
+    if (!this.config.expressive || this._updatingTheme) {
       return;
     }
     const _theme = this.generateExpressiveThemeFromImage(img);
@@ -310,10 +311,12 @@ export class ActivePlayerController {
       dark: this.hass.themes.darkMode,
       target: this._host
     }
+    this._updatingTheme = true;
     const theme = await _theme;
     if (theme) {
       applyTheme(theme, options)
     }
+    this._updatingTheme = false;
   }
   public async generateExpressiveThemeFromImage(img: string) {
     const elem = this.generateImageElementFromImage(img);
@@ -327,8 +330,6 @@ export class ActivePlayerController {
   public generateImageElementFromImage(img: string): HTMLImageElement | undefined {
     const elem = document.createElement('img');
     const def = getThumbnail(this.hass, Thumbnail.CLEFT);
-    elem.height = 75;
-    elem.width = 75;
     elem.src = img;
     elem.crossOrigin = "Anonymous";
     elem.onerror = () => {elem.src = def}
@@ -414,5 +415,13 @@ export class ActivePlayerController {
     const vol = ret.response.volume_level ?? 0;
     // eslint-disable-next-line @typescript-eslint/no-unsafe-return
     return vol;
+  }
+  public disconnected() {
+    this._host.removeEventListener('artwork-updated', this.onActiveTrackChange);
+  }
+  public reconnected(hass: ExtendedHass) {
+    this.hass = hass; 
+    this._host.addEventListener('artwork-updated', this.onActiveTrackChange);
+    this.setActivePlayer(this.activeEntityID)
   }
 }

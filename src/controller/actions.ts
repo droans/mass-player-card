@@ -121,5 +121,11 @@ export class ActionsController {
   public get queueActions() {
     return this._queueActions;
   }
+  public disconnected() {
+    return;
+  }
+  public reconnected(hass: ExtendedHass) {
+    this.hass = hass;
+  }
 
 }
