@@ -88,15 +88,21 @@ export class MassPlayerControlsBase extends LitElement {
   public get playerData() {
     return this._playerData;
   }
-  
+  private requestPlayerDataUpdate() {
+    const ev = new Event('request-player-data-update');
+    this.controller.host.dispatchEvent(ev);    
+  }
   protected onPrevious = async () => {
     await this.actions.actionPlayPrevious();
+    this.requestPlayerDataUpdate();
   }
   protected onNext = async () => {
     await this.actions.actionPlayNext();
+    this.requestPlayerDataUpdate();
   }
   protected onPlayPause = async () => {
     await this.actions.actionPlayPause();
+    this.requestPlayerDataUpdate();
   }
   protected onShuffle = async () => {
     this.shuffle = !this.shuffle;
