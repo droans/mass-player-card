@@ -1,6 +1,6 @@
 import { CSSResultGroup, html, LitElement, PropertyValues, TemplateResult } from "lit";
 import styles from '../styles/progress-bar'
-import { state } from "lit/decorators.js";
+import { query, state } from "lit/decorators.js";
 import { consume } from "@lit/context";
 import { ActivePlayerController } from "../controller/active-player.js";
 import { actionsControllerContext, activeMediaPlayer, activePlayerControllerContext, activePlayerDataContext, controllerContext, ExtendedHassEntity } from "../const/context.js";
@@ -12,14 +12,17 @@ import { MassCardController } from "../controller/controller.js";
 class MassPlayerProgressBar extends LitElement {
   @state() private _media_duration!: number;
   @state() private _media_position!: number;
+  @query('#progress-bar') private progressBar!: HTMLElement;
   private entity_duration = 1;
   private entity_position = 0;
   private _prog_pct = 0;
   private _lastUpdate = 0;
-  private _listener: number|undefined;
+  private _tickListener: number|undefined;
   private _handleBarWidth = 8;
   private _refreshMilliseconds = 5000;
   private _tick_duration_ms = 250;
+  private _currentSetPosition = 0;
+  private _newSetPosition = 0;
 
   @consume({ context: activePlayerControllerContext, subscribe: true})
   private activePlayerController!: ActivePlayerController
@@ -66,11 +69,10 @@ class MassPlayerProgressBar extends LitElement {
     this._activePlayer = player;
     const cur_dur = player.attributes.media_duration;
     const cur_pos = player.attributes.media_position;
-    this.entity_duration = cur_dur;
-    this.media_duration = cur_dur;
-    this.entity_position = cur_pos;
-    this.media_position = cur_pos;
-    this._listener = undefined;
+    this.entity_duration ??= cur_dur;
+    this.media_duration ??= cur_dur;
+    this.entity_position ??= cur_pos;
+    this.media_position ??= cur_pos;
     this.requestProgress();
   }
   public get activePlayer() {
@@ -93,8 +95,8 @@ class MassPlayerProgressBar extends LitElement {
     void this.activePlayerController.getPlayerProgress().then( 
       (progress) => {
         progress = Math.min(progress ?? 1, this.entity_duration ?? progress);
-        this.media_position = progress ?? this.media_position;
         this.entity_position = progress ?? this.entity_position;
+        this._newSetPosition = this.media_position;
       }
     )
     void this.activePlayerController.getPlayerActiveItemDuration().then( 
@@ -118,7 +120,11 @@ class MassPlayerProgressBar extends LitElement {
       this.requestProgress();
       return;
     }
-    const pos = (this.media_position ?? 0) + (this._tick_duration_ms / 1000);
+    let pos = (this.media_position ?? 0) + (this._tick_duration_ms / 1000);
+    if (this._currentSetPosition != this._newSetPosition) {
+      this._currentSetPosition = this._newSetPosition;
+      pos = this._currentSetPosition;
+    }
     this.media_position = Math.min(pos, (this.media_duration));
   }
   private onSeek = (e: MouseEvent) => {
@@ -175,20 +181,20 @@ class MassPlayerProgressBar extends LitElement {
   }
 
   connectedCallback(): void {
-    if (!this._listener) {
+    if (!this._tickListener) {
       if (this.activePlayerController) {
         this.requestProgress();
       }
-      this._listener = setInterval(this.tickProgress, this._tick_duration_ms);
+      this._tickListener = setInterval(this.tickProgress, this._tick_duration_ms);
     }
     super.connectedCallback();
   }
   disconnectedCallback(): void {
-    if (this._listener) {
+    if (this._tickListener) {
       try {
-        clearInterval(this._listener);
+        clearInterval(this._tickListener);
       } finally {
-        this._listener = undefined;
+        this._tickListener = undefined;
       }
     }
     super.disconnectedCallback();
