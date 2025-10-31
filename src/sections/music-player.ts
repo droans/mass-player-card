@@ -627,8 +627,9 @@ class MusicPlayerCard extends LitElement {
     this.marqueeTitleWhenUpdated();
   }
   protected firstUpdated(): void {
-      this._firstLoaded = true;
-      this.controller.host.addEventListener('artwork-updated', () => {this.updatePlayerData()})
+    this._firstLoaded = true;
+    this.controller.host.addEventListener('artwork-updated', () => {this.updatePlayerData()})
+    this.controller.host.addEventListener('request-player-data-update', () => { this.updatePlayerData(); })
   }
   protected shouldUpdate(_changedProperties: PropertyValues): boolean {
     if (!this.player_data || !_changedProperties.size) {
