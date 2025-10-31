@@ -49,6 +49,7 @@ import {
   ListItemData
 } from "../const/media-browser";
 import {
+  ForceUpdatePlayerDataEvent,
   MARQUEE_DELAY_MS,
   PlayerData,
 } from "../const/music-player";
@@ -245,6 +246,28 @@ class MusicPlayerCard extends LitElement {
       return;
     }
     this.player_data = new_player_data;
+  }
+  public forceUpdatePlayerDataValue(key: string, value: string) {
+    const data = this.player_data
+    if (!Object.keys(data).includes(key)) {
+      return;
+    }
+    data[key] = value;
+    this.player_data = {...data};
+  }
+  private onForceLoadEvent = (ev: Event) => {
+    const e = ev as ForceUpdatePlayerDataEvent;
+    const key = e.detail.key;
+    /* eslint-disable
+      @typescript-eslint/no-unsafe-argument,
+      @typescript-eslint/no-unsafe-assignment
+    */
+    const val = e.detail.value;
+    this.forceUpdatePlayerDataValue(key, val)
+    /* eslint-enable
+      @typescript-eslint/no-unsafe-argument,
+      @typescript-eslint/no-unsafe-assignment
+    */
   }
   private onPlayerSelect = (ev: CustomEvent) => {
     ev.stopPropagation();
@@ -630,6 +653,7 @@ class MusicPlayerCard extends LitElement {
     this._firstLoaded = true;
     this.controller.host.addEventListener('artwork-updated', () => {this.updatePlayerData()})
     this.controller.host.addEventListener('request-player-data-update', () => { this.updatePlayerData(); })
+    this.controller.host.addEventListener('force-update-player', this.onForceLoadEvent);
   }
   protected shouldUpdate(_changedProperties: PropertyValues): boolean {
     if (!this.player_data || !_changedProperties.size) {
