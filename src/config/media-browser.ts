@@ -7,7 +7,7 @@ export interface MediaBrowserConfig {
   enabled: boolean;
   favorites: FavoritesConfig;
   recents: FavoritesConfig;
-  recommendations: {enabled: boolean};
+  recommendations: RecommendationsConfig;
   sections: customSection[];
   hide: MediaBrowserHiddenElementsConfig
   columns: number;
@@ -35,6 +35,11 @@ export interface customItem {
   media_content_id: never;
   media_content_type: never;
   service: never;
+}
+
+export interface RecommendationsConfig {
+  enabled: boolean;
+  providers?: string[];
 }
 
 export interface customSection {
@@ -97,8 +102,9 @@ export const HIDDEN_BUTTON_VALUE = {
 
 const DEFAULT_CUSTOM_SECTION_CONFIG = []
 
-const DEFAULT_RECOMMENDATIONS_CONFIG = {
+const DEFAULT_RECOMMENDATIONS_CONFIG: RecommendationsConfig = {
   enabled: true
+  
 }
 
 export const DEFAULT_MEDIA_BROWSER_CONFIG: MediaBrowserConfig = {
@@ -140,6 +146,25 @@ function favoritesConfigForm(section: string) {
   }
 }
 
+function recommendationsConfigForm() {
+  return {
+    name: "recommendations",
+    type: "expandable",
+    iconPath: mdiCreation,
+    schema: [
+      {
+        name: "enabled", 
+        selector: { boolean: {} }, 
+        default: true
+      },
+      {
+        name: "providers",
+        selector: { text: { multiple: true } }
+      }
+    ]
+  }
+}
+
 export function mediaBrowserConfigForm() {
   return [
     { name: "enabled", selector: { boolean: {} }, default: true },
@@ -172,20 +197,20 @@ export function mediaBrowserConfigForm() {
         favoritesConfigForm("tracks"),
       ]
     },
-    {
-      name: "recommendations",
-      type: "expandable",
-      iconPath: mdiCreation,
-      schema: [
-        {
-          name: "enabled", 
-          selector: { boolean: {} }, 
-          default: true
-        }
-      ]
-    },
+    recommendationsConfigForm(),
     hiddenElementsConfigItem(MEDIA_BROWSER_HIDDEN_ITEMS)
   ]
+}
+
+function processRecommendations(config: MediaBrowserConfig): MediaBrowserConfig {
+  const recommendations_config = config.recommendations;
+  return {
+    ...config,
+    recommendations: {
+      ...DEFAULT_RECOMMENDATIONS_CONFIG,
+      ...recommendations_config
+    }
+  }
 }
 
 function processHiddenElementsConfig(config: MediaBrowserConfig): MediaBrowserConfig {
@@ -250,6 +275,7 @@ export function processMediaBrowserConfig(config: Config): Config {
   browser_config = processDefaults(browser_config);
   browser_config = processFavorites(browser_config);
   browser_config = processSections(browser_config);
+  browser_config = processRecommendations(browser_config);
   browser_config = processHiddenElementsConfig(browser_config);
   return {
     ...config,

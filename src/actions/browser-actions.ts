@@ -132,7 +132,7 @@ export default class BrowserActions {
     }
   async actionGetRecommendations(
     player_entity_id: string,
-    providers: string | null
+    providers: string[] | null
   ): Promise<RecommendationResponse> {
     const _providers = providers ? {providers: providers} : {};
     const data = {
@@ -145,6 +145,8 @@ export default class BrowserActions {
       },
       return_response: true
     }
+    console.log(`Recommendations data:`);
+    console.log(data);
       /* eslint-disable-next-line
       @typescript-eslint/no-explicit-any,
       @typescript-eslint/no-unsafe-return,
