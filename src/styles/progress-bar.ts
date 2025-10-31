@@ -7,6 +7,7 @@ export default css`
     padding-left: 36px;
     padding-right: 36px;
     padding-bottom: 8px;
+    touch-action: none;
   }
   .progress-plain {
     --_light: var(--md-sys-color-primary, var(--md-linear-progress-track-color, var(--md-sys-color-surface-container-highest, #e6e0e9)));
