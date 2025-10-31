@@ -56,7 +56,7 @@ export function secondsToTime(seconds: number) {
       return '0:00';
     }
     const mins = Math.floor(seconds / 60);
-    const secs = Math.round(seconds % 60)
+    const secs = Math.floor(seconds % 60)
     return `${mins.toString()}:${secs < 10 ? "0" : ""}${secs.toString()}`  
 }
 export function playerHasUpdated(old_player: ExtendedHassEntity, new_player: ExtendedHassEntity): boolean {
