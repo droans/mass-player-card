@@ -21,6 +21,9 @@ class MassPlayerProgressBar extends LitElement {
   private _handleBarWidth = 8;
   private _refreshMilliseconds = 5000;
   private _tick_duration_ms = 250;
+  private _dragging = false;
+  private _requestProgress = true;
+  private _updateTimeout!: number | undefined;
   private _currentSetPosition = 0;
   private _newSetPosition = 0;
 
@@ -108,13 +111,16 @@ class MassPlayerProgressBar extends LitElement {
   }
   private tickProgress = () => {
     const playing = this.player_data?.playing;
-    if (!playing) {
+    if (!playing || this._dragging) {
       return;
     }
     const t = new Date().getTime()
     if (
-      (!this.media_duration || !this.media_position)
-      || (t - this._lastUpdate) >= this._refreshMilliseconds
+      this._requestProgress 
+      && (
+        (!this.media_duration || !this.media_position)
+        || (t - this._lastUpdate) >= this._refreshMilliseconds
+      )
     ) {
       this._lastUpdate = t;
       this.requestProgress();
@@ -127,14 +133,44 @@ class MassPlayerProgressBar extends LitElement {
     }
     this.media_position = Math.min(pos, (this.media_duration));
   }
-  private onSeek = (e: MouseEvent) => {
-    const progress_element = this.shadowRoot?.getElementById('progress-div');
-    const prog_width = progress_element?.offsetWidth ?? 1;
-    const seek = e.offsetX / prog_width;
-    const pos = Math.floor(seek * this.media_duration);
+  protected pointerMoveListener = (e: PointerEvent | MouseEvent) => {
+    const bar = this.progressBar;
+    const offset = (bar?.offsetParent as HTMLElement)?.offsetLeft ?? 36
+    const prog_width = bar.offsetWidth;
+    const seek = (e.offsetX - offset) / prog_width;
+    let pos = Math.floor(seek * this.media_duration);
+    pos = Math.min(this.media_duration, pos);
+    pos = Math.max(0, pos);
     this.media_position = pos;
+    this._newSetPosition = pos;
     this.entity_position = pos;
-    void this.actions.actionSeek(pos);
+  }
+  protected onPointerDown = () => {
+    this._dragging = true;
+    this._requestProgress = false;
+    window.addEventListener('pointerup', this.onPointerUp);
+    this.addEventListener('pointermove', this.pointerMoveListener);
+  }
+  protected onPointerUp = () => {
+    try {
+      void this.actions.actionSeek(this._newSetPosition);
+    } finally {
+      window.removeEventListener('pointerup', this.onPointerUp);
+      this.removeEventListener('pointermove', this.pointerMoveListener);
+      
+    }
+    this._newSetPosition = this.media_position;
+    if (this._updateTimeout) {
+      clearTimeout(this._updateTimeout)
+    }
+    this._dragging = false;
+    this._updateTimeout = setTimeout(
+      () => {
+        this._requestProgress = true;
+        this.requestProgress();
+      },
+      5000
+    );
   }
   protected renderTime() {
     const pos = secondsToTime(this.media_position);
@@ -161,7 +197,10 @@ class MassPlayerProgressBar extends LitElement {
         <div id="time" class="${this.controller.config.expressive ? `time-expressive` : ``}">
             ${this.renderTime()}
         </div>
-        <div id="progress-div">
+        <div 
+          id="progress-div"
+          @pointerdown=${this.onPointerDown}
+        >
           <link href="https://cdn.jsdelivr.net/npm/beercss@3.12.11/dist/cdn/beer.min.css" rel="stylesheet">
           <div
             class="prog-incomplete" 
@@ -172,7 +211,6 @@ class MassPlayerProgressBar extends LitElement {
             id="progress-bar"
             value="${this._prog_pct}"
             max="1"
-            @click=${this.onSeek}
           ></progress>
           ${this.renderVolumeBarHandle()}
         </div>
