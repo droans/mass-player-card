@@ -145,8 +145,6 @@ export default class BrowserActions {
       },
       return_response: true
     }
-    console.log(`Recommendations data:`);
-    console.log(data);
       /* eslint-disable-next-line
       @typescript-eslint/no-explicit-any,
       @typescript-eslint/no-unsafe-return,
