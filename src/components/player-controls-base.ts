@@ -76,9 +76,6 @@ export class MassPlayerControlsBase extends LitElement {
 
   @consume({ context: activePlayerDataContext, subscribe: true })
   public set playerData(playerData: PlayerData) {
-    if (jsonMatch(this._playerData, playerData)) {
-      return;
-    }
     this._playerData = playerData;
     this.playing = playerData.playing;
     this.repeat = playerData.repeat;
