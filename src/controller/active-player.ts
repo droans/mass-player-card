@@ -32,6 +32,7 @@ export class ActivePlayerController {
   private _hass!: ExtendedHass;
   private _config!: Config;
   private _host: HTMLElement;
+  private _updatingTheme = false;
 
   constructor(hass: ExtendedHass, config: Config, host: HTMLElement) {
     this._expressiveTheme = new ContextProvider(host, { context: expressiveThemeContext});
@@ -302,7 +303,7 @@ export class ActivePlayerController {
     */
   }
   public async applyExpressiveThemeFromImage(img: string) {
-    if (!this.config.expressive) {
+    if (!this.config.expressive || this._updatingTheme) {
       return;
     }
     const _theme = this.generateExpressiveThemeFromImage(img);
@@ -310,10 +311,12 @@ export class ActivePlayerController {
       dark: this.hass.themes.darkMode,
       target: this._host
     }
+    this._updatingTheme = true;
     const theme = await _theme;
     if (theme) {
       applyTheme(theme, options)
     }
+    this._updatingTheme = false;
   }
   public async generateExpressiveThemeFromImage(img: string) {
     const elem = this.generateImageElementFromImage(img);
