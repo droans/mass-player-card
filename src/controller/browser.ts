@@ -220,7 +220,8 @@ export class MediaBrowserController {
     
   }
   private async generateAllRecommendations() {
-    const data = await this.actions.actionGetRecommendations(this.activeEntityId, null);
+    const providers = this.browserConfig.recommendations.providers ?? null
+    const data = await this.actions.actionGetRecommendations(this.activeEntityId, providers);
     const resp = data.response.response;
     resp.forEach(
       (item) => {
