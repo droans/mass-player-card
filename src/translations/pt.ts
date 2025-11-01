@@ -18,7 +18,7 @@ export default {
   "browser.sections.track": "Faixas",
 
 
-  "player.controls.power": "Ligar/Desligar",
+  "player.controls.power": "On/Off",
   "player.controls.shuffle": "Aleatório",
   "player.controls.repeat": "Repetir",
   "player.controls.favorite": "Favorito",
