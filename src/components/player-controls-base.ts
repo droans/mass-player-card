@@ -118,7 +118,7 @@ export class MassPlayerControlsBase extends LitElement {
   protected onPlayPause = async () => {
     await this.actions.actionPlayPause();
     this.playing = !this.playing;
-    this.forceUpdatePlayerData('playing', !this.playing);
+    this.forceUpdatePlayerData('playing', this.playing);
   }
   protected onShuffle = async () => {
     this.shuffle = !this.shuffle;
