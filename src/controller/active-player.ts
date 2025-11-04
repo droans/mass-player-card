@@ -49,7 +49,7 @@ export class ActivePlayerController {
     this._host = host;
     host.addEventListener('artwork-updated', this.onActiveTrackChange);
     this.setDefaultActivePlayer();
-    if (!isActive(hass, this.activeMediaPlayer, this.activeEntityConfig)) {
+    if (!isActive(hass, this.activeMediaPlayer, this.activeEntityConfig) || !this._expressiveTheme) {
       void this.applyExpressiveTheme();
     }
   }
