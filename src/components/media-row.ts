@@ -103,19 +103,23 @@ class MediaRow extends LitElement {
     }
   }
   private callMoveItemUpService(e: Event) {
+    navigator.vibrate([50, 20, 25, 20, 25])
     e.stopPropagation();
     this.moveQueueItemUpService(this.media_item.queue_item_id);
   }
   private callMoveItemDownService(e: Event) {
+    navigator.vibrate([25, 20, 25, 20, 50])
     e.stopPropagation();
     this.moveQueueItemDownService(this.media_item.queue_item_id);
   }
   private callMoveItemNextService(e: Event) {
+    navigator.vibrate([50, 20, 25, 20, 50])
     e.stopPropagation();
     this.moveQueueItemNextService(this.media_item.queue_item_id);
   }
   private callRemoveItemService(e: Event) {
     e.stopPropagation();
+    navigator.vibrate([25, 20, 75, 20, 25])
     this.removeService(this.media_item.queue_item_id);
   }
   private callOnQueueItemSelectedService() {

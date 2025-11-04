@@ -99,6 +99,7 @@ class PlayerRow extends LitElement {
     return _changedProperties.size > 0;
   }
   private onJoinPressed(e: Event) {
+    navigator.vibrate([75, 20, 20, 20, 75])
     e.stopPropagation()
     if (this.joined) {
       this.unjoinService(this.player_entity.entity_id);
@@ -109,6 +110,7 @@ class PlayerRow extends LitElement {
   }
   private onTransferPressed(e: Event) {
     e.stopPropagation()
+    navigator.vibrate([75, 20, 40, 20, 25])
     this.transferService(this.player_entity.entity_id);
   }
   private artworkStyle() {

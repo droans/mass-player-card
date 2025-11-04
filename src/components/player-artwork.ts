@@ -154,6 +154,7 @@ class MassPlayerArtwork extends LitElement {
 
   private onCarouselSwipe = (ev: SLSwipeEvent) => {
     ev.stopPropagation();
+    navigator.vibrate([75, 20, 75]);
     const slide_idx = ev.detail.index;
     const last_ts = this._lastSwipedTS;
     const cur_ts = ev.timeStamp;
