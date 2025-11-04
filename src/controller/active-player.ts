@@ -103,6 +103,7 @@ export class ActivePlayerController {
   private set activeMediaPlayer(player: ExtendedHassEntity) {
     if (playerHasUpdated(this.activeMediaPlayer, player)) {
       this._activeMediaPlayer.setValue(player);
+      this.dispatchUpdatedActivePlayer();
       if (player.attributes?.group_members) {
         this.setGroupAttributes();
       }
@@ -166,6 +167,10 @@ export class ActivePlayerController {
     return this._expressiveTheme.value;
   }
   
+  private dispatchUpdatedActivePlayer() {
+    const ev = new CustomEvent('active-player-updated', {detail: this.activeMediaPlayer});
+    this._host.dispatchEvent(ev);
+  }
   private setGroupAttributes() {
     this.groupMembers = this.getGroupedPlayers().map(
       (item) => {
