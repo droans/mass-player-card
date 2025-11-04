@@ -649,7 +649,7 @@ class MusicPlayerCard extends LitElement {
   protected updated() {
     this.marqueeTitleWhenUpdated();
   }
-  private delayedUpdatePlayerData = async () => {
+  private delayedUpdatePlayerData = () => {
     setTimeout(
       () => {
         this.updatePlayerData();
@@ -662,6 +662,7 @@ class MusicPlayerCard extends LitElement {
     this.controller.host.addEventListener('artwork-updated', this.delayedUpdatePlayerData);
     this.controller.host.addEventListener('request-player-data-update', this.delayedUpdatePlayerData)
     this.controller.host.addEventListener('force-update-player', this.onForceLoadEvent);
+    this.controller.host.addEventListener('active-player-updated', () => {this.updatePlayerData()});
   }
   protected shouldUpdate(_changedProperties: PropertyValues): boolean {
     if (!this.player_data || !_changedProperties.size) {
