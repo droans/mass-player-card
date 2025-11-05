@@ -654,3 +654,39 @@ If you have the abilities and the equipment to do so, I am happy to accept any c
 ## I have other questions or issues not addressed
 
 Check the [repository issues](https://github.com/droans/mass-player-card/issues) to see if your question has already been asked. If not, feel free to [submit a new issue](https://github.com/droans/mass-player-card/issues/new). 
+
+# Contributing
+
+I am happy to accept any new contributions to this repository. Feel free to fork and submit pull requests.
+
+# Developing
+
+This card uses `corepack` for development and relies on Node 22.
+
+### Clone the repository:
+```bash
+git clone https://github.com/droans/mass-player-card
+```
+
+### Set up the environment
+Switch to Node 22:
+```bash
+nvm use 22
+```
+
+Install `corepack`:
+```bash
+npm install corepack
+```
+
+Install dependencies:
+```bash
+yarn install
+```
+
+Build:
+```bash
+yarn rollup
+```
+
+The output file will be located at `./dist/mass-player-card.js`
