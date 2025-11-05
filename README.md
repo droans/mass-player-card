@@ -645,7 +645,7 @@ If you would like to add new translations for other languages:
 
 The instructions are rather similar for improving existing language support. However, you do not need to make a clone of `en.ts` (instead, use the existing translation file) and you do not need to follow Step #4.
 
-## I am having issues wwith this card on my iOS/OSX device but it works fine elsewhere!
+## I am having issues with this card on my iOS/OSX device but it works fine elsewhere.
 
 Apple's Webkit engine has some peculiarities that aren't present in other browsers. Unfortunately, I don't own the required equipment (an iOS device and a Mac) in order to properly debug this issue.
 
