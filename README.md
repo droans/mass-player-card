@@ -59,7 +59,10 @@ A Home Assistant media player card built for Music Assistant players.
   - [I'm not seeing any artwork in the queue or media browser!](#im-not-seeing-any-artwork-in-the-queue-or-media-browser)
   - [How do I theme the card?](#how-do-i-theme-the-card)
   - [Can this card work in my local language?](#can-this-card-work-in-my-local-language)
+  - [I am having issues with this card on my iOS/OSX device but it works fine elsewhere.](#i-am-having-issues-with-this-card-on-my-iososx-device-but-it-works-fine-elsewhere)
   - [I have other questions or issues not addressed](#i-have-other-questions-or-issues-not-addressed)
+- [Contributing](#contributing)
+- [Developing](#developing)
 
 <!-- END doctoc generated TOC please keep comment here to allow auto update -->
 
