@@ -626,7 +626,12 @@ mass-player-card-default-border-radius: 12px;
 
 ## Can this card work in my local language?
 
-This card currently has complete support for English and majority support for Dutch. 
+**Current Language Support**
+
+| Language | Support |
+|----------|---------|
+| English  | Full    |
+| Dutch    | Most    |
 
 If you would like to add new translations for other languages:
 1. Fork this repository and clone it locally.
