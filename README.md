@@ -645,6 +645,12 @@ If you would like to add new translations for other languages:
 
 The instructions are rather similar for improving existing language support. However, you do not need to make a clone of `en.ts` (instead, use the existing translation file) and you do not need to follow Step #4.
 
+## I am having issues wwith this card on my iOS/OSX device but it works fine elsewhere!
+
+Apple's Webkit engine has some peculiarities that aren't present in other browsers. Unfortunately, I don't own the required equipment (an iOS device and a Mac) in order to properly debug this issue.
+
+If you have the abilities and the equipment to do so, I am happy to accept any contributions to help fix this issue!
+
 ## I have other questions or issues not addressed
 
 Check the [repository issues](https://github.com/droans/mass-player-card/issues) to see if your question has already been asked. If not, feel free to [submit a new issue](https://github.com/droans/mass-player-card/issues/new). 
