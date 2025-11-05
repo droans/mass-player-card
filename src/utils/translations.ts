@@ -1,10 +1,12 @@
 import { ExtendedHass } from '../const/common.js';
 import en from '../translations/en'
 import nl from '../translations/nl'
+import pt from '../translations/pt'
 
 const TRANSLATIONS = {
   en: en,
-  nl: nl
+  nl: nl,
+  pt: pt
 }
 const DEFAULT_LANGUAGE = 'en'
 const DEFAULT_TRANSLATIONS = TRANSLATIONS.en;
