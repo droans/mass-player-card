@@ -69,9 +69,12 @@ class MassPlayerProgressBar extends LitElement {
         return;
       }
     }
-    this._activePlayer = player;
     const cur_dur = player.attributes.media_duration;
-    const cur_pos = player.attributes.media_position;
+    const cur_pos = (
+      !this?._activePlayer?.attributes?.media_title
+      || player.attributes.media_title == this._activePlayer?.attributes?.media_title
+    ) ? player.attributes.media_position : 0;
+    this._activePlayer = player;
     this.entity_duration ??= cur_dur;
     this.media_duration ??= cur_dur;
     this.entity_position ??= cur_pos;
