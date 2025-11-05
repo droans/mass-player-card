@@ -62,7 +62,7 @@
     "build": "yarn rollup",
     "lint": "eslint **/*.ts --max-warnings 0 --no-warn-ignored",
     "rollup": "rollup -c",
-    "docs": "doctoc ./README.md"
+    "docs": "doctoc ./README.md --maxlevel 2"
   },
   "packageManager": "yarn@4.9.1"
 }
