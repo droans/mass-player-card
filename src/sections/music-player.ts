@@ -98,7 +98,6 @@ class MusicPlayerCard extends LitElement {
   private _hass!: ExtendedHass;
   private _groupedPlayers!: EntityConfig[];
   private actions!: PlayerActions;
-  private marquee_x_dist = 0;
 
   private _artworkHeaderClass!: string;
   private _artworkProgressClass!: string;
