@@ -35,7 +35,7 @@ jobs:
       - name: Install dependencies
         run: yarn install --frozen-lockfile
       - name: Lint the code
-        run: npm run lint --if-present
+        run: yarn lint
   build:
     runs-on: ubuntu-latest
 
