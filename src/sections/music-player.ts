@@ -69,10 +69,6 @@ import {
 import { MassCardController } from "../controller/controller.js";
 
 class MusicPlayerCard extends LitElement {
-  @state() private shouldMarqueeTitle = false;
-
-  @query('.player-track-title') _track_title!: LitElement;
-  @query('#animation') _animation!: WaAnimation;
   private _firstLoaded = false;
 
   @consume({ context: IconsContext}) private Icons!: Icons;
@@ -99,7 +95,6 @@ class MusicPlayerCard extends LitElement {
   private _config!: PlayerConfig;
 
   public selectedPlayerService!: PlayerSelectedService;
-  private _animationListener  = async () => this.onAnimationEnd();
   private _hass!: ExtendedHass;
   private _groupedPlayers!: EntityConfig[];
   private actions!: PlayerActions;
@@ -303,50 +298,14 @@ class MusicPlayerCard extends LitElement {
     void this.activePlayerController.setActiveGroupVolume(volume_level);
   }
 
-  private marqueeTitleWhenUpdated() {
-    const title = this._track_title;
-    const offset = title?.offsetWidth ?? 0;
-    const scroll = title?.scrollWidth ?? 0;
-    if (offset < scroll) {
-      this.shouldMarqueeTitle = true;
-      this.marquee_x_dist = offset - scroll;
-    } else {
-      if (this.shouldMarqueeTitle) {
-        this.shouldMarqueeTitle = false;
-      }
-    }
-  }
-  private onAnimationEnd = async () => {
-    if (this._track_title.className !== 'player-track-title marquee') {
-      return;
-    }
-    const delay = (delayMs: number) => {
-      return new Promise(resolve => setTimeout(resolve, delayMs))
-    };
-    this._track_title.className = 'player-track-title marquee-pause-end';
-    await delay(MARQUEE_DELAY_MS);
-    this._track_title.className = 'player-track-title marquee';
-    await delay(MARQUEE_DELAY_MS);
-  }
   protected wrapTitleMarquee() {
     const title = `${this.player_data.track_title} - ${this.player_data.track_album}`
-    if (!this.shouldMarqueeTitle) {
-      /* eslint-disable-next-line @typescript-eslint/no-misused-promises */
-      this.removeEventListener('animationiteration', this._animationListener);
-      return html`<div class="player-track-title">${title}</div>`
-    }
-    const marqueeTime = `${(1 - (this.marquee_x_dist / 40)).toString()}s`;
-    /* eslint-disable-next-line @typescript-eslint/no-misused-promises */
-    this._track_title.addEventListener('animationiteration', this._animationListener);
     return html`
-      <div
+      <ha-marquee-text
         class="player-track-title marquee"
-        style="
-          --marquee-left-offset: ${this.marquee_x_dist}px;
-          --marquee-time: ${marqueeTime};"
       >
       ${title}
-      </div>
+      </ha-marquee-text>
     `
   }
   protected renderPlayerName() {
@@ -639,15 +598,9 @@ class MusicPlayerCard extends LitElement {
       return;
     }
     this.updatePlayerData();
-    if (this._animation) {
-      this._animation.play = true;
-    }
   }
   disconnectedCallback(): void {
     super.disconnectedCallback();
-  }
-  protected updated() {
-    this.marqueeTitleWhenUpdated();
   }
   private delayedUpdatePlayerData = () => {
     setTimeout(
@@ -659,7 +612,6 @@ class MusicPlayerCard extends LitElement {
   }
   protected firstUpdated(): void {
     this._firstLoaded = true;
-    this.controller.host.addEventListener('artwork-updated', this.delayedUpdatePlayerData);
     this.controller.host.addEventListener('request-player-data-update', this.delayedUpdatePlayerData)
     this.controller.host.addEventListener('force-update-player', this.onForceLoadEvent);
     this.controller.host.addEventListener('active-player-updated', () => {this.updatePlayerData()});
