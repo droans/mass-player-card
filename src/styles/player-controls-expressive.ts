@@ -64,7 +64,7 @@ export default css`
   .button-lower-active::part(base) {
     --wa-color-fill-normal: var(--lower-button-background-color-active);
     --inherited-background-color: var(--lower-button-background-color-active);
-    --ha-button-border-radius: var(--lower-button-border-radius);
+    --ha-button-border-radius: 20px;
   }
   .button-lower-active::part(label) {
     color: var(--lower-button-icon-color-active);
