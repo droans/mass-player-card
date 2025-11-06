@@ -17,6 +17,7 @@ export default css`
     height: 30px;
     width: 30px;
     border-radius: 25%;
+    --wa-form-control-padding-inline: 0px;
   }
 
   .action-button-expressive::part(base) {

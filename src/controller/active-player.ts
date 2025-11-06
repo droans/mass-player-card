@@ -49,7 +49,7 @@ export class ActivePlayerController {
     this._host = host;
     host.addEventListener('artwork-updated', this.onActiveTrackChange);
     this.setDefaultActivePlayer();
-    if (!isActive(hass, this.activeMediaPlayer, this.activeEntityConfig) || !this._expressiveTheme) {
+    if (!isActive(hass, this.activeMediaPlayer, this.activeEntityConfig) || !this.expressiveTheme) {
       void this.applyExpressiveTheme();
     }
   }
@@ -106,6 +106,10 @@ export class ActivePlayerController {
       this.dispatchUpdatedActivePlayer();
       if (player.attributes?.group_members) {
         this.setGroupAttributes();
+      }
+      if (!this._expressiveTheme) {
+        const img = player.attributes.entity_picture_local ?? player.attributes.entity_picture;
+        this.applyExpressiveThemeFromImage(img);
       }
     }
   }

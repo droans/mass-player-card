@@ -221,10 +221,10 @@ class MassPlayerProgressBar extends LitElement {
 
   connectedCallback(): void {
     if (!this._tickListener) {
-      if (this.activePlayerController) {
-        this.requestProgress();
-      }
       this._tickListener = setInterval(this.tickProgress, this._tick_duration_ms);
+    }
+    if (this.activePlayerController && this.hasUpdated) {
+      this.requestProgress();
     }
     super.connectedCallback();
   }
