@@ -73,7 +73,7 @@ class MassPlayerProgressBar extends LitElement {
     const cur_pos = (
       !this?._activePlayer?.attributes?.media_title
       || player.attributes.media_title == this._activePlayer?.attributes?.media_title
-    ) ? player.attributes.media_position : 0;
+    ) ? player.attributes.media_position : 1;
     this._activePlayer = player;
     this.entity_duration ??= cur_dur;
     this.media_duration ??= cur_dur;
@@ -119,7 +119,7 @@ class MassPlayerProgressBar extends LitElement {
     if (
       this._requestProgress 
       && (
-        (!this.media_duration || !this.media_position)
+        (!this.media_duration)
         || (t - this._lastUpdate) >= this._refreshMilliseconds
       )
     ) {
