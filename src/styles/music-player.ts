@@ -119,6 +119,7 @@ export default css`
     height: 30px;
     width: 30px;
     border-radius: 25%;
+    --wa-form-control-padding-inline: 0px;
   }
   .grouped-button-unjoin-expressive::part(base) {
     box-shadow: var(--md-sys-elevation-level1);
@@ -182,7 +183,6 @@ export default css`
   }
   .menu-header-expressive::part(menu-select-menu) {
     --control-select-menu-background-color: var(--md-sys-color-secondary-container) !important;
-    background-color: unset !important;
     box-shadow: var(--md-sys-elevation-level1);
     border-radius: var(--button-small-border-radius);
   }
@@ -275,7 +275,7 @@ export default css`
     width: 2em;
   }
   .menu-header::part(menu-select-menu) {
-    background-color: var(--wa-color-brand-fill-normal, var(--wa-color-neutral-fill-normal));
+    background-color: var(--control-select-menu-background-color);
   }
   .menu-header::part(menu-svg):not(.svg-menu-expressive) {
     color: var(--wa-color-brand-on-normal, var(--wa-color-neutral-on-normal));
