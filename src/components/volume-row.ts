@@ -184,21 +184,50 @@ class VolumeRow extends LitElement {
       </ha-button>
     `
   }
+  protected renderTicks() {
+    if (!this.controller.config.expressive) {
+      return;
+    }
+    const tickCt = 19;
+    const rng = [...Array(tickCt).keys()]
+    const vol = this.player_data.volume;
+    return html`
+      <div id="ticks"
+      >
+        ${rng.map(
+          (i) => {
+            const tick_pct = ((i + 1) * 100) / (tickCt + 1);
+            const tick_inside = tick_pct <= vol;
+            return html`
+              <div
+                class="tick tick-${tick_inside ? `in` : `out`}"
+                value=${tick_pct}
+                tick=${i}
+              ></div>
+            `
+          }
+        )}
+      </div>
+    `
+  }
   protected renderVolumeBar(): TemplateResult {
     if (this.hide.volume) {
       return html``
     }
     return html`
-      <ha-control-slider
-        .unit="%"
-        .value=${this.player_data.volume}
-        .min=0
-        .max=${this.maxVolume}
-        @value-changed=${this.onVolume}
-        id="volume-slider"
-        class="${this.controller.ActivePlayer.useExpressive ? `volume-slider-expressive` : ``}"
-        part="volume-slider"
-      ></ha-control-slider>
+      <div id="div-slider">
+        <ha-control-slider
+          .unit="%"
+          .value=${this.player_data.volume}
+          .min=0
+          .max=${this.maxVolume}
+          @value-changed=${this.onVolume}
+          id="volume-slider"
+          class="${this.controller.ActivePlayer.useExpressive ? `volume-slider-expressive` : ``}"
+          part="volume-slider"
+        ></ha-control-slider>
+        ${this.renderTicks()}
+      </div>
     `
   }
   protected render(): TemplateResult {

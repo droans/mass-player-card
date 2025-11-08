@@ -53,6 +53,7 @@ export default css`
     --expressive-player-blur-color: rgba(from var(--mass-player-card-expressive-player-blur-color,var(--md-sys-color-primary-container)) r g b / 0.6) !important;
 
     --player-control-icon-width: var(--mass-player-card-player-control-icon-width,30px);
+    --player-volume-slider-height: var(--mass-player-card-player-volume-slider-height,40px);
 
     --player-name-color: var(--mass-player-card-player-name-color,var(--ha-color-text-secondary));
 

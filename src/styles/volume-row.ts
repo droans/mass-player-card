@@ -19,11 +19,45 @@ export default css`
   #button-power {
     margin-right: 1em;
   }
+  
+  #div-slider {
+    width: 100%;
+    height: var(--player-volume-slider-height);
+    position: relative;
+  }
 
   .svg-plain {
     color: var(--md-sys-color-primary);
     height: 3em;
     width: 3em;
+  }
+
+  #ticks {
+    height: var(--player-volume-slider-height);
+    width: inherit;
+    position: absolute;
+    display: flex;
+    justify-content: space-evenly;
+    top: 0;
+    align-items: center;
+    pointer-events: none;
+  }
+  .tick {
+    width: 1%;
+    aspect-ratio: 1;
+    display: inline-flex;
+    flex-direction: row;
+    vertical-align: bottom;
+    position: relative;
+    height: max-content;
+    border-radius: 50%;
+
+  }
+  .tick-in {
+    background-color: var(--md-sys-color-on-primary)
+  }
+  .tick-out {
+    background-color: var(--md-sys-color-on-primary-container)
   }
 
   #volume {
@@ -39,6 +73,7 @@ export default css`
     --control-slider-thickness: 2.25em;
     border-radius: 10px;
     --disabled-color: var(--control-slider-color);
+    height: var(--player-volume-slider-height);
   } 
   .volume-slider-expressive {
     --control-slider-color: var(--md-sys-color-primary);
