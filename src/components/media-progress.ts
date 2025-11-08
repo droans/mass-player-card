@@ -1,5 +1,5 @@
 import { CSSResultGroup, html, LitElement, PropertyValues, TemplateResult } from "lit";
-import styles from '../styles/progress-bar'
+import styles from '../styles/media-progress'
 import { query, state } from "lit/decorators.js";
 import { consume } from "@lit/context";
 import { ActivePlayerController } from "../controller/active-player.js";
