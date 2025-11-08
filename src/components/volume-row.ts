@@ -40,7 +40,7 @@ class VolumeRow extends LitElement {
   private _initialUpdate!: boolean;
 
   private hide: PlayerHiddenElementsConfig = DEFAULT_PLAYER_HIDDEN_ELEMENTS_CONFIG;
-  @state() private _player_data!: PlayerData;
+  @state() public _player_data!: PlayerData;
 
   @consume({ context: actionsControllerContext, subscribe: true})
   private actions!: ActionsController

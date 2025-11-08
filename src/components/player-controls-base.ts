@@ -107,35 +107,42 @@ export class MassPlayerControlsBase extends LitElement {
     const ev = new Event('request-player-data-update');
     this.controller.host.dispatchEvent(ev);    
   }
-  protected onPrevious = async () => {
+  protected onPrevious = async (e: Event) => {
+    e.stopPropagation();
     await this.actions.actionPlayPrevious();
     this.requestPlayerDataUpdate();
   }
-  protected onNext = async () => {
+  protected onNext = async (e: Event) => {
+    e.stopPropagation();
     await this.actions.actionPlayNext();
     this.requestPlayerDataUpdate();
   }
-  protected onPlayPause = async () => {
-    await this.actions.actionPlayPause();
+  protected onPlayPause = async (e: Event) => {
+    e.stopPropagation();
     this.playing = !this.playing;
     this.forceUpdatePlayerData('playing', this.playing);
+    await this.actions.actionPlayPause();
   }
-  protected onShuffle = async () => {
+  protected onShuffle = async (e: Event) => {
+    e.stopPropagation();
     this.shuffle = !this.shuffle;
     this.requestUpdate();
     await this.actions.actionToggleShuffle();
   }
-  protected onRepeat = async () => {
+  protected onRepeat = async (e: Event) => {
+    e.stopPropagation();
     const cur_repeat = this.playerData.repeat;
     const repeat = getIteratedRepeatMode(cur_repeat);
     this.repeat = repeat;
     this.requestUpdate();
     await this.actions.actionSetRepeat(repeat);
   }
-  protected onPower = async () => {
+  protected onPower = async (e: Event) => {
+    e.stopPropagation();
     await this.actions.actionTogglePower();
   }
-  protected onFavorite = async () => {
+  protected onFavorite = async (e: Event) => {
+    e.stopPropagation();
     this.favorite = !this.favorite;
     this.requestUpdate();
     if (this.playerData.favorite) {
