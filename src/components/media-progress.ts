@@ -134,6 +134,17 @@ class MassPlayerProgressBar extends LitElement {
     }
     this.media_position = Math.min(pos, (this.media_duration));
   }
+  private onSeek = async (e: MouseEvent) => {
+    const prog_width = this.progressBar?.offsetWidth ?? 1;
+    const seek = e.offsetX / prog_width;
+    const pos = Math.floor(seek * this.media_duration);
+    await this.actions.actionSeek(pos);
+    this._dragging = false;
+    this._requestProgress = true;
+    window.removeEventListener('pointerup', this.onPointerUp);
+    this.removeEventListener('pointermove', this.pointerMoveListener);
+
+  }
   protected pointerMoveListener = (e: PointerEvent | MouseEvent) => {
     const bar = this.progressBar;
     const offset = (bar?.offsetParent as HTMLElement)?.offsetLeft ?? 36
@@ -201,6 +212,7 @@ class MassPlayerProgressBar extends LitElement {
         <div 
           id="progress-div"
           @pointerdown=${this.onPointerDown}
+          @click=${this.onSeek}
         >
           <link href="https://cdn.jsdelivr.net/npm/beercss@3.12.11/dist/cdn/beer.min.css" rel="stylesheet">
           <div
