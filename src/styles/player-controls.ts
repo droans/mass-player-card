@@ -1,4 +1,4 @@
-import { css } from 'lit';
+import { css } from "lit"
 
 // Styles belonging to the card
 // https://lit.dev/docs/components/styles/
@@ -59,19 +59,17 @@ export default css`
   }
   .icon-small {
   }
-  
-  .icon-accent {
 
+  .icon-accent {
   }
   .icon-accent::part(base) {
-    background-color: var(--md-sys-color-primary)
+    background-color: var(--md-sys-color-primary);
   }
   .icon-accent::part(label) {
-    color: var(--md-sys-color-on-primary)
+    color: var(--md-sys-color-on-primary);
   }
 
   .icon-filled {
-    
   }
 
   .icon-outlined {
@@ -80,7 +78,6 @@ export default css`
   }
 
   .icon-plain {
-
   }
 
   .player-controls {
@@ -96,5 +93,4 @@ export default css`
     height: 2em;
     width: 2em;
   }
-
-`;
+`

@@ -17,7 +17,6 @@ export default {
   "browser.sections.radio": "Radios",
   "browser.sections.track": "Tracks",
 
-
   "player.controls.power": "Power",
   "player.controls.shuffle": "Shuffle",
   "player.controls.repeat": "Repeat",
@@ -36,12 +35,11 @@ export default {
     "Please don't leave me alone with my thoughts.",
     "I hope you don't have tinnitus.",
     "Why not do something productive instead?",
-    "Let's use our imagination instead."
-    ],
+    "Let's use our imagination instead.",
+  ],
   "player.title.inactive": "Nothing is currently active!",
 
   "players.header": "Players",
 
   "queue.header": "Queue",
-
 }

@@ -17,7 +17,6 @@ export default {
   "browser.sections.radio": "Radiozenders",
   "browser.sections.track": "Nummers",
 
-
   "player.controls.power": "Power",
   "player.controls.shuffle": "Random",
   "player.controls.repeat": "Herhalen",
@@ -36,12 +35,11 @@ export default {
     "Laat me niet alleen met mijn gedachten.",
     "Hopelijk heb je geen oorsuizen.",
     "Waarom niet iets productiefs doen?",
-    "Laten we onze verbeelding gebruiken."
-    ],
+    "Laten we onze verbeelding gebruiken.",
+  ],
   "player.title.inactive": "Er is momenteel niets actief!",
 
   "players.header": "Spelers",
 
   "queue.header": "Wachtrij",
-
 }

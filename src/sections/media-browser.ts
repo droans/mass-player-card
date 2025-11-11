@@ -1,19 +1,19 @@
-import '@shoelace-style/shoelace/dist/components/input/input';
+import "@shoelace-style/shoelace/dist/components/input/input"
 import {
   CSSResultGroup,
   html,
   LitElement,
   PropertyValues,
-  TemplateResult
-} from "lit";
+  TemplateResult,
+} from "lit"
 import {
   CardsUpdatedEvent,
   ExtendedHass,
   MediaTypes,
   TargetValEventData,
-} from "../const/common.js";
-import { MediaBrowserConfig } from "../config/media-browser.js";
-import { customElement, property, state } from "lit/decorators.js";
+} from "../const/common.js"
+import { MediaBrowserConfig } from "../config/media-browser.js"
+import { customElement, property, state } from "lit/decorators.js"
 import {
   DEFAULT_ACTIVE_SECTION,
   DEFAULT_ACTIVE_SUBSECTION,
@@ -24,170 +24,171 @@ import {
   MediaCardItem,
   newMediaBrowserItemsConfig,
   SEARCH_TERM_MIN_LENGTH,
-  SEARCH_UPDATE_DELAY
-} from "../const/media-browser.js";
-import { consume, provide } from "@lit/context";
+  SEARCH_UPDATE_DELAY,
+} from "../const/media-browser.js"
+import { consume, provide } from "@lit/context"
 
-
-import '../components/media-browser-cards.js';
-import '../components/section-header.js';
-import styles from '../styles/media-browser.js'
+import "../components/media-browser-cards.js"
+import "../components/section-header.js"
+import styles from "../styles/media-browser.js"
 
 import {
   activeEntityConf,
   activeMediaBrowserCardsContext,
   browserControllerContext,
   EntityConfig,
-  hassExt, 
+  hassExt,
   IconsContext,
   mediaBrowserCardsContext,
   mediaBrowserConfigContext,
-  useExpressiveContext
-} from "../const/context.js";
-import { Icons } from "../const/icons.js";
-import { MediaBrowserController } from "../controller/browser.js";
-import BrowserActions from "../actions/browser-actions.js";
-import { EnqueueOptions } from "../const/actions.js";
-import { getMediaTypeSvg } from "../utils/thumbnails.js";
-import { jsonMatch } from '../utils/util.js';
-import { getTranslation } from '../utils/translations.js';
+  useExpressiveContext,
+} from "../const/context.js"
+import { Icons } from "../const/icons.js"
+import { MediaBrowserController } from "../controller/browser.js"
+import BrowserActions from "../actions/browser-actions.js"
+import { EnqueueOptions } from "../const/actions.js"
+import { getMediaTypeSvg } from "../utils/thumbnails.js"
+import { jsonMatch } from "../utils/util.js"
+import { getTranslation } from "../utils/translations.js"
 
 @customElement(`mass-media-browser`)
 export class MediaBrowser extends LitElement {
-  @property({ attribute: false }) private _config!: MediaBrowserConfig;
-  @property({ attribute: false }) public onMediaSelectedAction!: () => void;
+  @property({ attribute: false }) private _config!: MediaBrowserConfig
+  @property({ attribute: false }) public onMediaSelectedAction!: () => void
 
   @state() public _cards!: newMediaBrowserItemsConfig
-  @state() private searchMediaTypeIcon!: string;
-  @state() private searchMediaType: MediaTypes = MediaTypes.TRACK; 
-  @state() private searchLibrary = false;
+  @state() private searchMediaTypeIcon!: string
+  @state() private searchMediaType: MediaTypes = MediaTypes.TRACK
+  @state() private searchLibrary = false
 
-  @provide({ context: activeMediaBrowserCardsContext }) 
-  @state() 
-  public _activeCards!: MediaCardItem[];
+  @provide({ context: activeMediaBrowserCardsContext })
+  @state()
+  public _activeCards!: MediaCardItem[]
 
-  @consume({ context: useExpressiveContext, subscribe: true}) private useExpressive!: boolean;
-  @consume({ context: IconsContext}) private Icons!: Icons;
-  @consume({ context: activeEntityConf, subscribe: true}) private activeEntityConfig!: EntityConfig;
+  @consume({ context: useExpressiveContext, subscribe: true })
+  private useExpressive!: boolean
+  @consume({ context: IconsContext }) private Icons!: Icons
+  @consume({ context: activeEntityConf, subscribe: true })
+  private activeEntityConfig!: EntityConfig
 
   public activeSection = DEFAULT_ACTIVE_SECTION
   public activeSubSection = DEFAULT_ACTIVE_SUBSECTION
-  private previousSections: string[] = [];
-  private previousSubSections: string[] = [];
+  private previousSections: string[] = []
+  private previousSubSections: string[] = []
 
-  private _hass!: ExtendedHass;
-  private _browserController!: MediaBrowserController;
-  private actions!: BrowserActions;
-  private searchTerm = '';
-  private _searchTimeout!: number;
-  
-  @state() 
+  private _hass!: ExtendedHass
+  private _browserController!: MediaBrowserController
+  private actions!: BrowserActions
+  private searchTerm = ""
+  private _searchTimeout!: number
+
+  @state()
   public set activeCards(cards: MediaCardItem[]) {
     if (jsonMatch(this._activeCards, cards)) {
-      return;
+      return
     }
-    this._activeCards = cards;
+    this._activeCards = cards
   }
   public get activeCards() {
-    return this._activeCards;
+    return this._activeCards
   }
 
-  @consume({ context: hassExt, subscribe: true})
+  @consume({ context: hassExt, subscribe: true })
   public set hass(hass: ExtendedHass) {
-    this._hass = hass;
+    this._hass = hass
     if (!this.actions) {
-      this.actions = new BrowserActions(hass);
+      this.actions = new BrowserActions(hass)
     }
   }
   public get hass() {
-    return this._hass;
+    return this._hass
   }
 
-  @consume({ context: browserControllerContext, subscribe: true})
+  @consume({ context: browserControllerContext, subscribe: true })
   public set browserController(controller: MediaBrowserController) {
-    this._browserController = controller;
+    this._browserController = controller
   }
   public get browserController() {
-    return this._browserController;
+    return this._browserController
   }
 
-  @consume({ context: mediaBrowserConfigContext, subscribe: true})
+  @consume({ context: mediaBrowserConfigContext, subscribe: true })
   public set config(config: MediaBrowserConfig) {
-    this._config = config;
+    this._config = config
   }
   public get config() {
-    return this._config;
+    return this._config
   }
 
-  @consume({ context: mediaBrowserCardsContext, subscribe: true}) 
+  @consume({ context: mediaBrowserCardsContext, subscribe: true })
   public set cards(cards: newMediaBrowserItemsConfig) {
     if (jsonMatch(this._cards, cards)) {
-      return;
+      return
     }
-    this._cards = cards;
-    if (this.activeSection == 'search') {
-      this.activeCards = [];
-      return;
-    } 
-    this.setActiveCards();
+    this._cards = cards
+    if (this.activeSection == "search") {
+      this.activeCards = []
+      return
+    }
+    this.setActiveCards()
   }
   public get cards() {
-     return this._cards
+    return this._cards
   }
   private setPreviousSection() {
-    this.previousSections.push(this.activeSection);
-    this.previousSubSections.push(this.activeSubSection);
+    this.previousSections.push(this.activeSection)
+    this.previousSubSections.push(this.activeSubSection)
   }
   /* eslint-disable 
     @typescript-eslint/no-unsafe-argument,
     @typescript-eslint/no-unsafe-assignment,
   */
   public setActiveCards() {
-    const section = this.activeSection;
-    const subsection = this.activeSubSection;
+    const section = this.activeSection
+    const subsection = this.activeSubSection
     if (!this.cards) {
-      return;
+      return
     }
     // eslint-disable-next-line @typescript-eslint/no-unsafe-member-access
-    const new_cards = [...this.cards[section][subsection]];
-    const cur_cards = this.activeCards;
+    const new_cards = [...this.cards[section][subsection]]
+    const cur_cards = this.activeCards
     if (!jsonMatch(new_cards, cur_cards)) {
       this.activeCards = new_cards
     }
   }
   public resetActiveSections() {
-    this.activeSection = DEFAULT_ACTIVE_SECTION;
-    this.activeSubSection = DEFAULT_ACTIVE_SUBSECTION;
-    this.previousSections = [];
-    this.previousSubSections = [];
-    this.setActiveCards();
+    this.activeSection = DEFAULT_ACTIVE_SECTION
+    this.activeSubSection = DEFAULT_ACTIVE_SUBSECTION
+    this.previousSections = []
+    this.previousSubSections = []
+    this.setActiveCards()
   }
   private onServiceSelect = (data: MediaCardData) => {
     if (data.service) {
       void this.actions.actionPlayMediaFromService(
-        data.service, 
-        this.activeEntityConfig.entity_id
+        data.service,
+        this.activeEntityConfig.entity_id,
       )
-      return;
+      return
     }
     void this.actions.actionPlayMedia(
       this.activeEntityConfig.entity_id,
       data.media_content_id,
-      data.media_content_type
+      data.media_content_type,
     )
-    this.onMediaSelectedAction();
+    this.onMediaSelectedAction()
   }
   private onSectionSelect = (data: MediaCardData) => {
-    this.setPreviousSection();
-    this.activeSection = data.subtype;
-    this.activeSubSection = data.section;
-    this.setActiveCards();
+    this.setPreviousSection()
+    this.activeSection = data.subtype
+    this.activeSubSection = data.section
+    this.setActiveCards()
   }
   private onItemSelect = (data: MediaCardData) => {
     void this.actions.actionPlayMedia(
       this.activeEntityConfig.entity_id,
       data.media_content_id,
-      data.media_content_type
+      data.media_content_type,
     )
   }
   /* eslint-enable 
@@ -197,14 +198,14 @@ export class MediaBrowser extends LitElement {
     const funcs = {
       section: this.onSectionSelect,
       item: this.onItemSelect,
-      service: this.onServiceSelect
+      service: this.onServiceSelect,
     }
     /* eslint-disable
       @typescript-eslint/no-unsafe-member-access,
       @typescript-eslint/no-unsafe-call,
     */
-    const func = funcs[data.type];
-    func(data);
+    const func = funcs[data.type]
+    func(data)
     /* eslint-enable
       @typescript-eslint/no-unsafe-member-access,
       @typescript-eslint/no-unsafe-call,
@@ -215,8 +216,8 @@ export class MediaBrowser extends LitElement {
     /* eslint-disable
       @typescript-eslint/no-unsafe-assignment
     */
-    const content_id: string = data.media_content_id;
-    const content_type: string = data.media_content_type;
+    const content_id: string = data.media_content_id
+    const content_type: string = data.media_content_type
     /* eslint-enable
       @typescript-eslint/no-unsafe-assignment
     */
@@ -224,114 +225,115 @@ export class MediaBrowser extends LitElement {
       void this.actions.actionPlayRadio(
         this.activeEntityConfig.entity_id,
         content_id,
-        content_type
-      );
-      return;
+        content_type,
+      )
+      return
     }
     void this.actions.actionEnqueueMedia(
       this.activeEntityConfig.entity_id,
       content_id,
       content_type,
-      enqueue
+      enqueue,
     )
   }
   private onBack = () => {
-    this.activeSection = this.previousSections.pop() ?? DEFAULT_ACTIVE_SECTION;
-    this.activeSubSection = this.previousSubSections.pop() ?? DEFAULT_ACTIVE_SUBSECTION;
-    this.setActiveCards();
+    this.activeSection = this.previousSections.pop() ?? DEFAULT_ACTIVE_SECTION
+    this.activeSubSection =
+      this.previousSubSections.pop() ?? DEFAULT_ACTIVE_SUBSECTION
+    this.setActiveCards()
   }
   private onSearchButtonPress = () => {
-    this.setPreviousSection();
+    this.setPreviousSection()
     if (!this.searchMediaTypeIcon) {
-      this.searchMediaTypeIcon = getMediaTypeSvg(MediaTypes.TRACK, this.Icons, this.hass);
+      this.searchMediaTypeIcon = getMediaTypeSvg(
+        MediaTypes.TRACK,
+        this.Icons,
+        this.hass,
+      )
     }
-    this.searchTerm = '';
-    this.activeSection = 'search';
-    this.cards.search = [];
-    this.activeCards = this.cards.search;
-    
+    this.searchTerm = ""
+    this.activeSection = "search"
+    this.cards.search = []
+    this.activeCards = this.cards.search
   }
   private onSearchMediaTypeSelect = async (ev: TargetValEventData) => {
-    const val = ev.target.value as MediaTypes;
+    const val = ev.target.value as MediaTypes
     if (!val) {
-      return;
+      return
     }
-    ev.target.value = '';
-    this.searchMediaType = val;
-    this.searchMediaTypeIcon = getMediaTypeSvg(val, this.Icons, this.hass);
+    ev.target.value = ""
+    this.searchMediaType = val
+    this.searchMediaTypeIcon = getMediaTypeSvg(val, this.Icons, this.hass)
     await this.searchMedia()
   }
   private onSearchLibrarySelect = async () => {
-    this.searchLibrary = !this.searchLibrary;
+    this.searchLibrary = !this.searchLibrary
     await this.searchMedia()
   }
   private onSearchInput = (ev: TargetValEventData) => {
-    const val = ev.target.value.trim();
+    const val = ev.target.value.trim()
     if (val.length < SEARCH_TERM_MIN_LENGTH) {
-      return;
+      return
     }
-    this.searchTerm = val;
+    this.searchTerm = val
     if (this._searchTimeout) {
       try {
         clearTimeout(this._searchTimeout)
       } finally {
-        this._searchTimeout = 0;
+        this._searchTimeout = 0
       }
     }
-    this._searchTimeout = setTimeout(
-      () => {
-        this._searchTimeout = 0;
-        void this.searchMedia()
-      },
-      SEARCH_UPDATE_DELAY
-    )
+    this._searchTimeout = setTimeout(() => {
+      this._searchTimeout = 0
+      void this.searchMedia()
+    }, SEARCH_UPDATE_DELAY)
   }
   private onFilterType = (ev: TargetValEventData) => {
-    const val = ev.target.value;
+    const val = ev.target.value
     if (!val.length) {
-      return;
+      return
     }
-    ev.target.value = ``;
+    ev.target.value = ``
     if (!Object.keys(this.cards).includes(val)) {
-      return;
+      return
     }
-    this.activeSection = val;
-    this.activeSubSection = 'main';
+    this.activeSection = val
+    this.activeSubSection = "main"
     /* eslint-disable-next-line
       @typescript-eslint/no-unsafe-assignment,
       @typescript-eslint/no-unsafe-member-access
     */
-    this.activeCards = this.cards[val].main;
+    this.activeCards = this.cards[val].main
   }
   private async searchMedia() {
-    const search_term = this.searchTerm;
+    const search_term = this.searchTerm
     if (search_term.length < SEARCH_TERM_MIN_LENGTH) {
-      return;
+      return
     }
     const cards = await this.browserController.search(
       this.activeEntityConfig.entity_id,
       search_term,
       this.searchMediaType,
       this.searchLibrary,
-      DEFAULT_SEARCH_LIMIT
+      DEFAULT_SEARCH_LIMIT,
     )
-    this.activeCards = cards;    
+    this.activeCards = cards
   }
   private onCardsUpdated = (ev: Event) => {
-    const _ev = ev as CardsUpdatedEvent;
-    const detail = _ev.detail;
-    const section = detail.section;
-    if (section == 'all') {
-      this._cards = detail.cards as newMediaBrowserItemsConfig;
+    const _ev = ev as CardsUpdatedEvent
+    const detail = _ev.detail
+    const section = detail.section
+    if (section == "all") {
+      this._cards = detail.cards as newMediaBrowserItemsConfig
     }
     if (!this.cards) {
-      return;
+      return
     }
     if (
-        !this?.activeCards?.length
-        && (section == 'all' || section == this.activeSection)
-      ) {
-      this.setActiveCards();
+      !this?.activeCards?.length &&
+      (section == "all" || section == this.activeSection)
+    ) {
+      this.setActiveCards()
     }
   }
   protected renderBrowserCards(): TemplateResult {
@@ -343,20 +345,18 @@ export class MediaBrowser extends LitElement {
     `
   }
   protected renderTitle(): TemplateResult {
-    const title = this.activeSection;
-    return html`
-      <span slot="label" id="title">
-        ${title}
-      </span>
-    `
+    const title = this.activeSection
+    return html` <span slot="label" id="title"> ${title} </span> `
   }
   protected renderSearchMediaTypeButton(): TemplateResult {
-    if (this.activeSection == 'search') {
-      const icons = getSearchMediaButtons(this.Icons, this.hass);
+    if (this.activeSection == "search") {
+      const icons = getSearchMediaButtons(this.Icons, this.hass)
       return html`
         <mass-menu-button
           id="search-media-type-menu"
-          class="${this.useExpressive ? `search-media-type-menu-expressive` : ``}"
+          class="${this.useExpressive
+            ? `search-media-type-menu-expressive`
+            : ``}"
           .iconPath=${this.searchMediaTypeIcon}
           .initialSelection=${this.searchMediaType}
           .items=${icons}
@@ -368,7 +368,7 @@ export class MediaBrowser extends LitElement {
     return html``
   }
   protected renderSearchLibraryButton(): TemplateResult {
-    if (this.activeSection == 'search') {
+    if (this.activeSection == "search") {
       return html`
         <ha-button
           appearance="plain"
@@ -379,8 +379,10 @@ export class MediaBrowser extends LitElement {
           class="button-min"
         >
           <ha-svg-icon
-            .path=${this.searchLibrary ? this.Icons.LIBRARY : this.Icons.LIBRARY_OUTLINED}
-            class="svg-xs ${this.useExpressive ? `svg-menu-expressive`: ``}"
+            .path=${this.searchLibrary
+              ? this.Icons.LIBRARY
+              : this.Icons.LIBRARY_OUTLINED}
+            class="svg-xs ${this.useExpressive ? `svg-menu-expressive` : ``}"
           ></ha-svg-icon>
         </ha-button>
       `
@@ -388,14 +390,17 @@ export class MediaBrowser extends LitElement {
     return html``
   }
   protected renderSearchBar() {
-    const styles_base_url = 'https://cdn.jsdelivr.net/npm/@shoelace-style/shoelace@2.20.1/cdn/themes/';
-    const darkMode = this.hass.themes.darkMode;
-    const styles_url = styles_base_url + (darkMode ? 'dark.css' : 'light.css');
-    const placeholder = getTranslation("browser.search.placeholder", this.hass) as string;
+    const styles_base_url =
+      "https://cdn.jsdelivr.net/npm/@shoelace-style/shoelace@2.20.1/cdn/themes/"
+    const darkMode = this.hass.themes.darkMode
+    const styles_url = styles_base_url + (darkMode ? "dark.css" : "light.css")
+    const placeholder = getTranslation(
+      "browser.search.placeholder",
+      this.hass,
+    ) as string
     return html`
-      <span slot="end" id="search-input"
-      >
-        <link rel="stylesheet" href="${styles_url}">
+      <span slot="end" id="search-input">
+        <link rel="stylesheet" href="${styles_url}" />
         <sl-input
           placeholder="${placeholder}"
           type="search"
@@ -420,14 +425,15 @@ export class MediaBrowser extends LitElement {
     return html`
       <span slot="end" id="buttons-end">
         <div id="header-buttons-end">
-          ${this.renderFilterButton()}
-          ${this.renderSearchButton()}
+          ${this.renderFilterButton()} ${this.renderSearchButton()}
         </div>
       </span>
     `
   }
   protected renderSearchButton(): TemplateResult {
-    const hide = this.config.hide.search || this.activeEntityConfig.hide.media_browser.search;
+    const hide =
+      this.config.hide.search ||
+      this.activeEntityConfig.hide.media_browser.search
     if (hide) {
       return html``
     }
@@ -445,10 +451,12 @@ export class MediaBrowser extends LitElement {
           class="header-icon"
         ></ha-svg-icon>
       </ha-button>
-    `  
+    `
   }
   protected renderBackButton(): TemplateResult {
-    const hide = this.config.hide.back_button || this.activeEntityConfig.hide.media_browser.back_button;
+    const hide =
+      this.config.hide.back_button ||
+      this.activeEntityConfig.hide.media_browser.back_button
     if (hide) {
       return html``
     }
@@ -469,10 +477,9 @@ export class MediaBrowser extends LitElement {
         </ha-button>
       </span>
     `
-
   }
   protected renderFilterButton(): TemplateResult {
-    const icons = getFilterButtons(this.Icons, this.hass, this.config);
+    const icons = getFilterButtons(this.Icons, this.hass, this.config)
     const icon = this.Icons.FILTER
     return html`
       <mass-menu-button
@@ -489,16 +496,14 @@ export class MediaBrowser extends LitElement {
   protected renderSearchHeader(): TemplateResult {
     return html`
       <mass-section-header id="search">
-        ${this.renderBackButton()}
-        ${this.renderSearchBar()}
+        ${this.renderBackButton()} ${this.renderSearchBar()}
       </mass-section-header>
     `
   }
   protected renderSubsectionHeader(): TemplateResult {
     return html`
       <mass-section-header>
-        ${this.renderBackButton()}
-        ${this.renderTitle()}
+        ${this.renderBackButton()} ${this.renderTitle()}
         ${this.renderEndButtons()}
       </mass-section-header>
     `
@@ -506,38 +511,48 @@ export class MediaBrowser extends LitElement {
   protected renderMainHeader(): TemplateResult {
     return html`
       <mass-section-header>
-        ${this.renderTitle()}
-        ${this.renderEndButtons()}
+        ${this.renderTitle()} ${this.renderEndButtons()}
       </mass-section-header>
     `
-
   }
   protected shouldUpdate(_changedProperties: PropertyValues): boolean {
-    return _changedProperties.size > 0;
+    return _changedProperties.size > 0
   }
   protected renderHeader(): TemplateResult {
     if (this.activeSection == "search") {
-      return this.renderSearchHeader();
+      return this.renderSearchHeader()
     }
-    if (this.activeSection == DEFAULT_ACTIVE_SECTION && this.activeSubSection == DEFAULT_ACTIVE_SUBSECTION) {
-      return this.renderMainHeader();
+    if (
+      this.activeSection == DEFAULT_ACTIVE_SECTION &&
+      this.activeSubSection == DEFAULT_ACTIVE_SUBSECTION
+    ) {
+      return this.renderMainHeader()
     }
-    return this.renderSubsectionHeader();
+    return this.renderSubsectionHeader()
   }
   protected firstUpdated(): void {
-    this.browserController._host.addEventListener('cards-updated', this.onCardsUpdated);
+    this.browserController._host.addEventListener(
+      "cards-updated",
+      this.onCardsUpdated,
+    )
   }
   protected render(): TemplateResult {
     return html`
-      <div id="container" class="${this.useExpressive ? `container-expressive` : ``}">
+      <div
+        id="container"
+        class="${this.useExpressive ? `container-expressive` : ``}"
+      >
         ${this.renderHeader()}
-        <div id="mass-browser" class="${this.useExpressive ? `mass-browser-expressive` : ``}">
+        <div
+          id="mass-browser"
+          class="${this.useExpressive ? `mass-browser-expressive` : ``}"
+        >
           ${this.renderBrowserCards()}
         </div>
       </div>
     `
   }
   static get styles(): CSSResultGroup {
-    return styles;
+    return styles
   }
 }

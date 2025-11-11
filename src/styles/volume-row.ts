@@ -1,4 +1,4 @@
-import { css } from "lit";
+import { css } from "lit"
 
 export default css`
   .button-min {
@@ -19,7 +19,7 @@ export default css`
   #button-power {
     margin-right: 1em;
   }
-  
+
   #div-slider {
     width: 100%;
     height: var(--player-volume-slider-height);
@@ -51,13 +51,12 @@ export default css`
     position: relative;
     height: max-content;
     border-radius: 50%;
-
   }
   .tick-in {
-    background-color: var(--md-sys-color-on-primary)
+    background-color: var(--md-sys-color-on-primary);
   }
   .tick-out {
-    background-color: var(--md-sys-color-on-primary-container)
+    background-color: var(--md-sys-color-on-primary-container);
   }
 
   #volume {
@@ -74,7 +73,7 @@ export default css`
     border-radius: 10px;
     --disabled-color: var(--control-slider-color);
     height: var(--player-volume-slider-height);
-  } 
+  }
   .volume-slider-expressive {
     --control-slider-color: var(--md-sys-color-primary);
     box-shadow: var(--md-sys-elevation-level1);

@@ -1,8 +1,8 @@
-import { CSSResultGroup, html, TemplateResult } from "lit";
-import { MassPlayerControlsBase } from "./player-controls-base";
-import { RepeatMode } from "../const/common";
-import { getRepeatIcon } from "../utils/music-player";
-import styles from '../styles/player-controls-expressive'
+import { CSSResultGroup, html, TemplateResult } from "lit"
+import { MassPlayerControlsBase } from "./player-controls-base"
+import { RepeatMode } from "../const/common"
+import { getRepeatIcon } from "../utils/music-player"
+import styles from "../styles/player-controls-expressive"
 
 class MassPlayerControlsExpressive extends MassPlayerControlsBase {
   protected renderPrevious(): TemplateResult {
@@ -24,7 +24,7 @@ class MassPlayerControlsExpressive extends MassPlayerControlsBase {
     `
   }
   protected renderPlayPause(): TemplateResult {
-    const playing = this.playing;
+    const playing = this.playing
     return html`
       <ha-button
         appearance="filled"
@@ -86,7 +86,7 @@ class MassPlayerControlsExpressive extends MassPlayerControlsBase {
     if (this.hiddenElements.shuffle) {
       return html``
     }
-    const shuffle = this.shuffle;
+    const shuffle = this.shuffle
     return html`
       <ha-button
         appearance="filled"
@@ -109,9 +109,9 @@ class MassPlayerControlsExpressive extends MassPlayerControlsBase {
     if (this.hiddenElements.repeat) {
       return html``
     }
-    const repeat = this.repeat;
-    const repeat_on = repeat != RepeatMode.OFF;
-    const icon = getRepeatIcon(repeat, this.Icons);
+    const repeat = this.repeat
+    const repeat_on = repeat != RepeatMode.OFF
+    const icon = getRepeatIcon(repeat, this.Icons)
     return html`
       <ha-button
         appearance="filled"
@@ -134,7 +134,7 @@ class MassPlayerControlsExpressive extends MassPlayerControlsBase {
     if (this.hiddenElements.favorite) {
       return html``
     }
-    const favorite = this.favorite;
+    const favorite = this.favorite
     return html`
       <ha-button
         appearance="filled"
@@ -155,19 +155,14 @@ class MassPlayerControlsExpressive extends MassPlayerControlsBase {
   }
   protected renderUpperControls(): TemplateResult {
     return html`
-      <div 
-        id="player-controls-upper"
-        class="player-controls"
-      >
-        ${this.renderPrevious()}
-        ${this.renderPlayPause()}
-        ${this.renderNext()}
-    </div>
+      <div id="player-controls-upper" class="player-controls">
+        ${this.renderPrevious()} ${this.renderPlayPause()} ${this.renderNext()}
+      </div>
     `
   }
   protected renderLowerControls(): TemplateResult {
-    const h = this.hiddenElements;
-    const all_hidden = h.power && h.shuffle && h.repeat && h.favorite;
+    const h = this.hiddenElements
+    const all_hidden = h.power && h.shuffle && h.repeat && h.favorite
     if (all_hidden) {
       return html``
     }
@@ -186,18 +181,21 @@ class MassPlayerControlsExpressive extends MassPlayerControlsBase {
   }
   protected render(): TemplateResult {
     return html`
-      <link href="https://cdn.jsdelivr.net/npm/beercss@3.12.11/dist/cdn/beer.min.css" rel="stylesheet">
-      <div
-        id="div-controls"
-      >
-        ${this.renderUpperControls()}
-        ${this.renderLowerControls()}
+      <link
+        href="https://cdn.jsdelivr.net/npm/beercss@3.12.11/dist/cdn/beer.min.css"
+        rel="stylesheet"
+      />
+      <div id="div-controls">
+        ${this.renderUpperControls()} ${this.renderLowerControls()}
       </div>
     `
   }
   static get styles(): CSSResultGroup {
-    return styles;
+    return styles
   }
 }
 
-customElements.define('mass-player-controls-expressive', MassPlayerControlsExpressive);
+customElements.define(
+  "mass-player-controls-expressive",
+  MassPlayerControlsExpressive,
+)

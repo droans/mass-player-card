@@ -1,4 +1,4 @@
-import { css } from "lit";
+import { css } from "lit"
 
 export default css`
   .artwork {
@@ -8,18 +8,17 @@ export default css`
     display: block;
   }
   .artwork-large {
-    border-radius: var(--artwork-border-radius) var(--artwork-border-radius) 0px 0px;
+    border-radius: var(--artwork-border-radius) var(--artwork-border-radius) 0px
+      0px;
   }
   .artwork-medium {
-
   }
   .artwork-small {
-
   }
   .asleep {
     height: 100%;
     width: 100%;
-  } 
+  }
   .asleep-expressive {
     color: rgba(from var(--md-sys-color-primary) r g b / 0.7);
   }
