@@ -1,4 +1,4 @@
-import { css } from "lit"
+import { css } from "lit";
 export default css`
   :host {
     --me-menu-background-color: var(--md-sys-color-secondary-container);
@@ -35,4 +35,4 @@ export default css`
   .svg-menu-expressive {
     color: var(--md-sys-color-on-background);
   }
-`
+`;

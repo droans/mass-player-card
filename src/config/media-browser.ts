@@ -1,64 +1,64 @@
-import { mdiCreation, mdiHeart, mdiHistory } from "@mdi/js"
+import { mdiCreation, mdiHeart, mdiHistory } from "@mdi/js";
 
-import { Config } from "./config"
-import { hiddenElementsConfigItem } from "../utils/config.js"
+import { Config } from "./config";
+import { hiddenElementsConfigItem } from "../utils/config.js";
 
 export interface MediaBrowserConfig {
-  enabled: boolean
-  favorites: FavoritesConfig
-  recents: FavoritesConfig
-  recommendations: RecommendationsConfig
-  sections: customSection[]
-  hide: MediaBrowserHiddenElementsConfig
-  columns: number
+  enabled: boolean;
+  favorites: FavoritesConfig;
+  recents: FavoritesConfig;
+  recommendations: RecommendationsConfig;
+  sections: customSection[];
+  hide: MediaBrowserHiddenElementsConfig;
+  columns: number;
 }
 
 export interface FavoritesConfig {
-  enabled: boolean
-  albums: FavoriteItemConfig
-  artists: FavoriteItemConfig
-  audiobooks: FavoriteItemConfig
-  playlists: FavoriteItemConfig
-  podcasts: FavoriteItemConfig
-  radios: FavoriteItemConfig
-  tracks: FavoriteItemConfig
+  enabled: boolean;
+  albums: FavoriteItemConfig;
+  artists: FavoriteItemConfig;
+  audiobooks: FavoriteItemConfig;
+  playlists: FavoriteItemConfig;
+  podcasts: FavoriteItemConfig;
+  radios: FavoriteItemConfig;
+  tracks: FavoriteItemConfig;
 }
 export interface FavoriteItemConfig {
-  enabled: boolean
-  limit: number
-  favorites_only: boolean
-  items: customItem[]
+  enabled: boolean;
+  limit: number;
+  favorites_only: boolean;
+  items: customItem[];
 }
 export interface customItem {
-  name: string
-  image: string
-  media_content_id: never
-  media_content_type: never
-  service: never
+  name: string;
+  image: string;
+  media_content_id: never;
+  media_content_type: never;
+  service: never;
 }
 
 export interface RecommendationsConfig {
-  enabled: boolean
-  providers?: string[]
+  enabled: boolean;
+  providers?: string[];
 }
 
 export interface customSection {
-  name: string
-  image: string
-  items: customItem[]
+  name: string;
+  image: string;
+  items: customItem[];
 }
 
 export interface MediaBrowserHiddenElementsConfig {
-  back_button: boolean
-  search: boolean
-  recents: boolean
-  titles: boolean
-  enqueue_menu: boolean
-  add_to_queue_button: boolean
-  play_next_button: boolean
-  play_next_clear_queue_button: boolean
-  play_now_button: boolean
-  play_now_clear_queue_button: boolean
+  back_button: boolean;
+  search: boolean;
+  recents: boolean;
+  titles: boolean;
+  enqueue_menu: boolean;
+  add_to_queue_button: boolean;
+  play_next_button: boolean;
+  play_next_clear_queue_button: boolean;
+  play_now_button: boolean;
+  play_now_clear_queue_button: boolean;
 }
 
 export const DEFAULT_FAVORITE_ITEM_CONFIG: FavoriteItemConfig = {
@@ -66,7 +66,7 @@ export const DEFAULT_FAVORITE_ITEM_CONFIG: FavoriteItemConfig = {
   limit: 25,
   items: [],
   favorites_only: true,
-}
+};
 
 const DEFAULT_FAVORITES_CONFIG: FavoritesConfig = {
   enabled: true,
@@ -77,7 +77,7 @@ const DEFAULT_FAVORITES_CONFIG: FavoritesConfig = {
   podcasts: DEFAULT_FAVORITE_ITEM_CONFIG,
   radios: DEFAULT_FAVORITE_ITEM_CONFIG,
   tracks: DEFAULT_FAVORITE_ITEM_CONFIG,
-}
+};
 
 export const DEFAULT_MEDIA_BROWSER_HIDDEN_ELEMENTS_CONFIG: MediaBrowserHiddenElementsConfig =
   {
@@ -91,7 +91,7 @@ export const DEFAULT_MEDIA_BROWSER_HIDDEN_ELEMENTS_CONFIG: MediaBrowserHiddenEle
     play_next_clear_queue_button: false,
     play_now_button: false,
     play_now_clear_queue_button: false,
-  }
+  };
 
 export const HIDDEN_BUTTON_VALUE = {
   add: "add_to_queue_button",
@@ -99,13 +99,13 @@ export const HIDDEN_BUTTON_VALUE = {
   next: "play_next_button",
   replace: "play_now_clear_queue_button",
   replace_next: "play_next_clear_queue_button",
-}
+};
 
-const DEFAULT_CUSTOM_SECTION_CONFIG = []
+const DEFAULT_CUSTOM_SECTION_CONFIG = [];
 
 const DEFAULT_RECOMMENDATIONS_CONFIG: RecommendationsConfig = {
   enabled: true,
-}
+};
 
 export const DEFAULT_MEDIA_BROWSER_CONFIG: MediaBrowserConfig = {
   enabled: true,
@@ -115,7 +115,7 @@ export const DEFAULT_MEDIA_BROWSER_CONFIG: MediaBrowserConfig = {
   sections: DEFAULT_CUSTOM_SECTION_CONFIG,
   hide: DEFAULT_MEDIA_BROWSER_HIDDEN_ELEMENTS_CONFIG,
   columns: 2,
-}
+};
 
 const MEDIA_BROWSER_HIDDEN_ITEMS = [
   "back_button",
@@ -127,7 +127,7 @@ const MEDIA_BROWSER_HIDDEN_ITEMS = [
   "play_now_clear_queue_button",
   "play_next_button",
   "play_next_clear_queue_button",
-]
+];
 
 function favoritesConfigForm(section: string) {
   return {
@@ -146,7 +146,7 @@ function favoritesConfigForm(section: string) {
         ],
       },
     ],
-  }
+  };
 }
 
 function recommendationsConfigForm() {
@@ -165,7 +165,7 @@ function recommendationsConfigForm() {
         selector: { text: { multiple: true } },
       },
     ],
-  }
+  };
 }
 
 export function mediaBrowserConfigForm() {
@@ -202,49 +202,49 @@ export function mediaBrowserConfigForm() {
     },
     recommendationsConfigForm(),
     hiddenElementsConfigItem(MEDIA_BROWSER_HIDDEN_ITEMS),
-  ]
+  ];
 }
 
 function processRecommendations(
   config: MediaBrowserConfig,
 ): MediaBrowserConfig {
-  const recommendations_config = config.recommendations
+  const recommendations_config = config.recommendations;
   return {
     ...config,
     recommendations: {
       ...DEFAULT_RECOMMENDATIONS_CONFIG,
       ...recommendations_config,
     },
-  }
+  };
 }
 
 function processHiddenElementsConfig(
   config: MediaBrowserConfig,
 ): MediaBrowserConfig {
-  const hidden_elements_config = config.hide
+  const hidden_elements_config = config.hide;
   return {
     ...config,
     hide: {
       ...DEFAULT_MEDIA_BROWSER_HIDDEN_ELEMENTS_CONFIG,
       ...hidden_elements_config,
     },
-  }
+  };
 }
 
 function processFavoriteItemConfig(config: FavoriteItemConfig) {
-  const default_favorites_config = DEFAULT_FAVORITE_ITEM_CONFIG
+  const default_favorites_config = DEFAULT_FAVORITE_ITEM_CONFIG;
   return {
     ...default_favorites_config,
     ...config,
-  }
+  };
 }
 
 function processFavorites(config: MediaBrowserConfig): MediaBrowserConfig {
-  let favorites_config = config.favorites
+  let favorites_config = config.favorites;
   favorites_config = {
     ...DEFAULT_FAVORITES_CONFIG,
     ...favorites_config,
-  }
+  };
   favorites_config = {
     ...favorites_config,
     albums: processFavoriteItemConfig(favorites_config.albums),
@@ -254,35 +254,35 @@ function processFavorites(config: MediaBrowserConfig): MediaBrowserConfig {
     podcasts: processFavoriteItemConfig(favorites_config.podcasts),
     radios: processFavoriteItemConfig(favorites_config.radios),
     tracks: processFavoriteItemConfig(favorites_config.tracks),
-  }
+  };
   return {
     ...config,
     favorites: favorites_config,
-  }
+  };
 }
 function processSections(config: MediaBrowserConfig): MediaBrowserConfig {
-  let section_config = config.sections
-  section_config = [...DEFAULT_CUSTOM_SECTION_CONFIG, ...section_config]
+  let section_config = config.sections;
+  section_config = [...DEFAULT_CUSTOM_SECTION_CONFIG, ...section_config];
   return {
     ...config,
     sections: section_config,
-  }
+  };
 }
 function processDefaults(config: MediaBrowserConfig) {
   return {
     ...DEFAULT_MEDIA_BROWSER_CONFIG,
     ...config,
-  }
+  };
 }
 export function processMediaBrowserConfig(config: Config): Config {
-  let browser_config = config.media_browser
-  browser_config = processDefaults(browser_config)
-  browser_config = processFavorites(browser_config)
-  browser_config = processSections(browser_config)
-  browser_config = processRecommendations(browser_config)
-  browser_config = processHiddenElementsConfig(browser_config)
+  let browser_config = config.media_browser;
+  browser_config = processDefaults(browser_config);
+  browser_config = processFavorites(browser_config);
+  browser_config = processSections(browser_config);
+  browser_config = processRecommendations(browser_config);
+  browser_config = processHiddenElementsConfig(browser_config);
   return {
     ...config,
     media_browser: browser_config,
-  }
+  };
 }

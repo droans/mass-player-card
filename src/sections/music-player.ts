@@ -1,27 +1,32 @@
-import "@material/web/progress/linear-progress.js"
+import "@material/web/progress/linear-progress.js";
 
-import { consume, provide } from "@lit/context"
-import { CSSResultGroup, LitElement, PropertyValues, TemplateResult } from "lit"
-import { query, state } from "lit/decorators.js"
-import { html } from "lit/static-html.js"
+import { consume, provide } from "@lit/context";
+import {
+  CSSResultGroup,
+  LitElement,
+  PropertyValues,
+  TemplateResult,
+} from "lit";
+import { query, state } from "lit/decorators.js";
+import { html } from "lit/static-html.js";
 
-import "../components/media-progress"
-import "../components/menu-button"
-import "../components/player-artwork"
-import "../components/player-controls"
-import "../components/player-controls-expressive"
-import "../components/section-header"
-import "../components/volume-row"
-import "../components/volume-slider"
+import "../components/media-progress";
+import "../components/menu-button";
+import "../components/player-artwork";
+import "../components/player-controls";
+import "../components/player-controls-expressive";
+import "../components/section-header";
+import "../components/volume-row";
+import "../components/volume-slider";
 
-import PlayerActions from "../actions/player-actions"
+import PlayerActions from "../actions/player-actions";
 
 import {
   DetailValEventData,
   ExtendedHass,
   ExtendedHassEntity,
   WaAnimation,
-} from "../const/common"
+} from "../const/common";
 import {
   activeEntityConf,
   activeMediaPlayer,
@@ -36,267 +41,265 @@ import {
   hassExt,
   IconsContext,
   musicPlayerConfigContext,
-} from "../const/context"
-import { ListItemData } from "../const/media-browser"
-import {
-  ForceUpdatePlayerDataEvent,
-  MARQUEE_DELAY_MS,
-  PlayerData,
-} from "../const/music-player"
+} from "../const/context";
+import { ListItemData } from "../const/media-browser";
+import { ForceUpdatePlayerDataEvent, PlayerData } from "../const/music-player";
 
-import styles from "../styles/music-player"
+import styles from "../styles/music-player";
 
-import { PlayerSelectedService } from "../const/actions"
-import { ArtworkSize, PlayerConfig } from "../config/player"
-import { ActivePlayerController } from "../controller/active-player"
-import { Config } from "../config/config.js"
-import { Icons } from "../const/icons.js"
-import { isActive, jsonMatch, playerHasUpdated } from "../utils/util.js"
-import { MassCardController } from "../controller/controller.js"
+import { PlayerSelectedService } from "../const/actions";
+import { ArtworkSize, PlayerConfig } from "../config/player";
+import { ActivePlayerController } from "../controller/active-player";
+import { Config } from "../config/config.js";
+import { Icons } from "../const/icons.js";
+import { isActive, jsonMatch, playerHasUpdated } from "../utils/util.js";
+import { MassCardController } from "../controller/controller.js";
 
 class MusicPlayerCard extends LitElement {
-  private _firstLoaded = false
+  private _firstLoaded = false;
 
-  @consume({ context: IconsContext }) private Icons!: Icons
+  @consume({ context: IconsContext }) private Icons!: Icons;
 
   @consume({ context: entitiesConfigContext, subscribe: true })
-  public playerEntities!: EntityConfig[]
+  public playerEntities!: EntityConfig[];
 
   @consume({ context: configContext, subscribe: true })
-  private cardConfig!: Config
+  private cardConfig!: Config;
 
   @consume({ context: controllerContext, subscribe: true })
-  private controller!: MassCardController
+  private controller!: MassCardController;
 
   @provide({ context: activePlayerDataContext })
   @state()
-  public player_data!: PlayerData
+  public player_data!: PlayerData;
 
   @state()
-  private _groupVolumeLevel!: number
+  private _groupVolumeLevel!: number;
 
-  private _activeEntityConfig!: EntityConfig
-  private _activeEntity!: ExtendedHassEntity
-  private _config!: PlayerConfig
+  @query("animation") private _animationElement!: WaAnimation;
 
-  public selectedPlayerService!: PlayerSelectedService
-  private _hass!: ExtendedHass
-  private _groupedPlayers!: EntityConfig[]
-  private actions!: PlayerActions
+  private _activeEntityConfig!: EntityConfig;
+  private _activeEntity!: ExtendedHassEntity;
+  private _config!: PlayerConfig;
 
-  private _artworkHeaderClass!: string
-  private _artworkProgressClass!: string
-  private _artworkVolumeClass!: string
-  private _artworkMediaControlsClass!: string
-  private _artworkActiveTrackClass!: string
+  public selectedPlayerService!: PlayerSelectedService;
+  private _hass!: ExtendedHass;
+  private _groupedPlayers!: EntityConfig[];
+  private actions!: PlayerActions;
+
+  private _artworkHeaderClass!: string;
+  private _artworkProgressClass!: string;
+  private _artworkVolumeClass!: string;
+  private _artworkMediaControlsClass!: string;
+  private _artworkActiveTrackClass!: string;
   @state()
-  private _activePlayerController!: ActivePlayerController
+  private _activePlayerController!: ActivePlayerController;
 
   @consume({ context: activeEntityConf, subscribe: true })
   public set activeEntityConfig(entity: EntityConfig) {
-    this._activeEntityConfig = entity
+    this._activeEntityConfig = entity;
   }
   public get activeEntityConfig() {
-    return this._activeEntityConfig
+    return this._activeEntityConfig;
   }
   public get activeMediaPlayer() {
-    return this?.activePlayerController?.activeMediaPlayer
+    return this?.activePlayerController?.activeMediaPlayer;
   }
 
   @consume({ context: activeMediaPlayer, subscribe: true })
   @state()
   private set activeEntity(entity: ExtendedHassEntity) {
     if (!playerHasUpdated(this._activeEntity, entity)) {
-      return
+      return;
     }
-    this._activeEntity = entity
-    this.updatePlayerData()
+    this._activeEntity = entity;
+    this.updatePlayerData();
   }
   public get activeEntity() {
-    return this._activeEntity
+    return this._activeEntity;
   }
 
   @consume({ context: hassExt, subscribe: true })
   public set hass(hass: ExtendedHass) {
     if (hass) {
-      this.actions = new PlayerActions(hass)
+      this.actions = new PlayerActions(hass);
     }
-    const hassExists = !!this._hass
-    this._hass = hass
+    const hassExists = !!this._hass;
+    this._hass = hass;
     if (!hassExists) {
-      this.updatePlayerData()
+      this.updatePlayerData();
     }
   }
   public get hass() {
-    return this._hass
+    return this._hass;
   }
 
   @consume({ context: musicPlayerConfigContext, subscribe: true })
   public set config(config: PlayerConfig) {
     if (jsonMatch(this._config, config)) {
-      return
+      return;
     }
-    this._config = config
+    this._config = config;
     switch (config.layout.artwork_size) {
       case ArtworkSize.LARGE:
-        this._artworkHeaderClass = "header-art-lg"
-        this._artworkProgressClass = "bg-art-lg"
-        this._artworkVolumeClass = "vol-art-lg"
-        this._artworkMediaControlsClass = "controls-art-lg"
-        this._artworkActiveTrackClass = "active-track-lg"
-        break
+        this._artworkHeaderClass = "header-art-lg";
+        this._artworkProgressClass = "bg-art-lg";
+        this._artworkVolumeClass = "vol-art-lg";
+        this._artworkMediaControlsClass = "controls-art-lg";
+        this._artworkActiveTrackClass = "active-track-lg";
+        break;
       case ArtworkSize.MEDIUM:
-        this._artworkHeaderClass = "header-art-med"
-        this._artworkProgressClass = "bg-art-med"
-        this._artworkVolumeClass = "vol-art-med"
-        this._artworkMediaControlsClass = "controls-art-med"
-        this._artworkActiveTrackClass = "active-track-med"
-        break
+        this._artworkHeaderClass = "header-art-med";
+        this._artworkProgressClass = "bg-art-med";
+        this._artworkVolumeClass = "vol-art-med";
+        this._artworkMediaControlsClass = "controls-art-med";
+        this._artworkActiveTrackClass = "active-track-med";
+        break;
       case ArtworkSize.SMALL:
-        this._artworkHeaderClass = "header-art-sm"
-        this._artworkProgressClass = "bg-art-sm"
-        this._artworkVolumeClass = "vol-art-sm"
-        this._artworkMediaControlsClass = "controls-art-sm"
-        this._artworkActiveTrackClass = "active-track-sm"
+        this._artworkHeaderClass = "header-art-sm";
+        this._artworkProgressClass = "bg-art-sm";
+        this._artworkVolumeClass = "vol-art-sm";
+        this._artworkMediaControlsClass = "controls-art-sm";
+        this._artworkActiveTrackClass = "active-track-sm";
     }
   }
   public get config() {
-    return this._config
+    return this._config;
   }
 
   private async _getGroupedVolume() {
     if (this.activePlayerController) {
       this.groupVolumeLevel =
-        await this.activePlayerController.getActiveGroupVolume()
+        await this.activePlayerController.getActiveGroupVolume();
     }
   }
 
   @consume({ context: activePlayerControllerContext, subscribe: true })
   private set activePlayerController(controller: ActivePlayerController) {
     if (!controller) {
-      return
+      return;
     }
-    this._activePlayerController = controller
+    this._activePlayerController = controller;
     if (!this.player_data) {
-      this.updatePlayerData()
+      this.updatePlayerData();
     }
     if (!this.groupVolumeLevel) {
-      void this._getGroupedVolume()
+      void this._getGroupedVolume();
     }
   }
   private get activePlayerController() {
-    return this._activePlayerController
+    return this._activePlayerController;
   }
   @consume({ context: groupVolumeContext, subscribe: true })
   public set groupVolumeLevel(volume_level: number) {
     if (volume_level != this._groupVolumeLevel) {
-      this._groupVolumeLevel = volume_level
+      this._groupVolumeLevel = volume_level;
     }
   }
   public get groupVolumeLevel() {
-    return this._groupVolumeLevel
+    return this._groupVolumeLevel;
   }
 
   @consume({ context: groupedPlayersContext, subscribe: true })
   private set groupedPlayersList(players: string[]) {
     const card_players = this.playerEntities.filter((entity) =>
       players?.includes(entity.entity_id),
-    )
+    );
     if (jsonMatch(this._groupedPlayers, card_players)) {
-      return
+      return;
     }
-    this._groupedPlayers = card_players
+    this._groupedPlayers = card_players;
   }
 
   private get groupedPlayers() {
-    return this._groupedPlayers
+    return this._groupedPlayers;
   }
 
   private updatePlayerData() {
     if (!this.hass) {
-      return
+      return;
     }
     this._updatePlayerData().catch(() => {
-      return
-    })
+      return;
+    });
   }
   private async _updatePlayerData() {
     if (!this.activeMediaPlayer) {
-      return
+      return;
     }
     const current_item = await this.actions.actionGetCurrentItem(
       this.activeMediaPlayer,
-    )
+    );
     const new_player_data =
-      this.activePlayerController.getactivePlayerData(current_item)
+      this.activePlayerController.getactivePlayerData(current_item);
     if (jsonMatch(this.player_data, new_player_data)) {
-      return
+      return;
     }
-    this.player_data = new_player_data
+    this.player_data = new_player_data;
   }
   public forceUpdatePlayerDataValue(key: string, value: string) {
-    const data = this.player_data
+    const data = this.player_data;
     if (!Object.keys(data).includes(key)) {
-      return
+      return;
     }
-    data[key] = value
-    this.player_data = { ...data }
+    data[key] = value;
+    this.player_data = { ...data };
   }
   private onForceLoadEvent = (ev: Event) => {
-    const e = ev as ForceUpdatePlayerDataEvent
-    const key = e.detail.key
+    const e = ev as ForceUpdatePlayerDataEvent;
+    const key = e.detail.key;
     /* eslint-disable
       @typescript-eslint/no-unsafe-argument,
       @typescript-eslint/no-unsafe-assignment
     */
-    const val = e.detail.value
-    this.forceUpdatePlayerDataValue(key, val)
+    const val = e.detail.value;
+    this.forceUpdatePlayerDataValue(key, val);
     /* eslint-enable
       @typescript-eslint/no-unsafe-argument,
       @typescript-eslint/no-unsafe-assignment
     */
-  }
+  };
   private onPlayerSelect = (ev: CustomEvent) => {
-    ev.stopPropagation()
+    ev.stopPropagation();
     /* eslint-disable
       @typescript-eslint/no-explicit-any,
       @typescript-eslint/no-unsafe-assignment,
       @typescript-eslint/no-unsafe-member-access
     */
-    const target = ev.target as any
-    const player = target.value as string
+    const target = ev.target as any;
+    const player = target.value as string;
     if (!player.length) {
-      return
+      return;
     }
     /* eslint-enable
       @typescript-eslint/no-explicit-any,
       @typescript-eslint/no-unsafe-assignment,
       @typescript-eslint/no-unsafe-member-access
     */
-    this.selectedPlayerService(player)
+    this.selectedPlayerService(player);
     //eslint-disable-next-line @typescript-eslint/no-unsafe-member-access
-    target.value = ""
-  }
+    target.value = "";
+  };
   private onUnjoinSelect = (ev) => {
     //eslint-disable-next-line @typescript-eslint/no-unsafe-assignment, @typescript-eslint/no-unsafe-member-access
-    const ent = ev?.target?.entity
+    const ent = ev?.target?.entity;
     if (ev) {
       //eslint-disable-next-line @typescript-eslint/no-floating-promises, @typescript-eslint/no-unsafe-argument
-      this.actions.actionUnjoinPlayers(ent)
+      this.actions.actionUnjoinPlayers(ent);
     }
-  }
+  };
   private onGroupVolumeChange = (ev: DetailValEventData) => {
-    const volume_level = ev.detail.value
-    void this.activePlayerController.setActiveGroupVolume(volume_level)
-  }
+    const volume_level = ev.detail.value;
+    void this.activePlayerController.setActiveGroupVolume(volume_level);
+  };
 
   protected wrapTitleMarquee() {
-    const title = `${this.player_data.track_title} - ${this.player_data.track_album}`
+    const title = `${this.player_data.track_title} - ${this.player_data.track_album}`;
     return html`
       <ha-marquee-text class="player-track-title marquee">
         ${title}
       </ha-marquee-text>
-    `
+    `;
   }
   protected renderPlayerName() {
     return html`
@@ -308,7 +311,7 @@ class MusicPlayerCard extends LitElement {
         ${this.player_data?.player_name ??
         this.activePlayerController.activePlayerName}
       </div>
-    `
+    `;
   }
   protected renderTitle() {
     if (!isActive(this.hass, this.activeMediaPlayer, this.activeEntityConfig)) {
@@ -316,12 +319,12 @@ class MusicPlayerCard extends LitElement {
         <div class="player-track-title">
           ${this.controller.translate("player.title.inactive")}
         </div>
-      `
+      `;
     }
-    return this.wrapTitleMarquee()
+    return this.wrapTitleMarquee();
   }
   protected renderGroupedVolume() {
-    const vol_level = this._groupVolumeLevel
+    const vol_level = this._groupVolumeLevel;
     return html`
       <div class="grouped-players-item grouped-volume">
         <div class="player-name-icon">
@@ -350,17 +353,17 @@ class MusicPlayerCard extends LitElement {
         </div>
         <div class="divider"></div>
       </div>
-    `
+    `;
   }
   protected renderGroupedPlayers() {
-    const players = this.groupedPlayers
-    const ct = players.length
-    const expressive = this.cardConfig.expressive
+    const players = this.groupedPlayers;
+    const ct = players.length;
+    const expressive = this.cardConfig.expressive;
     return this.groupedPlayers.map((item, idx) => {
       const name =
         item.name.length > 0
           ? item.name
-          : this.hass.states[item.entity_id].attributes.friendly_name
+          : this.hass.states[item.entity_id].attributes.friendly_name;
       return html`
         <div class="grouped-players-item">
           <div class="player-name-icon">
@@ -406,13 +409,13 @@ class MusicPlayerCard extends LitElement {
           </ha-md-list-item>
           ${idx < ct - 1 ? html`<div class="divider"></div>` : ``}
         </div>
-      `
-    })
+      `;
+    });
   }
   protected renderGrouped() {
     const hide =
       this.config.hide.group_volume ||
-      this.activeEntityConfig.hide.player.group_volume
+      this.activeEntityConfig.hide.player.group_volume;
     if (this?.groupedPlayers?.length > 1 && !hide) {
       return html`
         <mass-menu-button
@@ -426,16 +429,16 @@ class MusicPlayerCard extends LitElement {
         >
           ${this.renderGroupedVolume()} ${this.renderGroupedPlayers()}
         </mass-menu-button>
-      `
+      `;
     }
-    return html``
+    return html``;
   }
   protected renderArtist() {
     if (!isActive(this.hass, this.activeMediaPlayer, this.activeEntityConfig)) {
       const msgs: string[] = this.controller.translate(
         "player.messages.inactive",
-      ) as string[]
-      const i = Math.floor(Math.random() * msgs.length)
+      ) as string[];
+      const i = Math.floor(Math.random() * msgs.length);
       return html`
         <div
           class="player-track-artist ${this.cardConfig.expressive
@@ -445,7 +448,7 @@ class MusicPlayerCard extends LitElement {
           ${msgs[i]}
         </div>
         ;
-      `
+      `;
     }
     return html` <div
       class="player-track-artist ${this.cardConfig.expressive
@@ -453,28 +456,28 @@ class MusicPlayerCard extends LitElement {
         : ``}"
     >
       ${this.player_data.track_artist}
-    </div>`
+    </div>`;
   }
   protected renderPlayerItems() {
     return this.playerEntities.map((item) => {
       const name =
         item.name.length > 0
           ? item.name
-          : this.hass.states[item.entity_id].attributes.friendly_name
+          : this.hass.states[item.entity_id].attributes.friendly_name;
       const r: ListItemData = {
         option: item.entity_id,
         icon: this.Icons.SPEAKER,
         title: name ?? item.name,
-      }
-      return r
-    })
+      };
+      return r;
+    });
   }
   protected renderSectionTitle() {
-    const label = this.controller.translate("player.header") as string
-    return html` <span slot="label">${label}</span> `
+    const label = this.controller.translate("player.header") as string;
+    return html` <span slot="label">${label}</span> `;
   }
   protected renderHeader(): TemplateResult {
-    const expressive = this.cardConfig.expressive
+    const expressive = this.cardConfig.expressive;
     return html`
       <div
         id="player-card-header"
@@ -490,13 +493,13 @@ class MusicPlayerCard extends LitElement {
         </mass-section-header>
         ${this.renderActiveItemSection()}
       </div>
-    `
+    `;
   }
   protected renderPlayerSelector(): TemplateResult {
-    const config_hide = this.config.hide.player_selector
-    const entity_hide = this.activeEntityConfig.hide.player.player_selector
+    const config_hide = this.config.hide.player_selector;
+    const entity_hide = this.activeEntityConfig.hide.player.player_selector;
     if (config_hide || entity_hide) {
-      return html``
+      return html``;
     }
     return html`
       <span slot="start">
@@ -511,7 +514,7 @@ class MusicPlayerCard extends LitElement {
           .items=${this.renderPlayerItems()}
         ></mass-menu-button>
       </span>
-    `
+    `;
   }
   protected renderActiveItemSection() {
     return html`
@@ -527,14 +530,14 @@ class MusicPlayerCard extends LitElement {
           ${this.renderPlayerHeader()} ${this.renderProgress()}
         </div>
       </div>
-    `
+    `;
   }
   protected renderPlayerHeader() {
     return html`
       <div class="player-header">
         ${this.renderPlayerName()} ${this.renderTitle()} ${this.renderArtist()}
       </div>
-    `
+    `;
   }
   protected renderProgress() {
     return html`
@@ -548,10 +551,10 @@ class MusicPlayerCard extends LitElement {
           ? ``
           : `opacity: 0;`}"
       ></mass-progress-bar>
-    `
+    `;
   }
   protected renderArtwork() {
-    return html` <mass-artwork></mass-artwork> `
+    return html` <mass-artwork></mass-artwork> `;
   }
   protected renderVolumeRow() {
     return html`
@@ -562,7 +565,7 @@ class MusicPlayerCard extends LitElement {
             : ``}"
         ></mass-volume-row>
       </div>
-    `
+    `;
   }
   protected renderControls() {
     return html`
@@ -577,10 +580,10 @@ class MusicPlayerCard extends LitElement {
           : html`<mass-player-controls></mass-player-controls>`}
         ${this.renderVolumeRow()}
       </div>
-    `
+    `;
   }
   protected render() {
-    const expressive = this.cardConfig.expressive
+    const expressive = this.cardConfig.expressive;
     return html`
       <div id="container" class="${expressive ? `container-expressive` : ``}">
         ${this.renderHeader()}
@@ -600,46 +603,47 @@ class MusicPlayerCard extends LitElement {
           </div>
         </wa-animation>
       </div>
-    `
+    `;
   }
   connectedCallback(): void {
-    super.connectedCallback()
+    super.connectedCallback();
     if (!this._firstLoaded) {
-      return
+      return;
     }
-    this.updatePlayerData()
+    this.updatePlayerData();
+    this._animationElement.cancel();
   }
   disconnectedCallback(): void {
-    super.disconnectedCallback()
+    super.disconnectedCallback();
   }
   private delayedUpdatePlayerData = () => {
     setTimeout(() => {
-      this.updatePlayerData()
-    }, 2000)
-  }
+      this.updatePlayerData();
+    }, 2000);
+  };
   protected firstUpdated(): void {
-    this._firstLoaded = true
+    this._firstLoaded = true;
     this.controller.host.addEventListener(
       "request-player-data-update",
       this.delayedUpdatePlayerData,
-    )
+    );
     this.controller.host.addEventListener(
       "force-update-player",
       this.onForceLoadEvent,
-    )
+    );
     this.controller.host.addEventListener("active-player-updated", () => {
-      this.updatePlayerData()
-    })
+      this.updatePlayerData();
+    });
   }
   protected shouldUpdate(_changedProperties: PropertyValues): boolean {
     if (!this.player_data || !_changedProperties.size) {
-      return false
+      return false;
     }
-    return super.shouldUpdate(_changedProperties)
+    return super.shouldUpdate(_changedProperties);
   }
   static get styles(): CSSResultGroup {
-    return styles
+    return styles;
   }
 }
 
-customElements.define("mass-music-player-card", MusicPlayerCard)
+customElements.define("mass-music-player-card", MusicPlayerCard);
