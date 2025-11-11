@@ -370,13 +370,13 @@ __metadata:
   languageName: node
   linkType: hard
 
-"@material/web@npm:2.4.0":
-  version: 2.4.0
-  resolution: "@material/web@npm:2.4.0"
+"@material/web@npm:2.4.1":
+  version: 2.4.1
+  resolution: "@material/web@npm:2.4.1"
   dependencies:
     lit: "npm:^2.8.0 || ^3.0.0"
     tslib: "npm:^2.4.0"
-  checksum: 10c0/f4257e3bb15b60470b57d24a314fc3627b2e5880be763ec3b167948772fc56c2c4790dcfaaebb970ccb6a8eaa82ab5ad7918d02cbbcd45891a2e9132b89882e3
+  checksum: 10c0/d555bd50782218612d4a3a3ead50c5da7dc3913eacf75fe20853648e711c92d7b147b838b3ce5bd46ef839cd0909d65ce57a4690cbfd7ee9ae5a2a0b814c99ca
   languageName: node
   linkType: hard
 
@@ -2282,7 +2282,7 @@ __metadata:
     "@eslint/js": "npm:9.21.0"
     "@lit/context": "npm:1.1.6"
     "@material/material-color-utilities": "npm:^0.3.0"
-    "@material/web": "npm:2.4.0"
+    "@material/web": "npm:2.4.1"
     "@mdi/js": "npm:7.4.47"
     "@rollup/plugin-json": "npm:^6.0.0"
     "@rollup/plugin-node-resolve": "npm:^16.0.0"
