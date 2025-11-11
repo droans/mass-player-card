@@ -21,6 +21,8 @@ jobs:
       - run: |
           echo "Release: ${{ github.event.release.target_commitish }}"
       - uses: actions/checkout@v3
+        with:
+          ref: main
       - name: Echo release info
         run: |
           echo "Release ${{ github.event.release }}"
