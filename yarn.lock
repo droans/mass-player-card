@@ -5,9 +5,9 @@ __metadata:
   version: 8
   cacheKey: 10c0
 
-"@awesome.me/webawesome@npm:^3.0.0-beta.6":
-  version: 3.0.0-beta.6
-  resolution: "@awesome.me/webawesome@npm:3.0.0-beta.6"
+"@awesome.me/webawesome@npm:^3.0.0":
+  version: 3.0.0
+  resolution: "@awesome.me/webawesome@npm:3.0.0"
   dependencies:
     "@ctrl/tinycolor": "npm:4.1.0"
     "@floating-ui/dom": "npm:^1.6.13"
@@ -18,7 +18,7 @@ __metadata:
     lit: "npm:^3.2.1"
     nanoid: "npm:^5.1.5"
     qr-creator: "npm:^1.0.0"
-  checksum: 10c0/5c0c02232bfa84cad8a70353ff47b3aa47414e96e56e344fa786c8d723b01eb7dfde46a08daeaec10490571c4adcf6ac88bf4961ee6ca643d960632caf46f544
+  checksum: 10c0/809a4f698798e10a5b78200f0e9bb473dd46416c2756280771fd58a42850d319e02ad38c5549a599c09811817bc8c498ccb39fd20a910324b0f8bbe36dcf9e82
   languageName: node
   linkType: hard
 
@@ -2284,7 +2284,7 @@ __metadata:
   version: 0.0.0-use.local
   resolution: "mass-player-card@workspace:."
   dependencies:
-    "@awesome.me/webawesome": "npm:^3.0.0-beta.6"
+    "@awesome.me/webawesome": "npm:^3.0.0"
     "@eslint/js": "npm:9.39.1"
     "@lit/context": "npm:1.1.6"
     "@material/material-color-utilities": "npm:^0.3.0"
