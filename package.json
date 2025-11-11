@@ -46,7 +46,7 @@
     "eslint-plugin-lit": "^2.1.1",
     "eslint-plugin-wc": "^3.0.1",
     "prettier": "^3.6.2",
-    "rollup": "^4.0.0",
+    "rollup": "^4.53.2",
     "rollup-plugin-commonjs": "^10.1.0",
     "rollup-plugin-serve": "^3.0.0",
     "ts-lit-plugin": "^2.0.2",
