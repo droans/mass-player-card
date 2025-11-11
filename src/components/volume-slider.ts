@@ -51,7 +51,7 @@ class VolumeSlider extends LitElement {
     let volume: number = ev.detail.value as number;
     volume = volume / 100;
     await this._actions.actionSetVolume(this.entity, volume);
-    this.requestUpdate();
+    this.requestUpdate('volume', volume);
   }
   protected render() {
     return html`

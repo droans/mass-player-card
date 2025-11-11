@@ -126,7 +126,7 @@ export class MassPlayerControlsBase extends LitElement {
   protected onShuffle = async (e: Event) => {
     e.stopPropagation();
     this.shuffle = !this.shuffle;
-    this.requestUpdate();
+    this.requestUpdate('shuffle', this.shuffle);
     await this.actions.actionToggleShuffle();
   }
   protected onRepeat = async (e: Event) => {
@@ -134,7 +134,7 @@ export class MassPlayerControlsBase extends LitElement {
     const cur_repeat = this.playerData.repeat;
     const repeat = getIteratedRepeatMode(cur_repeat);
     this.repeat = repeat;
-    this.requestUpdate();
+    this.requestUpdate('repeat', this.repeat);
     await this.actions.actionSetRepeat(repeat);
   }
   protected onPower = async (e: Event) => {
@@ -144,7 +144,7 @@ export class MassPlayerControlsBase extends LitElement {
   protected onFavorite = async (e: Event) => {
     e.stopPropagation();
     this.favorite = !this.favorite;
-    this.requestUpdate();
+    this.requestUpdate('favorite', this.favorite);
     if (this.playerData.favorite) {
       await this.actions.actionRemoveFavorite();
     } else {
