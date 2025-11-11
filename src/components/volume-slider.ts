@@ -50,8 +50,8 @@ class VolumeSlider extends LitElement {
     //eslint-disable-next-line @typescript-eslint/no-unsafe-member-access
     let volume: number = ev.detail.value as number;
     volume = volume / 100;
-    await this._actions.actionSetVolume(this.entity, volume);
     this.requestUpdate('volume', volume);
+    await this._actions.actionSetVolume(this.entity, volume);
   }
   protected render() {
     return html`
