@@ -40,7 +40,6 @@ import {
 import { ListItemData } from "../const/media-browser"
 import {
   ForceUpdatePlayerDataEvent,
-  MARQUEE_DELAY_MS,
   PlayerData,
 } from "../const/music-player"
 
@@ -74,6 +73,8 @@ class MusicPlayerCard extends LitElement {
 
   @state()
   private _groupVolumeLevel!: number
+
+  @query('animation') private _animationElement!: WaAnimation;
 
   private _activeEntityConfig!: EntityConfig
   private _activeEntity!: ExtendedHassEntity
@@ -608,6 +609,7 @@ class MusicPlayerCard extends LitElement {
       return
     }
     this.updatePlayerData()
+    this._animationElement.cancel();
   }
   disconnectedCallback(): void {
     super.disconnectedCallback()

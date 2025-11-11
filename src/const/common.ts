@@ -103,6 +103,7 @@ export interface CardsUpdatedEvent extends CustomEvent {
 
 export interface WaAnimation extends LitElement {
   play: boolean
+  cancel: () => void
 }
 
 export const DarkModeThumbnails: Record<string, string> = {
