@@ -261,11 +261,10 @@ export class MusicAssistantPlayerCard extends LitElement {
           name="${Sections.MEDIA_BROWSER}"
           class="section${this.active_section == Sections.MEDIA_BROWSER ? "" : "-hidden"}"
         >
-            <mass-media-browser
-              .config=${this.config.media_browser}
-              .onMediaSelectedAction=${this.browserItemSelected}
-            >
-          </wa-animation>
+          <mass-media-browser
+            .config=${this.config.media_browser}
+            .onMediaSelectedAction=${this.browserItemSelected}
+          >
         </wa-tab-panel>
       `)
     }
@@ -307,13 +306,6 @@ export class MusicAssistantPlayerCard extends LitElement {
   }
   connectedCallback() {
     super.connectedCallback()
-    this.shadowRoot?.querySelectorAll("wa-animation").forEach(
-      // eslint-disable-next-line @typescript-eslint/no-explicit-any
-      (e: any) => {
-        // eslint-disable-next-line @typescript-eslint/no-unsafe-member-access
-        e.play = true
-      },
-    )
     if (this._controller) {
       this._controller.Queue.resetQueueFailures()
       void this._controller.Queue.subscribeUpdates()
