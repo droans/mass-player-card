@@ -12,7 +12,7 @@
 
 [release-shield]: https://img.shields.io/github/release/droans/mass-player-card.svg?style=for-the-badge
 [release]: https://github.com/droans/mass-player-card/releases
-[license-shield]: https://img.shields.io/github/license/droans/mass-player-card.svg?style=for-the-badge
+[license-shield]: https://img.shields.io/github/license/droans/mass-player-card?style=for-the-badge
 [license]: LICENSE
 [hacs-badge-shield]: https://img.shields.io/badge/HACS-Default-blue.svg?style=for-the-badge
 [hacs-badge]: https://github.com/hacs/default
