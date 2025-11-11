@@ -89,7 +89,7 @@ In addition to the Music Assistant integration, this card depends on the custom 
     - Press "Add Resource". For the URL, type in "/local/mass-card.js". Select "JavaScript module" and click "Create".
 
 # Configuration
-The card does not have a visual editor. Use this configuration to create your card:
+This card comes with a visual editor. However, not every option can be set with it (eg, player name and volume player, custom items, etc). Use the below documentation to help. 
 
 ### Minimal Config
 
