@@ -21,6 +21,12 @@ jobs:
       - run: |
           echo "Release: ${{ github.event.release.target_commitish }}"
       - uses: actions/checkout@v3
+      - name: Echo release info
+        run: |
+          echo "Release ${{ github.event.release }}"
+          echo "Release ${{ github.event.release.tag_name }} published"
+          echo "Target branch: ${{ github.event.release.target_commitish }}"
+          echo "Release name: ${{ github.event.release.name }}"
       - name: Use Node.js ${{ matrix.node-version }}
         uses: actions/setup-node@v4
         with:
@@ -43,8 +49,18 @@ jobs:
             ${{ runner.OS }}-
       - name: Install dependencies
         run: yarn install --frozen-lockfile
+      - name: Set version in release, repo based on tag
+        run: |
+          npm config set git-tag-version false
+          npm version ${{ github.event.release.tag_name }} -m "beep boop version bump"
+          git config --local user.email "github-actions[bot]@users.noreply.github.com"
+          git config --local user.name "github-actions[bot]"
+          git add .
+          git commit -m "beep boop version bump"
+          git push 
       - name: Build the project
-        run: yarn rollup
+        run: |
+          yarn rollup
       - name: Upload built source
         uses: softprops/action-gh-release@v2
         with:
