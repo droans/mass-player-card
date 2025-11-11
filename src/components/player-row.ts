@@ -1,14 +1,14 @@
-import { consume } from "@lit/context"
-import { html, type CSSResultGroup, LitElement, PropertyValues } from "lit"
-import { property } from "lit/decorators.js"
+import { consume } from "@lit/context";
+import { html, type CSSResultGroup, LitElement, PropertyValues } from "lit";
+import { property } from "lit/decorators.js";
 
 import {
   PlayerJoinService,
   PlayerSelectedService,
   PlayerTransferService,
   PlayerUnjoinService,
-} from "../const/actions"
-import { ExtendedHass, ExtendedHassEntity, Thumbnail } from "../const/common"
+} from "../const/actions";
+import { ExtendedHass, ExtendedHassEntity, Thumbnail } from "../const/common";
 import {
   activeEntityConf,
   EntityConfig,
@@ -16,146 +16,146 @@ import {
   IconsContext,
   playersConfigContext,
   useExpressiveContext,
-} from "../const/context"
+} from "../const/context";
 
 import {
   backgroundImageFallback,
   getFallbackBackgroundImage,
-} from "../utils/thumbnails"
-import { isActive, jsonMatch, testMixedContent } from "../utils/util"
+} from "../utils/thumbnails";
+import { isActive, jsonMatch, testMixedContent } from "../utils/util";
 
-import styles from "../styles/player-row"
+import styles from "../styles/player-row";
 import {
   DEFAULT_PLAYERS_HIDDEN_ELEMENTS_CONFIG,
   PlayersConfig,
   PlayersHiddenElementsConfig,
-} from "../config/players"
-import { Icons } from "../const/icons.js"
+} from "../config/players";
+import { Icons } from "../const/icons.js";
 
 class PlayerRow extends LitElement {
-  @property({ type: Boolean }) joined = false
-  @property({ type: Boolean }) player_entity!: ExtendedHassEntity
-  @property({ type: Boolean }) selected = false
-  @consume({ context: IconsContext }) private Icons!: Icons
+  @property({ type: Boolean }) joined = false;
+  @property({ type: Boolean }) player_entity!: ExtendedHassEntity;
+  @property({ type: Boolean }) selected = false;
+  @consume({ context: IconsContext }) private Icons!: Icons;
   @consume({ context: useExpressiveContext, subscribe: true })
-  private useExpressive!: boolean
+  private useExpressive!: boolean;
 
   @consume({ context: hassExt })
-  public hass!: ExtendedHass
+  public hass!: ExtendedHass;
 
-  public allowJoin = true
-  public playerName!: string
-  public joinService!: PlayerJoinService
-  public selectedService!: PlayerSelectedService
-  public transferService!: PlayerTransferService
-  public unjoinService!: PlayerUnjoinService
+  public allowJoin = true;
+  public playerName!: string;
+  public joinService!: PlayerJoinService;
+  public selectedService!: PlayerSelectedService;
+  public transferService!: PlayerTransferService;
+  public unjoinService!: PlayerUnjoinService;
 
-  private _config!: PlayersConfig
-  private _entityConfig!: EntityConfig
+  private _config!: PlayersConfig;
+  private _entityConfig!: EntityConfig;
   private hide: PlayersHiddenElementsConfig =
-    DEFAULT_PLAYERS_HIDDEN_ELEMENTS_CONFIG
+    DEFAULT_PLAYERS_HIDDEN_ELEMENTS_CONFIG;
 
   @consume({ context: playersConfigContext, subscribe: true })
   public set config(config: PlayersConfig) {
     if (jsonMatch(this._config, config)) {
-      return
+      return;
     }
-    this._config = config
-    this.updateHiddenElements()
+    this._config = config;
+    this.updateHiddenElements();
   }
   public get config() {
-    return this._config
+    return this._config;
   }
   @consume({ context: activeEntityConf, subscribe: true })
   public set entityConfig(config: EntityConfig) {
     if (jsonMatch(this._entityConfig, config)) {
-      return
+      return;
     }
-    this._entityConfig = config
-    this.updateHiddenElements()
+    this._entityConfig = config;
+    this.updateHiddenElements();
   }
   public get entityConfig() {
-    return this._entityConfig
+    return this._entityConfig;
   }
   private updateHiddenElements() {
     if (!this.config || !this.entityConfig) {
-      return
+      return;
     }
-    const entity = this.entityConfig.hide.players
-    const card = this.config.hide
+    const entity = this.entityConfig.hide.players;
+    const card = this.config.hide;
     this.hide = {
       action_buttons: entity.action_buttons || card.action_buttons,
       join_button: entity.join_button || card.join_button,
       transfer_button: entity.transfer_button || card.transfer_button,
-    }
+    };
   }
   private callOnPlayerSelectedService() {
-    this.selectedService(this.player_entity.entity_id)
+    this.selectedService(this.player_entity.entity_id);
   }
   protected shouldUpdate(_changedProperties: PropertyValues<this>): boolean {
-    return _changedProperties.size > 0
+    return _changedProperties.size > 0;
   }
   private onJoinPressed(e: Event) {
-    navigator.vibrate([75, 20, 20, 20, 75])
-    e.stopPropagation()
+    navigator.vibrate([75, 20, 20, 20, 75]);
+    e.stopPropagation();
     if (this.joined) {
-      this.unjoinService(this.player_entity.entity_id)
-      return
+      this.unjoinService(this.player_entity.entity_id);
+      return;
     }
-    this.joinService(this.player_entity.entity_id)
-    this.joined = !this.joined
+    this.joinService(this.player_entity.entity_id);
+    this.joined = !this.joined;
   }
   private onTransferPressed(e: Event) {
-    e.stopPropagation()
-    navigator.vibrate([75, 20, 40, 20, 25])
-    this.transferService(this.player_entity.entity_id)
+    e.stopPropagation();
+    navigator.vibrate([75, 20, 40, 20, 25]);
+    this.transferService(this.player_entity.entity_id);
   }
   private artworkStyle() {
     const img: string =
-      this.player_entity?.attributes?.entity_picture_local ?? ""
+      this.player_entity?.attributes?.entity_picture_local ?? "";
     if (!testMixedContent(img)) {
-      return getFallbackBackgroundImage(this.hass, Thumbnail.HEADPHONES)
+      return getFallbackBackgroundImage(this.hass, Thumbnail.HEADPHONES);
     }
-    return backgroundImageFallback(this.hass, img, Thumbnail.HEADPHONES)
+    return backgroundImageFallback(this.hass, img, Thumbnail.HEADPHONES);
   }
   private renderThumbnail() {
     return html`
       <span class="thumbnail" slot="start" style="${this.artworkStyle()}">
       </span>
-    `
+    `;
   }
   private _calculateTitleWidth() {
-    let button_ct = 0
-    const hide = this.config.hide
+    let button_ct = 0;
+    const hide = this.config.hide;
     if (
       !hide.join_button &&
       this.player_entity.attributes?.group_members &&
       this.allowJoin
     ) {
-      button_ct += 1
+      button_ct += 1;
     }
     if (!hide.transfer_button) {
-      button_ct += 1
+      button_ct += 1;
     }
     if (this.selected || hide.action_buttons) {
-      return `100%;`
+      return `100%;`;
     }
-    const gap_ct = button_ct - 1
-    return `calc(100% - ( (32px * ${button_ct.toString()}) + (8px * ${gap_ct.toString()}) + 16px));`
+    const gap_ct = button_ct - 1;
+    return `calc(100% - ( (32px * ${button_ct.toString()}) + (8px * ${gap_ct.toString()}) + 16px));`;
   }
   private renderTitle() {
-    let title = this.playerName
+    let title = this.playerName;
     if (!title.length) {
-      title = this.player_entity.attributes?.friendly_name ?? "Media Player"
+      title = this.player_entity.attributes?.friendly_name ?? "Media Player";
     }
     const active_style =
       isActive(this.hass, this.player_entity, this._entityConfig) &&
       this.player_entity.state == "playing"
         ? `audio-bars`
-        : `audio-bars-inactive`
+        : `audio-bars-inactive`;
     const active_expressive_style = this.useExpressive
       ? `audio-bars-expressive`
-      : `audio-bars-normal`
+      : `audio-bars-normal`;
     return html`
       <span slot="headline">
         <div
@@ -172,13 +172,13 @@ class PlayerRow extends LitElement {
         </div>
       </span>
       <span slot="supporting-text"> </span>
-    `
+    `;
   }
 
   /* eslint-disable @typescript-eslint/unbound-method */
   protected renderTransferButton() {
     if (this.hide.transfer_button) {
-      return html``
+      return html``;
     }
     return html`
       <ha-button
@@ -197,14 +197,14 @@ class PlayerRow extends LitElement {
             : ``}"
         ></ha-svg-icon>
       </ha-button>
-    `
+    `;
   }
   protected renderJoinButon() {
     if (this.hide.join_button) {
-      return html``
+      return html``;
     }
     if (!this.player_entity.attributes?.group_members || !this.allowJoin) {
-      return
+      return;
     }
     return html`
       <ha-button
@@ -223,7 +223,7 @@ class PlayerRow extends LitElement {
             : ``}"
         ></ha-svg-icon>
       </ha-button>
-    `
+    `;
   }
   protected renderActionButtons() {
     if (!this.selected && !this.hide.action_buttons) {
@@ -232,18 +232,18 @@ class PlayerRow extends LitElement {
           slot="end"
           class="button-group"
           @click=${(ev: Event) => {
-            ev.stopPropagation()
+            ev.stopPropagation();
           }}
         >
           ${this.renderJoinButon()} ${this.renderTransferButton()}
         </span>
-      `
+      `;
     }
-    return html``
+    return html``;
   }
   render() {
-    const active = this.selected ? `-active` : ``
-    const expressive = this.useExpressive ? `button-expressive` : ``
+    const active = this.selected ? `-active` : ``;
+    const expressive = this.useExpressive ? `button-expressive` : ``;
     return html`
       <ha-md-list-item
         class="button${active} ${expressive}${active}"
@@ -254,12 +254,12 @@ class PlayerRow extends LitElement {
         ${this.renderActionButtons()}
       </ha-md-list-item>
       <div class="divider"></div>
-    `
+    `;
   }
   /* eslint-enable @typescript-eslint/unbound-method */
   static get styles(): CSSResultGroup {
-    return styles
+    return styles;
   }
 }
 
-customElements.define("mass-player-player-row", PlayerRow)
+customElements.define("mass-player-player-row", PlayerRow);

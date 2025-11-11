@@ -1,4 +1,4 @@
-import { css } from "lit"
+import { css } from "lit";
 
 export default css`
   ha-control-slider {
@@ -22,4 +22,4 @@ export default css`
     padding-left: 2em;
     padding-right: 2em;
   }
-`
+`;

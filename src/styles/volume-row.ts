@@ -1,4 +1,4 @@
-import { css } from "lit"
+import { css } from "lit";
 
 export default css`
   .button-min {
@@ -78,4 +78,4 @@ export default css`
     --control-slider-color: var(--md-sys-color-primary);
     box-shadow: var(--md-sys-elevation-level1);
   }
-`
+`;

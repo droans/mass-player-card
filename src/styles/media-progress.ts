@@ -1,4 +1,4 @@
-import { css } from "lit"
+import { css } from "lit";
 
 // Styles belonging to the card
 // https://lit.dev/docs/components/styles/
@@ -83,4 +83,4 @@ export default css`
 
   .wavy {
   }
-`
+`;

@@ -1,4 +1,4 @@
-import { css } from "lit"
+import { css } from "lit";
 
 export default css`
   .end {
@@ -44,4 +44,4 @@ export default css`
     top: 0.5em;
     z-index: 1;
   }
-`
+`;

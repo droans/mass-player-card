@@ -1,6 +1,6 @@
-import { ContextProvider } from "@lit/context"
-import { Config } from "../config/config"
-import { ExtendedHass } from "../const/common"
+import { ContextProvider } from "@lit/context";
+import { Config } from "../config/config";
+import { ExtendedHass } from "../const/common";
 import {
   actionsControllerContext,
   activePlayerControllerContext,
@@ -8,49 +8,49 @@ import {
   browserControllerContext,
   hassExt,
   queueControllerContext,
-} from "../const/context"
-import { MassCardConfigController } from "./config"
-import { ActivePlayerController } from "./active-player"
-import { Sections } from "../const/card"
-import { ActionsController } from "./actions"
-import { QueueController } from "./queue.js"
-import { MediaBrowserController } from "./browser.js"
-import { jsonMatch } from "../utils/util.js"
-import { getTranslation } from "../utils/translations.js"
+} from "../const/context";
+import { MassCardConfigController } from "./config";
+import { ActivePlayerController } from "./active-player";
+import { Sections } from "../const/card";
+import { ActionsController } from "./actions";
+import { QueueController } from "./queue.js";
+import { MediaBrowserController } from "./browser.js";
+import { jsonMatch } from "../utils/util.js";
+import { getTranslation } from "../utils/translations.js";
 
 export class MassCardController {
-  private _hass = new ContextProvider(document.body, { context: hassExt })
-  private _host!: HTMLElement
+  private _hass = new ContextProvider(document.body, { context: hassExt });
+  private _host!: HTMLElement;
 
-  private configController: MassCardConfigController
+  private configController: MassCardConfigController;
   private activePlayerController!: ContextProvider<
     typeof activePlayerControllerContext
-  >
-  private actionsController!: ContextProvider<typeof actionsControllerContext>
-  private queueController!: ContextProvider<typeof queueControllerContext>
-  private browserController!: ContextProvider<typeof browserControllerContext>
-  private _activeSection!: ContextProvider<typeof activeSectionContext>
-  private _connected = true
-  private _reconnected = false
+  >;
+  private actionsController!: ContextProvider<typeof actionsControllerContext>;
+  private queueController!: ContextProvider<typeof queueControllerContext>;
+  private browserController!: ContextProvider<typeof browserControllerContext>;
+  private _activeSection!: ContextProvider<typeof activeSectionContext>;
+  private _connected = true;
+  private _reconnected = false;
 
   constructor(host: HTMLElement) {
-    this.host = host
-    this.configController = new MassCardConfigController(host)
+    this.host = host;
+    this.configController = new MassCardConfigController(host);
     this._activeSection = new ContextProvider(this.host, {
       context: activeSectionContext,
-    })
+    });
   }
   public set host(host: HTMLElement) {
-    this._host = host
+    this._host = host;
   }
   public get host() {
-    return this._host
+    return this._host;
   }
   private setupIfReady() {
-    this._setupActiveController()
-    this._setupActionsController()
-    this._setupQueueController()
-    this._setupBrowserController()
+    this._setupActiveController();
+    this._setupActionsController();
+    this._setupQueueController();
+    this._setupBrowserController();
   }
   private _setupActiveController() {
     if (this.hass && this.config && !this.activePlayerController) {
@@ -58,26 +58,30 @@ export class MassCardController {
         this.hass,
         this.config,
         this.host,
-      )
+      );
       this.activePlayerController = new ContextProvider(this.host, {
         context: activePlayerControllerContext,
-      })
-      this.activePlayerController.setValue(active_controller)
+      });
+      this.activePlayerController.setValue(active_controller);
     }
   }
   private _setupActionsController() {
-    const is_ready = !!(this.activePlayerController && this.config && this.hass)
+    const is_ready = !!(
+      this.activePlayerController &&
+      this.config &&
+      this.hass
+    );
     if (!this.actionsController && is_ready) {
       this.actionsController = new ContextProvider(this.host, {
         context: actionsControllerContext,
-      })
+      });
       this.actionsController.setValue(
         new ActionsController(
           this.host,
           this.hass,
           this.ActivePlayer.activeEntityConfig,
         ),
-      )
+      );
     }
   }
   private _setupQueueController() {
@@ -89,7 +93,7 @@ export class MassCardController {
     ) {
       this.queueController = new ContextProvider(this.host, {
         context: queueControllerContext,
-      })
+      });
       this.queueController.setValue(
         new QueueController(
           this.hass,
@@ -97,7 +101,7 @@ export class MassCardController {
           this.config,
           this.host,
         ),
-      )
+      );
     }
   }
   private _setupBrowserController() {
@@ -109,7 +113,7 @@ export class MassCardController {
     ) {
       this.browserController = new ContextProvider(this.host, {
         context: browserControllerContext,
-      })
+      });
       this.browserController.setValue(
         new MediaBrowserController(
           this.hass,
@@ -117,96 +121,96 @@ export class MassCardController {
           this.activeEntityId,
           this.host,
         ),
-      )
+      );
     }
   }
 
   public set hass(hass: ExtendedHass) {
-    this._hass.value = hass
-    this.setupIfReady()
-    this.ActivePlayer.hass = hass
-    this.Actions.hass = hass
-    this.Queue.hass = hass
+    this._hass.value = hass;
+    this.setupIfReady();
+    this.ActivePlayer.hass = hass;
+    this.Actions.hass = hass;
+    this.Queue.hass = hass;
     if (this._reconnected) {
-      this._reconnected = false
-      this.hassReconnected()
+      this._reconnected = false;
+      this.hassReconnected();
     }
   }
   public get hass() {
-    return this._hass.value
+    return this._hass.value;
   }
 
   public set config(config: Config) {
     if (jsonMatch(this.configController.config, config)) {
-      return
+      return;
     }
-    this.configController.config = config
-    this.setupIfReady()
+    this.configController.config = config;
+    this.setupIfReady();
   }
   public get config() {
-    return this.configController.config
+    return this.configController.config;
   }
   public get Config() {
-    return this.configController
+    return this.configController;
   }
   public set activeEntityId(entity: string) {
-    this.ActivePlayer.setActivePlayer(entity)
-    this.Actions.setEntityConfig(this.ActivePlayer.activeEntityConfig)
-    this.Queue.setActiveEntityId(entity)
-    this.Browser.activeEntityId = entity
+    this.ActivePlayer.setActivePlayer(entity);
+    this.Actions.setEntityConfig(this.ActivePlayer.activeEntityConfig);
+    this.Queue.setActiveEntityId(entity);
+    this.Browser.activeEntityId = entity;
   }
   public get activeEntityId() {
-    return this.ActivePlayer.activeEntityID
+    return this.ActivePlayer.activeEntityID;
   }
   public get activeEntity() {
-    return this.ActivePlayer.activeMediaPlayer
+    return this.ActivePlayer.activeMediaPlayer;
   }
   public get volumeEntity() {
-    return this.ActivePlayer.volumeMediaPlayer
+    return this.ActivePlayer.volumeMediaPlayer;
   }
   public set activeSection(section: Sections) {
     if (section != this.activeSection) {
-      this._activeSection.setValue(section)
-      const ev = new CustomEvent("section-changed", { detail: section })
-      this.host.dispatchEvent(ev)
+      this._activeSection.setValue(section);
+      const ev = new CustomEvent("section-changed", { detail: section });
+      this.host.dispatchEvent(ev);
     }
   }
   public get activeSection() {
-    return this._activeSection.value
+    return this._activeSection.value;
   }
   public get ActivePlayer() {
-    return this.activePlayerController.value
+    return this.activePlayerController.value;
   }
   public get Actions() {
-    return this.actionsController.value
+    return this.actionsController.value;
   }
 
   public get Queue() {
-    return this.queueController.value
+    return this.queueController.value;
   }
 
   public get Browser() {
-    return this.browserController.value
+    return this.browserController.value;
   }
   public disconnected() {
-    this.ActivePlayer.disconnected()
-    this.Actions.disconnected()
-    this.Queue.disconnected()
-    this.Browser.disconnected()
-    this._connected = false
+    this.ActivePlayer.disconnected();
+    this.Actions.disconnected();
+    this.Queue.disconnected();
+    this.Browser.disconnected();
+    this._connected = false;
   }
   public connected() {
-    this._connected = true
-    this._reconnected = true
+    this._connected = true;
+    this._reconnected = true;
   }
   private hassReconnected() {
-    this.ActivePlayer.reconnected(this.hass)
-    this.Actions.reconnected(this.hass)
-    this.Queue.reconnected(this.hass)
-    this.Browser.reconnected(this.hass)
+    this.ActivePlayer.reconnected(this.hass);
+    this.Actions.reconnected(this.hass);
+    this.Queue.reconnected(this.hass);
+    this.Browser.reconnected(this.hass);
   }
   public translate(key: string) {
     // eslint-disable-next-line @typescript-eslint/no-unsafe-return
-    return getTranslation(key, this.hass)
+    return getTranslation(key, this.hass);
   }
 }

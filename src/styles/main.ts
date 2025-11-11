@@ -1,4 +1,4 @@
-import { css } from "lit"
+import { css } from "lit";
 export default css`
   :host {
     --mass-player-card-height: var(--mass-player-card-section-height, 40em);
@@ -206,4 +206,4 @@ export default css`
   .section-hidden {
     display: none;
   }
-`
+`;
