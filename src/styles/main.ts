@@ -64,6 +64,7 @@ export default css`
   }
 
   ha-card {
+    max-width: var(--mass-player-card-max-width, 100%);
     font-family: 'Roboto Flex', var(--ha-font-family-body), 'Roboto', !important;
     border-radius: var(--default-border-radius);
   }
