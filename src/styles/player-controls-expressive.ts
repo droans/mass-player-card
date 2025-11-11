@@ -1,11 +1,15 @@
-import { css } from 'lit';
+import { css } from "lit"
 
 // Styles belonging to the card
 // https://lit.dev/docs/components/styles/
 export default css`
   :host {
-    --lower-button-background-color: var(--md-sys-color-secondary-container) !important;
-    --lower-button-background-color-active: var(--md-sys-color-secondary) !important;
+    --lower-button-background-color: var(
+      --md-sys-color-secondary-container
+    ) !important;
+    --lower-button-background-color-active: var(
+      --md-sys-color-secondary
+    ) !important;
 
     --lower-button-icon-color: var(--md-sys-color-on-secondary-container);
     --lower-button-icon-color-active: var(--md-sys-color-on-secondary);
@@ -15,7 +19,10 @@ export default css`
     --lower-button-end-border-radius: 8px 24px 24px 8px;
     --lower-button-only-border-radius: 24px 24px 24px 24px;
 
-    --next-prev-background-color: var(--md-sys-color-secondary-container, var(--inherited-background-color,var(--ha-button-background-color))) !important;
+    --next-prev-background-color: var(
+      --md-sys-color-secondary-container,
+      var(--inherited-background-color, var(--ha-button-background-color))
+    ) !important;
     --next-prev-icon-color: var(--md-sys-color-on-surface-variant);
 
     --next-prev-button-height: var(--play-pause-icon-height);
@@ -26,8 +33,14 @@ export default css`
 
     --play-pause-icon-height: 64px;
 
-    --play-background-color: var(--md-sys-color-primary, var(--inherited-background-color,var(--ha-button-background-color))) !important;
-    --pause-background-color: var(--md-sys-color-secondary-container, var(--inherited-background-color,var(--ha-button-background-color))) !important;
+    --play-background-color: var(
+      --md-sys-color-primary,
+      var(--inherited-background-color, var(--ha-button-background-color))
+    ) !important;
+    --pause-background-color: var(
+      --md-sys-color-secondary-container,
+      var(--inherited-background-color, var(--ha-button-background-color))
+    ) !important;
 
     --play-icon-color: var(--md-sys-color-on-primary);
     --pause-icon-color: var(--md-sys-color-on-secondary-container);
@@ -44,7 +57,7 @@ export default css`
     box-shadow: var(--md-sys-elevation-level1);
   }
   .button-lower::part(label) {
-    color:  var(--lower-button-icon-color);
+    color: var(--lower-button-icon-color);
     --inherited-text-color: var(--lower-button-icon-color);
   }
 
@@ -57,14 +70,16 @@ export default css`
     border-radius: var(--ha-button-border-radius);
   }
   .button-lower:only-of-type::part(base) {
-    --ha-button-border-radius: var(--lower-button-only-border-radius) !important;
+    --ha-button-border-radius: var(
+      --lower-button-only-border-radius
+    ) !important;
     border-radius: var(--ha-button-border-radius);
   }
 
   .button-lower-active::part(base) {
     --wa-color-fill-normal: var(--lower-button-background-color-active);
     --inherited-background-color: var(--lower-button-background-color-active);
-    --ha-button-border-radius: var(--lower-button-border-radius);
+    --ha-button-border-radius: 20px;
   }
   .button-lower-active::part(label) {
     color: var(--lower-button-icon-color-active);
@@ -114,10 +129,10 @@ export default css`
   .icons-lower {
     height: var(--icon-height);
     width: var(--icon-height);
-   color: var(--lower-button-icon-color);
+    color: var(--lower-button-icon-color);
   }
   .icons-lower-active {
-   color: var(--lower-button-icon-color-active);
+    color: var(--lower-button-icon-color-active);
   }
 
   .icons-next-previous {
@@ -143,7 +158,9 @@ export default css`
     place-self: center;
     padding: 6px;
     border-radius: 24px;
-    background-color: rgba(from var(--ha-card-background) r g b / 0.4) !important;
+    background-color: rgba(
+      from var(--ha-card-background) r g b / 0.4
+    ) !important;
   }
   #player-controls-upper {
     place-self: center;
@@ -171,4 +188,4 @@ export default css`
       --icon-height: 24px;
     }
   }
-`;
+`

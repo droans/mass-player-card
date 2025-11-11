@@ -1,4 +1,4 @@
-import { css } from "lit";
+import { css } from "lit"
 
 export default css`
   .end {
@@ -22,7 +22,7 @@ export default css`
   }
   .header-expressive {
     background-color: var(--md-sys-primary-container);
-    border-radius: 20px 20px 0px 0px
+    border-radius: 20px 20px 0px 0px;
   }
 
   .label {
@@ -44,5 +44,4 @@ export default css`
     top: 0.5em;
     z-index: 1;
   }
-
 `

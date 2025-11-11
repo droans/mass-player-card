@@ -1,13 +1,13 @@
-import { css } from 'lit';
+import { css } from "lit"
 
 // Styles belonging to the card
 // https://lit.dev/docs/components/styles/
 export default css`
   *[selected] {
-    color: var(--accent-color)
+    color: var(--accent-color);
   }
   *[hide] {
-  display: none;
+    display: none;
   }
 
   .button-min {
@@ -54,7 +54,7 @@ export default css`
     overflow-y: scroll;
     -ms-overflow-style: none;
     scrollbar-width: none;
-    border-radius: var(--queue-border-radius,12px);
+    border-radius: var(--queue-border-radius, 12px);
   }
   .list-expressive {
     background-color: var(--md-sys-color-background);
@@ -88,4 +88,4 @@ export default css`
     justify-content: center;
     padding: 0.5rem;
   }
-`;
+`

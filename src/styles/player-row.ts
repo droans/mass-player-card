@@ -1,4 +1,4 @@
-import { css } from 'lit';
+import { css } from "lit"
 
 // Styles belonging to the card
 // https://lit.dev/docs/components/styles/
@@ -17,6 +17,7 @@ export default css`
     height: 30px;
     width: 30px;
     border-radius: 25%;
+    --wa-form-control-padding-inline: 0px;
   }
 
   .action-button-expressive::part(base) {
@@ -27,11 +28,13 @@ export default css`
   }
   .action-button-expressive::part(base):hover {
     background-color: var(--expressive-row-button-color-hover) !important;
-    --inherited-background-color: var(--expressive-row-button-color-hover) !important;
+    --inherited-background-color: var(
+      --expressive-row-button-color-hover
+    ) !important;
     box-shadow: var(--md-sys-elevation-level1);
     --ha-button-border-radius: var(--button-small-border-radius) !important;
   }
-  
+
   .audio-bars {
     width: 0.55rem;
     position: absolute;
@@ -96,7 +99,10 @@ export default css`
   .button-active {
     margin: 0.15rem;
     border-radius: var(--player-row-border-radius);
-    background-color: var(--media-row-active-background-color, var(--md-sys-color-secondary-container));
+    background-color: var(
+      --media-row-active-background-color,
+      var(--md-sys-color-secondary-container)
+    );
     height: var(--media-row-height);
     padding-inline-start: 0px;
     padding-inline-end: 8px;
@@ -142,7 +148,7 @@ export default css`
     color: var(--expressive-row-button-color-text);
   }
   .svg-action-button-expressive:hover {
-    color: var(--expressive-row-button-color-text-hover)
+    color: var(--expressive-row-button-color-text-hover);
   }
 
   .thumbnail {
@@ -192,4 +198,4 @@ export default css`
       background-color: var(--max-color);
     }
   }
-`;
+`

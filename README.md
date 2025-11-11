@@ -12,7 +12,7 @@
 
 [release-shield]: https://img.shields.io/github/release/droans/mass-player-card.svg?style=for-the-badge
 [release]: https://github.com/droans/mass-player-card/releases
-[license-shield]: https://img.shields.io/github/license/droans/mass-player-card.svg?style=for-the-badge
+[license-shield]: https://img.shields.io/github/license/droans/mass-player-card?style=for-the-badge
 [license]: LICENSE
 [hacs-badge-shield]: https://img.shields.io/badge/HACS-Default-blue.svg?style=for-the-badge
 [hacs-badge]: https://github.com/hacs/default
@@ -49,6 +49,7 @@ A Home Assistant media player card built for Music Assistant players.
   - [Media Browser Config](#media-browser-config)
   - [Media Browser Hidden Elements Config](#media-browser-hidden-elements-config)
   - [Favorites Config](#favorites-config)
+  - [Recommendations Config](#recommendations-config)
   - [Sections Config](#sections-config)
   - [Section Item Config](#section-item-config)
   - [Players Config](#players-config)

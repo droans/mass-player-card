@@ -3,7 +3,7 @@
   "description": "Custom Music Assistant Player Card for Home Assistant",
   "repository": "https://github.com/droans/mass-player-card",
   "author": "Michael Carroll",
-  "version": "2.1.0-b7",
+  "version": "2.2.0-b9",
   "module": "mass-player-card.js",
   "keywords": [
     "home-assistant",
@@ -45,6 +45,7 @@
     "eslint-plugin-jest": "28.11.0",
     "eslint-plugin-lit": "^2.1.1",
     "eslint-plugin-wc": "^3.0.1",
+    "prettier": "^3.6.2",
     "rollup": "^4.0.0",
     "rollup-plugin-commonjs": "^10.1.0",
     "rollup-plugin-serve": "^3.0.0",
@@ -55,9 +56,23 @@
   "scripts": {
     "start": "rollup -c rollup.config.dev.js --watch",
     "build": "yarn rollup",
+    "prettier": "prettier ./src --write",
     "lint": "eslint src/*.ts --max-warnings 0 --no-warn-ignored",
     "rollup": "rollup -c",
+    "full": "echo 'Generating TOC' && yarn docs && echo 'Running Prettier' && yarn prettier && echo 'Linting' && yarn lint",
     "docs": "doctoc ./README.md --maxlevel 2"
   },
-  "packageManager": "yarn@4.9.1"
+  "packageManager": "yarn@4.9.1",
+  "prettier": {
+    "printWidth": 80,
+    "tabWidth": 2,
+    "useTabs": false,
+    "semi": false,
+    "singleQuote": false,
+    "trailingComma": "all",
+    "bracketSpacing": true,
+    "bracketSameLine": false,
+    "arrowParens": "always",
+    "endOfLine": "lf"
+  }
 }
