@@ -1,4 +1,4 @@
-import { css } from "lit"
+import { css } from "lit";
 
 // Styles belonging to the card
 // https://lit.dev/docs/components/styles/
@@ -46,4 +46,4 @@ export default css`
   .tabbed-expressive {
     --tabbed-background-color: var(--md-sys-color-primary-container) !important;
   }
-`
+`;

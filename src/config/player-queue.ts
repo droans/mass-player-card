@@ -1,23 +1,23 @@
-import { hiddenElementsConfigItem } from "../utils/config.js"
-import { Config } from "./config"
+import { hiddenElementsConfigItem } from "../utils/config.js";
+import { Config } from "./config";
 
 export interface QueueConfig {
-  enabled: boolean
-  limit_before: number
-  limit_after: number
-  show_album_covers: boolean
-  show_artist_names: boolean
-  hide: PlayerQueueHiddenElementsConfig
+  enabled: boolean;
+  limit_before: number;
+  limit_after: number;
+  show_album_covers: boolean;
+  show_artist_names: boolean;
+  hide: PlayerQueueHiddenElementsConfig;
 }
 
 export interface PlayerQueueHiddenElementsConfig {
-  action_buttons: boolean
-  move_down_button: boolean
-  move_next_button: boolean
-  move_up_button: boolean
-  remove_button: boolean
-  album_covers: boolean
-  artist_names: boolean
+  action_buttons: boolean;
+  move_down_button: boolean;
+  move_next_button: boolean;
+  move_up_button: boolean;
+  remove_button: boolean;
+  album_covers: boolean;
+  artist_names: boolean;
 }
 
 export const DEFAULT_PLAYER_QUEUE_HIDDEN_ELEMENTS_CONFIG: PlayerQueueHiddenElementsConfig =
@@ -29,7 +29,7 @@ export const DEFAULT_PLAYER_QUEUE_HIDDEN_ELEMENTS_CONFIG: PlayerQueueHiddenEleme
     remove_button: false,
     album_covers: false,
     artist_names: false,
-  }
+  };
 export const DEFAULT_QUEUE_CONFIG: QueueConfig = {
   enabled: true,
   limit_before: 5,
@@ -37,7 +37,7 @@ export const DEFAULT_QUEUE_CONFIG: QueueConfig = {
   show_album_covers: true,
   show_artist_names: true,
   hide: DEFAULT_PLAYER_QUEUE_HIDDEN_ELEMENTS_CONFIG,
-}
+};
 
 const PLAYER_QUEUE_HIDDEN_ITEMS = [
   "action_buttons",
@@ -47,7 +47,7 @@ const PLAYER_QUEUE_HIDDEN_ITEMS = [
   "remove_button",
   "album_covers",
   "artist_names",
-]
+];
 export function queueConfigForm() {
   return [
     { name: "enabled", selector: { boolean: {} }, default: true },
@@ -68,7 +68,7 @@ export function queueConfigForm() {
       ],
     },
     hiddenElementsConfigItem(PLAYER_QUEUE_HIDDEN_ITEMS),
-  ]
+  ];
 }
 
 export enum QueueConfigErrors {
@@ -80,28 +80,28 @@ export enum QueueConfigErrors {
 }
 
 function processHiddenElementsConfig(config: QueueConfig): QueueConfig {
-  const hidden_elements_config = config.hide
+  const hidden_elements_config = config.hide;
   return {
     ...config,
     hide: {
       ...DEFAULT_PLAYER_QUEUE_HIDDEN_ELEMENTS_CONFIG,
       ...hidden_elements_config,
     },
-  }
+  };
 }
 function processDefaults(config: QueueConfig): QueueConfig {
   return {
     ...DEFAULT_QUEUE_CONFIG,
     ...config,
-  }
+  };
 }
 
 export function processQueueConfig(config: Config): Config {
-  let queue_config = config.queue
-  queue_config = processDefaults(queue_config)
-  queue_config = processHiddenElementsConfig(queue_config)
+  let queue_config = config.queue;
+  queue_config = processDefaults(queue_config);
+  queue_config = processHiddenElementsConfig(queue_config);
   return {
     ...config,
     queue: queue_config,
-  }
+  };
 }

@@ -1,4 +1,4 @@
-import { css } from "lit"
+import { css } from "lit";
 
 // Styles belonging to the card
 // https://lit.dev/docs/components/styles/
@@ -124,4 +124,4 @@ export default css`
     border-radius: 0px 0px var(--default-border-radius)
       var(--default-border-radius);
   }
-`
+`;

@@ -10,4 +10,4 @@ export const DEFAULT_SECTION_PRIORITY = [
   Sections.QUEUE,
   Sections.PLAYERS,
   Sections.MEDIA_BROWSER,
-]
+];
