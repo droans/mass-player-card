@@ -1,120 +1,111 @@
-import { consume } from "@lit/context";
-import {
-  CSSResultGroup,
-  LitElement,
-  PropertyValues,
-  TemplateResult
-} from "lit";
-import { query, state } from "lit/decorators.js";
-import {
-  html,
-  literal
-} from "lit/static-html.js";
+import { consume } from "@lit/context"
+import { CSSResultGroup, LitElement, PropertyValues, TemplateResult } from "lit"
+import { query, state } from "lit/decorators.js"
+import { html, literal } from "lit/static-html.js"
 
-import './media-card'
+import "./media-card"
 
 import {
   CardEnqueueService,
   CardSelectedService,
-  EnqueueOptions
-} from "../const/actions";
-import { ExtendedHass } from "../const/common";
-import { activeMediaBrowserCardsContext, hassExt, mediaBrowserConfigContext } from "../const/context";
+  EnqueueOptions,
+} from "../const/actions"
+import { ExtendedHass } from "../const/common"
 import {
-  MediaCardData,
-  MediaCardItem
-} from "../const/media-browser";
+  activeMediaBrowserCardsContext,
+  hassExt,
+  mediaBrowserConfigContext,
+} from "../const/context"
+import { MediaCardData, MediaCardItem } from "../const/media-browser"
 
-import styles from '../styles/media-browser-cards';
-import { MediaBrowserConfig } from "../config/media-browser.js";
-import { jsonMatch } from "../utils/util.js";
+import styles from "../styles/media-browser-cards"
+import { MediaBrowserConfig } from "../config/media-browser.js"
+import { jsonMatch } from "../utils/util.js"
 
 class MediaBrowserCards extends LitElement {
-  @state() public code!: TemplateResult;
+  @state() public code!: TemplateResult
 
-  @consume({context: hassExt, subscribe: true})
-  public hass!: ExtendedHass;
+  @consume({ context: hassExt, subscribe: true })
+  public hass!: ExtendedHass
 
-  @query('.icons') private _iconsElement!: HTMLDivElement;
+  @query(".icons") private _iconsElement!: HTMLDivElement
 
-  private _browserConfig!: MediaBrowserConfig;
+  private _browserConfig!: MediaBrowserConfig
 
-  public onEnqueueAction!: CardEnqueueService;
-  public onSelectAction!: CardSelectedService;
-  private _items!: MediaCardItem[];
+  public onEnqueueAction!: CardEnqueueService
+  public onSelectAction!: CardSelectedService
+  private _items!: MediaCardItem[]
 
-  @consume({ context: mediaBrowserConfigContext, subscribe: true})
+  @consume({ context: mediaBrowserConfigContext, subscribe: true })
   public set browserConfig(conf: MediaBrowserConfig) {
     if (!jsonMatch(this._browserConfig, conf)) {
       this._browserConfig = conf
       if (this.items) {
-        this.generateCode();
+        this.generateCode()
       }
     }
   }
   public get browserConfig() {
-    return this._browserConfig;
+    return this._browserConfig
   }
 
-  @consume({ context: activeMediaBrowserCardsContext, subscribe: true})
+  @consume({ context: activeMediaBrowserCardsContext, subscribe: true })
   public set items(items: MediaCardItem[]) {
     if (!items?.length) {
-      return;
+      return
     }
-    if (!jsonMatch(this._items, items)){
-      this._items = items;
+    if (!jsonMatch(this._items, items)) {
+      this._items = items
       if (this.browserConfig) {
-        this.generateCode();
+        this.generateCode()
       }
     }
   }
   public get items() {
-    return this._items;
+    return this._items
   }
 
   private onItemSelected = (data: MediaCardData) => {
-    this.resetScroll();
-    this.onSelectAction(data);
+    this.resetScroll()
+    this.onSelectAction(data)
   }
   private onEnqueue = (data: MediaCardData, enqueue: EnqueueOptions) => {
-    this.onEnqueueAction(data, enqueue);
+    this.onEnqueueAction(data, enqueue)
   }
   public resetScroll() {
-    this._iconsElement.scrollTop = 0;
+    this._iconsElement.scrollTop = 0
   }
   private generateCode() {
-    const result = this.items.map(
-      (item) => {
-        // eslint-disable-next-line @typescript-eslint/no-unsafe-member-access
-        const queueable = (item.data?.media_content_id?.length > 0 && item.data?.media_content_type?.length > 0) ? literal`queueable` : literal``;
-        const width = ((1 / this.browserConfig.columns) * 100) - 2
-        return html`
-          <mass-media-card
-            style="max-width: ${width.toString()}%"
-            .config=${item}
-            .onSelectAction=${this.onItemSelected}
-            .onEnqueueAction=${this.onEnqueue}
-            ${queueable}
-          >
-          </mass-media-card>
-        `
-      }
-    )
-    this.code = html`
-        <div class="icons wa-grid">
-          ${result}
-        </div>
-    `
+    const result = this.items.map((item) => {
+      // eslint-disable-next-line @typescript-eslint/no-unsafe-member-access
+      const queueable =
+        item.data?.media_content_id?.length > 0 &&
+        item.data?.media_content_type?.length > 0
+          ? literal`queueable`
+          : literal``
+      const width = (1 / this.browserConfig.columns) * 100 - 2
+      return html`
+        <mass-media-card
+          style="max-width: ${width.toString()}%"
+          .config=${item}
+          .onSelectAction=${this.onItemSelected}
+          .onEnqueueAction=${this.onEnqueue}
+          ${queueable}
+        >
+        </mass-media-card>
+      `
+    })
+    this.code = html` <div class="icons wa-grid">${result}</div> `
   }
 
   protected render() {
-    return this.code;
+    return this.code
   }
   protected shouldUpdate(_changedProperties: PropertyValues): boolean {
-    return _changedProperties.size > 0;
+    return _changedProperties.size > 0
   }
   static get styles(): CSSResultGroup {
-    return styles;
+    return styles
   }
 }
-customElements.define('mass-browser-cards', MediaBrowserCards);
+customElements.define("mass-browser-cards", MediaBrowserCards)

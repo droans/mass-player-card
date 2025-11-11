@@ -1,9 +1,10 @@
-import { css } from 'lit';
+import { css } from "lit"
 
 // Styles belonging to the card
 // https://lit.dev/docs/components/styles/
 export default css`
-  .button-min, filter-menu::part(menu-button) {
+  .button-min,
+  filter-menu::part(menu-button) {
     height: 35px;
     width: 35px;
     --wa-color-fill-quiet: rgba(from var(--md-sys-color-primary) r g b / 0.1);
@@ -16,13 +17,13 @@ export default css`
   }
   .button-expressive::part(base) {
     background-color: var(--md-sys-color-secondary-container);
-
   }
-  .button-expressive::part(base), .filter-menu-expressive::part(menu-select-menu) {
+  .button-expressive::part(base),
+  .filter-menu-expressive::part(menu-select-menu) {
     box-shadow: var(--md-sys-elevation-level1);
     border-radius: var(--button-small-border-radius) !important;
   }
-  
+
   #container {
     box-shadow: unset;
     height: var(--mass-player-card-height);
@@ -32,7 +33,6 @@ export default css`
     background-color: var(--expressive-color-container);
   }
   #filter-menu {
-
   }
   #filter-menu::part(menu-button) {
   }
@@ -57,7 +57,9 @@ export default css`
     left: 2.5px;
   }
   #filter-menu-expressive::part(menu-select-menu) {
-    --control-select-menu-background-color: var(--md-sys-color-secondary-container);
+    --control-select-menu-background-color: var(
+      --md-sys-color-secondary-container
+    );
   }
   #filter-menu-expressive::part(menu-svg) {
     color: var(--md-sys-color-on-background);
@@ -82,7 +84,7 @@ export default css`
     height: calc(100% - 3em);
     border-radius: var(--expressive-border-radius-container);
   }
-  
+
   #search::part(end) {
     width: calc(100% - 3em - 40px);
   }
@@ -135,10 +137,9 @@ export default css`
     height: 30px;
     width: 30px;
   }
-  
 
   #title {
     text-indent: var(--title-indent);
     text-transform: capitalize;
   }
-`;
+`

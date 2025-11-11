@@ -1,4 +1,4 @@
-import { css } from 'lit';
+import { css } from "lit"
 
 // Styles belonging to the card
 // https://lit.dev/docs/components/styles/
@@ -7,7 +7,7 @@ export default css`
     position: absolute;
     bottom: 1.5em;
     right: -0.75em;
-    --ha-ripple-color: rgba(0,0,0,0);
+    --ha-ripple-color: rgba(0, 0, 0, 0);
   }
   mass-menu-button::part(menu-list-item) {
   }
@@ -22,7 +22,10 @@ export default css`
   }
   mass-menu-button::part(menu-svg) {
     color: var(--md-sys-color-primary);
-    background-color: var(--ha-card-background,var(--card-background-color,#fff));
+    background-color: var(
+      --ha-card-background,
+      var(--card-background-color, #fff)
+    );
     border-radius: 50%;
   }
 
@@ -64,13 +67,16 @@ export default css`
   }
   #enqueue-menu-control {
     --control-select-menu-background-color: unset;
-    --ha-ripple-color: rgba(0,0,0,0);
+    --ha-ripple-color: rgba(0, 0, 0, 0);
     --mdc-icon-size: 5em;
     --control-select-menu-height: 6em;
   }
   #enqueue-svg {
     color: var(--md-sys-color-primary);
-    background-color: var(--ha-card-background,var(--card-background-color,#fff));
+    background-color: var(
+      --ha-card-background,
+      var(--card-background-color, #fff)
+    );
     border-radius: 50%;
   }
 
@@ -88,7 +94,7 @@ export default css`
 
   .thumbnail {
     border-radius: var(--browser-card-border-radius);
-    overflow: hidden !important
+    overflow: hidden !important;
   }
   #thumbnail-div {
     background-size: 100%;
@@ -103,7 +109,7 @@ export default css`
     width: 100%;
     aspect-ratio: 1;
   }
-  
+
   #title-div {
     font-size: 1.2rem;
     text-transform: capitalize;
@@ -111,8 +117,11 @@ export default css`
     width: 100%;
     line-height: 160%;
     bottom: 0;
-    background-color: rgba(from var(--md-sys-color-primary-container) r g b / 0.9);
+    background-color: rgba(
+      from var(--md-sys-color-primary-container) r g b / 0.9
+    );
     color: var(--md-sys-color-on-primary-container);
-    border-radius: 0px 0px var(--default-border-radius) var(--default-border-radius);
+    border-radius: 0px 0px var(--default-border-radius)
+      var(--default-border-radius);
   }
-`;
+`

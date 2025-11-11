@@ -49,6 +49,7 @@ A Home Assistant media player card built for Music Assistant players.
   - [Media Browser Config](#media-browser-config)
   - [Media Browser Hidden Elements Config](#media-browser-hidden-elements-config)
   - [Favorites Config](#favorites-config)
+  - [Recommendations Config](#recommendations-config)
   - [Sections Config](#sections-config)
   - [Section Item Config](#section-item-config)
   - [Players Config](#players-config)

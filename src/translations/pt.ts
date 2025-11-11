@@ -17,7 +17,6 @@ export default {
   "browser.sections.radio": "Rádios",
   "browser.sections.track": "Faixas",
 
-
   "player.controls.power": "On/Off",
   "player.controls.shuffle": "Aleatório",
   "player.controls.repeat": "Repetir",
@@ -36,12 +35,11 @@ export default {
     "Por favor, não me deixes sozinho com os meus pensamentos.",
     "Espero que não tenhas zumbidos no ouvido.",
     "Porque não fazer algo produtivo?",
-    "Vamos usar a nossa imaginação."
-    ],
+    "Vamos usar a nossa imaginação.",
+  ],
   "player.title.inactive": "Não há nada activo!",
 
   "players.header": "Leitores",
 
   "queue.header": "Fila",
-  
 }

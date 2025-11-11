@@ -1,24 +1,25 @@
-import { hiddenElementsConfigItem } from "../utils/config.js";
-import { Config } from "./config";
+import { hiddenElementsConfigItem } from "../utils/config.js"
+import { Config } from "./config"
 
 export interface PlayerConfig {
-  enabled: boolean;
-  hide: PlayerHiddenElementsConfig;
-  layout: PlayerLayoutConfig;
+  enabled: boolean
+  hide: PlayerHiddenElementsConfig
+  layout: PlayerLayoutConfig
 }
 
 export interface PlayerControlsHiddenElementsConfig {
-  power: boolean,
-  repeat: boolean,
-  shuffle: boolean,
-  favorite: boolean,
+  power: boolean
+  repeat: boolean
+  shuffle: boolean
+  favorite: boolean
 }
 
-export interface PlayerHiddenElementsConfig extends PlayerControlsHiddenElementsConfig {
-  mute: boolean,
-  player_selector: boolean,
-  volume: boolean,
-  group_volume: boolean,
+export interface PlayerHiddenElementsConfig
+  extends PlayerControlsHiddenElementsConfig {
+  mute: boolean
+  player_selector: boolean
+  volume: boolean
+  group_volume: boolean
 }
 
 export interface PlayerLayoutConfig {
@@ -28,42 +29,42 @@ export interface PlayerLayoutConfig {
 }
 export enum PlayerControlsLayout {
   COMPACT = "compact",
-  SPACED = "spaced"
+  SPACED = "spaced",
 }
 export interface PlayerIcons {
-  shuffle: PlayerIcon;
-  previous: PlayerIcon;
-  play_pause: PlayerIcon;
-  next: PlayerIcon;
-  repeat: PlayerIcon;
+  shuffle: PlayerIcon
+  previous: PlayerIcon
+  play_pause: PlayerIcon
+  next: PlayerIcon
+  repeat: PlayerIcon
 }
 export interface PlayerIcon {
-  size: PlayerIconSize;
-  box_shadow: boolean;
-  label: boolean;
+  size: PlayerIconSize
+  box_shadow: boolean
+  label: boolean
 }
 export enum ArtworkSize {
   SMALL = "small",
   MEDIUM = "medium",
-  LARGE = "large"
+  LARGE = "large",
 }
 
 export enum PlayerIconSize {
   SMALL = "small",
-  LARGE = "large"
+  LARGE = "large",
 }
 
-
-export const DEFAULT_PLAYER_HIDDEN_ELEMENTS_CONFIG: PlayerHiddenElementsConfig = {
-  favorite: false,
-  mute: false,
-  player_selector: false,
-  power: false,
-  repeat: false,
-  shuffle: false,
-  volume: false,
-  group_volume: false,
-}
+export const DEFAULT_PLAYER_HIDDEN_ELEMENTS_CONFIG: PlayerHiddenElementsConfig =
+  {
+    favorite: false,
+    mute: false,
+    player_selector: false,
+    power: false,
+    repeat: false,
+    shuffle: false,
+    volume: false,
+    group_volume: false,
+  }
 export const DEFAULT_PLAYER_ICON_CONFIG: PlayerIcons = {
   shuffle: {
     size: PlayerIconSize.SMALL,
@@ -103,14 +104,14 @@ export const DEFAULT_PLAYER_CONFIG: PlayerConfig = {
 }
 
 const PLAYER_HIDDEN_ITEMS = [
-  'favorite',
-  'mute',
-  'player_selector',
-  'power',
-  'repeat',
-  'shuffle',
-  'volume',
-  'group_volume',
+  "favorite",
+  "mute",
+  "player_selector",
+  "power",
+  "repeat",
+  "shuffle",
+  "volume",
+  "group_volume",
 ]
 
 export function playerConfigForm() {
@@ -121,14 +122,14 @@ export function playerConfigForm() {
 }
 
 function processPlayerIconsConfig(config: PlayerConfig): PlayerConfig {
-  const layout_config = config.layout;
-  const d = DEFAULT_PLAYER_ICON_CONFIG;
-  const icons_config = layout_config.icons;
+  const layout_config = config.layout
+  const d = DEFAULT_PLAYER_ICON_CONFIG
+  const icons_config = layout_config.icons
 
   let i: PlayerIcons = {
     ...d,
-    ...icons_config
-  };
+    ...icons_config,
+  }
   i = {
     shuffle: {
       ...d.shuffle,
@@ -149,56 +150,55 @@ function processPlayerIconsConfig(config: PlayerConfig): PlayerConfig {
     repeat: {
       ...d.repeat,
       ...i.repeat,
-    }
+    },
   }
   const result = {
     ...config,
     layout: {
       ...layout_config,
-      icons: i
-    }
+      icons: i,
+    },
   }
-  return result;
-
+  return result
 }
 
 function processLayoutConfig(config: PlayerConfig): PlayerConfig {
-  config = processPlayerIconsConfig(config);
-  const layout_config = config.layout;
+  config = processPlayerIconsConfig(config)
+  const layout_config = config.layout
   return {
     ...config,
     layout: {
       ...DEFAULT_PLAYER_LAYOUT_CONFIG,
-      ...layout_config
-    }
+      ...layout_config,
+    },
   }
 }
 
 function processHiddenElementsConfig(config: PlayerConfig): PlayerConfig {
-  const hidden_elements_config = config.hide;
+  const hidden_elements_config = config.hide
   return {
     ...config,
     hide: {
       ...DEFAULT_PLAYER_HIDDEN_ELEMENTS_CONFIG,
-      ...hidden_elements_config
-    }
+      ...hidden_elements_config,
+    },
   }
 }
 
 function processDefaults(config: PlayerConfig): PlayerConfig {
   return {
     ...DEFAULT_PLAYER_CONFIG,
-    ...config
+    ...config,
   }
 }
 
 export function processPlayerConfig(config: Config): Config {
-  let player_config = config.player;
-  player_config = processDefaults(player_config);
-  player_config = processHiddenElementsConfig(player_config);
-  player_config = processLayoutConfig(player_config);
+  let player_config = config.player
+  player_config = processDefaults(player_config)
+  player_config = processHiddenElementsConfig(player_config)
+  player_config = processLayoutConfig(player_config)
   return {
     ...config,
-    player: player_config
+    player: player_config,
   }
 }

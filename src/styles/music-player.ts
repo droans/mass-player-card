@@ -1,4 +1,4 @@
-import { css } from 'lit';
+import { css } from "lit"
 
 // Styles belonging to the card
 // https://lit.dev/docs/components/styles/
@@ -43,10 +43,8 @@ export default css`
     z-index: 1;
   }
   .bg-art-med {
-
   }
   .bg-art-sm {
-
   }
 
   #container {
@@ -57,13 +55,10 @@ export default css`
   }
 
   .controls-art-lg {
-
   }
   .controls-art-med {
-    
   }
   .controls-art-sm {
-    
   }
 
   .divider {
@@ -86,7 +81,6 @@ export default css`
     z-index: 0;
   }
   .header-art-med {
-
   }
   .header-art-sm {
     position: relative;
@@ -105,7 +99,8 @@ export default css`
   .grouped-players-volume-slider {
     display: contents;
   }
-  #grouped-volume, .grouped-players-volume-slider::part(slider) {
+  #grouped-volume,
+  .grouped-players-volume-slider::part(slider) {
     position: relative;
     width: 96%;
     left: 2%;
@@ -129,7 +124,9 @@ export default css`
   }
   .grouped-button-unjoin-expressive::part(base):hover {
     background-color: var(--expressive-row-button-color-hover) !important;
-    --inherited-background-color: var(--expressive-row-button-color-hover) !important;
+    --inherited-background-color: var(
+      --expressive-row-button-color-hover
+    ) !important;
     box-shadow: var(--md-sys-elevation-level1);
     --ha-button-border-radius: var(--button-small-border-radius) !important;
   }
@@ -145,7 +142,7 @@ export default css`
     color: var(--expressive-row-button-color-text);
   }
   .grouped-svg-unjoin-expressive:hover {
-    color: var(--expressive-row-button-color-text-hover)
+    color: var(--expressive-row-button-color-text-hover);
   }
 
   .marquee-pause-end {
@@ -165,16 +162,22 @@ export default css`
     bottom: 0;
     width: 100%;
   }
-  
+
   .media-controls:not(.media-controls-expressive) {
-    background: linear-gradient(transparent, var(--player-blur-color) 10%) !important;
+    background: linear-gradient(
+      transparent,
+      var(--player-blur-color) 10%
+    ) !important;
   }
   .media-controls-expressive {
-    background: linear-gradient(transparent, var(--expressive-player-blur-color) 10%) !important;
+    background: linear-gradient(
+      transparent,
+      var(--expressive-player-blur-color) 10%
+    ) !important;
   }
 
   .menu-header::part(menu-select-menu) {
-    border-radius: 50%; 
+    border-radius: 50%;
     height: 2.5em;
     width: 2.5em;
     --control-select-menu-padding: 7px;
@@ -182,7 +185,9 @@ export default css`
     --control-select-menu-height: 2.5em;
   }
   .menu-header-expressive::part(menu-select-menu) {
-    --control-select-menu-background-color: var(--md-sys-color-secondary-container) !important;
+    --control-select-menu-background-color: var(
+      --md-sys-color-secondary-container
+    ) !important;
     box-shadow: var(--md-sys-elevation-level1);
     border-radius: var(--button-small-border-radius);
   }
@@ -207,16 +212,23 @@ export default css`
     top: 0;
     width: 100%;
     z-index: 1;
-    border-radius: var(--default-border-radius) var(--default-border-radius) 0px 0px;
+    border-radius: var(--default-border-radius) var(--default-border-radius) 0px
+      0px;
   }
   .player-card-header {
-    background: linear-gradient(var(--player-blur-color) 90%, transparent) !important;
+    background: linear-gradient(
+      var(--player-blur-color) 90%,
+      transparent
+    ) !important;
   }
   .player-card-header-expressive {
-    background: linear-gradient(var(--expressive-player-blur-color) 90%, transparent) !important;
-
+    background: linear-gradient(
+      var(--expressive-player-blur-color) 90%,
+      transparent
+    ) !important;
   }
-  .player-card-header, .player-card-header-expressive {
+  .player-card-header,
+  .player-card-header-expressive {
     backdrop-filter: blur(3px);
   }
   .player-header {
@@ -234,18 +246,21 @@ export default css`
     color: var(--md-sys-color-on-primary-container) !important;
   }
 
-  .grouped-players-select-item, #players-select-menu::part(menu-list-item) {
+  .grouped-players-select-item,
+  #players-select-menu::part(menu-list-item) {
     height: 3.5em;
   }
   .grouped-players-select-item {
     width: 320px;
   }
-  .players-select-item-icon,  .grouped-players-select-item-icon {
+  .players-select-item-icon,
+  .grouped-players-select-item-icon {
     height: 2em;
     width: 2em;
     color: var(--md-sys-color-primary);
   }
-  #players-select-menu, #grouped-players-menu {
+  #players-select-menu,
+  #grouped-players-menu {
     --control-select-menu-height: 2.5em;
   }
 
@@ -265,8 +280,9 @@ export default css`
     text-shadow: 0px 0px var(--md-sys-color-primary);
   }
 
-  #players-select-menu::part(menu-button), #grouped-players-menu::part(menu-button) {
-    --ha-ripple-color: rgba(0,0,0,0);
+  #players-select-menu::part(menu-button),
+  #grouped-players-menu::part(menu-button) {
+    --ha-ripple-color: rgba(0, 0, 0, 0);
   }
   #players-select-menu::part(menu-list-item) {
   }
@@ -301,7 +317,6 @@ export default css`
   .vol-art-med {
   }
   .vol-art-sm {
-
   }
 
   @keyframes marquee {
@@ -312,4 +327,4 @@ export default css`
       left: var(--marquee-left-offset);
     }
   }
-`;
+`

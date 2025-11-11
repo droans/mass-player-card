@@ -1,4 +1,4 @@
-import { css } from 'lit';
+import { css } from "lit"
 
 // Styles belonging to the card
 // https://lit.dev/docs/components/styles/
@@ -9,7 +9,7 @@ export default css`
   a.active-expressive {
     box-shadow: var(--md-sys-elevation-level2);
   }
-  
+
   .action-button-svg {
     --icon-primary-color: var(--tab-active-icon-color);
     height: var(--tab-icon-height);
@@ -46,4 +46,4 @@ export default css`
   .tabbed-expressive {
     --tabbed-background-color: var(--md-sys-color-primary-container) !important;
   }
-`;
+`
