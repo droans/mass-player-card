@@ -112,6 +112,7 @@ class VolumeRow extends LitElement {
     if (isNaN(volume)) return;
     this.player_data.volume = volume;
     volume = volume / 100;
+    this.requestUpdate('volume', this.player_data.volume);
     await this.actions.actionSetVolume(volume);
   }
   private onFavorite = async () => {
