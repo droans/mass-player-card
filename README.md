@@ -60,7 +60,10 @@ A Home Assistant media player card built for Music Assistant players.
   - [I'm not seeing any artwork in the queue or media browser!](#im-not-seeing-any-artwork-in-the-queue-or-media-browser)
   - [How do I theme the card?](#how-do-i-theme-the-card)
   - [Can this card work in my local language?](#can-this-card-work-in-my-local-language)
+  - [I am having issues with this card on my iOS/OSX device but it works fine elsewhere.](#i-am-having-issues-with-this-card-on-my-iososx-device-but-it-works-fine-elsewhere)
   - [I have other questions or issues not addressed](#i-have-other-questions-or-issues-not-addressed)
+- [Contributing](#contributing)
+- [Developing](#developing)
 
 <!-- END doctoc generated TOC please keep comment here to allow auto update -->
 
@@ -87,7 +90,7 @@ In addition to the Music Assistant integration, this card depends on the custom 
     - Press "Add Resource". For the URL, type in "/local/mass-card.js". Select "JavaScript module" and click "Create".
 
 # Configuration
-The card does not have a visual editor. Use this configuration to create your card:
+This card comes with a visual editor. However, not every option can be set with it (eg, player name and volume player, custom items, etc). Use the below documentation to help. 
 
 ### Minimal Config
 
@@ -647,7 +650,12 @@ mass-player-card-default-border-radius: 12px;
 
 ## Can this card work in my local language?
 
-This card currently has complete support for English and majority support for Dutch. 
+**Current Language Support**
+
+| Language | Support |
+|----------|---------|
+| English  | Full    |
+| Dutch    | Most    |
 
 If you would like to add new translations for other languages:
 1. Fork this repository and clone it locally.
@@ -661,6 +669,48 @@ If you would like to add new translations for other languages:
 
 The instructions are rather similar for improving existing language support. However, you do not need to make a clone of `en.ts` (instead, use the existing translation file) and you do not need to follow Step #4.
 
+## I am having issues with this card on my iOS/OSX device but it works fine elsewhere.
+
+Apple's Webkit engine has some peculiarities that aren't present in other browsers. Unfortunately, I don't own the required equipment (an iOS device and a Mac) in order to properly debug this issue.
+
+If you have the abilities and the equipment to do so, I am happy to accept any contributions to help fix this issue!
+
 ## I have other questions or issues not addressed
 
 Check the [repository issues](https://github.com/droans/mass-player-card/issues) to see if your question has already been asked. If not, feel free to [submit a new issue](https://github.com/droans/mass-player-card/issues/new). 
+
+# Contributing
+
+I am happy to accept any new contributions to this repository. Feel free to fork and submit pull requests.
+
+# Developing
+
+This card uses `corepack` for development and relies on Node 22.
+
+### Clone the repository:
+```bash
+git clone https://github.com/droans/mass-player-card
+```
+
+### Set up the environment
+Switch to Node 22:
+```bash
+nvm use 22
+```
+
+Install `corepack`:
+```bash
+npm install corepack
+```
+
+Install dependencies:
+```bash
+yarn install
+```
+
+Build:
+```bash
+yarn rollup
+```
+
+The output file will be located at `./dist/mass-player-card.js`
