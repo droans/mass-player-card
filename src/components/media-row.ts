@@ -1,15 +1,15 @@
-import { consume } from "@lit/context"
+import { consume } from "@lit/context";
 import {
   html,
   type CSSResultGroup,
   LitElement,
   PropertyValues,
   TemplateResult,
-} from "lit"
-import { property, state } from "lit/decorators.js"
+} from "lit";
+import { property, state } from "lit/decorators.js";
 
-import { QueueItemSelectedService, QueueService } from "../const/actions"
-import { ExtendedHass, Thumbnail } from "../const/common"
+import { QueueItemSelectedService, QueueService } from "../const/actions";
+import { ExtendedHass, Thumbnail } from "../const/common";
 import {
   activeEntityConf,
   EntityConfig,
@@ -18,79 +18,83 @@ import {
   mediaCardDisplayContext,
   playerQueueConfigContext,
   useExpressiveContext,
-} from "../const/context"
-import { QueueItem } from "../const/player-queue"
+} from "../const/context";
+import { QueueItem } from "../const/player-queue";
 
-import styles from "../styles/media-row"
+import styles from "../styles/media-row";
 
 import {
   backgroundImageFallback,
   getFallbackBackgroundImage,
-} from "../utils/thumbnails"
-import { jsonMatch, queueItemhasUpdated, testMixedContent } from "../utils/util"
+} from "../utils/thumbnails";
+import {
+  jsonMatch,
+  queueItemhasUpdated,
+  testMixedContent,
+} from "../utils/util";
 import {
   DEFAULT_PLAYER_QUEUE_HIDDEN_ELEMENTS_CONFIG,
   PlayerQueueHiddenElementsConfig,
   QueueConfig,
-} from "../config/player-queue"
-import { Icons } from "../const/icons.js"
+} from "../config/player-queue";
+import { Icons } from "../const/icons.js";
 
 class MediaRow extends LitElement {
-  @property({ attribute: false }) media_item!: QueueItem
+  @property({ attribute: false }) media_item!: QueueItem;
 
   @consume({ context: hassExt, subscribe: true })
-  public hass!: ExtendedHass
-  @consume({ context: IconsContext }) public Icons!: Icons
+  public hass!: ExtendedHass;
+  @consume({ context: IconsContext }) public Icons!: Icons;
 
   @consume({ context: mediaCardDisplayContext, subscribe: true })
   @state()
-  public display!: boolean
+  public display!: boolean;
 
   @consume({ context: useExpressiveContext, subscribe: true })
-  public useExpressive!: boolean
+  public useExpressive!: boolean;
 
-  public moveQueueItemDownService!: QueueService
-  public moveQueueItemNextService!: QueueService
-  public moveQueueItemUpService!: QueueService
-  public removeService!: QueueService
-  public selectedService!: QueueItemSelectedService
-  public showAlbumCovers = true
+  public moveQueueItemDownService!: QueueService;
+  public moveQueueItemNextService!: QueueService;
+  public moveQueueItemUpService!: QueueService;
+  public removeService!: QueueService;
+  public selectedService!: QueueItemSelectedService;
+  public showAlbumCovers = true;
 
-  private _config!: QueueConfig
-  private _entityConfig!: EntityConfig
+  private _config!: QueueConfig;
+  private _entityConfig!: EntityConfig;
   private hide: PlayerQueueHiddenElementsConfig =
-    DEFAULT_PLAYER_QUEUE_HIDDEN_ELEMENTS_CONFIG
+    DEFAULT_PLAYER_QUEUE_HIDDEN_ELEMENTS_CONFIG;
 
   @consume({ context: playerQueueConfigContext, subscribe: true })
   public set config(config: QueueConfig) {
     if (jsonMatch(this._config, config)) {
-      return
+      return;
     }
-    this._config = config
-    this.updateHiddenElements()
+    this._config = config;
+    this.updateHiddenElements();
   }
   public get config() {
-    return this._config
+    return this._config;
   }
 
   @consume({ context: activeEntityConf, subscribe: true })
   public set entityConfig(config: EntityConfig) {
     if (jsonMatch(this._entityConfig, config)) {
-      return
+      return;
     }
-    this._entityConfig = config
-    this.updateHiddenElements()
+    this._entityConfig = config;
+    this.updateHiddenElements();
   }
   public get entityConfig() {
-    return this._entityConfig
+    return this._entityConfig;
   }
 
   private updateHiddenElements() {
     if (!this.entityConfig || !this.config) {
-      return
+      return;
     }
-    const entity = this._entityConfig.hide.queue
-    const card = this._config.hide
+    const entity = this._entityConfig.hide.queue;
+    const card = this._config.hide;
     this.hide = {
       album_covers: entity.album_covers || card.album_covers,
       artist_names: entity.artist_names || card.artist_names,
@@ -99,52 +103,52 @@ class MediaRow extends LitElement {
       move_next_button: entity.move_next_button || card.move_next_button,
       move_up_button: entity.move_up_button || card.move_up_button,
       remove_button: entity.remove_button || card.remove_button,
-    }
+    };
   }
   private callMoveItemUpService(e: Event) {
-    navigator.vibrate([50, 20, 25, 20, 25])
-    e.stopPropagation()
-    this.moveQueueItemUpService(this.media_item.queue_item_id)
+    navigator.vibrate([50, 20, 25, 20, 25]);
+    e.stopPropagation();
+    this.moveQueueItemUpService(this.media_item.queue_item_id);
   }
   private callMoveItemDownService(e: Event) {
-    navigator.vibrate([25, 20, 25, 20, 50])
-    e.stopPropagation()
-    this.moveQueueItemDownService(this.media_item.queue_item_id)
+    navigator.vibrate([25, 20, 25, 20, 50]);
+    e.stopPropagation();
+    this.moveQueueItemDownService(this.media_item.queue_item_id);
   }
   private callMoveItemNextService(e: Event) {
-    navigator.vibrate([50, 20, 25, 20, 50])
-    e.stopPropagation()
-    this.moveQueueItemNextService(this.media_item.queue_item_id)
+    navigator.vibrate([50, 20, 25, 20, 50]);
+    e.stopPropagation();
+    this.moveQueueItemNextService(this.media_item.queue_item_id);
   }
   private callRemoveItemService(e: Event) {
-    e.stopPropagation()
-    navigator.vibrate([25, 20, 75, 20, 25])
-    this.removeService(this.media_item.queue_item_id)
+    e.stopPropagation();
+    navigator.vibrate([25, 20, 75, 20, 25]);
+    this.removeService(this.media_item.queue_item_id);
   }
   private callOnQueueItemSelectedService() {
-    this.selectedService(this.media_item.queue_item_id)
+    this.selectedService(this.media_item.queue_item_id);
   }
   protected shouldUpdate(_changedProperties: PropertyValues<this>): boolean {
     if (_changedProperties.has("media_item")) {
       // eslint-disable-next-line @typescript-eslint/no-non-null-assertion
-      const oldItem: QueueItem = _changedProperties.get("media_item")!
-      return queueItemhasUpdated(oldItem, this.media_item)
+      const oldItem: QueueItem = _changedProperties.get("media_item")!;
+      return queueItemhasUpdated(oldItem, this.media_item);
     }
-    return _changedProperties.size > 0
+    return _changedProperties.size > 0;
   }
   private artworkStyle() {
     const img =
-      this.media_item.local_image_encoded ?? this.media_item.media_image ?? ""
+      this.media_item.local_image_encoded ?? this.media_item.media_image ?? "";
     if (!testMixedContent(img)) {
-      return getFallbackBackgroundImage(this.hass, Thumbnail.CLEFT)
+      return getFallbackBackgroundImage(this.hass, Thumbnail.CLEFT);
     }
-    return backgroundImageFallback(this.hass, img, Thumbnail.CLEFT)
+    return backgroundImageFallback(this.hass, img, Thumbnail.CLEFT);
   }
   private renderThumbnail(): TemplateResult {
     const played =
-      !this.media_item.show_action_buttons && !this.media_item.playing
+      !this.media_item.show_action_buttons && !this.media_item.playing;
     const img =
-      this.media_item.local_image_encoded ?? this.media_item.media_image
+      this.media_item.local_image_encoded ?? this.media_item.media_image;
     if (img && this.showAlbumCovers && !this.hide.album_covers) {
       return html`
         <span
@@ -153,35 +157,35 @@ class MediaRow extends LitElement {
           style="${this.artworkStyle()}"
         >
         </span>
-      `
+      `;
     }
-    return html``
+    return html``;
   }
   private _calculateTitleWidth() {
-    let button_ct = 0
-    const hide = this.config.hide
-    const media_item = this.media_item
+    let button_ct = 0;
+    const hide = this.config.hide;
+    const media_item = this.media_item;
     if (media_item.show_move_up_next && !hide.move_next_button) {
-      button_ct += 1
+      button_ct += 1;
     }
     if (media_item.show_move_up_next && !hide.move_up_button) {
-      button_ct += 1
+      button_ct += 1;
     }
     if (!hide.move_down_button) {
-      button_ct += 1
+      button_ct += 1;
     }
     if (!hide.remove_button) {
-      button_ct += 1
+      button_ct += 1;
     }
     if (
       button_ct == 0 ||
       !media_item.show_action_buttons ||
       hide.action_buttons
     ) {
-      return `100%`
+      return `100%`;
     }
-    const gap_ct = button_ct - 1
-    return `calc(100% - ((32px * ${button_ct.toString()}) + (8px * ${gap_ct.toString()}) + 16px));`
+    const gap_ct = button_ct - 1;
+    return `calc(100% - ((32px * ${button_ct.toString()}) + (8px * ${gap_ct.toString()}) + 16px));`;
   }
   private renderTitle(): TemplateResult {
     return html`
@@ -192,11 +196,11 @@ class MediaRow extends LitElement {
       >
         ${this.media_item.media_title}
       </span>
-    `
+    `;
   }
   private renderArtist(): TemplateResult {
     if (this.hide.artist_names) {
-      return html``
+      return html``;
     }
     return html`
       <span
@@ -206,29 +210,29 @@ class MediaRow extends LitElement {
       >
         ${this.media_item.media_artist}
       </span>
-    `
+    `;
   }
   private renderActionButtons(): TemplateResult {
     if (this.hide.action_buttons || !this.media_item.show_action_buttons) {
-      return html``
+      return html``;
     }
     return html`
       <span
         slot="end"
         class="button-group"
         @click=${(e: Event) => {
-          e.stopPropagation()
+          e.stopPropagation();
         }}
       >
         ${this.renderMoveNextButton()} ${this.renderMoveUpButton()}
         ${this.renderMoveDownButton()} ${this.renderRemoveButton()}
       </span>
-    `
+    `;
   }
   /* eslint-disable @typescript-eslint/unbound-method */
   private renderMoveNextButton(): TemplateResult {
     if (this.hide.move_next_button || !this.media_item.show_move_up_next) {
-      return html``
+      return html``;
     }
     return html`
       <ha-button
@@ -247,11 +251,11 @@ class MediaRow extends LitElement {
             : ``}"
         ></ha-svg-icon>
       </ha-button>
-    `
+    `;
   }
   private renderMoveUpButton(): TemplateResult {
     if (this.hide.move_up_button || !this.media_item.show_move_up_next) {
-      return html``
+      return html``;
     }
     return html`
       <ha-button
@@ -270,11 +274,11 @@ class MediaRow extends LitElement {
             : ``}"
         ></ha-svg-icon>
       </ha-button>
-    `
+    `;
   }
   private renderMoveDownButton(): TemplateResult {
     if (this.hide.move_down_button) {
-      return html``
+      return html``;
     }
     return html`
       <ha-button
@@ -293,11 +297,11 @@ class MediaRow extends LitElement {
             : ``}"
         ></ha-svg-icon>
       </ha-button>
-    `
+    `;
   }
   private renderRemoveButton(): TemplateResult {
     if (this.hide.remove_button) {
-      return html``
+      return html``;
     }
     return html`
       <ha-button
@@ -316,12 +320,12 @@ class MediaRow extends LitElement {
             : ``}"
         ></ha-svg-icon>
       </ha-button>
-    `
+    `;
   }
 
   render(): TemplateResult {
-    const playing = this.media_item.playing ? `-active` : ``
-    const expressive = this.useExpressive ? `button-expressive${playing}` : ``
+    const playing = this.media_item.playing ? `-active` : ``;
+    const expressive = this.useExpressive ? `button-expressive${playing}` : ``;
     return html`
       <ha-md-list-item
         style="${this.display ? "" : "display: none;"}"
@@ -333,11 +337,11 @@ class MediaRow extends LitElement {
         ${this.renderActionButtons()}
       </ha-md-list-item>
       <div class="divider"></div>
-    `
+    `;
   }
   static get styles(): CSSResultGroup {
-    return styles
+    return styles;
   }
 }
 
-customElements.define("mass-player-media-row", MediaRow)
+customElements.define("mass-player-media-row", MediaRow);

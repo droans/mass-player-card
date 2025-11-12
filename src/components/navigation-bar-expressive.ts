@@ -4,113 +4,113 @@ import {
   LitElement,
   PropertyValues,
   TemplateResult,
-} from "lit"
-import styles from "../styles/navigation-bar"
+} from "lit";
+import styles from "../styles/navigation-bar";
 import {
   activeSectionContext,
   controllerContext,
   IconsContext,
-} from "../const/context.js"
-import { consume } from "@lit/context"
-import { state } from "lit/decorators.js"
-import { Sections } from "../const/card.js"
-import { Config } from "../config/config.js"
-import { MassCardController } from "../controller/controller.js"
-import { MediaBrowser } from "../sections/media-browser.js"
-import { Icons } from "../const/icons.js"
+} from "../const/context.js";
+import { consume } from "@lit/context";
+import { state } from "lit/decorators.js";
+import { Sections } from "../const/card.js";
+import { Config } from "../config/config.js";
+import { MassCardController } from "../controller/controller.js";
+import { MediaBrowser } from "../sections/media-browser.js";
+import { Icons } from "../const/icons.js";
 
 class MassNavBar extends LitElement {
-  private _controller!: MassCardController
-  private _config!: Config
-  private _activeSection!: Sections
-  @consume({ context: IconsContext }) private Icons!: Icons
+  private _controller!: MassCardController;
+  private _config!: Config;
+  private _activeSection!: Sections;
+  @consume({ context: IconsContext }) private Icons!: Icons;
 
   @consume({ context: activeSectionContext, subscribe: true })
   @state()
   public set active_section(section: Sections) {
     if (!this.controller) {
-      return
+      return;
     }
-    this._activeSection = section
+    this._activeSection = section;
   }
   public get active_section() {
-    return this._activeSection
+    return this._activeSection;
   }
   private setActiveSection(section: Sections) {
-    this.controller.activeSection = section
+    this.controller.activeSection = section;
   }
 
   @consume({ context: controllerContext, subscribe: true })
   private set controller(controller: MassCardController) {
-    this._controller = controller
-    this.active_section = controller.activeSection
-    this.config = controller.config
+    this._controller = controller;
+    this.active_section = controller.activeSection;
+    this.config = controller.config;
   }
   private get controller() {
-    return this._controller
+    return this._controller;
   }
   private set config(config: Config) {
-    this._config = config
+    this._config = config;
   }
   private get config() {
-    return this._config
+    return this._config;
   }
 
   private handleTabChanged = (section: Sections) => {
-    this.setActiveSection(section)
+    this.setActiveSection(section);
     if (section == Sections.MEDIA_BROWSER) {
-      this.returnMediaBrowserToHome()
+      this.returnMediaBrowserToHome();
     }
-  }
+  };
   protected returnMediaBrowserToHome = () => {
-    const host = this.controller.host
+    const host = this.controller.host;
     const el: MediaBrowser | null | undefined =
-      host.shadowRoot?.querySelector("mass-media-browser")
+      host.shadowRoot?.querySelector("mass-media-browser");
     if (!el) {
-      return
+      return;
     }
-    el.resetActiveSections()
-  }
+    el.resetActiveSections();
+  };
 
   protected renderMusicPlayerTab(): TemplateResult {
-    const section = Sections.MUSIC_PLAYER
-    const icon = this.Icons.MUSIC
+    const section = Sections.MUSIC_PLAYER;
+    const icon = this.Icons.MUSIC;
     if (this.config.player.enabled) {
-      return this.renderTab(section, icon)
+      return this.renderTab(section, icon);
     }
-    return html``
+    return html``;
   }
   protected renderQueueTab(): TemplateResult {
-    const section = Sections.QUEUE
-    const icon = this.Icons.PLAYLIST
+    const section = Sections.QUEUE;
+    const icon = this.Icons.PLAYLIST;
     if (this.config.queue.enabled) {
-      return this.renderTab(section, icon)
+      return this.renderTab(section, icon);
     }
-    return html``
+    return html``;
   }
   protected renderMediaBrowserTab(): TemplateResult {
-    const section = Sections.MEDIA_BROWSER
-    const icon = this.Icons.ALBUM
+    const section = Sections.MEDIA_BROWSER;
+    const icon = this.Icons.ALBUM;
     if (this.config.media_browser.enabled) {
-      return this.renderTab(section, icon)
+      return this.renderTab(section, icon);
     }
-    return html``
+    return html``;
   }
   protected renderPlayersTab(): TemplateResult {
-    const section = Sections.PLAYERS
-    const icon = this.Icons.SPEAKER_MULTIPLE
+    const section = Sections.PLAYERS;
+    const icon = this.Icons.SPEAKER_MULTIPLE;
     if (this.config.players.enabled) {
-      return this.renderTab(section, icon)
+      return this.renderTab(section, icon);
     }
-    return html``
+    return html``;
   }
   private renderTab(section: Sections, icon: string): TemplateResult {
-    const active = this.active_section == section
+    const active = this.active_section == section;
     return html`
       <a
         class="${active ? `active active-expressive` : ``} player-tabs"
         @click=${() => {
-          this.handleTabChanged(section)
+          this.handleTabChanged(section);
         }}
       >
         <i class="icon-i">
@@ -120,7 +120,7 @@ class MassNavBar extends LitElement {
           ></ha-svg-icon>
         </i>
       </a>
-    `
+    `;
   }
   protected render(): TemplateResult {
     return html`
@@ -134,17 +134,17 @@ class MassNavBar extends LitElement {
           ${this.renderMediaBrowserTab()} ${this.renderPlayersTab()}
         </nav>
       </div>
-    `
+    `;
   }
   protected shouldUpdate(_changedProperties: PropertyValues): boolean {
     if (!this.config) {
-      return false
+      return false;
     }
-    return _changedProperties.size > 0
+    return _changedProperties.size > 0;
   }
   static get styles(): CSSResultGroup {
-    return styles
+    return styles;
   }
 }
 
-customElements.define("mass-nav-bar-expressive", MassNavBar)
+customElements.define("mass-nav-bar-expressive", MassNavBar);

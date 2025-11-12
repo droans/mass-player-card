@@ -1,4 +1,4 @@
-import { css } from "lit"
+import { css } from "lit";
 
 export default css`
   .artwork {
@@ -47,4 +47,4 @@ export default css`
     left: calc(50% - (var(--artwork-small-height) / 2));
     top: calc(50% - (var(--artwork-small-height) / 2));
   }
-`
+`;

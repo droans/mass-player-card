@@ -4,9 +4,9 @@ import {
   Thumbnail,
   LightModeThumbnails,
   MediaTypes,
-} from "../const/common"
-import { Icons } from "../const/icons.js"
-import { getSearchMediaButtons } from "../const/media-browser.js"
+} from "../const/common";
+import { Icons } from "../const/icons.js";
+import { getSearchMediaButtons } from "../const/media-browser.js";
 
 export async function asyncBackgroundImageFallback(
   hass: ExtendedHass,
@@ -14,48 +14,48 @@ export async function asyncBackgroundImageFallback(
   fallback: Thumbnail,
   download_local = true,
 ) {
-  const _fallback: string = getThumbnail(hass, fallback)
+  const _fallback: string = getThumbnail(hass, fallback);
   if (image_url.startsWith("http://") && download_local) {
-    image_url = await getLocalImage(hass, image_url)
+    image_url = await getLocalImage(hass, image_url);
   }
-  return `background-image: url(${image_url}), url(${_fallback})`
+  return `background-image: url(${image_url}), url(${_fallback})`;
 }
 export function backgroundImageFallback(
   hass: ExtendedHass,
   image_url: string,
   fallback: Thumbnail,
 ) {
-  const _fallback: string = getThumbnail(hass, fallback)
-  return `background-image: url(${image_url}), url(${_fallback})`
+  const _fallback: string = getThumbnail(hass, fallback);
+  return `background-image: url(${image_url}), url(${_fallback})`;
 }
 
 export function getFallbackBackgroundImage(
   hass: ExtendedHass,
   fallback: Thumbnail,
 ) {
-  const _fallback: string = getThumbnail(hass, fallback)
-  return `background-image: url(${_fallback})`
+  const _fallback: string = getThumbnail(hass, fallback);
+  return `background-image: url(${_fallback})`;
 }
 
 export function getThumbnail(hass: ExtendedHass, thumbnail: Thumbnail): string {
   if (!hass) {
-    return LightModeThumbnails[thumbnail]
+    return LightModeThumbnails[thumbnail];
   }
   if (hass.themes.darkMode) {
-    return DarkModeThumbnails[thumbnail]
+    return DarkModeThumbnails[thumbnail];
   }
-  return LightModeThumbnails[thumbnail]
+  return LightModeThumbnails[thumbnail];
 }
 export function getMediaTypeSvg(
   media_type: MediaTypes,
   icons: Icons,
   hass: ExtendedHass,
 ) {
-  const data = getSearchMediaButtons(icons, hass)
+  const data = getSearchMediaButtons(icons, hass);
   const result = data.find((item) => {
-    return (item.option as MediaTypes) == media_type
-  })
-  return result?.icon ?? Thumbnail.CLEFT
+    return (item.option as MediaTypes) == media_type;
+  });
+  return result?.icon ?? Thumbnail.CLEFT;
 }
 
 export async function encodeImageIfLocal(
@@ -63,24 +63,24 @@ export async function encodeImageIfLocal(
   image_url: string,
 ): Promise<string> {
   if (image_url.startsWith("https")) {
-    return image_url
+    return image_url;
   }
-  return await getLocalImage(hass, image_url)
+  return await getLocalImage(hass, image_url);
 }
 
 async function getLocalImage(hass: ExtendedHass, url: string): Promise<string> {
   if (typeof url != "string") {
-    return ""
+    return "";
   }
   try {
     const result: string = await hass.callWS({
       type: "mass_queue/download_and_encode_image",
       url: url,
-    })
-    return result
+    });
+    return result;
   } catch (e) {
     // eslint-disable-next-line no-console
-    console.error("Error getting image", e)
-    return ""
+    console.error("Error getting image", e);
+    return "";
   }
 }
