@@ -2,7 +2,7 @@ import { ExtendedHass } from "../const/common.js"
 import en from "../translations/en"
 import nl from "../translations/nl"
 import pt from "../translations/pt"
-import pt from "../translations/fr"
+import fr from "../translations/fr"
 
 const TRANSLATIONS = {
   en: en,
