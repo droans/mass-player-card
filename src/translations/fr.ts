@@ -3,10 +3,10 @@ export default {
   "browser.card.recents": "Récents",
   "browser.card.recommendations": "Recommandations",
 
-  "browser.enqueue.play": "Lire maintenant",
-  "browser.enqueue.next": "Lire ensuite",
-  "browser.enqueue.play_clear": "Lire maintenant et vider la file",
-  "browser.enqueue.next_clear": "Lire ensuite et vider la file",
+  "browser.enqueue.play": "Lire",
+  "browser.enqueue.next": "Lire suivant",
+  "browser.enqueue.play_clear": "Lire et vider la file",
+  "browser.enqueue.next_clear": "Lire suivant et vider la file",
   "browser.enqueue.queue": "Ajouter à la file",
   "browser.enqueue.radio": "Lancer la radio",
 
@@ -20,8 +20,8 @@ export default {
   "browser.sections.radio": "Radios",
   "browser.sections.track": "Titres",
 
-  "player.controls.power": "Alimentation",
-  "player.controls.shuffle": "Aléatoire",
+  "player.controls.power": "On/Off",
+  "player.controls.shuffle": "Shuffle",
   "player.controls.repeat": "Répéter",
   "player.controls.favorite": "Favori",
   "player.controls.previous": "Précédent",
