@@ -652,10 +652,12 @@ mass-player-card-default-border-radius: 12px;
 
 **Current Language Support**
 
-| Language | Support |
-|----------|---------|
-| English  | Full    |
-| Dutch    | Most    |
+| Language  | Support |
+|-----------|---------|
+| English   | Full    |
+| Dutch     | Most    |
+| French    | Most    |
+| Portugese | Most    |
 
 If you would like to add new translations for other languages:
 1. Fork this repository and clone it locally.
