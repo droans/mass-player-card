@@ -4,7 +4,8 @@ tag-template: "v$RESOLVED_VERSION"
 change-template: "- $TITLE @$AUTHOR (#$NUMBER)"
 sort-direction: ascending
 prerelease-identifier: 'b'
-prelease: true
+prerelease: true
+include-pre-releases: true
 categories:
   - title: "🚨 Breaking changes"
     labels:
