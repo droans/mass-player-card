@@ -10,17 +10,15 @@ import {
   activeMediaPlayer,
   activePlayerDataContext,
   controllerContext,
-  currentQueueItemContext,
   ExtendedHass,
   hassExt,
   IconsContext,
   musicPlayerConfigContext,
-  nextQueueItemContext,
-  previousQueueItemContext,
+  queueContext,
 } from "../const/context.js";
 import { ExtendedHassEntity, Thumbnail } from "../const/common.js";
 import { query, state } from "lit/decorators.js";
-import { QueueItem } from "../const/player-queue.js";
+import { QueueItem, QueueItems } from "../const/player-queue.js";
 import {
   PlayerData,
   SLSwipeEvent,
@@ -43,6 +41,7 @@ class MassPlayerArtwork extends LitElement {
   @consume({ context: activeMediaPlayer, subscribe: true })
   @state()
   public activePlayer!: ExtendedHassEntity;
+  private _queue!: QueueItems;
 
   @consume({ context: IconsContext })
   private Icons!: Icons;
@@ -79,7 +78,18 @@ class MassPlayerArtwork extends LitElement {
     return this._playerData;
   }
 
-  @consume({ context: previousQueueItemContext, subscribe: true })
+  @consume({ context: queueContext, subscribe: true })
+  public set queue(queue: QueueItems | null) {
+    if (!queue) {
+      return;
+    }
+    this._queue = queue;
+    const cur_idx = queue.findIndex((item) => item.playing);
+    this.currentQueueItem = queue[cur_idx];
+    this.previousQueueItem = queue[cur_idx - 1];
+    this.nextQueueItem = queue[cur_idx + 1];
+  }
+
   public set previousQueueItem(item: QueueItem | null | undefined) {
     if (jsonMatch(this.previousQueueItem, item)) {
       return;
@@ -103,7 +113,6 @@ class MassPlayerArtwork extends LitElement {
     return this._previousItemImage;
   }
 
-  @consume({ context: currentQueueItemContext, subscribe: true })
   public set currentQueueItem(item: QueueItem | null | undefined) {
     if (jsonMatch(this.currentQueueItem, item)) {
       return;
@@ -133,7 +142,6 @@ class MassPlayerArtwork extends LitElement {
     return this._currentItemImage;
   }
 
-  @consume({ context: nextQueueItemContext, subscribe: true })
   public set nextQueueItem(item: QueueItem | null | undefined) {
     if (jsonMatch(this.nextQueueItem, item)) {
       return;
