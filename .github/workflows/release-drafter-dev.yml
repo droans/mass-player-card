@@ -86,8 +86,8 @@ jobs:
           config-name: release-drafter-dev.yml
           prerelease: true
           prerelease-identifier: b
-          tag: ${{ steps.version.outputs.pkg_version }}
-          version: ${{ steps.version.outputs.pkg_version }}
+          tag: v${{ steps.version.outputs.pkg_version }}
+          version: v${{ steps.version.outputs.pkg_version }}
         env:
           GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
 
