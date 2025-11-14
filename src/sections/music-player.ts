@@ -611,7 +611,9 @@ class MusicPlayerCard extends LitElement {
       return;
     }
     this.updatePlayerData();
-    this._animationElement.cancel();
+    if (this._animationElement.cancel) {
+      this._animationElement.cancel();
+    }
   }
   disconnectedCallback(): void {
     super.disconnectedCallback();
