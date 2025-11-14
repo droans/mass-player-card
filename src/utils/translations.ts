@@ -1,17 +1,17 @@
-import { ExtendedHass } from "../const/common.js"
-import en from "../translations/en"
-import nl from "../translations/nl"
-import pt from "../translations/pt"
-import fr from "../translations/fr"
+import { ExtendedHass } from "../const/common.js";
+import en from "../translations/en";
+import nl from "../translations/nl";
+import pt from "../translations/pt";
+import fr from "../translations/fr";
 
 const TRANSLATIONS = {
   en: en,
   nl: nl,
   pt: pt,
   fr: fr,
-}
-const DEFAULT_LANGUAGE = "en"
-const DEFAULT_TRANSLATIONS = TRANSLATIONS.en
+};
+const DEFAULT_LANGUAGE = "en";
+const DEFAULT_TRANSLATIONS = TRANSLATIONS.en;
 
 export function getTranslation(key: string, hass: ExtendedHass) {
   const lang = hass?.language ?? DEFAULT_LANGUAGE;

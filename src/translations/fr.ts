@@ -45,4 +45,4 @@ export default {
   "players.header": "Appareils",
 
   "queue.header": "File d’attente",
-}
+};
