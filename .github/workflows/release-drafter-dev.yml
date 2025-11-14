@@ -11,33 +11,15 @@ permissions:
   contents: read
 
 jobs:
-  update_release_draft:
-    name: Draft pre-release
+  build_artifact:
+    name: Build card and store artifact
     runs-on: ubuntu-latest
     permissions:
       contents: write
-      pull-requests: write
     steps:
-      - name: Run Release Drafter
-        uses: release-drafter/release-drafter@v6.1.0
-        with:
-          config-name: release-drafter-dev.yml
-          prerelease: true
-          prerelease-identifier: b
-        env:
-          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
-
-      - run: |
-          echo "Release: ${{ github.event.release.target_commitish }}"
       - uses: actions/checkout@v3
         with:
           ref: dev
-      - name: Echo release info
-        run: |
-          echo "Release ${{ github.event.release }}"
-          echo "Release ${{ github.event.release.tag_name }} published"
-          echo "Target branch: ${{ github.event.release.target_commitish }}"
-          echo "Release name: ${{ github.event.release.name }}"
       - name: Use Node.js ${{ matrix.node-version }}
         uses: actions/setup-node@v4
         with:
@@ -67,14 +49,51 @@ jobs:
       - name: Build the project
         run: |
           yarn rollup
+      - name: Upload Build
+        uses: actions/upload-artifact@v4
+        with:
+          name: card-js
+          path: dist/mass-player-card.js
+      - name: Upload package.json
+        uses: actions/upload-artifact@v4
+        with:
+          name: package-json
+          path: package.json
+
+  draft_prerelease:
+    name: Draft pre-release
+    runs-on: ubuntu-latest
+    needs: build_artifact
+    permissions:
+      contents: write
+      pull-requests: write
+    steps:
+      - name: Grab built card
+        uses: actions/download-artifact@v5
+        with:
+          name: card-js
+      - name: Grab package.json
+        uses: actions/download-artifact@v5
+        with:
+          name: package-json
       - name: Get Version
         id: version
         run: |
           echo "pkg_version=$(jq -r '.version' package.json)" >> "${GITHUB_OUTPUT}"
+      - name: Run Release Drafter
+        uses: release-drafter/release-drafter@v6.1.0
+        with:
+          config-name: release-drafter-dev.yml
+          prerelease: true
+          prerelease-identifier: b
+          tag: ${{ steps.version.outputs.pkg_version }}
+          version: ${{ steps.version.outputs.pkg_version }}
+        env:
+          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
 
       - name: Upload built source
         uses: softprops/action-gh-release@v2
         with:
-          files: dist/mass-player-card.js
+          files: mass-player-card.js
           tag_name: ${{ steps.version.outputs.pkg_version }}
           draft: true
