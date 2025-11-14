@@ -7,10 +7,6 @@ export default css`
     justify-self: center;
     display: block;
   }
-  .artwork-large {
-    border-radius: var(--artwork-border-radius) var(--artwork-border-radius) 0px
-      0px;
-  }
   .artwork-medium {
   }
   .artwork-small {
