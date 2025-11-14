@@ -97,3 +97,5 @@ jobs:
           files: mass-player-card.js
           tag_name: v${{ steps.version.outputs.pkg_version }}
           draft: true
+          prerelease: true
+          target_commitish: dev
