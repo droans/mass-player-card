@@ -64,6 +64,7 @@ class MassPlayerArtwork extends LitElement {
   private _lastSwipedTS = 0;
   private _disconnected = false;
   private _playerLoadedTS = 0;
+  private _curIdx = 0;
 
   @consume({ context: activePlayerDataContext, subscribe: true })
   public set playerData(playerData: PlayerData) {
@@ -85,9 +86,13 @@ class MassPlayerArtwork extends LitElement {
     }
     this._queue = queue;
     const cur_idx = queue.findIndex((item) => item.playing);
+    this._curIdx = cur_idx;
     this.currentQueueItem = queue[cur_idx];
     this.previousQueueItem = queue[cur_idx - 1];
     this.nextQueueItem = queue[cur_idx + 1];
+  }
+  public get queue() {
+    return this._queue;
   }
 
   public set previousQueueItem(item: QueueItem | null | undefined) {
@@ -183,12 +188,21 @@ class MassPlayerArtwork extends LitElement {
     }
     if (slide_idx == 0) {
       if (this.previousItemImage) {
+        this.nextItemImage = this.currentItemImage;
         this.currentItemImage = this.previousItemImage;
+        if (this.queue) {
+          this.previousItemImage = this.queue[this._curIdx - 2].media_image;
+        }
         void this.controller.Actions.actionPlayPrevious();
       }
     } else if (slide_idx == 2) {
       if (this.nextItemImage) {
+        this.previousItemImage = this.currentItemImage;
         this.currentItemImage = this.nextItemImage;
+        if (this.queue) {
+          this.nextItemImage = this.queue[this._curIdx + 2].media_image;
+        }
+
         void this.controller.Actions.actionPlayNext();
       }
     }
