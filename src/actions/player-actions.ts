@@ -2,6 +2,7 @@
 import { HassEntity } from "home-assistant-js-websocket";
 import { ExtendedHass, ExtendedHassEntity, RepeatMode } from "../const/common";
 import { QueueItem } from "../const/player-queue";
+import { getQueueItemsServiceSchema } from "mass-queue-types/packages/actions/get_queue_items";
 
 export default class PlayerActions {
   private _hass!: ExtendedHass;
@@ -116,7 +117,7 @@ export default class PlayerActions {
         @typescript-eslint/no-unsafe-assignment,
         @typescript-eslint/no-unsafe-member-access
       */
-    const ret = await this.hass.callWS<any>({
+    const data: getQueueItemsServiceSchema = {
       type: "call_service",
       domain: "mass_queue",
       service: "get_queue_items",
@@ -126,7 +127,8 @@ export default class PlayerActions {
         limit_after: 1,
       },
       return_response: true,
-    });
+    };
+    const ret = await this.hass.callWS<any>(data);
     /* eslint-disable-next-line @typescript-eslint/no-unsafe-call */
     const result: QueueItem = ret.response[entity.entity_id].find(
       (item: QueueItem) => {

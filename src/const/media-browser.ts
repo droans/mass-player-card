@@ -5,6 +5,12 @@ import { Thumbnail, MediaTypes, ExtendedHass } from "./common";
 import { Icons } from "./icons.js";
 import { getTranslation } from "../utils/translations.js";
 import { MediaBrowserConfig } from "../config/media-browser.js";
+import {
+  getRecommendationsServiceResponse,
+  recommendationItem,
+  recommendationItems,
+  recommendationSection,
+} from "mass-queue-types/packages/actions/get_recommendations";
 
 export interface MediaBrowserItem {
   name: string;
@@ -68,28 +74,11 @@ export interface ListItemData {
   title: string;
 }
 
-export interface RecommendationItem {
-  item_id: string;
-  name: string;
-  sort_name: string;
-  uri: string;
-  media_type: string;
-  image: string;
-}
-export type RecommendationItems = RecommendationItem[];
-export interface RecommendationSection {
-  item_id: string;
-  provider: string;
-  sort_name: string;
-  name: string;
-  uri: string;
-  icon: string;
-  image: string | null;
-  items: RecommendationItems;
-}
-export interface RecommendationResponse {
-  response: { response: RecommendationSection[] };
-}
+export type RecommendationItem = recommendationItem;
+export type RecommendationItems = recommendationItems;
+export type RecommendationSection = recommendationSection;
+
+export type RecommendationResponse = getRecommendationsServiceResponse;
 
 export type ListItems = ListItemData[];
 /* eslint-disable

@@ -19,8 +19,11 @@ import {
   themeFromImage,
   Theme,
 } from "@material/material-color-utilities";
+import { getGroupVolumeServiceSchema } from "mass-queue-types/packages/actions/get_group_volume";
+import { setGroupVolumeServiceSchema } from "mass-queue-types/packages/actions/set_group_volume";
 import { getThumbnail } from "../utils/thumbnails.js";
 import { isActive, jsonMatch, playerHasUpdated } from "../utils/util.js";
+
 export class ActivePlayerController {
   private _activeEntityConfig: ContextProvider<typeof activeEntityConf>;
   private _activeEntityID: ContextProvider<typeof activeEntityID>;
@@ -432,7 +435,7 @@ export class ActivePlayerController {
     entity_id: string,
     volume_level: number,
   ): Promise<void> {
-    await this.hass.callWS({
+    const data: setGroupVolumeServiceSchema = {
       type: "call_service",
       domain: "mass_queue",
       service: "set_group_volume",
@@ -440,7 +443,8 @@ export class ActivePlayerController {
         entity: entity_id,
         volume_level: volume_level,
       },
-    });
+    };
+    await this.hass.callWS(data);
   }
   public async setActiveGroupVolume(volume_level: number): Promise<void> {
     await this.setGroupedVolume(this.activeMediaPlayer.entity_id, volume_level);
@@ -451,7 +455,7 @@ export class ActivePlayerController {
   }
   public async getGroupedVolume(entity_id: string): Promise<number> {
     // eslint-disable-next-line @typescript-eslint/no-unsafe-assignment, @typescript-eslint/no-explicit-any
-    const ret = await this.hass.callWS<any>({
+    const data: getGroupVolumeServiceSchema = {
       type: "call_service",
       domain: "mass_queue",
       service: "get_group_volume",
@@ -459,7 +463,8 @@ export class ActivePlayerController {
         entity: entity_id,
       },
       return_response: true,
-    });
+    };
+    const ret = await this.hass.callWS<any>(data);
     // eslint-disable-next-line @typescript-eslint/no-unsafe-assignment, @typescript-eslint/no-unsafe-member-access
     const vol = ret.response.volume_level ?? 0;
     // eslint-disable-next-line @typescript-eslint/no-unsafe-return

@@ -5,6 +5,7 @@ import {
   MediaLibraryItem,
   RecommendationResponse,
 } from "../const/media-browser";
+import { getRecommendationsServiceSchema } from "mass-queue-types/packages/actions/get_recommendations";
 
 export default class BrowserActions {
   private _hass!: ExtendedHass;
@@ -144,7 +145,7 @@ export default class BrowserActions {
     providers: string[] | null,
   ): Promise<RecommendationResponse> {
     const _providers = providers ? { providers: providers } : {};
-    const data = {
+    const data: getRecommendationsServiceSchema = {
       type: "call_service",
       domain: "mass_queue",
       service: "get_recommendations",
