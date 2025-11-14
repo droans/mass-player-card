@@ -95,5 +95,5 @@ jobs:
         uses: softprops/action-gh-release@v2
         with:
           files: mass-player-card.js
-          tag_name: ${{ steps.version.outputs.pkg_version }}
+          tag_name: v${{ steps.version.outputs.pkg_version }}
           draft: true
