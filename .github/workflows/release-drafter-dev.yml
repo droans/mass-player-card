@@ -18,22 +18,63 @@ jobs:
       contents: write
       pull-requests: write
     steps:
-      - name: Checkout Repo
-        uses: actions/checkout@v3
+      - name: Run Release Drafter
+        uses: release-drafter/release-drafter@v6.1.0
         with:
-          sparse-checkout: |
-            package.json
-          sparse-checkout-cone-mode: false
+          config-name: release-drafter-dev.yml
+          prerelease: true
+          prerelease-identifier: b
+        env:
+          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+
+      - run: |
+          echo "Release: ${{ github.event.release.target_commitish }}"
+      - uses: actions/checkout@v3
+        with:
           ref: dev
+      - name: Echo release info
+        run: |
+          echo "Release ${{ github.event.release }}"
+          echo "Release ${{ github.event.release.tag_name }} published"
+          echo "Target branch: ${{ github.event.release.target_commitish }}"
+          echo "Release name: ${{ github.event.release.name }}"
+      - name: Use Node.js ${{ matrix.node-version }}
+        uses: actions/setup-node@v4
+        with:
+          node-version: ${{ matrix.node-version }}
+      - name: Prepare dependencies
+        run: |
+          echo "Get Node version"
+          node --version
+          echo "Install Yarn"
+          npm install -g corepack@0.34.0
+          echo "Check that we're running latest yarn..."
+          which yarn
+      - name: Cache Node.js modules
+        uses: actions/cache@v3
+        with:
+          path: ~/.npm # npm cache files are stored in `~/.npm` on Linux/macOS
+          key: ${{ runner.OS }}-node-${{ matrix.node-version }}-${{ hashFiles('**/yarn.lock') }}
+          restore-keys: |
+            ${{ runner.OS }}-node-${{ matrix.node-version }}
+            ${{ runner.OS }}-
+      - name: Install dependencies
+        run: yarn install --frozen-lockfile
+      - name: Set version in release, repo based on tag
+        run: |
+          npm config set git-tag-version false
+          npm version prerelease
+      - name: Build the project
+        run: |
+          yarn rollup
       - name: Get Version
         id: version
         run: |
           echo "pkg_version=$(jq -r '.version' package.json)" >> "${GITHUB_OUTPUT}"
-      - name: Run Release Drafter
-        uses: release-drafter/release-drafter@v6.1.0
+
+      - name: Upload built source
+        uses: softprops/action-gh-release@v2
         with:
-          tag: ${{ steps.version.outputs.pkg_version }}
-          version: ${{ steps.version.outputs.pkg_version }}
-          config-name: release-drafter-dev.yml
-        env:
-          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+          files: dist/mass-player-card.js
+          tag_name: ${{ steps.version.outputs.pkg_version }}
+          draft: true
