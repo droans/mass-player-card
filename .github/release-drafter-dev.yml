@@ -5,7 +5,6 @@ change-template: "- $TITLE @$AUTHOR (#$NUMBER)"
 sort-direction: ascending
 prerelease-identifier: 'b'
 prerelease: true
-include-pre-releases: true
 categories:
   - title: "🚨 Breaking changes"
     labels:
