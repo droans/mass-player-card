@@ -61,6 +61,7 @@ A Home Assistant media player card built for Music Assistant players.
   - [How do I theme the card?](#how-do-i-theme-the-card)
   - [Can this card work in my local language?](#can-this-card-work-in-my-local-language)
   - [I am having issues with this card on my iOS/OSX device but it works fine elsewhere.](#i-am-having-issues-with-this-card-on-my-iososx-device-but-it-works-fine-elsewhere)
+  - [I would like to sponsor you/the card and/or pay to add a new feature!](#i-would-like-to-sponsor-youthe-card-andor-pay-to-add-a-new-feature)
   - [I have other questions or issues not addressed](#i-have-other-questions-or-issues-not-addressed)
 - [Contributing](#contributing)
 - [Developing](#developing)
@@ -676,6 +677,12 @@ The instructions are rather similar for improving existing language support. How
 Apple's Webkit engine has some peculiarities that aren't present in other browsers. Unfortunately, I don't own the required equipment (an iOS device and a Mac) in order to properly debug this issue.
 
 If you have the abilities and the equipment to do so, I am happy to accept any contributions to help fix this issue!
+
+## I would like to sponsor you/the card and/or pay to add a new feature!
+
+While I appreciate it, I am not going to accept any funding.
+
+When someone funds development, there's often an implied belief that the card will keep being developed or the maintainer will provide new projects. I want to be able to drop development on this card when I feel that it is complete. I do not want people to feel misled, cheated, or that I should prioritize their wants over anything else. This card is something I created for myself
 
 ## I have other questions or issues not addressed
 
