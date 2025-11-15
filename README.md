@@ -41,6 +41,7 @@ A Home Assistant media player card built for Music Assistant players.
   - [Base Config](#base-config)
   - [Entity Config](#entity-config)
   - [Entity Hidden Elements Config](#entity-hidden-elements-config)
+  - [Expressive Scheme](#expressive-scheme)
   - [Music Player Config](#music-player-config)
   - [Music Player Hidden Elements Config](#music-player-hidden-elements-config)
   - [Music Player Layout Config](#music-player-layout-config)
