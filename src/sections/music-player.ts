@@ -7,7 +7,7 @@ import {
   PropertyValues,
   TemplateResult,
 } from "lit";
-import { query, state } from "lit/decorators.js";
+import { state } from "lit/decorators.js";
 import { html } from "lit/static-html.js";
 
 import "../components/media-progress";
@@ -25,7 +25,6 @@ import {
   DetailValEventData,
   ExtendedHass,
   ExtendedHassEntity,
-  WaAnimation,
 } from "../const/common";
 import {
   activeEntityConf,
@@ -75,8 +74,6 @@ class MusicPlayerCard extends LitElement {
 
   @state()
   private _groupVolumeLevel!: number;
-
-  @query("animation") private _animationElement!: WaAnimation;
 
   private _activeEntityConfig!: EntityConfig;
   private _activeEntity!: ExtendedHassEntity;
@@ -587,36 +584,14 @@ class MusicPlayerCard extends LitElement {
     return html`
       <div id="container" class="${expressive ? `container-expressive` : ``}">
         ${this.renderHeader()}
-        <wa-animation
-          id="animation"
-          name="fadeIn"
-          easing="ease-in"
-          iterations="1"
-          play=${this.checkVisibility()}
-          playback-rate="4"
+        <div
+          id="player-card"
+          class="${expressive ? `player-card-expressive` : ``}"
         >
-          <div
-            id="player-card"
-            class="${expressive ? `player-card-expressive` : ``}"
-          >
-            ${this.renderArtwork()} ${this.renderControls()}
-          </div>
-        </wa-animation>
+          ${this.renderArtwork()} ${this.renderControls()}
+        </div>
       </div>
     `;
-  }
-  connectedCallback(): void {
-    super.connectedCallback();
-    if (!this._firstLoaded) {
-      return;
-    }
-    this.updatePlayerData();
-    if (this._animationElement.cancel) {
-      this._animationElement.cancel();
-    }
-  }
-  disconnectedCallback(): void {
-    super.disconnectedCallback();
   }
   private delayedUpdatePlayerData = () => {
     setTimeout(() => {
