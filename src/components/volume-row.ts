@@ -197,10 +197,11 @@ class VolumeRow extends LitElement {
     const tickCt = 19;
     const rng = [...Array(tickCt).keys()];
     const vol = this.player_data.volume;
+    const max_vol = this.maxVolume;
     return html`
       <div id="ticks">
         ${rng.map((i) => {
-          const tick_pct = ((i + 1) * 100) / (tickCt + 1);
+          const tick_pct = ((i + 1) * max_vol) / (tickCt + 1);
           const tick_inside = tick_pct <= vol;
           return html`
             <div
