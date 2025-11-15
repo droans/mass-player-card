@@ -13,7 +13,7 @@ import { Sections } from "./card";
 import { ActivePlayerController } from "../controller/active-player";
 import { ActionsController } from "../controller/actions";
 import { MassCardController } from "../controller/controller";
-import { Theme } from "@material/material-color-utilities";
+import { DynamicScheme } from "@material/material-color-utilities";
 import { Icons } from "./icons";
 import { QueueItem, QueueItems } from "./player-queue.js";
 import { QueueController } from "../controller/queue.js";
@@ -50,7 +50,7 @@ export const queueControllerContext = createContext<QueueController>(uuid4());
 export const browserControllerContext =
   createContext<MediaBrowserController>(uuid4());
 
-export const expressiveThemeContext = createContext<Theme | undefined>(uuid4());
+export const expressiveSchemeContext = createContext<DynamicScheme | undefined>(uuid4());
 export const useExpressiveContext = createContext<boolean>(uuid4());
 export const IconsContext = createContext<Icons>(uuid4());
 

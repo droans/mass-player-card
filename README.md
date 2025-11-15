@@ -110,6 +110,8 @@ entities:
 
 ```yaml
 type: custom:mass-player-card
+expressive: true
+expressive_theme: expressive
 entities:
   - entity_id: <MEDIA_PLAYER_ENTITY>
     volume_entity_id: <MEDIA_PLAYER_ENTITY>
@@ -231,6 +233,8 @@ media_browser:
 ```yaml
 type: custom:mass-player-card
 expressive: true
+expressive: true
+expressive_theme: fruit_salad
 download_local: false
 entities:
   - media_player.kitchen_player_music_assistant
@@ -347,16 +351,17 @@ media_browser:
 </details>
 
 ## Base Config
-| Parameter      | Type                                             | Required | Default | Description                                           |
-|----------------|--------------------------------------------------|----------|---------|-------------------------------------------------------|
-| type           | str                                              | Yes      | n/a     | Use `custom:mass-player-card`                         |
-| expressive     | boolean                                          | No       | true    | Enables Material Expressive theme                     |
-| download_local | boolean                                          | No       | false   | Download and encode images if not remotely accessible |
-| entities       | list of string or [EntityConfig](#entity-config) | Yes      | n/a     | The Music Assistant `media_player` entities to use    |
-| player         | [MusicPlayerConfig](#music-player-config)        | No       | 5       | See Below                                             |
-| queue          | [QueueConfig](#queue-config)                     | No       | 5       | See Below                                             |
-| media_browser  | [MediaBrowserConfig](#media-browser-config)      | No       | 5       | See Below                                             |
-| players        | [PlayersConfig](#players-config)                 | No       | 5       | See Below                                             |
+| Parameter         | Type                                             | Required | Default    | Description                                           |
+|-------------------|--------------------------------------------------|----------|------------|-------------------------------------------------------|
+| type              | str                                              | Yes      | n/a        | Use `custom:mass-player-card`                         |
+| expressive        | boolean                                          | No       | true       | Enables Material Expressive theme                     |
+| expressive_scheme | str                                              | No       | expressive | The expressive scheme to use for the theme, see below |
+| download_local    | boolean                                          | No       | false      | Download and encode images if not remotely accessible |
+| entities          | list of string or [EntityConfig](#entity-config) | Yes      | n/a        | The Music Assistant `media_player` entities to use    |
+| player            | [MusicPlayerConfig](#music-player-config)        | No       | 5          | See Below                                             |
+| queue             | [QueueConfig](#queue-config)                     | No       | 5          | See Below                                             |
+| media_browser     | [MediaBrowserConfig](#media-browser-config)      | No       | 5          | See Below                                             |
+| players           | [PlayersConfig](#players-config)                 | No       | 5          | See Below                                             |
 
 ## Entity Config
 For each entity, you can either provide the Entity ID by itself or you can provide the Music Assistant media player Entity ID, the media player Entity ID for volume control, and/or the name of the player. Below is the config if you would like to provide the additional details.
@@ -379,6 +384,20 @@ Certain elements across the different sections can be hidden or displayed depend
 | queue         | [QueueHiddenElementsConfig](#queue-hidden-elements-config)  | No       | See below   | See Below                                |
 | media_browser | [MediaBrowserHiddenElementsConfig](#media-browser-hidden-elements-config)  | No       | See below   | See Below                                |
 | players       | [PlayersHiddenElementsConfig](#players-hidden-elements-config)  | No       | See below   | See Below                                |
+
+## Expressive Scheme
+This defines the expressive scheme which will be used for color generation. @Nerwyn has a [great description](https://github.com/Nerwyn/material-you-utilities) in the readme for his Material You Utilities which may be useful.
+
+There are a handful of different options for the scheme:
+* content
+* expressive
+* fidelity
+* fruit_salad
+* monochrome
+* neutral
+* rainbow
+* tonal_spot
+* vibrant
 
 ## Music Player Config
 

@@ -48,6 +48,7 @@ export interface Config {
   media_browser: MediaBrowserConfig;
   players: PlayersConfig;
   expressive: boolean;
+  expressive_scheme: ExpressiveScheme;
   download_local: boolean;
 }
 
@@ -67,12 +68,24 @@ export interface EntityConfig {
   inactive_when_idle: boolean;
 }
 
+export type ExpressiveScheme = 
+  'content'
+  | 'expressive'
+  | 'fidelity'
+  | 'fruit_salad'
+  | 'monochrome'
+  | 'neutral'
+  | 'rainbow'
+  | 'tonal_spot'
+  | 'vibrant'
+
 export const DEFAULT_CONFIG: Config = {
   queue: DEFAULT_QUEUE_CONFIG,
   player: DEFAULT_PLAYER_CONFIG,
   players: DEFAULT_PLAYERS_CONFIG,
   media_browser: DEFAULT_MEDIA_BROWSER_CONFIG,
   expressive: true,
+  expressive_scheme: 'expressive',
   entities: [],
   download_local: false,
 };
@@ -96,6 +109,57 @@ export function createStubConfig(hass: ExtendedHass, entities: string[]) {
   };
 }
 
+function createExpressiveSchemeConfigForm() {
+  return {
+    name: "expressive_scheme",
+    required: false,
+    selector: {
+      select: {
+        multiple: false,
+        mode: "dropdown",
+        options: [
+          {
+            value: "content",
+            label: "Content"
+          },
+          {
+            value: "expressive",
+            label: "Expressive"
+          },
+          {
+            value: "fidelity",
+            label: "Fidelity"
+          },
+          {
+            value: "fruit_salad",
+            label: "Fruit Salad"
+          },
+          {
+            value: "monochrome",
+            label: "Monochrome"
+          },
+          {
+            value: "neutral",
+            label: "Neutral"
+          },
+          {
+            value: "rainbow",
+            label: "Rainbow"
+          },
+          {
+            value: "tonal_spot",
+            label: "Tonal Spot"
+          },
+          {
+            value: "vibrant",
+            label: "Vibrant"
+          },
+        ]
+      }
+    }
+  }
+}
+
 export function createConfigForm() {
   return {
     schema: [
@@ -115,6 +179,7 @@ export function createConfigForm() {
         required: false,
         selector: { boolean: {}, default: true },
       },
+      createExpressiveSchemeConfigForm(),
       {
         name: "download_local",
         required: false,

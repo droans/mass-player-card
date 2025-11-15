@@ -5,7 +5,7 @@ import {
   activeEntityID,
   activeMediaPlayer,
   activePlayerName,
-  expressiveThemeContext,
+  expressiveSchemeContext,
   groupedPlayersContext,
   groupVolumeContext,
   useExpressiveContext,
@@ -15,14 +15,12 @@ import { Config, EntityConfig } from "../config/config";
 import { PlayerData } from "../const/music-player";
 import { QueueItem } from "../const/player-queue";
 import {
-  applyTheme,
-  themeFromImage,
-  Theme,
+  DynamicScheme
 } from "@material/material-color-utilities";
 import { getGroupVolumeServiceSchema } from "mass-queue-types/packages/actions/get_group_volume";
 import { setGroupVolumeServiceSchema } from "mass-queue-types/packages/actions/set_group_volume";
-import { getThumbnail } from "../utils/thumbnails.js";
 import { isActive, jsonMatch, playerHasUpdated } from "../utils/util.js";
+import { applyExpressiveSchemeFromImage } from "../utils/expressive.js";
 
 export class ActivePlayerController {
   private _activeEntityConfig: ContextProvider<typeof activeEntityConf>;
@@ -30,8 +28,7 @@ export class ActivePlayerController {
   private _activeMediaPlayer: ContextProvider<typeof activeMediaPlayer>;
   private _activePlayerName: ContextProvider<typeof activePlayerName>;
   private _volumeMediaPlayer: ContextProvider<typeof volumeMediaPlayer>;
-  private _initialExpressiveLoad = false;
-  private _expressiveTheme!: ContextProvider<typeof expressiveThemeContext>;
+  private _expressiveScheme!: ContextProvider<typeof expressiveSchemeContext>;
   private _useExpressive!: ContextProvider<typeof useExpressiveContext>;
   private _groupMembers!: ContextProvider<typeof groupedPlayersContext>;
   private _groupVolume!: ContextProvider<typeof groupVolumeContext>;
@@ -39,11 +36,11 @@ export class ActivePlayerController {
   private _hass!: ExtendedHass;
   private _config!: Config;
   private _host: HTMLElement;
-  private _updatingTheme = false;
+  private _updatingScheme = false;
 
   constructor(hass: ExtendedHass, config: Config, host: HTMLElement) {
-    this._expressiveTheme = new ContextProvider(host, {
-      context: expressiveThemeContext,
+    this._expressiveScheme = new ContextProvider(host, {
+      context: expressiveSchemeContext,
     });
     this._useExpressive = new ContextProvider(host, {
       context: useExpressiveContext,
@@ -76,9 +73,9 @@ export class ActivePlayerController {
     this.setDefaultActivePlayer();
     if (
       !isActive(hass, this.activeMediaPlayer, this.activeEntityConfig) ||
-      !this.expressiveTheme
+      !this.expressiveScheme
     ) {
-      void this.applyExpressiveTheme();
+      void this.applyDefaultExpressiveScheme();
     }
   }
   public set hass(hass: ExtendedHass) {
@@ -134,11 +131,11 @@ export class ActivePlayerController {
       if (player.attributes?.group_members) {
         this.setGroupAttributes();
       }
-      if (!this._expressiveTheme) {
+      if (!this.expressiveScheme) {
         const img =
           player.attributes.entity_picture_local ??
           player.attributes.entity_picture;
-        this.applyExpressiveThemeFromImage(img);
+        void this.applyExpressiveSchemeFromImage(img);
       }
     }
   }
@@ -193,11 +190,13 @@ export class ActivePlayerController {
     return this._volumeMediaPlayer.value;
   }
 
-  private set expressiveTheme(theme: Theme | undefined) {
-    this._expressiveTheme.setValue(theme);
+  private set expressiveScheme(scheme: DynamicScheme | undefined) {
+    if (scheme) {
+      this._expressiveScheme.setValue(scheme);
+    }
   }
-  public get expressiveTheme() {
-    return this._expressiveTheme.value;
+  public get expressiveScheme() {
+    return this._expressiveScheme.value;
   }
 
   private dispatchUpdatedActivePlayer() {
@@ -313,15 +312,6 @@ export class ActivePlayerController {
     return result;
     /* eslint-enable */
   }
-
-  public applyExpressiveThemeTo(host: HTMLElement) {
-    if (this.expressiveTheme) {
-      applyTheme(this.expressiveTheme, {
-        dark: this.hass.themes.darkMode,
-        target: host,
-      });
-    }
-  }
   public onActiveTrackChange = (ev: Event) => {
     /* eslint-disable
       @typescript-eslint/no-unsafe-assignment,
@@ -333,98 +323,23 @@ export class ActivePlayerController {
       return;
     }
     const img = detail.image;
-    void this.applyExpressiveThemeFromImage(img);
+    void this.applyExpressiveSchemeFromImage(img);
     /* eslint-enable
       @typescript-eslint/no-unsafe-assignment,
       @typescript-eslint/no-unsafe-argument,
       @typescript-eslint/no-unsafe-member-access
     */
   };
-  public async applyExpressiveThemeFromImage(img: string) {
-    if (!this.config.expressive || this._updatingTheme) {
+  public async applyDefaultExpressiveScheme() {
+    await this.applyExpressiveSchemeFromImage(Thumbnail.CLEFT)
+  }
+  public async applyExpressiveSchemeFromImage(img: string) {
+    if (!this.config.expressive || this._updatingScheme) {
       return;
     }
-    const _theme = this.generateExpressiveThemeFromImage(img);
-    const options = {
-      dark: this.hass.themes.darkMode,
-      target: this._host,
-    };
-    this._updatingTheme = true;
-    const theme = await _theme;
-    if (theme) {
-      applyTheme(theme, options);
-    }
-    this._updatingTheme = false;
-  }
-  public async generateExpressiveThemeFromImage(img: string) {
-    const elem = this.generateImageElementFromImage(img);
-    if (!elem) {
-      return;
-    }
-    const theme = await themeFromImage(elem);
-    this.expressiveTheme = theme;
-    return theme;
-  }
-  public generateImageElementFromImage(
-    img: string,
-  ): HTMLImageElement | undefined {
-    const elem = document.createElement("img");
-    const def = getThumbnail(this.hass, Thumbnail.CLEFT);
-    elem.src = img;
-    elem.crossOrigin = "Anonymous";
-    elem.onerror = () => {
-      elem.src = def;
-    };
-    return elem;
-  }
-  public async applyExpressiveTheme() {
-    if (!this.config.expressive) {
-      return;
-    }
-    const _theme = this.generateExpressiveTheme();
-    const options = {
-      dark: this.hass.themes.darkMode,
-      target: this._host,
-    };
-    const theme = await _theme;
-    if (theme) {
-      applyTheme(theme, options);
-    }
-  }
-  public async generateExpressiveTheme() {
-    return this.generateExpressiveThemeFromActiveImage();
-  }
-  public generateImageElementFromActiveImage(): HTMLImageElement | undefined {
-    const attrs = this.activeMediaPlayer.attributes;
-    const def = getThumbnail(this.hass, Thumbnail.CLEFT);
-    const origin = window.location.origin;
-    const local = attrs.entity_picture_local;
-    const non_local = attrs.entity_picture;
-    const pic = `${origin}${local ?? non_local}`;
-    const url: string = isActive(
-      this.hass,
-      this.activeMediaPlayer,
-      this.activeEntityConfig,
-    )
-      ? (pic ?? def)
-      : def;
-    const elem = document.createElement("img");
-    elem.height = 75;
-    elem.width = 75;
-    elem.src = url;
-    elem.onerror = () => {
-      elem.src = def;
-    };
-    return elem;
-  }
-  public async generateExpressiveThemeFromActiveImage() {
-    const elem = this.generateImageElementFromActiveImage();
-    if (!elem) {
-      return;
-    }
-    const theme = await themeFromImage(elem);
-    this.expressiveTheme = theme;
-    return theme;
+    this._updatingScheme = true;
+    await applyExpressiveSchemeFromImage(img, this.hass, this.config.expressive_scheme, this._host)
+    this._updatingScheme = false;
   }
   private async _getAndSetGroupedVolume() {
     const entity = this.activeMediaPlayer.entity_id;
