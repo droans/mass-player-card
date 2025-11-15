@@ -14,9 +14,7 @@ import {
 import { Config, EntityConfig } from "../config/config";
 import { PlayerData } from "../const/music-player";
 import { QueueItem } from "../const/player-queue";
-import {
-  DynamicScheme
-} from "@material/material-color-utilities";
+import { DynamicScheme } from "@material/material-color-utilities";
 import { getGroupVolumeServiceSchema } from "mass-queue-types/packages/actions/get_group_volume";
 import { setGroupVolumeServiceSchema } from "mass-queue-types/packages/actions/set_group_volume";
 import { isActive, jsonMatch, playerHasUpdated } from "../utils/util.js";
@@ -331,14 +329,19 @@ export class ActivePlayerController {
     */
   };
   public async applyDefaultExpressiveScheme() {
-    await this.applyExpressiveSchemeFromImage(Thumbnail.CLEFT)
+    await this.applyExpressiveSchemeFromImage(Thumbnail.CLEFT);
   }
   public async applyExpressiveSchemeFromImage(img: string) {
     if (!this.config.expressive || this._updatingScheme) {
       return;
     }
     this._updatingScheme = true;
-    await applyExpressiveSchemeFromImage(img, this.hass, this.config.expressive_scheme, this._host)
+    await applyExpressiveSchemeFromImage(
+      img,
+      this.hass,
+      this.config.expressive_scheme,
+      this._host,
+    );
     this._updatingScheme = false;
   }
   private async _getAndSetGroupedVolume() {
@@ -369,7 +372,6 @@ export class ActivePlayerController {
     return await this.getGroupedVolume(this.activeMediaPlayer.entity_id);
   }
   public async getGroupedVolume(entity_id: string): Promise<number> {
-    // eslint-disable-next-line @typescript-eslint/no-unsafe-assignment, @typescript-eslint/no-explicit-any
     const data: getGroupVolumeServiceSchema = {
       type: "call_service",
       domain: "mass_queue",
@@ -379,6 +381,7 @@ export class ActivePlayerController {
       },
       return_response: true,
     };
+    // eslint-disable-next-line @typescript-eslint/no-unsafe-assignment, @typescript-eslint/no-explicit-any
     const ret = await this.hass.callWS<any>(data);
     // eslint-disable-next-line @typescript-eslint/no-unsafe-assignment, @typescript-eslint/no-unsafe-member-access
     const vol = ret.response.volume_level ?? 0;

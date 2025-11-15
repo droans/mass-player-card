@@ -50,7 +50,9 @@ export const queueControllerContext = createContext<QueueController>(uuid4());
 export const browserControllerContext =
   createContext<MediaBrowserController>(uuid4());
 
-export const expressiveSchemeContext = createContext<DynamicScheme | undefined>(uuid4());
+export const expressiveSchemeContext = createContext<DynamicScheme | undefined>(
+  uuid4(),
+);
 export const useExpressiveContext = createContext<boolean>(uuid4());
 export const IconsContext = createContext<Icons>(uuid4());
 

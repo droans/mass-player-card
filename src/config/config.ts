@@ -68,16 +68,16 @@ export interface EntityConfig {
   inactive_when_idle: boolean;
 }
 
-export type ExpressiveScheme = 
-  'content'
-  | 'expressive'
-  | 'fidelity'
-  | 'fruit_salad'
-  | 'monochrome'
-  | 'neutral'
-  | 'rainbow'
-  | 'tonal_spot'
-  | 'vibrant'
+export type ExpressiveScheme =
+  | "content"
+  | "expressive"
+  | "fidelity"
+  | "fruit_salad"
+  | "monochrome"
+  | "neutral"
+  | "rainbow"
+  | "tonal_spot"
+  | "vibrant";
 
 export const DEFAULT_CONFIG: Config = {
   queue: DEFAULT_QUEUE_CONFIG,
@@ -85,7 +85,7 @@ export const DEFAULT_CONFIG: Config = {
   players: DEFAULT_PLAYERS_CONFIG,
   media_browser: DEFAULT_MEDIA_BROWSER_CONFIG,
   expressive: true,
-  expressive_scheme: 'expressive',
+  expressive_scheme: "expressive",
   entities: [],
   download_local: false,
 };
@@ -120,44 +120,44 @@ function createExpressiveSchemeConfigForm() {
         options: [
           {
             value: "content",
-            label: "Content"
+            label: "Content",
           },
           {
             value: "expressive",
-            label: "Expressive"
+            label: "Expressive",
           },
           {
             value: "fidelity",
-            label: "Fidelity"
+            label: "Fidelity",
           },
           {
             value: "fruit_salad",
-            label: "Fruit Salad"
+            label: "Fruit Salad",
           },
           {
             value: "monochrome",
-            label: "Monochrome"
+            label: "Monochrome",
           },
           {
             value: "neutral",
-            label: "Neutral"
+            label: "Neutral",
           },
           {
             value: "rainbow",
-            label: "Rainbow"
+            label: "Rainbow",
           },
           {
             value: "tonal_spot",
-            label: "Tonal Spot"
+            label: "Tonal Spot",
           },
           {
             value: "vibrant",
-            label: "Vibrant"
+            label: "Vibrant",
           },
-        ]
-      }
-    }
-  }
+        ],
+      },
+    },
+  };
 }
 
 export function createConfigForm() {
