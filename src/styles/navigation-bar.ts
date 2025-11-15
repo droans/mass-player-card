@@ -44,6 +44,6 @@ export default css`
     --tab-icon-height: 24px;
   }
   .tabbed-expressive {
-    --tabbed-background-color: var(--md-sys-color-primary-container) !important;
+    --tabbed-background-color: var(--md-sys-color-surface-container) !important;
   }
 `;

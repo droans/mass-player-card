@@ -92,6 +92,7 @@ export default css`
     --inherited-background-color: var(--next-prev-background-color);
     --wa-color-fill-normal: var(--next-prev-background-color);
     box-shadow: var(--md-sys-elevation-level1);
+    padding: 0px;
   }
   #button-next::part(base) {
     --ha-button-border-radius: var(--prev-border-radius);
