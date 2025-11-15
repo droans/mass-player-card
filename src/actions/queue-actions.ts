@@ -49,7 +49,6 @@ export default class QueueActions {
       return_response: true,
     };
     const ret: getQueueItemsServiceResponse = await this.hass.callWS<any>(data);
-    /* eslint-disable-next-line @typescript-eslint/no-unsafe-member-access */
     const result: QueueItems = ret.response[this.player_entity];
     return result;
     /* eslint-enable
