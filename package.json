@@ -3,7 +3,7 @@
   "description": "Custom Music Assistant Player Card for Home Assistant",
   "repository": "https://github.com/droans/mass-player-card",
   "author": "Michael Carroll",
-  "version": "2.2.1-b.2",
+  "version": "2.3.0",
   "module": "mass-player-card.js",
   "keywords": [
     "home-assistant",
@@ -58,7 +58,7 @@
     "start": "rollup -c rollup.config.dev.js --watch",
     "build": "yarn rollup",
     "prettier": "prettier ./src --write",
-    "lint": "eslint src/*.ts --max-warnings 0 --no-warn-ignored",
+    "lint": "eslint src/**/*.ts --max-warnings 0 --no-warn-ignored",
     "rollup": "rollup -c",
     "full": "echo 'Generating TOC' && yarn docs && echo 'Running Prettier' && yarn prettier && echo 'Linting' && yarn lint",
     "docs": "doctoc ./README.md --maxlevel 2"
