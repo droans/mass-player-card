@@ -188,10 +188,12 @@ class MediaRow extends LitElement {
     return `calc(100% - ((32px * ${button_ct.toString()}) + (8px * ${gap_ct.toString()}) + 16px));`;
   }
   private renderTitle(): TemplateResult {
+    const played =
+      !this.media_item.show_action_buttons && !this.media_item.playing;
     return html`
       <span
         slot="headline"
-        class="title"
+        class="title ${played ? "title-disabled" : ""}"
         style="width: ${this._calculateTitleWidth()}"
       >
         ${this.media_item.media_title}
@@ -202,10 +204,12 @@ class MediaRow extends LitElement {
     if (this.hide.artist_names) {
       return html``;
     }
+    const played =
+      !this.media_item.show_action_buttons && !this.media_item.playing;
     return html`
       <span
         slot="supporting-text"
-        class="title"
+        class="title ${played ? "title-disabled" : ""}""
         style="width: ${this._calculateTitleWidth()}"
       >
         ${this.media_item.media_artist}
