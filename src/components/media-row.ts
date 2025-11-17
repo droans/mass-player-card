@@ -209,7 +209,7 @@ class MediaRow extends LitElement {
     return html`
       <span
         slot="supporting-text"
-        class="title ${played ? "title-disabled" : ""}""
+        class="title ${played ? "title-disabled" : ""}"
         style="width: ${this._calculateTitleWidth()}"
       >
         ${this.media_item.media_artist}
