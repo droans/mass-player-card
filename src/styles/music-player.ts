@@ -202,6 +202,8 @@ export default css`
     background-position: center;
     background-size: 22em;
     position: relative;
+    border-top-left-radius: 28px;
+    border-top-right-radius: 28px;
   }
   .player-card-expressive {
     background-color: var(--md-sys-color-background);
