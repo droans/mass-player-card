@@ -4,15 +4,13 @@ import { css } from "lit";
 // https://lit.dev/docs/components/styles/
 export default css`
   :host {
-    --lower-button-background-color: var(
-      --md-sys-color-secondary-container
-    ) !important;
-    --lower-button-background-color-active: var(
-      --md-sys-color-secondary
-    ) !important;
+    --lower-button-background-color: var(--md-sys-color-surface-container-low) !important;
+    --lower-button-background-color-active: var(--md-sys-color-primary) !important;
+    --lower-button-background-color-hover: var(--md-sys-color-on-primary);
 
-    --lower-button-icon-color: var(--md-sys-color-on-secondary-container);
-    --lower-button-icon-color-active: var(--md-sys-color-on-secondary);
+    --lower-button-icon-color: var(--md-sys-color-primary);
+    --lower-button-icon-color-active: var(--md-sys-color-on-primary);
+    --lower-button-icon-color-hover: var(--md-sys-color-on-primary);
 
     --lower-button-border-radius: 8px;
     --lower-button-start-border-radius: 24px 8px 8px 24px;
@@ -23,7 +21,7 @@ export default css`
       --md-sys-color-secondary-container,
       var(--inherited-background-color, var(--ha-button-background-color))
     ) !important;
-    --next-prev-icon-color: var(--md-sys-color-on-surface-variant);
+    --next-prev-icon-color: var(--md-sys-color-on-secondary-container);
 
     --next-prev-button-height: var(--play-pause-icon-height);
     --next-prev-button-width: 48px;
@@ -38,7 +36,7 @@ export default css`
       var(--inherited-background-color, var(--ha-button-background-color))
     ) !important;
     --pause-background-color: var(
-      --md-sys-color-secondary-container,
+      --md-sys-color-surface-container,
       var(--inherited-background-color, var(--ha-button-background-color))
     ) !important;
 
@@ -59,6 +57,9 @@ export default css`
   .button-lower::part(label) {
     color: var(--lower-button-icon-color);
     --inherited-text-color: var(--lower-button-icon-color);
+  }
+  .button-lower::part(base):hover {
+    --ha-button-border-radius: 40px !important;
   }
 
   .button-lower:first-of-type::part(base) {
@@ -149,7 +150,7 @@ export default css`
     color: var(--md-sys-color-on-primary);
   }
   #icon-pause {
-    color: var(--md-sys-color-on-secondary-container);
+    color: var(--md-sys-color-on-surface-variant);
   }
 
   .player-controls {

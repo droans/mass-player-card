@@ -1,10 +1,11 @@
 import { css } from "lit";
 export default css`
   :host {
-    --me-menu-background-color: var(--md-sys-color-secondary-container);
+    --me-menu-background-color: var(--md-sys-color-surface-container);
     --me-menu-text-color: var(--md-sys-color-on-secondary-container);
     --mass-menu-selected-background-color: var(--md-sys-color-secondary);
     --mass-menu-selected-text-color: var(--md-sys-color-on-secondary);
+    --mdc-list-side-padding-left: var(--menu-item-padding-left);
   }
   .menu-expressive {
     --mdc-theme-text-primary-on-background: var(--me-menu-text-color);
@@ -33,6 +34,6 @@ export default css`
     border-radius: var(--menu-selected-item-border-radius);
   }
   .svg-menu-expressive {
-    color: var(--md-sys-color-on-background);
+    color: var(--md-sys-color-on-secondary-container);
   }
 `;

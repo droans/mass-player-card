@@ -376,7 +376,7 @@ export class MediaBrowser extends LitElement {
           size="medium"
           id="search-favorite-button"
           @click=${this.onSearchLibrarySelect}
-          class="button-min"
+          class="button-min ${this.useExpressive ? `search-library-button-expressive` : ``}"
         >
           <ha-svg-icon
             .path=${this.searchLibrary

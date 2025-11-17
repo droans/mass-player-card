@@ -10,12 +10,11 @@ export default css`
   .action-button::part(base) {
     height: 30px;
     width: 30px;
-    border-radius: 25%;
     --wa-form-control-padding-inline: 0px;
   }
   .action-button-expressive::part(base) {
     box-shadow: var(--md-sys-elevation-level1);
-    --ha-button-border-radius: var(--button-small-border-radius) !important;
+    --ha-button-border-radius: 4px !important;
     background-color: var(--expressive-row-button-color);
     --inherited-background-color: var(--expressive-row-button-color);
   }
@@ -25,6 +24,21 @@ export default css`
       --expressive-row-button-color-hover
     ) !important;
     box-shadow: var(--md-sys-elevation-level1);
+    --ha-button-border-radius: var(--button-small-border-radius) !important;
+  }
+  .action-button-expressive:first-of-type::part(base) {
+    --ha-button-border-radius: var(--button-small-border-radius) 4px 4px var(--button-small-border-radius) !important;
+  }
+  .action-button-expressive:first-of-type::part(base):hover {
+    --ha-button-border-radius: var(--button-small-border-radius) !important;
+  }
+  .action-button-expressive:last-of-type::part(base) {
+    --ha-button-border-radius: 4px var(--button-small-border-radius) var(--button-small-border-radius) 4px !important;
+  }
+  .action-button-expressive:last-of-type::part(base):hover {
+    --ha-button-border-radius: var(--button-small-border-radius) !important;
+  }
+  .action-button-expressive:only-of-type::part(base) {
     --ha-button-border-radius: var(--button-small-border-radius) !important;
   }
 
@@ -52,6 +66,7 @@ export default css`
 
   .button-expressive {
     background-color: var(--expressive-row-color) !important;
+    --md-list-item-hover-state-layer-color: var(--md-sys-color-on-surface);
   }
   .button-expressive > .title {
     color: var(--expressive-row-color-text);
@@ -71,20 +86,23 @@ export default css`
     flex-direction: row;
     align-items: center;
     justify-content: flex-end;
-    gap: 8px;
+    gap: 2px;
     height: 48px;
     right: 0;
     padding-right: 16px;
     position: absolute;
   }
 
+  .divider {
+    --divider-color: var(--md-sys-color-surface-variant);
+  }
   .divider::before {
     content: " ";
     display: block;
     height: 1px;
     background-color: var(--divider-color);
-    margin-left: 8px;
-    margin-right: 8px;
+    margin-left: 64px;
+    margin-right: 24px;
   }
 
   .svg-action-button {
@@ -113,7 +131,7 @@ export default css`
     background-repeat: no-repeat;
     background-position: left;
     border-radius: var(--media-row-border-radius);
-    filter: opacity(0.5);
+    opacity: 0.38;
   }
 
   .title {
@@ -123,5 +141,8 @@ export default css`
     white-space: nowrap;
     min-width: 0;
     color: var(--font-color);
+  }
+  .title-disabled {
+    opacity: 0.38;
   }
 `;
