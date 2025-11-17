@@ -23,6 +23,14 @@ export default css`
     box-shadow: var(--md-sys-elevation-level1);
     border-radius: var(--button-small-border-radius) !important;
   }
+  .button-expressive .header-icon,
+  .filter-menu-expressive::part(menu-svg),
+  .menu-expressive::part(menu-svg) {
+    color: var(--md-sys-color-on-primary);
+  }
+  #button-search::part(base), #button-back::part(base) {
+    --inherited-background-color: var(--md-sys-color-primary);
+  }
 
   #container {
     box-shadow: unset;
@@ -46,6 +54,7 @@ export default css`
     --mdc-icon-size: 1.5em;
     --control-select-menu-padding: 0px;
     --control-select-menu-background-color: unset;
+    background-color: var(--md-sys-color-primary);
     --control-select-menu-height: 35px;
     width: 35px;
   }
@@ -122,8 +131,8 @@ export default css`
     top: 2.5px;
     left: 2.5px;
   }
-  #search-media-type-menu-expressive::part(menu-svg) {
-    color: var(--md-sys-color-on-background);
+  .search-media-type-menu-expressive::part(menu-svg), .search-library-button-expressive .svg-menu-expressive {
+    color: var(--md-sys-color-on-primary) !important;
   }
   #search-options {
     height: 35px;
@@ -131,7 +140,7 @@ export default css`
   }
 
   .svg-menu-expressive {
-    color: var(--md-sys-color-on-background);
+    color: var(--md-sys-color-primary);
   }
   .svg-xs {
     height: 30px;

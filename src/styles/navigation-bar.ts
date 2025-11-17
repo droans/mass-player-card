@@ -40,7 +40,7 @@ export default css`
     --tabbed-background-color: var(--tabbed-background-color);
     --tab-active-icon-color: var(--md-sys-color-on-secondary-container);
     --tab-active-indicator-color: var(--md-sys-color-secondary-container);
-    --tab-inactive-icon-color: var(--md-sys-color-on-primary-container);
+    --tab-inactive-icon-color: var(--md-sys-color-on-surface-variant);
     --tab-icon-height: 24px;
   }
   .tabbed-expressive {

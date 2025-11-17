@@ -60,7 +60,7 @@ export default css`
 
     --button-small-border-radius: var(
       --mass-player-card-small-button-border-radius,
-      12px
+      16px
     );
 
     --expressive-border-radius-container: var(
@@ -79,7 +79,7 @@ export default css`
 
     --expressive-row-color: var(
       --mass-player-card-expressive-row-color,
-      var(--md-sys-color-background)
+      var(--md-sys-color-surface)
     );
     --expressive-row-color-text: var(
       --mass-player-card-expressive-row-color-text,
@@ -100,15 +100,15 @@ export default css`
     );
     --expressive-row-button-color-text: var(
       --mass-player-card-expressive-row-button-color-text,
-      var(--md-sys-color-on-primary-container)
+      var(--md-sys-color-on-secondary-container)
     );
     --expressive-row-button-color-hover: var(
       --mass-player-card-expressive-row-button-color-hover,
-      var(--md-sys-color-tertiary-container)
+      rgba(from var(--expressive-row-button-color-hover) r g b / 0.38) !important
     );
     --expressive-row-button-color-text-hover: var(
       --mass-player-card-expressive-row-button-color-text-hover,
-      var(--md-sys-color-on-tertiary-container)
+      var(--md-sys-color-on-secondary-container)
     );
 
     --md-list-container-color: var(
@@ -182,6 +182,7 @@ export default css`
       --mass-player-card-row-icon-button-height,
       1.5rem
     );
+    --menu-item-padding-left: var(--mass-player-card-menu-item-padding-left, 12px);
   }
 
   ha-card {

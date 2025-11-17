@@ -76,6 +76,7 @@ export default css`
   }
   .volume-slider-expressive {
     --control-slider-color: var(--md-sys-color-primary);
+    --disabled-color: var(--md-sys-color-secondary-container);
     box-shadow: var(--md-sys-elevation-level1);
   }
 `;
