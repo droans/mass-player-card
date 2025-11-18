@@ -24,6 +24,7 @@ export default css`
     background-color: var(--mdc-theme-surface);
   }
   .inactive-item-expressive {
+    border-radius: var(--default-border-radius);
     --md-ripple-hover-color: var(--md-sys-color-on-surface);
     --md-ripple-pressed-color: var(--md-sys-color-on-surface);
   }
@@ -36,8 +37,12 @@ export default css`
     --mdc-theme-text-icon-on-background: var(--mass-menu-item-active-icon-color-expressive);
     --mdc-theme-text-primary-on-background: var(--mass-menu-item-active-text-color-expressive);
     background-color: var(--mass-menu-item-active-color-expressive);
+    border-radius: var(--default-border-radius);
     --md-ripple-hover-color: var(--md-sys-color-on-surface);
     --md-ripple-pressed-color: var(--md-sys-color-on-surface);
+  }
+  .svg-expressive {
+    margin-left: 14px;
   }
   .svg-menu-expressive {
     color: var(--md-sys-color-on-secondary-container);

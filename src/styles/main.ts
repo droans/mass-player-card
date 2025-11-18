@@ -125,10 +125,6 @@ export default css`
     );
 
     --menu-border-radius: var(--mass-player-card-menu-border-radius, 24px);
-    --menu-selected-item-border-radius: var(
-      --mass-player-card-menu-selected-item-border-radius,
-      24px
-    );
 
     --media-row-active-background-color: var(
       --mass-player-card-media-row-active-background-color,

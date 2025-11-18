@@ -127,6 +127,7 @@ export default css`
   .button-expressive {
     background-color: var(--expressive-row-color) !important;
     --md-list-item-hover-state-layer-color: var(--md-sys-color-on-surface);
+    border-radius: var(--default-border-radius);
     --md-ripple-hover-color: var(--md-sys-color-on-surface);
     --md-ripple-pressed-color: var(--md-sys-color-on-surface);
   }
@@ -137,6 +138,7 @@ export default css`
     --primary-text-color: var(--expressive-row-active-color-text) !important;
     --font-color: var(--expressive-row-active-color-text) !important;
     background-color: var(--expressive-row-active-color) !important;
+    border-radius: var(--default-border-radius);
     --md-ripple-hover-color: var(--md-sys-color-on-surface);
     --md-ripple-pressed-color: var(--md-sys-color-on-surface);
   }
@@ -181,6 +183,7 @@ export default css`
     background-repeat: no-repeat;
     background-position: left;
     border-radius: 0.7rem;
+    margin-left: 14px;
   }
   .thumbnail-disabled {
     width: var(--media-row-thumbnail-height);
@@ -190,6 +193,7 @@ export default css`
     background-position: left;
     border-radius: 0.7rem;
     filter: opacity(0.5);
+    margin-left: 14px;
   }
 
   .title {

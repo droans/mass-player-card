@@ -44,13 +44,13 @@ export default css`
 
   .button {
     margin: 0.15rem;
-    border-radius: --media-row-border-radius;
+    border-radius: var(--media-row-border-radius);
     background: var(--media-row-background-color);
     height: var(--media-row-height);
   }
   .button-active {
     margin: 0.15rem;
-    border-radius: --media-row-border-radius;
+    border-radius: var(--media-row-border-radius);
     background-color: var(
       --media-row-active-background-color,
       var(--md-sys-color-secondary-container)
@@ -67,6 +67,7 @@ export default css`
   .button-expressive {
     background-color: var(--expressive-row-color) !important;
     --md-list-item-hover-state-layer-color: var(--md-sys-color-on-surface);
+    border-radius: var(--default-border-radius);
     --md-ripple-hover-color: var(--md-sys-color-on-surface);
     --md-ripple-pressed-color: var(--md-sys-color-on-surface);
   }
@@ -78,6 +79,7 @@ export default css`
     --primary-text-color: var(--expressive-row-active-color-text) !important;
     --font-color: var(--expressive-row-active-color-text) !important;
     background-color: var(--expressive-row-active-color) !important;
+    border-radius: var(--default-border-radius);
     --md-ripple-hover-color: var(--md-sys-color-on-surface);
     --md-ripple-pressed-color: var(--md-sys-color-on-surface);
   }
@@ -127,6 +129,7 @@ export default css`
     background-repeat: no-repeat;
     background-position: left;
     border-radius: var(--media-row-border-radius);
+    margin-left: 14px;
   }
   .thumbnail-disabled {
     width: var(--media-row-thumbnail-height);
@@ -136,6 +139,7 @@ export default css`
     background-position: left;
     border-radius: var(--media-row-border-radius);
     opacity: 0.38;
+    margin-left: 14px;
   }
 
   .title {
