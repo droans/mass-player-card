@@ -127,6 +127,8 @@ export default css`
   .button-expressive {
     background-color: var(--expressive-row-color) !important;
     --md-list-item-hover-state-layer-color: var(--md-sys-color-on-surface);
+    --md-ripple-hover-color: var(--md-sys-color-on-surface);
+    --md-ripple-pressed-color: var(--md-sys-color-on-surface);
   }
   .button-expressive > .title {
     color: var(--expressive-row-color-text);
@@ -135,6 +137,8 @@ export default css`
     --primary-text-color: var(--expressive-row-active-color-text) !important;
     --font-color: var(--expressive-row-active-color-text) !important;
     background-color: var(--expressive-row-active-color) !important;
+    --md-ripple-hover-color: var(--md-sys-color-on-surface);
+    --md-ripple-pressed-color: var(--md-sys-color-on-surface);
   }
   .button-expressive-active > .title {
     color: var(--expressive-row-active-color-text);

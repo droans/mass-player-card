@@ -1,16 +1,19 @@
 import { css } from "lit";
 export default css`
   :host {
-    --me-menu-background-color: var(--md-sys-color-surface-container);
-    --me-menu-text-color: var(--md-sys-color-on-secondary-container);
-    --mass-menu-selected-background-color: var(--md-sys-color-secondary);
-    --mass-menu-selected-text-color: var(--md-sys-color-on-secondary);
+    --mass-menu-background-color-expressive: var(--md-sys-color-surface);
+    --mass-menu-text-color-expressive: var(--md-sys-color-on-surface);
+    --mass-menu-icon-color-expressive: var(--md-sys-color-on-surface-variant);
+    --mass-menu-item-active-color-expressive: var(--md-sys-color-secondary-container);
+    --mass-menu-item-active-text-color-expressive: var(--md-sys-color-on-secondary-container);
+    --mass-menu-item-active-icon-color-expressive: var(--md-sys-color-on-surface);
+
     --mdc-list-side-padding-left: var(--menu-item-padding-left);
   }
   .menu-expressive {
-    --mdc-theme-text-primary-on-background: var(--me-menu-text-color);
-    --mdc-theme-text-icon-on-background: var(--me-menu-text-color);
-    --mdc-theme-surface: var(--me-menu-background-color);
+    --mdc-theme-text-primary-on-background: var(--mass-menu-text-color-expressive);
+    --mdc-theme-text-icon-on-background: var(--mass-menu-icon-color-expressive);
+    --mdc-theme-surface: var(--mass-menu-background-color-expressive);
     --mdc-shape-medium: var(--menu-border-radius);
     --mdc-list-vertical-padding: 0px;
   }
@@ -20,18 +23,21 @@ export default css`
   .inactive-item {
     background-color: var(--mdc-theme-surface);
   }
+  .inactive-item-expressive {
+    --md-ripple-hover-color: var(--md-sys-color-on-surface);
+    --md-ripple-pressed-color: var(--md-sys-color-on-surface);
+  }
   .selected-item {
     --mdc-theme-text-icon-on-background: var(--mdc-theme-on-primary);
     --mdc-theme-text-primary-on-background: var(--mdc-theme-on-primary);
     background-color: var(--mdc-theme-primary);
   }
   .selected-item-expressive {
-    --mdc-theme-text-icon-on-background: var(--mass-menu-selected-text-color);
-    --mdc-theme-text-primary-on-background: var(
-      --mass-menu-selected-text-color
-    );
-    background-color: var(--mass-menu-selected-background-color);
-    border-radius: var(--menu-selected-item-border-radius);
+    --mdc-theme-text-icon-on-background: var(--mass-menu-item-active-icon-color-expressive);
+    --mdc-theme-text-primary-on-background: var(--mass-menu-item-active-text-color-expressive);
+    background-color: var(--mass-menu-item-active-color-expressive);
+    --md-ripple-hover-color: var(--md-sys-color-on-surface);
+    --md-ripple-pressed-color: var(--md-sys-color-on-surface);
   }
   .svg-menu-expressive {
     color: var(--md-sys-color-on-secondary-container);

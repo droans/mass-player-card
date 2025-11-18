@@ -132,7 +132,7 @@ export default css`
     left: 2.5px;
   }
   .search-media-type-menu-expressive::part(menu-svg), .search-library-button-expressive .svg-menu-expressive {
-    color: var(--md-sys-color-on-primary) !important;
+    color: var(--md-sys-color-on-surface-variant) !important
   }
   #search-options {
     height: 35px;
