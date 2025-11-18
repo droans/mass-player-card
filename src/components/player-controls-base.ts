@@ -145,7 +145,7 @@ export class MassPlayerControlsBase extends LitElement {
   };
   protected onRepeat = async (e: Event) => {
     e.stopPropagation();
-    const cur_repeat = this.playerData.repeat;
+    const cur_repeat = this.repeat;
     const repeat = getIteratedRepeatMode(cur_repeat);
     this.repeat = repeat;
     this.requestUpdate("repeat", this.repeat);
