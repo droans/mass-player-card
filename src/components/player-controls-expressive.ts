@@ -1,4 +1,4 @@
-import { CSSResultGroup, html, TemplateResult } from "lit";
+import { CSSResultGroup, html, PropertyValues, TemplateResult } from "lit";
 import { MassPlayerControlsBase } from "./player-controls-base";
 import { RepeatMode } from "../const/common";
 import { getRepeatIcon } from "../utils/music-player";
@@ -189,6 +189,9 @@ class MassPlayerControlsExpressive extends MassPlayerControlsBase {
         ${this.renderUpperControls()} ${this.renderLowerControls()}
       </div>
     `;
+  }
+  protected shouldUpdate(_changedProperties: PropertyValues): boolean {
+    return super.shouldUpdate(_changedProperties);
   }
   static get styles(): CSSResultGroup {
     return styles;
