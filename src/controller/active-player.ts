@@ -336,7 +336,7 @@ export class ActivePlayerController {
       return;
     }
     this._updatingScheme = true;
-    await applyExpressiveSchemeFromImage(
+    this.expressiveScheme = await applyExpressiveSchemeFromImage(
       img,
       this.hass,
       this.config.expressive_scheme,

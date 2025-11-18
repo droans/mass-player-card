@@ -8,8 +8,8 @@ export default css`
     align-content: center;
   }
   .action-button::part(base) {
-    height: 30px;
-    width: 30px;
+    height: 38px;
+    width: 38px;
     --wa-form-control-padding-inline: 0px;
   }
   .action-button-expressive::part(base) {
