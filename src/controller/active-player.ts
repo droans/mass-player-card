@@ -1,5 +1,5 @@
 import { ContextProvider } from "@lit/context";
-import { ExtendedHass, ExtendedHassEntity, Thumbnail } from "../const/common";
+import { ExtendedHass, ExtendedHassEntity } from "../const/common";
 import {
   activeEntityConf,
   activeEntityID,
@@ -18,7 +18,7 @@ import { DynamicScheme } from "@material/material-color-utilities";
 import { getGroupVolumeServiceSchema } from "mass-queue-types/packages/actions/get_group_volume";
 import { setGroupVolumeServiceSchema } from "mass-queue-types/packages/actions/set_group_volume";
 import { isActive, jsonMatch, playerHasUpdated } from "../utils/util.js";
-import { applyExpressiveSchemeFromImage } from "../utils/expressive.js";
+import { applyDefaultExpressiveScheme, applyExpressiveSchemeFromImage } from "../utils/expressive.js";
 
 export class ActivePlayerController {
   private _activeEntityConfig: ContextProvider<typeof activeEntityConf>;
@@ -69,12 +69,6 @@ export class ActivePlayerController {
     this._host = host;
     host.addEventListener("artwork-updated", this.onActiveTrackChange);
     this.setDefaultActivePlayer();
-    if (
-      !isActive(hass, this.activeMediaPlayer, this.activeEntityConfig) ||
-      !this.expressiveScheme
-    ) {
-      void this.applyDefaultExpressiveScheme();
-    }
   }
   public set hass(hass: ExtendedHass) {
     this._hass = hass;
@@ -129,8 +123,12 @@ export class ActivePlayerController {
       if (player.attributes?.group_members) {
         this.setGroupAttributes();
       }
-      if (!this.expressiveScheme
+      if (
+        isActive(this.hass, this.activeMediaPlayer, this.activeEntityConfig) 
+        && (
+          !this.expressiveScheme
         || player.attributes.media_content_id != this.activeMediaPlayer.attributes.media_content_id
+        )
       ) {
         const img =
           player.attributes.entity_picture_local ??
@@ -204,6 +202,14 @@ export class ActivePlayerController {
       detail: this.activeMediaPlayer,
     });
     this._host.dispatchEvent(ev);
+  }
+  public firstUpdateComplete() {
+    if (
+      !isActive(this.hass, this.activeMediaPlayer, this.activeEntityConfig) ||
+      !this.expressiveScheme
+    ) {
+      this.applyDefaultExpressiveScheme();
+    }
   }
   private setGroupAttributes() {
     this.groupMembers = this.getGroupedPlayers().map((item) => {
@@ -330,8 +336,12 @@ export class ActivePlayerController {
       @typescript-eslint/no-unsafe-member-access
     */
   };
-  public async applyDefaultExpressiveScheme() {
-    await this.applyExpressiveSchemeFromImage(Thumbnail.CLEFT);
+  public applyDefaultExpressiveScheme() {
+    if (!this.config.expressive || this._updatingScheme) {
+      return;
+    }
+    this._host.getRootNode()
+    this.expressiveScheme = applyDefaultExpressiveScheme(this.hass, this.config.expressive_scheme, this._host);
   }
   public async applyExpressiveSchemeFromImage(img: string) {
     if (!this.config.expressive || this._updatingScheme) {

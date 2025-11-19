@@ -1,4 +1,7 @@
 import {
+  argbFromHex,
+  argbFromRgb,
+  argbFromRgba,
   DynamicScheme,
   Hct,
   SchemeContent,
@@ -89,6 +92,8 @@ const EXPRESSIVE_KEYS: Record<string, string> = {
   tertiaryFixedDim: "--md-sys-color-tertiary-fixed-dim",
 };
 
+const DEFAULT_PRIMARY_COLOR = '#009ac7'
+
 function generateImageElement(
   img: string,
   hass: ExtendedHass,
@@ -102,6 +107,16 @@ function generateImageElement(
     elem.src = def;
   };
   return elem;
+}
+
+export function applyDefaultExpressiveScheme(
+  hass: ExtendedHass,
+  scheme: ExpressiveScheme,
+  elem: HTMLElement
+): DynamicScheme {
+  const color = window.getComputedStyle(document.body).getPropertyValue('--primary-color').replace('#','') ?? DEFAULT_PRIMARY_COLOR;
+  const argb = color.startsWith('rgb') ?_parseColorRgb(color) : _parseColorHex(color);
+  return applyExpressiveSchemeFromColor(argb, scheme, hass.themes.darkMode, elem);
 }
 
 export async function applyExpressiveSchemeFromImage(
@@ -119,6 +134,17 @@ export async function applyExpressiveSchemeFromImage(
   );
   applyExpressiveScheme(schemeResult, elem);
   return schemeResult;
+}
+
+export function applyExpressiveSchemeFromColor(
+  source: number,
+  scheme: ExpressiveScheme,
+  darkMode: boolean,
+  elem: HTMLElement
+): DynamicScheme {
+  const colorScheme = generateExpressiveSchemeFromColor(source, scheme, darkMode);
+  applyExpressiveScheme(colorScheme, elem);
+  return colorScheme
 }
 
 export async function generateExpressiveSchemeFromImage(
@@ -185,4 +211,23 @@ export function applyExpressiveScheme(
       elem.style.setProperty(colorKey, color);
     }
   });
+}
+
+function _parseColorHex(color: string) {
+  return argbFromHex(color);
+}
+
+function _parseColorRgb(color: string) {
+  const ints = color.split('(')[1].split(')')[0].split(',').map( (i) => { return parseInt(i) });
+  
+  if (ints.length == 4) {
+    const _rgba = {
+      r: ints[0],
+      g: ints[1],
+      b: ints[2],
+      a: ints[3],
+    }
+    return argbFromRgba(_rgba)
+  }
+  return argbFromRgb(ints[0], ints[1], ints[2])
 }
