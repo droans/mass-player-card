@@ -1,7 +1,7 @@
 import { CSSResultGroup, html, LitElement, TemplateResult } from "lit";
 import styles from '../styles/button'
 import { property } from "lit/decorators.js";
-import { ButtonColorRole, ServiceNoParams } from "../const/common.js";
+import { ButtonColorRole } from "../const/common.js";
 import { consume } from "@lit/context";
 import { configContext } from "../const/context.js";
 import { Config } from "../config/config.js";

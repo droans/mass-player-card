@@ -395,24 +395,6 @@ class MusicPlayerCard extends LitElement {
                     .entity="${item.entity_id}"
                   ></ha-svg-icon>
                 </mass-player-card-button>
-
-                <!-- <ha-button
-                  appearance="plain"
-                  variant="brand"
-                  size="medium"
-                  class="grouped-button-unjoin ${expressive
-                    ? `grouped-button-unjoin-expressive`
-                    : ``}"
-                  @click=${this.onUnjoinSelect}
-                >
-                  <ha-svg-icon
-                    .path=${this.Icons.LINK_OFF}
-                    class="grouped-svg-unjoin ${expressive
-                      ? `grouped-svg-unjoin-expressive`
-                      : ``}"
-                    .entity="${item.entity_id}"
-                  ></ha-svg-icon>
-                </ha-button> -->
               </span>
             </ha-md-list-item>
           </div>
