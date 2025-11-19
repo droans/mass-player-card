@@ -181,14 +181,12 @@ class PlayerRow extends LitElement {
       return html``;
     }
     return html`
-      <ha-button
-        appearance="plain"
-        variant="brand"
-        size="medium"
-        class="action-button ${this.useExpressive
-          ? `action-button-expressive`
-          : ``}"
-        @click=${this.onTransferPressed}
+      <mass-player-card-button
+        .onPressService=${this.onTransferPressed}
+        role="tonal"
+        size="small"
+        elevation=1
+        class="action-button ${this.useExpressive ? `action-button-expressive` : ``}"
       >
         <ha-svg-icon
           .path=${this.Icons.SWAP}
@@ -196,7 +194,7 @@ class PlayerRow extends LitElement {
             ? `svg-action-button-expressive`
             : ``}"
         ></ha-svg-icon>
-      </ha-button>
+      </mass-player-card-button>
     `;
   }
   protected renderJoinButon() {
@@ -207,14 +205,12 @@ class PlayerRow extends LitElement {
       return;
     }
     return html`
-      <ha-button
-        appearance="plain"
-        variant="brand"
-        size="medium"
-        class="action-button ${this.useExpressive
-          ? `action-button-expressive`
-          : ``}"
-        @click=${this.onJoinPressed}
+      <mass-player-card-button
+        .onPressService=${this.onJoinPressed}
+        role="tonal"
+        size="small"
+        elevation=1
+        class="action-button ${this.useExpressive ? `action-button-expressive` : ``}"
       >
         <ha-svg-icon
           .path=${this.joined ? this.Icons.LINK_OFF : this.Icons.LINK}
@@ -222,7 +218,7 @@ class PlayerRow extends LitElement {
             ? `svg-action-button-expressive`
             : ``}"
         ></ha-svg-icon>
-      </ha-button>
+      </mass-player-card-button>
     `;
   }
   protected renderActionButtons() {

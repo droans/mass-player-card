@@ -129,7 +129,9 @@ export class ActivePlayerController {
       if (player.attributes?.group_members) {
         this.setGroupAttributes();
       }
-      if (!this.expressiveScheme) {
+      if (!this.expressiveScheme
+        || player.attributes.media_content_id != this.activeMediaPlayer.attributes.media_content_id
+      ) {
         const img =
           player.attributes.entity_picture_local ??
           player.attributes.entity_picture;

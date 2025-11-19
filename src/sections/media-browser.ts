@@ -369,23 +369,23 @@ export class MediaBrowser extends LitElement {
   }
   protected renderSearchLibraryButton(): TemplateResult {
     if (this.activeSection == "search") {
-      return html`
-        <ha-button
-          appearance="plain"
-          variant="brand"
-          size="medium"
-          id="search-favorite-button"
-          @click=${this.onSearchLibrarySelect}
-          class="button-min ${this.useExpressive ? `search-library-button-expressive` : ``}"
-        >
-          <ha-svg-icon
-            .path=${this.searchLibrary
-              ? this.Icons.LIBRARY
-              : this.Icons.LIBRARY_OUTLINED}
-            class="svg-xs ${this.useExpressive ? `svg-menu-expressive` : ``}"
-          ></ha-svg-icon>
-        </ha-button>
-      `;
+    return html`
+      <mass-player-card-button
+        .onPressService=${this.onSearchLibrarySelect}
+        role="plain"
+        size="small"
+        elevation=0
+        id="search-favorite-button"
+        class="button-min ${this.useExpressive ? `search-library-button-expressive` : ``}"
+      >
+        <ha-svg-icon
+          .path=${this.searchLibrary
+            ? this.Icons.LIBRARY
+            : this.Icons.LIBRARY_OUTLINED}
+          class="svg-xs ${this.useExpressive ? `svg-menu-expressive` : ``}"
+        ></ha-svg-icon>
+      </mass-player-card-button>
+    `;
     }
     return html``;
   }
@@ -438,19 +438,21 @@ export class MediaBrowser extends LitElement {
       return html``;
     }
     return html`
-      <ha-button
-        appearance="plain"
-        variant="brand"
-        size="medium"
+      <mass-player-card-button
+        .onPressService=${this.onSearchButtonPress}
+        role="filled"
+        size="small"
+        elevation=1
         id="button-search"
         class="button-min ${this.useExpressive ? `button-expressive` : ``}"
-        @click=${this.onSearchButtonPress}
       >
         <ha-svg-icon
-          .path=${this.Icons.SEARCH}
-          class="header-icon"
+          .path=${this.searchLibrary
+            ? this.Icons.LIBRARY
+            : this.Icons.LIBRARY_OUTLINED}
+          class="svg-xs"
         ></ha-svg-icon>
-      </ha-button>
+      </mass-player-card-button>
     `;
   }
   protected renderBackButton(): TemplateResult {
@@ -462,19 +464,19 @@ export class MediaBrowser extends LitElement {
     }
     return html`
       <span slot="start" id="back-button">
-        <ha-button
-          appearance="plain"
-          variant="brand"
-          size="medium"
-          id="button-back"
-          class="button-min ${this.useExpressive ? `button-expressive` : ``}"
-          @click=${this.onBack}
+        <mass-player-card-button
+          .onPressService=${this.onBack}
+          role="filled"
+          size="small"
+          elevation=1
+            id="button-back"
+            class="button-min ${this.useExpressive ? `button-expressive` : ``}"
         >
           <ha-svg-icon
             .path=${this.Icons.ARROW_LEFT}
             class="header-icon"
           ></ha-svg-icon>
-        </ha-button>
+        </mass-player-card-button>
       </span>
     `;
   }

@@ -3,15 +3,15 @@ import { MassPlayerControlsBase } from "./player-controls-base";
 import { RepeatMode } from "../const/common";
 import { getRepeatIcon } from "../utils/music-player";
 import styles from "../styles/player-controls-expressive";
+import './button'
 
 class MassPlayerControlsExpressive extends MassPlayerControlsBase {
   protected renderPrevious(): TemplateResult {
     return html`
-      <ha-button
-        appearance="filled"
-        variant="brand"
-        @click=${this.onPrevious}
-        size="medium"
+      <mass-player-card-button
+        .onPressService=${this.onPrevious}
+        role="filled-variant"
+        size="large"
         id="button-previous"
         class="button-next-previous"
       >
@@ -20,17 +20,19 @@ class MassPlayerControlsExpressive extends MassPlayerControlsBase {
           class="icons-next-previous"
           id="icon-previous"
         ></ha-svg-icon>
-      </ha-button>
+      </mass-player-card-button>
     `;
   }
   protected renderPlayPause(): TemplateResult {
     const playing = this.playing;
     return html`
-      <ha-button
-        appearance="filled"
-        variant="brand"
-        @click=${this.onPlayPause}
-        size="medium"
+      <mass-player-card-button
+        .onPressService=${this.onPlayPause}
+        role="filled-variant"
+        size="large"
+        elevation=1
+        selectable
+        ?selected=${playing}
         id="${playing ? `button-play` : `button-pause`}"
         class="button-play-pause"
       >
@@ -39,16 +41,15 @@ class MassPlayerControlsExpressive extends MassPlayerControlsBase {
           id="${playing ? `icon-play` : `icon-pause`}"
           class="icon-play-pause"
         ></ha-svg-icon>
-      </ha-button>
+      </mass-player-card-button>
     `;
   }
   protected renderNext(): TemplateResult {
     return html`
-      <ha-button
-        appearance="filled"
-        variant="brand"
-        @click=${this.onNext}
-        size="medium"
+      <mass-player-card-button
+        .onPressService=${this.onNext}
+        role="filled-variant"
+        size="large"
         id="button-next"
         class="button-next-previous"
       >
@@ -57,7 +58,7 @@ class MassPlayerControlsExpressive extends MassPlayerControlsBase {
           class="icons-next-previous"
           id="icon-previous"
         ></ha-svg-icon>
-      </ha-button>
+      </mass-player-card-button>
     `;
   }
   protected renderPower(): TemplateResult {
@@ -65,11 +66,10 @@ class MassPlayerControlsExpressive extends MassPlayerControlsBase {
       return html``;
     }
     return html`
-      <ha-button
-        appearance="filled"
-        variant="brand"
-        @click=${this.onPower}
-        size="small"
+      <mass-player-card-button
+        .onPressService=${this.onPower}
+        role="variant"
+        size="medium"
         id="button-power"
         class="button-lower"
       >
@@ -79,7 +79,7 @@ class MassPlayerControlsExpressive extends MassPlayerControlsBase {
           class="icons-power icons-lower"
         ></ha-svg-icon>
         ${this.controller.translate("player.controls.power")}
-      </ha-button>
+      </mass-player-card-button>
     `;
   }
   protected renderShuffle(): TemplateResult {
@@ -88,11 +88,13 @@ class MassPlayerControlsExpressive extends MassPlayerControlsBase {
     }
     const shuffle = this.shuffle;
     return html`
-      <ha-button
-        appearance="filled"
-        variant="brand"
-        @click=${this.onShuffle}
-        size="small"
+      <mass-player-card-button
+        .onPressService=${this.onShuffle}
+        role="variant"
+        size="medium"
+        selectable
+        ?selected=${shuffle}
+        elevation=${shuffle ? 1 : 0}
         id="button-shuffle"
         class="button-lower ${shuffle ? `button-lower-active` : ``}"
       >
@@ -102,7 +104,7 @@ class MassPlayerControlsExpressive extends MassPlayerControlsBase {
           class="icons-shuffle icons-lower${shuffle ? `-active` : ``}"
         ></ha-svg-icon>
         ${this.controller.translate("player.controls.shuffle")}
-      </ha-button>
+      </mass-player-card-button>
     `;
   }
   protected renderRepeat(): TemplateResult {
@@ -113,11 +115,13 @@ class MassPlayerControlsExpressive extends MassPlayerControlsBase {
     const repeat_on = repeat != RepeatMode.OFF;
     const icon = getRepeatIcon(repeat, this.Icons);
     return html`
-      <ha-button
-        appearance="filled"
-        variant="brand"
-        @click=${this.onRepeat}
-        size="small"
+      <mass-player-card-button
+        .onPressService=${this.onRepeat}
+        role="variant"
+        size="medium"
+        selectable
+        ?selected=${repeat_on}
+        elevation=${repeat_on ? 1 : 0}
         id="button-repeat"
         class="button-lower ${repeat_on ? `button-lower-active` : ``}"
       >
@@ -127,7 +131,7 @@ class MassPlayerControlsExpressive extends MassPlayerControlsBase {
           class="icons-repeat icons-lower${repeat_on ? `-active` : ``}"
         ></ha-svg-icon>
         ${this.controller.translate("player.controls.repeat")}
-      </ha-button>
+      </mass-player-card-button>
     `;
   }
   protected renderFavorite(): TemplateResult {
@@ -136,11 +140,13 @@ class MassPlayerControlsExpressive extends MassPlayerControlsBase {
     }
     const favorite = this.favorite;
     return html`
-      <ha-button
-        appearance="filled"
-        variant="brand"
-        @click=${this.onFavorite}
-        size="small"
+      <mass-player-card-button
+        .onPressService=${this.onFavorite}
+        role="variant"
+        size="medium"
+        selectable
+        ?selected=${favorite}
+        elevation=${favorite ? 1 : 0}
         id="button-favorite"
         class="button-lower ${favorite ? `button-lower-active` : ``}"
       >
@@ -150,7 +156,7 @@ class MassPlayerControlsExpressive extends MassPlayerControlsBase {
           class="icons-favorite icons-lower${favorite ? `-active` : ``}"
         ></ha-svg-icon>
         ${this.controller.translate("player.controls.favorite")}
-      </ha-button>
+      </mass-player-card-button>
     `;
   }
   protected renderUpperControls(): TemplateResult {

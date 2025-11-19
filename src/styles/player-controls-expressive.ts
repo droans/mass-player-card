@@ -4,13 +4,7 @@ import { css } from "lit";
 // https://lit.dev/docs/components/styles/
 export default css`
   :host {
-    --lower-button-background-color: var(--md-sys-color-surface-container-low) !important;
-    --lower-button-background-color-active: var(--md-sys-color-primary) !important;
-    --lower-button-background-color-hover: var(--md-sys-color-on-primary);
 
-    --lower-button-icon-color: var(--md-sys-color-primary);
-    --lower-button-icon-color-active: var(--md-sys-color-on-primary);
-    --lower-button-icon-color-hover: var(--md-sys-color-on-primary);
 
     --lower-button-border-radius: 8px;
     --lower-button-start-border-radius: 24px 8px 8px 24px;
@@ -47,76 +41,51 @@ export default css`
     --play-pause-border-radius: 18px !important;
   }
 
-  .button-lower::part(base) {
-    --wa-color-fill-normal: var(--lower-button-background-color);
-    --inherited-background-color: var(--lower-button-background-color);
-    --ha-button-border-radius: var(--lower-button-border-radius);
-    border-radius: var(--ha-button-border-radius);
-    box-shadow: var(--md-sys-elevation-level1);
+  .button-lower::part(button) {
+    --button-border-radius: var(--lower-button-border-radius);
+    --button-padding-left: 8px;
+    --button-padding-right: 12px;
   }
-  .button-lower::part(label) {
-    color: var(--lower-button-icon-color);
-    --inherited-text-color: var(--lower-button-icon-color);
-  }
-  .button-lower::part(base):hover {
-    --ha-button-border-radius: 40px !important;
+  .button-lower::part(button):hover {
+    --button-border-radius: 40px !important;
   }
 
-  .button-lower:first-of-type::part(base) {
-    --ha-button-border-radius: var(--lower-button-start-border-radius);
-    border-radius: var(--ha-button-border-radius);
+  .button-lower:first-of-type::part(button) {
+    --button-border-radius: var(--lower-button-start-border-radius);
   }
-  .button-lower:last-of-type::part(base) {
-    --ha-button-border-radius: var(--lower-button-end-border-radius);
-    border-radius: var(--ha-button-border-radius);
+  .button-lower:last-of-type::part(button) {
+    --button-border-radius: var(--lower-button-end-border-radius);
   }
-  .button-lower:only-of-type::part(base) {
-    --ha-button-border-radius: var(
+  .button-lower:only-of-type::part(button) {
+    --button-border-radius: var(
       --lower-button-only-border-radius
     ) !important;
-    border-radius: var(--ha-button-border-radius);
   }
 
-  .button-lower-active::part(base) {
-    --wa-color-fill-normal: var(--lower-button-background-color-active);
-    --inherited-background-color: var(--lower-button-background-color-active);
-    --ha-button-border-radius: 20px;
-  }
-  .button-lower-active::part(label) {
-    color: var(--lower-button-icon-color-active);
-    --inherited-text-color: var(--lower-button-icon-color-active);
+  .button-lower-active::part(button) {
+    --button-border-radius: 20px;
   }
 
-  .button-next-previous::part(base) {
-    height: var(--next-prev-button-height);
-    width: var(--next-prev-button-width);
-    --inherited-background-color: var(--next-prev-background-color);
-    --wa-color-fill-normal: var(--next-prev-background-color);
-    box-shadow: var(--md-sys-elevation-level1);
-    padding: 0px;
+  .button-next-previous::part(button) {
+    --button-button-height: var(--next-prev-button-height);
+    --button-button-width: var(--next-prev-button-width);
+    --button-elevation: var(--md-sys-elevation-level1);
+    --button-padding: 0px;
   }
-  #button-next::part(base) {
-    --ha-button-border-radius: var(--prev-border-radius);
-    border-radius: var(--ha-button-border-radius);
+
+  #button-next::part(button) {
+    --button-border-radius: var(--prev-border-radius);
   }
-  #button-previous::part(base) {
-    --ha-button-border-radius: var(--next-border-radius);
-    border-radius: var(--ha-button-border-radius);
+  #button-previous::part(button) {
+    --button-border-radius: var(--next-border-radius);
+    border-radius: var(--button-border-radius);
   }
-  .button-play-pause::part(base) {
-    height: var(--play-pause-icon-height);
-    width: var(--play-pause-button-width);
-    --ha-button-border-radius: var(--play-pause-border-radius);
-    border-radius: var(--ha-button-border-radius);
-    box-shadow: var(--md-sys-elevation-level2);
-  }
-  #button-play::part(base) {
-    --wa-color-fill-normal: var(--play-background-color);
-    --inherited-background-color: var(--play-background-color);
-  }
-  #button-pause::part(base) {
-    --wa-color-fill-normal: var(--pause-background-color);
-    --inherited-background-color: var(--pause-background-color);
+  .button-play-pause {
+    --button-button-height: var(--play-pause-icon-height);
+    --button-button-width: var(--play-pause-button-width);
+    --button-border-radius: var(--play-pause-border-radius);
+    --button-padding: 0px;
+    --button-elevation: var(--md-sys-elevation-level2);
   }
 
   #div-controls {
@@ -131,26 +100,15 @@ export default css`
   .icons-lower {
     height: var(--icon-height);
     width: var(--icon-height);
-    color: var(--lower-button-icon-color);
-  }
-  .icons-lower-active {
-    color: var(--lower-button-icon-color-active);
   }
 
   .icons-next-previous {
-    color: var(--next-prev-icon-color);
     height: var(--next-prev-icon-height);
     width: var(--next-prev-icon-height);
   }
   .icon-play-pause {
     height: var(--play-pause-icon-height);
     width: var(--play-pause-icon-height);
-  }
-  #icon-play {
-    color: var(--md-sys-color-on-primary);
-  }
-  #icon-pause {
-    color: var(--md-sys-color-on-surface-variant);
   }
 
   .player-controls {

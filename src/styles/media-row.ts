@@ -7,39 +7,31 @@ export default css`
     width: var(--media-row-icon-width);
     align-content: center;
   }
-  .action-button::part(base) {
-    height: 38px;
-    width: 38px;
-    --wa-form-control-padding-inline: 0px;
+  .action-button::part(button) {
+    --button-button-height: 38px;
+    --button-button-width: 38px;
   }
-  .action-button-expressive::part(base) {
-    box-shadow: var(--md-sys-elevation-level1);
-    --ha-button-border-radius: 4px !important;
-    background-color: var(--expressive-row-button-color);
-    --inherited-background-color: var(--expressive-row-button-color);
+  .action-button-expressive::part(button) {
+    --button-border-radius: 4px !important;
   }
-  .action-button-expressive::part(base):hover {
+  .action-button-expressive::part(button):hover {
     background-color: var(--expressive-row-button-color-hover) !important;
-    --inherited-background-color: var(
-      --expressive-row-button-color-hover
-    ) !important;
-    box-shadow: var(--md-sys-elevation-level1);
-    --ha-button-border-radius: var(--button-small-border-radius) !important;
+    --button-border-radius: var(--button-small-border-radius) !important;
   }
-  .action-button-expressive:first-of-type::part(base) {
-    --ha-button-border-radius: var(--button-small-border-radius) 4px 4px var(--button-small-border-radius) !important;
+  .action-button-expressive:first-of-type::part(button) {
+    --button-border-radius: var(--button-small-border-radius) 4px 4px var(--button-small-border-radius) !important;
   }
-  .action-button-expressive:first-of-type::part(base):hover {
-    --ha-button-border-radius: var(--button-small-border-radius) !important;
+  .action-button-expressive:first-of-type::part(button):hover {
+    --button-border-radius: var(--button-small-border-radius) !important;
   }
-  .action-button-expressive:last-of-type::part(base) {
-    --ha-button-border-radius: 4px var(--button-small-border-radius) var(--button-small-border-radius) 4px !important;
+  .action-button-expressive:last-of-type::part(button) {
+    --button-border-radius: 4px var(--button-small-border-radius) var(--button-small-border-radius) 4px !important;
   }
-  .action-button-expressive:last-of-type::part(base):hover {
-    --ha-button-border-radius: var(--button-small-border-radius) !important;
+  .action-button-expressive:last-of-type::part(button):hover {
+    --button-border-radius: var(--button-small-border-radius) !important;
   }
-  .action-button-expressive:only-of-type::part(base) {
-    --ha-button-border-radius: var(--button-small-border-radius) !important;
+  .action-button-expressive:only-of-type::part(button) {
+    --button-border-radius: var(--button-small-border-radius) !important;
   }
 
   .button {

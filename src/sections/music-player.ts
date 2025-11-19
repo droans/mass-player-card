@@ -377,14 +377,15 @@ class MusicPlayerCard extends LitElement {
               ></ha-svg-icon>
               <span slot="headline" class="grouped-title"> ${name} </span>
               <span slot="end">
-                <ha-button
-                  appearance="plain"
-                  variant="brand"
-                  size="medium"
+
+                <mass-player-card-button
+                  .onPressService=${this.onUnjoinSelect}
+                  role="filled-variant"
+                  size="small"
+                  elevation=1
                   class="grouped-button-unjoin ${expressive
                     ? `grouped-button-unjoin-expressive`
                     : ``}"
-                  @click=${this.onUnjoinSelect}
                 >
                   <ha-svg-icon
                     .path=${this.Icons.LINK_OFF}
@@ -393,7 +394,7 @@ class MusicPlayerCard extends LitElement {
                       : ``}"
                     .entity="${item.entity_id}"
                   ></ha-svg-icon>
-                </ha-button>
+                </mass-player-card-button>
               </span>
             </ha-md-list-item>
           </div>
