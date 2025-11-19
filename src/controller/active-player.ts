@@ -330,8 +330,12 @@ export class ActivePlayerController {
       @typescript-eslint/no-unsafe-member-access
     */
   };
-  public async applyDefaultExpressiveScheme() {
-    await this.applyExpressiveSchemeFromImage(Thumbnail.CLEFT);
+  public applyDefaultExpressiveScheme() {
+    if (!this.config.expressive || this._updatingScheme) {
+      return;
+    }
+    this._host.getRootNode()
+    this.expressiveScheme = applyDefaultExpressiveScheme(this.hass, this.config.expressive_scheme, this._host);
   }
   public async applyExpressiveSchemeFromImage(img: string) {
     if (!this.config.expressive || this._updatingScheme) {
