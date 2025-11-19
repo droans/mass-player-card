@@ -11,20 +11,10 @@ export default css`
   }
 
   .button-min {
-    height: 35px;
-    width: 35px;
-    --wa-color-fill-quiet: rgba(from var(--md-sys-color-primary) r g b / 0.1);
+    --button-button-height: 35px;
+    --button-button-width: 35px;
+    --button-padding: 0px;
     position: relative;
-  }
-  .button-min::part(base) {
-    --wa-form-control-padding-inline: 0px;
-    height: 35px;
-    width: 35px;
-  }
-  .button-expressive::part(base) {
-    box-shadow: var(--md-sys-elevation-level1);
-    border-radius: var(--button-small-border-radius) !important;
-    background-color: var(--md-sys-color-secondary-container);
   }
 
   #container {
@@ -47,6 +37,10 @@ export default css`
     font-weight: 600;
     padding-top: 12px;
     height: auto;
+  }
+  .header-icon {
+    height: 30px;
+    width: 30px;
   }
 
   .list {

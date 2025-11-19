@@ -145,3 +145,12 @@ export const LightModeThumbnails: Record<string, string> = {
 };
 
 export const MAX_ACTIVE_LAST_ACTIVE_DURATION = 1800000;
+
+export enum ButtonColorRole {
+  Filled = 'filled',
+  FilledVariant = 'filled-variant',
+  Plain = 'plain',
+  Standard = 'standard',
+  Tonal = 'tonal',
+  Variant = 'variant',
+}

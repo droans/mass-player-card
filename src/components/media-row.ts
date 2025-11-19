@@ -239,14 +239,12 @@ class MediaRow extends LitElement {
       return html``;
     }
     return html`
-      <ha-button
-        appearance="plain"
-        variant="brand"
-        size="medium"
-        class="action-button ${this.useExpressive
-          ? `action-button-expressive`
-          : ``}"
-        @click=${this.callMoveItemNextService}
+      <mass-player-card-button
+        .onPressService=${this.callMoveItemNextService}
+        role="tonal"
+        size="small"
+        elevation=1
+        class="action-button ${this.useExpressive ? `action-button-expressive` : ``}"
       >
         <ha-svg-icon
           .path=${this.Icons.ARROW_PLAY_NEXT}
@@ -254,7 +252,7 @@ class MediaRow extends LitElement {
             ? `svg-action-button-expressive`
             : ``}"
         ></ha-svg-icon>
-      </ha-button>
+      </mass-player-card-button>
     `;
   }
   private renderMoveUpButton(): TemplateResult {
@@ -262,14 +260,12 @@ class MediaRow extends LitElement {
       return html``;
     }
     return html`
-      <ha-button
-        appearance="plain"
-        variant="brand"
-        size="medium"
-        class="action-button ${this.useExpressive
-          ? `action-button-expressive`
-          : ``}"
-        @click=${this.callMoveItemUpService}
+      <mass-player-card-button
+        .onPressService=${this.callMoveItemUpService}
+        role="tonal"
+        size="small"
+        elevation=1
+        class="action-button ${this.useExpressive ? `action-button-expressive` : ``}"
       >
         <ha-svg-icon
           .path=${this.Icons.ARROW_UP}
@@ -277,7 +273,7 @@ class MediaRow extends LitElement {
             ? `svg-action-button-expressive`
             : ``}"
         ></ha-svg-icon>
-      </ha-button>
+      </mass-player-card-button>
     `;
   }
   private renderMoveDownButton(): TemplateResult {
@@ -285,14 +281,12 @@ class MediaRow extends LitElement {
       return html``;
     }
     return html`
-      <ha-button
-        appearance="plain"
-        variant="brand"
-        size="medium"
-        class="action-button ${this.useExpressive
-          ? `action-button-expressive`
-          : ``}"
-        @click=${this.callMoveItemDownService}
+      <mass-player-card-button
+        .onPressService=${this.callMoveItemDownService}
+        role="tonal"
+        size="small"
+        elevation=1
+        class="action-button ${this.useExpressive ? `action-button-expressive` : ``}"
       >
         <ha-svg-icon
           .path=${this.Icons.ARROW_DOWN}
@@ -300,7 +294,7 @@ class MediaRow extends LitElement {
             ? `svg-action-button-expressive`
             : ``}"
         ></ha-svg-icon>
-      </ha-button>
+      </mass-player-card-button>
     `;
   }
   private renderRemoveButton(): TemplateResult {
@@ -308,14 +302,12 @@ class MediaRow extends LitElement {
       return html``;
     }
     return html`
-      <ha-button
-        appearance="plain"
-        variant="brand"
-        size="medium"
-        class="action-button ${this.useExpressive
-          ? `action-button-expressive`
-          : ``}"
-        @click=${this.callRemoveItemService}
+      <mass-player-card-button
+        .onPressService=${this.callRemoveItemService}
+        role="tonal"
+        size="small"
+        elevation=1
+        class="action-button ${this.useExpressive ? `action-button-expressive` : ``}"
       >
         <ha-svg-icon
           .path=${this.Icons.CLOSE}
@@ -323,7 +315,7 @@ class MediaRow extends LitElement {
             ? `svg-action-button-expressive`
             : ``}"
         ></ha-svg-icon>
-      </ha-button>
+      </mass-player-card-button>
     `;
   }
 

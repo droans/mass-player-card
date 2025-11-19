@@ -107,35 +107,14 @@ export default css`
     height: 2.5em;
   }
   .grouped-button-unjoin {
-    width: var(--media-row-icon-width);
+    --button-button-width: var(--media-row-icon-width);
+    --button-button-height: 30px;
+    --button-border-radius: 25%;
+    --button-padding: 0px;
     align-content: center;
   }
-  .grouped-button-unjoin::part(base) {
-    height: 30px;
-    width: 30px;
-    border-radius: 25%;
-    --wa-form-control-padding-inline: 0px;
-  }
-  .grouped-button-unjoin-expressive::part(base) {
-    box-shadow: var(--md-sys-elevation-level1);
-    --ha-button-border-radius: var(--button-small-border-radius) !important;
-    background-color: var(--expressive-row-button-color);
-    --inherited-background-color: var(--expressive-row-button-color);
-  }
-  .grouped-button-unjoin-expressive::part(base):hover {
-    background-color: var(--expressive-row-button-color-hover) !important;
-    --inherited-background-color: var(
-      --expressive-row-button-color-hover
-    ) !important;
-    box-shadow: var(--md-sys-elevation-level1);
-    --ha-button-border-radius: var(--button-small-border-radius) !important;
-  }
-
-  .grouped-button-unjoin-expressive > .title {
-    color: var(--expressive-row-color-text);
-  }
   .grouped-svg-unjoin {
-    height: var(--row-icon-button-height);
+    --button-button-height: var(--row-icon-button-height);
     width: var(--row-icon-button-height);
   }
   .grouped-svg-unjoin-expressive {

@@ -251,18 +251,20 @@ class QueueCard extends LitElement {
           ${label}
         </span>
         <span slot="end" id="clear-queue">
-          <ha-button
-            appearance="plain"
-            variant="brand"
-            size="medium"
+
+          <mass-player-card-button
+            .onPressService=${this.onClearQueue}
+            role="filled"
+            size="small"
+            elevation=1
             id="button-back"
             class="button-min ${expressive ? `button-expressive` : ``}"
-            @click=${this.onClearQueue}
           >
             <ha-svg-icon
               .path=${this.Icons.CLEAR}
               class="header-icon"
             ></ha-svg-icon>
+          </mass-player-card-button>
         </span>
       </mass-section-header>
     `;

@@ -10,6 +10,11 @@ export default css`
     --wa-color-fill-quiet: rgba(from var(--md-sys-color-primary) r g b / 0.1);
     position: relative;
   }
+  .button-min::part(button) {
+    --button-button-height: 35px;
+    --button-button-width: 35px;
+    --button-padding: 0px;
+  }
   .button-min::part(base) {
     --wa-form-control-padding-inline: 0px;
     height: 35px;
@@ -27,9 +32,6 @@ export default css`
   .filter-menu-expressive::part(menu-svg),
   .menu-expressive::part(menu-svg) {
     color: var(--md-sys-color-on-primary);
-  }
-  #button-search::part(base), #button-back::part(base) {
-    --inherited-background-color: var(--md-sys-color-primary);
   }
 
   #container {
@@ -97,8 +99,8 @@ export default css`
   #search::part(end) {
     width: calc(100% - 3em - 40px);
   }
-  #search-favorite-button::part(base) {
-    width: 36px;
+  #search-favorite-button::part(button) {
+    --button-button-width: 36px;
     vertical-align: top;
   }
   #search-input {
