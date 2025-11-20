@@ -1,14 +1,9 @@
-import { consume } from "@lit/context";
 import { CSSResultGroup, html, TemplateResult } from "lit";
-import { state } from "lit/decorators.js";
 import { MassPlayerControlsBase } from "./player-controls-base";
 import {
-  PlayerConfig,
   PlayerControlsLayout,
   PlayerIconSize,
-  PlayerLayoutConfig,
 } from "../config/player";
-import { musicPlayerConfigContext } from "../const/context";
 import {
   generateControlLabelHtml,
   generateControlSlotHtml,
@@ -16,7 +11,6 @@ import {
 } from "../utils/music-player";
 import { RepeatMode } from "../const/common";
 import styles from "../styles/player-controls";
-import { jsonMatch } from "../utils/util.js";
 
 class MassPlayerControls extends MassPlayerControlsBase {
 
@@ -28,9 +22,7 @@ class MassPlayerControls extends MassPlayerControlsBase {
     const icon_size =
       icon_style.size == PlayerIconSize.LARGE ? "medium" : "small";
     const slotHtml = generateControlSlotHtml(icon_style);
-    const label = this.controller.translate(
-      "player.controls.shuffle",
-    ) as string;
+    const label = this.controller.translate("player.controls.shuffle") as string;
     const labelHtml = generateControlLabelHtml(icon_style, label, this.layoutConfig.hide_labels);
     const div_layout =
       this.layoutConfig.controls_layout == PlayerControlsLayout.COMPACT
@@ -69,9 +61,7 @@ class MassPlayerControls extends MassPlayerControlsBase {
         ? "div-compact"
         : "div-spaced";
     const slotHtml = generateControlSlotHtml(icon_style);
-    const label = this.controller.translate(
-      "player.controls.previous",
-    ) as string;
+    const label = this.controller.translate("player.controls.previous") as string;
     const labelHtml = generateControlLabelHtml(icon_style, label, this.layoutConfig.hide_labels);
     return html` <div class="track-previous div-${icon_size} ${div_layout}">
       <ha-button

@@ -235,13 +235,13 @@ class MassPlayerControlsExpressive extends MassPlayerControlsBase {
       ></ha-svg-icon>
     `
   }
-  private renderLabel(label_key: string, icon_config: PlayerIcon) {
+  private renderLabel(label_key: string, icon_config: PlayerIcon): string {
     const hide_labels = this.layoutConfig.hide_labels;
     const hide_icon = !icon_config.label
     if (hide_labels || hide_icon) {
-      return html``
+      return ``
     }
-    return this.controller.translate(label_key);
+    return this.controller.translate(label_key) as string;
   }
 }
 
