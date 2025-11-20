@@ -111,6 +111,10 @@ export default css`
     width: var(--play-pause-icon-height);
   }
 
+  .no-label::part(button) {
+    --button-padding-left: 12px;
+    --button-padding-right: 12px;
+  }
   .player-controls {
     justify-items: center;
   }

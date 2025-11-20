@@ -69,13 +69,14 @@ class MassPlayerControlsExpressive extends MassPlayerControlsBase {
     }
     const label = this.renderLabel("player.controls.power", this.layoutConfig.icons.power);
     const icon = this.renderLowerIcon(this.Icons.POWER, `icons-power icons-lower`);
+    const no_label_class = !label?.length ? `no-label` : ``;
     return html`
       <mass-player-card-button
         .onPressService=${this.onPower}
         role="variant"
         size="medium"
         id="button-power"
-        class="button-lower"
+        class="button-lower ${no_label_class}"
       >
         ${icon}
         ${label}
@@ -89,6 +90,9 @@ class MassPlayerControlsExpressive extends MassPlayerControlsBase {
     const shuffle = this.shuffle;
     const label = this.renderLabel("player.controls.shuffle", this.layoutConfig.icons.power);
     const _icon = shuffle ? this.Icons.SHUFFLE : this.Icons.SHUFFLE_DISABLED;
+    const no_label_class = !label?.length ? `no-label` : ``;
+    const active_class = shuffle ? `button-lower-active` : ``
+
     const icon_html = this.renderLowerIcon(
       _icon,
       `icons-shuffle icons-lower${shuffle ? `-active` : ``}`,
@@ -103,7 +107,7 @@ class MassPlayerControlsExpressive extends MassPlayerControlsBase {
         ?selected=${shuffle}
         elevation=${shuffle ? 1 : 0}
         id="button-shuffle"
-        class="button-lower ${shuffle ? `button-lower-active` : ``}"
+        class="button-lower ${active_class} ${no_label_class}"
       >
         ${icon_html}
         ${label}
@@ -119,6 +123,9 @@ class MassPlayerControlsExpressive extends MassPlayerControlsBase {
 
     const label = this.renderLabel("player.controls.repeat", this.layoutConfig.icons.power);
     const _icon = getRepeatIcon(repeat, this.Icons);
+    const no_label_class = !label?.length ? `no-label` : ``;
+    const active_class = repeat_on ? `button-lower-active` : ``
+
     const icon_html = this.renderLowerIcon(
       _icon,
       `icons-shuffle icons-lower${repeat_on ? `-active` : ``}`,
@@ -133,7 +140,7 @@ class MassPlayerControlsExpressive extends MassPlayerControlsBase {
         ?selected=${repeat_on}
         elevation=${repeat_on ? 1 : 0}
         id="button-repeat"
-        class="button-lower ${repeat_on ? `button-lower-active` : ``}"
+        class="button-lower ${active_class} ${no_label_class}"
       >
         ${icon_html}
         ${label}
@@ -146,6 +153,8 @@ class MassPlayerControlsExpressive extends MassPlayerControlsBase {
     }
     const favorite = this.favorite;
     const label = this.renderLabel("player.controls.favorite", this.layoutConfig.icons.favorite);
+    const no_label_class = !label?.length ? `no-label` : ``;
+    const active_class = favorite ? `button-lower-active` : ``
     const _icon = favorite ? this.Icons.HEART_ALT : this.Icons.HEART_PLUS;
 
     const icon_html = this.renderLowerIcon(
@@ -162,7 +171,7 @@ class MassPlayerControlsExpressive extends MassPlayerControlsBase {
         ?selected=${favorite}
         elevation=${favorite ? 1 : 0}
         id="button-favorite"
-        class="button-lower ${favorite ? `button-lower-active` : ``}"
+        class="button-lower ${active_class} ${no_label_class}"
       >
         ${icon_html}
         ${label}
