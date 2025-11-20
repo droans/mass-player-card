@@ -1,4 +1,5 @@
-import { CSSResultGroup, html, PropertyValues, TemplateResult } from "lit";
+import { CSSResultGroup, PropertyValues, TemplateResult } from "lit";
+import { html, literal } from "lit/static-html.js";
 import { MassPlayerControlsBase } from "./player-controls-base";
 import { RepeatMode } from "../const/common";
 import { getRepeatIcon } from "../utils/music-player";
@@ -67,6 +68,7 @@ class MassPlayerControlsExpressive extends MassPlayerControlsBase {
       return html``;
     }
     const label = this.renderLabel("player.controls.power", this.layoutConfig.icons.power);
+    const icon = this.renderLowerIcon(this.Icons.POWER, `icons-power icons-lower`);
     return html`
       <mass-player-card-button
         .onPressService=${this.onPower}
@@ -75,11 +77,7 @@ class MassPlayerControlsExpressive extends MassPlayerControlsBase {
         id="button-power"
         class="button-lower"
       >
-        <ha-svg-icon
-          slot="start"
-          .path=${this.Icons.POWER}
-          class="icons-power icons-lower"
-        ></ha-svg-icon>
+        ${icon}
         ${label}
       </mass-player-card-button>
     `;
@@ -90,6 +88,12 @@ class MassPlayerControlsExpressive extends MassPlayerControlsBase {
     }
     const shuffle = this.shuffle;
     const label = this.renderLabel("player.controls.shuffle", this.layoutConfig.icons.power);
+    const _icon = shuffle ? this.Icons.SHUFFLE : this.Icons.SHUFFLE_DISABLED;
+    const icon_html = this.renderLowerIcon(
+      _icon,
+      `icons-shuffle icons-lower${shuffle ? `-active` : ``}`,
+      label
+    )
     return html`
       <mass-player-card-button
         .onPressService=${this.onShuffle}
@@ -101,11 +105,7 @@ class MassPlayerControlsExpressive extends MassPlayerControlsBase {
         id="button-shuffle"
         class="button-lower ${shuffle ? `button-lower-active` : ``}"
       >
-        <ha-svg-icon
-          slot="start"
-          .path=${shuffle ? this.Icons.SHUFFLE : this.Icons.SHUFFLE_DISABLED}
-          class="icons-shuffle icons-lower${shuffle ? `-active` : ``}"
-        ></ha-svg-icon>
+        ${icon_html}
         ${label}
       </mass-player-card-button>
     `;
@@ -118,6 +118,12 @@ class MassPlayerControlsExpressive extends MassPlayerControlsBase {
     const repeat_on = repeat != RepeatMode.OFF;
 
     const label = this.renderLabel("player.controls.repeat", this.layoutConfig.icons.power);
+    const _icon = getRepeatIcon(repeat, this.Icons);
+    const icon_html = this.renderLowerIcon(
+      _icon,
+      `icons-shuffle icons-lower${repeat_on ? `-active` : ``}`,
+      label
+    )
     return html`
       <mass-player-card-button
         .onPressService=${this.onRepeat}
@@ -129,11 +135,7 @@ class MassPlayerControlsExpressive extends MassPlayerControlsBase {
         id="button-repeat"
         class="button-lower ${repeat_on ? `button-lower-active` : ``}"
       >
-        <ha-svg-icon
-          slot="start"
-          .path=${icon}
-          class="icons-repeat icons-lower${repeat_on ? `-active` : ``}"
-        ></ha-svg-icon>
+        ${icon_html}
         ${label}
       </mass-player-card-button>
     `;
@@ -144,6 +146,13 @@ class MassPlayerControlsExpressive extends MassPlayerControlsBase {
     }
     const favorite = this.favorite;
     const label = this.renderLabel("player.controls.favorite", this.layoutConfig.icons.favorite);
+    const _icon = favorite ? this.Icons.HEART_ALT : this.Icons.HEART_PLUS;
+
+    const icon_html = this.renderLowerIcon(
+      _icon,
+      `icons-shuffle icons-lower${favorite ? `-active` : ``}`,
+      label
+    )
     return html`
       <mass-player-card-button
         .onPressService=${this.onFavorite}
@@ -155,11 +164,7 @@ class MassPlayerControlsExpressive extends MassPlayerControlsBase {
         id="button-favorite"
         class="button-lower ${favorite ? `button-lower-active` : ``}"
       >
-        <ha-svg-icon
-          slot="start"
-          .path=${favorite ? this.Icons.HEART : this.Icons.HEART_PLUS}
-          class="icons-favorite icons-lower${favorite ? `-active` : ``}"
-        ></ha-svg-icon>
+        ${icon_html}
         ${label}
       </mass-player-card-button>
     `;
@@ -206,6 +211,20 @@ class MassPlayerControlsExpressive extends MassPlayerControlsBase {
   }
   static get styles(): CSSResultGroup {
     return styles;
+  }
+  private renderLowerIcon(
+    path: string,
+    _class: string,
+    _label: string | null = null,
+  ) {
+    const slot_attr = _label?.length ? literal`slot="start"` : ``
+    return html`
+      <ha-svg-icon
+        ${slot_attr}
+        .path=${path}
+        class="${_class}"
+      ></ha-svg-icon>
+    `
   }
   private renderLabel(label_key: string, icon_config: PlayerIcon) {
     const hide_icon = !icon_config.label
