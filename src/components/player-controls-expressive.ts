@@ -155,7 +155,7 @@ class MassPlayerControlsExpressive extends MassPlayerControlsBase {
     const label = this.renderLabel("player.controls.favorite", this.layoutConfig.icons.favorite);
     const no_label_class = !label?.length ? `no-label` : ``;
     const active_class = favorite ? `button-lower-active` : ``
-    const _icon = favorite ? this.Icons.HEART_ALT : this.Icons.HEART_PLUS;
+    const _icon = favorite ? this.Icons.HEART_ALT : this.Icons.HEART_PLUS as string;
 
     const icon_html = this.renderLowerIcon(
       _icon,
