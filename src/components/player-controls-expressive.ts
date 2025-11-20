@@ -4,6 +4,7 @@ import { RepeatMode } from "../const/common";
 import { getRepeatIcon } from "../utils/music-player";
 import styles from "../styles/player-controls-expressive";
 import './button'
+import { PlayerIcon } from "../config/player.js";
 
 class MassPlayerControlsExpressive extends MassPlayerControlsBase {
   protected renderPrevious(): TemplateResult {
@@ -65,6 +66,7 @@ class MassPlayerControlsExpressive extends MassPlayerControlsBase {
     if (this.hiddenElements.power) {
       return html``;
     }
+    const label = this.renderLabel("player.controls.power", this.layoutConfig.icons.power);
     return html`
       <mass-player-card-button
         .onPressService=${this.onPower}
@@ -78,7 +80,7 @@ class MassPlayerControlsExpressive extends MassPlayerControlsBase {
           .path=${this.Icons.POWER}
           class="icons-power icons-lower"
         ></ha-svg-icon>
-        ${this.controller.translate("player.controls.power")}
+        ${label}
       </mass-player-card-button>
     `;
   }
@@ -87,6 +89,7 @@ class MassPlayerControlsExpressive extends MassPlayerControlsBase {
       return html``;
     }
     const shuffle = this.shuffle;
+    const label = this.renderLabel("player.controls.shuffle", this.layoutConfig.icons.power);
     return html`
       <mass-player-card-button
         .onPressService=${this.onShuffle}
@@ -103,7 +106,7 @@ class MassPlayerControlsExpressive extends MassPlayerControlsBase {
           .path=${shuffle ? this.Icons.SHUFFLE : this.Icons.SHUFFLE_DISABLED}
           class="icons-shuffle icons-lower${shuffle ? `-active` : ``}"
         ></ha-svg-icon>
-        ${this.controller.translate("player.controls.shuffle")}
+        ${label}
       </mass-player-card-button>
     `;
   }
@@ -113,7 +116,8 @@ class MassPlayerControlsExpressive extends MassPlayerControlsBase {
     }
     const repeat = this.repeat;
     const repeat_on = repeat != RepeatMode.OFF;
-    const icon = getRepeatIcon(repeat, this.Icons);
+
+    const label = this.renderLabel("player.controls.repeat", this.layoutConfig.icons.power);
     return html`
       <mass-player-card-button
         .onPressService=${this.onRepeat}
@@ -130,7 +134,7 @@ class MassPlayerControlsExpressive extends MassPlayerControlsBase {
           .path=${icon}
           class="icons-repeat icons-lower${repeat_on ? `-active` : ``}"
         ></ha-svg-icon>
-        ${this.controller.translate("player.controls.repeat")}
+        ${label}
       </mass-player-card-button>
     `;
   }
@@ -139,6 +143,7 @@ class MassPlayerControlsExpressive extends MassPlayerControlsBase {
       return html``;
     }
     const favorite = this.favorite;
+    const label = this.renderLabel("player.controls.favorite", this.layoutConfig.icons.favorite);
     return html`
       <mass-player-card-button
         .onPressService=${this.onFavorite}
@@ -155,7 +160,7 @@ class MassPlayerControlsExpressive extends MassPlayerControlsBase {
           .path=${favorite ? this.Icons.HEART : this.Icons.HEART_PLUS}
           class="icons-favorite icons-lower${favorite ? `-active` : ``}"
         ></ha-svg-icon>
-        ${this.controller.translate("player.controls.favorite")}
+        ${label}
       </mass-player-card-button>
     `;
   }
@@ -201,6 +206,13 @@ class MassPlayerControlsExpressive extends MassPlayerControlsBase {
   }
   static get styles(): CSSResultGroup {
     return styles;
+  }
+  private renderLabel(label_key: string, icon_config: PlayerIcon) {
+    const hide_icon = !icon_config.label
+    if ( hide_icon) {
+      return html``
+    }
+    return this.controller.translate(label_key);
   }
 }
 
