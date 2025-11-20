@@ -13,8 +13,9 @@ export function generateControlSlotHtml(icon_style: PlayerIcon) {
 export function generateControlLabelHtml(
   icon_style: PlayerIcon,
   label: string,
+  hide_labels: boolean,
 ) {
-  if (icon_style.size == PlayerIconSize.LARGE || !icon_style.label) {
+  if (icon_style.size == PlayerIconSize.LARGE || !icon_style.label || hide_labels) {
     return html``;
   }
   return html`${label}`;

@@ -24,6 +24,7 @@ export interface PlayerHiddenElementsConfig
 
 export interface PlayerLayoutConfig {
   controls_layout: PlayerControlsLayout;
+  hide_labels: boolean;
   icons: PlayerIcons;
   artwork_size: ArtworkSize;
 }
@@ -37,6 +38,8 @@ export interface PlayerIcons {
   play_pause: PlayerIcon;
   next: PlayerIcon;
   repeat: PlayerIcon;
+  power: PlayerIcon;
+  favorite: PlayerIcon;
 }
 export interface PlayerIcon {
   size: PlayerIconSize;
@@ -91,10 +94,21 @@ export const DEFAULT_PLAYER_ICON_CONFIG: PlayerIcons = {
     box_shadow: false,
     label: true,
   },
+  power: {
+    size: PlayerIconSize.SMALL,
+    box_shadow: false,
+    label: true,
+  },
+  favorite: {
+    size: PlayerIconSize.SMALL,
+    box_shadow: false,
+    label: true,
+  },
 };
 export const DEFAULT_PLAYER_LAYOUT_CONFIG: PlayerLayoutConfig = {
   controls_layout: PlayerControlsLayout.COMPACT,
   icons: DEFAULT_PLAYER_ICON_CONFIG,
+  hide_labels: false,
   artwork_size: ArtworkSize.LARGE,
 };
 export const DEFAULT_PLAYER_CONFIG: PlayerConfig = {
@@ -150,6 +164,14 @@ function processPlayerIconsConfig(config: PlayerConfig): PlayerConfig {
     repeat: {
       ...d.repeat,
       ...i.repeat,
+    },
+    power: {
+      ...d.power,
+      ...i.power,
+    },
+    favorite: {
+      ...d.favorite,
+      ...i.favorite,
     },
   };
   const result = {

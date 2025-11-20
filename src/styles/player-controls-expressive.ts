@@ -97,7 +97,7 @@ export default css`
     margin-bottom: 6px;
   }
 
-  .icons-lower {
+  .icons-lower, .icons-lower-active {
     height: var(--icon-height);
     width: var(--icon-height);
   }
@@ -111,6 +111,10 @@ export default css`
     width: var(--play-pause-icon-height);
   }
 
+  .no-label::part(button) {
+    --button-padding-left: 12px;
+    --button-padding-right: 12px;
+  }
   .player-controls {
     justify-items: center;
   }

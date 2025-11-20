@@ -1,14 +1,9 @@
-import { consume } from "@lit/context";
 import { CSSResultGroup, html, TemplateResult } from "lit";
-import { state } from "lit/decorators.js";
 import { MassPlayerControlsBase } from "./player-controls-base";
 import {
-  PlayerConfig,
   PlayerControlsLayout,
   PlayerIconSize,
-  PlayerLayoutConfig,
 } from "../config/player";
-import { musicPlayerConfigContext } from "../const/context";
 import {
   generateControlLabelHtml,
   generateControlSlotHtml,
@@ -16,20 +11,8 @@ import {
 } from "../utils/music-player";
 import { RepeatMode } from "../const/common";
 import styles from "../styles/player-controls";
-import { jsonMatch } from "../utils/util.js";
 
 class MassPlayerControls extends MassPlayerControlsBase {
-  private layoutConfig!: PlayerLayoutConfig;
-  private _config!: PlayerConfig;
-  @consume({ context: musicPlayerConfigContext, subscribe: true })
-  @state()
-  private set config(config: PlayerConfig) {
-    if (jsonMatch(this._config, config)) {
-      return;
-    }
-    this._config = config;
-    this.layoutConfig = config.layout;
-  }
 
   protected renderShuffle(): TemplateResult {
     if (this.hiddenElements.shuffle) {
@@ -39,10 +22,8 @@ class MassPlayerControls extends MassPlayerControlsBase {
     const icon_size =
       icon_style.size == PlayerIconSize.LARGE ? "medium" : "small";
     const slotHtml = generateControlSlotHtml(icon_style);
-    const label = this.controller.translate(
-      "player.controls.shuffle",
-    ) as string;
-    const labelHtml = generateControlLabelHtml(icon_style, label);
+    const label = this.controller.translate("player.controls.shuffle") as string;
+    const labelHtml = generateControlLabelHtml(icon_style, label, this.layoutConfig.hide_labels);
     const div_layout =
       this.layoutConfig.controls_layout == PlayerControlsLayout.COMPACT
         ? "div-compact"
@@ -80,10 +61,8 @@ class MassPlayerControls extends MassPlayerControlsBase {
         ? "div-compact"
         : "div-spaced";
     const slotHtml = generateControlSlotHtml(icon_style);
-    const label = this.controller.translate(
-      "player.controls.previous",
-    ) as string;
-    const labelHtml = generateControlLabelHtml(icon_style, label);
+    const label = this.controller.translate("player.controls.previous") as string;
+    const labelHtml = generateControlLabelHtml(icon_style, label, this.layoutConfig.hide_labels);
     return html` <div class="track-previous div-${icon_size} ${div_layout}">
       <ha-button
         appearance="outlined"
@@ -116,7 +95,7 @@ class MassPlayerControls extends MassPlayerControlsBase {
       ? "player.controls.play"
       : "player.controls.pause";
     const label = this.controller.translate(key) as string;
-    const labelHtml = generateControlLabelHtml(icon_style, label);
+    const labelHtml = generateControlLabelHtml(icon_style, label, this.layoutConfig.hide_labels);
     const appearance = this._playerData.playing ? "filled" : "outlined";
     return html`
       <div class="play-pause div-${icon_size} ${div_layout}">
@@ -151,7 +130,7 @@ class MassPlayerControls extends MassPlayerControlsBase {
         : "div-spaced";
     const slotHtml = generateControlSlotHtml(icon_style);
     const label = this.controller.translate("player.controls.next") as string;
-    const labelHtml = generateControlLabelHtml(icon_style, label);
+    const labelHtml = generateControlLabelHtml(icon_style, label, this.layoutConfig.hide_labels);
     return html`
       <div class="track-next div-${icon_size} ${div_layout}">
         <ha-button
@@ -188,7 +167,7 @@ class MassPlayerControls extends MassPlayerControlsBase {
       icon_style.size == PlayerIconSize.LARGE ? "medium" : "small";
     const slotHtml = generateControlSlotHtml(icon_style);
     const label = this.controller.translate("player.controls.repeat") as string;
-    const labelHtml = generateControlLabelHtml(icon_style, label);
+    const labelHtml = generateControlLabelHtml(icon_style, label, this.layoutConfig.hide_labels);
     const appearance =
       this._playerData.repeat == RepeatMode.OFF ? "accent" : "plain";
     return html`

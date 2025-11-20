@@ -22,10 +22,25 @@ import { jsonMatch } from "../utils/util.js";
 import {
   PlayerConfig,
   PlayerControlsHiddenElementsConfig,
+  PlayerLayoutConfig,
 } from "../config/player.js";
 import { MassCardController } from "../controller/controller.js";
 
 export class MassPlayerControlsBase extends LitElement {
+  protected layoutConfig!: PlayerLayoutConfig;
+  protected _config!: PlayerConfig;
+  @consume({ context: musicPlayerConfigContext, subscribe: true })
+  @state()
+  private set config(config: PlayerConfig) {
+    if (jsonMatch(this._config, config)) {
+      return;
+    }
+    this._config = config;
+    this.layoutConfig = config.layout;
+  }
+  public get config() {
+    return this._config;
+  }
   @consume({ context: actionsControllerContext })
   private actions!: ActionsController;
   private _entityHiddenElements!: PlayerControlsHiddenElementsConfig;
