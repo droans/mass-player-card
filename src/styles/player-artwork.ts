@@ -24,7 +24,7 @@ export default css`
     position: absolute;
   }
   .carousel-large {
-    height: var(--mass-player-card-height) !important;
+    height: var(--artwork-large-height) !important;
     aspect-ratio: 1;
     width: 100%;
   }
