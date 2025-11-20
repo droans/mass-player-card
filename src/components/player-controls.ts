@@ -19,17 +19,6 @@ import styles from "../styles/player-controls";
 import { jsonMatch } from "../utils/util.js";
 
 class MassPlayerControls extends MassPlayerControlsBase {
-  private layoutConfig!: PlayerLayoutConfig;
-  private _config!: PlayerConfig;
-  @consume({ context: musicPlayerConfigContext, subscribe: true })
-  @state()
-  private set config(config: PlayerConfig) {
-    if (jsonMatch(this._config, config)) {
-      return;
-    }
-    this._config = config;
-    this.layoutConfig = config.layout;
-  }
 
   protected renderShuffle(): TemplateResult {
     if (this.hiddenElements.shuffle) {
