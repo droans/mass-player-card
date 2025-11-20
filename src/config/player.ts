@@ -37,6 +37,8 @@ export interface PlayerIcons {
   play_pause: PlayerIcon;
   next: PlayerIcon;
   repeat: PlayerIcon;
+  power: PlayerIcon;
+  favorite: PlayerIcon;
 }
 export interface PlayerIcon {
   size: PlayerIconSize;
@@ -87,6 +89,16 @@ export const DEFAULT_PLAYER_ICON_CONFIG: PlayerIcons = {
     label: false,
   },
   repeat: {
+    size: PlayerIconSize.SMALL,
+    box_shadow: false,
+    label: true,
+  },
+  power: {
+    size: PlayerIconSize.SMALL,
+    box_shadow: false,
+    label: true,
+  },
+  favorite: {
     size: PlayerIconSize.SMALL,
     box_shadow: false,
     label: true,
@@ -150,6 +162,14 @@ function processPlayerIconsConfig(config: PlayerConfig): PlayerConfig {
     repeat: {
       ...d.repeat,
       ...i.repeat,
+    },
+    power: {
+      ...d.power,
+      ...i.power,
+    },
+    favorite: {
+      ...d.favorite,
+      ...i.favorite,
     },
   };
   const result = {
