@@ -97,7 +97,7 @@ export default css`
     margin-bottom: 6px;
   }
 
-  .icons-lower {
+  .icons-lower, .icons-lower-active {
     height: var(--icon-height);
     width: var(--icon-height);
   }
