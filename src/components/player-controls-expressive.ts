@@ -236,8 +236,9 @@ class MassPlayerControlsExpressive extends MassPlayerControlsBase {
     `
   }
   private renderLabel(label_key: string, icon_config: PlayerIcon) {
+    const hide_labels = this.layoutConfig.hide_labels;
     const hide_icon = !icon_config.label
-    if ( hide_icon) {
+    if (hide_labels || hide_icon) {
       return html``
     }
     return this.controller.translate(label_key);

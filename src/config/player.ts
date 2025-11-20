@@ -24,6 +24,7 @@ export interface PlayerHiddenElementsConfig
 
 export interface PlayerLayoutConfig {
   controls_layout: PlayerControlsLayout;
+  hide_labels: boolean;
   icons: PlayerIcons;
   artwork_size: ArtworkSize;
 }
@@ -107,6 +108,7 @@ export const DEFAULT_PLAYER_ICON_CONFIG: PlayerIcons = {
 export const DEFAULT_PLAYER_LAYOUT_CONFIG: PlayerLayoutConfig = {
   controls_layout: PlayerControlsLayout.COMPACT,
   icons: DEFAULT_PLAYER_ICON_CONFIG,
+  hide_labels: false,
   artwork_size: ArtworkSize.LARGE,
 };
 export const DEFAULT_PLAYER_CONFIG: PlayerConfig = {
