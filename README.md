@@ -411,7 +411,7 @@ There are a handful of different options for the scheme:
 |-----------|-------------------------------------------------------------------------|----------|---------|---------------------------------|
 | enabled   | bool                                                                    | No       | true    | Enable/disable music player tab |
 | hide      | [MusicPlayerHiddenElementsConfig](#music-player-hidden-elements-config) | No       | N/A     | See below                       |
-| layout    | [MusicPlayerLayoutConfig](#music-player-hidden-elements-config)         | No       | N/A     | See below                       |
+| layout    | [MusicPlayerLayoutConfig](#music-player-layout-config)         | No       | N/A     | See below                       |
 
 
 ## Music Player Hidden Elements Config
@@ -440,6 +440,7 @@ player:
   layout:
     controls_layout: compact          # Options: compact or spaced (default: compact)
     artwork_size: large               # Options: small, medium, large (default: large)
+    hide_labels: false                # Options: True/False (default: false)
                                       # Note: Medium/Large will display in the background behind the header and player controls. Small will display on its own.
     icons:
       shuffle:
@@ -463,6 +464,16 @@ player:
         label: true                   # Options: True/False (default: false)
                                       # Note: Label will never show if size is large
       play_pause:
+        size: large                   # Options: small or large (default: small)
+        box_shadow: true              # Options: True/False (default: false)
+        label: false                  # Options: True/False (default: false)
+                                      # Note: Label will never show if size is large
+      power:
+        size: large                   # Options: small or large (default: small)
+        box_shadow: true              # Options: True/False (default: false)
+        label: false                  # Options: True/False (default: false)
+                                      # Note: Label will never show if size is large
+      favorite:
         size: large                   # Options: small or large (default: small)
         box_shadow: true              # Options: True/False (default: false)
         label: false                  # Options: True/False (default: false)

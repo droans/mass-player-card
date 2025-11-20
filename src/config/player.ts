@@ -128,10 +128,89 @@ const PLAYER_HIDDEN_ITEMS = [
   "group_volume",
 ];
 
+function iconConfigForm(icon_name: string) {
+  return {
+    name: icon_name,
+    type: "expandable",
+    schema: [
+      {
+        name: "label",
+        selector: {
+          boolean: {}
+        },
+        default: true,
+        description: {
+          suffix: `Show/hide the label for ${icon_name}`,
+        }
+      }
+    ],
+  }
+}
+
+function iconsConfigForm() {
+  return {
+    name: "icons",
+    type: "expandable",
+    schema: [
+      iconConfigForm("power"),
+      iconConfigForm("shuffle"),
+      iconConfigForm("repeat"),
+      iconConfigForm("favorite"),
+    ]
+  }
+}
+
+function artworkSizeConfigForm() {
+  return {
+    name: "artwork_size",
+    selector: {
+      select: {
+        multiple: false,
+        custom_value: true,
+        mode: "dropdown",
+        options: [
+          {
+            "label": "Small (14em, Apx < 200px)",
+            "value": "small",
+            "description": "14em, apx 200px"
+          },
+          {
+            "label": "Medium",
+            "value": "medium",
+            "description": "22em, apx 300px"
+          },
+          {
+            "label": "Large",
+            "value": "large",
+            "description": "Full Card"
+          }
+        ]
+      },
+      default: "large",
+      description: {
+        suffix: `Set the size of the artwork in the card`,
+      }
+    }
+  }
+}
+
+function layoutConfigForm() {
+  return { 
+    name: "layout",
+    type: "expandable",
+    schema: [
+     artworkSizeConfigForm(), 
+     { name: "hide_labels", selector: { boolean: {} }, default: false },
+     iconsConfigForm(),
+    ]
+  }
+}
+
 export function playerConfigForm() {
   return [
     { name: "enabled", selector: { boolean: {} }, default: true },
     hiddenElementsConfigItem(PLAYER_HIDDEN_ITEMS),
+    layoutConfigForm(),
   ];
 }
 
