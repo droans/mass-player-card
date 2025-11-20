@@ -411,7 +411,7 @@ There are a handful of different options for the scheme:
 |-----------|-------------------------------------------------------------------------|----------|---------|---------------------------------|
 | enabled   | bool                                                                    | No       | true    | Enable/disable music player tab |
 | hide      | [MusicPlayerHiddenElementsConfig](#music-player-hidden-elements-config) | No       | N/A     | See below                       |
-| layout    | [MusicPlayerLayoutConfig](#music-player-hidden-elements-config)         | No       | N/A     | See below                       |
+| layout    | [MusicPlayerLayoutConfig](#music-player-layout-config)         | No       | N/A     | See below                       |
 
 
 ## Music Player Hidden Elements Config
