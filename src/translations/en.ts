@@ -42,4 +42,38 @@ export default {
   "players.header": "Players",
 
   "queue.header": "Queue",
+
+  "config.entities.remove": "Remove Player",
+  "config.entities.add": "Add Player",
+
+  "config.player.favorite": "Favorite Button",
+  "config.player.mute": "Mute Button",
+  "config.player.player_selector": "Player Selector",
+  "config.player.power": "Power Button",
+  "config.player.repeat": "Repeat Button",
+  "config.player.shuffle": "Shuffle Button",
+  "config.player.volume": "Volume Bar",
+  "config.player.group_volume": "Group Menu",
+  "config.queue.action_buttons": "All Action Buttons",
+  "config.queue.move_down": "Move Down Button",
+  "config.queue.move_next": "Move Next Button",
+  "config.queue.move_up": "Move Up Button",
+  "config.queue.remove": "Remove Button",
+  "config.queue.album_covers": "Album Covers",
+  "config.queue.artist_names": "Artist Names",
+  
+  "config.browser.back_button": "Back Button",
+  "config.browser.search": "Search Button",
+  "config.browser.recents": "Recents",
+  "config.browser.titles": "Titles",
+  "config.browser.enqueue_menu": "Enqueue Menu",
+  "config.browser.add_to_queue_button": "'Add to Queue' Button",
+  "config.browser.play_next_button": "'Play Next' Button",
+  "config.browser.play_next_clear_queue_button": "'Play Next and Clear Queue' Button",
+  "config.browser.play_now_button": "'Play Now' Button",
+  "config.browser.play_now_clear_queue_button": "'Play Now and Clear Queue' Button",
+
+  "config.players.action_buttons": "Action Buttons",
+  "config.players.join_button": "Join Button",
+  "config.players.transfer_button": "Transfer Button",
 };

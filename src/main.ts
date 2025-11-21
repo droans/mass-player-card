@@ -17,7 +17,7 @@ import "./sections/players";
 
 import "./components/navigation-bar-expressive";
 import "./components/navigation-bar";
-
+import './config/editor/config'
 import { Config, createConfigForm, createStubConfig } from "./config/config";
 
 import { Sections } from "./const/card";
@@ -127,8 +127,11 @@ export class MusicAssistantPlayerCard extends LitElement {
   public setActiveSection(section: Sections) {
     this._controller.activeSection = section;
   }
-  static getConfigForm() {
-    return createConfigForm();
+  // static getConfigForm() {
+  //   return createConfigForm();
+  // }
+  static getConfigElement() {
+    return document.createElement('mass-card-config-editor')
   }
 
   static getStubConfig(hass: ExtendedHass, entities: string[]) {

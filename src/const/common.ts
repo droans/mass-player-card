@@ -8,6 +8,11 @@ import {
   mediaBrowserSectionConfig,
   newMediaBrowserItemsConfig,
 } from "./media-browser.js";
+import { QueueConfig } from "../config/player-queue.js";
+import { PlayerConfig } from "../config/player.js";
+import { PlayersConfig } from "../config/players.js";
+import { MediaBrowserConfig } from "../config/media-browser.js";
+import { EntityConfig } from "./context.js";
 
 export enum RepeatMode {
   OFF = "off",
@@ -92,6 +97,26 @@ export interface DetailValEventData {
     value: number;
   };
 }
+export interface DetailStrValEventData {
+  detail: {
+    value: string;
+  };
+}
+export interface DetailBoolValEventData {
+  detail: {
+    value: boolean;
+  };
+}
+export interface ConfigSectionUpdatedEventData {
+  detail: {
+    section: string,
+    config: QueueConfig | PlayerConfig | PlayersConfig | MediaBrowserConfig | EntityConfig[]
+  }
+}
+export interface ConfigElement extends HTMLElement {
+  hass: ExtendedHass
+}
+
 
 export interface CardsUpdatedEventDetail {
   section: string;

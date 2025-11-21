@@ -52,7 +52,7 @@ export interface Config {
   download_local: boolean;
 }
 
-interface HiddenElementsConfig {
+export interface HiddenElementsConfig {
   player: PlayerHiddenElementsConfig;
   queue: PlayerQueueHiddenElementsConfig;
   media_browser: MediaBrowserHiddenElementsConfig;
@@ -90,7 +90,7 @@ export const DEFAULT_CONFIG: Config = {
   download_local: false,
 };
 
-const ENTITY_DEFAULT_HIDDEN_ITEM_CONFIG: HiddenElementsConfig = {
+export const ENTITY_DEFAULT_HIDDEN_ITEM_CONFIG: HiddenElementsConfig = {
   player: DEFAULT_PLAYER_HIDDEN_ELEMENTS_CONFIG,
   queue: DEFAULT_PLAYER_QUEUE_HIDDEN_ELEMENTS_CONFIG,
   media_browser: DEFAULT_MEDIA_BROWSER_HIDDEN_ELEMENTS_CONFIG,
