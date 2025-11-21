@@ -95,14 +95,11 @@ class PlayerRow extends LitElement {
   protected shouldUpdate(_changedProperties: PropertyValues<this>): boolean {
     return _changedProperties.size > 0;
   }
-  private onJoinPressed(e: Event) {
+  private onJoinPressed = async (e: Event) => {
     navigator.vibrate([75, 20, 20, 20, 75]);
     e.stopPropagation();
-    if (this.joined) {
-      this.unjoinService(this.player_entity.entity_id);
-      return;
-    }
-    this.joinService(this.player_entity.entity_id);
+    const service = this.joined ? this.unjoinService : this.joinService;
+    await service(this.player_entity.entity_id);
     this.joined = !this.joined;
   }
   private onTransferPressed(e: Event) {
