@@ -95,7 +95,7 @@ class PlayerRow extends LitElement {
   protected shouldUpdate(_changedProperties: PropertyValues<this>): boolean {
     return _changedProperties.size > 0;
   }
-  private onJoinPressed(e: Event) {
+  private onJoinPressed = async (e: Event) => {
     navigator.vibrate([75, 20, 20, 20, 75]);
     e.stopPropagation();
     if (this.joined) {
