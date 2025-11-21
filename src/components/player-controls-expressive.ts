@@ -128,7 +128,7 @@ class MassPlayerControlsExpressive extends MassPlayerControlsBase {
 
     const icon_html = this.renderLowerIcon(
       _icon,
-      `icons-shuffle icons-lower${repeat_on ? `-active` : ``}`,
+      `icons-repeat icons-lower${repeat_on ? `-active` : ``}`,
       label
     )
     return html`
@@ -159,7 +159,7 @@ class MassPlayerControlsExpressive extends MassPlayerControlsBase {
 
     const icon_html = this.renderLowerIcon(
       _icon,
-      `icons-shuffle icons-lower${favorite ? `-active` : ``}`,
+      `icons-favorite icons-lower${favorite ? `-active` : ``}`,
       label
     )
     return html`
