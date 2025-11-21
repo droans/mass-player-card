@@ -97,6 +97,10 @@ export default css`
     margin-bottom: 6px;
   }
 
+  .icons-favorite.icons-lower-active {
+    color: var(--md-sys-color-tertiary);
+  }
+
   .icons-lower, .icons-lower-active {
     height: var(--icon-height);
     width: var(--icon-height);
