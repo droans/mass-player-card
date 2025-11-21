@@ -26,22 +26,14 @@ export default class PlayersActions {
     }
   }
   async actionJoinPlayers(target_player: string, group_members: string) {
-    try {
-      await this.hass.callService("media_player", "join", {
-        entity_id: target_player,
-        group_members: group_members,
-      });
-    } catch (e) {
-      console.error(`Error joining players`, e);
-    }
+    await this.hass.callService("media_player", "join", {
+      entity_id: target_player,
+      group_members: group_members,
+    });
   }
   async actionUnjoinPlayers(player_entity: string) {
-    try {
-      await this.hass.callService("media_player", "unjoin", {
-        entity_id: player_entity,
-      });
-    } catch (e) {
-      console.error(`Error unjoining players`, e);
-    }
+    await this.hass.callService("media_player", "unjoin", {
+      entity_id: player_entity,
+    });
   }
 }
