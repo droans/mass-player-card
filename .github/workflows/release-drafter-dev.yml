@@ -44,7 +44,6 @@ jobs:
         run: yarn install --frozen-lockfile
       - name: Set version in release, repo based on tag
         run: |
-          # npm config set git-tag-version false
           git config --local user.email "github-actions[bot]@users.noreply.github.com"
           git config --local user.name "github-actions[bot]"
           npm version prerelease -m "beep boop version bump"
