@@ -541,13 +541,7 @@ class MusicPlayerCard extends LitElement {
     return html`
       <mass-progress-bar
         class="${this._artworkProgressClass}"
-        style="${isActive(
-          this.hass,
-          this.activeMediaPlayer,
-          this.activeEntityConfig,
-        )
-          ? ``
-          : `opacity: 0;`}"
+        style="${isActive(this.hass,this.activeMediaPlayer,this.activeEntityConfig,) ? `` : `opacity: 0;`}"
       ></mass-progress-bar>
     `;
   }
