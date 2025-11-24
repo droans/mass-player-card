@@ -75,6 +75,7 @@ export default css`
 
   #button-next::part(button) {
     --button-border-radius: var(--prev-border-radius);
+    border-radius: var(--button-border-radius);
   }
   #button-previous::part(button) {
     --button-border-radius: var(--next-border-radius);
