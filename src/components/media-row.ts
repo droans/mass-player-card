@@ -105,22 +105,22 @@ class MediaRow extends LitElement {
       remove_button: entity.remove_button || card.remove_button,
     };
   }
-  private callMoveItemUpService(e: Event) {
+  private callMoveItemUpService = (e: Event) => {
     navigator.vibrate([50, 20, 25, 20, 25]);
     e.stopPropagation();
     this.moveQueueItemUpService(this.media_item.queue_item_id);
   }
-  private callMoveItemDownService(e: Event) {
+  private callMoveItemDownService = (e: Event) => {
     navigator.vibrate([25, 20, 25, 20, 50]);
     e.stopPropagation();
     this.moveQueueItemDownService(this.media_item.queue_item_id);
   }
-  private callMoveItemNextService(e: Event) {
+  private callMoveItemNextService = (e: Event) => {
     navigator.vibrate([50, 20, 25, 20, 50]);
     e.stopPropagation();
     this.moveQueueItemNextService(this.media_item.queue_item_id);
   }
-  private callRemoveItemService(e: Event) {
+  private callRemoveItemService = (e: Event) => {
     e.stopPropagation();
     navigator.vibrate([25, 20, 75, 20, 25]);
     this.removeService(this.media_item.queue_item_id);
