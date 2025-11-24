@@ -258,10 +258,6 @@ class MassPlayerArtwork extends LitElement {
       </sl-carousel-item>
     `;
   }
-  protected renderPriorItem() {
-    const img = this.previousItemImage ?? Thumbnail.CLEFT;
-    return this.renderCarouselItem(img, `carousel-img-prior`);
-  }
   protected renderCarouselItems() {
     if (
       !isActive(
