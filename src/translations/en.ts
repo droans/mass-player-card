@@ -42,4 +42,5 @@ export default {
   "players.header": "Players",
 
   "queue.header": "Queue",
+  "player.playlist_dialog.header": "Add to Playlist"
 };
