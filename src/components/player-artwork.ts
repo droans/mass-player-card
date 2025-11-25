@@ -99,7 +99,7 @@ class MassPlayerArtwork extends LitElement {
     if (jsonMatch(this.previousQueueItem, item)) {
       return;
     }
-    this.previousItemImage = item?.media_image ?? ``;
+    this.previousItemImage = item?.media_image?.length ? item?.media_image : item?.local_image_encoded ?? ``;
     this._previousQueueItem = item ?? undefined;
   }
   public get previousQueueItem() {
@@ -122,7 +122,7 @@ class MassPlayerArtwork extends LitElement {
     if (jsonMatch(this.currentQueueItem, item)) {
       return;
     }
-    this.currentItemImage = item?.media_image ?? ``;
+    this.currentItemImage = item?.media_image?.length ? item?.media_image : item?.local_image_encoded ?? ``;
     this._currentQueueItem = item ?? undefined;
   }
   public get currentQueueItem() {
@@ -151,7 +151,7 @@ class MassPlayerArtwork extends LitElement {
     if (jsonMatch(this.nextQueueItem, item)) {
       return;
     }
-    this.nextItemImage = item?.media_image ?? ``;
+    this.nextItemImage = item?.media_image?.length ? item?.media_image : item?.local_image_encoded ?? ``;
     this._nextQueueItem = item ?? undefined;
   }
   public get nextQueueItem() {
