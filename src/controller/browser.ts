@@ -7,7 +7,6 @@ import {
   MediaBrowserConfig,
 } from "../config/media-browser.js";
 import {
-  CardsUpdatedEventDetail,
   ExtendedHass,
   MediaTypes,
   Thumbnail,
@@ -29,6 +28,7 @@ import {
 } from "../utils/media-browser.js";
 import { mediaBrowserCardsContext } from "../const/context.js";
 import { jsonMatch } from "../utils/util.js";
+import { CardsUpdatedEventDetail } from "../const/events.js";
 
 export class MediaBrowserController {
   private hass!: ExtendedHass;

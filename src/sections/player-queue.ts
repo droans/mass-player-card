@@ -17,7 +17,7 @@ import {
   QueueConfigErrors,
 } from "../config/player-queue";
 
-import { ExtendedHass, WaAnimation } from "../const/common";
+import { ExtendedHass } from "../const/common";
 import {
   activeEntityConf,
   activeEntityID,
@@ -40,6 +40,7 @@ import { QueueController } from "../controller/queue.js";
 import { jsonMatch } from "../utils/util.js";
 import { getTranslation } from "../utils/translations.js";
 import { Icons } from "../const/icons.js";
+import { WaAnimation } from "../const/elements.js";
 
 class QueueCard extends LitElement {
   @consume({ context: activePlayerControllerContext })

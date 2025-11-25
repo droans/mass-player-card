@@ -7,10 +7,8 @@ import {
   TemplateResult,
 } from "lit";
 import {
-  CardsUpdatedEvent,
   ExtendedHass,
   MediaTypes,
-  TargetValEventData,
 } from "../const/common.js";
 import { MediaBrowserConfig } from "../config/media-browser.js";
 import { customElement, property, state } from "lit/decorators.js";
@@ -50,6 +48,7 @@ import { EnqueueOptions } from "../const/actions.js";
 import { getMediaTypeSvg } from "../utils/thumbnails.js";
 import { jsonMatch } from "../utils/util.js";
 import { getTranslation } from "../utils/translations.js";
+import { CardsUpdatedEvent, TargetValEventData } from "../const/events.js";
 
 @customElement(`mass-media-browser`)
 export class MediaBrowser extends LitElement {

@@ -7,7 +7,7 @@ import {
 } from "lit";
 import { property, state } from "lit/decorators.js";
 
-import { TargetValEvent, TargetValEventData } from "../const/common";
+import { TargetValEvent, TargetValEventData } from "../const/events";
 import { ListItems } from "../const/media-browser";
 import { consume } from "@lit/context";
 import { useExpressiveContext } from "../const/context.js";
