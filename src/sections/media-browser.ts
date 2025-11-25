@@ -446,9 +446,7 @@ export class MediaBrowser extends LitElement {
         class="button-min ${this.useExpressive ? `button-expressive` : ``}"
       >
         <ha-svg-icon
-          .path=${this.searchLibrary
-            ? this.Icons.LIBRARY
-            : this.Icons.LIBRARY_OUTLINED}
+          .path=${this.Icons.SEARCH}
           class="svg-xs"
         ></ha-svg-icon>
       </mass-player-card-button>
