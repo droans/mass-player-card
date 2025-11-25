@@ -67,3 +67,6 @@ jobs:
         uses: softprops/action-gh-release@v2
         with:
           files: dist/mass-player-card.js
+          draft: true
+          prerelease: false
+          target_commitish: main
