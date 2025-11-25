@@ -8,18 +8,44 @@ import {
 import { Icons } from "../const/icons.js";
 import { getSearchMediaButtons } from "../const/media-browser.js";
 
+export interface ImageURLWithFallback {
+  image_url: string;
+  fallback_url: string;
+}
+
+export async function asyncImageURLWithFallback(
+  hass: ExtendedHass,
+  image_url: string,
+  fallback: string,
+  download_local = true
+): Promise<ImageURLWithFallback> {
+  if (Object.values(Thumbnail).includes(fallback as Thumbnail)) {
+    fallback = getThumbnail(hass, fallback as Thumbnail);
+  }
+  if (download_local) {
+    image_url = await encodeImageIfLocal(hass, image_url);
+  };
+  return {
+    image_url: image_url,
+    fallback_url: fallback
+  }
+}
+
 export async function asyncBackgroundImageFallback(
   hass: ExtendedHass,
   image_url: string,
   fallback: Thumbnail,
-  download_local = true,
+  download_local = true
 ) {
-  const _fallback: string = getThumbnail(hass, fallback);
-  if (image_url.startsWith("http://") && download_local) {
-    image_url = await getLocalImage(hass, image_url);
-  }
-  return `background-image: url(${image_url}), url(${_fallback})`;
+  const image = await asyncImageURLWithFallback(
+    hass,
+    image_url,
+    fallback,
+    download_local
+  )
+  return `background-image: url(${image.image_url}), url(${image.fallback_url})`;
 }
+
 export function backgroundImageFallback(
   hass: ExtendedHass,
   image_url: string,
