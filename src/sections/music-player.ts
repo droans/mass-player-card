@@ -22,7 +22,6 @@ import "../components/volume-slider";
 import PlayerActions from "../actions/player-actions";
 
 import {
-  DetailValEventData,
   ExtendedHass,
   ExtendedHassEntity,
 } from "../const/common";
@@ -53,6 +52,7 @@ import { Config } from "../config/config.js";
 import { Icons } from "../const/icons.js";
 import { isActive, jsonMatch, playerHasUpdated } from "../utils/util.js";
 import { MassCardController } from "../controller/controller.js";
+import { DetailValEventData } from "../const/events.js";
 
 class MusicPlayerCard extends LitElement {
   private _firstLoaded = false;

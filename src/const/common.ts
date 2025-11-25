@@ -4,10 +4,6 @@ import {
   HassEntityAttributeBase,
 } from "home-assistant-js-websocket";
 import { LitElement } from "lit";
-import {
-  mediaBrowserSectionConfig,
-  newMediaBrowserItemsConfig,
-} from "./media-browser.js";
 
 export enum RepeatMode {
   OFF = "off",
@@ -78,28 +74,8 @@ export interface ExtendedHass extends HomeAssistant {
   themes: ExtendedThemes;
 }
 
-export type TargetValEvent = (ev: TargetValEventData) => void;
-
 export type ServiceNoParams = () => void;
 
-export interface TargetValEventData {
-  target: {
-    value: string;
-  };
-}
-export interface DetailValEventData {
-  detail: {
-    value: number;
-  };
-}
-
-export interface CardsUpdatedEventDetail {
-  section: string;
-  cards: newMediaBrowserItemsConfig | mediaBrowserSectionConfig;
-}
-export interface CardsUpdatedEvent extends CustomEvent {
-  detail: CardsUpdatedEventDetail;
-}
 
 export interface WaAnimation extends LitElement {
   play: boolean;
