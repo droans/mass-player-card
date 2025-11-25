@@ -36,6 +36,7 @@ A Home Assistant media player card built for Music Assistant players.
 <!-- START doctoc generated TOC please keep comment here to allow auto update -->
 <!-- DON'T EDIT THIS SECTION, INSTEAD RE-RUN doctoc TO UPDATE -->
 
+  - [Features](#features)
   - [Installation](#installation)
 - [Configuration](#configuration)
   - [Base Config](#base-config)
@@ -68,6 +69,32 @@ A Home Assistant media player card built for Music Assistant players.
 - [Developing](#developing)
 
 <!-- END doctoc generated TOC please keep comment here to allow auto update -->
+
+## Features
+* Responsive Material Expressive UI!
+  * Set styles via HA theme variables
+* Hide elements you don't want, even at the player level or for an entire tab
+* Use a different `media_player` to control the volume of an entity
+* Even artwork for local media will show!
+* Music Player Tab
+  * Swipe to change tracks
+  * Hold ❤️ to Add to Playlist
+  * Customizable layout
+  * Adjust volume for current or any grouped players
+* Player Queue Tab
+  * Select track to play it now
+  * Move up, next, down, or remove items
+  * Clear entire playlist
+  * Configure the number of queue items to display
+* Media Browser Tab
+  * All media types - Albums, artists, audiobooks, playlists, podcasts, radios, and tracks
+  * View your Favorites, Recents, or Provider Recommendations
+  * Search your providers for any media type - both local and non-local media
+  * Add your own custom media or scripts
+* Players Tab
+  * Switch to any configured player
+  * Join or transfer your active queues
+
 
 ## Installation
 
