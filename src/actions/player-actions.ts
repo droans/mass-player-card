@@ -3,6 +3,7 @@ import { HassEntity } from "home-assistant-js-websocket";
 import { ExtendedHass, ExtendedHassEntity, RepeatMode } from "../const/common";
 import { QueueItem } from "../const/player-queue";
 import { getQueueItemsServiceSchema } from "mass-queue-types/packages/actions/get_queue_items";
+import { getInfoWSResponseSchema, getInfoWSServiceSchema } from "mass-queue-types/packages/ws/get_info"
 
 export default class PlayerActions {
   private _hass!: ExtendedHass;
@@ -169,5 +170,14 @@ export default class PlayerActions {
     } catch (e) {
       console.error(`Error unjoining players`, e);
     }
+  }
+  async actionGetPlayerInfo(
+    entity: ExtendedHassEntity,
+  ): Promise<getInfoWSResponseSchema | null> {
+    const data: getInfoWSServiceSchema = {
+      type: "mass_queue/get_info",
+      entity_id: entity.entity_id
+    };
+    return await this.hass.callWS(data);
   }
 }
