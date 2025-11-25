@@ -400,9 +400,8 @@ class MusicPlayerCard extends LitElement {
     return html`
       <ha-dialog
         id="dialog-favorites"
-        header-title="Playlist"
         class="${cls}"
-        heading="Add to Playlist"
+        heading="${this.controller.translate("player.playlist_dialog.header")}"
       >
         <div class="dialog-items">
           ${this.renderPlaylistDialogList()}
