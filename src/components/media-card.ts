@@ -16,7 +16,7 @@ import {
   CardSelectedService,
   EnqueueOptions,
 } from "../const/actions";
-import { ExtendedHass, WaAnimation } from "../const/common";
+import { ExtendedHass } from "../const/common";
 import {
   activeEntityConf,
   activeSectionContext,
@@ -51,6 +51,7 @@ import {
 import { Sections } from "../const/card";
 import { Icons } from "../const/icons.js";
 import { Config } from "../config/config.js";
+import { WaAnimation } from "../const/elements.js";
 
 class MediaCard extends LitElement {
   @property({ type: Boolean }) queueable = false;
