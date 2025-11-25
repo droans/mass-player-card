@@ -8,6 +8,10 @@ import './button'
 import { PlayerIcon } from "../config/player.js";
 
 class MassPlayerControlsExpressive extends MassPlayerControlsBase {
+  protected onFavoriteHold = () => {
+    const e = new Event("open-add-to-playlist-dialog");
+    this.controller.host.dispatchEvent(e);
+  }
   protected renderPrevious(): TemplateResult {
     return html`
       <mass-player-card-button
@@ -165,6 +169,7 @@ class MassPlayerControlsExpressive extends MassPlayerControlsBase {
     return html`
       <mass-player-card-button
         .onPressService=${this.onFavorite}
+        .onHoldService=${this.onFavoriteHold}
         role="variant"
         size="medium"
         selectable

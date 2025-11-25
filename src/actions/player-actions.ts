@@ -171,6 +171,30 @@ export default class PlayerActions {
       console.error(`Error unjoining players`, e);
     }
   }
+  async actionAddToPlaylist(
+    media_uri: string,
+    playlist_uri: string,
+    entity: ExtendedHassEntity
+  ): Promise<void> {
+    const player_info = await this.actionGetPlayerInfo(entity);
+    const mass_entry = player_info?.entries.mass_queue;
+    const playlist_uri_split = playlist_uri.split('/');
+    const playlist_id = playlist_uri_split[playlist_uri_split.length - 1]
+    const data = {
+      type: "call_service",
+      domain: "mass_queue",
+      service: "send_command",
+      service_data: {
+        command: "music/playlists/add_playlist_tracks",
+        config_entry_id: mass_entry,
+        data: {
+          db_playlist_id: playlist_id,
+          uris: [media_uri]
+        }
+      }
+    };
+    await this.hass.callWS(data);
+  }
   async actionGetPlayerInfo(
     entity: ExtendedHassEntity,
   ): Promise<getInfoWSResponseSchema | null> {
