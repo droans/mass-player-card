@@ -27,10 +27,37 @@ class MassButton extends LitElement {
   @property( { attribute: 'selectable', type: Boolean  }) selectable = false;
   @property( { attribute: 'elevation', type: Number }) elevation = 0;
   @property( { attribute: 'outlined', type: Boolean }) outlined = false;
+  @property({ attribute: false }) private onHoldService?: (ev: Event) => void;
+  @property({ attribute: 'hold-delay', type: Number }) holdDelayMs = 1000;
+  private timeout!: number | undefined;
+  
   @consume( { context: configContext, subscribe: true }) config!: Config;
 
-  private onPress = (ev: Event) => {
-    this.onPressService(ev);
+  private onHold = (ev: Event) => {
+    const func = this.onHoldService ?? this.onPressService;
+    func(ev);
+  }
+  private onPointerUp = (ev: Event) => {
+    if (this.timeout || !this.onHoldService) {
+      clearTimeout(this.timeout);
+      this.onPressService(ev);
+      this.timeout = undefined;
+    }
+  }
+  private onPointerDown = (ev: Event) => {
+    if (!this.onHoldService) {
+      return;
+    };
+    this.timeout = setTimeout(
+      () => {
+        if (!this.timeout) {
+          return;
+        }
+        this.timeout = undefined;
+        this.onHold(ev);
+      },
+      this.holdDelayMs
+    )
   }
 
   protected render(): TemplateResult {
@@ -42,7 +69,8 @@ class MassButton extends LitElement {
     return html`
       <ha-button
         appearance="${BUTTON_ROLE_MAP[this.colorRole]}"
-        @click=${this.onPress}
+        @pointerdown=${this.onPointerDown}
+        @pointerup=${this.onPointerUp}
         size="${this.size}"
         class="${this.colorRole} ${this.size} ${expressive} ${elevation} ${disabled} ${outlined} ${selected}"
         part="button"
