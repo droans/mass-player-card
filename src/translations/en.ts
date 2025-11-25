@@ -42,4 +42,4 @@ export default {
   "players.header": "Players",
 
   "queue.header": "Queue",
-}
+};

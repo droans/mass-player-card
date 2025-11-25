@@ -1,4 +1,4 @@
-import { css } from "lit"
+import { css } from "lit";
 
 // Styles belonging to the card
 // https://lit.dev/docs/components/styles/
@@ -61,6 +61,57 @@ export default css`
   .controls-art-sm {
   }
 
+  #dialog-favorites { 
+    --dialog-content-padding: 12px;
+  }
+  .dialog-playlist-item { /* button, button-active */
+    margin: 0.15rem;
+    border-radius: var(--media-row-border-radius);
+    background: var(--media-row-background-color);
+    height: var(--media-row-height);
+  }
+  #dialog-favorites-expressive .dialog-playlist-item { /* button-expressive, button-expressive-active */
+    background-color: var(--expressive-row-color) !important;
+    --md-list-item-hover-state-layer-color: var(--md-sys-color-on-surface);
+    border-radius: var(--default-border-radius);
+    --md-ripple-hover-color: var(--md-sys-color-on-surface);
+    --md-ripple-pressed-color: var(--md-sys-color-on-surface);
+  }
+  .dialog-playlist-thumbnail { /* thumbnail */
+    width: var(--media-row-thumbnail-height);
+    height: var(--media-row-thumbnail-height);
+    background-size: contain;
+    background-repeat: no-repeat;
+    background-position: left;
+    border-radius: var(--media-row-border-radius);
+    margin-left: 14px;
+
+  }
+  .dialog-playlist-title { /* title */
+    font-size: 1.1rem;
+    overflow: hidden;
+    text-overflow: ellipsis;
+    white-space: nowrap;
+    min-width: 0;
+    color: var(--font-color);
+    
+  }
+  #dialog-favorites-expressive .dialog-playlist-title {
+    color: var(--expressive-row-color-text);
+    
+  }
+  .dialog-playlist-divider {
+    --divider-color: var(--md-sys-color-outline-variant);
+  }
+  .dialog-playlist-divider::before {
+    content: " ";
+    display: block;
+    height: 1px;
+    background-color: var(--divider-color);
+    margin-left: 64px;
+    margin-right: 24px;
+  }
+
   .divider {
     margin-top: 4px;
   }
@@ -107,35 +158,14 @@ export default css`
     height: 2.5em;
   }
   .grouped-button-unjoin {
-    width: var(--media-row-icon-width);
+    --button-button-width: var(--media-row-icon-width);
+    --button-button-height: 30px;
+    --button-border-radius: 25%;
+    --button-padding: 0px;
     align-content: center;
   }
-  .grouped-button-unjoin::part(base) {
-    height: 30px;
-    width: 30px;
-    border-radius: 25%;
-    --wa-form-control-padding-inline: 0px;
-  }
-  .grouped-button-unjoin-expressive::part(base) {
-    box-shadow: var(--md-sys-elevation-level1);
-    --ha-button-border-radius: var(--button-small-border-radius) !important;
-    background-color: var(--expressive-row-button-color);
-    --inherited-background-color: var(--expressive-row-button-color);
-  }
-  .grouped-button-unjoin-expressive::part(base):hover {
-    background-color: var(--expressive-row-button-color-hover) !important;
-    --inherited-background-color: var(
-      --expressive-row-button-color-hover
-    ) !important;
-    box-shadow: var(--md-sys-elevation-level1);
-    --ha-button-border-radius: var(--button-small-border-radius) !important;
-  }
-
-  .grouped-button-unjoin-expressive > .title {
-    color: var(--expressive-row-color-text);
-  }
   .grouped-svg-unjoin {
-    height: var(--row-icon-button-height);
+    --button-button-height: var(--row-icon-button-height);
     width: var(--row-icon-button-height);
   }
   .grouped-svg-unjoin-expressive {
@@ -202,6 +232,8 @@ export default css`
     background-position: center;
     background-size: 22em;
     position: relative;
+    border-top-left-radius: 28px;
+    border-top-right-radius: 28px;
   }
   .player-card-expressive {
     background-color: var(--md-sys-color-background);
@@ -327,4 +359,4 @@ export default css`
       left: var(--marquee-left-offset);
     }
   }
-`
+`;

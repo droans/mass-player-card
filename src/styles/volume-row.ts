@@ -1,4 +1,4 @@
-import { css } from "lit"
+import { css } from "lit";
 
 export default css`
   .button-min {
@@ -24,6 +24,8 @@ export default css`
     width: 100%;
     height: var(--player-volume-slider-height);
     position: relative;
+    border-radius: 24px;
+    overflow: hidden
   }
 
   .svg-plain {
@@ -76,6 +78,7 @@ export default css`
   }
   .volume-slider-expressive {
     --control-slider-color: var(--md-sys-color-primary);
+    --disabled-color: var(--md-sys-color-secondary-container);
     box-shadow: var(--md-sys-elevation-level1);
   }
-`
+`;

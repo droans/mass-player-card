@@ -42,4 +42,4 @@ export default {
   "players.header": "Leitores",
 
   "queue.header": "Fila",
-}
+};

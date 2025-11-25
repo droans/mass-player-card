@@ -11,20 +11,73 @@ permissions:
   contents: read
 
 jobs:
-  update_release_draft:
+  build_artifact:
+    name: Build card and store artifact
+    runs-on: ubuntu-latest
+    permissions:
+      contents: write
+    steps:
+      - uses: actions/checkout@v3
+        with:
+          ref: dev
+      - name: Use Node.js ${{ matrix.node-version }}
+        uses: actions/setup-node@v4
+        with:
+          node-version: ${{ matrix.node-version }}
+      - name: Prepare dependencies
+        run: |
+          echo "Get Node version"
+          node --version
+          echo "Install Yarn"
+          npm install -g corepack@0.34.0
+          echo "Check that we're running latest yarn..."
+          which yarn
+      - name: Cache Node.js modules
+        uses: actions/cache@v3
+        with:
+          path: ~/.npm # npm cache files are stored in `~/.npm` on Linux/macOS
+          key: ${{ runner.OS }}-node-${{ matrix.node-version }}-${{ hashFiles('**/yarn.lock') }}
+          restore-keys: |
+            ${{ runner.OS }}-node-${{ matrix.node-version }}
+            ${{ runner.OS }}-
+      - name: Install dependencies
+        run: yarn install --frozen-lockfile
+      - name: Set version in release, repo based on tag
+        run: |
+          git config --local user.email "github-actions[bot]@users.noreply.github.com"
+          git config --local user.name "github-actions[bot]"
+          npm version prerelease -m "beep boop version bump"
+          git push 
+      - name: Build the project
+        run: |
+          yarn rollup
+      - name: Upload Build
+        uses: actions/upload-artifact@v4
+        with:
+          name: card-js
+          path: dist/mass-player-card.js
+      - name: Upload package.json
+        uses: actions/upload-artifact@v4
+        with:
+          name: package-json
+          path: package.json
+
+  draft_prerelease:
     name: Draft pre-release
     runs-on: ubuntu-latest
+    needs: build_artifact
     permissions:
       contents: write
       pull-requests: write
     steps:
-      - name: Checkout Repo
-        uses: actions/checkout@v3
+      - name: Grab built card
+        uses: actions/download-artifact@v5
         with:
-          sparse-checkout: |
-            package.json
-          sparse-checkout-cone-mode: false
-          ref: dev
+          name: card-js
+      - name: Grab package.json
+        uses: actions/download-artifact@v5
+        with:
+          name: package-json
       - name: Get Version
         id: version
         run: |
@@ -32,8 +85,19 @@ jobs:
       - name: Run Release Drafter
         uses: release-drafter/release-drafter@v6.1.0
         with:
-          tag: ${{ steps.version.outputs.pkg_version }}
-          version: ${{ steps.version.outputs.pkg_version }}
           config-name: release-drafter-dev.yml
+          prerelease: true
+          prerelease-identifier: b
+          tag: v${{ steps.version.outputs.pkg_version }}
+          version: v${{ steps.version.outputs.pkg_version }}
         env:
           GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+
+      - name: Upload built source
+        uses: softprops/action-gh-release@v2
+        with:
+          files: mass-player-card.js
+          tag_name: v${{ steps.version.outputs.pkg_version }}
+          draft: true
+          prerelease: true
+          target_commitish: dev

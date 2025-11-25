@@ -36,11 +36,13 @@ A Home Assistant media player card built for Music Assistant players.
 <!-- START doctoc generated TOC please keep comment here to allow auto update -->
 <!-- DON'T EDIT THIS SECTION, INSTEAD RE-RUN doctoc TO UPDATE -->
 
+  - [Features](#features)
   - [Installation](#installation)
 - [Configuration](#configuration)
   - [Base Config](#base-config)
   - [Entity Config](#entity-config)
   - [Entity Hidden Elements Config](#entity-hidden-elements-config)
+  - [Expressive Scheme](#expressive-scheme)
   - [Music Player Config](#music-player-config)
   - [Music Player Hidden Elements Config](#music-player-hidden-elements-config)
   - [Music Player Layout Config](#music-player-layout-config)
@@ -61,11 +63,38 @@ A Home Assistant media player card built for Music Assistant players.
   - [How do I theme the card?](#how-do-i-theme-the-card)
   - [Can this card work in my local language?](#can-this-card-work-in-my-local-language)
   - [I am having issues with this card on my iOS/OSX device but it works fine elsewhere.](#i-am-having-issues-with-this-card-on-my-iososx-device-but-it-works-fine-elsewhere)
+  - [I would like to sponsor you/the card and/or pay to add a new feature!](#i-would-like-to-sponsor-youthe-card-andor-pay-to-add-a-new-feature)
   - [I have other questions or issues not addressed](#i-have-other-questions-or-issues-not-addressed)
 - [Contributing](#contributing)
 - [Developing](#developing)
 
 <!-- END doctoc generated TOC please keep comment here to allow auto update -->
+
+## Features
+* Responsive Material Expressive UI!
+  * Set styles via HA theme variables
+* Hide elements you don't want, even at the player level or for an entire tab
+* Use a different `media_player` to control the volume of an entity
+* Even artwork for local media will show!
+* Music Player Tab
+  * Swipe to change tracks
+  * Hold ❤️ to Add to Playlist
+  * Customizable layout
+  * Adjust volume for current or any grouped players
+* Player Queue Tab
+  * Select track to play it now
+  * Move up, next, down, or remove items
+  * Clear entire playlist
+  * Configure the number of queue items to display
+* Media Browser Tab
+  * All media types - Albums, artists, audiobooks, playlists, podcasts, radios, and tracks
+  * View your Favorites, Recents, or Provider Recommendations
+  * Search your providers for any media type - both local and non-local media
+  * Add your own custom media or scripts
+* Players Tab
+  * Switch to any configured player
+  * Join or transfer your active queues
+
 
 ## Installation
 
@@ -109,6 +138,8 @@ entities:
 
 ```yaml
 type: custom:mass-player-card
+expressive: true
+expressive_theme: expressive
 entities:
   - entity_id: <MEDIA_PLAYER_ENTITY>
     volume_entity_id: <MEDIA_PLAYER_ENTITY>
@@ -230,6 +261,8 @@ media_browser:
 ```yaml
 type: custom:mass-player-card
 expressive: true
+expressive: true
+expressive_theme: fruit_salad
 download_local: false
 entities:
   - media_player.kitchen_player_music_assistant
@@ -346,16 +379,17 @@ media_browser:
 </details>
 
 ## Base Config
-| Parameter      | Type                                             | Required | Default | Description                                           |
-|----------------|--------------------------------------------------|----------|---------|-------------------------------------------------------|
-| type           | str                                              | Yes      | n/a     | Use `custom:mass-player-card`                         |
-| expressive     | boolean                                          | No       | true    | Enables Material Expressive theme                     |
-| download_local | boolean                                          | No       | false   | Download and encode images if not remotely accessible |
-| entities       | list of string or [EntityConfig](#entity-config) | Yes      | n/a     | The Music Assistant `media_player` entities to use    |
-| player         | [MusicPlayerConfig](#music-player-config)        | No       | 5       | See Below                                             |
-| queue          | [QueueConfig](#queue-config)                     | No       | 5       | See Below                                             |
-| media_browser  | [MediaBrowserConfig](#media-browser-config)      | No       | 5       | See Below                                             |
-| players        | [PlayersConfig](#players-config)                 | No       | 5       | See Below                                             |
+| Parameter         | Type                                             | Required | Default    | Description                                           |
+|-------------------|--------------------------------------------------|----------|------------|-------------------------------------------------------|
+| type              | str                                              | Yes      | n/a        | Use `custom:mass-player-card`                         |
+| expressive        | boolean                                          | No       | true       | Enables Material Expressive theme                     |
+| expressive_scheme | str                                              | No       | expressive | The expressive scheme to use for the theme, see below |
+| download_local    | boolean                                          | No       | false      | Download and encode images if not remotely accessible |
+| entities          | list of string or [EntityConfig](#entity-config) | Yes      | n/a        | The Music Assistant `media_player` entities to use    |
+| player            | [MusicPlayerConfig](#music-player-config)        | No       | 5          | See Below                                             |
+| queue             | [QueueConfig](#queue-config)                     | No       | 5          | See Below                                             |
+| media_browser     | [MediaBrowserConfig](#media-browser-config)      | No       | 5          | See Below                                             |
+| players           | [PlayersConfig](#players-config)                 | No       | 5          | See Below                                             |
 
 ## Entity Config
 For each entity, you can either provide the Entity ID by itself or you can provide the Music Assistant media player Entity ID, the media player Entity ID for volume control, and/or the name of the player. Below is the config if you would like to provide the additional details.
@@ -379,6 +413,20 @@ Certain elements across the different sections can be hidden or displayed depend
 | media_browser | [MediaBrowserHiddenElementsConfig](#media-browser-hidden-elements-config)  | No       | See below   | See Below                                |
 | players       | [PlayersHiddenElementsConfig](#players-hidden-elements-config)  | No       | See below   | See Below                                |
 
+## Expressive Scheme
+This defines the expressive scheme which will be used for color generation. @Nerwyn has a [great description](https://github.com/Nerwyn/material-you-utilities) in the readme for his Material You Utilities which may be useful.
+
+There are a handful of different options for the scheme:
+* content
+* expressive
+* fidelity
+* fruit_salad
+* monochrome
+* neutral
+* rainbow
+* tonal_spot
+* vibrant
+
 ## Music Player Config
 
 <details>
@@ -390,7 +438,7 @@ Certain elements across the different sections can be hidden or displayed depend
 |-----------|-------------------------------------------------------------------------|----------|---------|---------------------------------|
 | enabled   | bool                                                                    | No       | true    | Enable/disable music player tab |
 | hide      | [MusicPlayerHiddenElementsConfig](#music-player-hidden-elements-config) | No       | N/A     | See below                       |
-| layout    | [MusicPlayerLayoutConfig](#music-player-hidden-elements-config)         | No       | N/A     | See below                       |
+| layout    | [MusicPlayerLayoutConfig](#music-player-layout-config)         | No       | N/A     | See below                       |
 
 
 ## Music Player Hidden Elements Config
@@ -419,6 +467,7 @@ player:
   layout:
     controls_layout: compact          # Options: compact or spaced (default: compact)
     artwork_size: large               # Options: small, medium, large (default: large)
+    hide_labels: false                # Options: True/False (default: false)
                                       # Note: Medium/Large will display in the background behind the header and player controls. Small will display on its own.
     icons:
       shuffle:
@@ -442,6 +491,16 @@ player:
         label: true                   # Options: True/False (default: false)
                                       # Note: Label will never show if size is large
       play_pause:
+        size: large                   # Options: small or large (default: small)
+        box_shadow: true              # Options: True/False (default: false)
+        label: false                  # Options: True/False (default: false)
+                                      # Note: Label will never show if size is large
+      power:
+        size: large                   # Options: small or large (default: small)
+        box_shadow: true              # Options: True/False (default: false)
+        label: false                  # Options: True/False (default: false)
+                                      # Note: Label will never show if size is large
+      favorite:
         size: large                   # Options: small or large (default: small)
         box_shadow: true              # Options: True/False (default: false)
         label: false                  # Options: True/False (default: false)
@@ -652,10 +711,12 @@ mass-player-card-default-border-radius: 12px;
 
 **Current Language Support**
 
-| Language | Support |
-|----------|---------|
-| English  | Full    |
-| Dutch    | Most    |
+| Language  | Support |
+|-----------|---------|
+| English   | Full    |
+| Dutch     | Most    |
+| French    | Most    |
+| Portugese | Most    |
 
 If you would like to add new translations for other languages:
 1. Fork this repository and clone it locally.
@@ -674,6 +735,12 @@ The instructions are rather similar for improving existing language support. How
 Apple's Webkit engine has some peculiarities that aren't present in other browsers. Unfortunately, I don't own the required equipment (an iOS device and a Mac) in order to properly debug this issue.
 
 If you have the abilities and the equipment to do so, I am happy to accept any contributions to help fix this issue!
+
+## I would like to sponsor you/the card and/or pay to add a new feature!
+
+While I appreciate it, I am not going to accept any funding.
+
+When someone funds development, there's often an implied belief that the card will keep being developed or the maintainer will provide new projects. I want to be able to drop development on this card when I feel that it is complete. I do not want people to feel misled, cheated, or that I should prioritize their wants over anything else. This card is something I created for myself
 
 ## I have other questions or issues not addressed
 

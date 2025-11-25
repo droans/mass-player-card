@@ -1,23 +1,23 @@
-import { consume, provide } from "@lit/context"
-import { LovelaceCard } from "custom-card-helpers"
+import { consume, provide } from "@lit/context";
+import { LovelaceCard } from "custom-card-helpers";
 import {
   LitElement,
   html,
   type CSSResultGroup,
   PropertyValues,
   TemplateResult,
-} from "lit"
-import { property, query, queryAll, state } from "lit/decorators.js"
-import "../components/media-row"
-import "../components/section-header"
+} from "lit";
+import { property, query, queryAll, state } from "lit/decorators.js";
+import "../components/media-row";
+import "../components/section-header";
 
 import {
   DEFAULT_QUEUE_CONFIG,
   QueueConfig,
   QueueConfigErrors,
-} from "../config/player-queue"
+} from "../config/player-queue";
 
-import { ExtendedHass, WaAnimation } from "../const/common"
+import { ExtendedHass } from "../const/common";
 import {
   activeEntityConf,
   activeEntityID,
@@ -30,67 +30,68 @@ import {
   playerQueueConfigContext,
   queueContext,
   queueControllerContext,
-} from "../const/context"
-import { QueueItem, QueueItems } from "../const/player-queue"
+} from "../const/context";
+import { QueueItem, QueueItems } from "../const/player-queue";
 
-import styles from "../styles/player-queue"
-import { Sections } from "../const/card"
-import { ActivePlayerController } from "../controller/active-player.js"
-import { QueueController } from "../controller/queue.js"
-import { jsonMatch } from "../utils/util.js"
-import { getTranslation } from "../utils/translations.js"
-import { Icons } from "../const/icons.js"
+import styles from "../styles/player-queue";
+import { Sections } from "../const/card";
+import { ActivePlayerController } from "../controller/active-player.js";
+import { QueueController } from "../controller/queue.js";
+import { jsonMatch } from "../utils/util.js";
+import { getTranslation } from "../utils/translations.js";
+import { Icons } from "../const/icons.js";
+import { WaAnimation } from "../const/elements.js";
 
 class QueueCard extends LitElement {
   @consume({ context: activePlayerControllerContext })
-  private activePlayerController!: ActivePlayerController
+  private activePlayerController!: ActivePlayerController;
 
   @consume({ context: activeEntityConf, subscribe: true })
-  private entityConf!: EntityConfig
+  private entityConf!: EntityConfig;
 
   @consume({ context: IconsContext, subscribe: true })
-  private Icons!: Icons
+  private Icons!: Icons;
 
   @provide({ context: playerQueueConfigContext })
-  public _config!: QueueConfig
-  @state() private _queue: QueueItems = []
-  private _queueController!: QueueController
+  public _config!: QueueConfig;
+  @state() private _queue: QueueItems = [];
+  private _queueController!: QueueController;
 
-  @queryAll("#animation") _animations!: WaAnimation[]
-  @query(".media-active") _activeElement!: HTMLElement
-  @query(".list") _items!: HTMLElement
+  @queryAll("#animation") _animations!: WaAnimation[];
+  @query(".media-active") _activeElement!: HTMLElement;
+  @query(".list") _items!: HTMLElement;
 
-  private _firstLoaded = false
+  private _firstLoaded = false;
 
-  @state() public _tabSwitchFirstUpdate = false
+  @state() public _tabSwitchFirstUpdate = false;
 
   @consume({ context: queueControllerContext, subscribe: true })
   public set queueController(controller: QueueController) {
-    this._queueController = controller
+    this._queueController = controller;
   }
   public get queueController() {
-    return this._queueController
+    return this._queueController;
   }
 
   @consume({ context: queueContext, subscribe: true })
   public set queue(queue: QueueItems | null) {
     if (queue) {
       if (!this.queue?.length) {
-        this._queue = this.processQueue(queue)
-        return
+        this._queue = this.processQueue(queue);
+        return;
       }
       if (!jsonMatch(this.queue, queue)) {
-        this._queue = this.processQueue(queue)
+        this._queue = this.processQueue(queue);
       }
-      return
+      return;
     }
   }
   public get queue() {
-    return this._queue
+    return this._queue;
   }
 
   private processQueue(queue: QueueItems) {
-    const active_idx = queue.findIndex((i) => i.playing)
+    const active_idx = queue.findIndex((i) => i.playing);
 
     return queue.map((item, idx) => {
       {
@@ -98,121 +99,121 @@ class QueueCard extends LitElement {
           ...item,
           show_action_buttons: idx > active_idx,
           show_move_up_next: idx > active_idx + 1,
-        }
-        return r
+        };
+        return r;
       }
-    })
+    });
   }
 
-  private _active_player_entity!: string
-  private _hass!: ExtendedHass
-  private error?: TemplateResult
+  private _active_player_entity!: string;
+  private _hass!: ExtendedHass;
+  private error?: TemplateResult;
 
   @provide({ context: mediaCardDisplayContext })
-  private _mediaCardDisplay = true
-  private _section!: Sections
+  private _mediaCardDisplay = true;
+  private _section!: Sections;
 
   @consume({ context: activeSectionContext, subscribe: true })
   public set activeSection(section: Sections) {
-    this._mediaCardDisplay = section == Sections.QUEUE
-    this._section = section
+    this._mediaCardDisplay = section == Sections.QUEUE;
+    this._section = section;
   }
   public get activeSection() {
-    return this._section
+    return this._section;
   }
   @consume({ context: hassExt, subscribe: true })
   public set hass(hass: ExtendedHass) {
     if (!hass) {
-      return
+      return;
     }
-    this._hass = hass
+    this._hass = hass;
   }
   public get hass() {
-    return this._hass
+    return this._hass;
   }
 
   @consume({ context: activeEntityID, subscribe: true })
   @property({ attribute: false })
   public set active_player_entity(active_player_entity: string) {
-    this._active_player_entity = active_player_entity
+    this._active_player_entity = active_player_entity;
   }
   public get active_player_entity() {
-    return this._active_player_entity
+    return this._active_player_entity;
   }
 
   public set config(config: QueueConfig) {
-    const status = this.testConfig(config, false)
+    const status = this.testConfig(config, false);
     if (status !== QueueConfigErrors.OK) {
-      throw this.createError(status)
+      throw this.createError(status);
     }
     this._config = {
       ...DEFAULT_QUEUE_CONFIG,
       ...config,
-    }
+    };
   }
   public get config() {
-    return this._config
+    return this._config;
   }
 
   private testConfig(config: QueueConfig, test_active = true) {
     if (!config) {
-      return QueueConfigErrors.CONFIG_MISSING
+      return QueueConfigErrors.CONFIG_MISSING;
     }
     if (test_active) {
       if (!this.active_player_entity) {
-        return QueueConfigErrors.NO_ENTITY
+        return QueueConfigErrors.NO_ENTITY;
       }
       if (typeof this.active_player_entity !== "string") {
-        return QueueConfigErrors.ENTITY_TYPE
+        return QueueConfigErrors.ENTITY_TYPE;
       }
     }
     if (this.hass) {
       if (!this.hass.states[this.active_player_entity]) {
-        return QueueConfigErrors.MISSING_ENTITY
+        return QueueConfigErrors.MISSING_ENTITY;
       }
     }
-    return QueueConfigErrors.OK
+    return QueueConfigErrors.OK;
   }
   private scrollToActive() {
     if (!this.queue?.length) {
-      return
+      return;
     }
-    const item_offset = this._activeElement.offsetTop
-    const padding = this._activeElement.offsetHeight * 2
-    const scroll = item_offset - padding
-    this._items.scrollTop = scroll
+    const item_offset = this._activeElement.offsetTop;
+    const padding = this._activeElement.offsetHeight * 2;
+    const scroll = item_offset - padding;
+    this._items.scrollTop = scroll;
   }
   private onQueueItemSelected = async (queue_item_id: string) => {
-    await this.queueController.playQueueItem(queue_item_id)
-    void this.queueController.getQueue()
-    this.scrollToActive()
-  }
+    await this.queueController.playQueueItem(queue_item_id);
+    void this.queueController.getQueue();
+    this.scrollToActive();
+  };
   private onQueueItemRemoved = async (queue_item_id: string) => {
-    await this.queueController.removeQueueItem(queue_item_id)
-  }
+    await this.queueController.removeQueueItem(queue_item_id);
+  };
   private onQueueItemMoveNext = async (queue_item_id: string) => {
-    await this.queueController.moveQueueItemNext(queue_item_id)
-  }
+    await this.queueController.moveQueueItemNext(queue_item_id);
+  };
   private onQueueItemMoveUp = async (queue_item_id: string) => {
-    await this.queueController.moveQueueItemUp(queue_item_id)
-  }
+    await this.queueController.moveQueueItemUp(queue_item_id);
+  };
   private onQueueItemMoveDown = async (queue_item_id: string) => {
-    await this.queueController.moveQueueItemDown(queue_item_id)
-  }
+    await this.queueController.moveQueueItemDown(queue_item_id);
+  };
   private onClearQueue = async () => {
-    await this.queueController.clearQueue(this.active_player_entity)
-  }
+    await this.queueController.clearQueue(this.active_player_entity);
+  };
   private onTabSwitch = (ev: Event) => {
     if ((ev as CustomEvent).detail == Sections.QUEUE) {
-      this._tabSwitchFirstUpdate = true
-      this.scrollToActive()
+      this._tabSwitchFirstUpdate = true;
+      this.scrollToActive();
     }
-  }
+  };
   private renderQueueItems() {
-    const show_album_covers = this._config.show_album_covers
-    const delay_add = 62.5
-    let i = 1
-    const play = this._tabSwitchFirstUpdate
+    const show_album_covers = this._config.show_album_covers;
+    const delay_add = 62.5;
+    let i = 1;
+    const play = this._tabSwitchFirstUpdate;
     return this.queue?.map((item) => {
       const result = html`
         <wa-animation
@@ -237,38 +238,40 @@ class QueueCard extends LitElement {
           >
           </mass-player-media-row>
         </wa-animation>
-      `
-      i++
-      return result
-    })
+      `;
+      i++;
+      return result;
+    });
   }
   protected renderHeader(): TemplateResult {
-    const label = getTranslation("queue.header", this.hass) as string
-    const expressive = this.activePlayerController.useExpressive
+    const label = getTranslation("queue.header", this.hass) as string;
+    const expressive = this.activePlayerController.useExpressive;
     return html`
       <mass-section-header>
         <span slot="label" id="title">
           ${label}
         </span>
         <span slot="end" id="clear-queue">
-          <ha-button
-            appearance="plain"
-            variant="brand"
-            size="medium"
+
+          <mass-player-card-button
+            .onPressService=${this.onClearQueue}
+            role="filled"
+            size="small"
+            elevation=1
             id="button-back"
             class="button-min ${expressive ? `button-expressive` : ``}"
-            @click=${this.onClearQueue}
           >
             <ha-svg-icon
               .path=${this.Icons.CLEAR}
               class="header-icon"
             ></ha-svg-icon>
+          </mass-player-card-button>
         </span>
       </mass-section-header>
-    `
+    `;
   }
   protected render() {
-    const expressive = this.activePlayerController.useExpressive
+    const expressive = this.activePlayerController.useExpressive;
     return (
       this.error ??
       html`
@@ -279,58 +282,58 @@ class QueueCard extends LitElement {
           </ha-md-list>
         </div>
       `
-    )
+    );
   }
   protected shouldUpdate(_changedProperties: PropertyValues): boolean {
     if (!_changedProperties.size) {
-      return false
+      return false;
     }
     if (_changedProperties.has("_config") || _changedProperties.has("queue")) {
-      return true
+      return true;
     }
-    return super.shouldUpdate(_changedProperties)
+    return super.shouldUpdate(_changedProperties);
   }
 
   public disconnectedCallback(): void {
-    super.disconnectedCallback()
+    super.disconnectedCallback();
     if (this?.queueController?.isSubscribed)
-      this.queueController.unsubscribeUpdates()
-    super.disconnectedCallback()
+      this.queueController.unsubscribeUpdates();
+    super.disconnectedCallback();
   }
   public connectedCallback(): void {
     if (this.queueController) {
-      void this.queueController.getQueue()
-      void this.queueController.subscribeUpdates()
+      void this.queueController.getQueue();
+      void this.queueController.subscribeUpdates();
     }
     if (this._animations && this._firstLoaded) {
-      this._animations.forEach((animation) => (animation.play = true))
+      this._animations.forEach((animation) => (animation.play = true));
     }
-    super.connectedCallback()
+    super.connectedCallback();
   }
   protected firstUpdated(): void {
-    this._firstLoaded = true
+    this._firstLoaded = true;
     this.queueController._host.addEventListener(
       "section-changed",
       this.onTabSwitch,
-    )
+    );
   }
   protected updated(): void {
-    this._tabSwitchFirstUpdate = false
+    this._tabSwitchFirstUpdate = false;
     // this.scrollToActive();
   }
   static get styles(): CSSResultGroup {
-    return styles
+    return styles;
   }
   private createError(errorString: string): Error {
-    const error = new Error(errorString)
-    const errorCard = document.createElement("hui-error-card") as LovelaceCard
+    const error = new Error(errorString);
+    const errorCard = document.createElement("hui-error-card") as LovelaceCard;
     errorCard.setConfig({
       type: "error",
       error,
       origConfig: this._config,
-    })
-    this.error = html`${errorCard}`
-    return error
+    });
+    this.error = html`${errorCard}`;
+    return error;
   }
 }
-customElements.define("mass-player-queue-card", QueueCard)
+customElements.define("mass-player-queue-card", QueueCard);

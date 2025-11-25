@@ -4,5 +4,16 @@
     "Hacs",
     "Hass",
     "homeassistant"
-  ]
+  ],
+  "typescript.tsdk": "node_modules/typescript/lib",
+  "editor.defaultFormatter": "ms-vscode.vscode-typescript-tslint-plugin",
+  "[typescript]": {
+    "editor.defaultFormatter": "esbenp.prettier-vscode"
+  },
+  "tslint.configFile": "./tsconfig.json",
+  "tslint.packageManager": "yarn",
+  "tslint.suppressWhileTypeErrorsPresent": true,
+  "js/ts.implicitProjectConfig.target": "ES2021",
+  "typescript.reportStyleChecksAsWarnings": true,
+  "tslint.alwaysShowRuleFailuresAsWarnings": true
 }

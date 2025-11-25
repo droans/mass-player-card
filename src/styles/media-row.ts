@@ -1,4 +1,4 @@
-import { css } from "lit"
+import { css } from "lit";
 
 // Styles belonging to the card
 // https://lit.dev/docs/components/styles/
@@ -7,36 +7,42 @@ export default css`
     width: var(--media-row-icon-width);
     align-content: center;
   }
-  .action-button::part(base) {
-    height: 30px;
-    width: 30px;
-    border-radius: 25%;
-    --wa-form-control-padding-inline: 0px;
+  .action-button::part(button) {
+    --button-button-height: 38px;
+    --button-button-width: 38px;
   }
-  .action-button-expressive::part(base) {
-    box-shadow: var(--md-sys-elevation-level1);
-    --ha-button-border-radius: var(--button-small-border-radius) !important;
-    background-color: var(--expressive-row-button-color);
-    --inherited-background-color: var(--expressive-row-button-color);
+  .action-button-expressive::part(button) {
+    --button-border-radius: 4px !important;
   }
-  .action-button-expressive::part(base):hover {
+  .action-button-expressive::part(button):hover {
     background-color: var(--expressive-row-button-color-hover) !important;
-    --inherited-background-color: var(
-      --expressive-row-button-color-hover
-    ) !important;
-    box-shadow: var(--md-sys-elevation-level1);
-    --ha-button-border-radius: var(--button-small-border-radius) !important;
+    --button-border-radius: var(--button-small-border-radius) !important;
+  }
+  .action-button-expressive:first-of-type::part(button) {
+    --button-border-radius: var(--button-small-border-radius) 4px 4px var(--button-small-border-radius) !important;
+  }
+  .action-button-expressive:first-of-type::part(button):hover {
+    --button-border-radius: var(--button-small-border-radius) !important;
+  }
+  .action-button-expressive:last-of-type::part(button) {
+    --button-border-radius: 4px var(--button-small-border-radius) var(--button-small-border-radius) 4px !important;
+  }
+  .action-button-expressive:last-of-type::part(button):hover {
+    --button-border-radius: var(--button-small-border-radius) !important;
+  }
+  .action-button-expressive:only-of-type::part(button) {
+    --button-border-radius: var(--button-small-border-radius) !important;
   }
 
   .button {
     margin: 0.15rem;
-    border-radius: --media-row-border-radius;
+    border-radius: var(--media-row-border-radius);
     background: var(--media-row-background-color);
     height: var(--media-row-height);
   }
   .button-active {
     margin: 0.15rem;
-    border-radius: --media-row-border-radius;
+    border-radius: var(--media-row-border-radius);
     background-color: var(
       --media-row-active-background-color,
       var(--md-sys-color-secondary-container)
@@ -52,6 +58,10 @@ export default css`
 
   .button-expressive {
     background-color: var(--expressive-row-color) !important;
+    --md-list-item-hover-state-layer-color: var(--md-sys-color-on-surface);
+    border-radius: var(--default-border-radius);
+    --md-ripple-hover-color: var(--md-sys-color-on-surface);
+    --md-ripple-pressed-color: var(--md-sys-color-on-surface);
   }
   .button-expressive > .title {
     color: var(--expressive-row-color-text);
@@ -61,6 +71,9 @@ export default css`
     --primary-text-color: var(--expressive-row-active-color-text) !important;
     --font-color: var(--expressive-row-active-color-text) !important;
     background-color: var(--expressive-row-active-color) !important;
+    border-radius: var(--default-border-radius);
+    --md-ripple-hover-color: var(--md-sys-color-on-surface);
+    --md-ripple-pressed-color: var(--md-sys-color-on-surface);
   }
   .button-expressive-active > .title {
     color: var(--expressive-row-active-color-text);
@@ -71,20 +84,23 @@ export default css`
     flex-direction: row;
     align-items: center;
     justify-content: flex-end;
-    gap: 8px;
+    gap: 2px;
     height: 48px;
     right: 0;
     padding-right: 16px;
     position: absolute;
   }
 
+  .divider {
+    --divider-color: var(--md-sys-color-surface-variant);
+  }
   .divider::before {
     content: " ";
     display: block;
     height: 1px;
     background-color: var(--divider-color);
-    margin-left: 8px;
-    margin-right: 8px;
+    margin-left: 64px;
+    margin-right: 24px;
   }
 
   .svg-action-button {
@@ -105,6 +121,7 @@ export default css`
     background-repeat: no-repeat;
     background-position: left;
     border-radius: var(--media-row-border-radius);
+    margin-left: 14px;
   }
   .thumbnail-disabled {
     width: var(--media-row-thumbnail-height);
@@ -113,7 +130,8 @@ export default css`
     background-repeat: no-repeat;
     background-position: left;
     border-radius: var(--media-row-border-radius);
-    filter: opacity(0.5);
+    opacity: 0.38;
+    margin-left: 14px;
   }
 
   .title {
@@ -124,4 +142,7 @@ export default css`
     min-width: 0;
     color: var(--font-color);
   }
-`
+  .title-disabled {
+    opacity: 0.38;
+  }
+`;

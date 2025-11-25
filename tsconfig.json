@@ -15,7 +15,16 @@
     "experimentalDecorators": true,
     "plugins": [
       {
-        "name": "ts-lit-plugin"
+        "name": "typescript-styled-plugin",
+        "validate": false
+      },
+      {
+        "name": "ts-styled-plugin",
+        "validate": false
+      },
+      {
+        "name": "@styled/typescript-styled-plugin",
+        "validate": false
       }
     ]
   },

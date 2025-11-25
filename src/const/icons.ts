@@ -43,53 +43,54 @@ import {
   mdiSwapHorizontal,
   mdiVolumeHigh,
   mdiVolumeMute,
-} from "@mdi/js"
+} from "@mdi/js";
 
 export interface Icons {
-  ARTIST: string
-  ALBUM: string
-  ARROW_DOWN: string
-  ARROW_LEFT: string
-  ARROW_PLAY_NEXT: string
-  ASLEEP: string
-  BOOK: string
-  ARROW_UP: string
-  CLEAR: string
-  CLOSE: string
-  FILTER: string
-  HEART: string
-  HEART_PLUS: string
-  LIBRARY: string
-  LIBRARY_OUTLINED: string
-  LINK: string
-  LINK_OFF: string
-  MUSIC: string
-  PAUSE: string
-  PLAY: string
-  PLAY_CIRCLE: string
-  PLAY_CIRCLE_OUTLINE: string
-  PLAYLIST: string
-  PLAYLIST_PLUS: string
-  PODCAST: string
-  POWER: string
-  RADIO: string
-  RECENTS: string
-  REPEAT: string
-  REPEAT_OFF: string
-  REPEAT_ONCE: string
-  SEARCH: string
-  SHUFFLE: string
-  SHUFFLE_DISABLED: string
-  SKIP_NEXT: string
-  SKIP_NEXT_CIRCLE: string
-  SKIP_NEXT_CIRCLE_OUTLINED: string
-  SKIP_PREVIOUS: string
-  SPEAKER: string
-  SPEAKER_MULTIPLE: string
-  SUGGESTIONS: string
-  SWAP: string
-  VOLUME_HIGH: string
-  VOLUME_MUTE: string
+  ARTIST: string;
+  ALBUM: string;
+  ARROW_DOWN: string;
+  ARROW_LEFT: string;
+  ARROW_PLAY_NEXT: string;
+  ASLEEP: string;
+  BOOK: string;
+  ARROW_UP: string;
+  CLEAR: string;
+  CLOSE: string;
+  FILTER: string;
+  HEART: string;
+  HEART_ALT: string;
+  HEART_PLUS: string;
+  LIBRARY: string;
+  LIBRARY_OUTLINED: string;
+  LINK: string;
+  LINK_OFF: string;
+  MUSIC: string;
+  PAUSE: string;
+  PLAY: string;
+  PLAY_CIRCLE: string;
+  PLAY_CIRCLE_OUTLINE: string;
+  PLAYLIST: string;
+  PLAYLIST_PLUS: string;
+  PODCAST: string;
+  POWER: string;
+  RADIO: string;
+  RECENTS: string;
+  REPEAT: string;
+  REPEAT_OFF: string;
+  REPEAT_ONCE: string;
+  SEARCH: string;
+  SHUFFLE: string;
+  SHUFFLE_DISABLED: string;
+  SKIP_NEXT: string;
+  SKIP_NEXT_CIRCLE: string;
+  SKIP_NEXT_CIRCLE_OUTLINED: string;
+  SKIP_PREVIOUS: string;
+  SPEAKER: string;
+  SPEAKER_MULTIPLE: string;
+  SUGGESTIONS: string;
+  SWAP: string;
+  VOLUME_HIGH: string;
+  VOLUME_MUTE: string;
 }
 
 const MaterialDesignIcons: Icons = {
@@ -105,6 +106,7 @@ const MaterialDesignIcons: Icons = {
   CLOSE: mdiClose,
   FILTER: mdiFilterVariant,
   HEART: mdiHeart,
+  HEART_ALT: mdiHeart,
   HEART_PLUS: mdiHeartPlusOutline,
   LIBRARY: mdiLibrary,
   LIBRARY_OUTLINED: mdiLibraryOutline,
@@ -137,7 +139,7 @@ const MaterialDesignIcons: Icons = {
   SWAP: mdiSwapHorizontal,
   VOLUME_HIGH: mdiVolumeHigh,
   VOLUME_MUTE: mdiVolumeMute,
-}
+};
 
 const MaterialExpressiveIcons: Icons = {
   ARTIST:
@@ -163,6 +165,7 @@ const MaterialExpressiveIcons: Icons = {
     "M11 18q-.425 0-.712-.288T10 17t.288-.712T11 16h2q.425 0 .713.288T14 17t-.288.713T13 18zm-4-5q-.425 0-.712-.288T6 12t.288-.712T7 11h10q.425 0 .713.288T18 12t-.288.713T17 13zM4 8q-.425 0-.712-.288T3 7t.288-.712T4 6h16q.425 0 .713.288T21 7t-.288.713T20 8z",
   HEART:
     "M12 20.325q-.35 0-.712-.125t-.638-.4l-1.725-1.575q-2.65-2.425-4.788-4.812T2 8.15Q2 5.8 3.575 4.225T7.5 2.65q1.325 0 2.5.562t2 1.538q.825-.975 2-1.537t2.5-.563q2.35 0 3.925 1.575T22 8.15q0 2.875-2.125 5.275T15.05 18.25l-1.7 1.55q-.275.275-.637.4t-.713.125",
+  HEART_ALT: "M12 15.5q1.35 0 2.463-.737T16.15 12.8q.175-.375 0-.75t-.575-.525q-.375-.15-.737.013t-.538.537q-.3.675-.937 1.05T12 13.5t-1.362-.375t-.938-1.05q-.175-.375-.537-.537t-.738-.013q-.4.15-.575.525t0 .75q.575 1.225 1.688 1.963T12 15.5m-2.75-5q.525 0 .888-.363t.362-.887t-.363-.888T9.25 8t-.888.363T8 9.25t.363.888t.887.362m5.5 0q.525 0 .888-.363T16 9.25t-.363-.888T14.75 8t-.888.363t-.362.887t.363.888t.887.362M12 5.1q.85-1 2.025-1.55T16.5 3q2.35 0 3.925 1.575T22 8.5q0 1.05-.312 2.013t-1.075 2.075t-2.05 2.437t-3.238 3.075l-2 1.75q-.575.5-1.325.5t-1.325-.5l-2-1.75q-1.95-1.75-3.238-3.075t-2.05-2.437t-1.075-2.075T2 8.5q0-2.35 1.575-3.925T7.5 3q1.3 0 2.475.55T12 5.1",
   HEART_PLUS:
     "M1 8.475q0-2.35 1.575-3.912T6.5 3q1.3 0 2.475.55T11 5.1q.85-1 2.025-1.55T15.5 3q1.775 0 3.05.888t1.925 2.287q.175.375.025.763t-.525.562t-.763.025T18.65 7q-.45-1-1.325-1.5T15.5 5q-1.15 0-2.1.65t-1.65 1.6q-.125.2-.325.288T11 7.624t-.425-.1t-.325-.275q-.7-.95-1.65-1.6T6.5 5q-1.425 0-2.462.988T3 8.474q0 .825.35 1.675t1.25 1.963t2.45 2.6T11 18.3l2.225-1.95q.3-.275.7-.25t.675.3q.3.3.288.738t-.338.712l-2.225 1.975q-.275.25-.625.375t-.7.125t-.7-.125t-.625-.4q-1.125-1-2.612-2.275t-2.838-2.737t-2.287-3.063T1 8.475M18 14h-2q-.425 0-.712-.288T15 13t.288-.712T16 12h2v-2q0-.425.288-.712T19 9t.713.288T20 10v2h2q.425 0 .713.288T23 13t-.288.713T22 14h-2v2q0 .425-.288.713T19 17t-.712-.288T18 16z",
   LIBRARY:
@@ -224,11 +227,11 @@ const MaterialExpressiveIcons: Icons = {
     "M19 11.975q0-2.075-1.1-3.787t-2.95-2.563q-.375-.175-.55-.537t-.05-.738q.15-.4.538-.575t.787 0Q18.1 4.85 19.55 7.063T21 11.974t-1.45 4.913t-3.875 3.287q-.4.175-.788 0t-.537-.575q-.125-.375.05-.737t.55-.538q1.85-.85 2.95-2.562t1.1-3.788M7 15H4q-.425 0-.712-.288T3 14v-4q0-.425.288-.712T4 9h3l3.3-3.3q.475-.475 1.088-.213t.612.938v11.15q0 .675-.612.938T10.3 18.3zm9.5-3q0 1.05-.475 1.988t-1.25 1.537q-.25.15-.513.013T14 15.1V8.85q0-.3.263-.437t.512.012q.775.625 1.25 1.575t.475 2",
   VOLUME_MUTE:
     "M16.775 19.575q-.275.175-.55.325t-.575.275q-.375.175-.762 0t-.538-.575q-.15-.375.038-.737t.562-.538q.1-.05.188-.1t.187-.1L12 14.8v2.775q0 .675-.612.938T10.3 18.3L7 15H4q-.425 0-.712-.288T3 14v-4q0-.425.288-.712T4 9h2.2L2.1 4.9q-.275-.275-.275-.7t.275-.7t.7-.275t.7.275l17 17q.275.275.275.7t-.275.7t-.7.275t-.7-.275zm2.225-7.6q0-2.075-1.1-3.787t-2.95-2.563q-.375-.175-.55-.537t-.05-.738q.15-.4.538-.575t.787 0Q18.1 4.85 19.55 7.05T21 11.975q0 .825-.15 1.638t-.425 1.562q-.2.55-.612.688t-.763.012t-.562-.45t-.013-.75q.275-.65.4-1.312T19 11.975m-4.225-3.55Q15.6 8.95 16.05 10t.45 2v.25q0 .125-.025.25q-.05.325-.35.425t-.55-.15L14.3 11.5q-.15-.15-.225-.337T14 10.775V8.85q0-.3.263-.437t.512.012M9.75 6.95Q9.6 6.8 9.6 6.6t.15-.35l.55-.55q.475-.475 1.087-.213t.613.938V8q0 .35-.3.475t-.55-.125z",
-}
+};
 
 export function getIcons(expressive: boolean): Icons {
   if (expressive) {
-    return MaterialExpressiveIcons
+    return MaterialExpressiveIcons;
   }
-  return MaterialDesignIcons
+  return MaterialDesignIcons;
 }

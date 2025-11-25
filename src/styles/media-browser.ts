@@ -1,4 +1,4 @@
-import { css } from "lit"
+import { css } from "lit";
 
 // Styles belonging to the card
 // https://lit.dev/docs/components/styles/
@@ -9,6 +9,11 @@ export default css`
     width: 35px;
     --wa-color-fill-quiet: rgba(from var(--md-sys-color-primary) r g b / 0.1);
     position: relative;
+  }
+  .button-min::part(button) {
+    --button-button-height: 35px;
+    --button-button-width: 35px;
+    --button-padding: 0px;
   }
   .button-min::part(base) {
     --wa-form-control-padding-inline: 0px;
@@ -22,6 +27,11 @@ export default css`
   .filter-menu-expressive::part(menu-select-menu) {
     box-shadow: var(--md-sys-elevation-level1);
     border-radius: var(--button-small-border-radius) !important;
+  }
+  .button-expressive .header-icon,
+  .filter-menu-expressive::part(menu-svg),
+  .menu-expressive::part(menu-svg) {
+    color: var(--md-sys-color-on-primary);
   }
 
   #container {
@@ -46,6 +56,7 @@ export default css`
     --mdc-icon-size: 1.5em;
     --control-select-menu-padding: 0px;
     --control-select-menu-background-color: unset;
+    background-color: var(--md-sys-color-primary);
     --control-select-menu-height: 35px;
     width: 35px;
   }
@@ -88,8 +99,8 @@ export default css`
   #search::part(end) {
     width: calc(100% - 3em - 40px);
   }
-  #search-favorite-button::part(base) {
-    width: 36px;
+  #search-favorite-button::part(button) {
+    --button-button-width: 36px;
     vertical-align: top;
   }
   #search-input {
@@ -122,8 +133,8 @@ export default css`
     top: 2.5px;
     left: 2.5px;
   }
-  #search-media-type-menu-expressive::part(menu-svg) {
-    color: var(--md-sys-color-on-background);
+  .search-media-type-menu-expressive::part(menu-svg), .search-library-button-expressive .svg-menu-expressive {
+    color: var(--md-sys-color-on-surface-variant) !important
   }
   #search-options {
     height: 35px;
@@ -131,7 +142,7 @@ export default css`
   }
 
   .svg-menu-expressive {
-    color: var(--md-sys-color-on-background);
+    color: var(--md-sys-color-primary);
   }
   .svg-xs {
     height: 30px;
@@ -142,4 +153,4 @@ export default css`
     text-indent: var(--title-indent);
     text-transform: capitalize;
   }
-`
+`;

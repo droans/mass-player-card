@@ -1,4 +1,4 @@
-import { css } from "lit"
+import { css } from "lit";
 export default css`
   :host {
     --mass-player-card-height: var(--mass-player-card-section-height, 40em);
@@ -60,7 +60,7 @@ export default css`
 
     --button-small-border-radius: var(
       --mass-player-card-small-button-border-radius,
-      12px
+      16px
     );
 
     --expressive-border-radius-container: var(
@@ -79,7 +79,7 @@ export default css`
 
     --expressive-row-color: var(
       --mass-player-card-expressive-row-color,
-      var(--md-sys-color-background)
+      var(--md-sys-color-surface)
     );
     --expressive-row-color-text: var(
       --mass-player-card-expressive-row-color-text,
@@ -100,15 +100,15 @@ export default css`
     );
     --expressive-row-button-color-text: var(
       --mass-player-card-expressive-row-button-color-text,
-      var(--md-sys-color-on-primary-container)
+      var(--md-sys-color-on-secondary-container)
     );
     --expressive-row-button-color-hover: var(
       --mass-player-card-expressive-row-button-color-hover,
-      var(--md-sys-color-tertiary-container)
+      rgba(from var(--expressive-row-button-color-hover) r g b / 0.38) !important
     );
     --expressive-row-button-color-text-hover: var(
       --mass-player-card-expressive-row-button-color-text-hover,
-      var(--md-sys-color-on-tertiary-container)
+      var(--md-sys-color-on-secondary-container)
     );
 
     --md-list-container-color: var(
@@ -125,10 +125,6 @@ export default css`
     );
 
     --menu-border-radius: var(--mass-player-card-menu-border-radius, 24px);
-    --menu-selected-item-border-radius: var(
-      --mass-player-card-menu-selected-item-border-radius,
-      24px
-    );
 
     --media-row-active-background-color: var(
       --mass-player-card-media-row-active-background-color,
@@ -182,6 +178,14 @@ export default css`
       --mass-player-card-row-icon-button-height,
       1.5rem
     );
+    --menu-item-padding-left: var(--mass-player-card-menu-item-padding-left, 12px);
+
+    --md-sys-elevation-level0: none;
+    --md-sys-elevation-level1: rgba(from #000000 r g b / 0.2) 0px 2px 1px -1px, rgba(from #000000 r g b / 0.14) 0px 1px 1px 0px, rgba(from #000000 r g b / 0.12) 0px 1px 3px 0px;
+    --md-sys-elevation-level2: rgba(from #000000 r g b / 0.2) 0px 3px 3px -2px, rgba(from #000000 r g b / 0.14) 0px 3px 4px 0px, rgba(from #000000 r g b / 0.12) 0px 1px 8px 0px;
+    --md-sys-elevation-level3: rgba(from #000000 r g b / 0.2) 0px 3px 5px -1px, rgba(from #000000 r g b / 0.14) 0px 6px 10px 0px, rgba(from #000000 r g b / 0.12) 0px 1px 18px 0px;
+    --md-sys-elevation-level4: rgba(from #000000 r g b / 0.2) 0px 5px 5px -3px, rgba(from #000000 r g b / 0.14) 0px 8px 10px 1px, rgba(from #000000 r g b / 0.12) 0px 3px 14px 2px;
+    --md-sys-elevation-level5: rgba(from #000000 r g b / 0.2) 0px 7px 8px -4px, rgba(from #000000 r g b / 0.14) 0px 12px 17px 2px, rgba(from #000000 r g b / 0.12) 0px 5px 22px 4px;
   }
 
   ha-card {
@@ -206,4 +210,4 @@ export default css`
   .section-hidden {
     display: none;
   }
-`
+`;
