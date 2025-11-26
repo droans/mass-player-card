@@ -211,6 +211,9 @@ export class ActivePlayerController {
   }
 
   public async updateActivePlayerData() {
+    if (!this.activeMediaPlayer || !this.volumeMediaPlayer || !this.activeEntityID) {
+      return;
+    }
     this.activePlayerData = await this.getactivePlayerData();
   }
 
@@ -286,7 +289,7 @@ export class ActivePlayerController {
       muted: vol_player?.attributes?.is_volume_muted ?? true,
       volume: Math.floor(vol_player?.attributes?.volume_level * 100) ?? 0,
       player_name: this.activePlayerName,
-      favorite: current_item.media_item.favorite ?? false,
+      favorite: current_item?.media_item?.favorite ?? false,
     };
   }
   public async getPlayerProgress(): Promise<number> {
