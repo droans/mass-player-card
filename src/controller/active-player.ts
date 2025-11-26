@@ -15,8 +15,8 @@ import {
 import { Config, EntityConfig } from "../config/config";
 import { MassGetQueueServiceDataSchema, MassGetQueueServiceResponseSchema, PlayerData } from "../const/music-player";
 import { DynamicScheme } from "@material/material-color-utilities";
-import { getGroupVolumeServiceSchema } from "mass-queue-types/packages/actions/get_group_volume";
-import { setGroupVolumeServiceSchema } from "mass-queue-types/packages/actions/set_group_volume";
+import { getGroupVolumeServiceResponse, getGroupVolumeServiceSchema } from "mass-queue-types/packages/mass_queue/actions/get_group_volume";
+import { setGroupVolumeServiceSchema } from "mass-queue-types/packages/mass_queue/actions/set_group_volume";
 import { isActive, jsonMatch, playerHasUpdated } from "../utils/util.js";
 import { applyDefaultExpressiveScheme, applyExpressiveSchemeFromImage } from "../utils/expressive.js";
 
@@ -405,11 +405,8 @@ export class ActivePlayerController {
       },
       return_response: true,
     };
-    // eslint-disable-next-line @typescript-eslint/no-unsafe-assignment, @typescript-eslint/no-explicit-any
-    const ret = await this.hass.callWS<any>(data);
-    // eslint-disable-next-line @typescript-eslint/no-unsafe-assignment, @typescript-eslint/no-unsafe-member-access
+    const ret = await this.hass.callWS<getGroupVolumeServiceResponse>(data);
     const vol = ret.response.volume_level ?? 0;
-    // eslint-disable-next-line @typescript-eslint/no-unsafe-return
     return vol;
   }
   public disconnected() {

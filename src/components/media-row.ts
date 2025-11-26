@@ -38,6 +38,7 @@ import {
   QueueConfig,
 } from "../config/player-queue";
 import { Icons } from "../const/icons.js";
+import { queueItem } from "mass-queue-types/packages/mass_queue/actions/get_queue_items.js";
 
 class MediaRow extends LitElement {
   @property({ attribute: false }) media_item!: QueueItem;
@@ -130,8 +131,7 @@ class MediaRow extends LitElement {
   }
   protected shouldUpdate(_changedProperties: PropertyValues<this>): boolean {
     if (_changedProperties.has("media_item")) {
-      // eslint-disable-next-line @typescript-eslint/no-non-null-assertion
-      const oldItem: QueueItem = _changedProperties.get("media_item")!;
+      const oldItem = _changedProperties.get("media_item") as queueItem;
       return queueItemhasUpdated(oldItem, this.media_item);
     }
     return _changedProperties.size > 0;

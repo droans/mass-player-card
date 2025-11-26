@@ -4,7 +4,7 @@ import { ExtendedHass } from "../const/common";
 import {
   getQueueItemsServiceResponse,
   getQueueItemsServiceSchema,
-} from "mass-queue-types/packages/actions/get_queue_items";
+} from "mass-queue-types/packages/mass_queue/actions/get_queue_items";
 
 export default class QueueActions {
   private _hass!: ExtendedHass;
@@ -33,10 +33,6 @@ export default class QueueActions {
     limit_before: number,
     limit_after: number,
   ): Promise<QueueItems | null> {
-    /* eslint-disable
-      @typescript-eslint/no-explicit-any,
-      @typescript-eslint/no-unsafe-assignment,
-    */
     const data: getQueueItemsServiceSchema = {
       type: "call_service",
       domain: "mass_queue",
@@ -48,13 +44,9 @@ export default class QueueActions {
       },
       return_response: true,
     };
-    const ret: getQueueItemsServiceResponse = await this.hass.callWS<any>(data);
+    const ret = await this.hass.callWS<getQueueItemsServiceResponse>(data);
     const result: QueueItems = ret.response[this.player_entity];
     return result;
-    /* eslint-enable
-      @typescript-eslint/no-explicit-any,
-      @typescript-eslint/no-unsafe-assignment,
-    */
   }
   async playQueueItem(queue_item_id: string) {
     try {

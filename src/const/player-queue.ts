@@ -1,8 +1,8 @@
 import { ExtendedHass } from "./common";
 import { QueueConfig } from "../config/player-queue";
-import { queueItem } from "mass-queue-types/packages/actions/get_queue_items";
+import { queueItem } from "mass-queue-types/packages/mass_queue/actions/get_queue_items";
 
-export { getQueueItemsServiceResponse } from "mass-queue-types/packages/actions/get_queue_items";
+export { getQueueItemsServiceResponse } from "mass-queue-types/packages/mass_queue/actions/get_queue_items";
 
 export interface QueueItem extends queueItem {
   playing: boolean;

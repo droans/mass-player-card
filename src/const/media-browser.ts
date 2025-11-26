@@ -10,7 +10,8 @@ import {
   recommendationItem,
   recommendationItems,
   recommendationSection,
-} from "mass-queue-types/packages/actions/get_recommendations";
+} from "mass-queue-types/packages/mass_queue/actions/get_recommendations";
+import { MediaItem } from "mass-queue-types/packages/music_assistant/types.js";
 
 export interface MediaBrowserItem {
   name: string;
@@ -51,12 +52,7 @@ export interface MediaBrowserItemsConfig {
   main: MediaCardItem[];
   [str: string]: MediaCardItem[];
 }
-export interface MediaLibraryItem {
-  name: string;
-  image: string;
-  uri: string;
-  media_type: string;
-}
+export type MediaLibraryItem = MediaItem;
 
 export const MediaTypeThumbnails = {
   album: Thumbnail.DISC,
