@@ -1,3 +1,5 @@
+import { MediaCardData } from "./media-browser.js";
+
 export enum EnqueueOptions {
   PLAY_NOW = "play",
   PLAY_NOW_CLEAR_QUEUE = "replace",
@@ -24,12 +26,10 @@ export type BrowserItemSelectedService = (
 ) => void;
 
 export type CardSelectedService = (
-  /* eslint-disable-next-line @typescript-eslint/no-explicit-any */
-  data: any[] | Record<string, any>,
+  data: MediaCardData,
 ) => void;
 
 export type CardEnqueueService = (
-  /* eslint-disable-next-line @typescript-eslint/no-explicit-any */
-  data: any[] | Record<string, any>,
+  data: MediaCardData,
   enqueue: EnqueueOptions,
 ) => void;

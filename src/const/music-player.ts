@@ -39,6 +39,30 @@ export interface PlaylistDialogItem {
   uri: string;
 }
 
+export interface MassGetQueueServiceDataSchema {
+      type: "call_service",
+      domain: "music_assistant",
+      service: "get_queue",
+      service_data: {
+        entity_id: string,
+      },
+      return_response: true,
+}
+
+interface massQueueItem {
+  elapsed_time: number,
+  current_item: {
+    duration: number,
+    media_item: {
+      favorite: boolean;
+    }
+  }
+}
+
+export interface MassGetQueueServiceResponseSchema {
+  response: Record<string, massQueueItem>
+}
+
 export const SWIPE_MIN_X = 100;
 export const DEFAULT_MAX_VOLUME = 100;
 export const MARQUEE_DELAY_MS = 2000;

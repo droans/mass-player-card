@@ -10,7 +10,8 @@ import {
   recommendationItem,
   recommendationItems,
   recommendationSection,
-} from "mass-queue-types/packages/actions/get_recommendations";
+} from "mass-queue-types/packages/mass_queue/actions/get_recommendations";
+import { MediaItem } from "mass-queue-types/packages/music_assistant/types.js";
 
 export interface MediaBrowserItem {
   name: string;
@@ -27,8 +28,14 @@ export interface FavoriteItems {
   radios: MediaBrowserItem[];
   tracks: MediaBrowserItem[];
 }
-/* eslint-disable-next-line @typescript-eslint/no-explicit-any */
-export type MediaCardData = Record<string, any>;
+export interface MediaCardData {
+  type?: string;
+  subtype?: string;
+  section?: string;
+  media_content_id?: string;
+  media_content_type?: string;
+  service?: string;
+}
 export interface MediaCardItem {
   title: string;
   thumbnail: string;
@@ -51,12 +58,7 @@ export interface MediaBrowserItemsConfig {
   main: MediaCardItem[];
   [str: string]: MediaCardItem[];
 }
-export interface MediaLibraryItem {
-  name: string;
-  image: string;
-  uri: string;
-  media_type: string;
-}
+export type MediaLibraryItem = MediaItem;
 
 export const MediaTypeThumbnails = {
   album: Thumbnail.DISC,
@@ -81,40 +83,37 @@ export type RecommendationSection = recommendationSection;
 export type RecommendationResponse = getRecommendationsServiceResponse;
 
 export type ListItems = ListItemData[];
-/* eslint-disable
-  @typescript-eslint/no-unsafe-assignment
-*/
 export function getEnqueueButtons(icons: Icons, hass: ExtendedHass): ListItems {
   return [
     {
       option: EnqueueOptions.PLAY_NOW,
       icon: icons.PLAY_CIRCLE_OUTLINE,
-      title: getTranslation("browser.enqueue.play", hass),
+      title: getTranslation("browser.enqueue.play", hass) as string,
     },
     {
       option: EnqueueOptions.PLAY_NEXT,
       icon: icons.SKIP_NEXT_CIRCLE_OUTLINED,
-      title: getTranslation("browser.enqueue.next", hass),
+      title: getTranslation("browser.enqueue.next", hass) as string,
     },
     {
       option: EnqueueOptions.PLAY_NOW_CLEAR_QUEUE,
       icon: icons.PLAY_CIRCLE,
-      title: getTranslation("browser.enqueue.play_clear", hass),
+      title: getTranslation("browser.enqueue.play_clear", hass) as string,
     },
     {
       option: EnqueueOptions.PLAY_NEXT_CLEAR_QUEUE,
       icon: icons.SKIP_NEXT_CIRCLE,
-      title: getTranslation("browser.enqueue.next_clear", hass),
+      title: getTranslation("browser.enqueue.next_clear", hass) as string,
     },
     {
       option: EnqueueOptions.ADD_TO_QUEUE,
       icon: icons.PLAYLIST_PLUS,
-      title: getTranslation("browser.enqueue.queue", hass),
+      title: getTranslation("browser.enqueue.queue", hass) as string,
     },
     {
       option: EnqueueOptions.RADIO,
       icon: icons.RADIO,
-      title: getTranslation("browser.enqueue.radio", hass),
+      title: getTranslation("browser.enqueue.radio", hass) as string,
     },
   ];
 }
@@ -126,37 +125,37 @@ export function getSearchMediaButtons(
     {
       option: MediaTypes.ALBUM,
       icon: icons.ALBUM,
-      title: getTranslation("browser.sections.album", hass),
+      title: getTranslation("browser.sections.album", hass) as string,
     },
     {
       option: MediaTypes.ARTIST,
       icon: icons.ARTIST,
-      title: getTranslation("browser.sections.artist", hass),
+      title: getTranslation("browser.sections.artist", hass) as string,
     },
     {
       option: MediaTypes.AUDIOBOOK,
       icon: icons.BOOK,
-      title: getTranslation("browser.sections.audiobook", hass),
+      title: getTranslation("browser.sections.audiobook", hass) as string,
     },
     {
       option: MediaTypes.PLAYLIST,
       icon: icons.PLAYLIST,
-      title: getTranslation("browser.sections.playlist", hass),
+      title: getTranslation("browser.sections.playlist", hass) as string,
     },
     {
       option: MediaTypes.PODCAST,
       icon: icons.PODCAST,
-      title: getTranslation("browser.sections.podcast", hass),
+      title: getTranslation("browser.sections.podcast", hass) as string,
     },
     {
       option: MediaTypes.RADIO,
       icon: icons.RADIO,
-      title: getTranslation("browser.sections.radio", hass),
+      title: getTranslation("browser.sections.radio", hass) as string,
     },
     {
       option: MediaTypes.TRACK,
       icon: icons.MUSIC,
-      title: getTranslation("browser.sections.track", hass),
+      title: getTranslation("browser.sections.track", hass) as string,
     },
   ];
 }
@@ -170,28 +169,25 @@ export function getFilterButtons(
     result.push({
       option: "favorites",
       icon: icons.HEART,
-      title: getTranslation("browser.card.favorites", hass),
+      title: getTranslation("browser.card.favorites", hass) as string,
     });
   }
   if (config.recents.enabled) {
     result.push({
       option: "recents",
       icon: icons.RECENTS,
-      title: getTranslation("browser.card.recents", hass),
+      title: getTranslation("browser.card.recents", hass) as string,
     });
   }
   if (config.recommendations.enabled) {
     result.push({
       option: "recommendations",
       icon: icons.SUGGESTIONS,
-      title: getTranslation("browser.card.recommendations", hass),
+      title: getTranslation("browser.card.recommendations", hass) as string,
     });
   }
   return result;
 }
-/* eslint-enable
-  @typescript-eslint/no-unsafe-assignment
-*/
 
 export const SEARCH_UPDATE_DELAY = 1000;
 export const DEFAULT_SEARCH_LIMIT = 20;

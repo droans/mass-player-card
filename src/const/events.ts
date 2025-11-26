@@ -2,12 +2,12 @@ import { mediaBrowserSectionConfig, newMediaBrowserItemsConfig } from "./media-b
 
 export type TargetValEvent = (ev: TargetValEventData) => void;
 
-export interface TargetValEventData {
+export interface TargetValEventData extends Omit<Event, "target"> {
   target: {
     value: string;
   };
 }
-export interface DetailValEventData {
+export interface DetailValEventData extends Omit<Event, "target"> {
   detail: {
     value: number;
   };
@@ -17,6 +17,17 @@ export interface CardsUpdatedEventDetail {
   section: string;
   cards: newMediaBrowserItemsConfig | mediaBrowserSectionConfig;
 }
-export interface CardsUpdatedEvent extends CustomEvent {
+export interface CardsUpdatedEvent extends Omit<CustomEvent, "detail"> {
   detail: CardsUpdatedEventDetail;
+}
+export interface ArtworkUpdatedEventData extends Omit<Event, "detail"> {
+  detail: {
+    type: string;
+    image: string;
+  }
+}
+export interface JoinUnjoinEventData extends Omit<Event, "target"> {
+  target: {
+    entity: string;
+  }
 }

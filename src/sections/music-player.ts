@@ -1,6 +1,6 @@
 import "@material/web/progress/linear-progress.js";
 
-import { consume, provide } from "@lit/context";
+import { consume } from "@lit/context";
 import {
   CSSResultGroup,
   LitElement,
@@ -54,7 +54,7 @@ import { Config } from "../config/config.js";
 import { Icons } from "../const/icons.js";
 import { isActive, jsonMatch, playerHasUpdated } from "../utils/util.js";
 import { MassCardController } from "../controller/controller.js";
-import { DetailValEventData } from "../const/events.js";
+import { DetailValEventData, JoinUnjoinEventData, TargetValEventData } from "../const/events.js";
 import { asyncImageURLWithFallback } from "../utils/thumbnails.js";
 import { DialogElement } from "../const/elements.js";
 
@@ -74,7 +74,7 @@ class MusicPlayerCard extends LitElement {
   @consume({ context: controllerContext, subscribe: true })
   private controller!: MassCardController;
 
-  @provide({ context: activePlayerDataContext })
+  @consume({ context: activePlayerDataContext, subscribe: true })
   @state()
   public player_data!: PlayerData;
 
@@ -117,7 +117,6 @@ class MusicPlayerCard extends LitElement {
       return;
     }
     this._activeEntity = entity;
-    this.updatePlayerData();
   }
   public get activeEntity() {
     return this._activeEntity;
@@ -128,11 +127,7 @@ class MusicPlayerCard extends LitElement {
     if (hass) {
       this.actions = new PlayerActions(hass);
     }
-    const hassExists = !!this._hass;
     this._hass = hass;
-    if (!hassExists) {
-      this.updatePlayerData();
-    }
   }
   public get hass() {
     return this._hass;
@@ -185,7 +180,7 @@ class MusicPlayerCard extends LitElement {
     }
     this._activePlayerController = controller;
     if (!this.player_data) {
-      this.updatePlayerData();
+      void this.activePlayerController.updateActivePlayerData();
     }
     if (!this.groupVolumeLevel) {
       void this._getGroupedVolume();
@@ -219,23 +214,12 @@ class MusicPlayerCard extends LitElement {
     return this._groupedPlayers;
   }
 
-  private updatePlayerData() {
-    if (!this.hass) {
-      return;
-    }
-    this._updatePlayerData().catch(() => {
-      return;
-    });
-  }
   private async _updatePlayerData() {
     if (!this.activeMediaPlayer) {
       return;
     }
-    const current_item = await this.actions.actionGetCurrentItem(
-      this.activeMediaPlayer,
-    );
     const new_player_data =
-      this.activePlayerController.getactivePlayerData(current_item);
+      await this.activePlayerController.getactivePlayerData();
     if (jsonMatch(this.player_data, new_player_data)) {
       return;
     }
@@ -254,7 +238,7 @@ class MusicPlayerCard extends LitElement {
       name: playlist.name,
       image: await asyncImageURLWithFallback(
         this.controller.hass,
-        playlist.image,
+        playlist.image ?? ``,
         Thumbnail.PLAYLIST,
         this.controller.config.download_local
       ),
@@ -303,34 +287,20 @@ class MusicPlayerCard extends LitElement {
       @typescript-eslint/no-unsafe-assignment
     */
   };
-  private onPlayerSelect = (ev: CustomEvent) => {
+  private onPlayerSelect = (ev: TargetValEventData) => {
     ev.stopPropagation();
-    /* eslint-disable
-      @typescript-eslint/no-explicit-any,
-      @typescript-eslint/no-unsafe-assignment,
-      @typescript-eslint/no-unsafe-member-access
-    */
-    const target = ev.target as any;
-    const player = target.value as string;
+    const target = ev.target;
+    const player = target.value;
     if (!player.length) {
       return;
     }
-    /* eslint-enable
-      @typescript-eslint/no-explicit-any,
-      @typescript-eslint/no-unsafe-assignment,
-      @typescript-eslint/no-unsafe-member-access
-    */
     this.selectedPlayerService(player);
-    //eslint-disable-next-line @typescript-eslint/no-unsafe-member-access
     target.value = "";
   };
   private onUnjoinSelect = (ev) => {
-    //eslint-disable-next-line @typescript-eslint/no-unsafe-assignment, @typescript-eslint/no-unsafe-member-access
-    const ent = ev?.target?.entity;
-    if (ev) {
-      //eslint-disable-next-line @typescript-eslint/no-floating-promises, @typescript-eslint/no-unsafe-argument
-      this.actions.actionUnjoinPlayers(ent);
-    }
+    const e = ev as JoinUnjoinEventData;
+    const ent = e.target.entity;
+    void this.actions.actionUnjoinPlayers(ent);
   };
   private onGroupVolumeChange = (ev: DetailValEventData) => {
     const volume_level = ev.detail.value;
@@ -338,7 +308,6 @@ class MusicPlayerCard extends LitElement {
   };
 
   protected onAddToPlaylist = (ev: Event) => {
-    // eslint-disable-next-line @typescript-eslint/non-nullable-type-assertion-style
     const uri = (ev.target as HTMLElement).dataset.uri as string;
     const media_id = this.hass.states[this.activeEntity.entity_id].attributes.media_content_id;
     void this.actions.actionAddToPlaylist(
@@ -710,7 +679,7 @@ class MusicPlayerCard extends LitElement {
   }
   private delayedUpdatePlayerData = () => {
     setTimeout(() => {
-      this.updatePlayerData();
+      void this.activePlayerController.updateActivePlayerData();
     }, 2000);
   };
   private openPlaylistDialogOnEvent = () => {
@@ -727,7 +696,7 @@ class MusicPlayerCard extends LitElement {
       this.onForceLoadEvent,
     );
     this.controller.host.addEventListener("active-player-updated", () => {
-      this.updatePlayerData();
+      void this.activePlayerController.updateActivePlayerData();
     });
     this.controller.host.addEventListener(
       "open-add-to-playlist-dialog",
@@ -739,12 +708,10 @@ class MusicPlayerCard extends LitElement {
     if (!favoritesDialog) {
       return;
     }
-    // eslint-disable-next-line @typescript-eslint/non-nullable-type-assertion-style
     const actions_div = favoritesDialog.shadowRoot?.querySelector('#actions') as HTMLElement;
     if (actions_div && actions_div.style.display != 'none'){
       actions_div.style.display = 'none';
     }
-    // eslint-disable-next-line @typescript-eslint/non-nullable-type-assertion-style
     const content_div = favoritesDialog.shadowRoot?.querySelector('#content') as HTMLElement;
     if (content_div && content_div.style.scrollbarWidth != 'none'){
       content_div.style.scrollbarWidth = 'none';

@@ -89,7 +89,7 @@ class PlayerRow extends LitElement {
       transfer_button: entity.transfer_button || card.transfer_button,
     };
   }
-  private callOnPlayerSelectedService() {
+  private callOnPlayerSelectedService = () => {
     this.selectedService(this.player_entity.entity_id);
   }
   protected shouldUpdate(_changedProperties: PropertyValues<this>): boolean {
@@ -102,7 +102,7 @@ class PlayerRow extends LitElement {
     await service(this.player_entity.entity_id);
     this.joined = !this.joined;
   }
-  private onTransferPressed(e: Event) {
+  private onTransferPressed = (e: Event) => {
     e.stopPropagation();
     navigator.vibrate([75, 20, 40, 20, 25]);
     this.transferService(this.player_entity.entity_id);
@@ -172,7 +172,6 @@ class PlayerRow extends LitElement {
     `;
   }
 
-  /* eslint-disable @typescript-eslint/unbound-method */
   protected renderTransferButton() {
     if (this.hide.transfer_button) {
       return html``;
@@ -249,7 +248,6 @@ class PlayerRow extends LitElement {
       <div class="divider"></div>
     `;
   }
-  /* eslint-enable @typescript-eslint/unbound-method */
   static get styles(): CSSResultGroup {
     return styles;
   }

@@ -17,6 +17,7 @@ import {
 import { Config } from "../config/config.js";
 import QueueActions from "../actions/queue-actions.js";
 import { isActive, jsonMatch, playerHasUpdated } from "../utils/util.js";
+import { SubscriptionUnsubscribe } from "../const/common.js";
 
 export class QueueController {
   public _host!: HTMLElement;
@@ -32,8 +33,7 @@ export class QueueController {
   private _fails = 0;
   private _activeQueueID!: string;
 
-  /* eslint-disable-next-line @typescript-eslint/no-explicit-any */
-  private _unsubscribe!: any;
+  private _unsubscribe?: SubscriptionUnsubscribe;
   private _listening = false;
   private _interval!: number | undefined;
   private _timedListening = false;
@@ -202,8 +202,9 @@ export class QueueController {
       this.getCurNextPrQueueItems();
       this._updatingQueue = false;
       return queue;
-    } catch {
+    } catch(e) {
       this._fails++;
+      throw e;
     } finally {
       this._updatingQueue = false;
     }
@@ -251,8 +252,7 @@ export class QueueController {
 
   public unsubscribeUpdates() {
     if (this._unsubscribe) {
-      // eslint-disable-next-line @typescript-eslint/no-unsafe-call
-      this._unsubscribe();
+      void this._unsubscribe();
       this._unsubscribe = undefined;
     }
     if (this._interval) {

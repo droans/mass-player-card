@@ -88,7 +88,7 @@ export async function encodeImageIfLocal(
   hass: ExtendedHass,
   image_url: string,
 ): Promise<string> {
-  if (image_url.startsWith("https")) {
+  if (image_url.startsWith("https") || image_url.startsWith('/api') || image_url.startsWith('data:')) {
     return image_url;
   }
   return await getLocalImage(hass, image_url);
@@ -106,7 +106,7 @@ async function getLocalImage(hass: ExtendedHass, url: string): Promise<string> {
     return result;
   } catch (e) {
     // eslint-disable-next-line no-console
-    console.error("Error getting image", e);
+    console.error(`Error getting image: ${url}`, e);
     return "";
   }
 }

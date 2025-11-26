@@ -98,7 +98,7 @@ export class MassPlayerControlsBase extends LitElement {
 
   @consume({ context: IconsContext }) protected Icons!: Icons;
 
-  protected playing = false;
+  @state() protected playing = false;
   @state() protected repeat = RepeatMode.OFF;
   @state() protected shuffle = false;
   @state() protected favorite = false;

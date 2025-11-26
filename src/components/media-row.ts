@@ -38,6 +38,7 @@ import {
   QueueConfig,
 } from "../config/player-queue";
 import { Icons } from "../const/icons.js";
+import { queueItem } from "mass-queue-types/packages/mass_queue/actions/get_queue_items.js";
 
 class MediaRow extends LitElement {
   @property({ attribute: false }) media_item!: QueueItem;
@@ -125,13 +126,12 @@ class MediaRow extends LitElement {
     navigator.vibrate([25, 20, 75, 20, 25]);
     this.removeService(this.media_item.queue_item_id);
   }
-  private callOnQueueItemSelectedService() {
+  private callOnQueueItemSelectedService = () => {
     this.selectedService(this.media_item.queue_item_id);
   }
   protected shouldUpdate(_changedProperties: PropertyValues<this>): boolean {
     if (_changedProperties.has("media_item")) {
-      // eslint-disable-next-line @typescript-eslint/no-non-null-assertion
-      const oldItem: QueueItem = _changedProperties.get("media_item")!;
+      const oldItem = _changedProperties.get("media_item") as queueItem;
       return queueItemhasUpdated(oldItem, this.media_item);
     }
     return _changedProperties.size > 0;
@@ -233,7 +233,6 @@ class MediaRow extends LitElement {
       </span>
     `;
   }
-  /* eslint-disable @typescript-eslint/unbound-method */
   private renderMoveNextButton(): TemplateResult {
     if (this.hide.move_next_button || !this.media_item.show_move_up_next) {
       return html``;

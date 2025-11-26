@@ -5,8 +5,9 @@ import {
   MediaLibraryItem,
   RecommendationResponse,
 } from "../const/media-browser";
-import { getRecommendationsServiceSchema } from "mass-queue-types/packages/actions/get_recommendations";
-
+import { getRecommendationsServiceSchema } from "mass-queue-types/packages/mass_queue/actions/get_recommendations";
+import { getLibraryServiceResponse, getLibraryServiceSchema } from "mass-queue-types/packages/music_assistant/actions/get_library"
+import { searchServiceResponse, searchServiceSchema } from "mass-queue-types/packages/music_assistant/actions/search"
 export default class BrowserActions {
   private _hass!: ExtendedHass;
 
@@ -59,26 +60,19 @@ export default class BrowserActions {
     limit = 25,
   ): Promise<MediaLibraryItem[]> {
     const config_id = await this.getPlayerConfigEntry(player_entity_id);
-    /* eslint-disable-next-line
-        @typescript-eslint/no-explicit-any,
-        @typescript-eslint/no-unsafe-assignment,
-      */
-    const response = await this.hass.callWS<any>({
-      type: "call_service",
-      domain: "music_assistant",
-      service: "get_library",
-      service_data: {
-        limit: limit,
-        config_entry_id: config_id,
-        media_type: media_type,
-        order_by: "last_played_desc",
-      },
-      return_response: true,
-    });
-    /* eslint-disable-next-line
-        @typescript-eslint/no-unsafe-return,
-        @typescript-eslint/no-unsafe-member-access
-      */
+     const data: getLibraryServiceSchema = {
+        type: "call_service",
+        domain: "music_assistant",
+        service: "get_library",
+        service_data: {
+          limit: limit,
+          config_entry_id: config_id,
+          media_type: media_type,
+          order_by: "last_played_desc",
+        },
+        return_response: true,
+      }
+    const response = await this.hass.callWS<getLibraryServiceResponse>(data);
     return response.response.items;
   }
   async actionGetLibrary(
@@ -88,11 +82,7 @@ export default class BrowserActions {
     favorite = true,
   ): Promise<MediaLibraryItem[]> {
     const config_id = await this.getPlayerConfigEntry(player_entity_id);
-    /* eslint-disable-next-line
-        @typescript-eslint/no-explicit-any,
-        @typescript-eslint/no-unsafe-assignment,
-      */
-    const response = await this.hass.callWS<any>({
+     const data: getLibraryServiceSchema = {
       type: "call_service",
       domain: "music_assistant",
       service: "get_library",
@@ -103,11 +93,8 @@ export default class BrowserActions {
         media_type: media_type,
       },
       return_response: true,
-    });
-    /* eslint-disable-next-line
-        @typescript-eslint/no-unsafe-return,
-        @typescript-eslint/no-unsafe-member-access
-      */
+    }
+    const response = await this.hass.callWS<getLibraryServiceResponse>(data);
     return response.response.items;
   }
   async actionSearchMedia(
@@ -125,20 +112,16 @@ export default class BrowserActions {
       name: search_term,
       media_type: [media_type],
     };
-    // eslint-disable-next-line @typescript-eslint/no-explicit-any, @typescript-eslint/no-unsafe-assignment
-    const response = await this.hass.callWS<any>({
+    const data: searchServiceSchema = {
       type: "call_service",
       domain: "music_assistant",
       service: "search",
       service_data: args,
       return_response: true,
-    });
-    const response_media_type = `${media_type}s`;
-    /* eslint-disable-next-line
-      @typescript-eslint/no-unsafe-member-access,
-      @typescript-eslint/no-unsafe-return,
-      */
-    return response.response[response_media_type];
+    }
+    const response = await this.hass.callWS<searchServiceResponse>(data);
+    const response_media_type = media_type == MediaTypes.RADIO ? `radio` : `${media_type}s`;
+    return (response.response[response_media_type] ?? []) as MediaLibraryItem[];
   }
   async actionGetRecommendations(
     player_entity_id: string,
@@ -155,11 +138,7 @@ export default class BrowserActions {
       },
       return_response: true,
     };
-    /* eslint-disable-next-line
-      @typescript-eslint/no-explicit-any,
-      @typescript-eslint/no-unsafe-return,
-      */
-    return await this.hass.callWS<any>(data);
+    return await this.hass.callWS<RecommendationResponse>(data);
   }
   async actionPlayRadio(
     entity_id: string,
@@ -174,18 +153,11 @@ export default class BrowserActions {
     });
   }
   private async getPlayerConfigEntry(entity_id: string): Promise<string> {
-    /* eslint-disable
-        @typescript-eslint/no-explicit-any,
-        @typescript-eslint/no-unsafe-assignment,
-        @typescript-eslint/no-unsafe-member-access
-      */
-    const entry = await this.hass.callWS<any>({
+    const entry = await this.hass.callWS<{config_entry_id: string}>({
       type: "config/entity_registry/get",
       entity_id: entity_id,
     });
-    const result: any = entry.config_entry_id;
-    /* eslint-enable */
-    /* eslint-disable-next-line @typescript-eslint/no-unsafe-return, */
+    const result = entry.config_entry_id;
     return result;
   }
 }

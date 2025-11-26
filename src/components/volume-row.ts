@@ -30,6 +30,7 @@ import { MassCardController } from "../controller/controller.js";
 import { Icons } from "../const/icons.js";
 import { jsonMatch } from "../utils/util.js";
 import { state } from "lit/decorators.js";
+import { DetailValEventData } from "../const/events.js";
 
 class VolumeRow extends LitElement {
   private maxVolume!: number;
@@ -110,8 +111,7 @@ class VolumeRow extends LitElement {
   private onVolumeMuteToggle = async () => {
     await this.actions.actionToggleMute();
   };
-  private onVolume = async (ev: CustomEvent) => {
-    // eslint-disable-next-line @typescript-eslint/no-unsafe-assignment, @typescript-eslint/no-unsafe-member-access
+  private onVolume = async (ev: DetailValEventData) => {
     let volume: number = ev.detail.value;
     if (isNaN(volume)) return;
     this.player_data.volume = volume;
