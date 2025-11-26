@@ -333,6 +333,9 @@ export class ActivePlayerController {
       return;
     }
     const img = detail.image;
+    if (!img || !(this.activeMediaPlayer.state == 'playing') ) {
+      return;
+    }
     void this.applyExpressiveSchemeFromImage(img);
     /* eslint-enable
       @typescript-eslint/no-unsafe-assignment,
