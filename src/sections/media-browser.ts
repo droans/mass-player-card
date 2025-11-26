@@ -145,8 +145,12 @@ export class MediaBrowser extends LitElement {
     if (!this.cards) {
       return;
     }
+    try {
     // eslint-disable-next-line @typescript-eslint/no-unsafe-member-access
-    const new_cards = [...this.cards[section][subsection]];
+      new_cards = [...this.cards[section][subsection] as MediaCardItem[]];
+    } catch {
+      throw Error(`Failed to get cards for section ${section}, subsection ${subsection}`)
+    }
     const cur_cards = this.activeCards;
     if (!jsonMatch(new_cards, cur_cards)) {
       this.activeCards = new_cards;
