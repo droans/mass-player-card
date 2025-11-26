@@ -218,11 +218,8 @@ class MusicPlayerCard extends LitElement {
     if (!this.activeMediaPlayer) {
       return;
     }
-    const current_item = await this.actions.actionGetCurrentItem(
-      this.activeMediaPlayer,
-    );
     const new_player_data =
-      this.activePlayerController.getactivePlayerData(current_item);
+      await this.activePlayerController.getactivePlayerData();
     if (jsonMatch(this.player_data, new_player_data)) {
       return;
     }
