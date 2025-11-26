@@ -1,6 +1,6 @@
 import { html, TemplateResult } from "lit";
 import { ExtendedHass, Thumbnail, MediaTypes } from "../const/common";
-import { asyncBackgroundImageFallback } from "./thumbnails";
+import { asyncBackgroundImageFallback, getThumbnail } from "./thumbnails";
 import {
   MediaCardItem,
   MediaLibraryItem,
@@ -15,7 +15,8 @@ async function generateSectionBackgroundPart(
   thumbnail: string,
   fallback: Thumbnail = Thumbnail.DISC,
 ) {
-  const image = await asyncBackgroundImageFallback(hass, thumbnail, fallback);
+  const thumb = getThumbnail(hass, (thumbnail as Thumbnail)) ?? thumbnail;
+  const image = await asyncBackgroundImageFallback(hass, thumb, fallback);
   return html` <div class="thumbnail-section" style="${image}"></div> `;
 }
 async function generateSectionBackground(
