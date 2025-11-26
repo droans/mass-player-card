@@ -19,6 +19,7 @@ import { getGroupVolumeServiceResponse, getGroupVolumeServiceSchema } from "mass
 import { setGroupVolumeServiceSchema } from "mass-queue-types/packages/mass_queue/actions/set_group_volume";
 import { isActive, jsonMatch, playerHasUpdated } from "../utils/util.js";
 import { applyDefaultExpressiveScheme, applyExpressiveSchemeFromImage } from "../utils/expressive.js";
+import { ArtworkUpdatedEventData } from "../const/events.js";
 
 export class ActivePlayerController {
   private _activeEntityConfig: ContextProvider<typeof activeEntityConf>;
@@ -328,12 +329,7 @@ export class ActivePlayerController {
     return result;
   }
   public onActiveTrackChange = (ev: Event) => {
-    /* eslint-disable
-      @typescript-eslint/no-unsafe-assignment,
-      @typescript-eslint/no-unsafe-argument,
-      @typescript-eslint/no-unsafe-member-access
-    */
-    const detail = (ev as CustomEvent).detail;
+    const detail = (ev as ArtworkUpdatedEventData).detail;
     if (detail.type != "current") {
       return;
     }
@@ -342,11 +338,6 @@ export class ActivePlayerController {
       return;
     }
     void this.applyExpressiveSchemeFromImage(img);
-    /* eslint-enable
-      @typescript-eslint/no-unsafe-assignment,
-      @typescript-eslint/no-unsafe-argument,
-      @typescript-eslint/no-unsafe-member-access
-    */
   };
   public applyDefaultExpressiveScheme() {
     if (!this.config.expressive || this._updatingScheme) {

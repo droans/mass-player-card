@@ -210,7 +210,6 @@ export class MassCardController {
     this.Browser.reconnected(this.hass);
   }
   public translate(key: string) {
-    // eslint-disable-next-line @typescript-eslint/no-unsafe-return
     return getTranslation(key, this.hass);
   }
 }

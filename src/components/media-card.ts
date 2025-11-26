@@ -52,6 +52,7 @@ import { Sections } from "../const/card";
 import { Icons } from "../const/icons.js";
 import { Config } from "../config/config.js";
 import { WaAnimation } from "../const/elements.js";
+import { TargetValEventData } from "../const/events.js";
 
 class MediaCard extends LitElement {
   @property({ type: Boolean }) queueable = false;
@@ -208,24 +209,14 @@ class MediaCard extends LitElement {
     });
     this._enqueue_buttons = opts;
   }
-  private onEnqueue = (ev: CustomEvent) => {
+  private onEnqueue = (ev: TargetValEventData) => {
     ev.stopPropagation();
-    /* eslint-disable
-      @typescript-eslint/no-explicit-any,
-      @typescript-eslint/no-unsafe-assignment,
-      @typescript-eslint/no-unsafe-member-access
-    */
-    const target = ev.target as any;
+    const target = ev.target;
     const value = target.value as EnqueueOptions;
     if (!value) {
       return;
     }
     target.value = "";
-    /* eslint-enable
-      @typescript-eslint/no-explicit-any,
-      @typescript-eslint/no-unsafe-assignment,
-      @typescript-eslint/no-unsafe-member-access
-    */
     this.onEnqueueAction(this._config.data, value);
   };
   private onSelect = () => {

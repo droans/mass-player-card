@@ -6,6 +6,7 @@ import { ExtendedHass, ExtendedHassEntity } from "../const/common";
 import { hassExt } from "../const/context";
 import PlayerActions from "../actions/player-actions";
 import styles from "../styles/volume-slider";
+import { DetailValEventData } from "../const/events.js";
 class VolumeSlider extends LitElement {
   @property({ attribute: false }) public maxVolume = 100;
   @state() private entity!: ExtendedHassEntity;
@@ -33,9 +34,8 @@ class VolumeSlider extends LitElement {
   public get hass() {
     return this._hass;
   }
-  private onVolumeChange = async (ev: CustomEvent) => {
-    //eslint-disable-next-line @typescript-eslint/no-unsafe-member-access
-    let volume: number = ev.detail.value as number;
+  private onVolumeChange = async (ev: DetailValEventData) => {
+    let volume: number = ev.detail.value;
     volume = volume / 100;
     this.requestUpdate("volume", volume);
     await this._actions.actionSetVolume(this.entity, volume);

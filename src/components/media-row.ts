@@ -126,7 +126,7 @@ class MediaRow extends LitElement {
     navigator.vibrate([25, 20, 75, 20, 25]);
     this.removeService(this.media_item.queue_item_id);
   }
-  private callOnQueueItemSelectedService() {
+  private callOnQueueItemSelectedService = () => {
     this.selectedService(this.media_item.queue_item_id);
   }
   protected shouldUpdate(_changedProperties: PropertyValues<this>): boolean {
@@ -233,7 +233,6 @@ class MediaRow extends LitElement {
       </span>
     `;
   }
-  /* eslint-disable @typescript-eslint/unbound-method */
   private renderMoveNextButton(): TemplateResult {
     if (this.hide.move_next_button || !this.media_item.show_move_up_next) {
       return html``;
