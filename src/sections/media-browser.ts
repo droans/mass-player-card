@@ -138,18 +138,19 @@ export class MediaBrowser extends LitElement {
     this.previousSections.push(this.activeSection);
     this.previousSubSections.push(this.activeSubSection);
   }
-  /* eslint-disable 
-    @typescript-eslint/no-unsafe-argument,
-    @typescript-eslint/no-unsafe-assignment,
-  */
   public setActiveCards() {
     const section = this.activeSection;
     const subsection = this.activeSubSection;
+    let new_cards: MediaCardItem[] = [];
     if (!this.cards) {
       return;
     }
+    try {
     // eslint-disable-next-line @typescript-eslint/no-unsafe-member-access
-    const new_cards = [...this.cards[section][subsection]];
+      new_cards = [...this.cards[section][subsection] as MediaCardItem[]];
+    } catch {
+      throw Error(`Failed to get cards for section ${section}, subsection ${subsection}`)
+    }
     const cur_cards = this.activeCards;
     if (!jsonMatch(new_cards, cur_cards)) {
       this.activeCards = new_cards;
@@ -172,54 +173,36 @@ export class MediaBrowser extends LitElement {
     }
     void this.actions.actionPlayMedia(
       this.activeEntityConfig.entity_id,
-      data.media_content_id,
-      data.media_content_type,
+      data.media_content_id as string,
+      data.media_content_type as string,
     );
     this.onMediaSelectedAction();
   };
   private onSectionSelect = (data: MediaCardData) => {
     this.setPreviousSection();
-    this.activeSection = data.subtype;
-    this.activeSubSection = data.section;
+    this.activeSection = data.subtype as string;
+    this.activeSubSection = data.section as string;
     this.setActiveCards();
   };
   private onItemSelect = (data: MediaCardData) => {
     void this.actions.actionPlayMedia(
       this.activeEntityConfig.entity_id,
-      data.media_content_id,
-      data.media_content_type,
+      data.media_content_id as string,
+      data.media_content_type as string,
     );
   };
-  /* eslint-enable 
-    @typescript-eslint/no-unsafe-argument
-  */
   private onSelect = (data: MediaCardData) => {
     const funcs = {
       section: this.onSectionSelect,
       item: this.onItemSelect,
       service: this.onServiceSelect,
     };
-    /* eslint-disable
-      @typescript-eslint/no-unsafe-member-access,
-      @typescript-eslint/no-unsafe-call,
-    */
-    const func = funcs[data.type];
+    const func = funcs[data.type as string] as (data: MediaCardData) => void;
     func(data);
-    /* eslint-enable
-      @typescript-eslint/no-unsafe-member-access,
-      @typescript-eslint/no-unsafe-call,
-      @typescript-eslint/no-unsafe-assignment,
-    */
   };
   private onEnqueue = (data: MediaCardData, enqueue: EnqueueOptions) => {
-    /* eslint-disable
-      @typescript-eslint/no-unsafe-assignment
-    */
-    const content_id: string = data.media_content_id;
-    const content_type: string = data.media_content_type;
-    /* eslint-enable
-      @typescript-eslint/no-unsafe-assignment
-    */
+    const content_id: string = data.media_content_id as string;
+    const content_type: string = data.media_content_type as string;
     if (enqueue == EnqueueOptions.RADIO) {
       void this.actions.actionPlayRadio(
         this.activeEntityConfig.entity_id,
@@ -299,10 +282,9 @@ export class MediaBrowser extends LitElement {
     this.activeSection = val;
     this.activeSubSection = "main";
     /* eslint-disable-next-line
-      @typescript-eslint/no-unsafe-assignment,
       @typescript-eslint/no-unsafe-member-access
     */
-    this.activeCards = this.cards[val].main;
+    this.activeCards = this.cards[val].main as MediaCardItem[];
   };
   private async searchMedia() {
     const search_term = this.searchTerm;

@@ -15,10 +15,11 @@ import {
 import { Config, EntityConfig } from "../config/config";
 import { MassGetQueueServiceDataSchema, MassGetQueueServiceResponseSchema, PlayerData } from "../const/music-player";
 import { DynamicScheme } from "@material/material-color-utilities";
-import { getGroupVolumeServiceSchema } from "mass-queue-types/packages/actions/get_group_volume";
-import { setGroupVolumeServiceSchema } from "mass-queue-types/packages/actions/set_group_volume";
+import { getGroupVolumeServiceResponse, getGroupVolumeServiceSchema } from "mass-queue-types/packages/mass_queue/actions/get_group_volume";
+import { setGroupVolumeServiceSchema } from "mass-queue-types/packages/mass_queue/actions/set_group_volume";
 import { isActive, jsonMatch, playerHasUpdated } from "../utils/util.js";
 import { applyDefaultExpressiveScheme, applyExpressiveSchemeFromImage } from "../utils/expressive.js";
+import { ArtworkUpdatedEventData } from "../const/events.js";
 
 export class ActivePlayerController {
   private _activeEntityConfig: ContextProvider<typeof activeEntityConf>;
@@ -328,12 +329,7 @@ export class ActivePlayerController {
     return result;
   }
   public onActiveTrackChange = (ev: Event) => {
-    /* eslint-disable
-      @typescript-eslint/no-unsafe-assignment,
-      @typescript-eslint/no-unsafe-argument,
-      @typescript-eslint/no-unsafe-member-access
-    */
-    const detail = (ev as CustomEvent).detail;
+    const detail = (ev as ArtworkUpdatedEventData).detail;
     if (detail.type != "current") {
       return;
     }
@@ -342,11 +338,6 @@ export class ActivePlayerController {
       return;
     }
     void this.applyExpressiveSchemeFromImage(img);
-    /* eslint-enable
-      @typescript-eslint/no-unsafe-assignment,
-      @typescript-eslint/no-unsafe-argument,
-      @typescript-eslint/no-unsafe-member-access
-    */
   };
   public applyDefaultExpressiveScheme() {
     if (!this.config.expressive || this._updatingScheme) {
@@ -405,11 +396,8 @@ export class ActivePlayerController {
       },
       return_response: true,
     };
-    // eslint-disable-next-line @typescript-eslint/no-unsafe-assignment, @typescript-eslint/no-explicit-any
-    const ret = await this.hass.callWS<any>(data);
-    // eslint-disable-next-line @typescript-eslint/no-unsafe-assignment, @typescript-eslint/no-unsafe-member-access
+    const ret = await this.hass.callWS<getGroupVolumeServiceResponse>(data);
     const vol = ret.response.volume_level ?? 0;
-    // eslint-disable-next-line @typescript-eslint/no-unsafe-return
     return vol;
   }
   public disconnected() {

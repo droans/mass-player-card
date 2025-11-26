@@ -43,6 +43,7 @@ export default tseslint.config(
     rules: {
       "no-console": "warn",
       "@typescript-eslint/no-unnecessary-condition": "off",
+      "@typescript-eslint/non-nullable-type-assertion-style": "off"
     },
   },
   // disable type checking for root config files

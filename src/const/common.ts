@@ -124,3 +124,4 @@ export enum ButtonColorRole {
   Tonal = 'tonal',
   Variant = 'variant',
 }
+export type SubscriptionUnsubscribe = () => Promise<void>

@@ -2,8 +2,8 @@
 import { HassEntity } from "home-assistant-js-websocket";
 import { ExtendedHass, ExtendedHassEntity, RepeatMode } from "../const/common";
 import { QueueItem } from "../const/player-queue";
-import { getQueueItemsServiceSchema } from "mass-queue-types/packages/actions/get_queue_items";
-import { getInfoWSResponseSchema, getInfoWSServiceSchema } from "mass-queue-types/packages/ws/get_info"
+import { getQueueItemsServiceResponse, getQueueItemsServiceSchema } from "mass-queue-types/packages/mass_queue/actions/get_queue_items";
+import { getInfoWSResponseSchema, getInfoWSServiceSchema } from "mass-queue-types/packages/mass_queue/ws/get_info"
 
 export default class PlayerActions {
   private _hass!: ExtendedHass;
@@ -113,11 +113,6 @@ export default class PlayerActions {
   async actionGetCurrentItem(
     entity: ExtendedHassEntity,
   ): Promise<QueueItem | null> {
-    /* eslint-disable
-        @typescript-eslint/no-explicit-any,
-        @typescript-eslint/no-unsafe-assignment,
-        @typescript-eslint/no-unsafe-member-access
-      */
     const data: getQueueItemsServiceSchema = {
       type: "call_service",
       domain: "mass_queue",
@@ -129,19 +124,13 @@ export default class PlayerActions {
       },
       return_response: true,
     };
-    const ret = await this.hass.callWS<any>(data);
-    /* eslint-disable-next-line @typescript-eslint/no-unsafe-call */
-    const result: QueueItem = ret.response[entity.entity_id].find(
-      (item: QueueItem) => {
+    const ret = await this.hass.callWS<getQueueItemsServiceResponse>(data);
+    const result: QueueItem | undefined = ret.response[entity.entity_id].find(
+      (item) => {
         return item.media_content_id == entity.attributes.media_content_id;
       },
     );
-    return result;
-    /* eslint-enable
-        @typescript-eslint/no-explicit-any,
-        @typescript-eslint/no-unsafe-assignment,
-        @typescript-eslint/no-unsafe-member-access
-      */
+    return result ?? null;
   }
   async actionAddFavorite(entity: HassEntity) {
     const dev_id = this.hass.entities[entity.entity_id].device_id;

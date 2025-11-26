@@ -58,12 +58,9 @@ export async function generateFavoriteCard(
 ): Promise<MediaCardItem> {
   const thumbnail: Thumbnail = MediaTypeThumbnails[media_type];
   const translate_key = `browser.sections.${media_type}`;
-  /* eslint-disable 
-    @typescript-eslint/no-unsafe-assignment
-  */
   const title = getTranslation(translate_key, hass);
   return {
-    title: title,
+    title: title as string,
     background: await generateSectionBackground(hass, cards, thumbnail),
     thumbnail: thumbnail,
     fallback: thumbnail,
@@ -83,7 +80,7 @@ export async function generateRecentsCard(
   const translate_key = `browser.sections.${media_type}`;
   const title = getTranslation(translate_key, hass);
   return {
-    title: title,
+    title: title as string,
     background: await generateSectionBackground(hass, cards, thumbnail),
     thumbnail: thumbnail,
     fallback: thumbnail,
@@ -93,7 +90,6 @@ export async function generateRecentsCard(
       section: media_type,
     },
   };
-  // eslint-enable @typescript-eslint/no-unsafe-assignment
 }
 export async function generateRecommendationsCard(
   hass: ExtendedHass,
@@ -155,7 +151,7 @@ export function generateFavoritesSectionCards(
   return config.map((item) => {
     const r: MediaCardItem = {
       title: item.name,
-      thumbnail: item.image,
+      thumbnail: item.image as string,
       fallback: thumbnail,
       data: {
         type: "service",
