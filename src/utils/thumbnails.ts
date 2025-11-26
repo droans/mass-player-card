@@ -106,7 +106,7 @@ async function getLocalImage(hass: ExtendedHass, url: string): Promise<string> {
     return result;
   } catch (e) {
     // eslint-disable-next-line no-console
-    console.error("Error getting image", e);
+    console.error(`Error getting image: ${url}`, e);
     return "";
   }
 }
