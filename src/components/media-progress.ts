@@ -47,7 +47,7 @@ class MassPlayerProgressBar extends LitElement {
   @consume({ context: controllerContext, subscribe: true })
   private controller!: MassCardController;
 
-  private _player_data!: PlayerData;
+  @state() public _player_data!: PlayerData;
 
   private _activePlayer!: ExtendedHassEntity;
 
@@ -101,7 +101,6 @@ class MassPlayerProgressBar extends LitElement {
   }
 
   @consume({ context: activePlayerDataContext, subscribe: true })
-  @state()
   public set player_data(player_data: PlayerData) {
     this._player_data = player_data;
     this.requestProgress();
@@ -271,7 +270,9 @@ class MassPlayerProgressBar extends LitElement {
     super.disconnectedCallback();
   }
   protected shouldUpdate(_changedProperties: PropertyValues): boolean {
-    return _changedProperties.size > 0;
+    const bar_playing = this.progressBar?.classList?.contains('wavy');
+    const playing_changed = (bar_playing != this.player_data.playing)
+    return _changedProperties.size > 0 || playing_changed;
   }
 
   static get styles(): CSSResultGroup {
