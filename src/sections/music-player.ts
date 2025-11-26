@@ -74,7 +74,7 @@ class MusicPlayerCard extends LitElement {
   @consume({ context: controllerContext, subscribe: true })
   private controller!: MassCardController;
 
-  @provide({ context: activePlayerDataContext })
+  @consume({ context: activePlayerDataContext, subscribe: true })
   @state()
   public player_data!: PlayerData;
 
@@ -117,7 +117,6 @@ class MusicPlayerCard extends LitElement {
       return;
     }
     this._activeEntity = entity;
-    this.updatePlayerData();
   }
   public get activeEntity() {
     return this._activeEntity;
@@ -130,9 +129,6 @@ class MusicPlayerCard extends LitElement {
     }
     const hassExists = !!this._hass;
     this._hass = hass;
-    if (!hassExists) {
-      this.updatePlayerData();
-    }
   }
   public get hass() {
     return this._hass;
@@ -185,7 +181,7 @@ class MusicPlayerCard extends LitElement {
     }
     this._activePlayerController = controller;
     if (!this.player_data) {
-      this.updatePlayerData();
+      this.activePlayerController.updateActivePlayerData();
     }
     if (!this.groupVolumeLevel) {
       void this._getGroupedVolume();
@@ -219,14 +215,18 @@ class MusicPlayerCard extends LitElement {
     return this._groupedPlayers;
   }
 
-  private updatePlayerData() {
-    if (!this.hass) {
-      return;
-    }
-    this._updatePlayerData().catch(() => {
-      return;
-    });
-  }
+  // private updatePlayerData() {
+    // if (!this.activePlayerController) {
+    //   return;
+    // }
+    // this.activePlayerController.updateActivePlayerData();
+    // if (!this.hass) {
+    //   return;
+    // }
+    // this._updatePlayerData().catch(() => {
+    //   return;
+    // });
+  // }
   private async _updatePlayerData() {
     if (!this.activeMediaPlayer) {
       return;
@@ -710,7 +710,7 @@ class MusicPlayerCard extends LitElement {
   }
   private delayedUpdatePlayerData = () => {
     setTimeout(() => {
-      this.updatePlayerData();
+      this.activePlayerController.updateActivePlayerData();
     }, 2000);
   };
   private openPlaylistDialogOnEvent = () => {
@@ -727,7 +727,7 @@ class MusicPlayerCard extends LitElement {
       this.onForceLoadEvent,
     );
     this.controller.host.addEventListener("active-player-updated", () => {
-      this.updatePlayerData();
+      this.activePlayerController.updateActivePlayerData();
     });
     this.controller.host.addEventListener(
       "open-add-to-playlist-dialog",

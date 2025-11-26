@@ -4,6 +4,7 @@ import {
   activeEntityConf,
   activeEntityID,
   activeMediaPlayer,
+  activePlayerDataContext,
   activePlayerName,
   expressiveSchemeContext,
   groupedPlayersContext,
@@ -30,6 +31,7 @@ export class ActivePlayerController {
   private _useExpressive!: ContextProvider<typeof useExpressiveContext>;
   private _groupMembers!: ContextProvider<typeof groupedPlayersContext>;
   private _groupVolume!: ContextProvider<typeof groupVolumeContext>;
+  private _activePlayerData!: ContextProvider<typeof activePlayerDataContext>;
 
   private _hass!: ExtendedHass;
   private _config!: Config;
@@ -64,6 +66,9 @@ export class ActivePlayerController {
     this._volumeMediaPlayer = new ContextProvider(host, {
       context: volumeMediaPlayer,
     });
+    this._activePlayerData = new ContextProvider(host, {
+      context: activePlayerDataContext,
+    });
     this._hass = hass;
     this.config = config;
     this._host = host;
@@ -77,6 +82,7 @@ export class ActivePlayerController {
     if (playerHasUpdated(cur_entity, new_entity)) {
       this.setActivePlayer(this.activeEntityID);
     }
+    this.updateActivePlayerData();
   }
   public get hass() {
     return this._hass;
@@ -120,6 +126,7 @@ export class ActivePlayerController {
     if (playerHasUpdated(this.activeMediaPlayer, player)) {
       this._activeMediaPlayer.setValue(player);
       this.dispatchUpdatedActivePlayer();
+      this.updateActivePlayerData();
       if (player.attributes?.group_members) {
         this.setGroupAttributes();
       }
@@ -195,6 +202,19 @@ export class ActivePlayerController {
   }
   public get expressiveScheme() {
     return this._expressiveScheme.value;
+  }
+
+  private set activePlayerData(data: PlayerData) {
+    this._activePlayerData.setValue(data);
+  }
+  public get activePlayerData() {
+    return this._activePlayerData.value;
+  }
+
+  public async updateActivePlayerData() {
+    const current_queue = await this.actionGetCurrentQueue();
+    const current_item = current_queue.current_item;
+    this.activePlayerData = this.getactivePlayerData(current_item);
   }
 
   private dispatchUpdatedActivePlayer() {
