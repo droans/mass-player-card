@@ -1,6 +1,6 @@
 import "@material/web/progress/linear-progress.js";
 
-import { consume, provide } from "@lit/context";
+import { consume } from "@lit/context";
 import {
   CSSResultGroup,
   LitElement,
@@ -127,7 +127,6 @@ class MusicPlayerCard extends LitElement {
     if (hass) {
       this.actions = new PlayerActions(hass);
     }
-    const hassExists = !!this._hass;
     this._hass = hass;
   }
   public get hass() {
@@ -181,7 +180,7 @@ class MusicPlayerCard extends LitElement {
     }
     this._activePlayerController = controller;
     if (!this.player_data) {
-      this.activePlayerController.updateActivePlayerData();
+      void this.activePlayerController.updateActivePlayerData();
     }
     if (!this.groupVolumeLevel) {
       void this._getGroupedVolume();
@@ -215,18 +214,6 @@ class MusicPlayerCard extends LitElement {
     return this._groupedPlayers;
   }
 
-  // private updatePlayerData() {
-    // if (!this.activePlayerController) {
-    //   return;
-    // }
-    // this.activePlayerController.updateActivePlayerData();
-    // if (!this.hass) {
-    //   return;
-    // }
-    // this._updatePlayerData().catch(() => {
-    //   return;
-    // });
-  // }
   private async _updatePlayerData() {
     if (!this.activeMediaPlayer) {
       return;
@@ -710,7 +697,7 @@ class MusicPlayerCard extends LitElement {
   }
   private delayedUpdatePlayerData = () => {
     setTimeout(() => {
-      this.activePlayerController.updateActivePlayerData();
+      void this.activePlayerController.updateActivePlayerData();
     }, 2000);
   };
   private openPlaylistDialogOnEvent = () => {
@@ -727,7 +714,7 @@ class MusicPlayerCard extends LitElement {
       this.onForceLoadEvent,
     );
     this.controller.host.addEventListener("active-player-updated", () => {
-      this.activePlayerController.updateActivePlayerData();
+      void this.activePlayerController.updateActivePlayerData();
     });
     this.controller.host.addEventListener(
       "open-add-to-playlist-dialog",
