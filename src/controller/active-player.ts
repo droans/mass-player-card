@@ -13,8 +13,7 @@ import {
   volumeMediaPlayer,
 } from "../const/context";
 import { Config, EntityConfig } from "../config/config";
-import { PlayerData } from "../const/music-player";
-import { QueueItem } from "../const/player-queue";
+import { MassGetQueueServiceDataSchema, MassGetQueueServiceResponseSchema, PlayerData } from "../const/music-player";
 import { DynamicScheme } from "@material/material-color-utilities";
 import { getGroupVolumeServiceSchema } from "mass-queue-types/packages/actions/get_group_volume";
 import { setGroupVolumeServiceSchema } from "mass-queue-types/packages/actions/set_group_volume";
@@ -82,7 +81,7 @@ export class ActivePlayerController {
     if (playerHasUpdated(cur_entity, new_entity)) {
       this.setActivePlayer(this.activeEntityID);
     }
-    this.updateActivePlayerData();
+    void this.updateActivePlayerData();
   }
   public get hass() {
     return this._hass;
@@ -126,7 +125,7 @@ export class ActivePlayerController {
     if (playerHasUpdated(this.activeMediaPlayer, player)) {
       this._activeMediaPlayer.setValue(player);
       this.dispatchUpdatedActivePlayer();
-      this.updateActivePlayerData();
+      void this.updateActivePlayerData();
       if (player.attributes?.group_members) {
         this.setGroupAttributes();
       }
@@ -212,9 +211,7 @@ export class ActivePlayerController {
   }
 
   public async updateActivePlayerData() {
-    const current_queue = await this.actionGetCurrentQueue();
-    const current_item = current_queue.current_item;
-    this.activePlayerData = this.getactivePlayerData(current_item);
+    this.activePlayerData = await this.getactivePlayerData();
   }
 
   private dispatchUpdatedActivePlayer() {
@@ -270,9 +267,12 @@ export class ActivePlayerController {
     }
   }
 
-  public getactivePlayerData(current_item: QueueItem | null): PlayerData {
+  public async getactivePlayerData(): Promise<PlayerData> {
     const player = this.activeMediaPlayer;
     const vol_player = this.volumeMediaPlayer;
+    const current_queue = await this.actionGetCurrentQueue();
+    const current_item = current_queue.current_item;
+
     return {
       playing: player?.state == "playing",
       repeat: player?.attributes?.repeat ?? false,
@@ -286,15 +286,10 @@ export class ActivePlayerController {
       muted: vol_player?.attributes?.is_volume_muted ?? true,
       volume: Math.floor(vol_player?.attributes?.volume_level * 100) ?? 0,
       player_name: this.activePlayerName,
-      favorite: current_item?.favorite ?? false,
+      favorite: current_item.media_item.favorite ?? false,
     };
   }
   public async getPlayerProgress(): Promise<number> {
-    /* eslint-disable
-      @typescript-eslint/no-unsafe-assignment,
-      @typescript-eslint/no-unsafe-member-access,
-      @typescript-eslint/no-unsafe-return,
-    */
     if (!isActive(this.hass, this.activeMediaPlayer, this.activeEntityConfig)) {
       return 0;
     }
@@ -308,20 +303,10 @@ export class ActivePlayerController {
     }
     const current_queue = await this.actionGetCurrentQueue();
     return current_queue?.current_item?.duration ?? 1;
-    /* eslint-enable
-      @typescript-eslint/no-unsafe-assignment,
-      @typescript-eslint/no-unsafe-member-access,
-      @typescript-eslint/no-unsafe-return,
-    */
   }
   async actionGetCurrentQueue() {
     const entity_id = this.activeEntityID;
-    /* eslint-disable
-      @typescript-eslint/no-explicit-any,
-      @typescript-eslint/no-unsafe-assignment,
-      @typescript-eslint/no-unsafe-member-access
-    */
-    const data = {
+    const data: MassGetQueueServiceDataSchema = {
       type: "call_service",
       domain: "music_assistant",
       service: "get_queue",
@@ -330,13 +315,9 @@ export class ActivePlayerController {
       },
       return_response: true,
     };
-    const ret = await this.hass.callWS<any>(data);
-    /* eslint-disable
-      @typescript-eslint/no-unsafe-return
-    */
+    const ret = await this.hass.callWS<MassGetQueueServiceResponseSchema>(data);
     const result = ret.response[entity_id];
     return result;
-    /* eslint-enable */
   }
   public onActiveTrackChange = (ev: Event) => {
     /* eslint-disable
