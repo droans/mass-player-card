@@ -88,7 +88,7 @@ export async function encodeImageIfLocal(
   hass: ExtendedHass,
   image_url: string,
 ): Promise<string> {
-  if (image_url.startsWith("https")) {
+  if (image_url.startsWith("https") || image_url.startsWith('/api') || image_url.startsWith('data:')) {
     return image_url;
   }
   return await getLocalImage(hass, image_url);
