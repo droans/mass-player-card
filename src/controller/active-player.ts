@@ -214,7 +214,12 @@ export class ActivePlayerController {
     if (!this.activeMediaPlayer || !this.volumeMediaPlayer || !this.activeEntityID) {
       return;
     }
-    this.activePlayerData = await this.getactivePlayerData();
+    const data = await this.getactivePlayerData();
+    const new_data = JSON.stringify(data);
+    const cur_data = JSON.stringify(this.activePlayerData);
+    if (new_data != cur_data) {
+      this.activePlayerData = data;
+    }
   }
 
   private dispatchUpdatedActivePlayer() {
