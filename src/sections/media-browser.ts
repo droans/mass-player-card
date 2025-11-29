@@ -141,7 +141,6 @@ export class MediaBrowser extends LitElement {
     this.previousSubSections.push(this.activeSubSection);
   }
   public setActiveCards() {
-    console.log(`Setting active cards...`);
     const section = this.activeSection;
     const subsection = this.activeSubSection;
     let new_cards: MediaCardItem[] = [];
@@ -162,10 +161,8 @@ export class MediaBrowser extends LitElement {
   }
   public scrollCardsToTop() {
     if (this.offsetHeight) {
-      console.log(`Resetting scroll`)
       this?.cardsElement?.resetScroll();
     } 
-    console.log(`H: ${this.offsetHeight}`)
   }
   public resetActiveSections() {
     this.activeSection = DEFAULT_ACTIVE_SECTION;
