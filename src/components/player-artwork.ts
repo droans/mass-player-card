@@ -81,7 +81,7 @@ class MassPlayerArtwork extends LitElement {
 
   @consume({ context: queueContext, subscribe: true })
   public set queue(queue: QueueItems | null) {
-    if (!queue) {
+    if (!queue?.length) {
       return;
     }
     this._queue = queue;
