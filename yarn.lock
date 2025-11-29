@@ -1721,10 +1721,10 @@ __metadata:
   languageName: node
   linkType: hard
 
-"home-assistant-js-websocket@npm:9.5.0":
-  version: 9.5.0
-  resolution: "home-assistant-js-websocket@npm:9.5.0"
-  checksum: 10c0/7246e22f74fd4f0959723cbfc2ce36552ea491485ab03c17c9320dec8a62c6c5f037337ca64e6258d5be0270143373966aa7273946410253b7d41bc3e16575f1
+"home-assistant-js-websocket@npm:9.6.0":
+  version: 9.6.0
+  resolution: "home-assistant-js-websocket@npm:9.6.0"
+  checksum: 10c0/92973a99c21efbd15e093f12ebc7797d1d86a305246e2a6cbe5cd7d980fa916c216ffb3459a9aa17c23adf7339773a176c99783386b6fb5688972bad3107ab7b
   languageName: node
   linkType: hard
 
@@ -2113,7 +2113,7 @@ __metadata:
     eslint-plugin-jest: "npm:29.2.1"
     eslint-plugin-lit: "npm:^2.1.1"
     eslint-plugin-wc: "npm:^3.0.1"
-    home-assistant-js-websocket: "npm:9.5.0"
+    home-assistant-js-websocket: "npm:9.6.0"
     lit: "npm:3.3.1"
     mass-queue-types: "npm:^0.8.1"
     prettier: "npm:^3.6.2"
