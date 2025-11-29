@@ -11,7 +11,7 @@ import {
   MediaTypes,
 } from "../const/common.js";
 import { MediaBrowserConfig } from "../config/media-browser.js";
-import { customElement, property, state } from "lit/decorators.js";
+import { customElement, property, query, state } from "lit/decorators.js";
 import {
   DEFAULT_ACTIVE_SECTION,
   DEFAULT_ACTIVE_SUBSECTION,
@@ -49,6 +49,7 @@ import { getMediaTypeSvg } from "../utils/thumbnails.js";
 import { jsonMatch } from "../utils/util.js";
 import { getTranslation } from "../utils/translations.js";
 import { CardsUpdatedEvent, TargetValEventData } from "../const/events.js";
+import { MediaBrowserCards } from "../components/media-browser-cards.js";
 
 @customElement(`mass-media-browser`)
 export class MediaBrowser extends LitElement {
@@ -59,6 +60,7 @@ export class MediaBrowser extends LitElement {
   @state() private searchMediaTypeIcon!: string;
   @state() private searchMediaType: MediaTypes = MediaTypes.TRACK;
   @state() private searchLibrary = false;
+  @query('mass-browser-cards') cardsElement?: MediaBrowserCards;
 
   @provide({ context: activeMediaBrowserCardsContext })
   @state()
@@ -139,6 +141,7 @@ export class MediaBrowser extends LitElement {
     this.previousSubSections.push(this.activeSubSection);
   }
   public setActiveCards() {
+    console.log(`Setting active cards...`);
     const section = this.activeSection;
     const subsection = this.activeSubSection;
     let new_cards: MediaCardItem[] = [];
@@ -155,6 +158,14 @@ export class MediaBrowser extends LitElement {
     if (!jsonMatch(new_cards, cur_cards)) {
       this.activeCards = new_cards;
     }
+    this.scrollCardsToTop();
+  }
+  public scrollCardsToTop() {
+    if (this.offsetHeight) {
+      console.log(`Resetting scroll`)
+      this?.cardsElement?.resetScroll();
+    } 
+    console.log(`H: ${this.offsetHeight}`)
   }
   public resetActiveSections() {
     this.activeSection = DEFAULT_ACTIVE_SECTION;

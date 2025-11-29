@@ -27,13 +27,13 @@ import styles from "../styles/media-browser-cards";
 import { MediaBrowserConfig } from "../config/media-browser.js";
 import { jsonMatch } from "../utils/util.js";
 
-class MediaBrowserCards extends LitElement {
+export class MediaBrowserCards extends LitElement {
   @state() public code!: TemplateResult;
 
   @consume({ context: hassExt, subscribe: true })
   public hass!: ExtendedHass;
 
-  @query(".icons") private _iconsElement!: HTMLDivElement;
+  @query(".icons") private _iconsElement?: HTMLDivElement;
 
   private _browserConfig!: MediaBrowserConfig;
 
@@ -78,7 +78,7 @@ class MediaBrowserCards extends LitElement {
     this.onEnqueueAction(data, enqueue);
   };
   public resetScroll() {
-    this._iconsElement.scrollTop = 0;
+    this?._iconsElement?.scrollTo({top: 0});
   }
   private generateCode() {
     const result = this.items.map((item) => {
