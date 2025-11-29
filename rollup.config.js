@@ -3,6 +3,7 @@ import commonjs from 'rollup-plugin-commonjs';
 import nodeResolve from '@rollup/plugin-node-resolve';
 import terser from '@rollup/plugin-terser';
 import json from '@rollup/plugin-json';
+import {compileLitTemplates} from '@lit-labs/compiler';
 
 export default [
   {
@@ -14,7 +15,11 @@ export default [
     plugins: [
       nodeResolve(),
       commonjs(),
-      typescript(),
+      typescript({
+        transformers: {
+          before: [compileLitTemplates()]
+        }
+      }),
       json(),
       terser(),
     ],
