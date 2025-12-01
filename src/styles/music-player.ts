@@ -248,20 +248,34 @@ export default css`
     border-radius: var(--default-border-radius) var(--default-border-radius) 0px
       0px;
   }
-  .player-card-header {
+  .player-card-header::before {
     background: linear-gradient(
       var(--player-blur-color) 90%,
       transparent
     ) !important;
   }
-  .player-card-header-expressive {
+  .player-card-header-expressive::before {
+    content: '';
+    height: 100%;
+    width: 100%;
+    display: block;
+    position: absolute;
+    top: 0;
+    mask: linear-gradient(black, black 95%, transparent);
     background: linear-gradient(
       var(--expressive-player-blur-color) 90%,
       transparent
     ) !important;
+    
   }
-  .player-card-header,
-  .player-card-header-expressive {
+  #player-card-header::before {
+    content: '';
+    height: 100%;
+    width: 100%;
+    display: block;
+    position: absolute;
+    top: 0;
+    mask: linear-gradient(black, black 95%, transparent);
     backdrop-filter: blur(8px);
   }
   .player-header {
