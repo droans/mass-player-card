@@ -23,7 +23,7 @@ export default css`
 
   #progress-bar {
     --primary: var(
-      --md-sys-color-primary,
+      --md-sys-color-on-primary-container,
       var(
         --md-linear-progress-track-color,
         var(--md-sys-color-surface-container-highest, #e6e0e9)
@@ -55,7 +55,7 @@ export default css`
 
   #progress-handle {
     background-color: var(
-      --md-sys-color-primary,
+      --md-sys-color-on-primary-container,
       var(
         --md-linear-progress-track-color,
         var(--md-sys-color-surface-container-highest, #e6e0e9)

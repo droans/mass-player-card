@@ -306,7 +306,7 @@ export default css`
   }
   .player-track-title {
     font-size: 1.5rem;
-    color: var(--player-track-color, var(--md-sys-color-primary));
+    color: var(--player-track-color, var(--md-sys-color-on-primary-container));
     white-space: nowrap;
     text-overflow: clip;
     text-shadow: 0px 0px var(--md-sys-color-primary);
