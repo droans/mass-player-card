@@ -191,6 +191,7 @@ export default css`
     position: absolute;
     bottom: 0;
     width: 100%;
+    mask: linear-gradient(transparent, black 5%, black);
   }
 
   .media-controls:not(.media-controls-expressive) {
@@ -246,6 +247,7 @@ export default css`
     z-index: 1;
     border-radius: var(--default-border-radius) var(--default-border-radius) 0px
       0px;
+    mask: linear-gradient(black, black 95%, transparent);
   }
   .player-card-header {
     background: linear-gradient(
