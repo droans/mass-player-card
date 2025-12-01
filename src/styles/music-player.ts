@@ -247,7 +247,6 @@ export default css`
     z-index: 1;
     border-radius: var(--default-border-radius) var(--default-border-radius) 0px
       0px;
-    mask: linear-gradient(black, black 95%, transparent);
   }
   .player-card-header {
     background: linear-gradient(
