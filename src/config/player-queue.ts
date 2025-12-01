@@ -18,6 +18,7 @@ export interface PlayerQueueHiddenElementsConfig {
   remove_button: boolean;
   album_covers: boolean;
   artist_names: boolean;
+  clear_queue_button: boolean
 }
 
 export const DEFAULT_PLAYER_QUEUE_HIDDEN_ELEMENTS_CONFIG: PlayerQueueHiddenElementsConfig =
@@ -29,6 +30,7 @@ export const DEFAULT_PLAYER_QUEUE_HIDDEN_ELEMENTS_CONFIG: PlayerQueueHiddenEleme
     remove_button: false,
     album_covers: false,
     artist_names: false,
+    clear_queue_button: false,
   };
 export const DEFAULT_QUEUE_CONFIG: QueueConfig = {
   enabled: true,
@@ -47,6 +49,7 @@ const PLAYER_QUEUE_HIDDEN_ITEMS = [
   "remove_button",
   "album_covers",
   "artist_names",
+  "clear_queue_button",
 ];
 export function queueConfigForm() {
   return [

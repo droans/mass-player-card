@@ -530,15 +530,16 @@ Display and interact with the player's queue.
 ## Queue Hidden Elements Config
 Multiple elements on the queue tab can be hidden. By default, all elements are visible
 
-| Parameter        | Type  | Required | Default     | Description                |
-|------------------|-------|----------|-------------|----------------------------|
-| action_buttons   | bool  | No       | false       | Hides the action buttons   |
-| move_down_button | bool  | No       | false       | Hides the Move Down button |
-| move_up_button   | bool  | No       | false       | Hides the Move Up button   |
-| move_next_button | bool  | No       | false       | Hides the Move Next button |
-| remove_button    | bool  | No       | false       | Hides the Remove button    |
-| album_covers     | bool  | No       | false       | Hides album covers         |
-| artist_names     | bool  | No       | false       | Hides artist names         |
+| Parameter          | Type  | Required | Default     | Description                  |
+|--------------------|-------|----------|-------------|------------------------------|
+| action_buttons     | bool  | No       | false       | Hides the action buttons     |
+| move_down_button   | bool  | No       | false       | Hides the Move Down button   |
+| move_up_button     | bool  | No       | false       | Hides the Move Up button     |
+| move_next_button   | bool  | No       | false       | Hides the Move Next button   |
+| remove_button      | bool  | No       | false       | Hides the Remove button      |
+| album_covers       | bool  | No       | false       | Hides album covers           |
+| artist_names       | bool  | No       | false       | Hides artist names           |
+| clear_queue_button | bool  | No       | false       | Hides the Clear Queue button |
 
 ## Media Browser Config
 
