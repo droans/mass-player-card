@@ -55,8 +55,6 @@ export default css`
   #filter-menu::part(menu-select-menu) {
     --mdc-icon-size: 1.5em;
     --control-select-menu-padding: 0px;
-    --control-select-menu-background-color: unset;
-    background-color: var(--md-sys-color-primary);
     --control-select-menu-height: 35px;
     width: 35px;
   }
@@ -66,6 +64,15 @@ export default css`
     position: absolute;
     top: 2.5px;
     left: 2.5px;
+  }
+  #filter-menu:not(.filter-menu-expressive)::part(menu-select-menu) {
+    --control-select-menu-background-color: var(--md-sys-color-secondary-container);
+    background-color: var(--md-sys-color-secondary-container);
+    border-radius: 12px;
+  }
+  #filter-menu.filter-menu-expressive::part(menu-select-menu) {
+    --control-select-menu-background-color: unset;
+    background-color: var(--md-sys-color-primary);
   }
   #filter-menu-expressive::part(menu-select-menu) {
     --control-select-menu-background-color: var(
