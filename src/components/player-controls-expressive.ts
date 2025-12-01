@@ -9,6 +9,7 @@ import { PlayerIcon } from "../config/player.js";
 
 class MassPlayerControlsExpressive extends MassPlayerControlsBase {
   protected onFavoriteHold = () => {
+    navigator.vibrate(200);
     const e = new Event("open-add-to-playlist-dialog");
     this.controller.host.dispatchEvent(e);
   }

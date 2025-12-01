@@ -106,10 +106,10 @@ export class ActivePlayerController {
   private set activeEntityConfig(conf: EntityConfig) {
     this._activeEntityConfig.setValue(conf);
     const states = this.hass.states;
-    this.activePlayerName = this.activeEntityConfig.name;
-    this.volumeMediaPlayer = states[this.activeEntityConfig.volume_entity_id];
-    this.activeMediaPlayer = states[this.activeEntityConfig.entity_id];
-    this.activeEntityID = this.activeEntityConfig.entity_id;
+    this.activePlayerName = conf.name;
+    this.volumeMediaPlayer = states[conf.volume_entity_id];
+    this.activeMediaPlayer = states[conf.entity_id];
+    this.activeEntityID = conf.entity_id;
   }
   public get activeEntityConfig() {
     return this._activeEntityConfig.value;
@@ -186,7 +186,8 @@ export class ActivePlayerController {
     const new_attrs = player?.attributes;
     if (
       old_attrs?.volume_level != new_attrs?.volume_level ||
-      old_attrs?.is_volume_muted != new_attrs?.is_volume_muted
+      old_attrs?.is_volume_muted != new_attrs?.is_volume_muted || 
+      !old_attrs
     ) {
       this._volumeMediaPlayer.setValue(player);
     }
