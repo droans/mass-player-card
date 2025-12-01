@@ -153,7 +153,7 @@ export class MediaBrowserController {
       this.activeEntityId,
       media_type,
       limit,
-      favorites_only,
+      favorites_only ? true : null,
     );
     return [
       ...generateFavoritesSectionCards(resp, media_type),
