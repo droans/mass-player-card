@@ -243,29 +243,37 @@ class QueueCard extends LitElement {
       return result;
     });
   }
+  protected renderClearQueueButton(): TemplateResult {
+    const expressive = this.activePlayerController.useExpressive;
+    const hide = this.config.hide.clear_queue_button || this.entityConf.hide.queue.clear_queue_button;
+    if (hide) {
+      return html``
+    }
+    return html`
+      <mass-player-card-button
+        .onPressService=${this.onClearQueue}
+        role="filled"
+        size="small"
+        elevation=1
+        id="button-back"
+        class="button-min ${expressive ? `button-expressive` : ``}"
+      >
+        <ha-svg-icon
+          .path=${this.Icons.CLEAR}
+          class="header-icon"
+        ></ha-svg-icon>
+      </mass-player-card-button>
+    `
+  }
   protected renderHeader(): TemplateResult {
     const label = getTranslation("queue.header", this.hass) as string;
-    const expressive = this.activePlayerController.useExpressive;
     return html`
       <mass-section-header>
         <span slot="label" id="title">
           ${label}
         </span>
         <span slot="end" id="clear-queue">
-
-          <mass-player-card-button
-            .onPressService=${this.onClearQueue}
-            role="filled"
-            size="small"
-            elevation=1
-            id="button-back"
-            class="button-min ${expressive ? `button-expressive` : ``}"
-          >
-            <ha-svg-icon
-              .path=${this.Icons.CLEAR}
-              class="header-icon"
-            ></ha-svg-icon>
-          </mass-player-card-button>
+          ${this.renderClearQueueButton()}
         </span>
       </mass-section-header>
     `;

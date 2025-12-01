@@ -104,6 +104,7 @@ class MediaRow extends LitElement {
       move_next_button: entity.move_next_button || card.move_next_button,
       move_up_button: entity.move_up_button || card.move_up_button,
       remove_button: entity.remove_button || card.remove_button,
+      clear_queue_button: entity.clear_queue_button || card.clear_queue_button,
     };
   }
   private callMoveItemUpService = (e: Event) => {
