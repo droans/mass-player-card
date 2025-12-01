@@ -186,7 +186,7 @@ export default css`
   }
 
   .media-controls {
-    backdrop-filter: blur(3px);
+    backdrop-filter: blur(8px);
     background: var(--player-blur-color);
     position: absolute;
     bottom: 0;
@@ -263,7 +263,7 @@ export default css`
   }
   .player-card-header,
   .player-card-header-expressive {
-    backdrop-filter: blur(3px);
+    backdrop-filter: blur(8px);
   }
   .player-header {
     margin: 0em 1.75em 0em 1.75em;
