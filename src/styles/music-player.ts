@@ -186,11 +186,12 @@ export default css`
   }
 
   .media-controls {
-    backdrop-filter: blur(3px);
+    backdrop-filter: blur(8px);
     background: var(--player-blur-color);
     position: absolute;
     bottom: 0;
     width: 100%;
+    mask: linear-gradient(transparent, black 5%, black);
   }
 
   .media-controls:not(.media-controls-expressive) {
@@ -246,6 +247,7 @@ export default css`
     z-index: 1;
     border-radius: var(--default-border-radius) var(--default-border-radius) 0px
       0px;
+    mask: linear-gradient(black, black 95%, transparent);
   }
   .player-card-header {
     background: linear-gradient(
@@ -261,7 +263,7 @@ export default css`
   }
   .player-card-header,
   .player-card-header-expressive {
-    backdrop-filter: blur(3px);
+    backdrop-filter: blur(8px);
   }
   .player-header {
     margin: 0em 1.75em 0em 1.75em;
@@ -306,7 +308,7 @@ export default css`
   }
   .player-track-title {
     font-size: 1.5rem;
-    color: var(--player-track-color, var(--md-sys-color-primary));
+    color: var(--player-track-color, var(--md-sys-color-on-primary-container));
     white-space: nowrap;
     text-overflow: clip;
     text-shadow: 0px 0px var(--md-sys-color-primary);
