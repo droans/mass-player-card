@@ -250,7 +250,7 @@ class MusicPlayerCard extends LitElement {
       this.activeEntityConfig.entity_id,
       MediaTypes.PLAYLIST,
       PLAYLIST_DIALOG_MAX_ITEMS,
-      false
+      null
     );
     const _promises = playlistData.map(
       (playlist) => {

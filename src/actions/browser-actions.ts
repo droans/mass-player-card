@@ -79,15 +79,16 @@ export default class BrowserActions {
     player_entity_id: string,
     media_type: MediaTypes,
     limit = 25,
-    favorite = true,
+    favorite: boolean | null = true,
   ): Promise<MediaLibraryItem[]> {
     const config_id = await this.getPlayerConfigEntry(player_entity_id);
+    const favorite_data = typeof(favorite) == 'boolean' ? {favorite: favorite} : {}
      const data: getLibraryServiceSchema = {
       type: "call_service",
       domain: "music_assistant",
       service: "get_library",
       service_data: {
-        favorite: favorite,
+        ...favorite_data,
         limit: limit,
         config_entry_id: config_id,
         media_type: media_type,
