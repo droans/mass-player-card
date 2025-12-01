@@ -68,6 +68,10 @@ export class QueueController {
     if (jsonMatch(this._queue.value, queue_items)) {
       return;
     }
+    if (this.activeMediaPlayer.state == 'playing' && queue_items?.length) {
+      // If the player is playing, there must be active player items; assume then that we received bad data.
+      return
+    }
     this._queue.setValue(queue_items);
   }
   public get queue() {
