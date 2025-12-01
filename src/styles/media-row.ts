@@ -106,6 +106,7 @@ export default css`
   .svg-action-button {
     height: var(--row-icon-button-height);
     width: var(--row-icon-button-height);
+    color: var(--md-sys-color-on-secondary-container, var(--md-sys-color-on-secondary-container)) !important;
   }
   .svg-action-button-expressive {
     color: var(--expressive-row-button-color-text);
