@@ -68,7 +68,7 @@ export class QueueController {
     if (jsonMatch(this._queue.value, queue_items)) {
       return;
     }
-    if (this.activeMediaPlayer.state == 'playing' && queue_items?.length) {
+    if (this.activeMediaPlayer.state == 'playing' && !queue_items?.length) {
       // If the player is playing, there must be active player items; assume then that we received bad data.
       return
     }
@@ -163,7 +163,7 @@ export class QueueController {
     const activeEntityConfig = ents.find((item) => item.entity_id == ent_id);
     // eslint-disable-next-line @typescript-eslint/no-non-null-assertion
     if (isActive(this.hass, this.activeMediaPlayer, activeEntityConfig!)) {
-      const queue = this._getQueue();
+      const queue = await this._getQueue();
       return queue;
     }
     this.queue = [];
