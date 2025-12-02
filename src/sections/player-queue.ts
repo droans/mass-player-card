@@ -19,12 +19,12 @@ import {
 
 import { ExtendedHass } from "../const/common";
 import {
-  activeEntityConf,
-  activeEntityID,
+  activeEntityConfContext,
+  activeEntityIDContext,
   activePlayerControllerContext,
   activeSectionContext,
   EntityConfig,
-  hassExt,
+  hassContext,
   IconsContext,
   mediaCardDisplayContext,
   playerQueueConfigContext,
@@ -46,7 +46,7 @@ class QueueCard extends LitElement {
   @consume({ context: activePlayerControllerContext })
   private activePlayerController!: ActivePlayerController;
 
-  @consume({ context: activeEntityConf, subscribe: true })
+  @consume({ context: activeEntityConfContext, subscribe: true })
   private entityConf!: EntityConfig;
 
   @consume({ context: IconsContext, subscribe: true })
@@ -121,7 +121,7 @@ class QueueCard extends LitElement {
   public get activeSection() {
     return this._section;
   }
-  @consume({ context: hassExt, subscribe: true })
+  @consume({ context: hassContext, subscribe: true })
   public set hass(hass: ExtendedHass) {
     if (!hass) {
       return;
@@ -132,7 +132,7 @@ class QueueCard extends LitElement {
     return this._hass;
   }
 
-  @consume({ context: activeEntityID, subscribe: true })
+  @consume({ context: activeEntityIDContext, subscribe: true })
   @property({ attribute: false })
   public set active_player_entity(active_player_entity: string) {
     this._active_player_entity = active_player_entity;

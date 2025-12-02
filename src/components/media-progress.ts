@@ -11,7 +11,7 @@ import { consume } from "@lit/context";
 import { ActivePlayerController } from "../controller/active-player.js";
 import {
   actionsControllerContext,
-  activeMediaPlayer,
+  activeMediaPlayerContext,
   activePlayerControllerContext,
   activePlayerDataContext,
   controllerContext,
@@ -75,7 +75,7 @@ class MassPlayerProgressBar extends LitElement {
     return this._media_duration;
   }
 
-  @consume({ context: activeMediaPlayer, subscribe: true })
+  @consume({ context: activeMediaPlayerContext, subscribe: true })
   public set activePlayer(player: ExtendedHassEntity) {
     if (this._activePlayer) {
       if (!playerHasUpdated(this._activePlayer, player)) {

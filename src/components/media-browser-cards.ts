@@ -18,7 +18,7 @@ import {
 import { ExtendedHass } from "../const/common";
 import {
   activeMediaBrowserCardsContext,
-  hassExt,
+  hassContext,
   mediaBrowserConfigContext,
 } from "../const/context";
 import { MediaCardData, MediaCardItem } from "../const/media-browser";
@@ -30,7 +30,7 @@ import { jsonMatch } from "../utils/util.js";
 export class MediaBrowserCards extends LitElement {
   @state() public code!: TemplateResult;
 
-  @consume({ context: hassExt, subscribe: true })
+  @consume({ context: hassContext, subscribe: true })
   public hass!: ExtendedHass;
 
   @query(".icons") private _iconsElement?: HTMLDivElement;

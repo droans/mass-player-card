@@ -7,11 +7,11 @@ import "@shoelace-style/shoelace/dist/components/carousel-item/carousel-item.js"
 import styles from "../styles/player-artwork";
 import { getThumbnail } from "../utils/thumbnails.js";
 import {
-  activeMediaPlayer,
+  activeMediaPlayerContext,
   activePlayerDataContext,
   controllerContext,
   ExtendedHass,
-  hassExt,
+  hassContext,
   IconsContext,
   musicPlayerConfigContext,
   queueContext,
@@ -31,14 +31,14 @@ import { Icons } from "../const/icons.js";
 import { isActive, jsonMatch } from "../utils/util.js";
 
 class MassPlayerArtwork extends LitElement {
-  @consume({ context: hassExt, subscribe: true })
+  @consume({ context: hassContext, subscribe: true })
   private hass!: ExtendedHass;
   @consume({ context: controllerContext, subscribe: true })
   private controller!: MassCardController;
   @consume({ context: musicPlayerConfigContext, subscribe: true })
   @state()
   private playerConfig!: PlayerConfig;
-  @consume({ context: activeMediaPlayer, subscribe: true })
+  @consume({ context: activeMediaPlayerContext, subscribe: true })
   @state()
   public activePlayer!: ExtendedHassEntity;
   private _queue!: QueueItems;

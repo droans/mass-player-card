@@ -11,9 +11,9 @@ import { property, state } from "lit/decorators.js";
 import { QueueItemSelectedService, QueueService } from "../const/actions";
 import { ExtendedHass, Thumbnail } from "../const/common";
 import {
-  activeEntityConf,
+  activeEntityConfContext,
   EntityConfig,
-  hassExt,
+  hassContext,
   IconsContext,
   mediaCardDisplayContext,
   playerQueueConfigContext,
@@ -43,7 +43,7 @@ import { queueItem } from "mass-queue-types/packages/mass_queue/actions/get_queu
 class MediaRow extends LitElement {
   @property({ attribute: false }) media_item!: QueueItem;
 
-  @consume({ context: hassExt, subscribe: true })
+  @consume({ context: hassContext, subscribe: true })
   public hass!: ExtendedHass;
   @consume({ context: IconsContext }) public Icons!: Icons;
 
@@ -78,7 +78,7 @@ class MediaRow extends LitElement {
     return this._config;
   }
 
-  @consume({ context: activeEntityConf, subscribe: true })
+  @consume({ context: activeEntityConfContext, subscribe: true })
   public set entityConfig(config: EntityConfig) {
     if (jsonMatch(this._entityConfig, config)) {
       return;

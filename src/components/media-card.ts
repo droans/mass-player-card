@@ -18,11 +18,11 @@ import {
 } from "../const/actions";
 import { ExtendedHass } from "../const/common";
 import {
-  activeEntityConf,
+  activeEntityConfContext,
   activeSectionContext,
   configContext,
   EntityConfig,
-  hassExt,
+  hassContext,
   IconsContext,
   mediaBrowserConfigContext,
   useExpressiveContext,
@@ -66,7 +66,7 @@ class MediaCard extends LitElement {
 
   private _icons!: Icons;
 
-  @consume({ context: hassExt })
+  @consume({ context: hassContext })
   public hass!: ExtendedHass;
 
   @consume({ context: useExpressiveContext })
@@ -150,7 +150,7 @@ class MediaCard extends LitElement {
     return this._icons;
   }
 
-  @consume({ context: activeEntityConf, subscribe: true })
+  @consume({ context: activeEntityConfContext, subscribe: true })
   public set entityConfig(config: EntityConfig) {
     if (jsonMatch(this._entityConfig, config)) {
       return;

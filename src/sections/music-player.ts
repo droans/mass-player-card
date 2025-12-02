@@ -28,8 +28,8 @@ import {
   Thumbnail,
 } from "../const/common";
 import {
-  activeEntityConf,
-  activeMediaPlayer,
+  activeEntityConfContext,
+  activeMediaPlayerContext,
   activePlayerControllerContext,
   activePlayerDataContext,
   configContext,
@@ -38,7 +38,7 @@ import {
   EntityConfig,
   groupedPlayersContext,
   groupVolumeContext,
-  hassExt,
+  hassContext,
   IconsContext,
   musicPlayerConfigContext,
 } from "../const/context";
@@ -98,7 +98,7 @@ class MusicPlayerCard extends LitElement {
   @state()
   private _activePlayerController!: ActivePlayerController;
 
-  @consume({ context: activeEntityConf, subscribe: true })
+  @consume({ context: activeEntityConfContext, subscribe: true })
   public set activeEntityConfig(entity: EntityConfig) {
     this._activeEntityConfig = entity;
     void this.updatePlaylists()
@@ -110,7 +110,7 @@ class MusicPlayerCard extends LitElement {
     return this?.activePlayerController?.activeMediaPlayer;
   }
 
-  @consume({ context: activeMediaPlayer, subscribe: true })
+  @consume({ context: activeMediaPlayerContext, subscribe: true })
   @state()
   private set activeEntity(entity: ExtendedHassEntity) {
     if (!playerHasUpdated(this._activeEntity, entity)) {
@@ -122,7 +122,7 @@ class MusicPlayerCard extends LitElement {
     return this._activeEntity;
   }
 
-  @consume({ context: hassExt, subscribe: true })
+  @consume({ context: hassContext, subscribe: true })
   public set hass(hass: ExtendedHass) {
     if (hass) {
       this.actions = new PlayerActions(hass);
