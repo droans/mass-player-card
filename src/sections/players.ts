@@ -16,8 +16,8 @@ import { DEFAULT_PLAYERS_CONFIG, PlayersConfig } from "../config/players";
 import { PlayerSelectedService } from "../const/actions";
 import { ExtendedHass, ExtendedHassEntity } from "../const/common";
 import {
-  activeEntityConf,
-  hassExt,
+  activeEntityConfContext,
+  hassContext,
   playersConfigContext,
 } from "../const/context";
 
@@ -28,7 +28,7 @@ import { WaAnimation } from "../const/elements.js";
 class PlayersCard extends LitElement {
   @property({ attribute: false }) private entities: ExtendedHassEntity[] = [];
 
-  @consume({ context: activeEntityConf, subscribe: true })
+  @consume({ context: activeEntityConfContext, subscribe: true })
   @property({ attribute: false })
   public activePlayerEntity!: EntityConfig;
 
@@ -59,7 +59,7 @@ class PlayersCard extends LitElement {
     return this._config;
   }
 
-  @consume({ context: hassExt, subscribe: true })
+  @consume({ context: hassContext, subscribe: true })
   public set hass(hass: ExtendedHass) {
     if (!hass) {
       return;

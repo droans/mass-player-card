@@ -1,16 +1,16 @@
 import { ContextProvider } from "@lit/context";
 import { ExtendedHass, ExtendedHassEntity } from "../const/common";
 import {
-  activeEntityConf,
-  activeEntityID,
-  activeMediaPlayer,
+  activeEntityConfContext,
+  activeEntityIDContext,
+  activeMediaPlayerContext,
   activePlayerDataContext,
-  activePlayerName,
+  activePlayerNameContext,
   expressiveSchemeContext,
   groupedPlayersContext,
   groupVolumeContext,
   useExpressiveContext,
-  volumeMediaPlayer,
+  volumeMediaPlayerContext,
 } from "../const/context";
 import { Config, EntityConfig } from "../config/config";
 import { MassGetQueueServiceDataSchema, MassGetQueueServiceResponseSchema, PlayerData } from "../const/music-player";
@@ -22,11 +22,11 @@ import { applyDefaultExpressiveScheme, applyExpressiveSchemeFromImage } from "..
 import { ArtworkUpdatedEventData } from "../const/events.js";
 
 export class ActivePlayerController {
-  private _activeEntityConfig: ContextProvider<typeof activeEntityConf>;
-  private _activeEntityID: ContextProvider<typeof activeEntityID>;
-  private _activeMediaPlayer: ContextProvider<typeof activeMediaPlayer>;
-  private _activePlayerName: ContextProvider<typeof activePlayerName>;
-  private _volumeMediaPlayer: ContextProvider<typeof volumeMediaPlayer>;
+  private _activeEntityConfig: ContextProvider<typeof activeEntityConfContext>;
+  private _activeEntityID: ContextProvider<typeof activeEntityIDContext>;
+  private _activeMediaPlayer: ContextProvider<typeof activeMediaPlayerContext>;
+  private _activePlayerName: ContextProvider<typeof activePlayerNameContext>;
+  private _volumeMediaPlayer: ContextProvider<typeof volumeMediaPlayerContext>;
   private _expressiveScheme!: ContextProvider<typeof expressiveSchemeContext>;
   private _useExpressive!: ContextProvider<typeof useExpressiveContext>;
   private _groupMembers!: ContextProvider<typeof groupedPlayersContext>;
@@ -52,19 +52,19 @@ export class ActivePlayerController {
       context: groupVolumeContext,
     });
     this._activeEntityConfig = new ContextProvider(host, {
-      context: activeEntityConf,
+      context: activeEntityConfContext,
     });
     this._activeEntityID = new ContextProvider(host, {
-      context: activeEntityID,
+      context: activeEntityIDContext,
     });
     this._activeMediaPlayer = new ContextProvider(host, {
-      context: activeMediaPlayer,
+      context: activeMediaPlayerContext,
     });
     this._activePlayerName = new ContextProvider(host, {
-      context: activePlayerName,
+      context: activePlayerNameContext,
     });
     this._volumeMediaPlayer = new ContextProvider(host, {
-      context: volumeMediaPlayer,
+      context: volumeMediaPlayerContext,
     });
     this._activePlayerData = new ContextProvider(host, {
       context: activePlayerDataContext,

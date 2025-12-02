@@ -31,11 +31,11 @@ import "../components/section-header.js";
 import styles from "../styles/media-browser.js";
 
 import {
-  activeEntityConf,
+  activeEntityConfContext,
   activeMediaBrowserCardsContext,
   browserControllerContext,
   EntityConfig,
-  hassExt,
+  hassContext,
   IconsContext,
   mediaBrowserCardsContext,
   mediaBrowserConfigContext,
@@ -69,7 +69,7 @@ export class MediaBrowser extends LitElement {
   @consume({ context: useExpressiveContext, subscribe: true })
   private useExpressive!: boolean;
   @consume({ context: IconsContext }) private Icons!: Icons;
-  @consume({ context: activeEntityConf, subscribe: true })
+  @consume({ context: activeEntityConfContext, subscribe: true })
   private activeEntityConfig!: EntityConfig;
 
   public activeSection = DEFAULT_ACTIVE_SECTION;
@@ -94,7 +94,7 @@ export class MediaBrowser extends LitElement {
     return this._activeCards;
   }
 
-  @consume({ context: hassExt, subscribe: true })
+  @consume({ context: hassContext, subscribe: true })
   public set hass(hass: ExtendedHass) {
     this._hass = hass;
     if (!this.actions) {

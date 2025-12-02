@@ -10,9 +10,9 @@ import {
 } from "../const/actions";
 import { ExtendedHass, ExtendedHassEntity, Thumbnail } from "../const/common";
 import {
-  activeEntityConf,
+  activeEntityConfContext,
   EntityConfig,
-  hassExt,
+  hassContext,
   IconsContext,
   playersConfigContext,
   useExpressiveContext,
@@ -40,7 +40,7 @@ class PlayerRow extends LitElement {
   @consume({ context: useExpressiveContext, subscribe: true })
   private useExpressive!: boolean;
 
-  @consume({ context: hassExt })
+  @consume({ context: hassContext })
   public hass!: ExtendedHass;
 
   public allowJoin = true;
@@ -66,7 +66,7 @@ class PlayerRow extends LitElement {
   public get config() {
     return this._config;
   }
-  @consume({ context: activeEntityConf, subscribe: true })
+  @consume({ context: activeEntityConfContext, subscribe: true })
   public set entityConfig(config: EntityConfig) {
     if (jsonMatch(this._entityConfig, config)) {
       return;

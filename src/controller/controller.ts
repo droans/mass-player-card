@@ -6,7 +6,7 @@ import {
   activePlayerControllerContext,
   activeSectionContext,
   browserControllerContext,
-  hassExt,
+  hassContext,
   queueControllerContext,
 } from "../const/context";
 import { MassCardConfigController } from "./config";
@@ -19,7 +19,7 @@ import { jsonMatch } from "../utils/util.js";
 import { getTranslation } from "../utils/translations.js";
 
 export class MassCardController {
-  private _hass = new ContextProvider(document.body, { context: hassExt });
+  private _hass = new ContextProvider(document.body, { context: hassContext });
   private _host!: HTMLElement;
 
   private configController: MassCardConfigController;

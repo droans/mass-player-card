@@ -21,12 +21,12 @@ import { MediaBrowserController } from "../controller/browser.js";
 import { MediaCardItem, newMediaBrowserItemsConfig } from "./media-browser.js";
 export type { EntityConfig } from "../config/config";
 
-export const hassExt = createContext<ExtendedHass>(uuid4());
-export const activeEntityConf = createContext<EntityConfig>(uuid4());
-export const activeEntityID = createContext<string>(uuid4());
-export const activePlayerName = createContext<string>(uuid4());
-export const activeMediaPlayer = createContext<ExtendedHassEntity>(uuid4());
-export const volumeMediaPlayer = createContext<ExtendedHassEntity>(uuid4());
+export const hassContext = createContext<ExtendedHass>(uuid4());
+export const activeEntityConfContext = createContext<EntityConfig>(uuid4());
+export const activeEntityIDContext = createContext<string>(uuid4());
+export const activePlayerNameContext = createContext<string>(uuid4());
+export const activeMediaPlayerContext = createContext<ExtendedHassEntity>(uuid4());
+export const volumeMediaPlayerContext = createContext<ExtendedHassEntity>(uuid4());
 export const activePlayerDataContext = createContext<PlayerData>(uuid4());
 export const groupedPlayersContext = createContext<string[]>(uuid4());
 export const groupVolumeContext = createContext<number>(uuid4());
