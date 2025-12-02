@@ -31,6 +31,55 @@ export enum Thumbnail {
   RADIO = "radio",
 }
 
+export enum VibrateDuration {
+  CLICK = 5,
+  VERY_SHORT = 25,
+  SHORT = 75,
+  MEDIUM = 150,
+  LONG = 300,
+  VERY_LONG = 500,
+}
+
+export const VibrationPattern = {
+  Queue: {
+    ACTION_MOVE_UP: [
+      VibrateDuration.CLICK,
+      20,
+      VibrateDuration.SHORT
+    ],
+    ACTION_MOVE_DOWN: [
+      VibrateDuration.SHORT,
+      20,
+      VibrateDuration.CLICK
+    ],
+    ACTION_MOVE_NEXT: [
+      VibrateDuration.SHORT,
+      20,
+      VibrateDuration.SHORT    
+    ],
+    ACTION_REMOVE: [
+      VibrateDuration.CLICK,
+      20,
+      VibrateDuration.CLICK
+    ]
+  },
+  Players: {
+    ACTION_JOIN: [
+      VibrateDuration.CLICK,
+      20,
+      VibrateDuration.SHORT
+    ],
+    ACTION_TRANSFER: [
+      VibrateDuration.SHORT,
+      20,
+      VibrateDuration.CLICK
+    ]
+  },
+  Player: {
+    ACTION_FAVORITE_HOLD: VibrateDuration.CLICK,
+    ACTION_SWIPE: VibrateDuration.VERY_SHORT
+  }
+}
 interface ExtendedHassEntityAttributes extends HassEntityAttributeBase {
   app_id: string;
   active_queue: string;

@@ -8,7 +8,7 @@ import {
   PlayerTransferService,
   PlayerUnjoinService,
 } from "../const/actions";
-import { ExtendedHass, ExtendedHassEntity, Thumbnail } from "../const/common";
+import { ExtendedHass, ExtendedHassEntity, Thumbnail, VibrationPattern } from "../const/common";
 import {
   activeEntityConfContext,
   EntityConfig,
@@ -96,7 +96,7 @@ class PlayerRow extends LitElement {
     return _changedProperties.size > 0;
   }
   private onJoinPressed = async (e: Event) => {
-    navigator.vibrate([75, 20, 20, 20, 75]);
+    navigator.vibrate(VibrationPattern.Players.ACTION_JOIN);
     e.stopPropagation();
     const service = this.joined ? this.unjoinService : this.joinService;
     await service(this.player_entity.entity_id);
@@ -104,7 +104,7 @@ class PlayerRow extends LitElement {
   }
   private onTransferPressed = (e: Event) => {
     e.stopPropagation();
-    navigator.vibrate([75, 20, 40, 20, 25]);
+    navigator.vibrate(VibrationPattern.Players.ACTION_TRANSFER);
     this.transferService(this.player_entity.entity_id);
   }
   private artworkStyle() {
