@@ -203,8 +203,15 @@ export class MassPlayerArtwork extends LitElement {
     this.updateActiveSlide();
   }
   connectedCallback(): void {
-    super.connectedCallback();
+    this.settingSlide = true;
+    setTimeout(
+      () => {
+        this.settingSlide = false
+      },
+      100
+    )
     this.updateActiveSlide();
+    super.connectedCallback();
   }
   static get styles(): CSSResultGroup {
     return styles;
