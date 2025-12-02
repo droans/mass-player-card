@@ -277,6 +277,8 @@ export default css`
     top: 0;
     mask: linear-gradient(black, black 95%, transparent);
     backdrop-filter: blur(8px);
+    border-radius: var(--default-border-radius) var(--default-border-radius) 0px 0px;
+    overflow: hidden;
   }
   .player-header {
     margin: 0em 1.75em 0em 1.75em;
