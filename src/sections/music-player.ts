@@ -634,7 +634,7 @@ class MusicPlayerCard extends LitElement {
     `;
   }
   protected renderArtwork() {
-    return html` <mass-artwork></mass-artwork> `;
+    return html` <mpc-artwork></mpc-artwork>`;
   }
   protected renderVolumeRow() {
     return html`
