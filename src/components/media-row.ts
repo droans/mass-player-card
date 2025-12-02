@@ -20,6 +20,7 @@ import {
   useExpressiveContext,
 } from "../const/context";
 import { QueueItem } from "../const/player-queue";
+import { VibrationPattern } from "../const/common";
 
 import styles from "../styles/media-row";
 
@@ -108,23 +109,23 @@ class MediaRow extends LitElement {
     };
   }
   private callMoveItemUpService = (e: Event) => {
-    navigator.vibrate([50, 20, 25, 20, 25]);
+    navigator.vibrate(VibrationPattern.Queue.ACTION_MOVE_UP);
     e.stopPropagation();
     this.moveQueueItemUpService(this.media_item.queue_item_id);
   }
   private callMoveItemDownService = (e: Event) => {
-    navigator.vibrate([25, 20, 25, 20, 50]);
+    navigator.vibrate(VibrationPattern.Queue.ACTION_MOVE_DOWN);
     e.stopPropagation();
     this.moveQueueItemDownService(this.media_item.queue_item_id);
   }
   private callMoveItemNextService = (e: Event) => {
-    navigator.vibrate([50, 20, 25, 20, 50]);
+    navigator.vibrate(VibrationPattern.Queue.ACTION_MOVE_NEXT);
     e.stopPropagation();
     this.moveQueueItemNextService(this.media_item.queue_item_id);
   }
   private callRemoveItemService = (e: Event) => {
     e.stopPropagation();
-    navigator.vibrate([25, 20, 75, 20, 25]);
+    navigator.vibrate(VibrationPattern.Queue.ACTION_REMOVE);
     this.removeService(this.media_item.queue_item_id);
   }
   private callOnQueueItemSelectedService = () => {

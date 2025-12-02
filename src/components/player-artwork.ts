@@ -31,7 +31,7 @@ import { jsonMatch, playerHasUpdated } from "../utils/util.js";
 import { QueueItem, QueueItems } from "../const/player-queue.js";
 import { SlCarousel } from "@shoelace-style/shoelace";
 import { SLSwipeEvent } from "../const/music-player.js";
-import { Thumbnail } from "../const/common.js";
+import { Thumbnail, VibrationPattern } from "../const/common.js";
 import { getThumbnail } from "../utils/thumbnails.js";
 import { Icons } from "../const/icons.js";
 import styles from "../styles/player-artwork.js";
@@ -129,7 +129,7 @@ export class MassPlayerArtwork extends LitElement {
       this.settingSlide = false;
       return;
     }
-    navigator.vibrate(75);
+    navigator.vibrate(VibrationPattern.Player.ACTION_SWIPE);
     const idx = ev.detail.index;
     const queue_item_id = this.queue[idx].queue_item_id;
     if (queue_item_id == this.activePlayer.attributes.media_content_id) {
