@@ -486,7 +486,9 @@ class MusicPlayerCard extends LitElement {
               </span>
             </ha-md-list-item>
           </div>
-          <ha-md-list-item>
+          <ha-md-list-item
+            class="grouped-players-volume-item"
+          >
             <mass-volume-slider
               class="grouped-players-volume-slider"
               maxVolume=${item.max_volume}
@@ -598,6 +600,7 @@ class MusicPlayerCard extends LitElement {
           .onSelectAction=${this.onPlayerSelect}
           .initialSelection=${this.activeEntity.entity_id}
           .items=${this.renderPlayerItems()}
+          dividers
         ></mass-menu-button>
       </span>
     `;

@@ -10,6 +10,24 @@ export default css`
 
     --mdc-list-side-padding-left: var(--menu-item-padding-left);
   }
+  .divider {
+    margin-top: 2px;
+    margin-bottom: 2px;
+  }
+  .divider::before {
+    content: " ";
+    display: block;
+    height: 1px;
+    background-color: var(--divider-color);
+    margin-left: 24px;
+    margin-right: 24px;
+  }
+  ha-list-item:first-of-type {
+    margin-top: 10px
+  }
+  ha-list-item:last-of-type {
+    margin-bottom: 10px
+  }
   .menu-expressive {
     --mdc-theme-text-primary-on-background: var(--mass-menu-text-color-expressive);
     --mdc-theme-text-icon-on-background: var(--mass-menu-icon-color-expressive);
