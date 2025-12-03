@@ -37,7 +37,8 @@ export default css`
     --play-icon-color: var(--md-sys-color-on-primary);
     --pause-icon-color: var(--md-sys-color-on-secondary-container);
 
-    --play-pause-button-width: 96px;
+    --pause-button-width: 96px;
+    --play-button-width: 110px;
     --play-pause-border-radius: 18px !important;
   }
 
@@ -83,10 +84,15 @@ export default css`
   }
   .button-play-pause {
     --button-button-height: var(--play-pause-icon-height);
-    --button-button-width: var(--play-pause-button-width);
     --button-border-radius: var(--play-pause-border-radius);
     --button-padding: 0px;
     --button-elevation: var(--md-sys-elevation-level2);
+  }
+  #button-play {
+    --button-button-width: var(--play-button-width);
+  }
+  #button-pause {
+    --button-button-width: var(--pause-button-width);
   }
 
   #div-controls {

@@ -444,6 +444,7 @@ class MusicPlayerCard extends LitElement {
     const players = this.groupedPlayers;
     const ct = players.length;
     const expressive = this.cardConfig.expressive;
+    const role = this.controller.config.expressive_scheme == "vibrant" ? `tonal` : `filled-variant`
     return this.groupedPlayers.map((item, idx) => {
       const name =
         item.name.length > 0
@@ -468,7 +469,7 @@ class MusicPlayerCard extends LitElement {
 
                 <mass-player-card-button
                   .onPressService=${this.onUnjoinSelect}
-                  role="filled-variant"
+                  role="${role}"
                   size="small"
                   elevation=1
                   class="grouped-button-unjoin ${expressive

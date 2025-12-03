@@ -10,9 +10,10 @@ import { property, state } from "lit/decorators.js";
 import { TargetValEvent, TargetValEventData } from "../const/events";
 import { ListItems } from "../const/media-browser";
 import { consume } from "@lit/context";
-import { useExpressiveContext } from "../const/context.js";
+import { controllerContext, useExpressiveContext } from "../const/context.js";
 import styles from "../styles/menu-button";
 import { jsonMatch } from "../utils/util.js";
+import { MassCardController } from "../controller/controller.js";
 
 class MassMenuButton extends LitElement {
   @property({ attribute: false }) public iconPath!: string;
@@ -27,6 +28,9 @@ class MassMenuButton extends LitElement {
 
   @consume({ context: useExpressiveContext, subscribe: true })
   private useExpressive!: boolean;
+
+  @consume({ context: controllerContext, subscribe: true })
+  private controller!: MassCardController;
 
   public onSelectAction!: TargetValEvent;
 
@@ -98,11 +102,13 @@ class MassMenuButton extends LitElement {
   }
 
   protected render() {
+    const expressive_class = this.useExpressive ? `menu-expressive` : ``;
+    const vibrant_class = this.controller.config.expressive_scheme == 'vibrant' ? `vibrant` : ``;
     return html`
       <div id="menu-button" part="menu-button">
         <ha-control-select-menu
           id="menu-select-menu"
-          class="${this.useExpressive ? `menu-expressive` : ``}"
+          class="${expressive_class} ${vibrant_class}"
           part="menu-select-menu"
           naturalMenuWidth
           ?fixedMenuPosition=${this.fixedMenuPosition}
