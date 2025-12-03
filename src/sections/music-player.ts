@@ -598,6 +598,7 @@ class MusicPlayerCard extends LitElement {
           .onSelectAction=${this.onPlayerSelect}
           .initialSelection=${this.activeEntity.entity_id}
           .items=${this.renderPlayerItems()}
+          dividers
         ></mass-menu-button>
       </span>
     `;

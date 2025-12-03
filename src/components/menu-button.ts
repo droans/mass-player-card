@@ -16,12 +16,20 @@ import { jsonMatch } from "../utils/util.js";
 
 class MassMenuButton extends LitElement {
   @property({ attribute: false }) public iconPath!: string;
-  @property({ attribute: false }) private _items!: ListItems;
+
+  @property({ attribute: false }) private _items?: ListItems;
+
   @property({ type: Boolean, attribute: "fixedMenuPosition" })
-  public fixedMenuPosition!: boolean;
+  public fixedMenuPosition: boolean = false;
+
+  @property({ type: Boolean, attribute: "dividers" })
+  public dividers: boolean = false;
+
   @consume({ context: useExpressiveContext, subscribe: true })
   private useExpressive!: boolean;
+
   public onSelectAction!: TargetValEvent;
+
   @state() private _selectedItem!: string;
   private _initialSelection?: string;
 
@@ -33,6 +41,7 @@ class MassMenuButton extends LitElement {
   public get initialSelection() {
     return this._initialSelection ?? ``;
   }
+
   public set items(items: ListItems) {
     if (jsonMatch(this._items, items)) {
       return;
@@ -43,8 +52,9 @@ class MassMenuButton extends LitElement {
     }
   }
   public get items() {
-    return this._items;
+    return this._items ?? [];
   }
+
   private onSelect = (ev: TargetValEventData) => {
     const val = ev.target.value;
     if (val == "") {
@@ -55,32 +65,36 @@ class MassMenuButton extends LitElement {
   };
 
   protected renderMenuItems(): TemplateResult | TemplateResult[] {
-    if (!this.items) {
+    if (!this?.items?.length) {
       return html``;
     }
-
-    return this._items.map((item) => {
-      return html`
-        <ha-list-item
-          class="menu-list-item ${this._selectedItem == item.option
-            ? `selected-item`
-            : `inactive-item`}${this.useExpressive ? `-expressive` : ``}"
-          part="menu-list-item"
-          .value="${item.option}"
-          .graphic=${item.icon}
-        >
-          <ha-svg-icon
-            class="menu-list-item-svg ${this.useExpressive
-              ? `svg-expressive`
-              : ``}"
-            part="menu-list-item-svg"
-            slot="graphic"
-            .path=${item.icon}
-          ></ha-svg-icon>
-          ${item.title}
-        </ha-list-item>
-      `;
-    });
+    const ct = this.items.length;
+    return this.items.map(
+      (item, idx) => {
+        const use_dividers = idx < ct - 1 && this.dividers;
+        return html`
+          <ha-list-item
+            class="menu-list-item ${this._selectedItem == item.option
+              ? `selected-item`
+              : `inactive-item`}${this.useExpressive ? `-expressive` : ``}"
+            part="menu-list-item"
+            .value="${item.option}"
+            .graphic=${item.icon}
+          >
+            <ha-svg-icon
+              class="menu-list-item-svg ${this.useExpressive
+                ? `svg-expressive`
+                : ``}"
+              part="menu-list-item-svg"
+              slot="graphic"
+              .path=${item.icon}
+            ></ha-svg-icon>
+            ${item.title}
+          </ha-list-item>
+          ${use_dividers ? html`<div class = "divider"></div>` : html``}
+        `;
+      }
+    );
   }
 
   protected render() {
