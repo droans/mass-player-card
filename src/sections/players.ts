@@ -113,7 +113,10 @@ class PlayersCard extends LitElement {
     }
     const entities: ExtendedHassEntity[] = [];
     this._config.entities.forEach((item) => {
-      entities.push(hass.states[item.entity_id]);
+      const state = hass.states[item.entity_id];
+      if (state) {
+        entities.push(hass.states[item.entity_id]);
+      }
     });
     this.entities = entities;
   }

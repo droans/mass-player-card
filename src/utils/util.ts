@@ -103,15 +103,18 @@ export function isActive(
   entity: ExtendedHassEntity,
   entity_config: EntityConfig,
 ): boolean {
+  if (!entity || !hass) {
+    return false
+  }
   const inactive_states = entity_config.inactive_when_idle
     ? ["off", "idle"]
     : ["off"];
-  const not_off = !inactive_states.includes(entity.state);
+  const not_off = !inactive_states.includes(entity?.state);
   const has_item = !!entity?.attributes?.media_content_id;
-  const is_mass = entity.attributes.app_id == MUSIC_ASSISTANT_APP_NAME;
-  const has_queue = !!entity.attributes?.active_queue;
+  const is_mass = entity?.attributes?.app_id == MUSIC_ASSISTANT_APP_NAME;
+  const has_queue = !!entity?.attributes?.active_queue;
   const connected = hass.connected;
-  const updated_ms = new Date(entity.last_updated).getTime();
+  const updated_ms = new Date(entity?.last_updated).getTime();
   const now_ms = new Date().getTime();
   const updated_recently =
     now_ms - updated_ms <= MAX_ACTIVE_LAST_ACTIVE_DURATION;
