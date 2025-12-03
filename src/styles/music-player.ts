@@ -113,17 +113,20 @@ export default css`
   }
 
   .divider {
-    margin-top: 4px;
+    margin-top: 2px;
+    margin-bottom: 2px;
   }
   .divider::before {
     content: " ";
     display: block;
     height: 1px;
     background-color: var(--divider-color);
-    margin-left: 8px;
-    margin-right: 8px;
+    margin-left: 24px;
+    margin-right: 24px;
   }
-
+  .grouped-players-volume-item {
+    --md-list-item-top-space: 0px;
+  }
   .header-art-lg {
     z-index: 2;
     position: relative;
@@ -163,6 +166,12 @@ export default css`
     --button-border-radius: 25%;
     --button-padding: 0px;
     align-content: center;
+  }
+  #grouped-players-menu ha-md-list-item:not(.grouped-players-volume-item) {
+    padding-right: 12px;
+  }
+  #grouped-players-menu ha-md-list-item {
+    padding-left: 12px;
   }
   .grouped-svg-unjoin {
     --button-button-height: var(--row-icon-button-height);
