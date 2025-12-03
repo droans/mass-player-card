@@ -20,10 +20,10 @@ class MassMenuButton extends LitElement {
   @property({ attribute: false }) private _items?: ListItems;
 
   @property({ type: Boolean, attribute: "fixedMenuPosition" })
-  public fixedMenuPosition: boolean = false;
+  public fixedMenuPosition = false;
 
   @property({ type: Boolean, attribute: "dividers" })
-  public dividers: boolean = false;
+  public dividers = false;
 
   @consume({ context: useExpressiveContext, subscribe: true })
   private useExpressive!: boolean;
