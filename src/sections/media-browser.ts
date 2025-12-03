@@ -456,8 +456,8 @@ export class MediaBrowser extends LitElement {
           role="filled"
           size="small"
           elevation=1
-            id="button-back"
-            class="button-min ${this.useExpressive ? `button-expressive` : ``}"
+          id="button-back"
+          class="button-min ${this.useExpressive ? `button-expressive` : ``}"
         >
           <ha-svg-icon
             .path=${this.Icons.ARROW_LEFT}

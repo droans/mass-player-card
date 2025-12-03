@@ -54,32 +54,12 @@ export default css`
   .has-box-shadow::part(base) {
     box-shadow: rgba(0, 0, 0, 0.16) 0px 2px 4px 0px;
   }
-
-  .icon-medium {
-  }
-  .icon-small {
-  }
-
-  .icon-accent {
-  }
   .icon-accent::part(base) {
     background-color: var(--md-sys-color-primary);
   }
   .icon-accent::part(label) {
     color: var(--md-sys-color-on-primary);
   }
-
-  .icon-filled {
-  }
-
-  .icon-outlined {
-  }
-  .icon-outlined::part(label) {
-  }
-
-  .icon-plain {
-  }
-
   .player-controls {
     width: var(--player-control-icon-width);
     height: var(--player-control-icon-width);

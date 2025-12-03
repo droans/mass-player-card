@@ -5,16 +5,13 @@ import { css } from "lit";
 export default css`
   :host {
     --button-default-height-small: 32px;
-    --button-default-width-small: 32px;
-    --button-default-border-radius-small: 10px;
+    --button-default-border-radius-small: 40%;
     
     --button-default-height-medium: 40px;
-    --button-default-width-medium: 40px;
-    --button-default-border-radius-medium: 12px;
+    --button-default-border-radius-medium: 40%;
     
     --button-default-height-large: 64px;
-    --button-default-width-large: 64px;
-    --button-default-border-radius-small: 20px;
+    --button-default-border-radius-large: 40%;
 
     --animation-duration: 0.25s;
     --used-button-height: var(--button-button-height);
@@ -42,9 +39,6 @@ export default css`
     padding-left: var(--button-padding-left, var(--button-padding, 0px));
     padding-right: var(--button-padding-right, var(--button-padding, 0px));
   }
-  .small {
-
-  }
 
   .medium::part(base) {
     height: var(--used-button-height, var(--button-default-height-medium));
@@ -52,18 +46,12 @@ export default css`
     padding-left: var(--button-padding-left, var(--button-padding, 16px));
     padding-right: var(--button-padding-right, var(--button-padding, 16px));
   }
-  .medium {
-
-  }
   
   .large::part(base) {
     height: var(--used-button-height, var(--button-default-height-large));
     --ha-button-border-radius: var(--button-border-radius, var(--button-default-border-radius-large));
     padding-left: var(--button-padding-left, var(--button-padding, 24px));
     padding-right: var(--button-padding-right, var(--button-padding, 24px));
-  }
-  .large {
-
   }
 
   .filled {
@@ -81,11 +69,9 @@ export default css`
     --button-unselected-text-color: var(--md-sys-color-on-surface-variant);
     
     --button-disabled-background-color: var(--md-sys-color-on-surface);
-    --button-disabled-text-color: var(--md-sys-color-on-surface);
-    
-    --button-hovered-background-color: ;
-    --button-hovered-text-color: ;
+    --button-disabled-text-color: var(--md-sys-color-on-surface);    
   }
+
   .filled-variant {
     --button-outline-color: var(--md-sys-color-outline, var(--outline-color));
   }
@@ -160,11 +146,7 @@ export default css`
     --button-disabled-text-color: var(--md-sys-color-on-surface-variant);
 
   }
-  
-  .variant {
-    --button-outline-color: var(--md-sys-color-outline, var(--outline-color));
-    --button-background-color: var(--md-sys-color-secondary-container);
-  }
+
   .plain.expressive {
     --button-background-color: transparent;
     --button-text-color: var(--md-sys-color-on-tertiary-container);

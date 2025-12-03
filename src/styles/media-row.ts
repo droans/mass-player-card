@@ -37,7 +37,6 @@ export default css`
   .button {
     margin: 0.15rem;
     border-radius: var(--media-row-border-radius);
-    background: var(--media-row-background-color);
     height: var(--media-row-height);
   }
   .button-active {

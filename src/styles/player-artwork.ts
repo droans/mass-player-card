@@ -7,10 +7,6 @@ export default css`
     justify-self: center;
     display: block;
   }
-  #artwork.medium {
-  }
-  #artwork.small {
-  }
   #asleep {
     height: 100%;
     width: 100%;
