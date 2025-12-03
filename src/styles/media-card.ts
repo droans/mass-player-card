@@ -9,8 +9,6 @@ export default css`
     right: -0.75em;
     --ha-ripple-color: rgba(0, 0, 0, 0);
   }
-  mass-menu-button::part(menu-list-item) {
-  }
   mass-menu-button::part(menu-list-item-svg) {
     height: 2em;
     width: 2em;
@@ -30,12 +28,7 @@ export default css`
   }
 
   wa-card {
-    --inner-border-radius: var(--browser-card-border-radius);
-    --wa-panel-border-radius: var(--browser-card-border-radius);
-    --wa-panel-border-style: var(--ha-card-border-style);
-    --wa-color-surface-border: var(--ha-color-border-neutral-normal);
     --wa-panel-border-width: var(--ha-card-border-width);
-    --wa-shadow-s: var(--ha-card-box-shadow);
     height: 100%;
     width: 100%;
   }
@@ -48,36 +41,6 @@ export default css`
     overflow: visible !important;
     margin: 0px 3px 3px 3px;
     aspect-ratio: 1;
-  }
-
-  #card-button-div {
-    position: absolute;
-    width: 100%;
-    height: 100%;
-    display: contents;
-    top: 0;
-    left: 0;
-  }
-
-  #enqueue-list-item {
-  }
-  .enqueue-item-svg {
-    height: 2em;
-    width: 2em;
-  }
-  #enqueue-menu-control {
-    --control-select-menu-background-color: unset;
-    --ha-ripple-color: rgba(0, 0, 0, 0);
-    --mdc-icon-size: 5em;
-    --control-select-menu-height: 6em;
-  }
-  #enqueue-svg {
-    color: var(--md-sys-color-primary);
-    background-color: var(
-      --ha-card-background,
-      var(--card-background-color, #fff)
-    );
-    border-radius: 50%;
   }
 
   .media-card {

@@ -9,17 +9,6 @@ export default css`
     padding-bottom: 8px;
     touch-action: none;
   }
-  .progress-plain {
-    --_light: var(
-      --md-sys-color-primary,
-      var(
-        --md-linear-progress-track-color,
-        var(--md-sys-color-surface-container-highest, #e6e0e9)
-      )
-    );
-    --_dark: var(--light);
-    --_size: 6px !important;
-  }
 
   #progress-bar {
     --primary: var(
@@ -79,8 +68,5 @@ export default css`
   }
   .time-expressive {
     color: var(--md-sys-color-on-primary-container) !important;
-  }
-
-  .wavy {
   }
 `;
