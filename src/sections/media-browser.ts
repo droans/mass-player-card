@@ -48,7 +48,7 @@ import { EnqueueOptions } from "../const/actions.js";
 import { getMediaTypeSvg } from "../utils/thumbnails.js";
 import { jsonMatch } from "../utils/util.js";
 import { getTranslation } from "../utils/translations.js";
-import { CardsUpdatedEvent, TargetValEventData } from "../const/events.js";
+import { CardsUpdatedEvent, MenuButtonEventData, TargetValEventData } from "../const/events.js";
 import { MediaBrowserCards } from "../components/media-browser-cards.js";
 
 @customElement(`mass-media-browser`)
@@ -246,12 +246,11 @@ export class MediaBrowser extends LitElement {
     this.cards.search = [];
     this.activeCards = this.cards.search;
   };
-  private onSearchMediaTypeSelect = async (ev: TargetValEventData) => {
-    const val = ev.target.value as MediaTypes;
+  private onSearchMediaTypeSelect = async (ev: MenuButtonEventData) => {
+    const val = ev.detail.option as MediaTypes;
     if (!val) {
       return;
     }
-    ev.target.value = "";
     this.searchMediaType = val;
     this.searchMediaTypeIcon = getMediaTypeSvg(val, this.Icons, this.hass);
     await this.searchMedia();
@@ -278,12 +277,11 @@ export class MediaBrowser extends LitElement {
       void this.searchMedia();
     }, SEARCH_UPDATE_DELAY);
   };
-  private onFilterType = (ev: TargetValEventData) => {
-    const val = ev.target.value;
+  private onFilterType = (ev: MenuButtonEventData) => {
+    const val = ev.detail.option;
     if (!val.length) {
       return;
     }
-    ev.target.value = ``;
     if (!Object.keys(this.cards).includes(val)) {
       return;
     }
@@ -349,7 +347,7 @@ export class MediaBrowser extends LitElement {
           .iconPath=${this.searchMediaTypeIcon}
           .initialSelection=${this.searchMediaType}
           .items=${icons}
-          .onSelectAction=${this.onSearchMediaTypeSelect}
+          @menu-item-selected=${this.onSearchMediaTypeSelect}
           fixedMenuPosition
         ></mass-menu-button>
       `;
@@ -477,7 +475,7 @@ export class MediaBrowser extends LitElement {
         .iconPath=${icon}
         .initialSelection=${this.activeSection}
         .items=${icons}
-        .onSelectAction=${this.onFilterType}
+        @menu-item-selected=${this.onFilterType}
         fixedMenuPosition
       ></mass-menu-button>
     `;

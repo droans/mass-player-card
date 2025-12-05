@@ -51,7 +51,7 @@ import { Sections } from "../const/card";
 import { Icons } from "../const/icons.js";
 import { Config } from "../config/config.js";
 import { WaAnimation } from "../const/elements.js";
-import { TargetValEventData } from "../const/events.js";
+import { MenuButtonEventData } from "../const/events.js";
 
 class MediaCard extends LitElement {
   @property({ type: Boolean }) queueable = false;
@@ -208,14 +208,13 @@ class MediaCard extends LitElement {
     });
     this._enqueue_buttons = opts;
   }
-  private onEnqueue = (ev: TargetValEventData) => {
+  private onEnqueue = (ev: MenuButtonEventData) => {
     ev.stopPropagation();
-    const target = ev.target;
-    const value = target.value as EnqueueOptions;
+    const target = ev.detail;
+    const value = target.option as EnqueueOptions;
     if (!value) {
       return;
     }
-    target.value = "";
     this.onEnqueueAction(this._config.data, value);
   };
   private onSelect = () => {
@@ -272,7 +271,7 @@ class MediaCard extends LitElement {
         id="enqueue-button-div"
         .iconPath=${this.Icons.PLAY_CIRCLE}
         .items=${this._enqueue_buttons}
-        .onSelectAction=${this.onEnqueue}
+        @menu-item-selected=${this.onEnqueue}
         fixedMenuPosition
       ></mass-menu-button>
     `;

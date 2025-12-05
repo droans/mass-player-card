@@ -30,9 +30,16 @@ export enum Thumbnail {
   PLAYLIST = "playlist",
   RADIO = "radio",
 }
+
+export interface ListImageData {
+  url: string;
+  fallback: string;
+}
+
 export interface ListItemData {
   option: string;
   icon: string;
+  image?: ListImageData;
   title: string;
 }
 export type ListItems = ListItemData[];
