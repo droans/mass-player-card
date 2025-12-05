@@ -8,3 +8,7 @@ export interface WaAnimation extends LitElement {
 export interface DialogElement extends LitElement {
   open: boolean;
 }
+
+export interface ControlSelectMenuElement extends LitElement {
+  menuOpen: boolean;
+}

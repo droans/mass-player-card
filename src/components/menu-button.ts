@@ -5,17 +5,18 @@ import {
   PropertyValues,
   TemplateResult,
 } from "lit";
-import { property, state } from "lit/decorators.js";
+import { property, query, state } from "lit/decorators.js";
 
-import { TargetValEvent, TargetValEventData } from "../const/events";
-import { ListItems } from "../const/media-browser";
+import { ListItems } from "../const/common";
 import { consume } from "@lit/context";
 import { controllerContext, useExpressiveContext } from "../const/context.js";
 import styles from "../styles/menu-button";
 import { jsonMatch } from "../utils/util.js";
 import { MassCardController } from "../controller/controller.js";
+import './menu-item';
+import { ControlSelectMenuElement } from "../const/elements.js";
 
-class MassMenuButton extends LitElement {
+export class MassMenuButton extends LitElement {
   @property({ attribute: false }) public iconPath!: string;
 
   @property({ attribute: false }) private _items?: ListItems;
@@ -26,13 +27,17 @@ class MassMenuButton extends LitElement {
   @property({ type: Boolean, attribute: "dividers" })
   public dividers = false;
 
+  @property({ type: Boolean, attribute: 'use-md' })
+  public useMD = false;
+
+  @query('#menu-select-menu')
+  public menuElement!: ControlSelectMenuElement;
+
   @consume({ context: useExpressiveContext, subscribe: true })
   private useExpressive!: boolean;
 
   @consume({ context: controllerContext, subscribe: true })
   private controller!: MassCardController;
-
-  public onSelectAction!: TargetValEvent;
 
   @state() private _selectedItem!: string;
   private _initialSelection?: string;
@@ -59,13 +64,8 @@ class MassMenuButton extends LitElement {
     return this._items ?? [];
   }
 
-  private onSelect = (ev: TargetValEventData) => {
-    const val = ev.target.value;
-    if (val == "") {
-      return;
-    }
-    this._selectedItem = ev.target.value;
-    this.onSelectAction(ev);
+  private onSelect = () => {
+    this.menuElement.menuOpen = false;
   };
 
   protected renderMenuItems(): TemplateResult | TemplateResult[] {
@@ -77,26 +77,15 @@ class MassMenuButton extends LitElement {
       (item, idx) => {
         const use_dividers = idx < ct - 1 && this.dividers;
         return html`
-          <ha-list-item
-            class="menu-list-item ${this._selectedItem == item.option
-              ? `selected-item`
-              : `inactive-item`}${this.useExpressive ? `-expressive` : ``}"
-            part="menu-list-item"
-            .value="${item.option}"
-            .graphic=${item.icon}
-          >
-            <ha-svg-icon
-              class="menu-list-item-svg ${this.useExpressive
-                ? `svg-expressive`
-                : ``}"
-              part="menu-list-item-svg"
-              slot="graphic"
-              .path=${item.icon}
-            ></ha-svg-icon>
-            ${item.title}
-          </ha-list-item>
-          ${use_dividers ? html`<div class = "divider"></div>` : html``}
-        `;
+          <mpc-menu-item
+            class="menu-items"
+            ?divider=${use_dividers}
+            ?expressive=${this.useExpressive}
+            ?selected=${this._selectedItem == item.option}
+            .menuItem=${item}
+            ?use-md=${this.useMD}
+          ></mpc-menu-item>
+        `
       }
     );
   }
@@ -111,8 +100,8 @@ class MassMenuButton extends LitElement {
           class="${expressive_class} ${vibrant_class}"
           part="menu-select-menu"
           naturalMenuWidth
+          @menu-item-selected=${this.onSelect}
           ?fixedMenuPosition=${this.fixedMenuPosition}
-          @selected=${this.onSelect}
         >
           <ha-svg-icon
             slot="icon"

@@ -31,6 +31,19 @@ export enum Thumbnail {
   RADIO = "radio",
 }
 
+export interface ListImageData {
+  url: string;
+  fallback: string;
+}
+
+export interface ListItemData {
+  option: string;
+  icon: string;
+  image?: ListImageData;
+  title: string;
+}
+export type ListItems = ListItemData[];
+
 export enum VibrateDuration {
   CLICK = 5,
   VERY_SHORT = 25,

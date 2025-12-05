@@ -24,6 +24,7 @@ import PlayerActions from "../actions/player-actions";
 import {
   ExtendedHass,
   ExtendedHassEntity,
+  ListItemData,
   MediaTypes,
   Thumbnail,
 } from "../const/common";
@@ -42,7 +43,7 @@ import {
   IconsContext,
   musicPlayerConfigContext,
 } from "../const/context";
-import { ListItemData, MediaLibraryItem } from "../const/media-browser";
+import { MediaLibraryItem } from "../const/media-browser";
 import { ForceUpdatePlayerDataEvent, PlayerData, PLAYLIST_DIALOG_MAX_ITEMS, PlaylistDialogItem } from "../const/music-player";
 
 import styles from "../styles/music-player";
@@ -54,7 +55,7 @@ import { Config } from "../config/config.js";
 import { Icons } from "../const/icons.js";
 import { isActive, jsonMatch, playerHasUpdated } from "../utils/util.js";
 import { MassCardController } from "../controller/controller.js";
-import { DetailValEventData, JoinUnjoinEventData, TargetValEventData } from "../const/events.js";
+import { DetailValEventData, JoinUnjoinEventData, MenuButtonEventData } from "../const/events.js";
 import { asyncImageURLWithFallback } from "../utils/thumbnails.js";
 import { DialogElement } from "../const/elements.js";
 
@@ -287,15 +288,14 @@ class MusicPlayerCard extends LitElement {
       @typescript-eslint/no-unsafe-assignment
     */
   };
-  private onPlayerSelect = (ev: TargetValEventData) => {
+  private onPlayerSelect = (ev: MenuButtonEventData) => {
     ev.stopPropagation();
-    const target = ev.target;
-    const player = target.value;
+    const target = ev.detail;
+    const player = target.option;
     if (!player.length) {
       return;
     }
     this.selectedPlayerService(player);
-    target.value = "";
   };
   private onUnjoinSelect = (ev) => {
     const e = ev as JoinUnjoinEventData;
@@ -549,14 +549,16 @@ class MusicPlayerCard extends LitElement {
   }
   protected renderPlayerItems() {
     return this.playerEntities.map((item) => {
-      const name =
-        item.name.length > 0
-          ? item.name
-          : this.hass.states[item.entity_id].attributes.friendly_name;
+    const ent = this.hass.states[item.entity_id];
+    const name = item.name.length > 0 ? item.name : ent?.attributes?.friendly_name ?? `Missing- ${item.entity_id}`;
       const r: ListItemData = {
         option: item.entity_id,
         icon: this.Icons.SPEAKER,
         title: name ?? item.name,
+        image: {
+          url: ent?.attributes?.entity_picture_local ?? ``,
+          fallback: ent?.attributes?.entity_picture ?? ``
+        }
       };
       return r;
     });
@@ -598,10 +600,11 @@ class MusicPlayerCard extends LitElement {
             ? `menu-header-expressive`
             : ``}"
           .iconPath=${this.Icons.SPEAKER}
-          .onSelectAction=${this.onPlayerSelect}
           .initialSelection=${this.activeEntity.entity_id}
           .items=${this.renderPlayerItems()}
+          @menu-item-selected=${this.onPlayerSelect}
           dividers
+          use-md
         ></mass-menu-button>
       </span>
     `;

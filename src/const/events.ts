@@ -31,3 +31,11 @@ export interface JoinUnjoinEventData extends Omit<Event, "target"> {
     entity: string;
   }
 }
+
+export interface MenuButtonEventData extends Omit<CustomEvent, "detail"> {
+  detail: {
+    option: string,
+  },
+}
+
+export type MenuButtonEvent = (ev: MenuButtonEventData) => void;
