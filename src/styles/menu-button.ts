@@ -4,20 +4,11 @@ export default css`
     --mass-menu-background-color-expressive: var(--md-sys-color-surface-container-low);
     --mass-menu-text-color-expressive: var(--md-sys-color-on-surface);
     --mass-menu-icon-color-expressive: var(--md-sys-color-on-surface-variant);
-    --mass-menu-item-active-color-expressive: var(--md-sys-color-secondary-container);
-    --mass-menu-item-active-text-color-expressive: var(--md-sys-color-on-secondary-container);
-    --mass-menu-item-active-icon-color-expressive: var(--md-sys-color-on-surface);
 
     
     --mass-menu-background-color-expressive-vibrant: var(--md-sys-color-tertiary-container);
     --mass-menu-text-color-expressive-vibrant: var(--md-sys-color-on-tertiary-container);
     --mass-menu-icon-color-expressive-vibrant: var(--md-sys-color-on-tertiary-container);
-
-    --mass-menu-item-active-color-expressive-vibrant: var(--md-sys-color-tertiary);
-    --mass-menu-item-active-text-color-expressive-vibrant: var(--md-sys-color-on-tertiary);
-    --mass-menu-item-active-icon-color-expressive-vibrant: var(--md-sys-color-on-tertiary);
-
-    --mdc-list-side-padding-left: var(--menu-item-padding-left);
   }
   .divider {
     margin-top: 2px;
@@ -31,10 +22,16 @@ export default css`
     margin-left: 24px;
     margin-right: 24px;
   }
-  ha-list-item:first-of-type {
+  mpc-menu-item {
+    height: 100%;
+    width: 100%;
+    display: block;
+    border: none;
+  }
+  mpc-menu-item:first-of-type {
     margin-top: 10px
   }
-  ha-list-item:last-of-type {
+  mpc-menu-item:last-of-type {
     margin-bottom: 10px
   }
   .menu-expressive {
@@ -49,12 +46,6 @@ export default css`
     --mdc-theme-text-icon-on-background: var(--mass-menu-icon-color-expressive-vibrant);
     --mdc-theme-surface: var(--mass-menu-background-color-expressive-vibrant);
   }
-  .menu-expressive.vibrant .selected-item-expressive {
-    --mdc-theme-text-icon-on-background: var(--mass-menu-item-active-icon-color-expressive-vibrant);
-    --mdc-theme-text-primary-on-background: var(--mass-menu-item-active-text-color-expressive-vibrant);
-    background-color: var(--mass-menu-item-active-color-expressive-vibrant);
-
-  }
   .svg-menu {
     color: var(--md-sys-color-primary);
   }
@@ -66,23 +57,13 @@ export default css`
     --md-ripple-hover-color: var(--md-sys-color-on-surface);
     --md-ripple-pressed-color: var(--md-sys-color-on-surface);
   }
-  .selected-item {
-    --mdc-theme-text-icon-on-background: var(--mdc-theme-on-primary);
-    --mdc-theme-text-primary-on-background: var(--mdc-theme-on-primary);
-    background-color: var(--mdc-theme-primary);
-  }
-  .selected-item-expressive {
-    --mdc-theme-text-icon-on-background: var(--mass-menu-item-active-icon-color-expressive);
-    --mdc-theme-text-primary-on-background: var(--mass-menu-item-active-text-color-expressive);
-    background-color: var(--mass-menu-item-active-color-expressive);
-    border-radius: var(--default-border-radius);
-    --md-ripple-hover-color: var(--md-sys-color-on-surface);
-    --md-ripple-pressed-color: var(--md-sys-color-on-surface);
-  }
   .svg-expressive {
     margin-left: 14px;
   }
   .svg-menu-expressive {
     color: var(--md-sys-color-on-secondary-container);
+  }
+  .title-md, .title, .menu-list-item-image, .menu-list-item-svg {
+    touch-action: none;
   }
 `;
