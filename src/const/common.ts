@@ -30,6 +30,12 @@ export enum Thumbnail {
   PLAYLIST = "playlist",
   RADIO = "radio",
 }
+export interface ListItemData {
+  option: string;
+  icon: string;
+  title: string;
+}
+export type ListItems = ListItemData[];
 
 export enum VibrateDuration {
   CLICK = 5,

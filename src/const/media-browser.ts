@@ -1,7 +1,7 @@
 import { TemplateResult } from "lit";
 
 import { EnqueueOptions } from "./actions";
-import { Thumbnail, MediaTypes, ExtendedHass } from "./common";
+import { Thumbnail, MediaTypes, ExtendedHass, ListItems } from "./common";
 import { Icons } from "./icons.js";
 import { getTranslation } from "../utils/translations.js";
 import { MediaBrowserConfig } from "../config/media-browser.js";
@@ -70,19 +70,12 @@ export const MediaTypeThumbnails = {
   radio: Thumbnail.RADIO,
 };
 
-export interface ListItemData {
-  option: string;
-  icon: string;
-  title: string;
-}
-
 export type RecommendationItem = recommendationItem;
 export type RecommendationItems = recommendationItems;
 export type RecommendationSection = recommendationSection;
 
 export type RecommendationResponse = getRecommendationsServiceResponse;
 
-export type ListItems = ListItemData[];
 export function getEnqueueButtons(icons: Icons, hass: ExtendedHass): ListItems {
   return [
     {

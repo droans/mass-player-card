@@ -8,7 +8,7 @@ import {
 import { property, state } from "lit/decorators.js";
 
 import { TargetValEvent, TargetValEventData } from "../const/events";
-import { ListItems } from "../const/media-browser";
+import { ListItems } from "../const/common";
 import { consume } from "@lit/context";
 import { controllerContext, useExpressiveContext } from "../const/context.js";
 import styles from "../styles/menu-button";
