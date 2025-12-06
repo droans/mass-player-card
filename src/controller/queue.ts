@@ -25,7 +25,6 @@ export class QueueController {
   private _currentQueueItem!: ContextProvider<typeof currentQueueItemContext>;
   private _nextQueueItem!: ContextProvider<typeof nextQueueItemContext>;
   private _previousQueueItem!: ContextProvider<typeof previousQueueItemContext>;
-  private _currentItem!: QueueItem;
   private _hass!: ExtendedHass;
   private _activeMediaPlayer!: ExtendedHassEntity;
   private _config!: Config;
