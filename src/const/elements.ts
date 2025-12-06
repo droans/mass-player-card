@@ -2,6 +2,9 @@ import { LitElement } from "lit";
 
 export interface WaAnimation extends LitElement {
   play: boolean;
+  keyframes?: Keyframe[],
+  duration?: number,
+  iterations?: number;
   cancel?: () => void;
 }
 
