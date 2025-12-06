@@ -291,7 +291,7 @@ export class QueueController {
       return;
     }
     const new_idx = this.getIndex(queue_item_id);
-    if (!new_idx) return;
+    if (!new_idx || !this.queue[new_idx]) return;
     this.queue[new_idx].playing = true;
     const cur_idx = this.queue.findIndex((i) => i.playing);
     this.queue[cur_idx].playing = false;
