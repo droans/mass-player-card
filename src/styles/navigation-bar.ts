@@ -9,7 +9,9 @@ export default css`
   a.active-expressive {
     box-shadow: var(--md-sys-elevation-level2);
   }
-
+  :is(nav.tabbed>a,.tabs>a):is(:hover)::after {
+    opacity: 0 !important;
+  }
   .action-button-svg {
     --icon-primary-color: var(--tab-active-icon-color);
     height: var(--tab-icon-height);
