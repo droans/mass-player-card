@@ -101,8 +101,8 @@ function generateImageElement(
 ): HTMLImageElement {
   const elem = document.createElement("img");
   const def = getThumbnail(hass, defaultImage);
+  elem.crossOrigin = "anonymous";
   elem.src = img;
-  elem.crossOrigin = "Anonymous";
   elem.onerror = () => {
     elem.src = def;
   };
@@ -125,13 +125,16 @@ export async function applyExpressiveSchemeFromImage(
   scheme: ExpressiveScheme,
   elem: HTMLElement,
   defaultImage: Thumbnail = Thumbnail.CLEFT,
-): Promise<DynamicScheme> {
+): Promise<DynamicScheme | undefined> {
   const schemeResult = await generateExpressiveSchemeFromImage(
     img,
     hass,
     scheme,
     defaultImage,
   );
+  if (!schemeResult) {
+    return
+  }
   applyExpressiveScheme(schemeResult, elem);
   return schemeResult;
 }
@@ -152,7 +155,7 @@ export async function generateExpressiveSchemeFromImage(
   hass: ExtendedHass,
   scheme: ExpressiveScheme,
   defaultImage: Thumbnail = Thumbnail.CLEFT,
-): Promise<DynamicScheme> {
+): Promise<DynamicScheme | undefined> {
   const elem = generateImageElement(img, hass, defaultImage);
   const darkMode = hass.themes.darkMode;
   return generateExpressiveSchemeFromImageElement(elem, scheme, darkMode);
@@ -160,16 +163,19 @@ export async function generateExpressiveSchemeFromImage(
 
 async function generateExpressiveSourceColorForImageElement(
   elem: HTMLImageElement,
-) {
-  return await sourceColorFromImage(elem);
+): Promise<number | undefined> {
+    return await sourceColorFromImage(elem);
 }
 
 export async function generateExpressiveSchemeFromImageElement(
   elem: HTMLImageElement,
   scheme: ExpressiveScheme,
   darkMode: boolean,
-): Promise<DynamicScheme> {
+): Promise<DynamicScheme | undefined> {
   const col = await generateExpressiveSourceColorForImageElement(elem);
+  if (!col) {
+    return
+  }
   return generateExpressiveSchemeFromColor(col, scheme, darkMode);
 }
 
