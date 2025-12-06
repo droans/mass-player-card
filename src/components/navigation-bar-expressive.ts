@@ -18,6 +18,7 @@ import { Config } from "../config/config";
 import { MassCardController } from "../controller/controller";
 import { MediaBrowser } from "../sections/media-browser";
 import { Icons } from "../const/icons";
+import { WaAnimation } from "../const/elements";
 
 class MassNavBar extends LitElement {
   private _controller!: MassCardController;
@@ -29,8 +30,10 @@ class MassNavBar extends LitElement {
   @query('#tab-media-browser') browserTab?: HTMLAnchorElement;
   @query('#tab-players') playersTab?: HTMLAnchorElement;
   @query('#tab-indicator') tabIndicator!: HTMLDivElement;
+  @query('#animation') animationElement!: WaAnimation;
   @query('#navigation') navbar!: HTMLDivElement;
   private animationLength = 350;
+  private animating = false;
 
   @consume({ context: activeSectionContext, subscribe: true })
   @state()
@@ -89,7 +92,10 @@ class MassNavBar extends LitElement {
     }
     return elems[section];
   }
-  private animateBounceLeft(to_element: HTMLAnchorElement): Keyframe {
+  private animateBounceLeft(from_element: HTMLAnchorElement, to_element: HTMLAnchorElement): Keyframe {
+    const from_left = from_element.offsetLeft;
+    const from_width = from_element.offsetWidth;
+
     const to_left = to_element.offsetLeft;
     const to_width = to_element.offsetWidth;
     
@@ -97,13 +103,18 @@ class MassNavBar extends LitElement {
 
     const bounce_left = Math.max(0, to_left - bounce_move);
     const bounce_width = bounce_left > 0 ? to_width : to_width - (to_left + bounce_move)
+    const translate_x = bounce_left - from_left;
+    const scale_x = bounce_width / from_width;
+
     return {
-      left: `${bounce_left.toString()}px`,
-      width: `${bounce_width.toString()}px`,
+      transform: `translateX(${translate_x.toString()}px) scaleX(${scale_x.toString()})`,
       offset: 0.8,
     }
   }
-  private animateBounceRight(to_element: HTMLAnchorElement): Keyframe {
+  private animateBounceRight(from_element: HTMLAnchorElement, to_element: HTMLAnchorElement): Keyframe {
+    const from_left = from_element.offsetLeft;
+    const from_width = from_element.offsetWidth;
+
     const to_left = to_element.offsetLeft;
     const to_width = to_element.offsetWidth;
     
@@ -113,13 +124,15 @@ class MassNavBar extends LitElement {
     
     const bounce_left = to_left + bounce_move;
     const bounce_width = to_elem_x_end >= navbarWidth ? navbarWidth - bounce_left : to_width;
+    const translate_x = bounce_left - from_left;
+    const scale_x = bounce_width / from_width;
     return {
-      left: `${bounce_left.toString()}px`,
-      width: `${bounce_width.toString()}px`,
+      transform: `translateX(${translate_x.toString()}px) scaleX(${scale_x.toString()})`,
       offset: 0.8,
     }
   }
   private animateTabChange(from_section: Sections, to_section: Sections) {
+    this.animating = true;
     if (from_section == to_section) {
       return;
     }
@@ -132,31 +145,30 @@ class MassNavBar extends LitElement {
     const from_left = from_elem.offsetLeft;
     const to_width = to_elem.offsetWidth;
     const to_left = to_elem.offsetLeft;
-    const bounce = from_left - to_left > 0 ? this.animateBounceLeft(to_elem) : this.animateBounceRight(to_elem)
+    const bounce = (from_left - to_left > 0) 
+      ? this.animateBounceLeft(from_elem, to_elem) 
+      : this.animateBounceRight(from_elem, to_elem)
+    
+    const translate_x = to_left - from_left;
+    const scale_x = to_width / from_width;
+    
     const _keyframes = [
-      {
-        left: `${from_left.toString()}px`,
-        width: `${from_width.toString()}px`
-      }, // from
       bounce,
       {
-        left: `${to_left.toString()}px`,
-        width: `${to_width.toString()}px`
-      }, // to
+        transform: `translateX(${translate_x.toString()}px) scaleX(${scale_x.toString()})`,
+      }
     ]
-    const keyframeEffect = new KeyframeEffect(
-      this.tabIndicator,
-      _keyframes,
-      {
-        // keyframe options
-        duration: this.animationLength,
-        // direction: "alternate",
-        // easing: "ease-in-out",
-        iterations: 1,
-      },
-    );
-    const animation = new Animation(keyframeEffect, document.timeline);
-    animation.play();
+    const animation = this.animationElement;
+    animation.keyframes = _keyframes;
+    animation.addEventListener(
+      'wa-finish',
+      () => {
+        this.animating = false;
+        this.tabIndicator.style.left = `${to_left.toString()}px`;
+        this.tabIndicator.style.width = `${to_width.toString()}px`;
+      }
+    )
+    animation.play = true;
   }
 
   protected renderMusicPlayerTab(): TemplateResult {
@@ -191,17 +203,6 @@ class MassNavBar extends LitElement {
     }
     return html``;
   }
-  private renderIndicator(): TemplateResult {
-    const elem = this.getSectionElement(this.active_section);
-    const left = elem ? elem.offsetLeft : 0;
-    const width = elem ? elem.offsetWidth : 113;
-    return html`
-      <div
-        id="tab-indicator"
-        style="left: ${left}px; width: ${width}px"
-      ></div>
-    `
-  }
   private renderTab(section: Sections, icon: string): TemplateResult {
     const active = this.active_section == section;
     return html`
@@ -231,7 +232,6 @@ class MassNavBar extends LitElement {
           />
           ${this.renderMusicPlayerTab()} ${this.renderQueueTab()}
           ${this.renderMediaBrowserTab()} ${this.renderPlayersTab()}
-          ${this.renderIndicator()}
         </nav>
       </div>
     `;
@@ -241,6 +241,22 @@ class MassNavBar extends LitElement {
       return false;
     }
     return _changedProperties.size > 0;
+  }
+  protected firstUpdated(): void {
+    if (!this.tabIndicator) {
+      const indicator = document.createElement('div');
+      indicator.id = 'tab-indicator';
+      const elem = this.getSectionElement(this.active_section);
+      const left = elem?.offsetLeft ?? 0;
+      indicator.style = `left: ${left.toString()}px;`
+
+      const animation = document.createElement('wa-animation') as WaAnimation;
+      animation.id = 'animation'
+      animation.duration = this.animationLength;
+      animation.iterations = 1;
+      animation.appendChild(indicator)
+      this.navbar.appendChild(animation)
+    }
   }
   static get styles(): CSSResultGroup {
     return styles;

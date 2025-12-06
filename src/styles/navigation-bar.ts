@@ -9,7 +9,9 @@ export default css`
   a.active-expressive {
     box-shadow: var(--md-sys-elevation-level2);
   }
-
+  :is(nav.tabbed>a,.tabs>a):is(:hover)::after {
+    opacity: 0 !important;
+  }
   .action-button-svg {
     --icon-primary-color: var(--tab-active-icon-color);
     height: var(--tab-icon-height);
@@ -41,6 +43,9 @@ export default css`
     box-shadow: var(--md-sys-elevation-level2);
     background-color: var(--md-sys-color-secondary-container);
     z-index: 1;
+    will-change: transform;
+    border-radius: 25% / 50%;
+    width: 25%;
   }
   .tabbed {
     --tabbed-elevation: var(--md-sys-elevation-level1);
@@ -52,11 +57,5 @@ export default css`
   }
   .tabbed-expressive {
     --tabbed-background-color: var(--md-sys-color-surface-container) !important;
-  }
-
-  @keyframes move-indicator {
-    to {
-      left: var(--left-pos);
-    }
   }
 `;
