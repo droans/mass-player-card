@@ -77,6 +77,9 @@ export class MassPlayerArtwork extends LitElement {
       return;
     }
     this._queue = queue;
+    if (!this.carouselElement) {
+      return;
+    }
     this.updateActiveSlide();
   }
   public get queue() {
