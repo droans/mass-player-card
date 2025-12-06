@@ -208,7 +208,12 @@ export class MassPlayerArtwork extends LitElement {
     super.connectedCallback();
   }
   protected firstUpdated(): void {
-    this.updateActiveSlide();
+    setTimeout(
+      () => {
+        this.updateActiveSlide();
+      },
+      500
+    )
     this?.carouselElement?.addEventListener('sl-slide-change', this.onSwipe)
   }
   static get styles(): CSSResultGroup {
