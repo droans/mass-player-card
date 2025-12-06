@@ -1,7 +1,7 @@
 import { CSSResultGroup, html, LitElement, TemplateResult } from "lit";
 import styles from '../styles/menu-item';
 import { customElement, property, state } from "lit/decorators.js";
-import { ListImageData, ListItemData } from "../const/common.js";
+import { ListImageData, ListItemData } from "../const/types";
 
 @customElement('mpc-menu-item')
 export class MassMenuItem extends LitElement {

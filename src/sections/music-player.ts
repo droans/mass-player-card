@@ -22,12 +22,9 @@ import "../components/volume-slider";
 import PlayerActions from "../actions/player-actions";
 
 import {
-  ExtendedHass,
-  ExtendedHassEntity,
-  ListItemData,
   MediaTypes,
   Thumbnail,
-} from "../const/common";
+} from "../const/enums";
 import {
   activeEntityConfContext,
   activeMediaPlayerContext,
@@ -43,21 +40,21 @@ import {
   IconsContext,
   musicPlayerConfigContext,
 } from "../const/context";
-import { MediaLibraryItem } from "../const/media-browser";
-import { PlayerData, PLAYLIST_DIALOG_MAX_ITEMS, PlaylistDialogItem } from "../const/music-player";
+import { ExtendedHass, ExtendedHassEntity, ListItemData, MediaLibraryItem, PlayerData, PlaylistDialogItem } from "../const/types";
+import { PLAYLIST_DIALOG_MAX_ITEMS } from "../const/music-player";
 
 import styles from "../styles/music-player";
 
 import { PlayerSelectedService } from "../const/actions";
 import { ArtworkSize, PlayerConfig } from "../config/player";
 import { ActivePlayerController } from "../controller/active-player";
-import { Config } from "../config/config.js";
-import { Icons } from "../const/icons.js";
-import { isActive, jsonMatch, playerHasUpdated } from "../utils/util.js";
-import { MassCardController } from "../controller/controller.js";
-import { DetailValEventData, ForceUpdatePlayerDataEvent, JoinUnjoinEventData, MenuButtonEventData } from "../const/events.js";
-import { asyncImageURLWithFallback } from "../utils/thumbnails.js";
-import { DialogElement } from "../const/elements.js";
+import { Config } from "../config/config";
+import { Icons } from "../const/icons";
+import { isActive, jsonMatch, playerHasUpdated } from "../utils/util";
+import { MassCardController } from "../controller/controller";
+import { DetailValEventData, ForceUpdatePlayerDataEvent, JoinUnjoinEventData, MenuButtonEventData } from "../const/events";
+import { asyncImageURLWithFallback } from "../utils/thumbnails";
+import { DialogElement } from "../const/elements";
 
 class MusicPlayerCard extends LitElement {
   @query('#dialog-favorites') favoritesDialog!: DialogElement;

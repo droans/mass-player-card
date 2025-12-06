@@ -17,7 +17,7 @@ import {
   QueueConfigErrors,
 } from "../config/player-queue";
 
-import { ExtendedHass } from "../const/common";
+import { ExtendedHass, QueueItem, QueueItems } from "../const/types";
 import {
   activeEntityConfContext,
   activeEntityIDContext,
@@ -31,16 +31,15 @@ import {
   queueContext,
   queueControllerContext,
 } from "../const/context";
-import { QueueItem, QueueItems } from "../const/player-queue";
 
 import styles from "../styles/player-queue";
-import { Sections } from "../const/card";
-import { ActivePlayerController } from "../controller/active-player.js";
-import { QueueController } from "../controller/queue.js";
-import { jsonMatch } from "../utils/util.js";
-import { getTranslation } from "../utils/translations.js";
-import { Icons } from "../const/icons.js";
-import { WaAnimation } from "../const/elements.js";
+import { Sections } from "../const/enums";
+import { ActivePlayerController } from "../controller/active-player";
+import { QueueController } from "../controller/queue";
+import { jsonMatch } from "../utils/util";
+import { getTranslation } from "../utils/translations";
+import { Icons } from "../const/icons";
+import { WaAnimation } from "../const/elements";
 
 class QueueCard extends LitElement {
   @consume({ context: activePlayerControllerContext })

@@ -1,5 +1,4 @@
 import { ContextProvider } from "@lit/context";
-import { ExtendedHass, ExtendedHassEntity } from "../const/common";
 import {
   activeEntityConfContext,
   activeEntityIDContext,
@@ -13,13 +12,19 @@ import {
   volumeMediaPlayerContext,
 } from "../const/context";
 import { Config, EntityConfig } from "../config/config";
-import { MassGetQueueServiceDataSchema, MassGetQueueServiceResponseSchema, PlayerData } from "../const/music-player";
+import {
+  ExtendedHass,
+  ExtendedHassEntity,
+  MassGetQueueServiceDataSchema,
+  MassGetQueueServiceResponseSchema,
+  PlayerData
+} from "../const/types";
 import { DynamicScheme } from "@material/material-color-utilities";
 import { getGroupVolumeServiceResponse, getGroupVolumeServiceSchema } from "mass-queue-types/packages/mass_queue/actions/get_group_volume";
 import { setGroupVolumeServiceSchema } from "mass-queue-types/packages/mass_queue/actions/set_group_volume";
-import { isActive, jsonMatch, playerHasUpdated } from "../utils/util.js";
-import { applyDefaultExpressiveScheme, applyExpressiveSchemeFromImage } from "../utils/expressive.js";
-import { ArtworkUpdatedEventData } from "../const/events.js";
+import { isActive, jsonMatch, playerHasUpdated } from "../utils/util";
+import { applyDefaultExpressiveScheme, applyExpressiveSchemeFromImage } from "../utils/expressive";
+import { ArtworkUpdatedEventData } from "../const/events";
 
 export class ActivePlayerController {
   private _activeEntityConfig: ContextProvider<typeof activeEntityConfContext>;

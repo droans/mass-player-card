@@ -11,20 +11,18 @@ import {
   musicPlayerConfigContext,
 } from "../const/context";
 import { ActionsController } from "../controller/actions";
-import {
-  PlayerData,
-} from "../const/music-player";
+import { PlayerData } from "../const/types";
 import { Icons } from "../const/icons";
 import { getIteratedRepeatMode } from "../utils/music-player";
-import { RepeatMode } from "../const/common";
-import { jsonMatch } from "../utils/util.js";
+import { RepeatMode } from "../const/enums";
+import { jsonMatch } from "../utils/util";
 import {
   PlayerConfig,
   PlayerControlsHiddenElementsConfig,
   PlayerLayoutConfig,
-} from "../config/player.js";
-import { MassCardController } from "../controller/controller.js";
-import { ForceUpdatePlayerDataEventData } from "../const/events.js";
+} from "../config/player";
+import { MassCardController } from "../controller/controller";
+import { ForceUpdatePlayerDataEventData } from "../const/events";
 
 export class MassPlayerControlsBase extends LitElement {
   protected layoutConfig!: PlayerLayoutConfig;

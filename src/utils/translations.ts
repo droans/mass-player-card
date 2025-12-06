@@ -1,4 +1,4 @@
-import { ExtendedHass } from "../const/common.js";
+import { ExtendedHass } from "../const/types";
 import en from "../translations/en";
 import nl from "../translations/nl";
 import pt from "../translations/pt";

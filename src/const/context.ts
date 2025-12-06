@@ -1,24 +1,20 @@
 import { createContext } from "@lit/context";
 
-import type { ExtendedHass, ExtendedHassEntity } from "./common";
-export type { ExtendedHass, ExtendedHassEntity } from "./common";
+import type { ExtendedHass, ExtendedHassEntity, MediaCardItem, newMediaBrowserItemsConfig, PlayerData, QueueItem, QueueItems } from "./types";
 
 import { Config, type EntityConfig } from "../config/config";
 import { PlayerConfig } from "../config/player";
-import { PlayerData } from "./music-player";
 import { QueueConfig } from "../config/player-queue";
 import { MediaBrowserConfig } from "../config/media-browser";
 import { PlayersConfig } from "../config/players";
-import { Sections } from "./card";
+import { Sections } from "./enums";
 import { ActivePlayerController } from "../controller/active-player";
 import { ActionsController } from "../controller/actions";
 import { MassCardController } from "../controller/controller";
 import { DynamicScheme } from "@material/material-color-utilities";
 import { Icons } from "./icons";
-import { QueueItem, QueueItems } from "./player-queue.js";
-import { QueueController } from "../controller/queue.js";
-import { MediaBrowserController } from "../controller/browser.js";
-import { MediaCardItem, newMediaBrowserItemsConfig } from "./media-browser.js";
+import { QueueController } from "../controller/queue";
+import { MediaBrowserController } from "../controller/browser";
 export type { EntityConfig } from "../config/config";
 
 export const hassContext = createContext<ExtendedHass>(uuid4());

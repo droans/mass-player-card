@@ -7,14 +7,14 @@ import {
 } from "lit";
 import { property, query, state } from "lit/decorators.js";
 
-import { ListItems } from "../const/common";
+import { ListItems } from "../const/types";
 import { consume } from "@lit/context";
-import { controllerContext, useExpressiveContext } from "../const/context.js";
+import { controllerContext, useExpressiveContext } from "../const/context";
 import styles from "../styles/menu-button";
-import { jsonMatch } from "../utils/util.js";
-import { MassCardController } from "../controller/controller.js";
+import { jsonMatch } from "../utils/util";
+import { MassCardController } from "../controller/controller";
 import './menu-item';
-import { ControlSelectMenuElement } from "../const/elements.js";
+import { ControlSelectMenuElement } from "../const/elements";
 
 export class MassMenuButton extends LitElement {
   @property({ attribute: false }) public iconPath!: string;

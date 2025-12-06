@@ -1,7 +1,7 @@
 import { html } from "lit";
 import { PlayerIcon, PlayerIconSize } from "../config/player";
-import { RepeatMode } from "../const/common.js";
-import { Icons } from "../const/icons.js";
+import { RepeatMode } from "../const/enums";
+import { Icons } from "../const/icons";
 
 export function generateControlSlotHtml(icon_style: PlayerIcon) {
   if (icon_style.size == PlayerIconSize.LARGE || !icon_style.label) {

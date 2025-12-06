@@ -18,23 +18,22 @@ import "@shoelace-style/shoelace/dist/components/carousel-item/carousel-item.js"
 import {
   activeMediaPlayerContext,
   controllerContext,
-  ExtendedHass,
-  ExtendedHassEntity,
   hassContext,
   IconsContext,
   musicPlayerConfigContext,
   queueContext
-} from "../const/context.js";
-import { PlayerConfig } from "../config/player.js";
-import { MassCardController } from "../controller/controller.js";
-import { jsonMatch, playerHasUpdated } from "../utils/util.js";
-import { QueueItem, QueueItems } from "../const/player-queue.js";
+} from "../const/context";
+import { PlayerConfig } from "../config/player";
+import { MassCardController } from "../controller/controller";
+import { jsonMatch, playerHasUpdated } from "../utils/util";
+import { ExtendedHass, ExtendedHassEntity, QueueItem, QueueItems } from "../const/types";
 import { SlCarousel } from "@shoelace-style/shoelace";
 import { SLSwipeEvent } from "../const/events";
-import { Thumbnail, VibrationPattern } from "../const/common.js";
-import { getThumbnail } from "../utils/thumbnails.js";
-import { Icons } from "../const/icons.js";
-import styles from "../styles/player-artwork.js";
+import { VibrationPattern } from "../const/common";
+import { getThumbnail } from "../utils/thumbnails";
+import { Icons } from "../const/icons";
+import styles from "../styles/player-artwork";
+import { Thumbnail } from "../const/enums";
 
 @customElement('mpc-artwork')
 export class MassPlayerArtwork extends LitElement {

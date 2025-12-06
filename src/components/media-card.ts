@@ -14,9 +14,8 @@ import "./menu-button";
 import {
   CardEnqueueService,
   CardSelectedService,
-  EnqueueOptions,
 } from "../const/actions";
-import { ExtendedHass, ListItems } from "../const/common";
+import { ExtendedHass, ListItems, MediaCardItem } from "../const/types";
 import {
   activeEntityConfContext,
   activeSectionContext,
@@ -30,7 +29,6 @@ import {
 import {
   getEnqueueButtons,
   getSearchMediaButtons,
-  MediaCardItem,
 } from "../const/media-browser";
 
 import styles from "../styles/media-card";
@@ -47,11 +45,11 @@ import {
   MediaBrowserConfig,
   MediaBrowserHiddenElementsConfig,
 } from "../config/media-browser";
-import { Sections } from "../const/card";
-import { Icons } from "../const/icons.js";
-import { Config } from "../config/config.js";
-import { WaAnimation } from "../const/elements.js";
-import { MenuButtonEventData } from "../const/events.js";
+import { EnqueueOptions, Sections } from "../const/enums";
+import { Icons } from "../const/icons";
+import { Config } from "../config/config";
+import { WaAnimation } from "../const/elements";
+import { MenuButtonEventData } from "../const/events";
 
 class MediaCard extends LitElement {
   @property({ type: Boolean }) queueable = false;

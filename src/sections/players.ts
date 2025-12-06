@@ -14,7 +14,7 @@ import { Config, EntityConfig } from "../config/config";
 import { DEFAULT_PLAYERS_CONFIG, PlayersConfig } from "../config/players";
 
 import { PlayerSelectedService } from "../const/actions";
-import { ExtendedHass, ExtendedHassEntity } from "../const/common";
+import { ExtendedHass, ExtendedHassEntity } from "../const/types";
 import {
   activeEntityConfContext,
   hassContext,
@@ -22,8 +22,8 @@ import {
 } from "../const/context";
 
 import styles from "../styles/player-queue";
-import { getTranslation } from "../utils/translations.js";
-import { WaAnimation } from "../const/elements.js";
+import { getTranslation } from "../utils/translations";
+import { WaAnimation } from "../const/elements";
 
 class PlayersCard extends LitElement {
   @property({ attribute: false }) private entities: ExtendedHassEntity[] = [];

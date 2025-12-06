@@ -10,14 +10,14 @@ import {
   activeSectionContext,
   controllerContext,
   IconsContext,
-} from "../const/context.js";
+} from "../const/context";
 import { consume } from "@lit/context";
 import { state } from "lit/decorators.js";
-import { Sections } from "../const/card.js";
-import { Config } from "../config/config.js";
-import { MassCardController } from "../controller/controller.js";
-import { MediaBrowser } from "../sections/media-browser.js";
-import { Icons } from "../const/icons.js";
+import { Sections } from "../const/enums";
+import { Config } from "../config/config";
+import { MassCardController } from "../controller/controller";
+import { MediaBrowser } from "../sections/media-browser";
+import { Icons } from "../const/icons";
 
 class MassNavBar extends LitElement {
   private _controller!: MassCardController;

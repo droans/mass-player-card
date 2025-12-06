@@ -1,6 +1,5 @@
 /* eslint-disable no-console */
-import { QueueItems } from "../const/player-queue";
-import { ExtendedHass } from "../const/common";
+import { ExtendedHass, QueueItems } from "../const/types";
 import {
   getQueueItemsServiceResponse,
   getQueueItemsServiceSchema,
