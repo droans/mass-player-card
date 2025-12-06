@@ -30,7 +30,7 @@ class MassNavBar extends LitElement {
   @query('#tab-players') playersTab?: HTMLAnchorElement;
   @query('#tab-indicator') tabIndicator!: HTMLDivElement;
   @query('#navigation') navbar!: HTMLDivElement;
-  private animationLength = 250;
+  private animationLength = 350;
 
   @consume({ context: activeSectionContext, subscribe: true })
   @state()
