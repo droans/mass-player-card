@@ -1,11 +1,12 @@
 import { css } from "lit";
 
 export default css`
-  #artwork {
+  .artwork {
     border-radius: var(--artwork-border-radius);
     max-width: 100%;
     justify-self: center;
     display: block;
+    touch-action: none;
   }
   #asleep {
     height: 100%;

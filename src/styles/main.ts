@@ -164,7 +164,7 @@ export default css`
       --mass-player-card-row-icon-button-height,
       1.5rem
     );
-    --menu-item-padding-left: var(--mass-player-card-menu-item-padding-left, 12px);
+    --menu-item-padding-left: var(--mass-player-card-menu-item-padding-left, 20px);
 
     --md-sys-elevation-level0: none;
     --md-sys-elevation-level1: rgba(from #000000 r g b / 0.2) 0px 2px 1px -1px, rgba(from #000000 r g b / 0.14) 0px 1px 1px 0px, rgba(from #000000 r g b / 0.12) 0px 1px 3px 0px;

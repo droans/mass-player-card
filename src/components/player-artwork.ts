@@ -148,8 +148,7 @@ export class MassPlayerArtwork extends LitElement {
       <sl-carousel-item 
       >
         <img
-          id="artwork"
-          class="${size}"
+          class="artwork ${size}"
           src="${img}"
           onerror="console.log('Rendering fallback for ${item.media_title} as image is unavailable'); this.src='${fallback}';"
         > 
