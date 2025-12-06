@@ -8,7 +8,6 @@ import {
   queueContext,
 } from "../const/context.js";
 import {
-  MassQueueEvent,
   MAX_GET_QUEUE_FAILURES,
   QueueItem,
   QueueItems,
@@ -18,6 +17,7 @@ import { Config } from "../config/config.js";
 import QueueActions from "../actions/queue-actions.js";
 import { isActive, jsonMatch, playerHasUpdated } from "../utils/util.js";
 import { SubscriptionUnsubscribe } from "../const/common.js";
+import { MassQueueEvent } from "../const/events.js";
 
 export class QueueController {
   public _host!: HTMLElement;
@@ -25,7 +25,6 @@ export class QueueController {
   private _currentQueueItem!: ContextProvider<typeof currentQueueItemContext>;
   private _nextQueueItem!: ContextProvider<typeof nextQueueItemContext>;
   private _previousQueueItem!: ContextProvider<typeof previousQueueItemContext>;
-  private _currentItem!: QueueItem;
   private _hass!: ExtendedHass;
   private _activeMediaPlayer!: ExtendedHassEntity;
   private _config!: Config;

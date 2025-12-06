@@ -30,7 +30,7 @@ import { MassCardController } from "../controller/controller.js";
 import { jsonMatch, playerHasUpdated } from "../utils/util.js";
 import { QueueItem, QueueItems } from "../const/player-queue.js";
 import { SlCarousel } from "@shoelace-style/shoelace";
-import { SLSwipeEvent } from "../const/music-player.js";
+import { SLSwipeEvent } from "../const/events";
 import { Thumbnail, VibrationPattern } from "../const/common.js";
 import { getThumbnail } from "../utils/thumbnails.js";
 import { Icons } from "../const/icons.js";
@@ -148,8 +148,7 @@ export class MassPlayerArtwork extends LitElement {
       <sl-carousel-item 
       >
         <img
-          id="artwork"
-          class="${size}"
+          class="artwork ${size}"
           src="${img}"
           onerror="console.log('Rendering fallback for ${item.media_title} as image is unavailable'); this.src='${fallback}';"
         > 

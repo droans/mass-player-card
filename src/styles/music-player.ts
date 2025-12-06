@@ -284,6 +284,19 @@ export default css`
   #grouped-players-menu {
     --control-select-menu-height: 2.5em;
   }
+  
+  .players-player-select-item {
+    width: 320px;
+  }
+  .players-player-item-icon, .players-player-item-image {
+    height: 2em;
+    width: 2em;
+    color: var(--md-sys-color-primary);
+  }
+  #players-select-menu,
+  #grouped-players-menu {
+    --control-select-menu-height: 2.5em;
+  }
 
   .player-track-artist {
     font-size: 1em;
