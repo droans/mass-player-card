@@ -128,6 +128,10 @@ export class MassPlayerArtwork extends LitElement {
     }
     navigator.vibrate(VibrationPattern.Player.ACTION_SWIPE);
     const idx = ev.detail.index;
+    if (Math.abs(idx - (this?.currentIdx ?? 0)) > 1)  {
+      this.updateActiveSlide()
+      return;
+    }
     const item = this.queue[idx];
     const media_content_id = item.media_content_id;
     if (media_content_id == this.activePlayer.attributes.media_content_id) {
