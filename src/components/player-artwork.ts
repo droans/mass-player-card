@@ -128,11 +128,12 @@ export class MassPlayerArtwork extends LitElement {
     }
     navigator.vibrate(VibrationPattern.Player.ACTION_SWIPE);
     const idx = ev.detail.index;
-    const queue_item_id = this.queue[idx].queue_item_id;
-    if (queue_item_id == this.activePlayer.attributes.media_content_id) {
+    const item = this.queue[idx];
+    const media_content_id = item.media_content_id;
+    if (media_content_id == this.activePlayer.attributes.media_content_id) {
       return;
     }
-    void this.controller.Queue.playQueueItem(queue_item_id);
+    void this.controller.Queue.playQueueItem(item.queue_item_id);
   }
 
   protected renderCarouselItem(item: QueueItem, fallback: string = Thumbnail.CLEFT): TemplateResult {
