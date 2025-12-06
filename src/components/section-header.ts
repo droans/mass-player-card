@@ -2,7 +2,7 @@ import { html, LitElement, PropertyValues } from "lit";
 
 import styles from "../styles/section-header";
 import { consume } from "@lit/context";
-import { useExpressiveContext } from "../const/context.js";
+import { useExpressiveContext } from "../const/context";
 
 class MassSectionHeader extends LitElement {
   @consume({ context: useExpressiveContext, subscribe: true })

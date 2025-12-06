@@ -1,9 +1,4 @@
-export enum Sections {
-  QUEUE = "queue",
-  MUSIC_PLAYER = "music-player",
-  PLAYERS = "players",
-  MEDIA_BROWSER = "media-browser",
-}
+import { Sections } from "./enums";
 
 export const DEFAULT_SECTION_PRIORITY = [
   Sections.MUSIC_PLAYER,

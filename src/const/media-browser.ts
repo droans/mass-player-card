@@ -1,9 +1,9 @@
-import { EnqueueOptions } from "./actions";
-import { Thumbnail, MediaTypes } from "./common";
-import { Icons } from "./icons.js";
-import { getTranslation } from "../utils/translations.js";
-import { MediaBrowserConfig } from "../config/media-browser.js";
-import { ExtendedHass, ListItems } from "./types.js";
+import { Thumbnail, MediaTypes } from "./enums";
+import { Icons } from "./icons";
+import { getTranslation } from "../utils/translations";
+import { MediaBrowserConfig } from "../config/media-browser";
+import { ExtendedHass, ListItems } from "./types";
+import { EnqueueOptions } from "./enums";
 
 export const MediaTypeThumbnails = {
   album: Thumbnail.DISC,

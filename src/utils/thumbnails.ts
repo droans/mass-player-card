@@ -1,12 +1,12 @@
+import { MediaTypes } from "mass-queue-types/packages/music_assistant/types.js";
 import {
   DarkModeThumbnails,
-  Thumbnail,
   LightModeThumbnails,
-  MediaTypes,
 } from "../const/common";
-import { Icons } from "../const/icons.js";
-import { getSearchMediaButtons } from "../const/media-browser.js";
-import { ExtendedHass } from "../const/types.js";
+import { Thumbnail } from "../const/enums";
+import { Icons } from "../const/icons";
+import { getSearchMediaButtons } from "../const/media-browser";
+import { ExtendedHass } from "../const/types";
 
 export interface ImageURLWithFallback {
   image_url: string;

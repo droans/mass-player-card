@@ -8,8 +8,8 @@ import {
   playerQueueConfigContext,
   playersConfigContext,
 } from "../const/context";
-import { getIcons, Icons } from "../const/icons.js";
-import { jsonMatch } from "../utils/util.js";
+import { getIcons, Icons } from "../const/icons";
+import { jsonMatch } from "../utils/util";
 
 export class MassCardConfigController {
   private _config!: Config;

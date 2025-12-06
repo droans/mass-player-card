@@ -22,8 +22,8 @@ import {
 } from "../const/context";
 
 import styles from "../styles/player-queue";
-import { getTranslation } from "../utils/translations.js";
-import { WaAnimation } from "../const/elements.js";
+import { getTranslation } from "../utils/translations";
+import { WaAnimation } from "../const/elements";
 
 class PlayersCard extends LitElement {
   @property({ attribute: false }) private entities: ExtendedHassEntity[] = [];

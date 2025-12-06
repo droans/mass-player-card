@@ -8,8 +8,8 @@ import {
 } from "lit";
 import {
   MediaTypes,
-} from "../const/common.js";
-import { MediaBrowserConfig } from "../config/media-browser.js";
+} from "../const/enums";
+import { MediaBrowserConfig } from "../config/media-browser";
 import { customElement, property, query, state } from "lit/decorators.js";
 import {
   DEFAULT_ACTIVE_SECTION,
@@ -19,12 +19,12 @@ import {
   getSearchMediaButtons,
   SEARCH_TERM_MIN_LENGTH,
   SEARCH_UPDATE_DELAY,
-} from "../const/media-browser.js";
+} from "../const/media-browser";
 import { consume, provide } from "@lit/context";
 
-import "../components/media-browser-cards.js";
-import "../components/section-header.js";
-import styles from "../styles/media-browser.js";
+import "../components/media-browser-cards";
+import "../components/section-header";
+import styles from "../styles/media-browser";
 
 import {
   activeEntityConfContext,
@@ -36,17 +36,17 @@ import {
   mediaBrowserCardsContext,
   mediaBrowserConfigContext,
   useExpressiveContext,
-} from "../const/context.js";
-import { Icons } from "../const/icons.js";
-import { MediaBrowserController } from "../controller/browser.js";
-import BrowserActions from "../actions/browser-actions.js";
-import { EnqueueOptions } from "../const/actions.js";
-import { getMediaTypeSvg } from "../utils/thumbnails.js";
-import { jsonMatch } from "../utils/util.js";
-import { getTranslation } from "../utils/translations.js";
-import { CardsUpdatedEvent, MenuButtonEventData, TargetValEventData } from "../const/events.js";
-import { MediaBrowserCards } from "../components/media-browser-cards.js";
-import { ExtendedHass, MediaCardData, MediaCardItem, newMediaBrowserItemsConfig } from "../const/types.js";
+} from "../const/context";
+import { Icons } from "../const/icons";
+import { MediaBrowserController } from "../controller/browser";
+import BrowserActions from "../actions/browser-actions";
+import { EnqueueOptions } from "../const/enums";
+import { getMediaTypeSvg } from "../utils/thumbnails";
+import { jsonMatch } from "../utils/util";
+import { getTranslation } from "../utils/translations";
+import { CardsUpdatedEvent, MenuButtonEventData, TargetValEventData } from "../const/events";
+import { MediaBrowserCards } from "../components/media-browser-cards";
+import { ExtendedHass, MediaCardData, MediaCardItem, newMediaBrowserItemsConfig } from "../const/types";
 
 @customElement(`mass-media-browser`)
 export class MediaBrowser extends LitElement {

@@ -1,4 +1,4 @@
-import { hiddenElementsConfigItem } from "../utils/config.js";
+import { hiddenElementsConfigItem } from "../utils/config";
 import { Config } from "./config";
 
 export interface QueueConfig {

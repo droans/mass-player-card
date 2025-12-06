@@ -11,12 +11,12 @@ import {
 } from "../const/context";
 import { MassCardConfigController } from "./config";
 import { ActivePlayerController } from "./active-player";
-import { Sections } from "../const/card";
+import { Sections } from "../const/enums";
 import { ActionsController } from "./actions";
-import { QueueController } from "./queue.js";
-import { MediaBrowserController } from "./browser.js";
-import { jsonMatch } from "../utils/util.js";
-import { getTranslation } from "../utils/translations.js";
+import { QueueController } from "./queue";
+import { MediaBrowserController } from "./browser";
+import { jsonMatch } from "../utils/util";
+import { getTranslation } from "../utils/translations";
 
 export class MassCardController {
   private _hass = new ContextProvider(document.body, { context: hassContext });

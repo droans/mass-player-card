@@ -15,10 +15,10 @@ import {
   SchemeVibrant,
   sourceColorFromImage,
 } from "@material/material-color-utilities";
-import { ExpressiveScheme } from "../config/config.js";
-import { Thumbnail } from "../const/common.js";
-import { getThumbnail } from "./thumbnails.js";
-import { ExtendedHass } from "../const/types.js";
+import { ExpressiveScheme } from "../config/config";
+import { Thumbnail } from "../const/enums";
+import { getThumbnail } from "./thumbnails";
+import { ExtendedHass } from "../const/types";
 
 type dynamicSchemeType = new (
   sourceColorHct: Hct,

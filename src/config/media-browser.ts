@@ -1,7 +1,7 @@
 import { mdiCreation, mdiHeart, mdiHistory } from "@mdi/js";
 
 import { Config } from "./config";
-import { hiddenElementsConfigItem } from "../utils/config.js";
+import { hiddenElementsConfigItem } from "../utils/config";
 
 export interface MediaBrowserConfig {
   enabled: boolean;

@@ -1,6 +1,6 @@
 /* eslint-disable no-console */
 import { HassEntity } from "home-assistant-js-websocket";
-import {  RepeatMode } from "../const/common";
+import {  RepeatMode } from "../const/enums";
 import { ExtendedHass, ExtendedHassEntity, QueueItem } from "../const/types";
 import { getQueueItemsServiceResponse, getQueueItemsServiceSchema } from "mass-queue-types/packages/mass_queue/actions/get_queue_items";
 import { getInfoWSResponseSchema, getInfoWSServiceSchema } from "mass-queue-types/packages/mass_queue/ws/get_info"

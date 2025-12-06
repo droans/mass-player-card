@@ -8,7 +8,7 @@ import {
   PlayerTransferService,
   PlayerUnjoinService,
 } from "../const/actions";
-import { Thumbnail, VibrationPattern } from "../const/common";
+import { VibrationPattern } from "../const/common";
 import {
   activeEntityConfContext,
   EntityConfig,
@@ -30,8 +30,9 @@ import {
   PlayersConfig,
   PlayersHiddenElementsConfig,
 } from "../config/players";
-import { Icons } from "../const/icons.js";
-import { ExtendedHass, ExtendedHassEntity } from "../const/types.js";
+import { Icons } from "../const/icons";
+import { ExtendedHass, ExtendedHassEntity } from "../const/types";
+import { Thumbnail } from "../const/enums";
 
 class PlayerRow extends LitElement {
   @property({ type: Boolean }) joined = false;

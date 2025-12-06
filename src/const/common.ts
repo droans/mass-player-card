@@ -1,39 +1,4 @@
-export enum RepeatMode {
-  OFF = "off",
-  ONCE = "one",
-  ALL = "all",
-}
-export enum MediaTypes {
-  ALBUM = "album",
-  ARTIST = "artist",
-  AUDIOBOOK = "audiobook",
-  PLAYLIST = "playlist",
-  PODCAST = "podcast",
-  TRACK = "track",
-  RADIO = "radio",
-}
-
-export enum Thumbnail {
-  BOOK = "book",
-  CLEFT = "cleft",
-  DISC = "disc",
-  HEADPHONES = "headphones",
-  MICROPHONE = "microphone",
-  MICROPHONE_MAGIC = "microphone_magic",
-  PERSON = "person",
-  PLAYLIST = "playlist",
-  RADIO = "radio",
-}
-
-
-export enum VibrateDuration {
-  CLICK = 5,
-  VERY_SHORT = 25,
-  SHORT = 75,
-  MEDIUM = 150,
-  LONG = 300,
-  VERY_LONG = 500,
-}
+import { VibrateDuration } from "./enums";
 
 export const VibrationPattern = {
   Queue: {
@@ -115,12 +80,3 @@ export const LightModeThumbnails: Record<string, string> = {
 };
 
 export const MAX_ACTIVE_LAST_ACTIVE_DURATION = 1800000;
-
-export enum ButtonColorRole {
-  Filled = 'filled',
-  FilledVariant = 'filled-variant',
-  Plain = 'plain',
-  Standard = 'standard',
-  Tonal = 'tonal',
-  Variant = 'variant',
-}

@@ -20,7 +20,7 @@ import "./components/navigation-bar";
 
 import { Config, createConfigForm, createStubConfig } from "./config/config";
 
-import { Sections } from "./const/card";
+import { Sections } from "./const/enums";
 import {
   activeSectionContext,
   configContext,
@@ -34,7 +34,7 @@ import head_styles from "./styles/head";
 
 import { getDefaultSection, jsonMatch } from "./utils/util";
 import { MassCardController } from "./controller/controller";
-import { ExtendedHass } from "./const/types.js";
+import { ExtendedHass } from "./const/types";
 
 const DEV = false;
 

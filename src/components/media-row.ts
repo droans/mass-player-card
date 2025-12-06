@@ -9,7 +9,7 @@ import {
 import { property, state } from "lit/decorators.js";
 
 import { QueueItemSelectedService, QueueService } from "../const/actions";
-import { Thumbnail } from "../const/common";
+import { Thumbnail } from "../const/enums";
 import {
   activeEntityConfContext,
   EntityConfig,
@@ -38,7 +38,7 @@ import {
   PlayerQueueHiddenElementsConfig,
   QueueConfig,
 } from "../config/player-queue";
-import { Icons } from "../const/icons.js";
+import { Icons } from "../const/icons";
 import { queueItem } from "mass-queue-types/packages/mass_queue/actions/get_queue_items.js";
 
 class MediaRow extends LitElement {

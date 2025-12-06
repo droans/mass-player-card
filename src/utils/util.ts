@@ -1,10 +1,11 @@
 import { Config, EntityConfig } from "../config/config";
-import { DEFAULT_SECTION_PRIORITY, Sections } from "../const/card";
+import { DEFAULT_SECTION_PRIORITY } from "../const/card";
 import {
   MAX_ACTIVE_LAST_ACTIVE_DURATION,
-} from "../const/common.js";
-import { MUSIC_ASSISTANT_APP_NAME } from "../const/player-queue.js";
-import { ExtendedHass, ExtendedHassEntity, QueueItem } from "../const/types.js";
+} from "../const/common";
+import { Sections } from "../const/enums";
+import { MUSIC_ASSISTANT_APP_NAME } from "../const/player-queue";
+import { ExtendedHass, ExtendedHassEntity, QueueItem } from "../const/types";
 
 export function testMixedContent(url: string) {
   try {

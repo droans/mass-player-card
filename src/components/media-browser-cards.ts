@@ -13,7 +13,6 @@ import "./media-card";
 import {
   CardEnqueueService,
   CardSelectedService,
-  EnqueueOptions,
 } from "../const/actions";
 import {
   activeMediaBrowserCardsContext,
@@ -23,8 +22,9 @@ import {
 import { ExtendedHass, MediaCardData, MediaCardItem } from "../const/types";
 
 import styles from "../styles/media-browser-cards";
-import { MediaBrowserConfig } from "../config/media-browser.js";
-import { jsonMatch } from "../utils/util.js";
+import { MediaBrowserConfig } from "../config/media-browser";
+import { jsonMatch } from "../utils/util";
+import { EnqueueOptions } from "../const/enums";
 
 export class MediaBrowserCards extends LitElement {
   @state() public code!: TemplateResult;

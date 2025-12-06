@@ -9,7 +9,7 @@ import {
   generateControlSlotHtml,
   getRepeatIcon,
 } from "../utils/music-player";
-import { RepeatMode } from "../const/common";
+import { RepeatMode } from "../const/enums";
 import styles from "../styles/player-controls";
 
 class MassPlayerControls extends MassPlayerControlsBase {

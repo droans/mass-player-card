@@ -8,19 +8,19 @@ import {
 import styles from "../styles/media-progress";
 import { query, state } from "lit/decorators.js";
 import { consume } from "@lit/context";
-import { ActivePlayerController } from "../controller/active-player.js";
+import { ActivePlayerController } from "../controller/active-player";
 import {
   actionsControllerContext,
   activeMediaPlayerContext,
   activePlayerControllerContext,
   activePlayerDataContext,
   controllerContext,
-} from "../const/context.js";
-import { ActionsController } from "../controller/actions.js";
-import { playerHasUpdated } from "../utils/util.js";
+} from "../const/context";
+import { ActionsController } from "../controller/actions";
+import { playerHasUpdated } from "../utils/util";
 import { ExtendedHassEntity, PlayerData } from "../const/types";
-import { secondsToTime } from "../utils/util.js";
-import { MassCardController } from "../controller/controller.js";
+import { secondsToTime } from "../utils/util";
+import { MassCardController } from "../controller/controller";
 class MassPlayerProgressBar extends LitElement {
   @state() private _media_duration!: number;
   @state() private _media_position!: number;
