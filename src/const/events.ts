@@ -1,5 +1,5 @@
 import { SlCarouselItem } from "@shoelace-style/shoelace";
-import { mediaBrowserSectionConfig, newMediaBrowserItemsConfig } from "./media-browser.js";
+import { mediaBrowserSectionConfig, newMediaBrowserItemsConfig } from "./types";
 
 export type TargetValEvent = (ev: TargetValEventData) => void;
 

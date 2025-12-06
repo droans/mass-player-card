@@ -9,7 +9,7 @@ import {
 import { property, state } from "lit/decorators.js";
 
 import { QueueItemSelectedService, QueueService } from "../const/actions";
-import { ExtendedHass, Thumbnail } from "../const/common";
+import { Thumbnail } from "../const/common";
 import {
   activeEntityConfContext,
   EntityConfig,
@@ -19,7 +19,7 @@ import {
   playerQueueConfigContext,
   useExpressiveContext,
 } from "../const/context";
-import { QueueItem } from "../const/player-queue";
+import { ExtendedHass, QueueItem } from "../const/types";
 import { VibrationPattern } from "../const/common";
 
 import styles from "../styles/media-row";

@@ -16,7 +16,7 @@ import {
   CardSelectedService,
   EnqueueOptions,
 } from "../const/actions";
-import { ExtendedHass, ListItems } from "../const/common";
+import { ExtendedHass, ListItems, MediaCardItem } from "../const/types";
 import {
   activeEntityConfContext,
   activeSectionContext,
@@ -30,7 +30,6 @@ import {
 import {
   getEnqueueButtons,
   getSearchMediaButtons,
-  MediaCardItem,
 } from "../const/media-browser";
 
 import styles from "../styles/media-card";

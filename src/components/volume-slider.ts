@@ -2,7 +2,7 @@ import { consume } from "@lit/context";
 import { CSSResultGroup, html, LitElement, PropertyValues } from "lit";
 import { property, state } from "lit/decorators.js";
 
-import { ExtendedHass, ExtendedHassEntity } from "../const/common";
+import { ExtendedHass, ExtendedHassEntity } from "../const/types";
 import { hassContext } from "../const/context";
 import PlayerActions from "../actions/player-actions";
 import styles from "../styles/volume-slider";

@@ -15,11 +15,10 @@ import {
   activePlayerControllerContext,
   activePlayerDataContext,
   controllerContext,
-  ExtendedHassEntity,
 } from "../const/context.js";
 import { ActionsController } from "../controller/actions.js";
 import { playerHasUpdated } from "../utils/util.js";
-import { PlayerData } from "../const/music-player.js";
+import { ExtendedHassEntity, PlayerData } from "../const/types";
 import { secondsToTime } from "../utils/util.js";
 import { MassCardController } from "../controller/controller.js";
 class MassPlayerProgressBar extends LitElement {

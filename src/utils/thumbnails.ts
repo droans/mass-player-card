@@ -1,12 +1,12 @@
 import {
   DarkModeThumbnails,
-  ExtendedHass,
   Thumbnail,
   LightModeThumbnails,
   MediaTypes,
 } from "../const/common";
 import { Icons } from "../const/icons.js";
 import { getSearchMediaButtons } from "../const/media-browser.js";
+import { ExtendedHass } from "../const/types.js";
 
 export interface ImageURLWithFallback {
   image_url: string;

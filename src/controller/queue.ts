@@ -1,22 +1,18 @@
 import { ContextProvider } from "@lit/context";
 import {
   currentQueueItemContext,
-  ExtendedHass,
-  ExtendedHassEntity,
   nextQueueItemContext,
   previousQueueItemContext,
   queueContext,
 } from "../const/context.js";
 import {
   MAX_GET_QUEUE_FAILURES,
-  QueueItem,
-  QueueItems,
   TIMED_LISTENER_DELAY_MS,
 } from "../const/player-queue.js";
 import { Config } from "../config/config.js";
 import QueueActions from "../actions/queue-actions.js";
 import { isActive, jsonMatch, playerHasUpdated } from "../utils/util.js";
-import { SubscriptionUnsubscribe } from "../const/common.js";
+import { ExtendedHass, ExtendedHassEntity, QueueItem, QueueItems, SubscriptionUnsubscribe } from "../const/types";
 import { MassQueueEvent } from "../const/events.js";
 
 export class QueueController {

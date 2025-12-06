@@ -1,64 +1,9 @@
-import { TemplateResult } from "lit";
-
 import { EnqueueOptions } from "./actions";
-import { Thumbnail, MediaTypes, ExtendedHass, ListItems } from "./common";
+import { Thumbnail, MediaTypes } from "./common";
 import { Icons } from "./icons.js";
 import { getTranslation } from "../utils/translations.js";
 import { MediaBrowserConfig } from "../config/media-browser.js";
-import {
-  getRecommendationsServiceResponse,
-  recommendationItem,
-  recommendationItems,
-  recommendationSection,
-} from "mass-queue-types/packages/mass_queue/actions/get_recommendations";
-import { MediaItem } from "mass-queue-types/packages/music_assistant/types.js";
-
-export interface MediaBrowserItem {
-  name: string;
-  media_content_id: string;
-  media_content_type: MediaTypes;
-  image: string;
-}
-export interface FavoriteItems {
-  albums: MediaBrowserItem[];
-  artists: MediaBrowserItem[];
-  audiobooks: MediaBrowserItem[];
-  playlists: MediaBrowserItem[];
-  podcasts: MediaBrowserItem[];
-  radios: MediaBrowserItem[];
-  tracks: MediaBrowserItem[];
-}
-export interface MediaCardData {
-  type?: string;
-  subtype?: string;
-  section?: string;
-  media_content_id?: string;
-  media_content_type?: string;
-  service?: string;
-}
-export interface MediaCardItem {
-  title: string;
-  thumbnail: string;
-  fallback: Thumbnail;
-  data: MediaCardData;
-  background?: TemplateResult;
-}
-
-export interface mediaBrowserSectionConfig {
-  main: MediaCardItem[];
-  [str: string]: MediaCardItem[];
-}
-export interface newMediaBrowserItemsConfig {
-  favorites: mediaBrowserSectionConfig;
-  recents: mediaBrowserSectionConfig;
-  recommendations: mediaBrowserSectionConfig;
-  search: MediaCardItem[];
-}
-export interface MediaBrowserItemsConfig {
-  main: MediaCardItem[];
-  [str: string]: MediaCardItem[];
-}
-export type MediaLibraryItem = MediaItem;
+import { ExtendedHass, ListItems } from "./types.js";
 
 export const MediaTypeThumbnails = {
   album: Thumbnail.DISC,
@@ -69,12 +14,6 @@ export const MediaTypeThumbnails = {
   track: Thumbnail.CLEFT,
   radio: Thumbnail.RADIO,
 };
-
-export type RecommendationItem = recommendationItem;
-export type RecommendationItems = recommendationItems;
-export type RecommendationSection = recommendationSection;
-
-export type RecommendationResponse = getRecommendationsServiceResponse;
 
 export function getEnqueueButtons(icons: Icons, hass: ExtendedHass): ListItems {
   return [

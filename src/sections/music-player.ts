@@ -22,9 +22,6 @@ import "../components/volume-slider";
 import PlayerActions from "../actions/player-actions";
 
 import {
-  ExtendedHass,
-  ExtendedHassEntity,
-  ListItemData,
   MediaTypes,
   Thumbnail,
 } from "../const/common";
@@ -43,8 +40,8 @@ import {
   IconsContext,
   musicPlayerConfigContext,
 } from "../const/context";
-import { MediaLibraryItem } from "../const/media-browser";
-import { PlayerData, PLAYLIST_DIALOG_MAX_ITEMS, PlaylistDialogItem } from "../const/music-player";
+import { ExtendedHass, ExtendedHassEntity, ListItemData, MediaLibraryItem, PlayerData, PlaylistDialogItem } from "../const/types";
+import { PLAYLIST_DIALOG_MAX_ITEMS } from "../const/music-player";
 
 import styles from "../styles/music-player";
 

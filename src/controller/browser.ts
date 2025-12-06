@@ -7,16 +7,11 @@ import {
   MediaBrowserConfig,
 } from "../config/media-browser.js";
 import {
-  ExtendedHass,
   MediaTypes,
   Thumbnail,
 } from "../const/common.js";
 import {
   DEFAULT_SEARCH_LIMIT,
-  MediaCardItem,
-  MediaLibraryItem,
-  newMediaBrowserItemsConfig,
-  RecommendationSection,
 } from "../const/media-browser.js";
 import {
   generateCustomSectionCards,
@@ -29,6 +24,7 @@ import {
 import { mediaBrowserCardsContext } from "../const/context.js";
 import { jsonMatch } from "../utils/util.js";
 import { CardsUpdatedEventDetail } from "../const/events.js";
+import { ExtendedHass, MediaCardItem, MediaLibraryItem, newMediaBrowserItemsConfig, RecommendationSection } from "../const/types.js";
 
 export class MediaBrowserController {
   private hass!: ExtendedHass;

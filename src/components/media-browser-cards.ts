@@ -15,13 +15,12 @@ import {
   CardSelectedService,
   EnqueueOptions,
 } from "../const/actions";
-import { ExtendedHass } from "../const/common";
 import {
   activeMediaBrowserCardsContext,
   hassContext,
   mediaBrowserConfigContext,
 } from "../const/context";
-import { MediaCardData, MediaCardItem } from "../const/media-browser";
+import { ExtendedHass, MediaCardData, MediaCardItem } from "../const/types";
 
 import styles from "../styles/media-browser-cards";
 import { MediaBrowserConfig } from "../config/media-browser.js";

@@ -3,7 +3,8 @@ import PlayerActions from "../actions/player-actions";
 import PlayersActions from "../actions/players-actions";
 import QueueActions from "../actions/queue-actions";
 import { EntityConfig } from "../config/config";
-import { ExtendedHass, ExtendedHassEntity, RepeatMode } from "../const/common";
+import { RepeatMode } from "../const/common";
+import { ExtendedHass, ExtendedHassEntity } from "../const/types.js";
 
 export class ActionsController {
   private _host: HTMLElement;

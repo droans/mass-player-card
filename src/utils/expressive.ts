@@ -16,8 +16,9 @@ import {
   sourceColorFromImage,
 } from "@material/material-color-utilities";
 import { ExpressiveScheme } from "../config/config.js";
-import { ExtendedHass, Thumbnail } from "../const/common.js";
+import { Thumbnail } from "../const/common.js";
 import { getThumbnail } from "./thumbnails.js";
+import { ExtendedHass } from "../const/types.js";
 
 type dynamicSchemeType = new (
   sourceColorHct: Hct,

@@ -18,8 +18,6 @@ import "@shoelace-style/shoelace/dist/components/carousel-item/carousel-item.js"
 import {
   activeMediaPlayerContext,
   controllerContext,
-  ExtendedHass,
-  ExtendedHassEntity,
   hassContext,
   IconsContext,
   musicPlayerConfigContext,
@@ -28,7 +26,7 @@ import {
 import { PlayerConfig } from "../config/player.js";
 import { MassCardController } from "../controller/controller.js";
 import { jsonMatch, playerHasUpdated } from "../utils/util.js";
-import { QueueItem, QueueItems } from "../const/player-queue.js";
+import { ExtendedHass, ExtendedHassEntity, QueueItem, QueueItems } from "../const/types";
 import { SlCarousel } from "@shoelace-style/shoelace";
 import { SLSwipeEvent } from "../const/events";
 import { Thumbnail, VibrationPattern } from "../const/common.js";

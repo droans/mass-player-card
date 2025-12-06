@@ -7,7 +7,7 @@ import {
 } from "lit";
 import { property, query, state } from "lit/decorators.js";
 
-import { ListItems } from "../const/common";
+import { ListItems } from "../const/types";
 import { consume } from "@lit/context";
 import { controllerContext, useExpressiveContext } from "../const/context.js";
 import styles from "../styles/menu-button";

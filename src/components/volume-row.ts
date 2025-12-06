@@ -22,7 +22,7 @@ import {
   IconsContext,
   musicPlayerConfigContext,
 } from "../const/context";
-import { PlayerData } from "../const/music-player";
+import { PlayerData } from "../const/types";
 
 import styles from "../styles/volume-row";
 import { ActionsController } from "../controller/actions.js";

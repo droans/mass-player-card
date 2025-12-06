@@ -14,7 +14,7 @@ import { Config, EntityConfig } from "../config/config";
 import { DEFAULT_PLAYERS_CONFIG, PlayersConfig } from "../config/players";
 
 import { PlayerSelectedService } from "../const/actions";
-import { ExtendedHass, ExtendedHassEntity } from "../const/common";
+import { ExtendedHass, ExtendedHassEntity } from "../const/types";
 import {
   activeEntityConfContext,
   hassContext,

@@ -6,7 +6,7 @@ import {
 } from "@mdi/js";
 
 import { DEFAULT_MAX_VOLUME } from "../const/music-player";
-import { ExtendedHass } from "../const/common";
+import { ExtendedHass } from "../const/types";
 
 import {
   DEFAULT_MEDIA_BROWSER_CONFIG,

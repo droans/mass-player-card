@@ -1,14 +1,12 @@
 import { html, TemplateResult } from "lit";
-import { ExtendedHass, Thumbnail, MediaTypes } from "../const/common";
+import { Thumbnail, MediaTypes } from "../const/common";
 import { asyncBackgroundImageFallback, getThumbnail } from "./thumbnails";
 import {
-  MediaCardItem,
-  MediaLibraryItem,
   MediaTypeThumbnails,
-  RecommendationSection,
 } from "../const/media-browser";
 import { customItem } from "../config/media-browser";
 import { getTranslation } from "./translations.js";
+import { ExtendedHass, MediaCardItem, MediaLibraryItem, RecommendationSection } from "../const/types.js";
 
 async function generateSectionBackgroundPart(
   hass: ExtendedHass,

@@ -17,7 +17,7 @@ import {
   QueueConfigErrors,
 } from "../config/player-queue";
 
-import { ExtendedHass } from "../const/common";
+import { ExtendedHass, QueueItem, QueueItems } from "../const/types";
 import {
   activeEntityConfContext,
   activeEntityIDContext,
@@ -31,7 +31,6 @@ import {
   queueContext,
   queueControllerContext,
 } from "../const/context";
-import { QueueItem, QueueItems } from "../const/player-queue";
 
 import styles from "../styles/player-queue";
 import { Sections } from "../const/card";

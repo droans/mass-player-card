@@ -1,6 +1,6 @@
 import { ContextProvider } from "@lit/context";
 import { Config } from "../config/config";
-import { ExtendedHass } from "../const/common";
+import { ExtendedHass } from "../const/types";
 import {
   actionsControllerContext,
   activePlayerControllerContext,

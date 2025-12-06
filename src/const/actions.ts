@@ -1,4 +1,4 @@
-import { MediaCardData } from "./media-browser.js";
+import { MediaCardData } from "./types";
 
 export enum EnqueueOptions {
   PLAY_NOW = "play",

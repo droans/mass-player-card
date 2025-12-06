@@ -11,9 +11,7 @@ import {
   musicPlayerConfigContext,
 } from "../const/context";
 import { ActionsController } from "../controller/actions";
-import {
-  PlayerData,
-} from "../const/music-player";
+import { PlayerData } from "../const/types";
 import { Icons } from "../const/icons";
 import { getIteratedRepeatMode } from "../utils/music-player";
 import { RepeatMode } from "../const/common";

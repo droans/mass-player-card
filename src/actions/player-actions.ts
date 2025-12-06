@@ -1,7 +1,7 @@
 /* eslint-disable no-console */
 import { HassEntity } from "home-assistant-js-websocket";
-import { ExtendedHass, ExtendedHassEntity, RepeatMode } from "../const/common";
-import { QueueItem } from "../const/player-queue";
+import {  RepeatMode } from "../const/common";
+import { ExtendedHass, ExtendedHassEntity, QueueItem } from "../const/types";
 import { getQueueItemsServiceResponse, getQueueItemsServiceSchema } from "mass-queue-types/packages/mass_queue/actions/get_queue_items";
 import { getInfoWSResponseSchema, getInfoWSServiceSchema } from "mass-queue-types/packages/mass_queue/ws/get_info"
 
