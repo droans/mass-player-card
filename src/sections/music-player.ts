@@ -297,9 +297,8 @@ class MusicPlayerCard extends LitElement {
     }
     this.selectedPlayerService(player);
   };
-  private onUnjoinSelect = (ev) => {
-    const e = ev as JoinUnjoinEventData;
-    const ent = e.target.entity;
+  private onUnjoinSelect = (ev: JoinUnjoinEventData) => {
+    const ent = ev.target.entity;
     void this.actions.actionUnjoinPlayers(ent);
   };
   private onGroupVolumeChange = (ev: DetailValEventData) => {
