@@ -33,8 +33,15 @@ export default css`
 
   .player-tabs {
     --primary-container: rgba(from var(--primary-color) r g b / 0.25);
+    z-index: 2;
   }
-
+  #tab-indicator {
+    height: 100%;
+    position: absolute;
+    box-shadow: var(--md-sys-elevation-level2);
+    background-color: var(--md-sys-color-secondary-container);
+    z-index: 1;
+  }
   .tabbed {
     --tabbed-elevation: var(--md-sys-elevation-level1);
     --tabbed-background-color: var(--tabbed-background-color);
@@ -45,5 +52,11 @@ export default css`
   }
   .tabbed-expressive {
     --tabbed-background-color: var(--md-sys-color-surface-container) !important;
+  }
+
+  @keyframes move-indicator {
+    to {
+      left: var(--left-pos);
+    }
   }
 `;
