@@ -44,7 +44,7 @@ import {
   musicPlayerConfigContext,
 } from "../const/context";
 import { MediaLibraryItem } from "../const/media-browser";
-import { ForceUpdatePlayerDataEvent, PlayerData, PLAYLIST_DIALOG_MAX_ITEMS, PlaylistDialogItem } from "../const/music-player";
+import { PlayerData, PLAYLIST_DIALOG_MAX_ITEMS, PlaylistDialogItem } from "../const/music-player";
 
 import styles from "../styles/music-player";
 
@@ -55,7 +55,7 @@ import { Config } from "../config/config.js";
 import { Icons } from "../const/icons.js";
 import { isActive, jsonMatch, playerHasUpdated } from "../utils/util.js";
 import { MassCardController } from "../controller/controller.js";
-import { DetailValEventData, JoinUnjoinEventData, MenuButtonEventData } from "../const/events.js";
+import { DetailValEventData, ForceUpdatePlayerDataEvent, JoinUnjoinEventData, MenuButtonEventData } from "../const/events.js";
 import { asyncImageURLWithFallback } from "../utils/thumbnails.js";
 import { DialogElement } from "../const/elements.js";
 

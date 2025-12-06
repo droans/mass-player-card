@@ -12,7 +12,6 @@ import {
 } from "../const/context";
 import { ActionsController } from "../controller/actions";
 import {
-  ForceUpdatePlayerDataEventData,
   PlayerData,
 } from "../const/music-player";
 import { Icons } from "../const/icons";
@@ -25,6 +24,7 @@ import {
   PlayerLayoutConfig,
 } from "../config/player.js";
 import { MassCardController } from "../controller/controller.js";
+import { ForceUpdatePlayerDataEventData } from "../const/events.js";
 
 export class MassPlayerControlsBase extends LitElement {
   protected layoutConfig!: PlayerLayoutConfig;

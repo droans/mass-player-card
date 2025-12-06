@@ -19,15 +19,6 @@ export interface QueueSection {
 
 export type QueueItems = QueueItem[];
 
-export interface MassQueueEvent {
-  data: {
-    type: string;
-    data: {
-      queue_id: string;
-    };
-  };
-}
-
 export const MAX_GET_QUEUE_FAILURES = 6;
 export const MUSIC_ASSISTANT_APP_NAME = "music_assistant";
 export const TIMED_LISTENER_DELAY_MS = 10000;

@@ -1,15 +1,6 @@
-import { SlCarouselItem } from "@shoelace-style/shoelace";
 import { RepeatMode } from "./common";
 import { ImageURLWithFallback } from "../utils/thumbnails.js";
 
-export interface ForceUpdatePlayerDataEvent extends CustomEvent {
-  detail: ForceUpdatePlayerDataEventData;
-}
-export interface ForceUpdatePlayerDataEventData {
-  key: string;
-  // eslint-disable-next-line @typescript-eslint/no-explicit-any,
-  value: any;
-}
 export interface PlayerData {
   playing: boolean;
   muted: boolean;
@@ -24,14 +15,6 @@ export interface PlayerData {
   favorite: boolean;
 }
 
-export interface SLSwipeEvent {
-  detail: {
-    index: number;
-    slide: SlCarouselItem;
-  };
-  timeStamp: number;
-  stopPropagation(): void;
-}
 
 export interface PlaylistDialogItem {
   image: ImageURLWithFallback;
