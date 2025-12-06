@@ -30,7 +30,7 @@ class MassNavBar extends LitElement {
   @query('#tab-players') playersTab?: HTMLAnchorElement;
   @query('#tab-indicator') tabIndicator!: HTMLDivElement;
   @query('#navigation') navbar!: HTMLDivElement;
-  private animationLength: number = 250;
+  private animationLength = 250;
 
   @consume({ context: activeSectionContext, subscribe: true })
   @state()
@@ -89,9 +89,7 @@ class MassNavBar extends LitElement {
     }
     return elems[section];
   }
-  private generateAnimationBounceLeft(from_element: HTMLAnchorElement, to_element: HTMLAnchorElement): Keyframe {
-    const from_left = from_element.offsetLeft;
-    const from_width = from_element.offsetWidth;
+  private animateBounceLeft(to_element: HTMLAnchorElement): Keyframe {
     const to_left = to_element.offsetLeft;
     const to_width = to_element.offsetWidth;
     
@@ -105,9 +103,7 @@ class MassNavBar extends LitElement {
       offset: 0.8,
     }
   }
-  private generateAnimationBounceRight(from_element: HTMLAnchorElement, to_element: HTMLAnchorElement): Keyframe {
-    const from_left = from_element.offsetLeft;
-    const from_width = from_element.offsetWidth;
+  private animateBounceRight(to_element: HTMLAnchorElement): Keyframe {
     const to_left = to_element.offsetLeft;
     const to_width = to_element.offsetWidth;
     
@@ -129,7 +125,6 @@ class MassNavBar extends LitElement {
     }
     const from_elem = this.getSectionElement(from_section);
     const to_elem = this.getSectionElement(to_section);
-    console.log()
     if (!from_elem || !to_elem) {
       return;
     }
@@ -137,10 +132,7 @@ class MassNavBar extends LitElement {
     const from_left = from_elem.offsetLeft;
     const to_width = to_elem.offsetWidth;
     const to_left = to_elem.offsetLeft;
-    console.log(`Playing animation from ${from_elem.id} to ${to_elem.id}`)
-    const bounce = from_left - to_left > 0 
-      ? this.generateAnimationBounceLeft(from_elem, to_elem) 
-      : this.generateAnimationBounceRight(from_elem, to_elem)
+    const bounce = from_left - to_left > 0 ? this.animateBounceLeft(to_elem) : this.animateBounceRight(to_elem)
     const _keyframes = [
       {
         left: `${from_left.toString()}px`,
@@ -152,8 +144,6 @@ class MassNavBar extends LitElement {
         width: `${to_width.toString()}px`
       }, // to
     ]
-    console.log(`Keyframes:`);
-    console.log(_keyframes)
     const keyframeEffect = new KeyframeEffect(
       this.tabIndicator,
       _keyframes,
