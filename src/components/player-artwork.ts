@@ -55,10 +55,10 @@ export class MassPlayerArtwork extends LitElement {
 
   @state() private _queue!: QueueItems | null;
 
-  @query('#carousel') private carouselElement!: SlCarousel;
+  @query('#carousel') private carouselElement?: SlCarousel;
 
   private currentIdx?: number;
-  private settingSlide = false;
+  private _timeout?: number;
 
   @consume({ context: activeMediaPlayerContext, subscribe: true })
   public set activePlayer(player: ExtendedHassEntity) {
@@ -85,10 +85,10 @@ export class MassPlayerArtwork extends LitElement {
   }
 
   private setActiveSlide(idx: number | undefined = this.currentIdx) {
-    if (!idx || !this?.queue?.length || !this?.carouselElement) {
+    if (!idx || !this?.queue?.length || !this?.carouselElement || this._timeout) {
       return;
     }
-    this.settingSlide = true;
+    this.carouselElement.removeEventListener('sl-slide-change', this.onSwipe);
     this?.carouselElement?.goToSlide(idx, 'instant');
     const item = this.queue[idx];
     const img = item.media_image ?? item.local_image_encoded;
@@ -98,11 +98,12 @@ export class MassPlayerArtwork extends LitElement {
     }
     const ev = new CustomEvent('artwork-updated', { detail: detail });
     this.controller.host.dispatchEvent(ev);
-    setTimeout(
+    this._timeout = setTimeout(
       () => {
-        this.settingSlide = false
+        this?.carouselElement?.addEventListener('sl-slide-change', this.onSwipe);
+        this._timeout = undefined;
       },
-      100
+      250
     )
   }
   private updateActiveSlide() {
@@ -123,10 +124,6 @@ export class MassPlayerArtwork extends LitElement {
   private onSwipe = (ev: SLSwipeEvent) => {
     ev.stopPropagation();
     if (!this?.queue?.length) {
-      return;
-    }
-    if (this.settingSlide) {
-      this.settingSlide = false;
       return;
     }
     navigator.vibrate(VibrationPattern.Player.ACTION_SWIPE);
@@ -189,28 +186,23 @@ export class MassPlayerArtwork extends LitElement {
         id="carousel"
         class="${size}"
         mouse-dragging
-        @sl-slide-change=${this.onSwipe}
       >
         ${this.renderCarouselItems()}
       </sl-carousel>
     `
   }
   protected shouldUpdate(_changedProperties: PropertyValues): boolean {
-    return _changedProperties.size > 0;
-  }
-  protected updated(): void {
-    this.updateActiveSlide();
+    return super.shouldUpdate(_changedProperties)
   }
   connectedCallback(): void {
-    this.settingSlide = true;
-    setTimeout(
-      () => {
-        this.settingSlide = false
-      },
-      100
-    )
-    this.updateActiveSlide();
+    if (this.hasUpdated){
+      this.updateActiveSlide();
+    }
     super.connectedCallback();
+  }
+  protected firstUpdated(): void {
+    this.updateActiveSlide();
+    this?.carouselElement?.addEventListener('sl-slide-change', this.onSwipe)
   }
   static get styles(): CSSResultGroup {
     return styles;
