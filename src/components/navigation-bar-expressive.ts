@@ -220,22 +220,6 @@ class MassNavBar extends LitElement {
         </i>
       </a>
     `;
-    // return html`
-    //   <a
-    //     id="tab-${section}"
-    //     class="${active ? `active active-expressive` : ``} player-tabs"
-    //     @click=${() => {
-    //       this.handleTabChanged(section);
-    //     }}
-    //   >
-    //     <i class="icon-i">
-    //       <ha-svg-icon
-    //         .path=${icon}
-    //         class="action-button-svg${active ? "" : "-inactive"}"
-    //       ></ha-svg-icon>
-    //     </i>
-    //   </a>
-    // `;
   }
   protected render(): TemplateResult {
     return html`
