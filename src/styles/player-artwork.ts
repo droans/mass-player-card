@@ -6,7 +6,6 @@ export default css`
     max-width: 100%;
     justify-self: center;
     display: block;
-    touch-action: none;
   }
   #asleep {
     height: 100%;
