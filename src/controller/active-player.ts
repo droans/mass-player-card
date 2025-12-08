@@ -412,6 +412,7 @@ export class ActivePlayerController {
     return vol;
   }
   public disconnected() {
+    // Intentionally left blank
   }
   public reconnected(hass: ExtendedHass) {
     this.hass = hass;
