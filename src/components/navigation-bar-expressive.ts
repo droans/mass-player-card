@@ -165,7 +165,6 @@ class MassNavBar extends LitElement {
         transform: `translateX(${translate_x.toString()}px) scaleX(${scale_x.toString()})`,
       }
     ]
-    console.log(_keyframes);
     const animation = this.animationElement;
     animation.keyframes = _keyframes;
     animation.addEventListener(
