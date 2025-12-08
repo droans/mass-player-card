@@ -13,12 +13,11 @@ import {
   SchemeRainbow,
   SchemeTonalSpot,
   SchemeVibrant,
-  sourceColorFromImage,
+  sourceColorFromImage
 } from "@material/material-color-utilities";
-import { ExpressiveScheme } from "../config/config";
-import { Thumbnail } from "../const/enums";
-import { getThumbnail } from "./thumbnails";
-import { ExtendedHass } from "../const/types";
+import { ExpressiveScheme } from "../config/config.js";
+import { ExtendedHass } from "../const/types.js";
+import { tryPrefetchImageWithFallbacks } from "./util.js";
 
 type dynamicSchemeType = new (
   sourceColorHct: Hct,
@@ -95,118 +94,61 @@ const EXPRESSIVE_KEYS: Record<string, string> = {
 
 const DEFAULT_PRIMARY_COLOR = '#009ac7'
 
-function generateImageElement(
+export function generateDefaultExpressiveSchemeColor(): number {
+  const color = window.getComputedStyle(document.body).getPropertyValue('--primary-color').replace('#','') ?? DEFAULT_PRIMARY_COLOR;
+  const argb = color.startsWith('rgb') ?_parseColorRgb(color) : _parseColorHex(color);
+  return argb;
+}
+
+export async function generateImageElement(
   img: string,
   hass: ExtendedHass,
-  defaultImage: Thumbnail = Thumbnail.CLEFT,
-): HTMLImageElement {
+  fallbacks: string[] = [],
+): Promise<HTMLImageElement> {
+  const img_url = await tryPrefetchImageWithFallbacks(img, fallbacks, hass);
   const elem = document.createElement("img");
-  const def = getThumbnail(hass, defaultImage);
   elem.crossOrigin = "anonymous";
-  elem.src = img;
-  elem.onerror = () => {
-    elem.src = def;
-  };
+  elem.src = img_url as string;
   return elem;
 }
 
-export function applyDefaultExpressiveScheme(
-  hass: ExtendedHass,
-  scheme: ExpressiveScheme,
-  elem: HTMLElement
-): DynamicScheme {
-  const color = window.getComputedStyle(document.body).getPropertyValue('--primary-color').replace('#','') ?? DEFAULT_PRIMARY_COLOR;
-  const argb = color.startsWith('rgb') ?_parseColorRgb(color) : _parseColorHex(color);
-  return applyExpressiveSchemeFromColor(argb, scheme, hass.themes.darkMode, elem);
-}
-
-export async function applyExpressiveSchemeFromImage(
+export async function generateExpressiveSourceColorFromImage(
   img: string,
   hass: ExtendedHass,
-  scheme: ExpressiveScheme,
-  elem: HTMLElement,
-  defaultImage: Thumbnail = Thumbnail.CLEFT,
-): Promise<DynamicScheme | undefined> {
-  const schemeResult = await generateExpressiveSchemeFromImage(
-    img,
-    hass,
-    scheme,
-    defaultImage,
-  );
-  if (!schemeResult) {
-    return
+  fallbacks: string[] = [],
+): Promise<number> {
+  try {
+    const elem = await generateImageElement(img, hass, fallbacks)
+    return await sourceColorFromImage(elem)
+  } catch {
+    return generateDefaultExpressiveSchemeColor();
   }
-  applyExpressiveScheme(schemeResult, elem);
-  return schemeResult;
 }
 
-export function applyExpressiveSchemeFromColor(
-  source: number,
-  scheme: ExpressiveScheme,
-  darkMode: boolean,
-  elem: HTMLElement
-): DynamicScheme {
-  const colorScheme = generateExpressiveSchemeFromColor(source, scheme, darkMode);
-  applyExpressiveScheme(colorScheme, elem);
-  return colorScheme
-}
-
-export async function generateExpressiveSchemeFromImage(
-  img: string,
-  hass: ExtendedHass,
-  scheme: ExpressiveScheme,
-  defaultImage: Thumbnail = Thumbnail.CLEFT,
-): Promise<DynamicScheme | undefined> {
-  const elem = generateImageElement(img, hass, defaultImage);
-  const darkMode = hass.themes.darkMode;
-  return generateExpressiveSchemeFromImageElement(elem, scheme, darkMode);
-}
-
-async function generateExpressiveSourceColorForImageElement(
+export async function generateExpressiveSourceColorFromImageElement(
   elem: HTMLImageElement,
-): Promise<number | undefined> {
-    return await sourceColorFromImage(elem);
+): Promise<number> {
+  return await sourceColorFromImage(elem)
 }
 
-export async function generateExpressiveSchemeFromImageElement(
-  elem: HTMLImageElement,
-  scheme: ExpressiveScheme,
-  darkMode: boolean,
-): Promise<DynamicScheme | undefined> {
-  const col = await generateExpressiveSourceColorForImageElement(elem);
-  if (!col) {
-    return
-  }
-  return generateExpressiveSchemeFromColor(col, scheme, darkMode);
-}
-
-function _generateExpressiveSchemeFromColor(
-  source: number,
+export function generateExpressiveSchemeFromColor(
+  color: number,
   scheme: ExpressiveScheme,
   darkMode: boolean,
 ): DynamicScheme {
   const cls = ExpressiveSchemes[scheme];
-  const _hct = Hct.fromInt(source);
+  const _hct = Hct.fromInt(color);
   return new cls(
-    _hct, // Source Color HCT
-    darkMode, // Dark Mode Boolean
-    0, // Contrast Level
-    "2025", // Version
-    "phone", // Platform
-  );
+    _hct,
+    darkMode,
+    0,
+    "2025",
+    "phone"
+  )
 }
-
-function generateExpressiveSchemeFromColor(
-  source: number,
-  scheme: ExpressiveScheme,
-  darkMode: boolean,
-) {
-  return _generateExpressiveSchemeFromColor(source, scheme, darkMode);
-}
-
 export function applyExpressiveScheme(
   scheme: DynamicScheme,
-  elem: HTMLElement,
+  elem: HTMLElement
 ) {
   const entries = Object.entries(EXPRESSIVE_KEYS);
   entries.forEach((entry) => {
@@ -219,7 +161,6 @@ export function applyExpressiveScheme(
     }
   });
 }
-
 function _parseColorHex(color: string) {
   return argbFromHex(color);
 }

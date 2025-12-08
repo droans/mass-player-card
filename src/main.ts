@@ -323,7 +323,6 @@ export class MusicAssistantPlayerCard extends LitElement {
       //eslint-disable-next-line @typescript-eslint/no-non-null-assertion
       const stylesheet = head_styles.styleSheet!;
       document.adoptedStyleSheets.push(stylesheet);
-      this._controller.ActivePlayer.firstUpdateComplete();
     }
     this.addEventListener("section-changed", this.onSectionChangedEvent);
   }

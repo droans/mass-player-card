@@ -99,6 +99,10 @@ export class MassPlayerArtwork extends LitElement {
       image: img
     }
     const ev = new CustomEvent('artwork-updated', { detail: detail });
+    const elem = this.shadowRoot?.querySelectorAll('sl-carousel-item')[idx];
+    if (elem) {
+      this.controller.ActivePlayer.activeArtworkElement = elem.firstElementChild as HTMLElement;
+    }
     this.controller.host.dispatchEvent(ev);
     this._timeout = setTimeout(
       () => {
@@ -117,10 +121,10 @@ export class MassPlayerArtwork extends LitElement {
         return item?.playing
       }
     )
-    if (idx >= 0) {
+    if (idx >= 0 && idx != this.carouselElement?.activeSlide) {
       this.currentIdx = idx;
-      this.setActiveSlide(this.currentIdx)
     }
+    this.setActiveSlide(this.currentIdx)
   }
 
   private onSwipe = (ev: SLSwipeEvent) => {
