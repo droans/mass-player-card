@@ -3,9 +3,10 @@ import { DEFAULT_SECTION_PRIORITY } from "../const/card";
 import {
   MAX_ACTIVE_LAST_ACTIVE_DURATION,
 } from "../const/common";
-import { Sections } from "../const/enums";
+import { Sections, Thumbnail } from "../const/enums";
 import { MUSIC_ASSISTANT_APP_NAME } from "../const/player-queue";
 import { ExtendedHass, ExtendedHassEntity, QueueItem } from "../const/types";
+import { getThumbnail } from "./thumbnails.js";
 
 export function testMixedContent(url: string) {
   try {
@@ -124,8 +125,53 @@ export function isActive(
 }
 
 // eslint-disable-next-line @typescript-eslint/no-explicit-any
-export function jsonMatch(objectA: any, objectB: any) {
+export function jsonMatch(objectA: any, objectB: any): boolean {
   const jsonA = JSON.stringify(objectA);
   const jsonB = JSON.stringify(objectB);
   return jsonA == jsonB;
+}
+
+export async function tryPrefetchImage(image_url: string): Promise<string | boolean> {
+  if (!image_url?.length || image_url.length < 10) {
+    return false;
+  }
+  try {
+    const response = await fetch(image_url)
+    if (!response.ok) {
+      return false
+    }
+    const blob = await response.blob();
+    return URL.createObjectURL(blob);
+  } catch {
+    return false
+  }
+}
+
+export function ensureThumbnail(img: string, hass: ExtendedHass): string {
+  // Returns a URL encodable image
+  // If `img` is a Thumbnail enum, returns the image related to the enum.
+  // Otherwise, returns `img`
+  if (Object.values(Thumbnail).includes(img as Thumbnail)) {
+    return getThumbnail(hass, img as Thumbnail)
+  }
+  return img
+}
+
+export async function tryPrefetchImageWithFallbacks(img_url: string, fallbacks: string[], hass: ExtendedHass): Promise<string | boolean> {
+  const images = [
+    img_url,
+    ...fallbacks
+  ];
+  const _promises = images.map(
+    async (img) => {
+      img = ensureThumbnail(img, hass);
+      return await tryPrefetchImage(img);
+    }
+  )
+  const imgs = await Promise.all(_promises);
+  const result = imgs.find((img) => { return img })
+  if (!result) {
+    return false
+  }
+  return result  
 }

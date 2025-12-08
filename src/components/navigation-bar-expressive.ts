@@ -102,8 +102,9 @@ class MassNavBar extends LitElement {
     const bounce_move = to_width * 0.2;
 
     const bounce_left = Math.max(0, to_left - bounce_move);
-    const bounce_width = bounce_left > 0 ? to_width : to_width - (to_left + bounce_move)
-    const translate_x = bounce_left - from_left;
+    const bounce_width = bounce_left > 0 ? to_width : to_width - bounce_move
+    const extra_left = to_left == 0 ? (bounce_move / 2) : 0;
+    const translate_x = bounce_left - from_left - extra_left;
     const scale_x = bounce_width / from_width;
 
     return {
@@ -118,13 +119,14 @@ class MassNavBar extends LitElement {
     const to_left = to_element.offsetLeft;
     const to_width = to_element.offsetWidth;
     
-    const bounce_move = to_width * 0.1;
+    const bounce_move = to_width * 0.2;
     const navbarWidth = this.navbar.offsetWidth;
     const to_elem_x_end = to_left + to_width;
     
     const bounce_left = to_left + bounce_move;
     const bounce_width = to_elem_x_end >= navbarWidth ? navbarWidth - bounce_left : to_width;
-    const translate_x = bounce_left - from_left;
+    const extra_left = to_elem_x_end >= navbarWidth ? (bounce_move / 2) : 0;
+    const translate_x = bounce_left - from_left - extra_left;
     const scale_x = bounce_width / from_width;
     return {
       transform: `translateX(${translate_x.toString()}px) scaleX(${scale_x.toString()})`,
@@ -153,6 +155,11 @@ class MassNavBar extends LitElement {
     const scale_x = to_width / from_width;
     
     const _keyframes = [
+      
+      {
+        transform: `translateX(${translate_x.toString()}px) scaleX(${scale_x.toString()})`,
+        offset: 0.6,
+      },
       bounce,
       {
         transform: `translateX(${translate_x.toString()}px) scaleX(${scale_x.toString()})`,
