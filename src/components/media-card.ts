@@ -7,7 +7,7 @@ import {
 } from "lit";
 import { html } from "lit/static-html.js";
 import { property, query, state } from "lit/decorators.js";
-import "@awesome.me/webawesome/dist/components/card/card.js";
+import "@droans/webawesome/dist/components/card/card.js";
 
 import "./menu-button";
 

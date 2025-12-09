@@ -22,6 +22,7 @@
   "license": "MIT",
   "type": "module",
   "dependencies": {
+    "@droans/webawesome": "^3.0.0",
     "@lit/context": "1.1.6",
     "@material/material-color-utilities": "^0.3.0",
     "@material/web": "2.4.1",
@@ -32,7 +33,6 @@
     "lit": "3.3.1"
   },
   "devDependencies": {
-    "@awesome.me/webawesome": "^3.0.0",
     "@eslint/js": "9.39.1",
     "@lit-labs/compiler": "^1.1.1",
     "@rollup/plugin-json": "^6.0.0",
