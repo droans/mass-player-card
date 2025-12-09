@@ -158,13 +158,25 @@ export class QueueController {
       `Reached max failures getting queue, check your browser and HA logs!`,
     );
   }
-  public getQueue = async () => {
+  public getQueue = async (attempt: number = 0) => {
     const ents = this.config.entities;
     const ent_id = this.activeMediaPlayer.entity_id;
     const activeEntityConfig = ents.find((item) => item.entity_id == ent_id);
     // eslint-disable-next-line @typescript-eslint/no-non-null-assertion
     if (isActive(this.hass, this.activeMediaPlayer, activeEntityConfig!)) {
-      const queue = await this._getQueue();
+      let queue = await this._getQueue();
+      if (!queue?.length && ["playing", "paused"].includes(this.activeMediaPlayer.state)) {
+        if (attempt >= MAX_GET_QUEUE_FAILURES) {
+          return []
+        }
+        // If queue length is zero and player is playing/paused, assume we refreshed at a bad time. Set a short delay and try again.
+        setTimeout(
+          () => {
+            return this.getQueue(attempt+ 1)
+          },
+          250
+        )
+      }
       return queue;
     }
     this.queue = [];
