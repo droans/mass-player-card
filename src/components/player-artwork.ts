@@ -12,8 +12,8 @@ import {
   query,
   state
 } from "lit/decorators.js";
-import "@shoelace-style/shoelace/dist/components/carousel/carousel.js";
-import "@shoelace-style/shoelace/dist/components/carousel-item/carousel-item.js";
+import "@droans/webawesome/dist/components/carousel/carousel.js"
+import "@droans/webawesome/dist/components/carousel-item/carousel-item.js"
 
 import {
   activeMediaPlayerContext,
@@ -28,12 +28,12 @@ import { MassCardController } from "../controller/controller";
 import { isActive, jsonMatch, playerHasUpdated } from "../utils/util";
 import { ExtendedHass, ExtendedHassEntity, QueueItem, QueueItems } from "../const/types";
 import { SlCarousel } from "@shoelace-style/shoelace";
-import { SLSwipeEvent } from "../const/events";
 import { VibrationPattern } from "../const/common";
 import { getThumbnail } from "../utils/thumbnails";
 import { Icons } from "../const/icons";
 import styles from "../styles/player-artwork";
 import { Thumbnail } from "../const/enums";
+import { WaSlideChangeEvent } from "@droans/webawesome";
 
 @customElement('mpc-artwork')
 export class MassPlayerArtwork extends LitElement {
@@ -88,7 +88,7 @@ export class MassPlayerArtwork extends LitElement {
     if (!idx || !this?.queue?.length || !this?.carouselElement || this._timeout) {
       return;
     }
-    this.carouselElement.removeEventListener('sl-slide-change', this.onSwipe);
+    this.carouselElement.removeEventListener('wa-slide-change', this.onSwipe);
     this?.carouselElement?.goToSlide(idx, 'instant');
     const item = this.queue[idx];
     const img = item.media_image ?? item.local_image_encoded;
@@ -100,7 +100,7 @@ export class MassPlayerArtwork extends LitElement {
     this.controller.host.dispatchEvent(ev);
     this._timeout = setTimeout(
       () => {
-        this?.carouselElement?.addEventListener('sl-slide-change', this.onSwipe);
+        this?.carouselElement?.addEventListener('wa-slide-change', this.onSwipe);
         this._timeout = undefined;
       },
       250
@@ -127,7 +127,7 @@ export class MassPlayerArtwork extends LitElement {
     )
   }
 
-  private onSwipe = (ev: SLSwipeEvent) => {
+  private onSwipe = (ev: WaSlideChangeEvent) => {
     ev.stopPropagation();
     if (!this?.queue?.length) {
       return;
@@ -150,7 +150,7 @@ export class MassPlayerArtwork extends LitElement {
     const img = item?.media_image?.length ? item.media_image : item.local_image_encoded;
     const playing = item.playing ? `playing` : false;
     return html`
-      <sl-carousel-item 
+      <wa-carousel-item 
       >
         <img
           class="artwork ${size}"
@@ -158,19 +158,19 @@ export class MassPlayerArtwork extends LitElement {
           ?data-playing=${playing}
           onerror="this.src='${fallback}';"
         > 
-      </sl-carousel-item>
+      </wa-carousel-item>
     `
   }
   protected renderEmptyQueue(): TemplateResult {
     const expressive = this.controller.config.expressive ? 'expressive' : ``
     return html`
-      <sl-carousel-item>
+      <wa-carousel-item>
         <ha-svg-icon
           .path=${this.Icons.ASLEEP}  
           id="asleep"
           class="${expressive}"
         >
-      </sl-carousel-item>
+      </wa-carousel-item>
     `
   }
   protected renderCarouselItems(): TemplateResult | TemplateResult[] {
@@ -191,13 +191,14 @@ export class MassPlayerArtwork extends LitElement {
   protected render(): TemplateResult {
     const size = this.playerConfig.layout.artwork_size;
     return html`
-      <sl-carousel
+      <wa-carousel
         id="carousel"
         class="${size}"
         mouse-dragging
+        loop
       >
         ${this.renderCarouselItems()}
-      </sl-carousel>
+      </wa-carousel>
     `
   }
   protected shouldUpdate(_changedProperties: PropertyValues): boolean {
@@ -213,7 +214,7 @@ export class MassPlayerArtwork extends LitElement {
     if (this.carouselElement) {
       this.controller.ActivePlayer.carouselElement = this.carouselElement;
     } 
-    this?.carouselElement?.addEventListener('sl-slide-change', this.onSwipe)
+    this?.carouselElement?.addEventListener('wa-slide-change', this.onSwipe)
   }
   protected updated(_changedProperties: PropertyValues): void {
     const wrongIdx = this.currentIdx != this.carouselElement?.activeSlide;
