@@ -29,6 +29,7 @@ import {
   generateExpressiveSchemeFromColor,
   generateExpressiveSourceColorFromImage
 } from "../utils/expressive.js";
+import { SlCarousel } from "@shoelace-style/shoelace";
 
 export class ActivePlayerController {
   private _activeEntityConfig: ContextProvider<typeof activeEntityConfContext>;
@@ -46,7 +47,8 @@ export class ActivePlayerController {
   private _config!: Config;
   private _host: HTMLElement;
   private _updatingScheme = false;
-  private _activeArtworkElement?: HTMLElement;
+  private _carouselElement?: SlCarousel;
+  private _observer?: MutationObserver;
   private _activeSchemeColor!: number;
 
   constructor(hass: ExtendedHass, config: Config, host: HTMLElement) {
@@ -209,16 +211,46 @@ export class ActivePlayerController {
   public get activePlayerData() {
     return this._activePlayerData.value;
   }
-
-  public set activeArtworkElement(elem: HTMLElement | undefined) {
-    if (!elem) {
+  public set carouselElement(elem: SlCarousel | undefined) {
+    if (elem) {
+      this._carouselElement = elem;
+      this.createObserver();
+    }
+  }
+  public get carouselElement() {
+    return this._carouselElement;
+  }
+  private createObserver() {
+    if (this._observer) {
+      try {
+        this._observer.disconnect()
+      } catch {
+        // pass
+      }
+    }
+    if (!this.carouselElement) {
+      return;
+    }
+    const config = { 
+      childList: true,
+      attributes: true,
+      attributeFilter: ["src", "data-playing"]
+    }
+    const observer = new MutationObserver(this.observerCallback);
+    observer.observe(this.carouselElement, config);
+    if (!this.expressiveScheme) {
+      this.createAndApplyExpressiveScheme();
+    }
+    this._observer = observer;
+  }
+  public getActiveArtwork(): HTMLElement | undefined {
+    if (!this.carouselElement) {
       return
     }
-    this._activeArtworkElement = elem;
-    this.createAndApplyExpressiveScheme();
+    return this.carouselElement.querySelector('[data-playing]') as HTMLElement;
   }
-  public get activeArtworkElement() {
-    return this._activeArtworkElement;
+  private observerCallback = () => {
+    this.createAndApplyExpressiveScheme();
   }
 
   public async updateActivePlayerData() {
@@ -353,10 +385,11 @@ export class ActivePlayerController {
     }
     this._updatingScheme = true;
     let schemeColor: number; 
-    if (!(this?.activeArtworkElement?.tagName?.toLowerCase() == 'img')) {
+    const activeArtwork = this.getActiveArtwork();
+    if (!(activeArtwork?.tagName?.toLowerCase() == 'img')) {
       schemeColor = generateDefaultExpressiveSchemeColor();
      } else {
-      const src = (this.activeArtworkElement as HTMLImageElement).src;
+      const src = (activeArtwork as HTMLImageElement).src;
       schemeColor = await generateExpressiveSourceColorFromImage(src, this.hass);
     } 
     if (schemeColor == this._activeSchemeColor) {
@@ -412,10 +445,12 @@ export class ActivePlayerController {
     return vol;
   }
   public disconnected() {
-    // Intentionally left blank
+    this._observer?.disconnect();
+    this._observer = undefined;
   }
   public reconnected(hass: ExtendedHass) {
     this.hass = hass;
     this.setActivePlayer(this.activeEntityID);
+    this.createObserver();
   }
 }
