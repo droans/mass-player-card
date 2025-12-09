@@ -99,10 +99,6 @@ export class MassPlayerArtwork extends LitElement {
       image: img
     }
     const ev = new CustomEvent('artwork-updated', { detail: detail });
-    const elem = this.shadowRoot?.querySelectorAll('sl-carousel-item')[idx];
-    if (elem) {
-      this.controller.ActivePlayer.activeArtworkElement = elem.firstElementChild as HTMLElement;
-    }
     this.controller.host.dispatchEvent(ev);
     this._timeout = setTimeout(
       () => {
@@ -152,13 +148,15 @@ export class MassPlayerArtwork extends LitElement {
     }
     const size = this.playerConfig.layout.artwork_size;
     const img = item?.media_image?.length ? item.media_image : item.local_image_encoded;
+    const playing = item.playing ? `playing` : false;
     return html`
       <sl-carousel-item 
       >
         <img
           class="artwork ${size}"
           src="${img}"
-          onerror="console.log('Rendering fallback for ${item.media_title} as image is unavailable'); this.src='${fallback}';"
+          ?data-playing=${playing}
+          onerror="this.src='${fallback}';"
         > 
       </sl-carousel-item>
     `
@@ -212,6 +210,9 @@ export class MassPlayerArtwork extends LitElement {
     super.connectedCallback();
   }
   protected firstUpdated(): void {
+    if (this.carouselElement) {
+      this.controller.ActivePlayer.carouselElement = this.carouselElement;
+    } 
     setTimeout(
       () => {
         this.updateActiveSlide();
