@@ -815,7 +815,7 @@ __metadata:
   languageName: node
   linkType: hard
 
-"@typescript-eslint/parser@npm:8.49.0":
+"@typescript-eslint/parser@npm:8.49.0, @typescript-eslint/parser@npm:^8.49.0":
   version: 8.49.0
   resolution: "@typescript-eslint/parser@npm:8.49.0"
   dependencies:
@@ -828,22 +828,6 @@ __metadata:
     eslint: ^8.57.0 || ^9.0.0
     typescript: ">=4.8.4 <6.0.0"
   checksum: 10c0/749e6244497f2b617351cce4ae520bc101c948b1c94c28e3bc4c5861eb999ada3b4be5dfad36a377a75675998a27d24c5ffba23ff2af743e2b4c4530f68b2673
-  languageName: node
-  linkType: hard
-
-"@typescript-eslint/parser@npm:^8.48.1":
-  version: 8.48.1
-  resolution: "@typescript-eslint/parser@npm:8.48.1"
-  dependencies:
-    "@typescript-eslint/scope-manager": "npm:8.48.1"
-    "@typescript-eslint/types": "npm:8.48.1"
-    "@typescript-eslint/typescript-estree": "npm:8.48.1"
-    "@typescript-eslint/visitor-keys": "npm:8.48.1"
-    debug: "npm:^4.3.4"
-  peerDependencies:
-    eslint: ^8.57.0 || ^9.0.0
-    typescript: ">=4.8.4 <6.0.0"
-  checksum: 10c0/54ec22c82cc631f56131bfed9747f8cadf52ab123463a406c5221f258f9533431c4a33ebe21ef178840d50235e69bb370d36aa2fd6a066e7223b38bfa41a1788
   languageName: node
   linkType: hard
 
@@ -2244,7 +2228,7 @@ __metadata:
     "@rollup/plugin-typescript": "npm:^12.3.0"
     "@shoelace-style/shoelace": "npm:^2.20.1"
     "@typescript-eslint/eslint-plugin": "npm:^8.48.1"
-    "@typescript-eslint/parser": "npm:^8.48.1"
+    "@typescript-eslint/parser": "npm:^8.49.0"
     custom-card-helpers: "npm:1.9.0"
     eslint: "npm:9.39.1"
     eslint-config-prettier: "npm:10.1.8"
