@@ -201,7 +201,7 @@ export class MassPlayerArtwork extends LitElement {
     `
   }
   protected shouldUpdate(_changedProperties: PropertyValues): boolean {
-    return super.shouldUpdate(_changedProperties)
+    return _changedProperties.size > 0
   }
   connectedCallback(): void {
     if (this.hasUpdated){
