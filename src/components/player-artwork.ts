@@ -103,7 +103,7 @@ export class MassPlayerArtwork extends LitElement {
         this?.carouselElement?.addEventListener('wa-slide-change', this.onSwipe);
         this._timeout = undefined;
       },
-      250
+      100
     )
   }
   private updateActiveSlide() {
