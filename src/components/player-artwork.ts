@@ -25,7 +25,7 @@ import {
 } from "../const/context";
 import { PlayerConfig } from "../config/player";
 import { MassCardController } from "../controller/controller";
-import { jsonMatch, playerHasUpdated } from "../utils/util";
+import { isActive, jsonMatch, playerHasUpdated } from "../utils/util";
 import { ExtendedHass, ExtendedHassEntity, QueueItem, QueueItems } from "../const/types";
 import { SlCarousel } from "@shoelace-style/shoelace";
 import { SLSwipeEvent } from "../const/events";
@@ -64,7 +64,6 @@ export class MassPlayerArtwork extends LitElement {
     if (!playerHasUpdated(this._activePlayer, player)) {
       return;
     }
-    this.updateActiveSlide();
     this._activePlayer = player;
   }
   public get activePlayer() {
@@ -80,7 +79,6 @@ export class MassPlayerArtwork extends LitElement {
     if (!this.carouselElement) {
       return;
     }
-    this.updateActiveSlide();
   }
   public get queue() {
     return this._queue;
@@ -119,8 +117,14 @@ export class MassPlayerArtwork extends LitElement {
     )
     if (idx >= 0 && idx != this.carouselElement?.activeSlide) {
       this.currentIdx = idx;
+      this.setActiveSlide(this.currentIdx)
     }
-    this.setActiveSlide(this.currentIdx)
+    setTimeout(
+      () => {
+        this.requestUpdate('activeSlide', 'fixed')
+      },
+      50
+    )
   }
 
   private onSwipe = (ev: SLSwipeEvent) => {
@@ -130,10 +134,6 @@ export class MassPlayerArtwork extends LitElement {
     }
     navigator.vibrate(VibrationPattern.Player.ACTION_SWIPE);
     const idx = ev.detail.index;
-    if (Math.abs(idx - (this?.currentIdx ?? 0)) > 1)  {
-      this.updateActiveSlide()
-      return;
-    }
     const item = this.queue[idx];
     const media_content_id = item.media_content_id;
     if (media_content_id == this.activePlayer.attributes.media_content_id) {
@@ -201,7 +201,7 @@ export class MassPlayerArtwork extends LitElement {
     `
   }
   protected shouldUpdate(_changedProperties: PropertyValues): boolean {
-    return super.shouldUpdate(_changedProperties)
+    return _changedProperties.size > 0
   }
   connectedCallback(): void {
     if (this.hasUpdated){
@@ -213,14 +213,26 @@ export class MassPlayerArtwork extends LitElement {
     if (this.carouselElement) {
       this.controller.ActivePlayer.carouselElement = this.carouselElement;
     } 
-    setTimeout(
-      () => {
-        this.updateActiveSlide();
-      },
-      500
-    )
     this?.carouselElement?.addEventListener('sl-slide-change', this.onSwipe)
   }
+  protected updated(_changedProperties: PropertyValues): void {
+    const wrongIdx = this.currentIdx != this.carouselElement?.activeSlide;
+    const playerChanged = _changedProperties.has('_activePlayer');
+    const queueChanged = _changedProperties.has('_queue');
+    const _isactive = isActive(this.hass, this.activePlayer, this.controller.ActivePlayer.activeEntityConfig);
+    const hasQueue = this.queue?.length;
+    if ( _isactive 
+      && hasQueue
+      && (
+         wrongIdx
+          || playerChanged
+          || queueChanged
+      )
+    ) {
+      this.updateActiveSlide();
+    }
+  }
+  
   static get styles(): CSSResultGroup {
     return styles;
   }
