@@ -1,4 +1,3 @@
-import { SlCarouselItem } from "@shoelace-style/shoelace";
 import { mediaBrowserSectionConfig, newMediaBrowserItemsConfig } from "./types";
 
 export type TargetValEvent = (ev: TargetValEventData) => void;
@@ -48,15 +47,6 @@ export interface ForceUpdatePlayerDataEventData {
   key: string;
   // eslint-disable-next-line @typescript-eslint/no-explicit-any,
   value: any;
-}
-
-export interface SLSwipeEvent extends CustomEvent {
-  detail: {
-    index: number;
-    slide: SlCarouselItem;
-  };
-  timeStamp: number;
-  stopPropagation(): void;
 }
 
 export interface MassQueueEvent {
