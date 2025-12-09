@@ -45,7 +45,6 @@ export default css`
     z-index: 1;
     will-change: transform;
     border-radius: 25% / 50%;
-    width: 25%;
   }
   .tabbed {
     --tabbed-elevation: var(--md-sys-elevation-level1);
