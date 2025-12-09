@@ -405,6 +405,7 @@ class MusicPlayerCard extends LitElement {
     return this.wrapTitleMarquee();
   }
   protected renderGroupedVolume() {
+    const expressive = this.cardConfig.expressive;
     const vol_level = this._groupVolumeLevel;
     return html`
       <div class="grouped-players-item grouped-volume">
@@ -416,7 +417,7 @@ class MusicPlayerCard extends LitElement {
             hide-label
           >
             <ha-svg-icon
-              class="grouped-players-select-item-icon"
+              class="grouped-players-select-item-icon ${expressive ? `expressive` : ``}"
               slot="start"
               .path=${this.Icons.SPEAKER_MULTIPLE}
             ></ha-svg-icon>
@@ -446,6 +447,9 @@ class MusicPlayerCard extends LitElement {
         item.name.length > 0
           ? item.name
           : this.hass.states[item.entity_id].attributes.friendly_name;
+      const state = this.hass.states[item.entity_id];
+      const img = state.attributes.entity_picture ?? state.attributes.entity_picture_local;
+      const fallback = state.attributes.entity_picture_local ?? this.Icons.SPEAKER;
       return html`
         <div class="grouped-players-item">
           <div class="player-name-icon">
@@ -455,11 +459,12 @@ class MusicPlayerCard extends LitElement {
               noninteractive
               hide-label
             >
-              <ha-svg-icon
-                class="grouped-players-select-item-icon"
+              <img 
+                class="grouped-players-select-item-image ${expressive ? `expressive` : ``}"
                 slot="start"
-                .path=${this.Icons.SPEAKER}
-              ></ha-svg-icon>
+                src="${img}"
+                onerror="this.src = '${fallback}';"
+              >
               <span slot="headline" class="grouped-title"> ${name} </span>
               <span slot="end">
 

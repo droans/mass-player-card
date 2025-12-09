@@ -274,28 +274,25 @@ export default css`
   }
   .grouped-players-select-item {
     width: 320px;
+    height: 100%;
   }
-  .grouped-players-select-item-icon {
-    height: 2em;
-    width: 2em;
+  .grouped-players-select-item-image, .grouped-players-select-item-icon {
+    height: 3em;
+    width: 3em;
+  }
+  .grouped-players-select-item-image.expressive {
+    border-radius: 12px;
+  }
+  .grouped-players-select-item-icon.expressive, .grouped-players-select-item-image.expressive {
+    margin-left: 14px;
+  }
+  .grouped-volume .player-name-icon {
+    margin-top: 10px;
     color: var(--md-sys-color-primary);
-  }
-  #players-select-menu,
-  #grouped-players-menu {
-    --control-select-menu-height: 2.5em;
   }
   
   .players-player-select-item {
     width: 320px;
-  }
-  .players-player-item-icon, .players-player-item-image {
-    height: 2em;
-    width: 2em;
-    color: var(--md-sys-color-primary);
-  }
-  #players-select-menu,
-  #grouped-players-menu {
-    --control-select-menu-height: 2.5em;
   }
 
   .player-track-artist {
