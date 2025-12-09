@@ -163,21 +163,39 @@ export function ensureThumbnail(img: string, hass: ExtendedHass): string {
   return img
 }
 
-export async function tryPrefetchImageWithFallbacks(img_url: string, fallbacks: string[], hass: ExtendedHass): Promise<string | boolean> {
-  const images = [
+export async function tryPrefetchImageWithFallbacks(img_url: string, fallbacks: string[], hass: ExtendedHass) {
+  const imgs = [
     img_url,
     ...fallbacks
   ];
-  const _promises = images.map(
-    async (img) => {
-      img = ensureThumbnail(img, hass);
-      return await tryPrefetchImage(img);
+  const img = await findFirstAccessibleImage(imgs, hass);
+  return img;
+}
+
+function findFirstAccessibleImage(urls: string[], hass: ExtendedHass) {
+  return new Promise(
+    (resolve, reject) => {
+      let index = 0;
+      
+      function tryNextImage() {
+        if (index >= urls.length) {
+          reject(new Error('No accessible images found'));
+          return;
+        }
+        const img = new Image();
+        const url = ensureThumbnail(urls[index], hass)
+        
+        img.onload = () => {
+          resolve(url);
+        };
+        
+        img.onerror = () => {
+          index++;
+          tryNextImage();
+        };
+        img.src = url;
+      }
+      tryNextImage();
     }
   )
-  const imgs = await Promise.all(_promises);
-  const result = imgs.find((img) => { return img })
-  if (!result) {
-    return false
-  }
-  return result  
 }
