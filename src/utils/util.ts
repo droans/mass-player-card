@@ -136,7 +136,13 @@ export async function tryPrefetchImage(image_url: string): Promise<string | bool
     return false;
   }
   try {
-    const response = await fetch(image_url)
+    const hdrs = {
+      method: 'GET',
+      headers: {
+        Accept: 'image',
+      }
+    }
+    const response = await fetch(image_url, hdrs)
     if (!response.ok) {
       return false
     }

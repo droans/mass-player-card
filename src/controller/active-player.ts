@@ -232,6 +232,7 @@ export class ActivePlayerController {
       return;
     }
     const config = { 
+      subtree: true,
       childList: true,
       attributes: true,
       attributeFilter: ["src", "data-playing"]
