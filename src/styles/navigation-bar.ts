@@ -44,8 +44,7 @@ export default css`
     background-color: var(--md-sys-color-secondary-container);
     z-index: 1;
     will-change: transform;
-    border-radius: 25% / 50%;
-    width: 25%;
+    border-radius: var(--default-border-radius);
   }
   .tabbed {
     --tabbed-elevation: var(--md-sys-elevation-level1);

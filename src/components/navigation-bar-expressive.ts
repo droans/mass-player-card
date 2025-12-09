@@ -251,11 +251,13 @@ class MassNavBar extends LitElement {
   }
   protected firstUpdated(): void {
     if (!this.tabIndicator) {
+      const tabs = this.navbar.querySelectorAll('a').length;
+      const width = Math.round((1 / Math.max(1, tabs)) * 100);
       const indicator = document.createElement('div');
       indicator.id = 'tab-indicator';
       const elem = this.getSectionElement(this.active_section);
       const left = elem?.offsetLeft ?? 0;
-      indicator.style = `left: ${left.toString()}px;`
+      indicator.style = `left: ${left.toString()}px; width: ${width.toString()}%;`
 
       const animation = document.createElement('wa-animation') as WaAnimation;
       animation.id = 'animation'
