@@ -17,36 +17,35 @@ import {
   QueueConfigErrors,
 } from "../config/player-queue";
 
-import { ExtendedHass } from "../const/common";
+import { ExtendedHass, QueueItem, QueueItems } from "../const/types";
 import {
-  activeEntityConf,
-  activeEntityID,
+  activeEntityConfContext,
+  activeEntityIDContext,
   activePlayerControllerContext,
   activeSectionContext,
   EntityConfig,
-  hassExt,
+  hassContext,
   IconsContext,
   mediaCardDisplayContext,
   playerQueueConfigContext,
   queueContext,
   queueControllerContext,
 } from "../const/context";
-import { QueueItem, QueueItems } from "../const/player-queue";
 
 import styles from "../styles/player-queue";
-import { Sections } from "../const/card";
-import { ActivePlayerController } from "../controller/active-player.js";
-import { QueueController } from "../controller/queue.js";
-import { jsonMatch } from "../utils/util.js";
-import { getTranslation } from "../utils/translations.js";
-import { Icons } from "../const/icons.js";
-import { WaAnimation } from "../const/elements.js";
+import { Sections } from "../const/enums";
+import { ActivePlayerController } from "../controller/active-player";
+import { QueueController } from "../controller/queue";
+import { jsonMatch } from "../utils/util";
+import { getTranslation } from "../utils/translations";
+import { Icons } from "../const/icons";
+import { WaAnimation } from "../const/elements";
 
 class QueueCard extends LitElement {
   @consume({ context: activePlayerControllerContext })
   private activePlayerController!: ActivePlayerController;
 
-  @consume({ context: activeEntityConf, subscribe: true })
+  @consume({ context: activeEntityConfContext, subscribe: true })
   private entityConf!: EntityConfig;
 
   @consume({ context: IconsContext, subscribe: true })
@@ -121,7 +120,7 @@ class QueueCard extends LitElement {
   public get activeSection() {
     return this._section;
   }
-  @consume({ context: hassExt, subscribe: true })
+  @consume({ context: hassContext, subscribe: true })
   public set hass(hass: ExtendedHass) {
     if (!hass) {
       return;
@@ -132,7 +131,7 @@ class QueueCard extends LitElement {
     return this._hass;
   }
 
-  @consume({ context: activeEntityID, subscribe: true })
+  @consume({ context: activeEntityIDContext, subscribe: true })
   @property({ attribute: false })
   public set active_player_entity(active_player_entity: string) {
     this._active_player_entity = active_player_entity;
@@ -243,29 +242,37 @@ class QueueCard extends LitElement {
       return result;
     });
   }
+  protected renderClearQueueButton(): TemplateResult {
+    const expressive = this.activePlayerController.useExpressive;
+    const hide = this.config.hide.clear_queue_button || this.entityConf.hide.queue.clear_queue_button;
+    if (hide) {
+      return html``
+    }
+    return html`
+      <mass-player-card-button
+        .onPressService=${this.onClearQueue}
+        role="filled"
+        size="small"
+        elevation=1
+        id="button-back"
+        class="button-min ${expressive ? `button-expressive` : ``}"
+      >
+        <ha-svg-icon
+          .path=${this.Icons.CLEAR}
+          class="header-icon"
+        ></ha-svg-icon>
+      </mass-player-card-button>
+    `
+  }
   protected renderHeader(): TemplateResult {
     const label = getTranslation("queue.header", this.hass) as string;
-    const expressive = this.activePlayerController.useExpressive;
     return html`
       <mass-section-header>
         <span slot="label" id="title">
           ${label}
         </span>
         <span slot="end" id="clear-queue">
-
-          <mass-player-card-button
-            .onPressService=${this.onClearQueue}
-            role="filled"
-            size="small"
-            elevation=1
-            id="button-back"
-            class="button-min ${expressive ? `button-expressive` : ``}"
-          >
-            <ha-svg-icon
-              .path=${this.Icons.CLEAR}
-              class="header-icon"
-            ></ha-svg-icon>
-          </mass-player-card-button>
+          ${this.renderClearQueueButton()}
         </span>
       </mass-section-header>
     `;

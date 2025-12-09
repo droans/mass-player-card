@@ -1,5 +1,5 @@
 /* eslint-disable no-console */
-import { ExtendedHass } from "../const/common";
+import { ExtendedHass } from "../const/types";
 
 export default class PlayersActions {
   private _hass!: ExtendedHass;

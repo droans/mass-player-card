@@ -95,7 +95,6 @@ export default css`
   .button {
     margin: 0.15rem;
     border-radius: var(--player-row-border-radius);
-    background: var(--media-row-background-color);
     height: var(--media-row-height);
   }
 
@@ -156,6 +155,7 @@ export default css`
   .svg-action-button {
     height: var(--row-icon-button-height);
     width: var(--row-icon-button-height);
+    color: var(--md-sys-color-on-secondary-container, var(--md-sys-color-on-secondary-container)) !important;
   }
   .svg-action-button-expressive {
     color: var(--expressive-row-button-color-text);

@@ -10,20 +10,30 @@ import {
   activeSectionContext,
   controllerContext,
   IconsContext,
-} from "../const/context.js";
+} from "../const/context";
 import { consume } from "@lit/context";
-import { state } from "lit/decorators.js";
-import { Sections } from "../const/card.js";
-import { Config } from "../config/config.js";
-import { MassCardController } from "../controller/controller.js";
-import { MediaBrowser } from "../sections/media-browser.js";
-import { Icons } from "../const/icons.js";
+import { query, state } from "lit/decorators.js";
+import { Sections } from "../const/enums";
+import { Config } from "../config/config";
+import { MassCardController } from "../controller/controller";
+import { MediaBrowser } from "../sections/media-browser";
+import { Icons } from "../const/icons";
+import { WaAnimation } from "../const/elements";
 
 class MassNavBar extends LitElement {
   private _controller!: MassCardController;
   private _config!: Config;
   private _activeSection!: Sections;
   @consume({ context: IconsContext }) private Icons!: Icons;
+  @query('#tab-music-player') playerTab?: HTMLAnchorElement;
+  @query('#tab-queue') queueTab?: HTMLAnchorElement;
+  @query('#tab-media-browser') browserTab?: HTMLAnchorElement;
+  @query('#tab-players') playersTab?: HTMLAnchorElement;
+  @query('#tab-indicator') tabIndicator!: HTMLDivElement;
+  @query('#animation') animationElement!: WaAnimation;
+  @query('#navigation') navbar!: HTMLDivElement;
+  private animationLength = 350;
+  private animating = false;
 
   @consume({ context: activeSectionContext, subscribe: true })
   @state()
@@ -57,6 +67,8 @@ class MassNavBar extends LitElement {
   }
 
   private handleTabChanged = (section: Sections) => {
+    const cur_section = this.active_section;
+    this.animateTabChange(cur_section, section);
     this.setActiveSection(section);
     if (section == Sections.MEDIA_BROWSER) {
       this.returnMediaBrowserToHome();
@@ -71,6 +83,100 @@ class MassNavBar extends LitElement {
     }
     el.resetActiveSections();
   };
+  private getSectionElement(section: Sections): HTMLAnchorElement | undefined {
+    const elems = {
+      'media-browser': this.browserTab,
+      'music-player': this.playerTab,
+      'queue': this.queueTab,
+      'players': this.playersTab,
+    }
+    return elems[section];
+  }
+  private animateBounceLeft(from_element: HTMLAnchorElement, to_element: HTMLAnchorElement): Keyframe {
+    const from_left = from_element.offsetLeft;
+    const from_width = from_element.offsetWidth;
+
+    const to_left = to_element.offsetLeft;
+    const to_width = to_element.offsetWidth;
+    
+    const bounce_move = to_width * 0.2;
+
+    const bounce_left = Math.max(0, to_left - bounce_move);
+    const bounce_width = bounce_left > 0 ? to_width : to_width - bounce_move
+    const extra_left = to_left == 0 ? (bounce_move / 2) : 0;
+    const translate_x = bounce_left - from_left - extra_left;
+    const scale_x = bounce_width / from_width;
+
+    return {
+      transform: `translateX(${translate_x.toString()}px) scaleX(${scale_x.toString()})`,
+      offset: 0.8,
+    }
+  }
+  private animateBounceRight(from_element: HTMLAnchorElement, to_element: HTMLAnchorElement): Keyframe {
+    const from_left = from_element.offsetLeft;
+    const from_width = from_element.offsetWidth;
+
+    const to_left = to_element.offsetLeft;
+    const to_width = to_element.offsetWidth;
+    
+    const bounce_move = to_width * 0.2;
+    const navbarWidth = this.navbar.offsetWidth;
+    const to_elem_x_end = to_left + to_width;
+    
+    const bounce_left = to_left + bounce_move;
+    const bounce_width = to_elem_x_end >= navbarWidth ? navbarWidth - bounce_left : to_width;
+    const extra_left = to_elem_x_end >= navbarWidth ? (bounce_move / 2) : 0;
+    const translate_x = bounce_left - from_left - extra_left;
+    const scale_x = bounce_width / from_width;
+    return {
+      transform: `translateX(${translate_x.toString()}px) scaleX(${scale_x.toString()})`,
+      offset: 0.8,
+    }
+  }
+  private animateTabChange(from_section: Sections, to_section: Sections) {
+    this.animating = true;
+    if (from_section == to_section) {
+      return;
+    }
+    const from_elem = this.getSectionElement(from_section);
+    const to_elem = this.getSectionElement(to_section);
+    if (!from_elem || !to_elem) {
+      return;
+    }
+    const from_width = from_elem.offsetWidth;
+    const from_left = from_elem.offsetLeft;
+    const to_width = to_elem.offsetWidth;
+    const to_left = to_elem.offsetLeft;
+    const bounce = (from_left - to_left > 0) 
+      ? this.animateBounceLeft(from_elem, to_elem) 
+      : this.animateBounceRight(from_elem, to_elem)
+    
+    const translate_x = to_left - from_left;
+    const scale_x = to_width / from_width;
+    
+    const _keyframes = [
+      
+      {
+        transform: `translateX(${translate_x.toString()}px) scaleX(${scale_x.toString()})`,
+        offset: 0.6,
+      },
+      bounce,
+      {
+        transform: `translateX(${translate_x.toString()}px) scaleX(${scale_x.toString()})`,
+      }
+    ]
+    const animation = this.animationElement;
+    animation.keyframes = _keyframes;
+    animation.addEventListener(
+      'wa-finish',
+      () => {
+        this.animating = false;
+        this.tabIndicator.style.left = `${to_left.toString()}px`;
+        this.tabIndicator.style.width = `${to_width.toString()}px`;
+      }
+    )
+    animation.play = true;
+  }
 
   protected renderMusicPlayerTab(): TemplateResult {
     const section = Sections.MUSIC_PLAYER;
@@ -108,7 +214,8 @@ class MassNavBar extends LitElement {
     const active = this.active_section == section;
     return html`
       <a
-        class="${active ? `active active-expressive` : ``} player-tabs"
+        id="tab-${section}"
+        class="player-tabs"
         @click=${() => {
           this.handleTabChanged(section);
         }}
@@ -125,7 +232,7 @@ class MassNavBar extends LitElement {
   protected render(): TemplateResult {
     return html`
       <div>
-        <nav class="tabbed tabbed-expressive">
+        <nav id="navigation" class="tabbed tabbed-expressive">
           <link
             href="https://cdn.jsdelivr.net/npm/beercss@3.12.11/dist/cdn/beer.min.css"
             rel="stylesheet"
@@ -141,6 +248,24 @@ class MassNavBar extends LitElement {
       return false;
     }
     return _changedProperties.size > 0;
+  }
+  protected firstUpdated(): void {
+    if (!this.tabIndicator) {
+      const tabs = this.navbar.querySelectorAll('a').length;
+      const width = Math.round((1 / Math.max(1, tabs)) * 100);
+      const indicator = document.createElement('div');
+      indicator.id = 'tab-indicator';
+      const elem = this.getSectionElement(this.active_section);
+      const left = elem?.offsetLeft ?? 0;
+      indicator.style = `left: ${left.toString()}px; width: ${width.toString()}%;`
+
+      const animation = document.createElement('wa-animation') as WaAnimation;
+      animation.id = 'animation'
+      animation.duration = this.animationLength;
+      animation.iterations = 1;
+      animation.appendChild(indicator)
+      this.navbar.appendChild(animation)
+    }
   }
   static get styles(): CSSResultGroup {
     return styles;

@@ -1,23 +1,18 @@
 import { ContextProvider } from "@lit/context";
-import BrowserActions from "../actions/browser-actions.js";
-import { Config } from "../config/config.js";
+import BrowserActions from "../actions/browser-actions";
+import { Config } from "../config/config";
 import {
   customSection,
   FavoriteItemConfig,
   MediaBrowserConfig,
-} from "../config/media-browser.js";
+} from "../config/media-browser";
 import {
-  ExtendedHass,
   MediaTypes,
   Thumbnail,
-} from "../const/common.js";
+} from "../const/enums";
 import {
   DEFAULT_SEARCH_LIMIT,
-  MediaCardItem,
-  MediaLibraryItem,
-  newMediaBrowserItemsConfig,
-  RecommendationSection,
-} from "../const/media-browser.js";
+} from "../const/media-browser";
 import {
   generateCustomSectionCards,
   generateFavoriteCard,
@@ -25,10 +20,11 @@ import {
   generateRecentsCard,
   generateRecommendationsCard,
   generateRecommendationSectionCards,
-} from "../utils/media-browser.js";
-import { mediaBrowserCardsContext } from "../const/context.js";
-import { jsonMatch } from "../utils/util.js";
-import { CardsUpdatedEventDetail } from "../const/events.js";
+} from "../utils/media-browser";
+import { mediaBrowserCardsContext } from "../const/context";
+import { jsonMatch } from "../utils/util";
+import { CardsUpdatedEventDetail } from "../const/events";
+import { ExtendedHass, MediaCardItem, MediaLibraryItem, newMediaBrowserItemsConfig, RecommendationSection } from "../const/types";
 
 export class MediaBrowserController {
   private hass!: ExtendedHass;
@@ -153,7 +149,7 @@ export class MediaBrowserController {
       this.activeEntityId,
       media_type,
       limit,
-      favorites_only,
+      favorites_only ? true : null,
     );
     return [
       ...generateFavoritesSectionCards(resp, media_type),

@@ -22,14 +22,12 @@ import "../components/volume-slider";
 import PlayerActions from "../actions/player-actions";
 
 import {
-  ExtendedHass,
-  ExtendedHassEntity,
   MediaTypes,
   Thumbnail,
-} from "../const/common";
+} from "../const/enums";
 import {
-  activeEntityConf,
-  activeMediaPlayer,
+  activeEntityConfContext,
+  activeMediaPlayerContext,
   activePlayerControllerContext,
   activePlayerDataContext,
   configContext,
@@ -38,25 +36,25 @@ import {
   EntityConfig,
   groupedPlayersContext,
   groupVolumeContext,
-  hassExt,
+  hassContext,
   IconsContext,
   musicPlayerConfigContext,
 } from "../const/context";
-import { ListItemData, MediaLibraryItem } from "../const/media-browser";
-import { ForceUpdatePlayerDataEvent, PlayerData, PLAYLIST_DIALOG_MAX_ITEMS, PlaylistDialogItem } from "../const/music-player";
+import { ExtendedHass, ExtendedHassEntity, ListItemData, MediaLibraryItem, PlayerData, PlaylistDialogItem } from "../const/types";
+import { PLAYLIST_DIALOG_MAX_ITEMS } from "../const/music-player";
 
 import styles from "../styles/music-player";
 
 import { PlayerSelectedService } from "../const/actions";
 import { ArtworkSize, PlayerConfig } from "../config/player";
 import { ActivePlayerController } from "../controller/active-player";
-import { Config } from "../config/config.js";
-import { Icons } from "../const/icons.js";
-import { isActive, jsonMatch, playerHasUpdated } from "../utils/util.js";
-import { MassCardController } from "../controller/controller.js";
-import { DetailValEventData, JoinUnjoinEventData, TargetValEventData } from "../const/events.js";
-import { asyncImageURLWithFallback } from "../utils/thumbnails.js";
-import { DialogElement } from "../const/elements.js";
+import { Config } from "../config/config";
+import { Icons } from "../const/icons";
+import { isActive, jsonMatch, playerHasUpdated } from "../utils/util";
+import { MassCardController } from "../controller/controller";
+import { DetailValEventData, ForceUpdatePlayerDataEvent, JoinUnjoinEventData, MenuButtonEventData } from "../const/events";
+import { asyncImageURLWithFallback } from "../utils/thumbnails";
+import { DialogElement } from "../const/elements";
 
 class MusicPlayerCard extends LitElement {
   @query('#dialog-favorites') favoritesDialog!: DialogElement;
@@ -98,7 +96,7 @@ class MusicPlayerCard extends LitElement {
   @state()
   private _activePlayerController!: ActivePlayerController;
 
-  @consume({ context: activeEntityConf, subscribe: true })
+  @consume({ context: activeEntityConfContext, subscribe: true })
   public set activeEntityConfig(entity: EntityConfig) {
     this._activeEntityConfig = entity;
     void this.updatePlaylists()
@@ -110,7 +108,7 @@ class MusicPlayerCard extends LitElement {
     return this?.activePlayerController?.activeMediaPlayer;
   }
 
-  @consume({ context: activeMediaPlayer, subscribe: true })
+  @consume({ context: activeMediaPlayerContext, subscribe: true })
   @state()
   private set activeEntity(entity: ExtendedHassEntity) {
     if (!playerHasUpdated(this._activeEntity, entity)) {
@@ -122,7 +120,7 @@ class MusicPlayerCard extends LitElement {
     return this._activeEntity;
   }
 
-  @consume({ context: hassExt, subscribe: true })
+  @consume({ context: hassContext, subscribe: true })
   public set hass(hass: ExtendedHass) {
     if (hass) {
       this.actions = new PlayerActions(hass);
@@ -250,7 +248,7 @@ class MusicPlayerCard extends LitElement {
       this.activeEntityConfig.entity_id,
       MediaTypes.PLAYLIST,
       PLAYLIST_DIALOG_MAX_ITEMS,
-      false
+      null
     );
     const _promises = playlistData.map(
       (playlist) => {
@@ -287,19 +285,17 @@ class MusicPlayerCard extends LitElement {
       @typescript-eslint/no-unsafe-assignment
     */
   };
-  private onPlayerSelect = (ev: TargetValEventData) => {
+  private onPlayerSelect = (ev: MenuButtonEventData) => {
     ev.stopPropagation();
-    const target = ev.target;
-    const player = target.value;
+    const target = ev.detail;
+    const player = target.option;
     if (!player.length) {
       return;
     }
     this.selectedPlayerService(player);
-    target.value = "";
   };
-  private onUnjoinSelect = (ev) => {
-    const e = ev as JoinUnjoinEventData;
-    const ent = e.target.entity;
+  private onUnjoinSelect = (ev: JoinUnjoinEventData) => {
+    const ent = ev.target.entity;
     void this.actions.actionUnjoinPlayers(ent);
   };
   private onGroupVolumeChange = (ev: DetailValEventData) => {
@@ -409,6 +405,7 @@ class MusicPlayerCard extends LitElement {
     return this.wrapTitleMarquee();
   }
   protected renderGroupedVolume() {
+    const expressive = this.cardConfig.expressive;
     const vol_level = this._groupVolumeLevel;
     return html`
       <div class="grouped-players-item grouped-volume">
@@ -420,7 +417,7 @@ class MusicPlayerCard extends LitElement {
             hide-label
           >
             <ha-svg-icon
-              class="grouped-players-select-item-icon"
+              class="grouped-players-select-item-icon ${expressive ? `expressive` : ``}"
               slot="start"
               .path=${this.Icons.SPEAKER_MULTIPLE}
             ></ha-svg-icon>
@@ -444,11 +441,15 @@ class MusicPlayerCard extends LitElement {
     const players = this.groupedPlayers;
     const ct = players.length;
     const expressive = this.cardConfig.expressive;
+    const role = this.controller.config.expressive_scheme == "vibrant" ? `tonal` : `filled-variant`
     return this.groupedPlayers.map((item, idx) => {
       const name =
         item.name.length > 0
           ? item.name
           : this.hass.states[item.entity_id].attributes.friendly_name;
+      const state = this.hass.states[item.entity_id];
+      const img = state.attributes.entity_picture ?? state.attributes.entity_picture_local;
+      const fallback = state.attributes.entity_picture_local ?? this.Icons.SPEAKER;
       return html`
         <div class="grouped-players-item">
           <div class="player-name-icon">
@@ -458,17 +459,18 @@ class MusicPlayerCard extends LitElement {
               noninteractive
               hide-label
             >
-              <ha-svg-icon
-                class="grouped-players-select-item-icon"
+              <img 
+                class="grouped-players-select-item-image ${expressive ? `expressive` : ``}"
                 slot="start"
-                .path=${this.Icons.SPEAKER}
-              ></ha-svg-icon>
+                src="${img}"
+                onerror="this.src = '${fallback}';"
+              >
               <span slot="headline" class="grouped-title"> ${name} </span>
               <span slot="end">
 
                 <mass-player-card-button
                   .onPressService=${this.onUnjoinSelect}
-                  role="filled-variant"
+                  role="${role}"
                   size="small"
                   elevation=1
                   class="grouped-button-unjoin ${expressive
@@ -486,7 +488,9 @@ class MusicPlayerCard extends LitElement {
               </span>
             </ha-md-list-item>
           </div>
-          <ha-md-list-item>
+          <ha-md-list-item
+            class="grouped-players-volume-item"
+          >
             <mass-volume-slider
               class="grouped-players-volume-slider"
               maxVolume=${item.max_volume}
@@ -546,14 +550,16 @@ class MusicPlayerCard extends LitElement {
   }
   protected renderPlayerItems() {
     return this.playerEntities.map((item) => {
-      const name =
-        item.name.length > 0
-          ? item.name
-          : this.hass.states[item.entity_id].attributes.friendly_name;
+    const ent = this.hass.states[item.entity_id];
+    const name = item.name.length > 0 ? item.name : ent?.attributes?.friendly_name ?? `Missing- ${item.entity_id}`;
       const r: ListItemData = {
         option: item.entity_id,
         icon: this.Icons.SPEAKER,
         title: name ?? item.name,
+        image: {
+          url: ent?.attributes?.entity_picture_local ?? ``,
+          fallback: ent?.attributes?.entity_picture ?? ``
+        }
       };
       return r;
     });
@@ -595,9 +601,11 @@ class MusicPlayerCard extends LitElement {
             ? `menu-header-expressive`
             : ``}"
           .iconPath=${this.Icons.SPEAKER}
-          .onSelectAction=${this.onPlayerSelect}
           .initialSelection=${this.activeEntity.entity_id}
           .items=${this.renderPlayerItems()}
+          @menu-item-selected=${this.onPlayerSelect}
+          dividers
+          use-md
         ></mass-menu-button>
       </span>
     `;
@@ -634,7 +642,7 @@ class MusicPlayerCard extends LitElement {
     `;
   }
   protected renderArtwork() {
-    return html` <mass-artwork></mass-artwork> `;
+    return html` <mpc-artwork></mpc-artwork>`;
   }
   protected renderVolumeRow() {
     return html`

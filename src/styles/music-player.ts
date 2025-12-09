@@ -12,18 +12,12 @@ export default css`
     border-radius: 10px;
   }
 
-  mass-artwork {
+  mpc-artwork {
     display: flex;
     justify-content: center;
   }
 
-  #active-track-lg {
-    width: 100%;
-  }
-  #active-track-med {
-    width: 100%;
-  }
-  #active-track-sm {
+  #active-track-lg, #active-track-med, #active-track-sm {
     width: 100%;
   }
 
@@ -33,18 +27,8 @@ export default css`
     -webkit-transform: translate3d(0, 0, -1px);
     position: relative;
   }
-  .active-track-text-expressive {
-  }
   .active-track-text-rounded {
     border-radius: 8px 8px 0px 0px;
-  }
-
-  .bg-art-lg {
-    z-index: 1;
-  }
-  .bg-art-med {
-  }
-  .bg-art-sm {
   }
 
   #container {
@@ -54,30 +38,22 @@ export default css`
     border-radius: var(--expressive-border-radius-container);
   }
 
-  .controls-art-lg {
-  }
-  .controls-art-med {
-  }
-  .controls-art-sm {
-  }
-
   #dialog-favorites { 
     --dialog-content-padding: 12px;
   }
-  .dialog-playlist-item { /* button, button-active */
+  .dialog-playlist-item {
     margin: 0.15rem;
     border-radius: var(--media-row-border-radius);
-    background: var(--media-row-background-color);
     height: var(--media-row-height);
   }
-  #dialog-favorites-expressive .dialog-playlist-item { /* button-expressive, button-expressive-active */
+  #dialog-favorites-expressive .dialog-playlist-item {
     background-color: var(--expressive-row-color) !important;
     --md-list-item-hover-state-layer-color: var(--md-sys-color-on-surface);
     border-radius: var(--default-border-radius);
     --md-ripple-hover-color: var(--md-sys-color-on-surface);
     --md-ripple-pressed-color: var(--md-sys-color-on-surface);
   }
-  .dialog-playlist-thumbnail { /* thumbnail */
+  .dialog-playlist-thumbnail {
     width: var(--media-row-thumbnail-height);
     height: var(--media-row-thumbnail-height);
     background-size: contain;
@@ -87,7 +63,7 @@ export default css`
     margin-left: 14px;
 
   }
-  .dialog-playlist-title { /* title */
+  .dialog-playlist-title {
     font-size: 1.1rem;
     overflow: hidden;
     text-overflow: ellipsis;
@@ -113,25 +89,26 @@ export default css`
   }
 
   .divider {
-    margin-top: 4px;
+    margin-top: 2px;
+    margin-bottom: 2px;
   }
   .divider::before {
     content: " ";
     display: block;
     height: 1px;
     background-color: var(--divider-color);
-    margin-left: 8px;
-    margin-right: 8px;
+    margin-left: 24px;
+    margin-right: 24px;
   }
-
+  .grouped-players-volume-item {
+    --md-list-item-top-space: 0px;
+  }
   .header-art-lg {
     z-index: 2;
     position: relative;
   }
   .header-art-lg::part(header) {
     z-index: 0;
-  }
-  .header-art-med {
   }
   .header-art-sm {
     position: relative;
@@ -164,6 +141,12 @@ export default css`
     --button-padding: 0px;
     align-content: center;
   }
+  #grouped-players-menu ha-md-list-item:not(.grouped-players-volume-item) {
+    padding-right: 12px;
+  }
+  #grouped-players-menu ha-md-list-item {
+    padding-left: 12px;
+  }
   .grouped-svg-unjoin {
     --button-button-height: var(--row-icon-button-height);
     width: var(--row-icon-button-height);
@@ -175,22 +158,13 @@ export default css`
     color: var(--expressive-row-button-color-text-hover);
   }
 
-  .marquee-pause-end {
-    left: var(--marquee-left-offset);
-    position: relative;
-  }
-  .marquee {
-    animation: marquee var(--marquee-time) linear 2s;
-    animation-iteration-count: infinite;
-    position: relative;
-  }
-
   .media-controls {
-    backdrop-filter: blur(3px);
+    backdrop-filter: blur(8px);
     background: var(--player-blur-color);
     position: absolute;
     bottom: 0;
     width: 100%;
+    mask: linear-gradient(transparent, black 5%, black);
   }
 
   .media-controls:not(.media-controls-expressive) {
@@ -232,11 +206,11 @@ export default css`
     background-position: center;
     background-size: 22em;
     position: relative;
-    border-top-left-radius: 28px;
-    border-top-right-radius: 28px;
+    border-top-left-radius: var(--default-border-radius);
+    border-top-right-radius: var(--default-border-radius);
   }
   .player-card-expressive {
-    background-color: var(--md-sys-color-background);
+    background-color: var(--md-sys-color-background, var(--ha-card-background));
     border-radius: 8px 8px 0px 0px;
   }
   #player-card-header {
@@ -247,21 +221,37 @@ export default css`
     border-radius: var(--default-border-radius) var(--default-border-radius) 0px
       0px;
   }
-  .player-card-header {
+  .player-card-header::before {
     background: linear-gradient(
       var(--player-blur-color) 90%,
       transparent
     ) !important;
   }
-  .player-card-header-expressive {
+  .player-card-header-expressive::before {
+    content: '';
+    height: 100%;
+    width: 100%;
+    display: block;
+    position: absolute;
+    top: 0;
+    mask: linear-gradient(black, black 95%, transparent);
     background: linear-gradient(
       var(--expressive-player-blur-color) 90%,
       transparent
     ) !important;
+    
   }
-  .player-card-header,
-  .player-card-header-expressive {
-    backdrop-filter: blur(3px);
+  #player-card-header::before {
+    content: '';
+    height: 100%;
+    width: 100%;
+    display: block;
+    position: absolute;
+    top: 0;
+    mask: linear-gradient(black, black 95%, transparent);
+    backdrop-filter: blur(8px);
+    border-radius: var(--default-border-radius) var(--default-border-radius) 0px 0px;
+    overflow: hidden;
   }
   .player-header {
     margin: 0em 1.75em 0em 1.75em;
@@ -284,16 +274,25 @@ export default css`
   }
   .grouped-players-select-item {
     width: 320px;
+    height: 100%;
   }
-  .players-select-item-icon,
-  .grouped-players-select-item-icon {
-    height: 2em;
-    width: 2em;
+  .grouped-players-select-item-image, .grouped-players-select-item-icon {
+    height: 3em;
+    width: 3em;
+  }
+  .grouped-players-select-item-image.expressive {
+    border-radius: 12px;
+  }
+  .grouped-players-select-item-icon.expressive, .grouped-players-select-item-image.expressive {
+    margin-left: 14px;
+  }
+  .grouped-volume .player-name-icon {
+    margin-top: 10px;
     color: var(--md-sys-color-primary);
   }
-  #players-select-menu,
-  #grouped-players-menu {
-    --control-select-menu-height: 2.5em;
+  
+  .players-player-select-item {
+    width: 320px;
   }
 
   .player-track-artist {
@@ -306,7 +305,7 @@ export default css`
   }
   .player-track-title {
     font-size: 1.5rem;
-    color: var(--player-track-color, var(--md-sys-color-primary));
+    color: var(--md-sys-color-on-primary-container);
     white-space: nowrap;
     text-overflow: clip;
     text-shadow: 0px 0px var(--md-sys-color-primary);
@@ -315,8 +314,6 @@ export default css`
   #players-select-menu::part(menu-button),
   #grouped-players-menu::part(menu-button) {
     --ha-ripple-color: rgba(0, 0, 0, 0);
-  }
-  #players-select-menu::part(menu-list-item) {
   }
   #players-select-menu::part(menu-list-item-svg) {
     height: 2em;
@@ -345,18 +342,5 @@ export default css`
   }
   .vol-art-lg::part(volume-div) {
     z-index: 0;
-  }
-  .vol-art-med {
-  }
-  .vol-art-sm {
-  }
-
-  @keyframes marquee {
-    from {
-      left: 0px;
-    }
-    to {
-      left: var(--marquee-left-offset);
-    }
   }
 `;

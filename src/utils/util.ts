@@ -1,11 +1,12 @@
 import { Config, EntityConfig } from "../config/config";
-import { DEFAULT_SECTION_PRIORITY, Sections } from "../const/card";
+import { DEFAULT_SECTION_PRIORITY } from "../const/card";
 import {
-  ExtendedHass,
-  ExtendedHassEntity,
   MAX_ACTIVE_LAST_ACTIVE_DURATION,
-} from "../const/common.js";
-import { MUSIC_ASSISTANT_APP_NAME, QueueItem } from "../const/player-queue.js";
+} from "../const/common";
+import { Sections, Thumbnail } from "../const/enums";
+import { MUSIC_ASSISTANT_APP_NAME } from "../const/player-queue";
+import { ExtendedHass, ExtendedHassEntity, QueueItem } from "../const/types";
+import { getThumbnail } from "./thumbnails.js";
 
 export function testMixedContent(url: string) {
   try {
@@ -103,15 +104,18 @@ export function isActive(
   entity: ExtendedHassEntity,
   entity_config: EntityConfig,
 ): boolean {
+  if (!entity || !hass) {
+    return false
+  }
   const inactive_states = entity_config.inactive_when_idle
     ? ["off", "idle"]
     : ["off"];
-  const not_off = !inactive_states.includes(entity.state);
+  const not_off = !inactive_states.includes(entity?.state);
   const has_item = !!entity?.attributes?.media_content_id;
-  const is_mass = entity.attributes.app_id == MUSIC_ASSISTANT_APP_NAME;
-  const has_queue = !!entity.attributes?.active_queue;
+  const is_mass = entity?.attributes?.app_id == MUSIC_ASSISTANT_APP_NAME;
+  const has_queue = !!entity?.attributes?.active_queue;
   const connected = hass.connected;
-  const updated_ms = new Date(entity.last_updated).getTime();
+  const updated_ms = new Date(entity?.last_updated).getTime();
   const now_ms = new Date().getTime();
   const updated_recently =
     now_ms - updated_ms <= MAX_ACTIVE_LAST_ACTIVE_DURATION;
@@ -121,8 +125,77 @@ export function isActive(
 }
 
 // eslint-disable-next-line @typescript-eslint/no-explicit-any
-export function jsonMatch(objectA: any, objectB: any) {
+export function jsonMatch(objectA: any, objectB: any): boolean {
   const jsonA = JSON.stringify(objectA);
   const jsonB = JSON.stringify(objectB);
   return jsonA == jsonB;
+}
+
+export async function tryPrefetchImage(image_url: string): Promise<string | boolean> {
+  if (!image_url?.length || image_url.length < 10) {
+    return false;
+  }
+  try {
+    const hdrs = {
+      method: 'GET',
+      headers: {
+        Accept: 'image',
+      }
+    }
+    const response = await fetch(image_url, hdrs)
+    if (!response.ok) {
+      return false
+    }
+    const blob = await response.blob();
+    return URL.createObjectURL(blob);
+  } catch {
+    return false
+  }
+}
+
+export function ensureThumbnail(img: string, hass: ExtendedHass): string {
+  // Returns a URL encodable image
+  // If `img` is a Thumbnail enum, returns the image related to the enum.
+  // Otherwise, returns `img`
+  if (Object.values(Thumbnail).includes(img as Thumbnail)) {
+    return getThumbnail(hass, img as Thumbnail)
+  }
+  return img
+}
+
+export async function tryPrefetchImageWithFallbacks(img_url: string, fallbacks: string[], hass: ExtendedHass) {
+  const imgs = [
+    img_url,
+    ...fallbacks
+  ];
+  const img = await findFirstAccessibleImage(imgs, hass);
+  return img;
+}
+
+function findFirstAccessibleImage(urls: string[], hass: ExtendedHass) {
+  return new Promise(
+    (resolve, reject) => {
+      let index = 0;
+      
+      function tryNextImage() {
+        if (index >= urls.length) {
+          reject(new Error('No accessible images found'));
+          return;
+        }
+        const img = new Image();
+        const url = ensureThumbnail(urls[index], hass)
+        
+        img.onload = () => {
+          resolve(url);
+        };
+        
+        img.onerror = () => {
+          index++;
+          tryNextImage();
+        };
+        img.src = url;
+      }
+      tryNextImage();
+    }
+  )
 }

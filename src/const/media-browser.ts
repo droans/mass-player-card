@@ -1,64 +1,9 @@
-import { TemplateResult } from "lit";
-
-import { EnqueueOptions } from "./actions";
-import { Thumbnail, MediaTypes, ExtendedHass } from "./common";
-import { Icons } from "./icons.js";
-import { getTranslation } from "../utils/translations.js";
-import { MediaBrowserConfig } from "../config/media-browser.js";
-import {
-  getRecommendationsServiceResponse,
-  recommendationItem,
-  recommendationItems,
-  recommendationSection,
-} from "mass-queue-types/packages/mass_queue/actions/get_recommendations";
-import { MediaItem } from "mass-queue-types/packages/music_assistant/types.js";
-
-export interface MediaBrowserItem {
-  name: string;
-  media_content_id: string;
-  media_content_type: MediaTypes;
-  image: string;
-}
-export interface FavoriteItems {
-  albums: MediaBrowserItem[];
-  artists: MediaBrowserItem[];
-  audiobooks: MediaBrowserItem[];
-  playlists: MediaBrowserItem[];
-  podcasts: MediaBrowserItem[];
-  radios: MediaBrowserItem[];
-  tracks: MediaBrowserItem[];
-}
-export interface MediaCardData {
-  type?: string;
-  subtype?: string;
-  section?: string;
-  media_content_id?: string;
-  media_content_type?: string;
-  service?: string;
-}
-export interface MediaCardItem {
-  title: string;
-  thumbnail: string;
-  fallback: Thumbnail;
-  data: MediaCardData;
-  background?: TemplateResult;
-}
-
-export interface mediaBrowserSectionConfig {
-  main: MediaCardItem[];
-  [str: string]: MediaCardItem[];
-}
-export interface newMediaBrowserItemsConfig {
-  favorites: mediaBrowserSectionConfig;
-  recents: mediaBrowserSectionConfig;
-  recommendations: mediaBrowserSectionConfig;
-  search: MediaCardItem[];
-}
-export interface MediaBrowserItemsConfig {
-  main: MediaCardItem[];
-  [str: string]: MediaCardItem[];
-}
-export type MediaLibraryItem = MediaItem;
+import { Thumbnail, MediaTypes } from "./enums";
+import { Icons } from "./icons";
+import { getTranslation } from "../utils/translations";
+import { MediaBrowserConfig } from "../config/media-browser";
+import { ExtendedHass, ListItems } from "./types";
+import { EnqueueOptions } from "./enums";
 
 export const MediaTypeThumbnails = {
   album: Thumbnail.DISC,
@@ -70,19 +15,6 @@ export const MediaTypeThumbnails = {
   radio: Thumbnail.RADIO,
 };
 
-export interface ListItemData {
-  option: string;
-  icon: string;
-  title: string;
-}
-
-export type RecommendationItem = recommendationItem;
-export type RecommendationItems = recommendationItems;
-export type RecommendationSection = recommendationSection;
-
-export type RecommendationResponse = getRecommendationsServiceResponse;
-
-export type ListItems = ListItemData[];
 export function getEnqueueButtons(icons: Icons, hass: ExtendedHass): ListItems {
   return [
     {

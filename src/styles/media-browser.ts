@@ -3,27 +3,11 @@ import { css } from "lit";
 // Styles belonging to the card
 // https://lit.dev/docs/components/styles/
 export default css`
-  .button-min,
-  filter-menu::part(menu-button) {
-    height: 35px;
-    width: 35px;
-    --wa-color-fill-quiet: rgba(from var(--md-sys-color-primary) r g b / 0.1);
-    position: relative;
-  }
   .button-min::part(button) {
     --button-button-height: 35px;
     --button-button-width: 35px;
     --button-padding: 0px;
   }
-  .button-min::part(base) {
-    --wa-form-control-padding-inline: 0px;
-    height: 35px;
-    width: 35px;
-  }
-  .button-expressive::part(base) {
-    background-color: var(--md-sys-color-secondary-container);
-  }
-  .button-expressive::part(base),
   .filter-menu-expressive::part(menu-select-menu) {
     box-shadow: var(--md-sys-elevation-level1);
     border-radius: var(--button-small-border-radius) !important;
@@ -42,12 +26,6 @@ export default css`
     border-radius: var(--expressive-border-radius-container);
     background-color: var(--expressive-color-container);
   }
-  #filter-menu {
-  }
-  #filter-menu::part(menu-button) {
-  }
-  #filter-menu::part(menu-list-item) {
-  }
   #filter-menu::part(menu-list-item-svg) {
     height: 2em;
     width: 2em;
@@ -55,8 +33,6 @@ export default css`
   #filter-menu::part(menu-select-menu) {
     --mdc-icon-size: 1.5em;
     --control-select-menu-padding: 0px;
-    --control-select-menu-background-color: unset;
-    background-color: var(--md-sys-color-primary);
     --control-select-menu-height: 35px;
     width: 35px;
   }
@@ -67,13 +43,14 @@ export default css`
     top: 2.5px;
     left: 2.5px;
   }
-  #filter-menu-expressive::part(menu-select-menu) {
-    --control-select-menu-background-color: var(
-      --md-sys-color-secondary-container
-    );
+  #filter-menu:not(.filter-menu-expressive)::part(menu-select-menu) {
+    --control-select-menu-background-color: var(--md-sys-color-secondary-container);
+    background-color: var(--md-sys-color-secondary-container);
+    border-radius: 12px;
   }
-  #filter-menu-expressive::part(menu-svg) {
-    color: var(--md-sys-color-on-background);
+  #filter-menu.filter-menu-expressive::part(menu-select-menu) {
+    --control-select-menu-background-color: unset;
+    background-color: var(--md-sys-color-primary);
   }
 
   #header-buttons-end {
@@ -84,18 +61,22 @@ export default css`
   .header-icon {
     height: 2rem;
     width: 2rem;
-    color: var(--md-sys-color-on-secondary-container);
   }
 
   #mass-browser {
     padding-top: 8px;
   }
   .mass-browser-expressive {
-    background-color: var(--md-sys-color-background);
+    background-color: var(--md-sys-color-background, var(--ha-card-background));
     height: calc(100% - 3em);
     border-radius: var(--expressive-border-radius-container);
   }
-
+  sl-input::part(base) {
+    background-color: var(--md-sys-color-surface-container-high)
+  }
+  sl-input::part(input)::placeholder {
+    color: var(--md-sys-color-on-surface);
+  }
   #search::part(end) {
     width: calc(100% - 3em - 40px);
   }
@@ -108,12 +89,6 @@ export default css`
     position: relative;
     width: calc(100% - 5em);
     z-index: 2;
-  }
-  #search-media-type-menu {
-  }
-  #search-media-type-menu::part(menu-button) {
-  }
-  #search-media-type-menu::part(menu-list-item) {
   }
   #search-media-type-menu::part(menu-list-item-svg) {
     height: 2em;
@@ -150,7 +125,6 @@ export default css`
   }
 
   #title {
-    text-indent: var(--title-indent);
     text-transform: capitalize;
   }
 `;

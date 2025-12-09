@@ -1,32 +1,42 @@
 import { ContextProvider } from "@lit/context";
-import { ExtendedHass, ExtendedHassEntity } from "../const/common";
 import {
-  activeEntityConf,
-  activeEntityID,
-  activeMediaPlayer,
+  activeEntityConfContext,
+  activeEntityIDContext,
+  activeMediaPlayerContext,
   activePlayerDataContext,
-  activePlayerName,
+  activePlayerNameContext,
   expressiveSchemeContext,
   groupedPlayersContext,
   groupVolumeContext,
   useExpressiveContext,
-  volumeMediaPlayer,
+  volumeMediaPlayerContext,
 } from "../const/context";
 import { Config, EntityConfig } from "../config/config";
-import { MassGetQueueServiceDataSchema, MassGetQueueServiceResponseSchema, PlayerData } from "../const/music-player";
+import {
+  ExtendedHass,
+  ExtendedHassEntity,
+  MassGetQueueServiceDataSchema,
+  MassGetQueueServiceResponseSchema,
+  PlayerData
+} from "../const/types";
 import { DynamicScheme } from "@material/material-color-utilities";
 import { getGroupVolumeServiceResponse, getGroupVolumeServiceSchema } from "mass-queue-types/packages/mass_queue/actions/get_group_volume";
 import { setGroupVolumeServiceSchema } from "mass-queue-types/packages/mass_queue/actions/set_group_volume";
-import { isActive, jsonMatch, playerHasUpdated } from "../utils/util.js";
-import { applyDefaultExpressiveScheme, applyExpressiveSchemeFromImage } from "../utils/expressive.js";
-import { ArtworkUpdatedEventData } from "../const/events.js";
+import { isActive, jsonMatch, playerHasUpdated } from "../utils/util";
+import {
+  applyExpressiveScheme,
+  generateDefaultExpressiveSchemeColor,
+  generateExpressiveSchemeFromColor,
+  generateExpressiveSourceColorFromImage
+} from "../utils/expressive.js";
+import { SlCarousel } from "@shoelace-style/shoelace";
 
 export class ActivePlayerController {
-  private _activeEntityConfig: ContextProvider<typeof activeEntityConf>;
-  private _activeEntityID: ContextProvider<typeof activeEntityID>;
-  private _activeMediaPlayer: ContextProvider<typeof activeMediaPlayer>;
-  private _activePlayerName: ContextProvider<typeof activePlayerName>;
-  private _volumeMediaPlayer: ContextProvider<typeof volumeMediaPlayer>;
+  private _activeEntityConfig: ContextProvider<typeof activeEntityConfContext>;
+  private _activeEntityID: ContextProvider<typeof activeEntityIDContext>;
+  private _activeMediaPlayer: ContextProvider<typeof activeMediaPlayerContext>;
+  private _activePlayerName: ContextProvider<typeof activePlayerNameContext>;
+  private _volumeMediaPlayer: ContextProvider<typeof volumeMediaPlayerContext>;
   private _expressiveScheme!: ContextProvider<typeof expressiveSchemeContext>;
   private _useExpressive!: ContextProvider<typeof useExpressiveContext>;
   private _groupMembers!: ContextProvider<typeof groupedPlayersContext>;
@@ -37,6 +47,9 @@ export class ActivePlayerController {
   private _config!: Config;
   private _host: HTMLElement;
   private _updatingScheme = false;
+  private _carouselElement?: SlCarousel;
+  private _observer?: MutationObserver;
+  private _activeSchemeColor!: number;
 
   constructor(hass: ExtendedHass, config: Config, host: HTMLElement) {
     this._expressiveScheme = new ContextProvider(host, {
@@ -52,19 +65,19 @@ export class ActivePlayerController {
       context: groupVolumeContext,
     });
     this._activeEntityConfig = new ContextProvider(host, {
-      context: activeEntityConf,
+      context: activeEntityConfContext,
     });
     this._activeEntityID = new ContextProvider(host, {
-      context: activeEntityID,
+      context: activeEntityIDContext,
     });
     this._activeMediaPlayer = new ContextProvider(host, {
-      context: activeMediaPlayer,
+      context: activeMediaPlayerContext,
     });
     this._activePlayerName = new ContextProvider(host, {
-      context: activePlayerName,
+      context: activePlayerNameContext,
     });
     this._volumeMediaPlayer = new ContextProvider(host, {
-      context: volumeMediaPlayer,
+      context: volumeMediaPlayerContext,
     });
     this._activePlayerData = new ContextProvider(host, {
       context: activePlayerDataContext,
@@ -72,7 +85,6 @@ export class ActivePlayerController {
     this._hass = hass;
     this.config = config;
     this._host = host;
-    host.addEventListener("artwork-updated", this.onActiveTrackChange);
     this.setDefaultActivePlayer();
   }
   public set hass(hass: ExtendedHass) {
@@ -129,18 +141,6 @@ export class ActivePlayerController {
       void this.updateActivePlayerData();
       if (player.attributes?.group_members) {
         this.setGroupAttributes();
-      }
-      if (
-        isActive(this.hass, this.activeMediaPlayer, this.activeEntityConfig) 
-        && (
-          !this.expressiveScheme
-        || player.attributes.media_content_id != this.activeMediaPlayer.attributes.media_content_id
-        )
-      ) {
-        const img =
-          player.attributes.entity_picture_local ??
-          player.attributes.entity_picture;
-        void this.applyExpressiveSchemeFromImage(img);
       }
     }
   }
@@ -211,6 +211,48 @@ export class ActivePlayerController {
   public get activePlayerData() {
     return this._activePlayerData.value;
   }
+  public set carouselElement(elem: SlCarousel | undefined) {
+    if (elem) {
+      this._carouselElement = elem;
+      this.createObserver();
+    }
+  }
+  public get carouselElement() {
+    return this._carouselElement;
+  }
+  private createObserver() {
+    if (this._observer) {
+      try {
+        this._observer.disconnect()
+      } catch {
+        // pass
+      }
+    }
+    if (!this.carouselElement) {
+      return;
+    }
+    const config = { 
+      subtree: true,
+      childList: true,
+      attributes: true,
+      attributeFilter: ["src", "data-playing"]
+    }
+    const observer = new MutationObserver(this.observerCallback);
+    observer.observe(this.carouselElement, config);
+    if (!this.expressiveScheme) {
+      this.createAndApplyExpressiveScheme();
+    }
+    this._observer = observer;
+  }
+  public getActiveArtwork(): HTMLElement | undefined {
+    if (!this.carouselElement) {
+      return
+    }
+    return this.carouselElement.querySelector('[data-playing]') as HTMLElement;
+  }
+  private observerCallback = () => {
+    this.createAndApplyExpressiveScheme();
+  }
 
   public async updateActivePlayerData() {
     if (!this.activeMediaPlayer || !this.volumeMediaPlayer || !this.activeEntityID) {
@@ -229,14 +271,6 @@ export class ActivePlayerController {
       detail: this.activeMediaPlayer,
     });
     this._host.dispatchEvent(ev);
-  }
-  public firstUpdateComplete() {
-    if (
-      !isActive(this.hass, this.activeMediaPlayer, this.activeEntityConfig) ||
-      !this.expressiveScheme
-    ) {
-      this.applyDefaultExpressiveScheme();
-    }
   }
   private setGroupAttributes() {
     this.groupMembers = this.getGroupedPlayers().map((item) => {
@@ -329,36 +363,46 @@ export class ActivePlayerController {
     const result = ret.response[entity_id];
     return result;
   }
-  public onActiveTrackChange = (ev: Event) => {
-    const detail = (ev as ArtworkUpdatedEventData).detail;
-    if (detail.type != "current") {
-      return;
-    }
-    const img = detail.image;
-    if (!img || !(this.activeMediaPlayer.state == 'playing') ) {
-      return;
-    }
-    void this.applyExpressiveSchemeFromImage(img);
-  };
-  public applyDefaultExpressiveScheme() {
-    if (!this.config.expressive || this._updatingScheme) {
-      return;
-    }
-    this._host.getRootNode()
-    this.expressiveScheme = applyDefaultExpressiveScheme(this.hass, this.config.expressive_scheme, this._host);
+  public createAndApplyExpressiveScheme() {
+    void this.createExpressiveSchemeFromArtwork().then(
+      (result) => {
+        if (!result) {
+          return;
+        }
+        this.applyExpressiveScheme();
+      }
+    );
   }
-  public async applyExpressiveSchemeFromImage(img: string) {
-    if (!this.config.expressive || this._updatingScheme) {
+  public applyExpressiveScheme() {
+    const scheme = this.expressiveScheme;
+    if (!scheme) {
+      return;
+    }
+    applyExpressiveScheme(scheme, this._host)
+  }
+  public async createExpressiveSchemeFromArtwork(): Promise<DynamicScheme | undefined> {
+    if (this._updatingScheme) {
       return;
     }
     this._updatingScheme = true;
-    this.expressiveScheme = await applyExpressiveSchemeFromImage(
-      img,
-      this.hass,
-      this.config.expressive_scheme,
-      this._host,
-    );
+    let schemeColor: number; 
+    const activeArtwork = this.getActiveArtwork();
+    if (!(activeArtwork?.tagName?.toLowerCase() == 'img')) {
+      schemeColor = generateDefaultExpressiveSchemeColor();
+     } else {
+      const src = (activeArtwork as HTMLImageElement).src;
+      schemeColor = await generateExpressiveSourceColorFromImage(src, this.hass);
+    } 
+    if (schemeColor == this._activeSchemeColor) {
+      this._updatingScheme = false;
+      return;
+    }
+    this._activeSchemeColor = schemeColor;
+    const schemeName = this.config.expressive_scheme;
+    const scheme = generateExpressiveSchemeFromColor(schemeColor, schemeName, this.hass.themes.darkMode);
+    this.expressiveScheme = scheme;
     this._updatingScheme = false;
+    return this.expressiveScheme;
   }
   private async _getAndSetGroupedVolume() {
     const entity = this.activeMediaPlayer.entity_id;
@@ -402,11 +446,12 @@ export class ActivePlayerController {
     return vol;
   }
   public disconnected() {
-    this._host.removeEventListener("artwork-updated", this.onActiveTrackChange);
+    this._observer?.disconnect();
+    this._observer = undefined;
   }
   public reconnected(hass: ExtendedHass) {
     this.hass = hass;
-    this._host.addEventListener("artwork-updated", this.onActiveTrackChange);
     this.setActivePlayer(this.activeEntityID);
+    this.createObserver();
   }
 }

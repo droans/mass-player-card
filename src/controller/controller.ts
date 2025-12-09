@@ -1,25 +1,25 @@
 import { ContextProvider } from "@lit/context";
 import { Config } from "../config/config";
-import { ExtendedHass } from "../const/common";
+import { ExtendedHass } from "../const/types";
 import {
   actionsControllerContext,
   activePlayerControllerContext,
   activeSectionContext,
   browserControllerContext,
-  hassExt,
+  hassContext,
   queueControllerContext,
 } from "../const/context";
 import { MassCardConfigController } from "./config";
 import { ActivePlayerController } from "./active-player";
-import { Sections } from "../const/card";
+import { Sections } from "../const/enums";
 import { ActionsController } from "./actions";
-import { QueueController } from "./queue.js";
-import { MediaBrowserController } from "./browser.js";
-import { jsonMatch } from "../utils/util.js";
-import { getTranslation } from "../utils/translations.js";
+import { QueueController } from "./queue";
+import { MediaBrowserController } from "./browser";
+import { jsonMatch } from "../utils/util";
+import { getTranslation } from "../utils/translations";
 
 export class MassCardController {
-  private _hass = new ContextProvider(document.body, { context: hassExt });
+  private _hass = new ContextProvider(document.body, { context: hassContext });
   private _host!: HTMLElement;
 
   private configController: MassCardConfigController;

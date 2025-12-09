@@ -5,23 +5,24 @@ import { css } from "lit";
 export default css`
   :host {
     --button-default-height-small: 32px;
-    --button-default-width-small: 32px;
-    --button-default-border-radius-small: 10px;
+    --button-default-border-radius-small: 40%;
     
     --button-default-height-medium: 40px;
-    --button-default-width-medium: 40px;
-    --button-default-border-radius-medium: 12px;
+    --button-default-border-radius-medium: 40%;
     
     --button-default-height-large: 64px;
-    --button-default-width-large: 64px;
-    --button-default-border-radius-small: 20px;
+    --button-default-border-radius-large: 40%;
 
     --animation-duration: 0.25s;
     --used-button-height: var(--button-button-height);
     --used-button-width: var(--button-button-width);
     
   }
-  
+  ha-button:not(.expressive)::part(base) {
+    --inherited-background-color: var(--used-button-background-color, var(--button-background-color));
+    --inherited-text-color: var(--used-button-text-color, var(--button-text-color));
+    --ha-button-border-radius: 12px !important;
+  }
   ha-button::part(base) {
     width: var(--used-button-width, 100%);
     box-shadow: var(--button-elevation);
@@ -35,11 +36,8 @@ export default css`
   .small::part(base) {
     height: var(--used-button-height, var(--button-default-height-small));
     --ha-button-border-radius: var(--button-border-radius, var(--button-default-border-radius-small));
-    padding-left: var(--button-padding-left, var(--button-padding, 8px));
-    padding-right: var(--button-padding-right, var(--button-padding, 12px));
-  }
-  .small {
-
+    padding-left: var(--button-padding-left, var(--button-padding, 0px));
+    padding-right: var(--button-padding-right, var(--button-padding, 0px));
   }
 
   .medium::part(base) {
@@ -48,9 +46,6 @@ export default css`
     padding-left: var(--button-padding-left, var(--button-padding, 16px));
     padding-right: var(--button-padding-right, var(--button-padding, 16px));
   }
-  .medium {
-
-  }
   
   .large::part(base) {
     height: var(--used-button-height, var(--button-default-height-large));
@@ -58,12 +53,10 @@ export default css`
     padding-left: var(--button-padding-left, var(--button-padding, 24px));
     padding-right: var(--button-padding-right, var(--button-padding, 24px));
   }
-  .large {
-
-  }
 
   .filled {
     --button-outline-color: var(--md-sys-color-outline-variant, var(--outline-color));
+    --button-background-color: var(--md-sys-color-secondary-container);
   }
   .filled.expressive {
     --button-background-color: var(--md-sys-color-primary);
@@ -76,11 +69,9 @@ export default css`
     --button-unselected-text-color: var(--md-sys-color-on-surface-variant);
     
     --button-disabled-background-color: var(--md-sys-color-on-surface);
-    --button-disabled-text-color: var(--md-sys-color-on-surface);
-    
-    --button-hovered-background-color: ;
-    --button-hovered-text-color: ;
+    --button-disabled-text-color: var(--md-sys-color-on-surface);    
   }
+
   .filled-variant {
     --button-outline-color: var(--md-sys-color-outline, var(--outline-color));
   }
@@ -100,6 +91,7 @@ export default css`
   
   .standard {
     --button-outline-color: var(--md-sys-color-outline-variant, var(--outline-color));
+    --button-background-color: var(--md-sys-color-secondary-container);
     
   }
   .standard.expressive {
@@ -119,6 +111,7 @@ export default css`
 
   .tonal {
     --button-outline-color: var(--md-sys-color-outline, var(--outline-color));
+    --button-background-color: var(--md-sys-color-secondary-container);
   }
   .tonal.expressive {
     --button-background-color: var(--md-sys-color-secondary-container);
@@ -137,6 +130,7 @@ export default css`
   
   .variant {
     --button-outline-color: var(--md-sys-color-outline, var(--outline-color));
+    --button-background-color: var(--md-sys-color-secondary-container);
   }
   .variant.expressive {
     --button-background-color: var(--md-sys-color-tertiary-container);
@@ -152,6 +146,7 @@ export default css`
     --button-disabled-text-color: var(--md-sys-color-on-surface-variant);
 
   }
+
   .plain.expressive {
     --button-background-color: transparent;
     --button-text-color: var(--md-sys-color-on-tertiary-container);

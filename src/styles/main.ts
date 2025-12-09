@@ -60,7 +60,7 @@ export default css`
 
     --button-small-border-radius: var(
       --mass-player-card-small-button-border-radius,
-      16px
+      40%
     );
 
     --expressive-border-radius-container: var(
@@ -71,10 +71,6 @@ export default css`
     --expressive-color-container: var(
       --mass-player-card-expressive-color-container,
       var(--md-sys-color-primary-container)
-    );
-    --expressive-card-color: var(
-      --mass-player-card-expressive-card-color,
-      var(--md-sys-color-background)
     );
 
     --expressive-row-color: var(
@@ -94,10 +90,6 @@ export default css`
       var(--md-sys-color-on-secondary-container)
     );
 
-    --expressive-row-button-color: var(
-      --mass-player-card-expressive-row-button-color,
-      var(--md-sys-color-primary-container)
-    );
     --expressive-row-button-color-text: var(
       --mass-player-card-expressive-row-button-color-text,
       var(--md-sys-color-on-secondary-container)
@@ -136,8 +128,6 @@ export default css`
       var(--media-row-height)
     );
 
-    --player-blur-px: var(--mass-player-card-player-blur-px, 3px);
-    --player-blur: blur(var(--player-blur-px));
     --player-blur-color: rgba(
       from var(--mass-player-card-player-blur-color, var(--ha-card-background))
         r g b / 0.6
@@ -165,10 +155,6 @@ export default css`
       var(--ha-color-text-secondary)
     );
 
-    --player-play-pause-color: var(
-      --mass-player-card-player-play-pause-color,
-      var(--secondary-background-color)
-    );
     --player-play-pause-icon-size: var(
       --mass-player-card-player-play-pause-icon-size,
       6rem
@@ -178,7 +164,7 @@ export default css`
       --mass-player-card-row-icon-button-height,
       1.5rem
     );
-    --menu-item-padding-left: var(--mass-player-card-menu-item-padding-left, 12px);
+    --menu-item-padding-left: var(--mass-player-card-menu-item-padding-left, 20px);
 
     --md-sys-elevation-level0: none;
     --md-sys-elevation-level1: rgba(from #000000 r g b / 0.2) 0px 2px 1px -1px, rgba(from #000000 r g b / 0.14) 0px 1px 1px 0px, rgba(from #000000 r g b / 0.12) 0px 1px 3px 0px;
@@ -194,11 +180,7 @@ export default css`
     border-radius: var(--default-border-radius);
   }
   ha-card#expressive {
-    background-color: var(--md-sys-color-background);
-  }
-  sl-tab-panel {
-    height: var(--mass-player-card-height);
-    display: block;
+    background-color: var(--md-sys-color-background, var(--ha-card-background));
   }
 
   #navbar-expressive {

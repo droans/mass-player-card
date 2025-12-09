@@ -1,15 +1,16 @@
 import { CSSResultGroup, PropertyValues, TemplateResult } from "lit";
 import { html, literal } from "lit/static-html.js";
 import { MassPlayerControlsBase } from "./player-controls-base";
-import { RepeatMode } from "../const/common";
+import { VibrationPattern } from "../const/common";
 import { getRepeatIcon } from "../utils/music-player";
 import styles from "../styles/player-controls-expressive";
 import './button'
-import { PlayerIcon } from "../config/player.js";
+import { PlayerIcon } from "../config/player";
+import { RepeatMode } from "../const/enums";
 
 class MassPlayerControlsExpressive extends MassPlayerControlsBase {
   protected onFavoriteHold = () => {
-    navigator.vibrate(200);
+    navigator.vibrate(VibrationPattern.Player.ACTION_FAVORITE_HOLD);
     const e = new Event("open-add-to-playlist-dialog");
     this.controller.host.dispatchEvent(e);
   }

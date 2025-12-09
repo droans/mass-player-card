@@ -15,22 +15,22 @@ import {
 
 import {
   actionsControllerContext,
-  activeEntityConf,
+  activeEntityConfContext,
   activePlayerDataContext,
   controllerContext,
   EntityConfig,
   IconsContext,
   musicPlayerConfigContext,
 } from "../const/context";
-import { PlayerData } from "../const/music-player";
+import { PlayerData } from "../const/types";
 
 import styles from "../styles/volume-row";
-import { ActionsController } from "../controller/actions.js";
-import { MassCardController } from "../controller/controller.js";
-import { Icons } from "../const/icons.js";
-import { jsonMatch } from "../utils/util.js";
+import { ActionsController } from "../controller/actions";
+import { MassCardController } from "../controller/controller";
+import { Icons } from "../const/icons";
+import { jsonMatch } from "../utils/util";
 import { state } from "lit/decorators.js";
-import { DetailValEventData } from "../const/events.js";
+import { DetailValEventData } from "../const/events";
 
 class VolumeRow extends LitElement {
   private maxVolume!: number;
@@ -64,7 +64,7 @@ class VolumeRow extends LitElement {
     return this._config;
   }
 
-  @consume({ context: activeEntityConf, subscribe: true })
+  @consume({ context: activeEntityConfContext, subscribe: true })
   public set entityConfig(config: EntityConfig) {
     if (jsonMatch(this._entityConfig, config)) {
       return;

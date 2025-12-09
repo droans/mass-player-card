@@ -7,22 +7,21 @@ import {
 } from "lit";
 import { html } from "lit/static-html.js";
 import { property, query, state } from "lit/decorators.js";
-import "@awesome.me/webawesome/dist/components/card/card.js";
+import "@droans/webawesome/dist/components/card/card.js";
 
 import "./menu-button";
 
 import {
   CardEnqueueService,
   CardSelectedService,
-  EnqueueOptions,
 } from "../const/actions";
-import { ExtendedHass } from "../const/common";
+import { ExtendedHass, ListItems, MediaCardItem } from "../const/types";
 import {
-  activeEntityConf,
+  activeEntityConfContext,
   activeSectionContext,
   configContext,
   EntityConfig,
-  hassExt,
+  hassContext,
   IconsContext,
   mediaBrowserConfigContext,
   useExpressiveContext,
@@ -30,8 +29,6 @@ import {
 import {
   getEnqueueButtons,
   getSearchMediaButtons,
-  ListItems,
-  MediaCardItem,
 } from "../const/media-browser";
 
 import styles from "../styles/media-card";
@@ -48,11 +45,11 @@ import {
   MediaBrowserConfig,
   MediaBrowserHiddenElementsConfig,
 } from "../config/media-browser";
-import { Sections } from "../const/card";
-import { Icons } from "../const/icons.js";
-import { Config } from "../config/config.js";
-import { WaAnimation } from "../const/elements.js";
-import { TargetValEventData } from "../const/events.js";
+import { EnqueueOptions, Sections } from "../const/enums";
+import { Icons } from "../const/icons";
+import { Config } from "../config/config";
+import { WaAnimation } from "../const/elements";
+import { MenuButtonEventData } from "../const/events";
 
 class MediaCard extends LitElement {
   @property({ type: Boolean }) queueable = false;
@@ -66,7 +63,7 @@ class MediaCard extends LitElement {
 
   private _icons!: Icons;
 
-  @consume({ context: hassExt })
+  @consume({ context: hassContext })
   public hass!: ExtendedHass;
 
   @consume({ context: useExpressiveContext })
@@ -150,7 +147,7 @@ class MediaCard extends LitElement {
     return this._icons;
   }
 
-  @consume({ context: activeEntityConf, subscribe: true })
+  @consume({ context: activeEntityConfContext, subscribe: true })
   public set entityConfig(config: EntityConfig) {
     if (jsonMatch(this._entityConfig, config)) {
       return;
@@ -209,14 +206,13 @@ class MediaCard extends LitElement {
     });
     this._enqueue_buttons = opts;
   }
-  private onEnqueue = (ev: TargetValEventData) => {
+  private onEnqueue = (ev: MenuButtonEventData) => {
     ev.stopPropagation();
-    const target = ev.target;
-    const value = target.value as EnqueueOptions;
+    const target = ev.detail;
+    const value = target.option as EnqueueOptions;
     if (!value) {
       return;
     }
-    target.value = "";
     this.onEnqueueAction(this._config.data, value);
   };
   private onSelect = () => {
@@ -273,7 +269,7 @@ class MediaCard extends LitElement {
         id="enqueue-button-div"
         .iconPath=${this.Icons.PLAY_CIRCLE}
         .items=${this._enqueue_buttons}
-        .onSelectAction=${this.onEnqueue}
+        @menu-item-selected=${this.onEnqueue}
         fixedMenuPosition
       ></mass-menu-button>
     `;

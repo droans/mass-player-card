@@ -1,317 +1,240 @@
 import { consume } from "@lit/context";
-import { html, LitElement, PropertyValues, TemplateResult } from "lit";
-
-import "@shoelace-style/shoelace/dist/components/carousel/carousel.js";
-import "@shoelace-style/shoelace/dist/components/carousel-item/carousel-item.js";
-
-import styles from "../styles/player-artwork";
-import { getThumbnail } from "../utils/thumbnails.js";
 import {
-  activeMediaPlayer,
-  activePlayerDataContext,
+  CSSResultGroup,
+  html,
+  LitElement,
+  PropertyValues,
+  TemplateResult
+} from "lit";
+
+import {
+  customElement,
+  query,
+  state
+} from "lit/decorators.js";
+import "@droans/webawesome/dist/components/carousel/carousel.js"
+import "@droans/webawesome/dist/components/carousel-item/carousel-item.js"
+
+import {
+  activeMediaPlayerContext,
   controllerContext,
-  ExtendedHass,
-  hassExt,
+  hassContext,
   IconsContext,
   musicPlayerConfigContext,
-  queueContext,
-} from "../const/context.js";
-import { ExtendedHassEntity, Thumbnail } from "../const/common.js";
-import { query, state } from "lit/decorators.js";
-import { QueueItem, QueueItems } from "../const/player-queue.js";
-import {
-  PlayerData,
-  SLSwipeEvent,
-  SWIPE_MIN_DELAY,
-} from "../const/music-player.js";
-import SlCarousel from "@shoelace-style/shoelace/dist/components/carousel/carousel.js";
-import { PlayerConfig } from "../config/player.js";
-import { MassCardController } from "../controller/controller.js";
-import { Icons } from "../const/icons.js";
-import { isActive, jsonMatch } from "../utils/util.js";
+  queueContext
+} from "../const/context";
+import { PlayerConfig } from "../config/player";
+import { MassCardController } from "../controller/controller";
+import { isActive, jsonMatch, playerHasUpdated } from "../utils/util";
+import { ExtendedHass, ExtendedHassEntity, QueueItem, QueueItems } from "../const/types";
+import { SlCarousel } from "@shoelace-style/shoelace";
+import { VibrationPattern } from "../const/common";
+import { getThumbnail } from "../utils/thumbnails";
+import { Icons } from "../const/icons";
+import styles from "../styles/player-artwork";
+import { Thumbnail } from "../const/enums";
+import { WaSlideChangeEvent } from "@droans/webawesome";
 
-class MassPlayerArtwork extends LitElement {
-  @consume({ context: hassExt, subscribe: true })
-  private hass!: ExtendedHass;
-  @consume({ context: controllerContext, subscribe: true })
-  private controller!: MassCardController;
+@customElement('mpc-artwork')
+export class MassPlayerArtwork extends LitElement {
   @consume({ context: musicPlayerConfigContext, subscribe: true })
   @state()
   private playerConfig!: PlayerConfig;
-  @consume({ context: activeMediaPlayer, subscribe: true })
-  @state()
-  public activePlayer!: ExtendedHassEntity;
-  private _queue!: QueueItems;
 
-  @consume({ context: IconsContext })
+  @consume({ context: hassContext, subscribe: true })
+  private hass!: ExtendedHass;
+
+  @consume({ context: controllerContext, subscribe: true })
+  private controller!: MassCardController;
+
+  @consume({ context: IconsContext, subscribe: true })
   private Icons!: Icons;
 
-  @query("#carousel") private carouselElement!: SlCarousel;
+  @state() private _activePlayer!: ExtendedHassEntity;
 
-  @query("#carousel-img-prior")
-  private previousCarouselImage!: HTMLImageElement;
-  @query("#carousel-img-cur") private currentCarouselImage!: HTMLImageElement;
-  @query("#carousel-img-next") private nextCarouselImage!: HTMLImageElement;
+  @state() private _queue!: QueueItems | null;
 
-  @state() public _playerData!: PlayerData;
+  @query('#carousel') private carouselElement?: SlCarousel;
 
-  private _previousQueueItem!: QueueItem | undefined;
-  private _currentQueueItem!: QueueItem | undefined;
-  private _nextQueueItem!: QueueItem | undefined;
-  private _previousItemImage!: string;
-  private _currentItemImage!: string;
-  private _nextItemImage!: string;
-  private _lastSwipedTS = 0;
-  private _disconnected = false;
-  private _playerLoadedTS = 0;
-  private _curIdx = 0;
+  private currentIdx?: number;
+  private _timeout?: number;
 
-  @consume({ context: activePlayerDataContext, subscribe: true })
-  public set playerData(playerData: PlayerData) {
-    const cur_data = this.playerData;
-    if (cur_data?.track_artwork != playerData?.track_artwork) {
-      this._playerData = playerData;
-      this.currentItemImage = playerData.track_artwork;
+  @consume({ context: activeMediaPlayerContext, subscribe: true })
+  public set activePlayer(player: ExtendedHassEntity) {
+    if (!playerHasUpdated(this._activePlayer, player)) {
+      return;
     }
-    this._playerLoadedTS = new Date().getTime();
+    this._activePlayer = player;
   }
-  public get playerData() {
-    return this._playerData;
+  public get activePlayer() {
+    return this._activePlayer;
   }
 
-  @consume({ context: queueContext, subscribe: true })
+  @consume({ context: queueContext, subscribe: true})
   public set queue(queue: QueueItems | null) {
-    if (!queue?.length) {
+    if (jsonMatch(this._queue, queue)) {
       return;
     }
     this._queue = queue;
-    const cur_idx = queue.findIndex((item) => item.playing);
-    this._curIdx = cur_idx;
-    this.currentQueueItem = queue[cur_idx];
-    this.previousQueueItem = queue[cur_idx - 1];
-    this.nextQueueItem = queue[cur_idx + 1];
+    if (!this.carouselElement) {
+      return;
+    }
   }
   public get queue() {
     return this._queue;
   }
 
-  public set previousQueueItem(item: QueueItem | null | undefined) {
-    if (jsonMatch(this.previousQueueItem, item)) {
+  private setActiveSlide(idx: number | undefined = this.currentIdx) {
+    if (!idx || !this?.queue?.length || !this?.carouselElement || this._timeout) {
       return;
     }
-    this.previousItemImage = item?.media_image?.length ? item?.media_image : item?.local_image_encoded ?? ``;
-    this._previousQueueItem = item ?? undefined;
-  }
-  public get previousQueueItem() {
-    return this._previousQueueItem;
-  }
-  public set previousItemImage(img: string) {
-    if (img == this._previousItemImage) {
-      return;
-    }
-    this._previousItemImage = img;
-    if (this.previousCarouselImage) {
-      this.previousCarouselImage.src = img;
-    }
-  }
-  public get previousItemImage() {
-    return this._previousItemImage;
-  }
-
-  public set currentQueueItem(item: QueueItem | null | undefined) {
-    if (jsonMatch(this.currentQueueItem, item)) {
-      return;
-    }
-    this.currentItemImage = item?.media_image?.length ? item?.media_image : item?.local_image_encoded ?? ``;
-    this._currentQueueItem = item ?? undefined;
-  }
-  public get currentQueueItem() {
-    return this._currentQueueItem;
-  }
-  public set currentItemImage(img: string) {
-    if (img == this._currentItemImage) {
-      return;
-    }
-    this._currentItemImage = img;
-    if (this.currentCarouselImage) {
-      this.currentCarouselImage.src = img;
-    }
+    this.carouselElement.removeEventListener('wa-slide-change', this.onSwipe);
+    this?.carouselElement?.goToSlide(idx, 'instant');
+    const item = this.queue[idx];
+    const img = item.media_image ?? item.local_image_encoded;
     const detail = {
-      type: "current",
-      image: img,
-    };
-    const ev = new CustomEvent("artwork-updated", { detail: detail });
+      type: 'current',
+      image: img
+    }
+    const ev = new CustomEvent('artwork-updated', { detail: detail });
     this.controller.host.dispatchEvent(ev);
+    this._timeout = setTimeout(
+      () => {
+        this?.carouselElement?.addEventListener('wa-slide-change', this.onSwipe);
+        this._timeout = undefined;
+      },
+      100
+    )
   }
-  public get currentItemImage() {
-    return this._currentItemImage;
-  }
-
-  public set nextQueueItem(item: QueueItem | null | undefined) {
-    if (jsonMatch(this.nextQueueItem, item)) {
+  private updateActiveSlide() {
+    if (!this.queue) {
       return;
     }
-    this.nextItemImage = item?.media_image?.length ? item?.media_image : item?.local_image_encoded ?? ``;
-    this._nextQueueItem = item ?? undefined;
-  }
-  public get nextQueueItem() {
-    return this._nextQueueItem;
-  }
-  public set nextItemImage(img: string) {
-    if (img == this._nextItemImage) {
-      return;
+    const idx = this.queue.findIndex(
+      (item) => {
+        return item?.playing
+      }
+    )
+    if (idx >= 0 && idx != this.carouselElement?.activeSlide) {
+      this.currentIdx = idx;
+      this.setActiveSlide(this.currentIdx)
     }
-    this._nextItemImage = img;
-    if (this.nextCarouselImage) {
-      this.nextCarouselImage.src = img;
-    }
-  }
-  public get nextItemImage() {
-    return this._nextItemImage;
+    setTimeout(
+      () => {
+        this.requestUpdate('activeSlide', 'fixed')
+      },
+      50
+    )
   }
 
-  private onCarouselSwipe = (ev: SLSwipeEvent) => {
+  private onSwipe = (ev: WaSlideChangeEvent) => {
     ev.stopPropagation();
-    navigator.vibrate([75, 20, 75]);
-    const slide_idx = ev.detail.index;
-    const last_ts = this._lastSwipedTS;
-    const cur_ts = ev.timeStamp;
-    const cur_time = new Date().getTime();
-    this._lastSwipedTS = cur_ts;
-    const delay_since_swipe = cur_ts - last_ts;
-    const delay_since_load = cur_time - this._playerLoadedTS;
-    if (
-      delay_since_swipe <= SWIPE_MIN_DELAY ||
-      delay_since_load <= SWIPE_MIN_DELAY
-    ) {
+    if (!this?.queue?.length) {
       return;
     }
-    if (slide_idx == 0) {
-      if (this.previousItemImage) {
-        this.nextItemImage = this.currentItemImage;
-        this.currentItemImage = this.previousItemImage;
-        if (this.queue) {
-          this.previousItemImage = this.queue[this._curIdx - 2].media_image;
-        }
-        void this.controller.Actions.actionPlayPrevious();
-      }
-    } else if (slide_idx == 2) {
-      if (this.nextItemImage) {
-        this.previousItemImage = this.currentItemImage;
-        this.currentItemImage = this.nextItemImage;
-        if (this.queue) {
-          this.nextItemImage = this.queue[this._curIdx + 2].media_image;
-        }
-
-        void this.controller.Actions.actionPlayNext();
-      }
+    navigator.vibrate(VibrationPattern.Player.ACTION_SWIPE);
+    const idx = ev.detail.index;
+    const item = this.queue[idx];
+    const media_content_id = item.media_content_id;
+    if (media_content_id == this.activePlayer.attributes.media_content_id) {
+      return;
     }
-    this.goToCurrentSlide("instant");
-  };
-  private goToCurrentSlide(behavior: ScrollBehavior = "instant") {
-    this.carouselElement.goToSlide(1, behavior);
+    void this.controller.Queue.playQueueItem(item.queue_item_id);
   }
 
-  protected renderItemArtwork(img: string | undefined, artwork_id: string) {
-    const fallback = getThumbnail(this.hass, Thumbnail.CLEFT);
+  protected renderCarouselItem(item: QueueItem, fallback: string = Thumbnail.CLEFT): TemplateResult {
+    if (Object.values(Thumbnail).includes(fallback as Thumbnail)) {
+      fallback = getThumbnail(this.hass, fallback as Thumbnail)
+    }
     const size = this.playerConfig.layout.artwork_size;
-    if (!img) {
-      return html` <img class="artwork artwork-${size}" src="${fallback}" /> `;
-    }
+    const img = item?.media_image?.length ? item.media_image : item.local_image_encoded;
+    const playing = item.playing ? `playing` : false;
     return html`
-      <img
-        id="${artwork_id}"
-        class="artwork artwork-${size}"
-        src="${img}"
-        onerror="this.src='${fallback}';"
-      />
-    `;
-  }
-  protected renderAsleep() {
-    const expressive = this.controller.config.expressive ? `-expressive` : ``;
-    return html`
-      <ha-svg-icon
-        .path=${this.Icons.ASLEEP}
-        class="asleep asleep${expressive}"
+      <wa-carousel-item 
       >
-      </ha-svg-icon>
-    `;
-  }
-  protected renderCarouselItem(img: string | undefined, artwork_id: string) {
-    img = img ?? Thumbnail.CLEFT;
-    return html`
-      <sl-carousel-item>
-        ${this.renderItemArtwork(img, artwork_id)}
-      </sl-carousel-item>
-    `;
-  }
-  protected renderInactive() {
-    const img = getThumbnail(this.hass, Thumbnail.CLEFT);
-    const size = this.playerConfig.layout.artwork_size;
-    return html`
-      <sl-carousel-item>
         <img
-          class="artwork artwork-${size}"
+          class="artwork ${size}"
           src="${img}"
-          onerror="this.src='${img}';"
-        />
-      </sl-carousel-item>
-    `;
+          ?data-playing=${playing}
+          onerror="this.src='${fallback}';"
+        > 
+      </wa-carousel-item>
+    `
   }
-  protected renderCarouselItems() {
-    if (
-      !isActive(
-        this.hass,
-        this.activePlayer,
-        this.controller.ActivePlayer.activeEntityConfig,
-      )
-    ) {
-      return this.renderAsleep();
-    }
+  protected renderEmptyQueue(): TemplateResult {
+    const expressive = this.controller.config.expressive ? 'expressive' : ``
     return html`
-      ${this.renderCarouselItem(this.previousItemImage, `carousel-img-prior`)}
-      ${this.renderCarouselItem(
-        this.activePlayer.attributes.entity_picture_local ??
-          this.currentItemImage,
-        `carousel-img-cur`,
-      )}
-      ${this.renderCarouselItem(this.nextItemImage, `carousel-img-next`)}
-    `;
+      <wa-carousel-item>
+        <ha-svg-icon
+          .path=${this.Icons.ASLEEP}  
+          id="asleep"
+          class="${expressive}"
+        >
+      </wa-carousel-item>
+    `
   }
-
+  protected renderCarouselItems(): TemplateResult | TemplateResult[] {
+    if (!this?.queue?.length) {
+      return this.renderEmptyQueue();
+    }
+    return this.queue.map (
+      (item) => {
+        if (item.playing) {
+          const attrs = this.activePlayer.attributes;
+          const fallback = attrs.entity_picture ?? attrs.entity_picture_local;
+          return this.renderCarouselItem(item, fallback);
+        }
+        return this.renderCarouselItem(item);
+      }
+    )
+  }
   protected render(): TemplateResult {
     const size = this.playerConfig.layout.artwork_size;
     return html`
-      <sl-carousel
+      <wa-carousel
         id="carousel"
-        class="carousel-${size}"
+        class="${size}"
         mouse-dragging
-        @sl-slide-change=${this.onCarouselSwipe}
+        loop
       >
         ${this.renderCarouselItems()}
-      </sl-carousel>
-    `;
+      </wa-carousel>
+    `
   }
   protected shouldUpdate(_changedProperties: PropertyValues): boolean {
-    return _changedProperties.size > 0;
-  }
-  protected updated(): void {
-    this.goToCurrentSlide();
-  }
-
-  disconnectedCallback(): void {
-    this._disconnected = true;
-    super.disconnectedCallback();
+    return _changedProperties.size > 0
   }
   connectedCallback(): void {
-    if (this._disconnected) {
-      this.goToCurrentSlide();
+    if (this.hasUpdated){
+      this.updateActiveSlide();
     }
-    this._disconnected = false;
     super.connectedCallback();
   }
-  static get styles() {
+  protected firstUpdated(): void {
+    if (this.carouselElement) {
+      this.controller.ActivePlayer.carouselElement = this.carouselElement;
+    } 
+    this?.carouselElement?.addEventListener('wa-slide-change', this.onSwipe)
+  }
+  protected updated(_changedProperties: PropertyValues): void {
+    const wrongIdx = this.currentIdx != this.carouselElement?.activeSlide;
+    const playerChanged = _changedProperties.has('_activePlayer');
+    const queueChanged = _changedProperties.has('_queue');
+    const _isactive = isActive(this.hass, this.activePlayer, this.controller.ActivePlayer.activeEntityConfig);
+    const hasQueue = this.queue?.length;
+    if ( _isactive 
+      && hasQueue
+      && (
+         wrongIdx
+          || playerChanged
+          || queueChanged
+      )
+    ) {
+      this.updateActiveSlide();
+    }
+  }
+  
+  static get styles(): CSSResultGroup {
     return styles;
   }
 }
-customElements.define("mass-artwork", MassPlayerArtwork);

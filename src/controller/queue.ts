@@ -1,23 +1,25 @@
 import { ContextProvider } from "@lit/context";
 import {
   currentQueueItemContext,
-  ExtendedHass,
-  ExtendedHassEntity,
   nextQueueItemContext,
   previousQueueItemContext,
   queueContext,
-} from "../const/context.js";
+} from "../const/context";
 import {
-  MassQueueEvent,
   MAX_GET_QUEUE_FAILURES,
+  TIMED_LISTENER_DELAY_MS,
+} from "../const/player-queue";
+import { Config } from "../config/config";
+import QueueActions from "../actions/queue-actions";
+import { isActive, jsonMatch, playerHasUpdated } from "../utils/util";
+import {
+  ExtendedHass,
+  ExtendedHassEntity,
   QueueItem,
   QueueItems,
-  TIMED_LISTENER_DELAY_MS,
-} from "../const/player-queue.js";
-import { Config } from "../config/config.js";
-import QueueActions from "../actions/queue-actions.js";
-import { isActive, jsonMatch, playerHasUpdated } from "../utils/util.js";
-import { SubscriptionUnsubscribe } from "../const/common.js";
+  SubscriptionUnsubscribe
+} from "../const/types";
+import { MassQueueEvent } from "../const/events";
 
 export class QueueController {
   public _host!: HTMLElement;
@@ -25,7 +27,6 @@ export class QueueController {
   private _currentQueueItem!: ContextProvider<typeof currentQueueItemContext>;
   private _nextQueueItem!: ContextProvider<typeof nextQueueItemContext>;
   private _previousQueueItem!: ContextProvider<typeof previousQueueItemContext>;
-  private _currentItem!: QueueItem;
   private _hass!: ExtendedHass;
   private _activeMediaPlayer!: ExtendedHassEntity;
   private _config!: Config;
@@ -67,6 +68,10 @@ export class QueueController {
   private set queue(queue_items: QueueItems | null) {
     if (jsonMatch(this._queue.value, queue_items)) {
       return;
+    }
+    if (this.activeMediaPlayer.state == 'playing' && !queue_items?.length) {
+      // If the player is playing, there must be active player items; assume then that we received bad data.
+      return
     }
     this._queue.setValue(queue_items);
   }
@@ -159,7 +164,7 @@ export class QueueController {
     const activeEntityConfig = ents.find((item) => item.entity_id == ent_id);
     // eslint-disable-next-line @typescript-eslint/no-non-null-assertion
     if (isActive(this.hass, this.activeMediaPlayer, activeEntityConfig!)) {
-      const queue = this._getQueue();
+      const queue = await this._getQueue();
       return queue;
     }
     this.queue = [];
@@ -178,7 +183,7 @@ export class QueueController {
     this._fails = 0;
     void this.getQueue();
   }
-  public async _getQueue() {
+  public async _getQueue(attempt = 0) {
     if (this._updatingQueue) {
       return;
     }
@@ -192,16 +197,29 @@ export class QueueController {
     }
     try {
       let queue = await this.actions.getQueue(limit_before, limit_after);
-      if (!queue) {
+      if (!queue?.length && ["playing", "paused"].includes(this.activeMediaPlayer.state)) {
+        if (attempt >= MAX_GET_QUEUE_FAILURES) {
+          return []
+        }
+        // If queue length is zero and player is playing/paused, assume we refreshed at a bad time. Set a short delay and try again.
+        setTimeout(
+          () => {
+            return this._getQueue(attempt+ 1)
+          },
+          75
+        )
+      } else {
+        if (!queue) {
+          this._updatingQueue = false;
+          return;
+        }
+        this._fails = 0;
+        queue = this.setActiveTrack(queue);
+        this.queue = queue;
+        this.getCurNextPrQueueItems();
         this._updatingQueue = false;
-        return;
+        return queue;
       }
-      this._fails = 0;
-      queue = this.setActiveTrack(queue);
-      this.queue = queue;
-      this.getCurNextPrQueueItems();
-      this._updatingQueue = false;
-      return queue;
     } catch(e) {
       this._fails++;
       throw e;
@@ -288,7 +306,7 @@ export class QueueController {
       return;
     }
     const new_idx = this.getIndex(queue_item_id);
-    if (!new_idx) return;
+    if (!new_idx || !this.queue[new_idx]) return;
     this.queue[new_idx].playing = true;
     const cur_idx = this.queue.findIndex((i) => i.playing);
     this.queue[cur_idx].playing = false;

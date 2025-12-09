@@ -8,20 +8,19 @@ import {
 import styles from "../styles/media-progress";
 import { query, state } from "lit/decorators.js";
 import { consume } from "@lit/context";
-import { ActivePlayerController } from "../controller/active-player.js";
+import { ActivePlayerController } from "../controller/active-player";
 import {
   actionsControllerContext,
-  activeMediaPlayer,
+  activeMediaPlayerContext,
   activePlayerControllerContext,
   activePlayerDataContext,
   controllerContext,
-  ExtendedHassEntity,
-} from "../const/context.js";
-import { ActionsController } from "../controller/actions.js";
-import { playerHasUpdated } from "../utils/util.js";
-import { PlayerData } from "../const/music-player.js";
-import { secondsToTime } from "../utils/util.js";
-import { MassCardController } from "../controller/controller.js";
+} from "../const/context";
+import { ActionsController } from "../controller/actions";
+import { playerHasUpdated } from "../utils/util";
+import { ExtendedHassEntity, PlayerData } from "../const/types";
+import { secondsToTime } from "../utils/util";
+import { MassCardController } from "../controller/controller";
 class MassPlayerProgressBar extends LitElement {
   @state() private _media_duration!: number;
   @state() private _media_position!: number;
@@ -75,7 +74,7 @@ class MassPlayerProgressBar extends LitElement {
     return this._media_duration;
   }
 
-  @consume({ context: activeMediaPlayer, subscribe: true })
+  @consume({ context: activeMediaPlayerContext, subscribe: true })
   public set activePlayer(player: ExtendedHassEntity) {
     if (this._activePlayer) {
       if (!playerHasUpdated(this._activePlayer, player)) {

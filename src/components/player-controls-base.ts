@@ -3,7 +3,7 @@ import { LitElement, PropertyValues } from "lit";
 import { state } from "lit/decorators.js";
 import {
   actionsControllerContext,
-  activeEntityConf,
+  activeEntityConfContext,
   activePlayerDataContext,
   controllerContext,
   EntityConfig,
@@ -11,20 +11,18 @@ import {
   musicPlayerConfigContext,
 } from "../const/context";
 import { ActionsController } from "../controller/actions";
-import {
-  ForceUpdatePlayerDataEventData,
-  PlayerData,
-} from "../const/music-player";
+import { PlayerData } from "../const/types";
 import { Icons } from "../const/icons";
 import { getIteratedRepeatMode } from "../utils/music-player";
-import { RepeatMode } from "../const/common";
-import { jsonMatch } from "../utils/util.js";
+import { RepeatMode } from "../const/enums";
+import { jsonMatch } from "../utils/util";
 import {
   PlayerConfig,
   PlayerControlsHiddenElementsConfig,
   PlayerLayoutConfig,
-} from "../config/player.js";
-import { MassCardController } from "../controller/controller.js";
+} from "../config/player";
+import { MassCardController } from "../controller/controller";
+import { ForceUpdatePlayerDataEventData } from "../const/events";
 
 export class MassPlayerControlsBase extends LitElement {
   protected layoutConfig!: PlayerLayoutConfig;
@@ -62,7 +60,7 @@ export class MassPlayerControlsBase extends LitElement {
     this.setHiddenElements();
   }
 
-  @consume({ context: activeEntityConf, subscribe: true })
+  @consume({ context: activeEntityConfContext, subscribe: true })
   private set activeEntityConfig(config: EntityConfig) {
     const c = config.hide.player;
     this._entityHiddenElements = {

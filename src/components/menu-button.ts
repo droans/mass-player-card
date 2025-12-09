@@ -5,23 +5,40 @@ import {
   PropertyValues,
   TemplateResult,
 } from "lit";
-import { property, state } from "lit/decorators.js";
+import { property, query, state } from "lit/decorators.js";
 
-import { TargetValEvent, TargetValEventData } from "../const/events";
-import { ListItems } from "../const/media-browser";
+import { ListItems } from "../const/types";
 import { consume } from "@lit/context";
-import { useExpressiveContext } from "../const/context.js";
+import { controllerContext, useExpressiveContext } from "../const/context";
 import styles from "../styles/menu-button";
-import { jsonMatch } from "../utils/util.js";
+import { jsonMatch } from "../utils/util";
+import { MassCardController } from "../controller/controller";
+import './menu-item';
+import { ControlSelectMenuElement } from "../const/elements";
 
-class MassMenuButton extends LitElement {
+export class MassMenuButton extends LitElement {
   @property({ attribute: false }) public iconPath!: string;
-  @property({ attribute: false }) private _items!: ListItems;
+
+  @property({ attribute: false }) private _items?: ListItems;
+
   @property({ type: Boolean, attribute: "fixedMenuPosition" })
-  public fixedMenuPosition!: boolean;
+  public fixedMenuPosition = false;
+
+  @property({ type: Boolean, attribute: "dividers" })
+  public dividers = false;
+
+  @property({ type: Boolean, attribute: 'use-md' })
+  public useMD = false;
+
+  @query('#menu-select-menu')
+  public menuElement!: ControlSelectMenuElement;
+
   @consume({ context: useExpressiveContext, subscribe: true })
   private useExpressive!: boolean;
-  public onSelectAction!: TargetValEvent;
+
+  @consume({ context: controllerContext, subscribe: true })
+  private controller!: MassCardController;
+
   @state() private _selectedItem!: string;
   private _initialSelection?: string;
 
@@ -33,6 +50,7 @@ class MassMenuButton extends LitElement {
   public get initialSelection() {
     return this._initialSelection ?? ``;
   }
+
   public set items(items: ListItems) {
     if (jsonMatch(this._items, items)) {
       return;
@@ -43,56 +61,47 @@ class MassMenuButton extends LitElement {
     }
   }
   public get items() {
-    return this._items;
+    return this._items ?? [];
   }
-  private onSelect = (ev: TargetValEventData) => {
-    const val = ev.target.value;
-    if (val == "") {
-      return;
-    }
-    this._selectedItem = ev.target.value;
-    this.onSelectAction(ev);
+
+  private onSelect = () => {
+    this.menuElement.menuOpen = false;
   };
 
   protected renderMenuItems(): TemplateResult | TemplateResult[] {
-    if (!this.items) {
+    if (!this?.items?.length) {
       return html``;
     }
-
-    return this._items.map((item) => {
-      return html`
-        <ha-list-item
-          class="menu-list-item ${this._selectedItem == item.option
-            ? `selected-item`
-            : `inactive-item`}${this.useExpressive ? `-expressive` : ``}"
-          part="menu-list-item"
-          .value="${item.option}"
-          .graphic=${item.icon}
-        >
-          <ha-svg-icon
-            class="menu-list-item-svg ${this.useExpressive
-              ? `svg-expressive`
-              : ``}"
-            part="menu-list-item-svg"
-            slot="graphic"
-            .path=${item.icon}
-          ></ha-svg-icon>
-          ${item.title}
-        </ha-list-item>
-      `;
-    });
+    const ct = this.items.length;
+    return this.items.map(
+      (item, idx) => {
+        const use_dividers = idx < ct - 1 && this.dividers;
+        return html`
+          <mpc-menu-item
+            class="menu-items"
+            ?divider=${use_dividers}
+            ?expressive=${this.useExpressive}
+            ?selected=${this._selectedItem == item.option}
+            .menuItem=${item}
+            ?use-md=${this.useMD}
+          ></mpc-menu-item>
+        `
+      }
+    );
   }
 
   protected render() {
+    const expressive_class = this.useExpressive ? `menu-expressive` : ``;
+    const vibrant_class = this.controller.config.expressive_scheme == 'vibrant' ? `vibrant` : ``;
     return html`
       <div id="menu-button" part="menu-button">
         <ha-control-select-menu
           id="menu-select-menu"
-          class="${this.useExpressive ? `menu-expressive` : ``}"
+          class="${expressive_class} ${vibrant_class}"
           part="menu-select-menu"
           naturalMenuWidth
+          @menu-item-selected=${this.onSelect}
           ?fixedMenuPosition=${this.fixedMenuPosition}
-          @selected=${this.onSelect}
         >
           <ha-svg-icon
             slot="icon"

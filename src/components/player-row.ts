@@ -8,11 +8,11 @@ import {
   PlayerTransferService,
   PlayerUnjoinService,
 } from "../const/actions";
-import { ExtendedHass, ExtendedHassEntity, Thumbnail } from "../const/common";
+import { VibrationPattern } from "../const/common";
 import {
-  activeEntityConf,
+  activeEntityConfContext,
   EntityConfig,
-  hassExt,
+  hassContext,
   IconsContext,
   playersConfigContext,
   useExpressiveContext,
@@ -30,7 +30,9 @@ import {
   PlayersConfig,
   PlayersHiddenElementsConfig,
 } from "../config/players";
-import { Icons } from "../const/icons.js";
+import { Icons } from "../const/icons";
+import { ExtendedHass, ExtendedHassEntity } from "../const/types";
+import { Thumbnail } from "../const/enums";
 
 class PlayerRow extends LitElement {
   @property({ type: Boolean }) joined = false;
@@ -40,7 +42,7 @@ class PlayerRow extends LitElement {
   @consume({ context: useExpressiveContext, subscribe: true })
   private useExpressive!: boolean;
 
-  @consume({ context: hassExt })
+  @consume({ context: hassContext })
   public hass!: ExtendedHass;
 
   public allowJoin = true;
@@ -66,7 +68,7 @@ class PlayerRow extends LitElement {
   public get config() {
     return this._config;
   }
-  @consume({ context: activeEntityConf, subscribe: true })
+  @consume({ context: activeEntityConfContext, subscribe: true })
   public set entityConfig(config: EntityConfig) {
     if (jsonMatch(this._entityConfig, config)) {
       return;
@@ -96,7 +98,7 @@ class PlayerRow extends LitElement {
     return _changedProperties.size > 0;
   }
   private onJoinPressed = async (e: Event) => {
-    navigator.vibrate([75, 20, 20, 20, 75]);
+    navigator.vibrate(VibrationPattern.Players.ACTION_JOIN);
     e.stopPropagation();
     const service = this.joined ? this.unjoinService : this.joinService;
     await service(this.player_entity.entity_id);
@@ -104,7 +106,7 @@ class PlayerRow extends LitElement {
   }
   private onTransferPressed = (e: Event) => {
     e.stopPropagation();
-    navigator.vibrate([75, 20, 40, 20, 25]);
+    navigator.vibrate(VibrationPattern.Players.ACTION_TRANSFER);
     this.transferService(this.player_entity.entity_id);
   }
   private artworkStyle() {

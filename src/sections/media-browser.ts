@@ -7,10 +7,9 @@ import {
   TemplateResult,
 } from "lit";
 import {
-  ExtendedHass,
   MediaTypes,
-} from "../const/common.js";
-import { MediaBrowserConfig } from "../config/media-browser.js";
+} from "../const/enums";
+import { MediaBrowserConfig } from "../config/media-browser";
 import { customElement, property, query, state } from "lit/decorators.js";
 import {
   DEFAULT_ACTIVE_SECTION,
@@ -18,38 +17,36 @@ import {
   DEFAULT_SEARCH_LIMIT,
   getFilterButtons,
   getSearchMediaButtons,
-  MediaCardData,
-  MediaCardItem,
-  newMediaBrowserItemsConfig,
   SEARCH_TERM_MIN_LENGTH,
   SEARCH_UPDATE_DELAY,
-} from "../const/media-browser.js";
+} from "../const/media-browser";
 import { consume, provide } from "@lit/context";
 
-import "../components/media-browser-cards.js";
-import "../components/section-header.js";
-import styles from "../styles/media-browser.js";
+import "../components/media-browser-cards";
+import "../components/section-header";
+import styles from "../styles/media-browser";
 
 import {
-  activeEntityConf,
+  activeEntityConfContext,
   activeMediaBrowserCardsContext,
   browserControllerContext,
   EntityConfig,
-  hassExt,
+  hassContext,
   IconsContext,
   mediaBrowserCardsContext,
   mediaBrowserConfigContext,
   useExpressiveContext,
-} from "../const/context.js";
-import { Icons } from "../const/icons.js";
-import { MediaBrowserController } from "../controller/browser.js";
-import BrowserActions from "../actions/browser-actions.js";
-import { EnqueueOptions } from "../const/actions.js";
-import { getMediaTypeSvg } from "../utils/thumbnails.js";
-import { jsonMatch } from "../utils/util.js";
-import { getTranslation } from "../utils/translations.js";
-import { CardsUpdatedEvent, TargetValEventData } from "../const/events.js";
-import { MediaBrowserCards } from "../components/media-browser-cards.js";
+} from "../const/context";
+import { Icons } from "../const/icons";
+import { MediaBrowserController } from "../controller/browser";
+import BrowserActions from "../actions/browser-actions";
+import { EnqueueOptions } from "../const/enums";
+import { getMediaTypeSvg } from "../utils/thumbnails";
+import { jsonMatch } from "../utils/util";
+import { getTranslation } from "../utils/translations";
+import { CardsUpdatedEvent, MenuButtonEventData, TargetValEventData } from "../const/events";
+import { MediaBrowserCards } from "../components/media-browser-cards";
+import { ExtendedHass, MediaCardData, MediaCardItem, newMediaBrowserItemsConfig } from "../const/types";
 
 @customElement(`mass-media-browser`)
 export class MediaBrowser extends LitElement {
@@ -69,7 +66,7 @@ export class MediaBrowser extends LitElement {
   @consume({ context: useExpressiveContext, subscribe: true })
   private useExpressive!: boolean;
   @consume({ context: IconsContext }) private Icons!: Icons;
-  @consume({ context: activeEntityConf, subscribe: true })
+  @consume({ context: activeEntityConfContext, subscribe: true })
   private activeEntityConfig!: EntityConfig;
 
   public activeSection = DEFAULT_ACTIVE_SECTION;
@@ -94,7 +91,7 @@ export class MediaBrowser extends LitElement {
     return this._activeCards;
   }
 
-  @consume({ context: hassExt, subscribe: true })
+  @consume({ context: hassContext, subscribe: true })
   public set hass(hass: ExtendedHass) {
     this._hass = hass;
     if (!this.actions) {
@@ -246,12 +243,11 @@ export class MediaBrowser extends LitElement {
     this.cards.search = [];
     this.activeCards = this.cards.search;
   };
-  private onSearchMediaTypeSelect = async (ev: TargetValEventData) => {
-    const val = ev.target.value as MediaTypes;
+  private onSearchMediaTypeSelect = async (ev: MenuButtonEventData) => {
+    const val = ev.detail.option as MediaTypes;
     if (!val) {
       return;
     }
-    ev.target.value = "";
     this.searchMediaType = val;
     this.searchMediaTypeIcon = getMediaTypeSvg(val, this.Icons, this.hass);
     await this.searchMedia();
@@ -278,12 +274,11 @@ export class MediaBrowser extends LitElement {
       void this.searchMedia();
     }, SEARCH_UPDATE_DELAY);
   };
-  private onFilterType = (ev: TargetValEventData) => {
-    const val = ev.target.value;
+  private onFilterType = (ev: MenuButtonEventData) => {
+    const val = ev.detail.option;
     if (!val.length) {
       return;
     }
-    ev.target.value = ``;
     if (!Object.keys(this.cards).includes(val)) {
       return;
     }
@@ -349,7 +344,7 @@ export class MediaBrowser extends LitElement {
           .iconPath=${this.searchMediaTypeIcon}
           .initialSelection=${this.searchMediaType}
           .items=${icons}
-          .onSelectAction=${this.onSearchMediaTypeSelect}
+          @menu-item-selected=${this.onSearchMediaTypeSelect}
           fixedMenuPosition
         ></mass-menu-button>
       `;
@@ -456,8 +451,8 @@ export class MediaBrowser extends LitElement {
           role="filled"
           size="small"
           elevation=1
-            id="button-back"
-            class="button-min ${this.useExpressive ? `button-expressive` : ``}"
+          id="button-back"
+          class="button-min ${this.useExpressive ? `button-expressive` : ``}"
         >
           <ha-svg-icon
             .path=${this.Icons.ARROW_LEFT}
@@ -477,7 +472,7 @@ export class MediaBrowser extends LitElement {
         .iconPath=${icon}
         .initialSelection=${this.activeSection}
         .items=${icons}
-        .onSelectAction=${this.onFilterType}
+        @menu-item-selected=${this.onFilterType}
         fixedMenuPosition
       ></mass-menu-button>
     `;

@@ -20,12 +20,11 @@ import "./components/navigation-bar";
 
 import { Config, createConfigForm, createStubConfig } from "./config/config";
 
-import { Sections } from "./const/card";
+import { Sections } from "./const/enums";
 import {
   activeSectionContext,
   configContext,
   controllerContext,
-  ExtendedHass,
 } from "./const/context";
 
 import { version } from "../package.json";
@@ -35,6 +34,7 @@ import head_styles from "./styles/head";
 
 import { getDefaultSection, jsonMatch } from "./utils/util";
 import { MassCardController } from "./controller/controller";
+import { ExtendedHass } from "./const/types";
 
 const DEV = false;
 
@@ -323,7 +323,6 @@ export class MusicAssistantPlayerCard extends LitElement {
       //eslint-disable-next-line @typescript-eslint/no-non-null-assertion
       const stylesheet = head_styles.styleSheet!;
       document.adoptedStyleSheets.push(stylesheet);
-      this._controller.ActivePlayer.firstUpdateComplete();
     }
     this.addEventListener("section-changed", this.onSectionChangedEvent);
   }

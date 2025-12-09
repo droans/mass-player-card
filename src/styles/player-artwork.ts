@@ -7,15 +7,11 @@ export default css`
     justify-self: center;
     display: block;
   }
-  .artwork-medium {
-  }
-  .artwork-small {
-  }
-  .asleep {
+  #asleep {
     height: 100%;
     width: 100%;
   }
-  .asleep-expressive {
+  #asleep.expressive {
     color: rgba(from var(--md-sys-color-primary) r g b / 0.7);
   }
 
@@ -23,19 +19,19 @@ export default css`
     --aspect-ratio: 1;
     position: absolute;
   }
-  .carousel-large {
+  #carousel.large {
     height: var(--artwork-large-height) !important;
     aspect-ratio: 1;
     width: 100%;
   }
-  .carousel-medium {
+  #carousel.medium {
     height: var(--artwork-medium-height);
     aspect-ratio: 1;
     place-content: center;
     position: absolute;
     top: calc(50% - (var(--artwork-medium-height) / 2) - 2em);
   }
-  .carousel-small {
+  #carousel.small {
     position: absolute;
     height: var(--artwork-small-height);
     display: flex;

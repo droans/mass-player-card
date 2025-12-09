@@ -2,11 +2,11 @@ import { consume } from "@lit/context";
 import { CSSResultGroup, html, LitElement, PropertyValues } from "lit";
 import { property, state } from "lit/decorators.js";
 
-import { ExtendedHass, ExtendedHassEntity } from "../const/common";
-import { hassExt } from "../const/context";
+import { ExtendedHass, ExtendedHassEntity } from "../const/types";
+import { hassContext } from "../const/context";
 import PlayerActions from "../actions/player-actions";
 import styles from "../styles/volume-slider";
-import { DetailValEventData } from "../const/events.js";
+import { DetailValEventData } from "../const/events";
 class VolumeSlider extends LitElement {
   @property({ attribute: false }) public maxVolume = 100;
   @state() private entity!: ExtendedHassEntity;
@@ -25,7 +25,7 @@ class VolumeSlider extends LitElement {
   public get entityId() {
     return this._entityId;
   }
-  @consume({ context: hassExt, subscribe: true })
+  @consume({ context: hassContext, subscribe: true })
   public set hass(hass: ExtendedHass) {
     this._hass = hass;
     this._actions = new PlayerActions(hass);

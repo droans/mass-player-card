@@ -1,13 +1,12 @@
-import { EnqueueOptions } from "../const/actions";
-import { ExtendedHass, MediaTypes } from "../const/common";
+import { EnqueueOptions } from "../const/enums";
+import { MediaTypes } from "../const/enums";
 import {
   DEFAULT_SEARCH_LIMIT,
-  MediaLibraryItem,
-  RecommendationResponse,
 } from "../const/media-browser";
 import { getRecommendationsServiceSchema } from "mass-queue-types/packages/mass_queue/actions/get_recommendations";
 import { getLibraryServiceResponse, getLibraryServiceSchema } from "mass-queue-types/packages/music_assistant/actions/get_library"
 import { searchServiceResponse, searchServiceSchema } from "mass-queue-types/packages/music_assistant/actions/search"
+import { ExtendedHass, MediaLibraryItem, RecommendationResponse } from "../const/types";
 export default class BrowserActions {
   private _hass!: ExtendedHass;
 
@@ -79,15 +78,16 @@ export default class BrowserActions {
     player_entity_id: string,
     media_type: MediaTypes,
     limit = 25,
-    favorite = true,
+    favorite: boolean | null = true,
   ): Promise<MediaLibraryItem[]> {
     const config_id = await this.getPlayerConfigEntry(player_entity_id);
+    const favorite_data = typeof(favorite) == 'boolean' ? {favorite: favorite} : {}
      const data: getLibraryServiceSchema = {
       type: "call_service",
       domain: "music_assistant",
       service: "get_library",
       service_data: {
-        favorite: favorite,
+        ...favorite_data,
         limit: limit,
         config_entry_id: config_id,
         media_type: media_type,

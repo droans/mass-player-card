@@ -55,6 +55,6 @@ exclude-labels:
   - "no-changelog"
 
 template: |
-  # Music Assistant Queue Actions v$RESOLVED_VERSION
+  # Music Assistant Player Card v$RESOLVED_VERSION
 
   $CHANGES

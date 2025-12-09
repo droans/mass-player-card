@@ -1,10 +1,10 @@
 import { CSSResultGroup, html, LitElement, TemplateResult } from "lit";
 import styles from '../styles/button'
 import { property } from "lit/decorators.js";
-import { ButtonColorRole } from "../const/common.js";
+import { ButtonColorRole } from "../const/enums";
 import { consume } from "@lit/context";
-import { configContext } from "../const/context.js";
-import { Config } from "../config/config.js";
+import { configContext } from "../const/context";
+import { Config } from "../config/config";
 
 const DEFAULT_COLOR_ROLE = ButtonColorRole.Filled;
 const DEFAULT_BUTTON_SIZE = "small"

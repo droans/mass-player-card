@@ -9,17 +9,18 @@ import {
 import { property, state } from "lit/decorators.js";
 
 import { QueueItemSelectedService, QueueService } from "../const/actions";
-import { ExtendedHass, Thumbnail } from "../const/common";
+import { Thumbnail } from "../const/enums";
 import {
-  activeEntityConf,
+  activeEntityConfContext,
   EntityConfig,
-  hassExt,
+  hassContext,
   IconsContext,
   mediaCardDisplayContext,
   playerQueueConfigContext,
   useExpressiveContext,
 } from "../const/context";
-import { QueueItem } from "../const/player-queue";
+import { ExtendedHass, QueueItem } from "../const/types";
+import { VibrationPattern } from "../const/common";
 
 import styles from "../styles/media-row";
 
@@ -37,13 +38,13 @@ import {
   PlayerQueueHiddenElementsConfig,
   QueueConfig,
 } from "../config/player-queue";
-import { Icons } from "../const/icons.js";
+import { Icons } from "../const/icons";
 import { queueItem } from "mass-queue-types/packages/mass_queue/actions/get_queue_items.js";
 
 class MediaRow extends LitElement {
   @property({ attribute: false }) media_item!: QueueItem;
 
-  @consume({ context: hassExt, subscribe: true })
+  @consume({ context: hassContext, subscribe: true })
   public hass!: ExtendedHass;
   @consume({ context: IconsContext }) public Icons!: Icons;
 
@@ -78,7 +79,7 @@ class MediaRow extends LitElement {
     return this._config;
   }
 
-  @consume({ context: activeEntityConf, subscribe: true })
+  @consume({ context: activeEntityConfContext, subscribe: true })
   public set entityConfig(config: EntityConfig) {
     if (jsonMatch(this._entityConfig, config)) {
       return;
@@ -104,26 +105,27 @@ class MediaRow extends LitElement {
       move_next_button: entity.move_next_button || card.move_next_button,
       move_up_button: entity.move_up_button || card.move_up_button,
       remove_button: entity.remove_button || card.remove_button,
+      clear_queue_button: entity.clear_queue_button || card.clear_queue_button,
     };
   }
   private callMoveItemUpService = (e: Event) => {
-    navigator.vibrate([50, 20, 25, 20, 25]);
+    navigator.vibrate(VibrationPattern.Queue.ACTION_MOVE_UP);
     e.stopPropagation();
     this.moveQueueItemUpService(this.media_item.queue_item_id);
   }
   private callMoveItemDownService = (e: Event) => {
-    navigator.vibrate([25, 20, 25, 20, 50]);
+    navigator.vibrate(VibrationPattern.Queue.ACTION_MOVE_DOWN);
     e.stopPropagation();
     this.moveQueueItemDownService(this.media_item.queue_item_id);
   }
   private callMoveItemNextService = (e: Event) => {
-    navigator.vibrate([50, 20, 25, 20, 50]);
+    navigator.vibrate(VibrationPattern.Queue.ACTION_MOVE_NEXT);
     e.stopPropagation();
     this.moveQueueItemNextService(this.media_item.queue_item_id);
   }
   private callRemoveItemService = (e: Event) => {
     e.stopPropagation();
-    navigator.vibrate([25, 20, 75, 20, 25]);
+    navigator.vibrate(VibrationPattern.Queue.ACTION_REMOVE);
     this.removeService(this.media_item.queue_item_id);
   }
   private callOnQueueItemSelectedService = () => {

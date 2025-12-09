@@ -9,7 +9,9 @@ export default css`
   a.active-expressive {
     box-shadow: var(--md-sys-elevation-level2);
   }
-
+  :is(nav.tabbed>a,.tabs>a):is(:hover)::after {
+    opacity: 0 !important;
+  }
   .action-button-svg {
     --icon-primary-color: var(--tab-active-icon-color);
     height: var(--tab-icon-height);
@@ -33,8 +35,17 @@ export default css`
 
   .player-tabs {
     --primary-container: rgba(from var(--primary-color) r g b / 0.25);
+    z-index: 2;
   }
-
+  #tab-indicator {
+    height: 100%;
+    position: absolute;
+    box-shadow: var(--md-sys-elevation-level2);
+    background-color: var(--md-sys-color-secondary-container);
+    z-index: 1;
+    will-change: transform;
+    border-radius: var(--default-border-radius);
+  }
   .tabbed {
     --tabbed-elevation: var(--md-sys-elevation-level1);
     --tabbed-background-color: var(--tabbed-background-color);
