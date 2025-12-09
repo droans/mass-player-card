@@ -5,23 +5,6 @@ __metadata:
   version: 8
   cacheKey: 10c0
 
-"@awesome.me/webawesome@npm:^3.0.0":
-  version: 3.0.0
-  resolution: "@awesome.me/webawesome@npm:3.0.0"
-  dependencies:
-    "@ctrl/tinycolor": "npm:4.1.0"
-    "@floating-ui/dom": "npm:^1.6.13"
-    "@lit/react": "npm:^1.0.8"
-    "@shoelace-style/animations": "npm:^1.2.0"
-    "@shoelace-style/localize": "npm:^3.2.1"
-    composed-offset-position: "npm:^0.0.6"
-    lit: "npm:^3.2.1"
-    nanoid: "npm:^5.1.5"
-    qr-creator: "npm:^1.0.0"
-  checksum: 10c0/809a4f698798e10a5b78200f0e9bb473dd46416c2756280771fd58a42850d319e02ad38c5549a599c09811817bc8c498ccb39fd20a910324b0f8bbe36dcf9e82
-  languageName: node
-  linkType: hard
-
 "@ctrl/tinycolor@npm:4.1.0":
   version: 4.1.0
   resolution: "@ctrl/tinycolor@npm:4.1.0"
@@ -33,6 +16,23 @@ __metadata:
   version: 4.2.0
   resolution: "@ctrl/tinycolor@npm:4.2.0"
   checksum: 10c0/374034581953f6debd950e4b07da833d1d8f7af5aead5117c91545fbe1583c91b2407bc285e1625529839135d6465c2e7549e7a8ad70979cab4c207486798064
+  languageName: node
+  linkType: hard
+
+"@droans/webawesome@npm:^3.0.0":
+  version: 3.0.0
+  resolution: "@droans/webawesome@npm:3.0.0"
+  dependencies:
+    "@ctrl/tinycolor": "npm:4.1.0"
+    "@floating-ui/dom": "npm:^1.6.13"
+    "@lit/react": "npm:^1.0.8"
+    "@shoelace-style/animations": "npm:^1.2.0"
+    "@shoelace-style/localize": "npm:^3.2.1"
+    composed-offset-position: "npm:^0.0.6"
+    lit: "npm:^3.2.1"
+    nanoid: "npm:^5.1.5"
+    qr-creator: "npm:^1.0.0"
+  checksum: 10c0/dfd179bb28ff60fe0b4903ad37dc546a7b0108378bf92bf606bce01ecd29c2e96feec71d38495d2272cba310828d18d36dd22fe72c7886888b60428b75ea45d1
   languageName: node
   linkType: hard
 
@@ -2096,7 +2096,7 @@ __metadata:
   version: 0.0.0-use.local
   resolution: "mass-player-card@workspace:."
   dependencies:
-    "@awesome.me/webawesome": "npm:^3.0.0"
+    "@droans/webawesome": "npm:^3.0.0"
     "@eslint/js": "npm:9.39.1"
     "@lit-labs/compiler": "npm:^1.1.1"
     "@lit/context": "npm:1.1.6"
