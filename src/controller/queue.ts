@@ -158,25 +158,13 @@ export class QueueController {
       `Reached max failures getting queue, check your browser and HA logs!`,
     );
   }
-  public getQueue = async (attempt = 0) => {
+  public getQueue = async () => {
     const ents = this.config.entities;
     const ent_id = this.activeMediaPlayer.entity_id;
     const activeEntityConfig = ents.find((item) => item.entity_id == ent_id);
     // eslint-disable-next-line @typescript-eslint/no-non-null-assertion
     if (isActive(this.hass, this.activeMediaPlayer, activeEntityConfig!)) {
       const queue = await this._getQueue();
-      if (!queue?.length && ["playing", "paused"].includes(this.activeMediaPlayer.state)) {
-        if (attempt >= MAX_GET_QUEUE_FAILURES) {
-          return []
-        }
-        // If queue length is zero and player is playing/paused, assume we refreshed at a bad time. Set a short delay and try again.
-        setTimeout(
-          () => {
-            return this.getQueue(attempt+ 1)
-          },
-          250
-        )
-      }
       return queue;
     }
     this.queue = [];
@@ -195,7 +183,7 @@ export class QueueController {
     this._fails = 0;
     void this.getQueue();
   }
-  public async _getQueue() {
+  public async _getQueue(attempt = 0) {
     if (this._updatingQueue) {
       return;
     }
@@ -209,16 +197,29 @@ export class QueueController {
     }
     try {
       let queue = await this.actions.getQueue(limit_before, limit_after);
-      if (!queue) {
+      if (!queue?.length && ["playing", "paused"].includes(this.activeMediaPlayer.state)) {
+        if (attempt >= MAX_GET_QUEUE_FAILURES) {
+          return []
+        }
+        // If queue length is zero and player is playing/paused, assume we refreshed at a bad time. Set a short delay and try again.
+        setTimeout(
+          () => {
+            return this._getQueue(attempt+ 1)
+          },
+          75
+        )
+      } else {
+        if (!queue) {
+          this._updatingQueue = false;
+          return;
+        }
+        this._fails = 0;
+        queue = this.setActiveTrack(queue);
+        this.queue = queue;
+        this.getCurNextPrQueueItems();
         this._updatingQueue = false;
-        return;
+        return queue;
       }
-      this._fails = 0;
-      queue = this.setActiveTrack(queue);
-      this.queue = queue;
-      this.getCurNextPrQueueItems();
-      this._updatingQueue = false;
-      return queue;
     } catch(e) {
       this._fails++;
       throw e;
