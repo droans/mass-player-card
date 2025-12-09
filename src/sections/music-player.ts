@@ -450,7 +450,6 @@ class MusicPlayerCard extends LitElement {
       const state = this.hass.states[item.entity_id];
       const img = state.attributes.entity_picture ?? state.attributes.entity_picture_local;
       const fallback = state.attributes.entity_picture_local ?? this.Icons.SPEAKER;
-      const expressive = this.cardConfig.expressive;
       return html`
         <div class="grouped-players-item">
           <div class="player-name-icon">
