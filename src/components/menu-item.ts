@@ -30,13 +30,13 @@ export class MassMenuItem extends LitElement {
   @property({ attribute: false })
   public set menuItem(item: ListItemData) {
     this._menuItem = item;
-    void this.setImageOrIconElement();
+    this.setImageOrIconElement();
   }
   public get menuItem() {
     return this._menuItem;
   }
-  private async setImageOrIconElement() {
-    await this.renderIconOrImage()
+  private setImageOrIconElement() {
+    this.renderIconOrImage()
   }
 
   private getImageCallback = (src: string | boolean) => {
@@ -78,19 +78,19 @@ export class MassMenuItem extends LitElement {
       >
     `
   }
-  protected async renderImageFallbackOrIcon() {
+  protected renderImageFallbackOrIcon() {
     const img_data = this.menuItem.image as ListImageData;
     const img_url = img_data.url
     const fallbacks = [img_data.fallback]
-    const src = tryPrefetchImageWithFallbacks(img_url, fallbacks, this.hass).then(
+    void tryPrefetchImageWithFallbacks(img_url, fallbacks, this.hass).then(
       (src) => {
         this.getImageCallback(src)
       }
     )
   }
-  protected async renderIconOrImage() {
+  protected renderIconOrImage() {
     if (this.menuItem?.image) {
-      await this.renderImageFallbackOrIcon()
+      this.renderImageFallbackOrIcon()
     }
     this.imgOrIconTemplate = this.renderIcon()
   }
