@@ -42,12 +42,18 @@ jobs:
             ${{ runner.OS }}-
       - name: Install dependencies
         run: yarn install --frozen-lockfile
-      - name: Set version in release, repo based on tag
+      - name: Set git config
         run: |
           git config --local user.email "github-actions[bot]@users.noreply.github.com"
           git config --local user.name "github-actions[bot]"
+      - name: Bump version
+        run: |
           npm version prerelease -m "beep boop version bump"
-          git push 
+      - name: Push changes
+        run: |
+          git add package.json
+          git commit -m "beep boop version bump"
+          git push
       - name: Build the project
         run: |
           yarn rollup
