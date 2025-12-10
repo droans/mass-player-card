@@ -4,7 +4,7 @@
   "repository": "https://github.com/droans/mass-player-card",
   "author": "Michael Carroll",
 
-  "version": "2.4.0",
+  "version": "2.4.1-b.0",
   "module": "mass-player-card.js",
   "keywords": [
     "home-assistant",
