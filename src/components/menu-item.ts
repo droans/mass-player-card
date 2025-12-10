@@ -1,12 +1,17 @@
 import { CSSResultGroup, html, LitElement, TemplateResult } from "lit";
 import styles from '../styles/menu-item';
 import { customElement, property, state } from "lit/decorators.js";
-import { ListImageData, ListItemData } from "../const/types";
+import { ExtendedHass, ListImageData, ListItemData } from "../const/types";
+import { tryPrefetchImageWithFallbacks } from "../utils/util.js";
+import { consume } from "@lit/context";
+import { hassContext } from "../const/context.js";
 
 @customElement('mpc-menu-item')
 export class MassMenuItem extends LitElement {
   private _menuItem!: ListItemData;
 
+  @consume({ context: hassContext, subscribe: true })
+  private hass!: ExtendedHass;
   // Image/Icon Element
   @state() imgOrIconTemplate!: TemplateResult;
   
@@ -31,7 +36,15 @@ export class MassMenuItem extends LitElement {
     return this._menuItem;
   }
   private async setImageOrIconElement() {
-    this.imgOrIconTemplate = await this.renderIconOrImage()
+    await this.renderIconOrImage()
+  }
+
+  private getImageCallback = (src: string | boolean) => {
+    if (typeof(src) == 'string') {
+      this.imgOrIconTemplate = this.renderImage(src)
+    } else {
+      this.imgOrIconTemplate = this.renderIcon();
+    }
   }
 
   protected onSelection = () => {
@@ -65,39 +78,21 @@ export class MassMenuItem extends LitElement {
       >
     `
   }
-  private async tryPrefetchImage(image_url: string): Promise<string | boolean> {
-    if (!image_url?.length || image_url.length < 10) {
-      return false;
-    }
-    try {
-      const response = await fetch(image_url)
-      if (!response.ok) {
-        return false
-      }
-      const blob = await response.blob();
-      return URL.createObjectURL(blob);
-    } catch {
-      return false
-    }
-  }
-  protected async renderImageFallbackOrIcon(): Promise<TemplateResult> {
+  protected async renderImageFallbackOrIcon() {
     const img_data = this.menuItem.image as ListImageData;
-    const def_img_src = await this.tryPrefetchImage(img_data.url);
-    if (typeof(def_img_src) == 'string') {
-      return this.renderImage(def_img_src)
-    }
-    
-    const fallback_img_src = this.tryPrefetchImage(img_data.fallback);
-    if (typeof(fallback_img_src) == 'string') {
-      return this.renderImage(fallback_img_src)
-    }
-    return this.renderIcon()
+    const img_url = img_data.url
+    const fallbacks = [img_data.fallback]
+    const src = tryPrefetchImageWithFallbacks(img_url, fallbacks, this.hass).then(
+      (src) => {
+        this.getImageCallback(src)
+      }
+    )
   }
-  protected async renderIconOrImage(): Promise<TemplateResult> {
+  protected async renderIconOrImage() {
     if (this.menuItem?.image) {
-      return await this.renderImageFallbackOrIcon()
+      await this.renderImageFallbackOrIcon()
     }
-    return this.renderIcon()
+    this.imgOrIconTemplate = this.renderIcon()
   }
 
   protected renderDivider(): TemplateResult {
