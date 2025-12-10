@@ -221,6 +221,9 @@ export class ActivePlayerController {
     return this._carouselElement;
   }
   private createObserver() {
+    if (!this.config.expressive) {
+      return;
+    }
     if (this._observer) {
       try {
         this._observer.disconnect()
@@ -364,6 +367,9 @@ export class ActivePlayerController {
     return result;
   }
   public createAndApplyExpressiveScheme() {
+    if (!this.config.expressive) {
+      return;
+    }
     void this.createExpressiveSchemeFromArtwork().then(
       (result) => {
         if (!result) {
