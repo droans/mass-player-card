@@ -161,6 +161,11 @@ export default css`
     height: 3em;
     width: 3em;
   }
+  .menu-list-item-svg:not(.expressive), .menu-list-item-image:not(.expressive) {
+    height: 2em;
+    width: 2em;
+    margin-left: 12px;
+  }
   .menu-list-item-image.expressive {
     border-radius: 12px;
   }
