@@ -48,7 +48,7 @@ jobs:
           git config --local user.name "github-actions[bot]"
       - name: Bump version
         run: |
-          npm version prerelease -m "beep boop version bump"
+          npm version prerelease
       - name: Push changes
         run: |
           git add package.json
