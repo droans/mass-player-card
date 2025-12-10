@@ -235,3 +235,12 @@ export function getIcons(expressive: boolean): Icons {
   }
   return MaterialDesignIcons;
 }
+
+/*
+  LICENSE AND COPYRIGHT 
+    Material Design Icons and Material Symbols:
+      Author: Google
+      URL: https://github.com/google/material-design-icons
+      License: Apache 2.0
+      License URL: https://github.com/google/material-design-icons/blob/master/LICENSE
+*/
