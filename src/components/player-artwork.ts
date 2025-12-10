@@ -195,7 +195,6 @@ export class MassPlayerArtwork extends LitElement {
         id="carousel"
         class="${size}"
         mouse-dragging
-        loop
       >
         ${this.renderCarouselItems()}
       </wa-carousel>
