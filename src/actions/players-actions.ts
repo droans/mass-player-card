@@ -25,13 +25,19 @@ export default class PlayersActions {
       console.error(`Error calling transfer player`, e);
     }
   }
-  async actionJoinPlayers(target_player: string, group_members: string) {
+  async actionJoinPlayers(target_player: string, group_members: string[]) {
+    const cur_members = this.hass.states[target_player].attributes.group_members.filter(
+      (player) => {
+        return player != target_player
+      }
+    )
+    const members = cur_members.concat (group_members);    
     await this.hass.callService("media_player", "join", {
       entity_id: target_player,
-      group_members: group_members,
+      group_members: members,
     });
   }
-  async actionUnjoinPlayers(player_entity: string) {
+  async actionUnjoinPlayers(player_entity: string[]) {
     await this.hass.callService("media_player", "unjoin", {
       entity_id: player_entity,
     });

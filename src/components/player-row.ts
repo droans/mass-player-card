@@ -35,9 +35,9 @@ import { ExtendedHass, ExtendedHassEntity } from "../const/types";
 import { Thumbnail } from "../const/enums";
 
 class PlayerRow extends LitElement {
-  @property({ type: Boolean }) joined = false;
-  @property({ type: Boolean }) player_entity!: ExtendedHassEntity;
-  @property({ type: Boolean }) selected = false;
+  @property({ attribute: false }) joined = false;
+  @property({ attribute: false }) player_entity!: ExtendedHassEntity;
+  @property({ attribute: false }) selected = false;
   @consume({ context: IconsContext }) private Icons!: Icons;
   @consume({ context: useExpressiveContext, subscribe: true })
   private useExpressive!: boolean;
@@ -101,7 +101,7 @@ class PlayerRow extends LitElement {
     navigator.vibrate(VibrationPattern.Players.ACTION_JOIN);
     e.stopPropagation();
     const service = this.joined ? this.unjoinService : this.joinService;
-    await service(this.player_entity.entity_id);
+    await service([this.player_entity.entity_id]);
     this.joined = !this.joined;
   }
   private onTransferPressed = (e: Event) => {

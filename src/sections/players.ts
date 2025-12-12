@@ -67,6 +67,8 @@ class PlayersCard extends LitElement {
     this._hass = hass;
     if (!this.actions) {
       this.actions = new PlayersActions(hass);
+    } else {
+      this.actions.hass = hass;
     }
     if (!this.entities.length) {
       this.setEntities(hass);
@@ -86,13 +88,13 @@ class PlayersCard extends LitElement {
   public get hass() {
     return this._hass;
   }
-  private joinPlayers = async (group_member: string) => {
+  private joinPlayers = async (group_member: string[]) => {
     await this.actions.actionJoinPlayers(
       this.activePlayerEntity.entity_id,
       group_member,
     );
   };
-  private unjoinPlayers = async (player_entity: string) => {
+  private unjoinPlayers = async (player_entity: string[]) => {
     await this.actions.actionUnjoinPlayers(player_entity);
   };
   private transferQueue = async (target_player: string) => {
