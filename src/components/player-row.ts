@@ -101,7 +101,7 @@ class PlayerRow extends LitElement {
     navigator.vibrate(VibrationPattern.Players.ACTION_JOIN);
     e.stopPropagation();
     const service = this.joined ? this.unjoinService : this.joinService;
-    await service(this.player_entity.entity_id);
+    await service([this.player_entity.entity_id]);
     this.joined = !this.joined;
   }
   private onTransferPressed = (e: Event) => {
