@@ -25,7 +25,7 @@ import {
 } from "../const/context";
 import { PlayerConfig } from "../config/player";
 import { MassCardController } from "../controller/controller";
-import { isActive, jsonMatch, playerHasUpdated } from "../utils/util";
+import { isActive, jsonMatch, playerHasUpdated, tryPrefetchImageWithFallbacks } from "../utils/util";
 import { ExtendedHass, ExtendedHassEntity, QueueItem, QueueItems } from "../const/types";
 import { SlCarousel } from "@shoelace-style/shoelace";
 import { VibrationPattern } from "../const/common";
@@ -53,6 +53,7 @@ export class MassPlayerArtwork extends LitElement {
   @state() private _activePlayer!: ExtendedHassEntity;
 
   @state() private _queue!: QueueItems | null;
+  @state() private imageElements!: TemplateResult[];
 
   @query('#carousel') private carouselElement?: SlCarousel;
 
@@ -76,12 +77,29 @@ export class MassPlayerArtwork extends LitElement {
       return;
     }
     this._queue = queue;
+    void this.createQueueImageElements();
     if (!this.carouselElement) {
       return;
     }
   }
   public get queue() {
     return this._queue;
+  }
+  private async createQueueImageElements() {
+    const elems: TemplateResult[] = [];
+    const attrs = this.activePlayer.attributes;
+    const fallback = attrs.entity_picture ?? attrs.entity_picture_local;
+    if (!this.queue) {
+      return
+    }
+    for (const queueItem of this.queue) {
+      if (queueItem.playing) {
+        elems.push(await this.renderCarouselItem(queueItem, fallback))
+      } else {
+        elems.push(await this.renderCarouselItem(queueItem))
+      }
+    }
+    this.imageElements = elems;
   }
 
   private setActiveSlide(idx: number | undefined = this.currentIdx) {
@@ -142,12 +160,17 @@ export class MassPlayerArtwork extends LitElement {
     void this.controller.Queue.playQueueItem(item.queue_item_id);
   }
 
-  protected renderCarouselItem(item: QueueItem, fallback: string = Thumbnail.CLEFT): TemplateResult {
+  protected async renderCarouselItem(item: QueueItem, fallback: string = Thumbnail.CLEFT): Promise<TemplateResult> {
     if (Object.values(Thumbnail).includes(fallback as Thumbnail)) {
       fallback = getThumbnail(this.hass, fallback as Thumbnail)
     }
     const size = this.playerConfig.layout.artwork_size;
-    const img = item?.media_image?.length ? item.media_image : item.local_image_encoded;
+    const default_img = item?.media_image?.length ? item.media_image : item.local_image_encoded as string;
+    const img = await tryPrefetchImageWithFallbacks(
+      default_img,
+      [fallback ? fallback : ''],
+      this.hass
+    )
     const playing = item.playing ? `playing` : false;
     return html`
       <wa-carousel-item 
@@ -156,7 +179,6 @@ export class MassPlayerArtwork extends LitElement {
           class="artwork ${size}"
           src="${img}"
           ?data-playing=${playing}
-          onerror="this.src='${fallback}';"
         > 
       </wa-carousel-item>
     `
@@ -173,21 +195,6 @@ export class MassPlayerArtwork extends LitElement {
       </wa-carousel-item>
     `
   }
-  protected renderCarouselItems(): TemplateResult | TemplateResult[] {
-    if (!this?.queue?.length) {
-      return this.renderEmptyQueue();
-    }
-    return this.queue.map (
-      (item) => {
-        if (item.playing) {
-          const attrs = this.activePlayer.attributes;
-          const fallback = attrs.entity_picture ?? attrs.entity_picture_local;
-          return this.renderCarouselItem(item, fallback);
-        }
-        return this.renderCarouselItem(item);
-      }
-    )
-  }
   protected render(): TemplateResult {
     const size = this.playerConfig.layout.artwork_size;
     return html`
@@ -196,7 +203,7 @@ export class MassPlayerArtwork extends LitElement {
         class="${size}"
         mouse-dragging
       >
-        ${this.renderCarouselItems()}
+        ${this.imageElements}
       </wa-carousel>
     `
   }
