@@ -131,27 +131,6 @@ export function jsonMatch(objectA: any, objectB: any): boolean {
   return jsonA == jsonB;
 }
 
-export async function tryPrefetchImage(image_url: string): Promise<string | boolean> {
-  if (!image_url?.length || image_url.length < 10) {
-    return false;
-  }
-  try {
-    const hdrs = {
-      method: 'GET',
-      headers: {
-        Accept: 'image',
-      }
-    }
-    const response = await fetch(image_url, hdrs)
-    if (!response.ok) {
-      return false
-    }
-    const blob = await response.blob();
-    return URL.createObjectURL(blob);
-  } catch {
-    return false
-  }
-}
 
 export function ensureThumbnail(img: string, hass: ExtendedHass): string {
   // Returns a URL encodable image
