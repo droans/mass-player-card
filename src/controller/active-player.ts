@@ -27,7 +27,7 @@ import {
   applyExpressiveScheme,
   generateDefaultExpressiveSchemeColor,
   generateExpressiveSchemeFromColor,
-  generateExpressiveSourceColorFromImage
+  generateExpressiveSourceColorFromImageElement
 } from "../utils/expressive.js";
 import { SlCarousel } from "@shoelace-style/shoelace";
 
@@ -396,8 +396,7 @@ export class ActivePlayerController {
     if (!(activeArtwork?.tagName?.toLowerCase() == 'img')) {
       schemeColor = generateDefaultExpressiveSchemeColor();
      } else {
-      const src = (activeArtwork as HTMLImageElement).src;
-      schemeColor = await generateExpressiveSourceColorFromImage(src, this.hass);
+      schemeColor = await generateExpressiveSourceColorFromImageElement(activeArtwork as HTMLImageElement)
     } 
     if (schemeColor == this._activeSchemeColor) {
       this._updatingScheme = false;

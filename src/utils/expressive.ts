@@ -104,12 +104,9 @@ export async function generateImageElement(
   img: string,
   hass: ExtendedHass,
   fallbacks: string[] = [],
-): Promise<HTMLImageElement> {
-  const img_url = await tryPrefetchImageWithFallbacks(img, fallbacks, hass);
-  const elem = document.createElement("img");
-  elem.crossOrigin = "anonymous";
-  elem.src = img_url as string;
-  return elem;
+): Promise<HTMLImageElement | false> {
+    
+  return await tryPrefetchImageWithFallbacks(img, fallbacks, hass, true) as HTMLImageElement | false;
 }
 
 export async function generateExpressiveSourceColorFromImage(
@@ -119,6 +116,9 @@ export async function generateExpressiveSourceColorFromImage(
 ): Promise<number> {
   try {
     const elem = await generateImageElement(img, hass, fallbacks)
+    if (!elem) {
+      return generateDefaultExpressiveSchemeColor();
+    }
     return await sourceColorFromImage(elem)
   } catch {
     return generateDefaultExpressiveSchemeColor();
@@ -128,6 +128,7 @@ export async function generateExpressiveSourceColorFromImage(
 export async function generateExpressiveSourceColorFromImageElement(
   elem: HTMLImageElement,
 ): Promise<number> {
+  elem.crossOrigin = 'Anonymous';
   return await sourceColorFromImage(elem)
 }
 
