@@ -1,4 +1,4 @@
-import { CSSResultGroup, html, LitElement, TemplateResult } from "lit";
+import { CSSResultGroup, html, LitElement, PropertyValues, TemplateResult } from "lit";
 import styles from '../styles/menu-item';
 import { customElement, property, state } from "lit/decorators.js";
 import { ExtendedHass, ListImageData, ListItemData } from "../const/types";
@@ -152,5 +152,8 @@ export class MassMenuItem extends LitElement {
 
   static get styles(): CSSResultGroup {
     return styles;
+  }
+  protected shouldUpdate(_changedProperties: PropertyValues): boolean {
+    return _changedProperties.size > 0;
   }
 }
