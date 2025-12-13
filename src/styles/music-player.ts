@@ -175,9 +175,12 @@ export default css`
   }
   .media-controls-expressive {
     background: linear-gradient(
-      transparent,
-      var(--expressive-player-blur-color) 10%
-    ) !important;
+      to top,
+      var(--expressive-player-blur-color),
+      rgb(from var(--expressive-player-blur-color) r g b / 0.7) 40%,
+      rgb(from var(--expressive-player-blur-color) r g b / 0.4) 75%,
+      transparent 100%
+    ) !important
   }
 
   .menu-header::part(menu-select-menu) {
@@ -236,8 +239,11 @@ export default css`
     top: 0;
     mask: linear-gradient(black, black 95%, transparent);
     background: linear-gradient(
-      var(--expressive-player-blur-color) 90%,
-      transparent
+      to bottom,
+      var(--expressive-player-blur-color),
+      rgb(from var(--expressive-player-blur-color) r g b / 0.7) 40%,
+      rgb(from var(--expressive-player-blur-color) r g b / 0.4) 75%,
+      transparent 100%
     ) !important;
     
   }
