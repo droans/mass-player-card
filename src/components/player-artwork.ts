@@ -10,6 +10,7 @@ import {
 import {
   customElement,
   query,
+  queryAll,
   state
 } from "lit/decorators.js";
 import "@droans/webawesome/dist/components/carousel/carousel.js"
@@ -53,12 +54,14 @@ export class MassPlayerArtwork extends LitElement {
   @state() private _activePlayer!: ExtendedHassEntity;
 
   @state() private _queue!: QueueItems | null;
-  @state() private imageElements!: TemplateResult[];
+  @state() private imageTemplates: TemplateResult[] = [];
 
   @query('#carousel') private carouselElement?: SlCarousel;
+  @queryAll('wa-carousel-item') private imageElements?: HTMLImageElement[];
 
   private currentIdx?: number;
   private _timeout?: number;
+  private _hidden = true;
 
   @consume({ context: activeMediaPlayerContext, subscribe: true })
   public set activePlayer(player: ExtendedHassEntity) {
@@ -90,17 +93,19 @@ export class MassPlayerArtwork extends LitElement {
     const attrs = this.activePlayer.attributes;
     const fallback = attrs.entity_picture ?? attrs.entity_picture_local;
     if (!this?.queue?.length) {
-      this.imageElements = [this.renderEmptyQueue()]
+      this.imageTemplates = [this.renderEmptyQueue()]
       return;
     }
     for (const queueItem of this.queue) {
       if (queueItem.playing) {
         elems.push(await this.renderCarouselItem(queueItem, [fallback]))
+        this.imageTemplates.push(await this.renderCarouselItem(queueItem, [fallback]))
       } else {
         elems.push(await this.renderCarouselItem(queueItem))
+        this.imageTemplates.push(await this.renderCarouselItem(queueItem))
       }
     }
-    this.imageElements = elems;
+    this.imageTemplates = [...elems];
   }
 
   private setActiveSlide(idx: number | undefined = this.currentIdx) {
@@ -204,7 +209,7 @@ export class MassPlayerArtwork extends LitElement {
         class="${size}"
         mouse-dragging
       >
-        ${this.imageElements}
+        ${this.imageTemplates}
       </wa-carousel>
     `
   }
@@ -238,6 +243,29 @@ export class MassPlayerArtwork extends LitElement {
       )
     ) {
       this.updateActiveSlide();
+    }
+    const queue = this.queue;
+    if (!queue) {
+      return;
+    }
+    const loadComplete = this.queue?.length == this.imageTemplates.length;
+    if (!loadComplete) {
+      this.imageElements?.forEach(
+        (elem, idx) => {
+          const queueItem = queue[idx];
+          if (!loadComplete && !queueItem.playing) {
+            elem.style.display = 'none'
+          }
+        }
+      )
+    }
+    if (loadComplete && this._hidden) {
+      this._hidden = false;
+      this.imageElements?.forEach(
+        (elem) => {
+          elem.style.display = 'unset';
+        }
+      )
     }
   }
   
