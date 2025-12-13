@@ -180,12 +180,11 @@ export async function tryPrefetchImageWithFallbacks(
 function findFirstAccessibleImage(
   urls: string[],
   hass: ExtendedHass,
-  returnElement: boolean = false,
+  returnElement = false,
 ): Promise<string | HTMLImageElement | false> {
   return new Promise(
     (resolve) => {
       let index = 0;
-      
       function tryNextImage() {
         if (index >= urls.length) {
           resolve(false);
