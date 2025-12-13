@@ -1,7 +1,7 @@
-import { CSSResultGroup, html, LitElement, TemplateResult } from "lit";
+import { CSSResultGroup, html, LitElement, PropertyValues, TemplateResult } from "lit";
 import styles from '../styles/menu-item';
 import { customElement, property, state } from "lit/decorators.js";
-import { ExtendedHass, ListImageData, ListItemData } from "../const/types";
+import { ExtendedHass, ListItemData } from "../const/types";
 import { tryPrefetchImageWithFallbacks } from "../utils/util.js";
 import { consume } from "@lit/context";
 import { hassContext } from "../const/context.js";
@@ -12,8 +12,8 @@ export class MassMenuItem extends LitElement {
 
   @consume({ context: hassContext, subscribe: true })
   private hass!: ExtendedHass;
-  // Image/Icon Element
-  @state() imgOrIconTemplate!: TemplateResult;
+  // Valid Image Path
+  @state() imgPath?: string
   
   // Add a divider
   @property({ attribute: 'divider', type: Boolean }) public divider = false;
@@ -36,14 +36,31 @@ export class MassMenuItem extends LitElement {
     return this._menuItem;
   }
   private setImageOrIconElement() {
-    this.renderIconOrImage()
+    this.getImagePath()
   }
 
   private getImageCallback = (src: string | false) => {
     if (typeof(src) == 'string') {
-      this.imgOrIconTemplate = this.renderImage(src)
+      this.imgPath = src;
     } else {
-      this.imgOrIconTemplate = this.renderIcon();
+      this.imgPath = undefined;
+    }
+  }
+
+  private getImagePath() {
+    const img_data = this.menuItem.image;
+    const default_img = img_data?.url;
+    const fallback = img_data?.fallback;
+    if (default_img?.length ?? fallback?.length) {
+      void tryPrefetchImageWithFallbacks(
+        default_img ?? fallback as string,
+        [fallback ?? default_img as string],
+        this.hass
+      ).then(
+        (src) => {
+          this.getImageCallback(src as string | false)
+        }
+      )
     }
   }
 
@@ -66,35 +83,25 @@ export class MassMenuItem extends LitElement {
       ></ha-svg-icon>
     `
   }
-  protected renderImage(src: string): TemplateResult {
+  protected renderImage(): TemplateResult {
     const slot = this.useMD ? `start` : `graphic`
     const expressive_class = this.expressive ? `expressive` : ``
     return html`
       <img
         class="menu-list-item-image ${expressive_class}"
         part="menu-list-item-image"
-        src="${src}"
+        src="${this.imgPath}"
         slot="${slot}"
       >
     `
   }
-  protected renderImageFallbackOrIcon() {
-    const img_data = this.menuItem.image as ListImageData;
-    const img_url = img_data.url
-    const fallbacks = [img_data.fallback]
-    void tryPrefetchImageWithFallbacks(img_url, fallbacks, this.hass).then(
-      (src) => {
-        this.getImageCallback(src as string | false)
-      }
-    )
-  }
-  protected renderIconOrImage() {
-    if (this.menuItem?.image) {
-      this.renderImageFallbackOrIcon()
-    }
-    this.imgOrIconTemplate = this.renderIcon()
-  }
 
+  protected renderImageOrIcon(): TemplateResult {
+    if (this.imgPath) {
+      return this.renderImage();
+    }
+    return this.renderIcon()
+  }
   protected renderDivider(): TemplateResult {
     if (!this.divider) {
       return html``
@@ -114,7 +121,7 @@ export class MassMenuItem extends LitElement {
         type="button"
         @click=${this.onSelection}
       >
-        ${this.imgOrIconTemplate}
+        ${this.renderImageOrIcon()}
         <span
           slot="headline"
           class="title-md ${expressive_class} ${selected_class}"
@@ -136,7 +143,7 @@ export class MassMenuItem extends LitElement {
         graphic="icon"
         @click=${this.onSelection}
       >
-        ${this.imgOrIconTemplate}
+        ${this.renderImageOrIcon()}
         <span class="title ${expressive_class} ${selected_class}">
           ${itm.title}
         </span>
@@ -152,5 +159,8 @@ export class MassMenuItem extends LitElement {
 
   static get styles(): CSSResultGroup {
     return styles;
+  }
+  protected shouldUpdate(_changedProperties: PropertyValues): boolean {
+    return _changedProperties.size > 0;
   }
 }

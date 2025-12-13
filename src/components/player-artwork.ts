@@ -89,12 +89,13 @@ export class MassPlayerArtwork extends LitElement {
     const elems: TemplateResult[] = [];
     const attrs = this.activePlayer.attributes;
     const fallback = attrs.entity_picture ?? attrs.entity_picture_local;
-    if (!this.queue) {
-      return
+    if (!this?.queue?.length) {
+      this.imageElements = [this.renderEmptyQueue()]
+      return;
     }
     for (const queueItem of this.queue) {
       if (queueItem.playing) {
-        elems.push(await this.renderCarouselItem(queueItem, fallback))
+        elems.push(await this.renderCarouselItem(queueItem, [fallback]))
       } else {
         elems.push(await this.renderCarouselItem(queueItem))
       }
@@ -160,15 +161,15 @@ export class MassPlayerArtwork extends LitElement {
     void this.controller.Queue.playQueueItem(item.queue_item_id);
   }
 
-  protected async renderCarouselItem(item: QueueItem, fallback: string = Thumbnail.CLEFT): Promise<TemplateResult> {
-    if (Object.values(Thumbnail).includes(fallback as Thumbnail)) {
-      fallback = getThumbnail(this.hass, fallback as Thumbnail)
-    }
+  protected async renderCarouselItem(
+    item: QueueItem,
+    fallbacks: string[] = [],
+  ): Promise<TemplateResult> {
     const size = this.playerConfig.layout.artwork_size;
     const default_img = item?.media_image?.length ? item.media_image : item.local_image_encoded as string;
     const img = await tryPrefetchImageWithFallbacks(
       default_img,
-      [fallback ? fallback : ''],
+      [...fallbacks, getThumbnail(this.hass, Thumbnail.CLEFT)],
       this.hass
     )
     const playing = item.playing ? `playing` : false;
