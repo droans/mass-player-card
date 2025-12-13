@@ -188,6 +188,7 @@ function findFirstAccessibleImage(
       function tryNextImage() {
         if (index >= urls.length) {
           resolve(false);
+          return;
         }
         const img = new Image();
         const url = ensureThumbnail(urls[index], hass)
@@ -197,6 +198,7 @@ function findFirstAccessibleImage(
             resolve(img)
           }
           resolve(url);
+          return;
         };
         
         img.onerror = () => {
