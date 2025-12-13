@@ -189,6 +189,7 @@ export class MassPlayerArtwork extends LitElement {
       <wa-carousel-item 
       >
         <img
+          loading="lazy"
           class="artwork ${size}"
           src="${img}"
           ?data-playing=${playing}
