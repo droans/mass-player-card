@@ -168,7 +168,7 @@ export async function tryPrefetchImageWithFallbacks(
   fallbacks: string[],
   hass: ExtendedHass,
   returnElement = false,
-): Promise<string | HTMLImageElement | boolean> {
+): Promise<string | HTMLImageElement | false> {
   const imgs = [
     img_url,
     ...fallbacks
@@ -181,7 +181,7 @@ function findFirstAccessibleImage(
   urls: string[],
   hass: ExtendedHass,
   returnElement: boolean = false,
-): Promise<string | HTMLImageElement | boolean> {
+): Promise<string | HTMLImageElement | false> {
   return new Promise(
     (resolve) => {
       let index = 0;

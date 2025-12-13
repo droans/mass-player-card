@@ -104,7 +104,7 @@ export async function generateImageElement(
   img: string,
   hass: ExtendedHass,
   fallbacks: string[] = [],
-): Promise<HTMLImageElement | boolean> {
+): Promise<HTMLImageElement | false> {
     
   return await tryPrefetchImageWithFallbacks(img, fallbacks, hass, true) as HTMLImageElement | false;
 }

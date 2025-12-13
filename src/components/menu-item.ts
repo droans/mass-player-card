@@ -39,7 +39,7 @@ export class MassMenuItem extends LitElement {
     this.renderIconOrImage()
   }
 
-  private getImageCallback = (src: string | boolean) => {
+  private getImageCallback = (src: string | false) => {
     if (typeof(src) == 'string') {
       this.imgOrIconTemplate = this.renderImage(src)
     } else {
@@ -84,7 +84,7 @@ export class MassMenuItem extends LitElement {
     const fallbacks = [img_data.fallback]
     void tryPrefetchImageWithFallbacks(img_url, fallbacks, this.hass).then(
       (src) => {
-        this.getImageCallback(src)
+        this.getImageCallback(src as string | false)
       }
     )
   }
