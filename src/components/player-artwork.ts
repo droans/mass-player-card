@@ -89,8 +89,9 @@ export class MassPlayerArtwork extends LitElement {
     const elems: TemplateResult[] = [];
     const attrs = this.activePlayer.attributes;
     const fallback = attrs.entity_picture ?? attrs.entity_picture_local;
-    if (!this.queue) {
-      return
+    if (!this?.queue?.length) {
+      this.imageElements = [this.renderEmptyQueue()]
+      return;
     }
     for (const queueItem of this.queue) {
       if (queueItem.playing) {
