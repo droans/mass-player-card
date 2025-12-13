@@ -97,7 +97,7 @@ export class MassPlayerArtwork extends LitElement {
       return;
     }
     for (const queueItem of this.queue) {
-      if (queueItem.playing) {
+      if (queueItem?.playing) {
         elems.push(await this.renderCarouselItem(queueItem, [fallback]))
         this.imageTemplates.push(await this.renderCarouselItem(queueItem, [fallback]))
       } else {
@@ -177,7 +177,7 @@ export class MassPlayerArtwork extends LitElement {
       [...fallbacks, getThumbnail(this.hass, Thumbnail.CLEFT)],
       this.hass
     )
-    const playing = item.playing ? `playing` : false;
+    const playing = item?.playing ? `playing` : false;
     return html`
       <wa-carousel-item 
       >
@@ -253,7 +253,7 @@ export class MassPlayerArtwork extends LitElement {
       this.imageElements?.forEach(
         (elem, idx) => {
           const queueItem = queue[idx];
-          if (!loadComplete && !queueItem.playing) {
+          if (!loadComplete && !queueItem?.playing) {
             elem.style.display = 'none'
           }
         }
