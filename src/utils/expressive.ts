@@ -116,6 +116,9 @@ export async function generateExpressiveSourceColorFromImage(
 ): Promise<number> {
   try {
     const elem = await generateImageElement(img, hass, fallbacks)
+    if (!elem) {
+      return generateDefaultExpressiveSchemeColor();
+    }
     return await sourceColorFromImage(elem)
   } catch {
     return generateDefaultExpressiveSchemeColor();
@@ -125,6 +128,7 @@ export async function generateExpressiveSourceColorFromImage(
 export async function generateExpressiveSourceColorFromImageElement(
   elem: HTMLImageElement,
 ): Promise<number> {
+  elem.crossOrigin = 'Anonymous';
   return await sourceColorFromImage(elem)
 }
 
