@@ -10,7 +10,6 @@ import {
 import {
   customElement,
   query,
-  queryAll,
   state
 } from "lit/decorators.js";
 import "@droans/webawesome/dist/components/carousel/carousel.js"
@@ -26,7 +25,7 @@ import {
 } from "../const/context";
 import { PlayerConfig } from "../config/player";
 import { MassCardController } from "../controller/controller";
-import { isActive, jsonMatch, playerHasUpdated, tryPrefetchImageWithFallbacks } from "../utils/util";
+import { isActive, jsonMatch, playerHasUpdated } from "../utils/util";
 import { ExtendedHass, ExtendedHassEntity, QueueItem, QueueItems } from "../const/types";
 import { SlCarousel } from "@shoelace-style/shoelace";
 import { VibrationPattern } from "../const/common";
@@ -54,13 +53,12 @@ export class MassPlayerArtwork extends LitElement {
   @state() private _activePlayer!: ExtendedHassEntity;
 
   @state() private _queue!: QueueItems | null;
-  @state() private imageTemplates: TemplateResult[] = [];
 
   @query('#carousel') private carouselElement?: SlCarousel;
-  @queryAll('wa-carousel-item') private imageElements?: HTMLImageElement[];
 
   private currentIdx?: number;
   private _timeout?: number;
+  private _updating = true;
 
   @consume({ context: activeMediaPlayerContext, subscribe: true })
   public set activePlayer(player: ExtendedHassEntity) {
@@ -79,37 +77,20 @@ export class MassPlayerArtwork extends LitElement {
       return;
     }
     this._queue = queue;
-    void this.createQueueImageElements();
-    if (!this.carouselElement) {
-      return;
-    }
+    if (queue?.length) {
+      this.updateActiveSlide();
+    } 
   }
   public get queue() {
     return this._queue;
-  }
-  private async createQueueImageElements() {
-    const _elems: Promise<TemplateResult>[] = [];
-    const attrs = this.activePlayer.attributes;
-    const fallback = attrs.entity_picture ?? attrs.entity_picture_local;
-    if (!this?.queue?.length) {
-      this.imageTemplates = [this.renderEmptyQueue()]
-      return;
-    }
-    for (const queueItem of this.queue) {
-      if (queueItem?.playing) {
-        _elems.push(this.renderCarouselItem(queueItem, [fallback]))
-      } else {
-        _elems.push(this.renderCarouselItem(queueItem))
-      }
-    }
-    const elems = await Promise.all(_elems)
-    this.imageTemplates = [...elems];
   }
 
   private setActiveSlide(idx: number | undefined = this.currentIdx) {
     if (!idx || !this?.queue?.length || !this?.carouselElement || this._timeout) {
       return;
     }
+    console.log(`navigating to ${idx}`)
+    this._updating = true;
     this.carouselElement.removeEventListener('wa-slide-change', this.onSwipe);
     this?.carouselElement?.goToSlide(idx, 'instant');
     const item = this.queue[idx];
@@ -125,11 +106,15 @@ export class MassPlayerArtwork extends LitElement {
         this?.carouselElement?.addEventListener('wa-slide-change', this.onSwipe);
         this._timeout = undefined;
       },
-      100
+      250
     )
+    this._updating = false;
   }
   private updateActiveSlide() {
+    console.log(`Updating active idx`)
+    
     if (!this.queue) {
+      console.log(`No queue.`)
       return;
     }
     const idx = this.queue.findIndex(
@@ -137,6 +122,7 @@ export class MassPlayerArtwork extends LitElement {
         return item?.playing
       }
     )
+    console.log(`Got idx ${idx}`)
     if (idx >= 0 && idx != this.carouselElement?.activeSlide) {
       this.currentIdx = idx;
       this.setActiveSlide(this.currentIdx)
@@ -151,48 +137,42 @@ export class MassPlayerArtwork extends LitElement {
 
   private onSwipe = (ev: WaSlideChangeEvent) => {
     ev.stopPropagation();
-    if (!this?.queue?.length) {
+    if (!this?.queue?.length || this._updating) {
       return;
     }
+    this._updating = true;
     navigator.vibrate(VibrationPattern.Player.ACTION_SWIPE);
     const idx = ev.detail.index;
+    console.log(`Navigating to ${idx}`)
     const item = this.queue[idx];
     const media_content_id = item.media_content_id;
     if (media_content_id == this.activePlayer.attributes.media_content_id) {
       return;
     }
-    void this.controller.Queue.playQueueItem(item.queue_item_id);
+    this.controller.Queue.playQueueItem(item.queue_item_id).then(
+      () => {
+        this._updating = false;
+      }
+    )
   }
 
-  protected async renderCarouselItem(
-    item: QueueItem,
-    fallbacks: string[] = [],
-  ): Promise<TemplateResult> {
+  protected renderCarouselItem(item: QueueItem, fallback: string = Thumbnail.CLEFT): TemplateResult {
+    if (Object.values(Thumbnail).includes(fallback as Thumbnail)) {
+      fallback = getThumbnail(this.hass, fallback as Thumbnail)
+    }
     const size = this.playerConfig.layout.artwork_size;
-    let default_img = item?.media_image?.length ? item.media_image : item.local_image_encoded as string;
-    let fallback = [
-      ...fallbacks,
-      getThumbnail(this.hass, Thumbnail.CLEFT)
-    ]
-    if (item?.playing) {
-      const attrs = this.activePlayer.attributes;
-      default_img = attrs.entity_picture_local ?? default_img;
-      fallback = [attrs.entity_picture ?? '', ...fallback]
-    } 
-    const img = await tryPrefetchImageWithFallbacks(
-      default_img,
-      fallback,
-      this.hass
-    )
-    const playing = item?.playing ? `playing` : false;
+    const _img = item?.media_image?.length ? item.media_image : item.local_image_encoded;
+    const attrs = this.activePlayer.attributes;
+    const img = item?.playing ? attrs.entity_picture_local ?? attrs.entity_picture ?? _img : _img;
+    const playing = item.playing ? `playing` : false;
     return html`
       <wa-carousel-item 
       >
         <img
-          loading="lazy"
           class="artwork ${size}"
           src="${img}"
           ?data-playing=${playing}
+          onerror="this.src='${fallback}';"
         > 
       </wa-carousel-item>
     `
@@ -209,6 +189,21 @@ export class MassPlayerArtwork extends LitElement {
       </wa-carousel-item>
     `
   }
+  protected renderCarouselItems(): TemplateResult | TemplateResult[] {
+    if (!this?.queue?.length) {
+      return this.renderEmptyQueue();
+    }
+    return this.queue.map (
+      (item) => {
+        if (item.playing) {
+          const attrs = this.activePlayer.attributes;
+          const fallback = attrs.entity_picture ?? attrs.entity_picture_local;
+          return this.renderCarouselItem(item, fallback);
+        }
+        return this.renderCarouselItem(item);
+      }
+    )
+  }
   protected render(): TemplateResult {
     const size = this.playerConfig.layout.artwork_size;
     return html`
@@ -217,11 +212,14 @@ export class MassPlayerArtwork extends LitElement {
         class="${size}"
         mouse-dragging
       >
-        ${this.imageTemplates}
+        ${this.renderCarouselItems()}
       </wa-carousel>
     `
   }
   protected shouldUpdate(_changedProperties: PropertyValues): boolean {
+    // if (_changedProperties.size) {
+    //   console.log(_changedProperties)
+    // }
     return _changedProperties.size > 0
   }
   connectedCallback(): void {
@@ -234,7 +232,12 @@ export class MassPlayerArtwork extends LitElement {
     if (this.carouselElement) {
       this.controller.ActivePlayer.carouselElement = this.carouselElement;
     } 
-    this?.carouselElement?.addEventListener('wa-slide-change', this.onSwipe)
+    setTimeout(
+      () => {
+        this.updateActiveSlide()
+      },
+      2000
+    )
   }
   protected updated(_changedProperties: PropertyValues): void {
     const wrongIdx = this.currentIdx != this.carouselElement?.activeSlide;
@@ -244,17 +247,21 @@ export class MassPlayerArtwork extends LitElement {
     const hasQueue = this.queue?.length;
     if ( _isactive 
       && hasQueue
+      && !this._updating
       && (
          wrongIdx
-          || playerChanged
           || queueChanged
       )
     ) {
+      // console.log(`---------------------`)
+      // console.log(`Is active: ${_isactive}`);
+      // console.log(`Has queue: ${hasQueue}`);
+      // console.log(`Wrong idx: ${wrongIdx}`);
+      // console.log(`Player changed: ${playerChanged}`);
+      // console.log(`Queue changed: ${queueChanged}`);
+      // console.log(`---------------------`)
+      console.log(`Updated requesting update.`)
       this.updateActiveSlide();
-    }
-    const queue = this.queue;
-    if (!queue) {
-      return;
     }
   }
   
