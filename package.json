@@ -33,7 +33,7 @@
     "lit": "3.3.1"
   },
   "devDependencies": {
-    "@eslint/js": "9.39.1",
+    "@eslint/js": "9.39.2",
     "@lit-labs/compiler": "^1.1.1",
     "@rollup/plugin-json": "^6.0.0",
     "@rollup/plugin-node-resolve": "^16.0.3",
