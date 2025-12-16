@@ -41,6 +41,7 @@ class PlayerRow extends LitElement {
   @consume({ context: IconsContext }) private Icons!: Icons;
   @consume({ context: useExpressiveContext, subscribe: true })
   private useExpressive!: boolean;
+  @property({ attribute: 'can-group', type: Boolean }) canGroup = false;
 
   @consume({ context: hassContext })
   public hass!: ExtendedHass;
@@ -196,7 +197,7 @@ class PlayerRow extends LitElement {
     `;
   }
   protected renderJoinButon() {
-    if (this.hide.join_button) {
+    if (this.hide.join_button || !this.canGroup) {
       return html``;
     }
     if (!this.player_entity.attributes?.group_members || !this.allowJoin) {

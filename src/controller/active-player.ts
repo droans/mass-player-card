@@ -30,6 +30,7 @@ import {
   generateExpressiveSourceColorFromImageElement
 } from "../utils/expressive.js";
 import { SlCarousel } from "@shoelace-style/shoelace";
+import { getInfoWSResponseSchema, getInfoWSServiceSchema } from "mass-queue-types/packages/mass_queue/ws/get_info.js";
 
 export class ActivePlayerController {
   private _activeEntityConfig: ContextProvider<typeof activeEntityConfContext>;
@@ -50,6 +51,7 @@ export class ActivePlayerController {
   private _carouselElement?: SlCarousel;
   private _observer?: MutationObserver;
   private _activeSchemeColor!: number;
+  private _canGroupWith: string[] = [];
 
   constructor(hass: ExtendedHass, config: Config, host: HTMLElement) {
     this._expressiveScheme = new ContextProvider(host, {
@@ -122,6 +124,7 @@ export class ActivePlayerController {
     this.volumeMediaPlayer = states[conf.volume_entity_id];
     this.activeMediaPlayer = states[conf.entity_id];
     this.activeEntityID = conf.entity_id;
+    void this.setCanGroupWith();
   }
   public get activeEntityConfig() {
     return this._activeEntityConfig.value;
@@ -220,6 +223,14 @@ export class ActivePlayerController {
   public get carouselElement() {
     return this._carouselElement;
   }
+
+  private set canGroupWith(entity_ids: string[]) {
+    this._canGroupWith = entity_ids;
+  }
+  public get canGroupWith() {
+    return this._canGroupWith;
+  }
+
   private createObserver() {
     if (!this.config.expressive) {
       return;
@@ -449,6 +460,36 @@ export class ActivePlayerController {
     const ret = await this.hass.callWS<getGroupVolumeServiceResponse>(data);
     const vol = ret.response.volume_level ?? 0;
     return vol;
+  }
+  public async getEntityInfo(entity_id = this.activeEntityID): Promise<getInfoWSResponseSchema> {
+    const data: getInfoWSServiceSchema = {
+      type: "mass_queue/get_info",
+      entity_id: entity_id
+    }
+    const resp = await this.hass.callWS<getInfoWSResponseSchema>(data);
+    return resp;
+  }
+  private async getPlayerProvider(entity_id: string) {
+    const resp = await this.getEntityInfo(entity_id);
+    return resp.provider
+  }
+  public async playerCanGroupWith(entity_id = this.activeEntityID): Promise<string[]> {
+    const provider = await this.getPlayerProvider(entity_id)
+    const ents = this.config.entities;
+    const result: string[] = [];
+    for (const ent of ents) {
+      const _id = ent.entity_id;
+      const _prov = await this.getPlayerProvider(_id);
+      if (_prov == provider && _id != entity_id) {
+        result.push(_id)
+      }
+    }
+    return result
+  }
+  private async setCanGroupWith() {
+    if (this.hass && this.activeEntityID) {
+      this.canGroupWith = await this.playerCanGroupWith();
+    }
   }
   public disconnected() {
     this._observer?.disconnect();
