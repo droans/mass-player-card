@@ -229,11 +229,6 @@ export class MassPlayerArtwork extends LitElement {
     }
     super.connectedCallback();
   }
-  protected firstUpdated(): void {
-    if (this.carouselElement) {
-      this.controller.ActivePlayer.carouselElement = this.carouselElement;
-    } 
-  }
   protected updated(_changedProperties: PropertyValues): void {
     if (this.carouselElement) {
       this.carouselElement.style = "";
