@@ -17,6 +17,7 @@ import { PlayerSelectedService } from "../const/actions";
 import { ExtendedHass, ExtendedHassEntity } from "../const/types";
 import {
   activeEntityConfContext,
+  controllerContext,
   hassContext,
   playersConfigContext,
 } from "../const/context";
@@ -24,6 +25,7 @@ import {
 import styles from "../styles/player-queue";
 import { getTranslation } from "../utils/translations";
 import { WaAnimation } from "../const/elements";
+import { MassCardController } from "../controller/controller.js";
 
 class PlayersCard extends LitElement {
   @property({ attribute: false }) private entities: ExtendedHassEntity[] = [];
@@ -31,6 +33,9 @@ class PlayersCard extends LitElement {
   @consume({ context: activeEntityConfContext, subscribe: true })
   @property({ attribute: false })
   public activePlayerEntity!: EntityConfig;
+
+  @consume({ context: controllerContext, subscribe: true })
+  private controller!: MassCardController;
 
   @query("#animation") _animation!: WaAnimation;
   private _firstLoaded = false;
@@ -126,6 +131,7 @@ class PlayersCard extends LitElement {
     const attrs =
       this._hass.states[this.activePlayerEntity.entity_id].attributes;
     const group_members: string[] = attrs?.group_members ?? [];
+    const canGroupWith = this.controller.ActivePlayer.canGroupWith;
     return this.entities.map((item) => {
       // eslint-disable-next-line @typescript-eslint/no-non-null-assertion
       const player = this.config.entities.find(
@@ -144,6 +150,7 @@ class PlayersCard extends LitElement {
             .transferService=${this.transferQueue}
             .joined=${group_members.includes(item.entity_id)}
             .allowJoin=${attrs.group_members !== undefined}
+            ?can-group=${canGroupWith.includes(player.entity_id)}
           >
           </mass-player-player-row>
         `,
