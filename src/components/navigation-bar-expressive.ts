@@ -41,6 +41,9 @@ class MassNavBar extends LitElement {
     if (!this.controller) {
       return;
     }
+    if (section != this.active_section) {
+      this.handleTabChanged(section)
+    }
     this._activeSection = section;
   }
   public get active_section() {
