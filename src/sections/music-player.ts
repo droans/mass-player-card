@@ -12,7 +12,7 @@ import { html } from "lit/static-html.js";
 
 import "../components/grouped-player-menu";
 import "../components/media-progress";
-import "../components/player-artwork-new";
+import "../components/player-artwork";
 import "../components/player-controls";
 import "../components/player-controls-expressive";
 import "../components/player-selector-menu";
