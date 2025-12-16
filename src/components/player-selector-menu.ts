@@ -1,13 +1,25 @@
-import { CSSResultGroup, html, LitElement, TemplateResult } from "lit";
+import {
+  CSSResultGroup,
+  html,
+  LitElement,
+  TemplateResult
+} from "lit";
 import "./menu-button";
 import styles from '../styles/player-selector-menu';
 import { consume } from "@lit/context";
-import { activeEntityConfContext, entitiesConfigContext, EntityConfig, hassContext, IconsContext, musicPlayerConfigContext, useExpressiveContext } from "../const/context.js";
+import {
+  activeEntityConfContext,
+  entitiesConfigContext,
+  EntityConfig,
+  hassContext,
+  IconsContext,
+  musicPlayerConfigContext,
+  useExpressiveContext
+} from "../const/context.js";
 import { PlayerConfig } from "../config/player.js";
 import { Icons } from "../const/icons.js";
 import { ExtendedHass, ListItemData } from "../const/types.js";
 import { customElement } from "lit/decorators.js";
-import { MenuButtonEventData } from "../const/events.js";
 
 @customElement('mpc-player-selector')
 export class MassCardPlayerSelector extends LitElement {

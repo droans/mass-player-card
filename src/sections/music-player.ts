@@ -37,7 +37,6 @@ import {
   EntityConfig,
   groupedPlayersContext,
   hassContext,
-  IconsContext,
   musicPlayerConfigContext,
 } from "../const/context";
 import { ExtendedHass, ExtendedHassEntity, MediaLibraryItem, PlayerData, PlaylistDialogItem } from "../const/types";
@@ -250,7 +249,6 @@ class MusicPlayerCard extends LitElement {
   };
   private onPlayerSelect = (ev: MenuButtonEventData) => {
     ev.stopPropagation();
-    console.log(`Got event: ${ev.detail.option}`)
     const target = ev.detail;
     const player = target.option;
     if (!player.length) {

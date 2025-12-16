@@ -1,8 +1,22 @@
-import { CSSResultGroup, html, LitElement, TemplateResult } from "lit";
+import {
+  CSSResultGroup,
+  html,
+  LitElement,
+  TemplateResult
+} from "lit";
 import "./menu-button";
 import styles from '../styles/grouped-player-menu';
 import { consume } from "@lit/context";
-import { controllerContext, entitiesConfigContext, EntityConfig, groupedPlayersContext, groupVolumeContext, hassContext, IconsContext, musicPlayerConfigContext, useExpressiveContext } from "../const/context.js";
+import {
+  controllerContext,
+  entitiesConfigContext,
+  EntityConfig,
+  groupedPlayersContext,
+  groupVolumeContext,
+  hassContext,
+  IconsContext,
+  useExpressiveContext
+} from "../const/context.js";
 import { Icons } from "../const/icons.js";
 import { ExtendedHass } from "../const/types.js";
 import { jsonMatch } from "../utils/util.js";
@@ -54,11 +68,11 @@ export class MassCardPlayerSelector extends LitElement {
   private onUnjoinSelect = (ev: JoinUnjoinEventData) => {
     const actions = new PlayerActions(this.hass);
     const ent = ev.target.entity;
-    actions.actionUnjoinPlayers(ent)
+    void actions.actionUnjoinPlayers(ent)
   }
   private onGroupVolumeChange = (ev: DetailValEventData) => {
     const vol = ev.detail.value;
-    this.controller.ActivePlayer.setActiveGroupVolume(vol); 
+    void this.controller.ActivePlayer.setActiveGroupVolume(vol); 
   }
 
   protected renderGroupedVolume(): TemplateResult {
