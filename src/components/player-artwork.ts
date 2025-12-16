@@ -126,12 +126,6 @@ export class MassPlayerArtwork extends LitElement {
       this.currentIdx = idx;
       this.setActiveSlide(this.currentIdx)
     }
-    setTimeout(
-      () => {
-        this.requestUpdate('activeSlide', 'fixed')
-      },
-      50
-    )
   }
 
   private onSwipe = (idx: number) => {
