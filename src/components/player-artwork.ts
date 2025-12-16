@@ -24,7 +24,7 @@ import {
 } from "../const/types.js";
 import { MassCardController } from "../controller/controller.js";
 import { Icons } from "../const/icons.js";
-import { jsonMatch, playerHasUpdated } from "../utils/util.js";
+import { delay, jsonMatch, playerHasUpdated } from "../utils/util.js";
 import styles from "../styles/player-artwork";
 import { Thumbnail } from "../const/enums.js";
 import WaCarouselItem from "@droans/webawesome/dist/components/carousel-item/carousel-item.js";
@@ -54,7 +54,6 @@ export class MassPlayerArtwork extends LitElement {
 
 
   private _slidesInserted = false;
-  private _justInsertedSlides = false;
 
   @consume({ context: activeMediaPlayerContext, subscribe: true })
   public set activePlayer(player: ExtendedHassEntity) {
@@ -76,11 +75,12 @@ export class MassPlayerArtwork extends LitElement {
       return;
     }
     this._queue = queue;
-    this.pushQueueArtwork();
+    void this.pushQueueArtwork();
   }
   public get queue() {
     return this._queue;
   }
+
   private getActiveIndex() {
     return this.queue?.findIndex(
       (item) => {
@@ -158,14 +158,13 @@ export class MassPlayerArtwork extends LitElement {
     `
   }
 
-  protected pushQueueArtwork() {
-    setTimeout(
-      () => {
-        this._pushQueueArtwork();
-        this._justInsertedSlides = true
-      },
-      150
-    )
+
+  protected async pushQueueArtwork() {
+    await delay(300);
+    this._pushQueueArtwork();
+    const activeIdx = this.getActiveIndex();
+    await delay(150)
+    this.carouselElement?.goToSlide(activeIdx, 'instant');
   }
   protected _pushQueueArtwork() {
     const queue = this.queue;
@@ -182,8 +181,6 @@ export class MassPlayerArtwork extends LitElement {
         this.updateCarouselImg(idx, url)
       }
     )
-    this.carouselElement.goToSlide(activeIdx, 'instant')
-    this.carouselElement.activeSlide = activeIdx
   }
   protected updateCarouselImg(index: number, img_url: string) {
     if (!this.carouselElement) {
@@ -279,23 +276,10 @@ export class MassPlayerArtwork extends LitElement {
   protected updated(): void {
     if (this.activeSlide && this.queue && !this._slidesInserted) {
       this.insertEmptyCarouselItems();
-      this.pushQueueArtwork()
+      void this.pushQueueArtwork()
       return;
     }
-    if (this._justInsertedSlides) {
-      this._justInsertedSlides = false;
-      const activeIdx = this.queue?.findIndex(
-        (item) => {
-          return item?.playing
-        }
-      );
-      if (!activeIdx) {
-        return
-      }
-      this.carouselElement?.goToSlide(activeIdx, 'instant');
-    }
   }
-
   static get styles(): CSSResultGroup {
     return styles;
   }
