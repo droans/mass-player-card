@@ -73,6 +73,9 @@ export class MassPlayerArtwork extends LitElement {
 
   @consume({ context: queueContext, subscribe: true})
   public set queue(queue: QueueItems | null) {
+    if (queue) {
+      queue = this._filterQueue(queue)
+    }
     if (jsonMatch(this._queue, queue)) {
       return;
     }
@@ -83,6 +86,19 @@ export class MassPlayerArtwork extends LitElement {
   }
   public get queue() {
     return this._queue;
+  }
+  private _filterQueue(queue: QueueItems) {
+    const playIdx = queue.findIndex(
+      (item) => {
+        return item?.playing
+      }
+    );
+    if (!playIdx) {
+      return queue.slice(0,10)
+    }
+    const startIdx = Math.max(0, playIdx - 5);
+    const endIdx = Math.min(queue.length - 1, playIdx + 5);
+    return queue.slice(startIdx, endIdx)
   }
 
   private setActiveSlide(idx: number | undefined = this.currentIdx) {
