@@ -215,6 +215,7 @@ export class MassPlayerArtwork extends LitElement {
         class="${size}"
         mouse-dragging
         @pointerdown=${this.onPointerDown}
+        style="display: none;"
       >
         ${this.renderCarouselItems()}
       </wa-carousel>
@@ -241,8 +242,10 @@ export class MassPlayerArtwork extends LitElement {
     )
   }
   protected updated(_changedProperties: PropertyValues): void {
+    if (this.carouselElement) {
+      this.carouselElement.style.display = "unset";
+    }
     const wrongIdx = this.currentIdx != this.carouselElement?.activeSlide;
-    const playerChanged = _changedProperties.has('_activePlayer');
     const queueChanged = _changedProperties.has('_queue');
     const _isactive = isActive(this.hass, this.activePlayer, this.controller.ActivePlayer.activeEntityConfig);
     const hasQueue = this.queue?.length;
