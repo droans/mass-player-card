@@ -236,7 +236,16 @@ export class MassPlayerArtwork extends LitElement {
   }
   protected updated(_changedProperties: PropertyValues): void {
     if (this.carouselElement) {
-      this.carouselElement.style.display = "unset";
+      this.carouselElement!.style = "";
+      if (this.currentIdx) {
+        this.carouselElement?.goToSlide(this?.currentIdx ?? 0, 'instant')
+        setTimeout(
+          () => {
+            this.carouselElement?.goToSlide(this?.currentIdx ?? 0, 'instant')
+          },
+          this._delay
+        )
+      }
     }
     const wrongIdx = this.currentIdx != this.carouselElement?.activeSlide;
     const queueChanged = _changedProperties.has('_queue');
