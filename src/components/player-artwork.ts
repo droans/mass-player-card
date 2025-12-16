@@ -33,7 +33,6 @@ import { getThumbnail } from "../utils/thumbnails";
 import { Icons } from "../const/icons";
 import styles from "../styles/player-artwork";
 import { Thumbnail } from "../const/enums";
-import { WaSlideChangeEvent } from "@droans/webawesome";
 
 @customElement('mpc-artwork')
 export class MassPlayerArtwork extends LitElement {
@@ -57,8 +56,6 @@ export class MassPlayerArtwork extends LitElement {
   @query('#carousel') private carouselElement?: SlCarousel;
 
   private currentIdx?: number;
-  private _timeout?: number;
-  private _updating = true;
 
   @consume({ context: activeMediaPlayerContext, subscribe: true })
   public set activePlayer(player: ExtendedHassEntity) {
@@ -102,10 +99,9 @@ export class MassPlayerArtwork extends LitElement {
   }
 
   private setActiveSlide(idx: number | undefined = this.currentIdx) {
-    if (!idx || !this?.queue?.length || !this?.carouselElement || this._timeout) {
+    if (!idx || !this?.queue?.length || !this?.carouselElement ) {
       return;
-    this._updating = true;
-    this.carouselElement.removeEventListener('wa-slide-change', this.onSwipe);
+    }
     this?.carouselElement?.goToSlide(idx, 'instant');
     const item = this.queue[idx];
     const img = item.media_image ?? item.local_image_encoded;
@@ -115,14 +111,6 @@ export class MassPlayerArtwork extends LitElement {
     }
     const ev = new CustomEvent('artwork-updated', { detail: detail });
     this.controller.host.dispatchEvent(ev);
-    this._timeout = setTimeout(
-      () => {
-        this?.carouselElement?.addEventListener('wa-slide-change', this.onSwipe);
-        this._timeout = undefined;
-      },
-      250
-    )
-    this._updating = false;
   }
   private updateActiveSlide() {
     if (!this.queue) {
@@ -145,24 +133,21 @@ export class MassPlayerArtwork extends LitElement {
     )
   }
 
-  private onSwipe = (ev: WaSlideChangeEvent) => {
-    ev.stopPropagation();
-    if (!this?.queue?.length || this._updating) {
+  private onSwipe = (idx: number) => {
+    if (!this?.queue?.length) {
       return;
     }
-    this._updating = true;
-    navigator.vibrate(VibrationPattern.Player.ACTION_SWIPE);
-    const idx = ev.detail.index;
+    this.queue[idx].playing = true;
+    if (this.currentIdx) {
+      this.queue[this.currentIdx].playing = false;
+    }
     const item = this.queue[idx];
     const media_content_id = item.media_content_id;
     if (media_content_id == this.activePlayer.attributes.media_content_id) {
       return;
     }
-    this.controller.Queue.playQueueItem(item.queue_item_id).then(
-      () => {
-        this._updating = false;
-      }
-    )
+    navigator.vibrate(VibrationPattern.Player.ACTION_SWIPE);
+    void this.controller.Queue.playQueueItem(item.queue_item_id)
   }
 
   protected renderCarouselItem(item: QueueItem, fallback: string = Thumbnail.CLEFT): TemplateResult {
@@ -198,6 +183,15 @@ export class MassPlayerArtwork extends LitElement {
       </wa-carousel-item>
     `
   }
+  protected onPointerDown = () => {
+    window.addEventListener("pointerup", this.onPointerUp)
+  }
+  protected onPointerUp = () => {
+    window.removeEventListener("pointerup", this.onPointerUp)
+    if (this.carouselElement?.activeSlide && this.carouselElement?.activeSlide != this.currentIdx) {
+      this.onSwipe(this.carouselElement?.activeSlide)
+    }
+  }
   protected renderCarouselItems(): TemplateResult | TemplateResult[] {
     if (!this?.queue?.length) {
       return this.renderEmptyQueue();
@@ -220,6 +214,7 @@ export class MassPlayerArtwork extends LitElement {
         id="carousel"
         class="${size}"
         mouse-dragging
+        @pointerdown=${this.onPointerDown}
       >
         ${this.renderCarouselItems()}
       </wa-carousel>
@@ -253,7 +248,6 @@ export class MassPlayerArtwork extends LitElement {
     const hasQueue = this.queue?.length;
     if ( _isactive 
       && hasQueue
-      && !this._updating
       && (
          wrongIdx
           || queueChanged
