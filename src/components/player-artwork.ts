@@ -81,6 +81,13 @@ export class MassPlayerArtwork extends LitElement {
   public get queue() {
     return this._queue;
   }
+  private getActiveIndex() {
+    return this.queue?.findIndex(
+      (item) => {
+        return item?.playing
+      }
+    ) ?? 0;
+  }
 
   private _filterQueue(queue: QueueItems) {
     const playIdx = queue.findIndex(
@@ -162,11 +169,7 @@ export class MassPlayerArtwork extends LitElement {
   }
   protected _pushQueueArtwork() {
     const queue = this.queue;
-    const activeIdx = queue?.findIndex(
-      (item) => {
-        return item?.playing
-      }
-    )
+    const activeIdx = this.getActiveIndex();
     if (!queue || !activeIdx || !this.activeSlide || !this.carouselElement) {
       return;
     }
