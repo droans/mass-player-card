@@ -57,6 +57,7 @@ export class MassPlayerArtwork extends LitElement {
   @query('#carousel') private carouselElement?: SlCarousel;
 
   private currentIdx?: number;
+  private _delay = 50
 
   @consume({ context: activeMediaPlayerContext, subscribe: true })
   public set activePlayer(player: ExtendedHassEntity) {
@@ -232,12 +233,6 @@ export class MassPlayerArtwork extends LitElement {
     if (this.carouselElement) {
       this.controller.ActivePlayer.carouselElement = this.carouselElement;
     } 
-    setTimeout(
-      () => {
-        this.updateActiveSlide()
-      },
-      2000
-    )
   }
   protected updated(_changedProperties: PropertyValues): void {
     if (this.carouselElement) {
