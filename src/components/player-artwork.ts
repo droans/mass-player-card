@@ -33,6 +33,7 @@ import { getThumbnail } from "../utils/thumbnails";
 import { Icons } from "../const/icons";
 import styles from "../styles/player-artwork";
 import { Thumbnail } from "../const/enums";
+import { keyed } from "lit/directives/keyed.js";
 
 @customElement('mpc-artwork')
 export class MassPlayerArtwork extends LitElement {
@@ -150,7 +151,7 @@ export class MassPlayerArtwork extends LitElement {
     void this.controller.Queue.playQueueItem(item.queue_item_id)
   }
 
-  protected renderCarouselItem(item: QueueItem, fallback: string = Thumbnail.CLEFT): TemplateResult {
+  protected renderCarouselItem(item: QueueItem, fallback: string = Thumbnail.CLEFT) {
     if (Object.values(Thumbnail).includes(fallback as Thumbnail)) {
       fallback = getThumbnail(this.hass, fallback as Thumbnail)
     }
@@ -159,17 +160,20 @@ export class MassPlayerArtwork extends LitElement {
     const attrs = this.activePlayer.attributes;
     const img = item?.playing ? attrs.entity_picture_local ?? attrs.entity_picture ?? _img : _img;
     const playing = item.playing ? `playing` : false;
-    return html`
-      <wa-carousel-item 
-      >
-        <img
-          class="artwork ${size}"
-          src="${img}"
-          ?data-playing=${playing}
-          onerror="this.src='${fallback}';"
-        > 
-      </wa-carousel-item>
-    `
+    return keyed(
+      item.media_content_id,
+      html`
+        <wa-carousel-item 
+        >
+          <img
+            class="artwork ${size}"
+            src="${img}"
+            ?data-playing=${playing}
+            onerror="this.src='${fallback}';"
+          > 
+        </wa-carousel-item>
+      `
+    )
   }
   protected renderEmptyQueue(): TemplateResult {
     const expressive = this.controller.config.expressive ? 'expressive' : ``
@@ -192,7 +196,7 @@ export class MassPlayerArtwork extends LitElement {
       this.onSwipe(this.carouselElement?.activeSlide)
     }
   }
-  protected renderCarouselItems(): TemplateResult | TemplateResult[] {
+  protected renderCarouselItems() {
     if (!this?.queue?.length) {
       return this.renderEmptyQueue();
     }
