@@ -104,8 +104,6 @@ export class MassPlayerArtwork extends LitElement {
   private setActiveSlide(idx: number | undefined = this.currentIdx) {
     if (!idx || !this?.queue?.length || !this?.carouselElement || this._timeout) {
       return;
-    }
-    console.log(`navigating to ${idx}`)
     this._updating = true;
     this.carouselElement.removeEventListener('wa-slide-change', this.onSwipe);
     this?.carouselElement?.goToSlide(idx, 'instant');
@@ -127,10 +125,7 @@ export class MassPlayerArtwork extends LitElement {
     this._updating = false;
   }
   private updateActiveSlide() {
-    console.log(`Updating active idx`)
-    
     if (!this.queue) {
-      console.log(`No queue.`)
       return;
     }
     const idx = this.queue.findIndex(
@@ -138,7 +133,6 @@ export class MassPlayerArtwork extends LitElement {
         return item?.playing
       }
     )
-    console.log(`Got idx ${idx}`)
     if (idx >= 0 && idx != this.carouselElement?.activeSlide) {
       this.currentIdx = idx;
       this.setActiveSlide(this.currentIdx)
@@ -159,7 +153,6 @@ export class MassPlayerArtwork extends LitElement {
     this._updating = true;
     navigator.vibrate(VibrationPattern.Player.ACTION_SWIPE);
     const idx = ev.detail.index;
-    console.log(`Navigating to ${idx}`)
     const item = this.queue[idx];
     const media_content_id = item.media_content_id;
     if (media_content_id == this.activePlayer.attributes.media_content_id) {
@@ -233,9 +226,6 @@ export class MassPlayerArtwork extends LitElement {
     `
   }
   protected shouldUpdate(_changedProperties: PropertyValues): boolean {
-    // if (_changedProperties.size) {
-    //   console.log(_changedProperties)
-    // }
     return _changedProperties.size > 0
   }
   connectedCallback(): void {
@@ -269,14 +259,6 @@ export class MassPlayerArtwork extends LitElement {
           || queueChanged
       )
     ) {
-      // console.log(`---------------------`)
-      // console.log(`Is active: ${_isactive}`);
-      // console.log(`Has queue: ${hasQueue}`);
-      // console.log(`Wrong idx: ${wrongIdx}`);
-      // console.log(`Player changed: ${playerChanged}`);
-      // console.log(`Queue changed: ${queueChanged}`);
-      // console.log(`---------------------`)
-      console.log(`Updated requesting update.`)
       this.updateActiveSlide();
     }
   }
