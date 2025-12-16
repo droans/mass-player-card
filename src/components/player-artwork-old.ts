@@ -236,7 +236,7 @@ export class MassPlayerArtwork extends LitElement {
   }
   protected updated(_changedProperties: PropertyValues): void {
     if (this.carouselElement) {
-      this.carouselElement!.style = "";
+      this.carouselElement.style = "";
       if (this.currentIdx) {
         this.carouselElement?.goToSlide(this?.currentIdx ?? 0, 'instant')
         setTimeout(
