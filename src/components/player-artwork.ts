@@ -33,6 +33,7 @@ import { getThumbnail } from "../utils/thumbnails";
 import { Icons } from "../const/icons";
 import styles from "../styles/player-artwork";
 import { Thumbnail } from "../const/enums";
+import { keyed } from "lit/directives/keyed.js";
 
 @customElement('mpc-artwork')
 export class MassPlayerArtwork extends LitElement {
