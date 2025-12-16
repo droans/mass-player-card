@@ -163,7 +163,21 @@ export class MassPlayerArtwork extends LitElement {
     await delay(300);
     this._pushQueueArtwork();
     const activeIdx = this.getActiveIndex();
+    this.carouselElement?.goToSlide(activeIdx, 'instant');
+    await delay(25)
+    this.carouselElement?.goToSlide(activeIdx, 'instant');
+    // Run again a few times with delays just to be safe.
+    await delay(75)
+    this.carouselElement?.goToSlide(activeIdx, 'instant');
     await delay(150)
+    this.carouselElement?.goToSlide(activeIdx, 'instant');
+    await delay(300)
+    this.carouselElement?.goToSlide(activeIdx, 'instant');
+    await delay(750)
+    this.carouselElement?.goToSlide(activeIdx, 'instant');
+    await delay(1000)
+    this.carouselElement?.goToSlide(activeIdx, 'instant');
+    await delay(1000)
     this.carouselElement?.goToSlide(activeIdx, 'instant');
   }
   protected _pushQueueArtwork() {
