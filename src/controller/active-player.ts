@@ -29,8 +29,8 @@ import {
   generateExpressiveSchemeFromColor,
   generateExpressiveSourceColorFromImageElement
 } from "../utils/expressive.js";
-import { SlCarousel } from "@shoelace-style/shoelace";
 import { getInfoWSResponseSchema, getInfoWSServiceSchema } from "mass-queue-types/packages/mass_queue/ws/get_info.js";
+import WaCarousel from "@droans/webawesome/dist/components/carousel/carousel.js";
 
 export class ActivePlayerController {
   private _activeEntityConfig: ContextProvider<typeof activeEntityConfContext>;
@@ -48,9 +48,11 @@ export class ActivePlayerController {
   private _config!: Config;
   private _host: HTMLElement;
   private _updatingScheme = false;
-  private _carouselElement?: SlCarousel;
+  private _carouselElement?: WaCarousel;
   private _observer?: MutationObserver;
   private _activeSchemeColor!: number;
+  private _timeout?: number;
+  private _observerDelay = 300;
   private _canGroupWith: string[] = [];
 
   constructor(hass: ExtendedHass, config: Config, host: HTMLElement) {
@@ -214,7 +216,7 @@ export class ActivePlayerController {
   public get activePlayerData() {
     return this._activePlayerData.value;
   }
-  public set carouselElement(elem: SlCarousel | undefined) {
+  public set carouselElement(elem: WaCarousel | undefined) {
     if (elem) {
       this._carouselElement = elem;
       this.createObserver();
@@ -262,10 +264,23 @@ export class ActivePlayerController {
     if (!this.carouselElement) {
       return
     }
-    return this.carouselElement.querySelector('[data-playing]') as HTMLElement;
+    return this.carouselElement.querySelector('#img-playing') as HTMLElement;
   }
   private observerCallback = () => {
-    this.createAndApplyExpressiveScheme();
+    if (this._timeout) {
+      try {
+        clearTimeout(this._timeout)
+      } catch {
+        // assume already canceled
+      }
+    }
+    this._timeout = setTimeout(
+      () => {
+        this._timeout = undefined;
+        this.createAndApplyExpressiveScheme();
+      },
+      this._observerDelay
+    )
   }
 
   public async updateActivePlayerData() {

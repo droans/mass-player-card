@@ -267,6 +267,7 @@ export class MassPlayerArtwork extends LitElement {
       <wa-carousel-item id="active-slide">
         <img
           class="artwork ${size}"
+          id="img-playing"
           src="${url}"
           onerror="if (this.src == '${url}') { this.src = '${fallback}' } else if (this.src == '${fallback}') { this.src = '${itemFallback}' } else { this.src == '${Thumbnail.CLEFT}' }"
         >
@@ -294,6 +295,13 @@ export class MassPlayerArtwork extends LitElement {
       return;
     }
   }
+  protected firstUpdated(): void {
+    if (this.carouselElement) {
+      this.controller.ActivePlayer.carouselElement = this.carouselElement;
+    }
+    
+  }
+
   static get styles(): CSSResultGroup {
     return styles;
   }
