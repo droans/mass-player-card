@@ -120,6 +120,11 @@ class MassPlayerProgressBar extends LitElement {
         this.media_duration = duration ?? this.media_duration;
         this.entity_duration = duration ?? this.entity_duration;
       });
+      if (this.activePlayer.state == 'playing') {
+        this.startProgressTick()
+      } else {
+        this.stopProgressTick();
+      }
   }
   private tickProgress = () => {
     const playing = this.player_data?.playing;
@@ -143,6 +148,21 @@ class MassPlayerProgressBar extends LitElement {
     }
     this.media_position = Math.min(pos, this.media_duration);
   };
+
+  private startProgressTick() {
+    this.stopProgressTick();
+    this._tickListener = setInterval(this.tickProgress, this._tick_duration_ms)
+  }
+  private stopProgressTick() {
+    if (this._tickListener) {
+      try {
+        clearInterval(this._tickListener)
+      } catch {
+        // Assume interval already cleared
+      }
+    }
+    this._tickListener = undefined;    
+  }
   private onSeek = async (e: MouseEvent) => {
     const prog_width = this.progressBar?.offsetWidth ?? 1;
     const seek = e.offsetX / prog_width;
@@ -246,23 +266,23 @@ class MassPlayerProgressBar extends LitElement {
     `;
   }
 
-  connectedCallback(): void {
-    this._tickListener ??= setInterval(this.tickProgress, this._tick_duration_ms)
-    if (this.activePlayerController && this.hasUpdated) {
-      this.requestProgress();
-    }
-    super.connectedCallback();
-  }
-  disconnectedCallback(): void {
-    if (this._tickListener) {
-      try {
-        clearInterval(this._tickListener);
-      } finally {
-        this._tickListener = undefined;
-      }
-    }
-    super.disconnectedCallback();
-  }
+  // connectedCallback(): void {
+  //   this._tickListener ??= setInterval(this.tickProgress, this._tick_duration_ms)
+  //   if (this.activePlayerController && this.hasUpdated) {
+  //     this.requestProgress();
+  //   }
+  //   super.connectedCallback();
+  // }
+  // disconnectedCallback(): void {
+  //   if (this._tickListener) {
+  //     try {
+  //       clearInterval(this._tickListener);
+  //     } finally {
+  //       this._tickListener = undefined;
+  //     }
+  //   }
+  //   super.disconnectedCallback();
+  // }
   protected shouldUpdate(_changedProperties: PropertyValues): boolean {
     const bar_playing = this.progressBar?.classList?.contains('wavy');
     const playing_changed = (bar_playing != this.player_data.playing)
