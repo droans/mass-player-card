@@ -57,6 +57,7 @@ export class MassPlayerArtwork extends LitElement {
 
   private _slidesInserted = false;
   private _pushingArtwork = false;
+  private _touchActive = false;
 
   @consume({ context: activeMediaPlayerContext, subscribe: true })
   public set activePlayer(player: ExtendedHassEntity) {
@@ -121,8 +122,11 @@ export class MassPlayerArtwork extends LitElement {
   }
 
   private onPointerDown = () => {
+    this._touchActive = true
     window.addEventListener('pointerup', this.onPointerUp)
   }
+  private onPointerUp = async () => {
+    this._touchActive = false;
     await delay(100)
     window.removeEventListener('pointerup', this.onPointerUp);
     if (!this.carouselElement || !this.queue) {
@@ -161,6 +165,52 @@ export class MassPlayerArtwork extends LitElement {
     `
   }
 
+  private async delayedGoToSlide(idx: number) {
+    const dataID = this.carouselItems[idx].dataset.queueitem;
+    const delays = [
+      0,
+      25,
+      75,
+      150,
+      300,
+      750,
+      1000,
+      1000
+    ]
+    for (const delay_ms of delays) {
+      await delay(delay_ms);
+      if (this._touchActive) {
+        break;
+      }
+      const intersectingSlide = this.getIntersectingSlide();
+      const intersectingDataId = intersectingSlide?.dataset.queueitem;
+      if (dataID == intersectingDataId) {
+        break
+      }
+      this.carouselElement?.goToSlide(idx, 'instant')
+    }
+  }
+
+  private getIntersectingSlide() {
+    const firstSlide = this.carouselItems[0];
+    const scrollContainer = firstSlide.assignedSlot?.parentElement;
+    if (!scrollContainer) {
+      return;
+    }
+    const scrollLeft = scrollContainer.scrollLeft;
+    const scrollWidth = scrollContainer.offsetWidth;
+    const scrollRight = scrollLeft + scrollWidth;
+    const result = [...this.carouselItems].filter(
+      (item) => {
+        const left = item.offsetLeft;
+        return left >= scrollLeft && left <= scrollRight
+      }
+    );
+    if (result?.length) {
+      return result[0]
+    }
+    return firstSlide;
+  }
 
   protected async pushQueueArtwork() {
     if (this._pushingArtwork) {
@@ -170,22 +220,7 @@ export class MassPlayerArtwork extends LitElement {
     await delay(300);
     this._pushQueueArtwork();
     const activeIdx = this.getActiveIndex();
-    this.carouselElement?.goToSlide(activeIdx, 'instant');
-    await delay(25)
-    this.carouselElement?.goToSlide(activeIdx, 'instant');
-    // Run again a few times with delays just to be safe.
-    await delay(75)
-    this.carouselElement?.goToSlide(activeIdx, 'instant');
-    await delay(150)
-    this.carouselElement?.goToSlide(activeIdx, 'instant');
-    await delay(300)
-    this.carouselElement?.goToSlide(activeIdx, 'instant');
-    await delay(750)
-    this.carouselElement?.goToSlide(activeIdx, 'instant');
-    await delay(1000)
-    this.carouselElement?.goToSlide(activeIdx, 'instant');
-    await delay(1000)
-    this.carouselElement?.goToSlide(activeIdx, 'instant');
+    this.delayedGoToSlide(activeIdx)
     this._pushingArtwork = false;
   }
   protected _pushQueueArtwork() {
