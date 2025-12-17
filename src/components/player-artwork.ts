@@ -195,19 +195,55 @@ export class MassPlayerArtwork extends LitElement {
         if (!url.length) {
           url = item.local_image_encoded ?? ''
         }
-        this.updateCarouselImg(idx, url)
+        if (item?.playing) {
+          const attrs = this.activePlayer.attributes;
+          const ent_img_local = attrs.entity_picture_local;
+          const fallbacks: string[] = []
+          const ent_img = attrs.entity_picture;
+          if (ent_img) {
+            fallbacks.push(ent_img)
+          }
+          fallbacks.push(url)
+          this.updateCarouselImg(idx, ent_img_local, fallbacks, true);
+        } else {
+          this.updateCarouselImg(idx, url)
+        }
       }
     )
   }
-  protected updateCarouselImg(index: number, img_url: string) {
+  protected updateCarouselImg(index: number, img_url: string, fallbacks: string[] = [], playing=false) {
     if (!this.carouselElement) {
       return
     }
     const elem = this.carouselElement.querySelectorAll('img')[index];
     if (!elem) {
       return
-    }    
+    }
     elem.src = img_url;
+    elem.onerror = () => {
+      const urls = [
+        img_url,
+        ...fallbacks,
+        Thumbnail.CLEFT
+      ]
+      const curIdx = urls.findIndex(
+        (item) => {
+          return elem.src == item
+        }
+      ) ?? 0;
+      const url = urls[curIdx + 1] ?? Thumbnail.CLEFT;
+      elem.src = url;
+    }
+    if (playing) {
+      elem.setAttribute('id', 'img-playing')
+      elem.parentElement?.setAttribute('id', 'active-slide')
+    } else if (elem.id) {
+      elem.id = '';
+      elem.removeAttribute('id')
+      elem.parentElement?.removeAttribute('id')
+    }
+  }
+
   private createAndDestroyCarouselItemsAsNeeded() {
     const slides = this.carouselItems;
     if (!slides || !this.carouselElement || !this.queue) {
@@ -296,15 +332,12 @@ export class MassPlayerArtwork extends LitElement {
     const size = this.playerConfig.layout.artwork_size;
     const attrs = this.activePlayer.attributes;
     const url = attrs.entity_picture_local;
-    const fallback = attrs.entity_picture;
-    const itemFallback = activeItem?.media_image?.length ? activeItem.media_image : activeItem.local_image_encoded;
     return html`
       <wa-carousel-item id="active-slide">
         <img
           class="artwork ${size}"
           id="img-playing"
           src="${url}"
-          onerror="if (this.src == '${url}') { this.src = '${fallback}' } else if (this.src == '${fallback}') { this.src = '${itemFallback}' } else { this.src == '${Thumbnail.CLEFT}' }"
         >
       </wa-carousel-item>
     `
