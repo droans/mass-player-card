@@ -15,7 +15,8 @@ import {
   groupVolumeContext,
   hassContext,
   IconsContext,
-  useExpressiveContext
+  useExpressiveContext,
+  useVibrantContext
 } from "../const/context.js";
 import { Icons } from "../const/icons.js";
 import { ExtendedHass } from "../const/types.js";
@@ -32,6 +33,9 @@ export class MassCardPlayerSelector extends LitElement {
 
   @consume({ context: useExpressiveContext, subscribe: true })
   private useExpressive!: boolean;
+
+  @consume({ context: useVibrantContext, subscribe: true })
+  private useVibrant!: boolean;
 
   @consume({ context: IconsContext, subscribe: true })
   private Icons!: Icons;
@@ -112,7 +116,7 @@ export class MassCardPlayerSelector extends LitElement {
     const players = this.groupedPlayers;
     const ct = players.length;
     const expressive = this.useExpressive;
-    const role = this.controller.config.expressive_scheme == "vibrant" ? `tonal` : `filled-variant`
+    const role = this.useVibrant ? `tonal` : `filled-variant`
     return this.groupedPlayers.map((item, idx) => {
       const name =
         item.name.length > 0

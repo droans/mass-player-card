@@ -50,6 +50,7 @@ export const expressiveSchemeContext = createContext<DynamicScheme | undefined>(
   uuid4(),
 );
 export const useExpressiveContext = createContext<boolean>(uuid4());
+export const useVibrantContext = createContext<boolean>(uuid4())
 export const IconsContext = createContext<Icons>(uuid4());
 
 export const queueContext = createContext<QueueItems | null>(uuid4());
