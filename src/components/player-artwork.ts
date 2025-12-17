@@ -123,7 +123,7 @@ export class MassPlayerArtwork extends LitElement {
   private onPointerDown = () => {
     window.addEventListener('pointerup', this.onPointerUp)
   }
-  private onPointerUp = () => {
+    await delay(100)
     window.removeEventListener('pointerup', this.onPointerUp);
     if (!this.carouselElement) {
       return;
