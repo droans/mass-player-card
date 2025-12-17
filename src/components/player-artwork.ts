@@ -15,6 +15,7 @@ import {
 import {
   customElement,
   query,
+  queryAll,
   state
 } from "lit/decorators.js";
 import { PlayerConfig } from "../config/player.js";
@@ -51,6 +52,7 @@ export class MassPlayerArtwork extends LitElement {
 
   @query('#carousel') private carouselElement?: WaCarousel;
   @query('#active-slide') private activeSlide!: WaCarouselItem
+  @queryAll('wa-carousel-item') private carouselItems!: WaCarouselItem[]
 
 
   private _slidesInserted = false;
@@ -95,7 +97,7 @@ export class MassPlayerArtwork extends LitElement {
         return item?.playing
       }
     );
-    if (!playIdx) {
+    if (!(playIdx == 0) && !playIdx) {
       return queue.slice(0,10)
     }
     const startIdx = Math.max(0, playIdx - 5);
@@ -125,7 +127,7 @@ export class MassPlayerArtwork extends LitElement {
     if (!this.carouselElement) {
       return;
     }
-    const slides = [...this.carouselElement.querySelectorAll('wa-carousel-item')];
+    const slides = [...this.carouselItems];
     const activeSlide = slides.findIndex(
       (item) => {
         return item.classList.contains('--in-view')
@@ -186,64 +188,133 @@ export class MassPlayerArtwork extends LitElement {
     if (!queue || !activeIdx || !this.activeSlide || !this.carouselElement) {
       return;
     }
+    this.createAndDestroyCarouselItemsAsNeeded();
     queue.forEach(
       (item, idx) => {
         let url = item.media_image ?? '';
         if (!url.length) {
           url = item.local_image_encoded ?? ''
         }
-        this.updateCarouselImg(idx, url)
+        if (item?.playing) {
+          const attrs = this.activePlayer.attributes;
+          const ent_img_local = attrs.entity_picture_local;
+          const fallbacks: string[] = []
+          const ent_img = attrs.entity_picture;
+          if (ent_img) {
+            fallbacks.push(ent_img)
+          }
+          fallbacks.push(url)
+          this.updateCarouselImg(idx, ent_img_local, fallbacks, true);
+        } else {
+          this.updateCarouselImg(idx, url)
+        }
       }
     )
   }
-  protected updateCarouselImg(index: number, img_url: string) {
+  protected updateCarouselImg(index: number, img_url: string, fallbacks: string[] = [], playing=false) {
     if (!this.carouselElement) {
       return
     }
     const elem = this.carouselElement.querySelectorAll('img')[index];
     if (!elem) {
       return
-    }    
+    }
     elem.src = img_url;
+    elem.onerror = () => {
+      const urls = [
+        img_url,
+        ...fallbacks,
+        Thumbnail.CLEFT
+      ]
+      const curIdx = urls.findIndex(
+        (item) => {
+          return elem.src == item
+        }
+      ) ?? 0;
+      const url = urls[curIdx + 1] ?? Thumbnail.CLEFT;
+      elem.src = url;
+    }
+    if (playing) {
+      elem.setAttribute('id', 'img-playing')
+      elem.parentElement?.setAttribute('id', 'active-slide')
+    } else if (elem.id) {
+      elem.id = '';
+      elem.removeAttribute('id')
+      elem.parentElement?.removeAttribute('id')
+    }
   }
 
-
-  private insertEmptyCarouselItems() {
-    const activeElem = this.activeSlide;
-    if (!activeElem) {
-      return;
+  private createAndDestroyCarouselItemsAsNeeded() {
+    const slides = this.carouselItems;
+    if (!slides || !this.carouselElement || !this.queue) {
+      return
     }
-    this._insertElementAfter();
-    this._insertElementAfter();
-    this._insertElementAfter();
-    this._insertElementAfter();
-    this._insertElementAfter();
-    this._insertElementBefore(activeElem);
-    this._insertElementBefore(activeElem);
-    this._insertElementBefore(activeElem);
-    this._insertElementBefore(activeElem);
-    this._insertElementBefore(activeElem);
-    this._slidesInserted = true
+    const artworkIdx = [...slides].findIndex(
+      (item) => { return item.id == 'active-slide'}
+    ) ?? 0;
+    const slidesLength = slides.length;
+    const actSlidesBefore = artworkIdx;
+    const actSlidesAfter = slidesLength - artworkIdx - 1
+    
+    const queueIdx = this.queue.findIndex(
+    (item) => { return item?.playing }
+    )
+    const queueLength = this.queue.length;
+    const reqSlidesBefore = queueIdx;
+    const reqSlidesAfter = queueLength - queueIdx - 1;
+    
+    if (actSlidesBefore == reqSlidesBefore && actSlidesAfter == reqSlidesAfter) {
+      return
+    }
+
+    if (actSlidesBefore < reqSlidesBefore) {
+      const insertBeforeCt = reqSlidesBefore - actSlidesBefore
+      this.insertSlides(insertBeforeCt, 'start')
+    } else if (actSlidesBefore > reqSlidesBefore ) {
+      const removeBeforeCt = actSlidesBefore - reqSlidesBefore;
+      this.removeSlides(removeBeforeCt, 'start')
+    }
+    
+    if (actSlidesAfter < reqSlidesAfter) {
+      const insertAfterCt = reqSlidesAfter - actSlidesAfter
+      this.insertSlides(insertAfterCt, 'end')
+    } else if (actSlidesAfter > reqSlidesAfter ) {
+      const removeAfterct = actSlidesAfter - reqSlidesAfter;
+      this.removeSlides(removeAfterct, 'end')
+    }
   }
 
-  private _insertElementBefore(before_elem: WaCarouselItem) {
-    const elem = document.createElement('wa-carousel-item');
-    const img = document.createElement('img');
-    elem.appendChild(img)
-    if (!this.carouselElement) {
-      return;
+  private removeSlides(ct: number, direction: 'start' | 'end') {
+    const elems = [...this.carouselItems];
+    let remove: WaCarouselItem[] = [];
+    if (direction == 'start') {
+      remove = elems.slice(0, ct)
+    } else {
+      remove = elems.slice(elems.length - ct, elems.length)
     }
-    this.carouselElement.goToSlide(this.carouselElement.activeSlide + 1);
-    this.carouselElement.insertBefore(elem, before_elem)
+    remove.forEach(
+      (item) => {
+        item.remove();
+      }
+    )
   }
-  private _insertElementAfter() {
-    const elem = document.createElement('wa-carousel-item');
-    const img = document.createElement('img');
-    elem.appendChild(img)
-    if (!this.carouselElement) {
-      return;
-    }
-    this.carouselElement.appendChild(elem)
+
+  private insertSlides(ct: number, direction: 'start' | 'end') {
+    const rng = [...Array(ct).keys()]
+
+    const insertBefore = this.carouselItems[0];
+    rng.forEach(
+      () => {
+        const elem = document.createElement('wa-carousel-item')
+        const img = document.createElement('img');
+        elem.appendChild(img);
+        if (direction == 'start') {
+          this.carouselElement?.insertBefore(elem, insertBefore)
+        } else {
+          this.carouselElement?.appendChild(elem)
+        }
+      }
+    )
   }
 
   protected renderActiveItem(): TemplateResult {
@@ -261,15 +332,12 @@ export class MassPlayerArtwork extends LitElement {
     const size = this.playerConfig.layout.artwork_size;
     const attrs = this.activePlayer.attributes;
     const url = attrs.entity_picture_local;
-    const fallback = attrs.entity_picture;
-    const itemFallback = activeItem?.media_image?.length ? activeItem.media_image : activeItem.local_image_encoded;
     return html`
       <wa-carousel-item id="active-slide">
         <img
           class="artwork ${size}"
           id="img-playing"
           src="${url}"
-          onerror="if (this.src == '${url}') { this.src = '${fallback}' } else if (this.src == '${fallback}') { this.src = '${itemFallback}' } else { this.src == '${Thumbnail.CLEFT}' }"
         >
       </wa-carousel-item>
     `
@@ -290,7 +358,6 @@ export class MassPlayerArtwork extends LitElement {
   }
   protected updated(): void {
     if (this.activeSlide && this.queue && !this._slidesInserted) {
-      this.insertEmptyCarouselItems();
       void this.pushQueueArtwork()
       return;
     }
