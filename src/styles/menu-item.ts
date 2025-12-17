@@ -77,10 +77,10 @@ export default css`
     --md-ripple-pressed-color: var(--ripple-pressed-color-expressive);
   }
   .menu-list-item-md.expressive:not(.vibrant):not(.selected) {
-    /* --mdc-theme-text-primary-on-background: var(--text-color-expressive); */
-    /* --mdc-theme-text-icon-on-background: var(--icon-color-expressive); */
-    /* --md-ripple-hover-color: var(--ripple-hover-color-expressive); */
-    /* --md-ripple-pressed-color: var(--ripple-pressed-color-expressive); */
+    --md-list-item-label-text-color: var(--text-color-expressive);
+    --md-list-item-leading-icon-color: var(--icon-color-expressive);
+    --ha-ripple-hover-color: var(--ripple-hover-color-expressive);
+    --ha-ripple-pressed-color: var(--ripple-pressed-color-expressive);
   }
   .title-md.expressive:not(.vibrant):not(.selected) {
     color: var(--text-color-expressive);
@@ -100,10 +100,10 @@ export default css`
   }
   .menu-list-item-md.expressive.selected:not(.vibrant) {
     background-color: var(--background-color-expressive-active);
-    /* --mdc-theme-text-primary-on-background: var(--text-color-expressive); */
-    /* --mdc-theme-text-icon-on-background: var(--icon-color-expressive); */
-    /* --md-ripple-hover-color: var(--ripple-hover-color-expressive); */
-    /* --md-ripple-pressed-color: var(--ripple-pressed-color-expressive); */
+    --md-list-item-label-text-color: var(--text-color-expressive);
+    --md-list-item-leading-icon-color: var(--icon-color-expressive);
+    --ha-ripple-hover-color: var(--ripple-hover-color-expressive);
+    --ha-ripple-pressed-color: var(--ripple-pressed-color-expressive);
   }
   
     
@@ -119,10 +119,10 @@ export default css`
     --md-ripple-pressed-color: var(--ripple-pressed-color-expressive-vibrant);
   }
   .menu-list-item-md.vibrant:not(.selected) {
-    /* --mdc-theme-text-primary-on-background: var(--text-color-expressive); */
-    /* --mdc-theme-text-icon-on-background: var(--icon-color-expressive); */
-    /* --md-ripple-hover-color: var(--ripple-hover-color-expressive); */
-    /* --md-ripple-pressed-color: var(--ripple-pressed-color-expressive); */
+    --md-list-item-label-text-color: var(--text-color-expressive-vibrant);
+    --md-list-item-leading-icon-color: var(--icon-color-expressive-vibrant);
+    --ha-ripple-hover-color: var(--ripple-hover-color-expressive-vibrant);
+    --ha-ripple-pressed-color: var(--ripple-pressed-color-expressive-vibrant);
   }
     
   /* 
@@ -138,11 +138,11 @@ export default css`
     --md-ripple-pressed-color: var(--ripple-pressed-color-expressive-vibrant-active);
   }
   .menu-list-item-md.vibrant.selected {
-    /* background-color: var(--background-color-expressive); */
-    /* --mdc-theme-text-primary-on-background: var(--text-color-expressive); */
-    /* --mdc-theme-text-icon-on-background: var(--icon-color-expressive); */
-    /* --md-ripple-hover-color: var(--ripple-hover-color-expressive); */
-    /* --md-ripple-pressed-color: var(--ripple-pressed-color-expressive); */
+    background-color: var(--background-color-expressive-vibrant-active);
+    --md-list-item-label-text-color: var(--text-color-expressive-vibrant-active);
+    --md-list-item-leading-icon-color: var(--icon-color-expressive-vibrant-active);
+    --ha-ripple-hover-color: var(--ripple-hover-color-expressive-vibrant-active);
+    --ha-ripple-pressed-color: var(--ripple-pressed-color-expressive-vibrant-active);
   }
 
   .svg.expressive {
