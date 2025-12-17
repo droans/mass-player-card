@@ -56,6 +56,8 @@ export class MassPlayerArtwork extends LitElement {
 
 
   private _slidesInserted = false;
+  private _pushingArtwork = false;
+  private _touchActive = false;
 
   @consume({ context: activeMediaPlayerContext, subscribe: true })
   public set activePlayer(player: ExtendedHassEntity) {
@@ -120,20 +122,27 @@ export class MassPlayerArtwork extends LitElement {
   }
 
   private onPointerDown = () => {
+    this._touchActive = true
     window.addEventListener('pointerup', this.onPointerUp)
   }
   private onPointerUp = () => {
+    this._touchActive = false;
     window.removeEventListener('pointerup', this.onPointerUp);
-    if (!this.carouselElement) {
+    void this._pointerUpCheckSwipe();
+  }
+
+  private _pointerUpCheckSwipe = async () => {
+    if (!this.carouselElement || !this.queue) {
       return;
     }
+    await delay(100)
     const slides = [...this.carouselItems];
     const activeSlide = slides.findIndex(
       (item) => {
         return item.classList.contains('--in-view')
       }
     )
-    const prevSlide = this.queue?.findIndex(
+    const prevSlide = this.queue.findIndex(
       (item) => {
         return item.playing;
       }
@@ -144,6 +153,7 @@ export class MassPlayerArtwork extends LitElement {
     if (activeSlide != prevSlide) {
       this.onSwipe(activeSlide)
     }
+
   }
 
   
@@ -160,27 +170,63 @@ export class MassPlayerArtwork extends LitElement {
     `
   }
 
+  private async delayedGoToSlide(idx: number) {
+    const dataID = this.carouselItems[idx].dataset.queueitem;
+    const delays = [
+      0,
+      25,
+      75,
+      150,
+      300,
+      750,
+      1000,
+      1000
+    ]
+    for (const delay_ms of delays) {
+      await delay(delay_ms);
+      if (this._touchActive) {
+        break;
+      }
+      const intersectingSlide = this.getIntersectingSlide();
+      const intersectingDataId = intersectingSlide?.dataset.queueitem;
+      if (dataID == intersectingDataId) {
+        break
+      }
+      this.carouselElement?.goToSlide(idx, 'instant')
+    }
+  }
+
+  private getIntersectingSlide() {
+    const firstSlide = this.carouselItems[0];
+    const scrollContainer = firstSlide.assignedSlot?.parentElement;
+    if (!scrollContainer) {
+      return;
+    }
+    const scrollLeft = scrollContainer.scrollLeft;
+    const scrollWidth = scrollContainer.offsetWidth;
+    const scrollRight = scrollLeft + scrollWidth;
+    const result = [...this.carouselItems].filter(
+      (item) => {
+        const left = item.offsetLeft;
+        return left >= scrollLeft && left <= scrollRight
+      }
+    );
+    if (result?.length) {
+      return result[0]
+    }
+    return firstSlide;
+  }
 
   protected async pushQueueArtwork() {
+    if (this._pushingArtwork) {
+      return;
+    }
+    this._pushingArtwork = true
     await delay(300);
     this._pushQueueArtwork();
     const activeIdx = this.getActiveIndex();
-    this.carouselElement?.goToSlide(activeIdx, 'instant');
-    await delay(25)
-    this.carouselElement?.goToSlide(activeIdx, 'instant');
-    // Run again a few times with delays just to be safe.
-    await delay(75)
-    this.carouselElement?.goToSlide(activeIdx, 'instant');
-    await delay(150)
-    this.carouselElement?.goToSlide(activeIdx, 'instant');
-    await delay(300)
-    this.carouselElement?.goToSlide(activeIdx, 'instant');
-    await delay(750)
-    this.carouselElement?.goToSlide(activeIdx, 'instant');
-    await delay(1000)
-    this.carouselElement?.goToSlide(activeIdx, 'instant');
-    await delay(1000)
-    this.carouselElement?.goToSlide(activeIdx, 'instant');
+    await this.delayedGoToSlide(activeIdx)
+    this._pushingArtwork = false;
   }
   protected _pushQueueArtwork() {
     const queue = this.queue;
@@ -204,14 +250,14 @@ export class MassPlayerArtwork extends LitElement {
             fallbacks.push(ent_img)
           }
           fallbacks.push(url)
-          this.updateCarouselImg(idx, ent_img_local, fallbacks, true);
+          this.updateCarouselImg(idx, ent_img_local, item.queue_item_id, fallbacks, true);
         } else {
-          this.updateCarouselImg(idx, url)
+          this.updateCarouselImg(idx, url, item.queue_item_id)
         }
       }
     )
   }
-  protected updateCarouselImg(index: number, img_url: string, fallbacks: string[] = [], playing=false) {
+  protected updateCarouselImg(index: number, img_url: string, queue_item_id: string, fallbacks: string[] = [], playing=false) {
     if (!this.carouselElement) {
       return
     }
@@ -234,6 +280,7 @@ export class MassPlayerArtwork extends LitElement {
       const url = urls[curIdx + 1] ?? Thumbnail.CLEFT;
       elem.src = url;
     }
+    elem.parentElement?.setAttribute('data-queueitem', queue_item_id)
     if (playing) {
       elem.setAttribute('id', 'img-playing')
       elem.parentElement?.setAttribute('id', 'active-slide')
@@ -333,7 +380,10 @@ export class MassPlayerArtwork extends LitElement {
     const attrs = this.activePlayer.attributes;
     const url = attrs.entity_picture_local;
     return html`
-      <wa-carousel-item id="active-slide">
+      <wa-carousel-item 
+        id="active-slide" 
+        data-queueitem="${activeItem.queue_item_id}"
+      >
         <img
           class="artwork ${size}"
           id="img-playing"
