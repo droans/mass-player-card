@@ -56,6 +56,7 @@ export class MassPlayerArtwork extends LitElement {
 
 
   private _slidesInserted = false;
+  private _pushingArtwork = false;
 
   @consume({ context: activeMediaPlayerContext, subscribe: true })
   public set activePlayer(player: ExtendedHassEntity) {
@@ -162,6 +163,10 @@ export class MassPlayerArtwork extends LitElement {
 
 
   protected async pushQueueArtwork() {
+    if (this._pushingArtwork) {
+      return;
+    }
+    this._pushingArtwork = true
     await delay(300);
     this._pushQueueArtwork();
     const activeIdx = this.getActiveIndex();
@@ -181,6 +186,7 @@ export class MassPlayerArtwork extends LitElement {
     this.carouselElement?.goToSlide(activeIdx, 'instant');
     await delay(1000)
     this.carouselElement?.goToSlide(activeIdx, 'instant');
+    this._pushingArtwork = false;
   }
   protected _pushQueueArtwork() {
     const queue = this.queue;
