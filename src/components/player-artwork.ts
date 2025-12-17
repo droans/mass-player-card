@@ -15,6 +15,7 @@ import {
 import {
   customElement,
   query,
+  queryAll,
   state
 } from "lit/decorators.js";
 import { PlayerConfig } from "../config/player.js";
@@ -51,6 +52,7 @@ export class MassPlayerArtwork extends LitElement {
 
   @query('#carousel') private carouselElement?: WaCarousel;
   @query('#active-slide') private activeSlide!: WaCarouselItem
+  @queryAll('wa-carousel-item') private carouselItems!: WaCarouselItem[]
 
 
   private _slidesInserted = false;
@@ -125,7 +127,7 @@ export class MassPlayerArtwork extends LitElement {
     if (!this.carouselElement) {
       return;
     }
-    const slides = [...this.carouselElement.querySelectorAll('wa-carousel-item')];
+    const slides = [...this.carouselItems];
     const activeSlide = slides.findIndex(
       (item) => {
         return item.classList.contains('--in-view')
