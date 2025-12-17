@@ -9,6 +9,7 @@ import {
   groupedPlayersContext,
   groupVolumeContext,
   useExpressiveContext,
+  useVibrantContext,
   volumeMediaPlayerContext,
 } from "../const/context";
 import { Config, EntityConfig } from "../config/config";
@@ -40,6 +41,7 @@ export class ActivePlayerController {
   private _volumeMediaPlayer: ContextProvider<typeof volumeMediaPlayerContext>;
   private _expressiveScheme!: ContextProvider<typeof expressiveSchemeContext>;
   private _useExpressive!: ContextProvider<typeof useExpressiveContext>;
+  private _useVibrant!: ContextProvider<typeof useVibrantContext>;
   private _groupMembers!: ContextProvider<typeof groupedPlayersContext>;
   private _groupVolume!: ContextProvider<typeof groupVolumeContext>;
   private _activePlayerData!: ContextProvider<typeof activePlayerDataContext>;
@@ -61,6 +63,9 @@ export class ActivePlayerController {
     });
     this._useExpressive = new ContextProvider(host, {
       context: useExpressiveContext,
+    });
+    this._useVibrant = new ContextProvider(host, {
+      context: useVibrantContext,
     });
     this._groupMembers = new ContextProvider(host, {
       context: groupedPlayersContext,
@@ -107,6 +112,7 @@ export class ActivePlayerController {
   public set config(config: Config) {
     this._config = config;
     this.useExpressive = config.expressive;
+    this.useVibrant = config.expressive_scheme == 'vibrant';
   }
   public get config() {
     return this._config;
@@ -117,6 +123,13 @@ export class ActivePlayerController {
   }
   public get useExpressive() {
     return this._useExpressive.value;
+  }
+
+  public set useVibrant(vibrant: boolean) {
+    this._useVibrant.setValue(vibrant)
+  }
+  public get useVibrant() {
+    return this._useVibrant.value
   }
 
   private set activeEntityConfig(conf: EntityConfig) {

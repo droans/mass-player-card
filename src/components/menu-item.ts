@@ -21,6 +21,9 @@ export class MassMenuItem extends LitElement {
   // Use Expressive Design tokens
   @property({ attribute: 'expressive', type: Boolean }) public expressive = false;
 
+  // Use Vibrant Expressive scheme
+  @property({ attribute: 'vibrant', type: Boolean }) public vibrant = false;
+
   // Use ha-md-list-item instead of ha-list-item
   @property({ attribute: 'use-md', type: Boolean }) public useMD = false;
 
@@ -72,11 +75,12 @@ export class MassMenuItem extends LitElement {
 
   protected renderIcon(): TemplateResult {
     const expressive_class = this.expressive ? `expressive` : ``;
+    const vibrant_class = this.vibrant ? `vibrant` : ``;
     const selected_class = this.selected ? `selected` : ``;
     const slot = this.useMD ? `start` : `graphic`
     return html`
       <ha-svg-icon
-        class="menu-list-item-svg ${expressive_class} ${selected_class}"
+        class="menu-list-item-svg ${expressive_class} ${vibrant_class} ${selected_class}"
         part="menu-list-item-svg"
         slot="${slot}"
         .path=${this.menuItem.icon}
@@ -113,18 +117,19 @@ export class MassMenuItem extends LitElement {
 
   protected renderMD(): TemplateResult {
     const expressive_class = this.expressive ? `expressive` : ``;
+    const vibrant_class = this.vibrant ? `vibrant` : ``;
     const selected_class = this.selected ? `selected` : ``;
     const itm = this.menuItem;
     return html`
       <ha-md-list-item
-        class="menu-list-item-md ${expressive_class} ${selected_class}" 
+        class="menu-list-item-md ${expressive_class} ${vibrant_class} ${selected_class}" 
         type="button"
         @click=${this.onSelection}
       >
         ${this.renderImageOrIcon()}
         <span
           slot="headline"
-          class="title-md ${expressive_class} ${selected_class}"
+          class="title-md ${expressive_class} ${vibrant_class} ${selected_class}"
         >
           ${itm.title}
         </span>
@@ -133,18 +138,19 @@ export class MassMenuItem extends LitElement {
   }
   protected renderMWC(): TemplateResult {
     const expressive_class = this.expressive ? `expressive` : ``;
+    const vibrant_class = this.vibrant ? `vibrant` : ``;
     const selected_class = this.selected ? `selected` : ``;
     const itm = this.menuItem;
     return html`
       <ha-list-item
-        class="menu-list-item ${expressive_class} ${selected_class}"
+        class="menu-list-item ${expressive_class} ${vibrant_class} ${selected_class}"
         part="menu-list-item"
         .value="${itm.option}"
         graphic="icon"
         @click=${this.onSelection}
       >
         ${this.renderImageOrIcon()}
-        <span class="title ${expressive_class} ${selected_class}">
+        <span class="title ${expressive_class} ${vibrant_class} ${selected_class}">
           ${itm.title}
         </span>
       </ha-list-item>

@@ -9,7 +9,7 @@ import { property, query, state } from "lit/decorators.js";
 
 import { ListItems } from "../const/types";
 import { consume } from "@lit/context";
-import { controllerContext, useExpressiveContext } from "../const/context";
+import { controllerContext, useExpressiveContext, useVibrantContext } from "../const/context";
 import styles from "../styles/menu-button";
 import { jsonMatch } from "../utils/util";
 import { MassCardController } from "../controller/controller";
@@ -35,6 +35,9 @@ export class MassMenuButton extends LitElement {
 
   @consume({ context: useExpressiveContext, subscribe: true })
   private useExpressive!: boolean;
+
+  @consume({ context: useVibrantContext, subscribe: true })
+  private useVibrant!: boolean;
 
   @consume({ context: controllerContext, subscribe: true })
   private controller!: MassCardController;
@@ -81,6 +84,7 @@ export class MassMenuButton extends LitElement {
             class="menu-items"
             ?divider=${use_dividers}
             ?expressive=${this.useExpressive}
+            ?vibrant=${this.useVibrant}
             ?selected=${this._selectedItem == item.option}
             .menuItem=${item}
             ?use-md=${this.useMD}
@@ -92,7 +96,7 @@ export class MassMenuButton extends LitElement {
 
   protected render() {
     const expressive_class = this.useExpressive ? `menu-expressive` : ``;
-    const vibrant_class = this.controller.config.expressive_scheme == 'vibrant' ? `vibrant` : ``;
+    const vibrant_class = this.useVibrant ? `vibrant` : ``;
     return html`
       <div id="menu-button" part="menu-button">
         <ha-control-select-menu
