@@ -210,14 +210,14 @@ export class MassPlayerArtwork extends LitElement {
             fallbacks.push(ent_img)
           }
           fallbacks.push(url)
-          this.updateCarouselImg(idx, ent_img_local, fallbacks, true);
+          this.updateCarouselImg(idx, ent_img_local, item.queue_item_id, fallbacks, true);
         } else {
-          this.updateCarouselImg(idx, url)
+          this.updateCarouselImg(idx, url, item.queue_item_id)
         }
       }
     )
   }
-  protected updateCarouselImg(index: number, img_url: string, fallbacks: string[] = [], playing=false) {
+  protected updateCarouselImg(index: number, img_url: string, queue_item_id: string, fallbacks: string[] = [], playing=false) {
     if (!this.carouselElement) {
       return
     }
@@ -240,6 +240,7 @@ export class MassPlayerArtwork extends LitElement {
       const url = urls[curIdx + 1] ?? Thumbnail.CLEFT;
       elem.src = url;
     }
+    elem.parentElement?.setAttribute('data-queueitem', queue_item_id)
     if (playing) {
       elem.setAttribute('id', 'img-playing')
       elem.parentElement?.setAttribute('id', 'active-slide')
@@ -339,7 +340,10 @@ export class MassPlayerArtwork extends LitElement {
     const attrs = this.activePlayer.attributes;
     const url = attrs.entity_picture_local;
     return html`
-      <wa-carousel-item id="active-slide">
+      <wa-carousel-item 
+        id="active-slide" 
+        data-queueitem="${activeItem.queue_item_id}"
+      >
         <img
           class="artwork ${size}"
           id="img-playing"
