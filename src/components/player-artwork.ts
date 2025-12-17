@@ -188,6 +188,7 @@ export class MassPlayerArtwork extends LitElement {
     if (!queue || !activeIdx || !this.activeSlide || !this.carouselElement) {
       return;
     }
+    this.createAndDestroyCarouselItemsAsNeeded();
     queue.forEach(
       (item, idx) => {
         let url = item.media_image ?? '';
@@ -207,45 +208,77 @@ export class MassPlayerArtwork extends LitElement {
       return
     }    
     elem.src = img_url;
+  private createAndDestroyCarouselItemsAsNeeded() {
+    const slides = this.carouselItems;
+    if (!slides || !this.carouselElement || !this.queue) {
+      return
+    }
+    const artworkIdx = [...slides].findIndex(
+      (item) => { return item.id == 'active-slide'}
+    ) ?? 0;
+    const slidesLength = slides.length;
+    const actSlidesBefore = artworkIdx;
+    const actSlidesAfter = slidesLength - artworkIdx - 1
+    
+    const queueIdx = this.queue.findIndex(
+    (item) => { return item?.playing }
+    )
+    const queueLength = this.queue.length;
+    const reqSlidesBefore = queueIdx;
+    const reqSlidesAfter = queueLength - queueIdx - 1;
+    
+    if (actSlidesBefore == reqSlidesBefore && actSlidesAfter == reqSlidesAfter) {
+      return
+    }
+
+    if (actSlidesBefore < reqSlidesBefore) {
+      const insertBeforeCt = reqSlidesBefore - actSlidesBefore
+      this.insertSlides(insertBeforeCt, 'start')
+    } else if (actSlidesBefore > reqSlidesBefore ) {
+      const removeBeforeCt = actSlidesBefore - reqSlidesBefore;
+      this.removeSlides(removeBeforeCt, 'start')
+    }
+    
+    if (actSlidesAfter < reqSlidesAfter) {
+      const insertAfterCt = reqSlidesAfter - actSlidesAfter
+      this.insertSlides(insertAfterCt, 'end')
+    } else if (actSlidesAfter > reqSlidesAfter ) {
+      const removeAfterct = actSlidesAfter - reqSlidesAfter;
+      this.removeSlides(removeAfterct, 'end')
+    }
   }
 
-
-  private insertEmptyCarouselItems() {
-    const activeElem = this.activeSlide;
-    if (!activeElem) {
-      return;
+  private removeSlides(ct: number, direction: 'start' | 'end') {
+    const elems = [...this.carouselItems];
+    let remove: WaCarouselItem[] = [];
+    if (direction == 'start') {
+      remove = elems.slice(0, ct)
+    } else {
+      remove = elems.slice(elems.length - ct, elems.length)
     }
-    this._insertElementAfter();
-    this._insertElementAfter();
-    this._insertElementAfter();
-    this._insertElementAfter();
-    this._insertElementAfter();
-    this._insertElementBefore(activeElem);
-    this._insertElementBefore(activeElem);
-    this._insertElementBefore(activeElem);
-    this._insertElementBefore(activeElem);
-    this._insertElementBefore(activeElem);
-    this._slidesInserted = true
+    remove.forEach(
+      (item) => {
+        item.remove();
+      }
+    )
   }
 
-  private _insertElementBefore(before_elem: WaCarouselItem) {
-    const elem = document.createElement('wa-carousel-item');
-    const img = document.createElement('img');
-    elem.appendChild(img)
-    if (!this.carouselElement) {
-      return;
-    }
-    this.carouselElement.goToSlide(this.carouselElement.activeSlide + 1);
-    this.carouselElement.insertBefore(elem, before_elem)
-  }
-  private _insertElementAfter() {
-    const elem = document.createElement('wa-carousel-item');
-    const img = document.createElement('img');
-    elem.appendChild(img)
-    if (!this.carouselElement) {
-      return;
-    }
-    this.carouselElement.appendChild(elem)
+  private insertSlides(ct: number, direction: 'start' | 'end') {
+    const rng = [...Array(ct).keys()]
+
+    const insertBefore = this.carouselItems[0];
+    rng.forEach(
+      () => {
+        const elem = document.createElement('wa-carousel-item')
+        const img = document.createElement('img');
+        elem.appendChild(img);
+        if (direction == 'start') {
+          this.carouselElement?.insertBefore(elem, insertBefore)
+        } else {
+          this.carouselElement?.appendChild(elem)
+        }
+      }
+    )
   }
 
   protected renderActiveItem(): TemplateResult {
@@ -292,7 +325,6 @@ export class MassPlayerArtwork extends LitElement {
   }
   protected updated(): void {
     if (this.activeSlide && this.queue && !this._slidesInserted) {
-      this.insertEmptyCarouselItems();
       void this.pushQueueArtwork()
       return;
     }
