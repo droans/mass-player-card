@@ -97,7 +97,7 @@ export class MassPlayerArtwork extends LitElement {
         return item?.playing
       }
     );
-    if (!playIdx) {
+    if (!(playIdx == 0) && !playIdx) {
       return queue.slice(0,10)
     }
     const startIdx = Math.max(0, playIdx - 5);
