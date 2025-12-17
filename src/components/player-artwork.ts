@@ -125,13 +125,17 @@ export class MassPlayerArtwork extends LitElement {
     this._touchActive = true
     window.addEventListener('pointerup', this.onPointerUp)
   }
-  private onPointerUp = async () => {
+  private onPointerUp = () => {
     this._touchActive = false;
-    await delay(100)
     window.removeEventListener('pointerup', this.onPointerUp);
+    void this._pointerUpCheckSwipe();
+  }
+
+  private _pointerUpCheckSwipe = async () => {
     if (!this.carouselElement || !this.queue) {
       return;
     }
+    await delay(100)
     const slides = [...this.carouselItems];
     const activeSlide = slides.findIndex(
       (item) => {
@@ -149,6 +153,7 @@ export class MassPlayerArtwork extends LitElement {
     if (activeSlide != prevSlide) {
       this.onSwipe(activeSlide)
     }
+
   }
 
   
@@ -220,7 +225,7 @@ export class MassPlayerArtwork extends LitElement {
     await delay(300);
     this._pushQueueArtwork();
     const activeIdx = this.getActiveIndex();
-    this.delayedGoToSlide(activeIdx)
+    await this.delayedGoToSlide(activeIdx)
     this._pushingArtwork = false;
   }
   protected _pushQueueArtwork() {
