@@ -125,7 +125,7 @@ export class MassPlayerArtwork extends LitElement {
   }
     await delay(100)
     window.removeEventListener('pointerup', this.onPointerUp);
-    if (!this.carouselElement) {
+    if (!this.carouselElement || !this.queue) {
       return;
     }
     const slides = [...this.carouselItems];
@@ -134,7 +134,7 @@ export class MassPlayerArtwork extends LitElement {
         return item.classList.contains('--in-view')
       }
     )
-    const prevSlide = this.queue?.findIndex(
+    const prevSlide = this.queue.findIndex(
       (item) => {
         return item.playing;
       }
