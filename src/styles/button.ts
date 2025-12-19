@@ -20,14 +20,18 @@ export default css`
   }
   ha-button:not(.expressive)::part(base) {
     --inherited-background-color: var(--used-button-background-color, var(--button-background-color));
+    background-color: var(--used-button-background-color, var(--button-background-color));
     --inherited-text-color: var(--used-button-text-color, var(--button-text-color));
+    color: var(--used-button-text-color, var(--button-text-color));
     --ha-button-border-radius: 12px !important;
   }
   ha-button::part(base) {
     width: var(--used-button-width, 100%);
     box-shadow: var(--button-elevation);
     padding: unset;
+    background-color: var(--used-button-background-color, var(--button-background-color));
     --inherited-background-color: var(--used-button-background-color, var(--button-background-color));
+    color: var(--used-button-text-color, var(--button-text-color));
     --inherited-text-color: var(--used-button-text-color, var(--button-text-color));
     --used-button-height: var(--button-button-height);
     --used-button-width: var(--button-button-width);
