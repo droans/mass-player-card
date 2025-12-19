@@ -22,7 +22,8 @@ import {
   backgroundImageFallback,
   getFallbackBackgroundImage,
 } from "../utils/thumbnails";
-import { isActive, jsonMatch, testMixedContent } from "../utils/util";
+import { isActive, jsonMatch } from "../utils/util";
+import { testMixedContent } from "../utils/url";
 
 import styles from "../styles/player-row";
 import {

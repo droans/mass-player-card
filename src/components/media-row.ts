@@ -31,8 +31,8 @@ import {
 import {
   jsonMatch,
   queueItemhasUpdated,
-  testMixedContent,
 } from "../utils/util";
+import { testMixedContent } from "../utils/url";
 import {
   DEFAULT_PLAYER_QUEUE_HIDDEN_ELEMENTS_CONFIG,
   PlayerQueueHiddenElementsConfig,

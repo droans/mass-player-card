@@ -38,7 +38,8 @@ import {
   backgroundImageFallback,
   getFallbackBackgroundImage,
 } from "../utils/thumbnails";
-import { jsonMatch, testMixedContent } from "../utils/util";
+import { jsonMatch } from "../utils/util";
+import { testMixedContent } from "../utils/url";
 import {
   DEFAULT_MEDIA_BROWSER_HIDDEN_ELEMENTS_CONFIG,
   HIDDEN_BUTTON_VALUE,
