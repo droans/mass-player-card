@@ -231,13 +231,6 @@ class MediaCard extends LitElement {
       this.cardConfig.download_local,
     );
   }
-  private artworkStyle() {
-    const img = this.config.thumbnail;
-    if (!testMixedContent(img)) {
-      return getFallbackBackgroundImage(this.hass, this.config.fallback);
-    }
-    return backgroundImageFallback(this.hass, img, this.config.fallback);
-  }
   protected renderThumbnailFromThumbnail() {
     const thumbnail = this.artwork || "";
     return html`
