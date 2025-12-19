@@ -26,13 +26,13 @@ import styles from "../styles/media-row";
 
 import {
   backgroundImageFallback,
+  encodeImageIfLocal,
   getFallbackBackgroundImage,
 } from "../utils/thumbnails";
 import {
   jsonMatch,
   queueItemhasUpdated,
 } from "../utils/util";
-import { testMixedContent } from "../utils/url";
 import {
   DEFAULT_PLAYER_QUEUE_HIDDEN_ELEMENTS_CONFIG,
   PlayerQueueHiddenElementsConfig,
@@ -42,10 +42,7 @@ import { Icons } from "../const/icons";
 import { queueItem } from "mass-queue-types/packages/mass_queue/actions/get_queue_items.js";
 
 class MediaRow extends LitElement {
-  @property({ attribute: false }) media_item!: QueueItem;
 
-  @consume({ context: hassContext, subscribe: true })
-  public hass!: ExtendedHass;
   @consume({ context: IconsContext }) public Icons!: Icons;
 
   @consume({ context: mediaCardDisplayContext, subscribe: true })
@@ -60,10 +57,15 @@ class MediaRow extends LitElement {
   public moveQueueItemUpService!: QueueService;
   public removeService!: QueueService;
   public selectedService!: QueueItemSelectedService;
+
   public showAlbumCovers = true;
+  private _media_item!: QueueItem;
+  @state() private _artworkStyle!: string;
 
   private _config!: QueueConfig;
   private _entityConfig!: EntityConfig;
+  private _hass!: ExtendedHass;
+
   private hide: PlayerQueueHiddenElementsConfig =
     DEFAULT_PLAYER_QUEUE_HIDDEN_ELEMENTS_CONFIG;
 
@@ -90,6 +92,17 @@ class MediaRow extends LitElement {
   public get entityConfig() {
     return this._entityConfig;
   }
+  
+  @consume({ context: hassContext, subscribe: true })
+  public set hass(hass: ExtendedHass) {
+    this._hass = hass;
+    if (this.media_item && !this._artworkStyle) {
+      void this.getArtworkStyle();
+    }
+  }
+  public get hass() {
+    return this._hass;
+  }
 
   private updateHiddenElements() {
     if (!this.entityConfig || !this.config) {
@@ -108,6 +121,19 @@ class MediaRow extends LitElement {
       clear_queue_button: entity.clear_queue_button || card.clear_queue_button,
     };
   }
+
+  @property({ attribute: false }) 
+  public set media_item(media_item: QueueItem) {
+    this._media_item = media_item;
+    if (this.hass) {
+      void this.getArtworkStyle();
+    }
+  }
+  public get media_item() {
+    return this._media_item;
+  }
+
+
   private callMoveItemUpService = (e: Event) => {
     navigator.vibrate(VibrationPattern.Queue.ACTION_MOVE_UP);
     e.stopPropagation();
@@ -138,17 +164,19 @@ class MediaRow extends LitElement {
     }
     return _changedProperties.size > 0;
   }
-  private artworkStyle() {
-    const img =
-      this.media_item.local_image_encoded ?? this.media_item.media_image ?? "";
-    if (!testMixedContent(img)) {
-      return getFallbackBackgroundImage(this.hass, Thumbnail.CLEFT);
+
+  private async getArtworkStyle() {
+    const img = this?.media_item?.local_image_encoded ?? this.media_item.media_image;
+    const url = await encodeImageIfLocal(this.hass, img);
+    if (!url.length) {
+      this._artworkStyle = getFallbackBackgroundImage(this.hass, Thumbnail.CLEFT)
+    } else {
+      this._artworkStyle = backgroundImageFallback(this.hass, url, Thumbnail.CLEFT)
     }
-    return backgroundImageFallback(this.hass, img, Thumbnail.CLEFT);
   }
   private renderThumbnail(): TemplateResult {
     const played =
-      !this.media_item.show_action_buttons && !this.media_item.playing;
+      !this.media_item.show_action_buttons && !this.media_item?.playing;
     const img =
       this.media_item.local_image_encoded ?? this.media_item.media_image;
     if (img && this.showAlbumCovers && !this.hide.album_covers) {
@@ -156,7 +184,7 @@ class MediaRow extends LitElement {
         <span
           class="thumbnail${played ? "-disabled" : ""}"
           slot="start"
-          style="${this.artworkStyle()}"
+          style="${this._artworkStyle}"
         >
         </span>
       `;
@@ -191,7 +219,7 @@ class MediaRow extends LitElement {
   }
   private renderTitle(): TemplateResult {
     const played =
-      !this.media_item.show_action_buttons && !this.media_item.playing;
+      !this.media_item.show_action_buttons && !this.media_item?.playing;
     return html`
       <span
         slot="headline"
@@ -207,7 +235,7 @@ class MediaRow extends LitElement {
       return html``;
     }
     const played =
-      !this.media_item.show_action_buttons && !this.media_item.playing;
+      !this.media_item.show_action_buttons && !this.media_item?.playing;
     return html`
       <span
         slot="supporting-text"

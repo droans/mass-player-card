@@ -7,6 +7,7 @@ import { Thumbnail } from "../const/enums";
 import { Icons } from "../const/icons";
 import { getSearchMediaButtons } from "../const/media-browser";
 import { ExtendedHass } from "../const/types";
+import { CheckURLResult, getUrlAccessibility } from "./url.js";
 
 export interface ImageURLWithFallback {
   image_url: string;
@@ -88,8 +89,12 @@ export async function encodeImageIfLocal(
   hass: ExtendedHass,
   image_url: string,
 ): Promise<string> {
-  if (image_url.startsWith("https") || image_url.startsWith('/api') || image_url.startsWith('data:')) {
-    return image_url;
+  const accessible = getUrlAccessibility(image_url);
+  if (accessible == CheckURLResult.NOT_URL) {
+    return ''
+  };
+  if (accessible == CheckURLResult.ACCESSIBLE) {
+    return image_url
   }
   return await getLocalImage(hass, image_url);
 }

@@ -1,6 +1,6 @@
 import { consume } from "@lit/context";
 import { html, type CSSResultGroup, LitElement, PropertyValues } from "lit";
-import { property } from "lit/decorators.js";
+import { property, state } from "lit/decorators.js";
 
 import {
   PlayerJoinService,
@@ -20,10 +20,11 @@ import {
 
 import {
   backgroundImageFallback,
+  encodeImageIfLocal,
   getFallbackBackgroundImage,
+  getThumbnail,
 } from "../utils/thumbnails";
 import { isActive, jsonMatch } from "../utils/util";
-import { testMixedContent } from "../utils/url";
 
 import styles from "../styles/player-row";
 import {
@@ -37,15 +38,11 @@ import { Thumbnail } from "../const/enums";
 
 class PlayerRow extends LitElement {
   @property({ attribute: false }) joined = false;
-  @property({ attribute: false }) player_entity!: ExtendedHassEntity;
   @property({ attribute: false }) selected = false;
   @consume({ context: IconsContext }) private Icons!: Icons;
   @consume({ context: useExpressiveContext, subscribe: true })
   private useExpressive!: boolean;
   @property({ attribute: 'can-group', type: Boolean }) canGroup = false;
-
-  @consume({ context: hassContext })
-  public hass!: ExtendedHass;
 
   public allowJoin = true;
   public playerName!: string;
@@ -53,9 +50,14 @@ class PlayerRow extends LitElement {
   public selectedService!: PlayerSelectedService;
   public transferService!: PlayerTransferService;
   public unjoinService!: PlayerUnjoinService;
+  
+  private _player_entity!: ExtendedHassEntity;
+  @state() private _artworkStyle!: string;
 
   private _config!: PlayersConfig;
   private _entityConfig!: EntityConfig;
+  private _hass!: ExtendedHass;
+
   private hide: PlayersHiddenElementsConfig =
     DEFAULT_PLAYERS_HIDDEN_ELEMENTS_CONFIG;
 
@@ -81,6 +83,29 @@ class PlayerRow extends LitElement {
   public get entityConfig() {
     return this._entityConfig;
   }
+
+  @consume({ context: hassContext, subscribe: true })
+  public set hass(hass: ExtendedHass) {
+    this._hass = hass;
+    if (this.player_entity && !this._artworkStyle) {
+      void this.getArtworkStyle();
+    }
+  }
+  public get hass() {
+    return this._hass;
+  }
+
+  @property({ attribute: false }) 
+  public set player_entity(entity: ExtendedHassEntity) {
+    this._player_entity = entity;
+    if (this.hass) {
+      void this.getArtworkStyle();
+    }
+  }
+  public get player_entity() {
+    return this._player_entity;
+  }
+
   private updateHiddenElements() {
     if (!this.config || !this.entityConfig) {
       return;
@@ -111,17 +136,30 @@ class PlayerRow extends LitElement {
     navigator.vibrate(VibrationPattern.Players.ACTION_TRANSFER);
     this.transferService(this.player_entity.entity_id);
   }
-  private artworkStyle() {
-    const img: string =
-      this.player_entity?.attributes?.entity_picture_local ?? "";
-    if (!testMixedContent(img)) {
-      return getFallbackBackgroundImage(this.hass, Thumbnail.HEADPHONES);
+
+  private async getArtworkStyle() {
+    const attrs = this?.player_entity?.attributes;
+    const hasLocal = !!(attrs?.entity_picture_local?.length)
+    const hasNonlocal = !!(attrs?.entity_picture?.length)
+    let img = '';
+    if (hasLocal) {
+      img = attrs.entity_picture_local
+    } else if (hasNonlocal)  {
+      img = attrs.entity_picture as string;
+    } else {
+      img = getThumbnail(this.hass, Thumbnail.HEADPHONES)
     }
-    return backgroundImageFallback(this.hass, img, Thumbnail.HEADPHONES);
+    const url = await encodeImageIfLocal(this.hass, img);
+    if (!url.length) {
+      this._artworkStyle = getFallbackBackgroundImage(this.hass, Thumbnail.HEADPHONES)
+    } else {
+      this._artworkStyle = backgroundImageFallback(this.hass, url, Thumbnail.HEADPHONES)
+    }
   }
+
   private renderThumbnail() {
     return html`
-      <span class="thumbnail" slot="start" style="${this.artworkStyle()}">
+      <span class="thumbnail" slot="start" style="${this._artworkStyle}">
       </span>
     `;
   }

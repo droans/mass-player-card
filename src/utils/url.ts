@@ -70,6 +70,7 @@ export function urlIsEncoded(url: string) {
   return url.startsWith('data:');
 }
 
+// eslint-disable-next-line @typescript-eslint/no-explicit-any
 export function isURL(url: any): boolean {
   if (typeof(url) != "string") {
     return false
@@ -82,7 +83,8 @@ export function urlIsHassApi(url: string): boolean {
   return url.startsWith('/api/');
 }
 
-export function getUrlAccessibility(url: string): CheckURLResult {
+// eslint-disable-next-line @typescript-eslint/no-explicit-any
+export function getUrlAccessibility(url: any): CheckURLResult {
   /*
     Return CheckURLResult.ACCESSIBLE if:
       // * HA is loaded via HTTP IP
@@ -100,9 +102,9 @@ export function getUrlAccessibility(url: string): CheckURLResult {
   if (!isURL(url)) {
     return CheckURLResult.NOT_URL
   }
-  url = url as string;
+  const _url = url as string;
 
-  if (urlIsHassApi(url) || testLocation(url) || urlIsEncoded(url)) {
+  if (urlIsHassApi(_url) || testLocation(_url) || urlIsEncoded(_url)) {
     return CheckURLResult.ACCESSIBLE
   }
   return CheckURLResult.NOT_ACCESSIBLE

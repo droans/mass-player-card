@@ -35,11 +35,8 @@ import styles from "../styles/media-card";
 
 import {
   asyncBackgroundImageFallback,
-  backgroundImageFallback,
-  getFallbackBackgroundImage,
 } from "../utils/thumbnails";
 import { jsonMatch } from "../utils/util";
-import { testMixedContent } from "../utils/url";
 import {
   DEFAULT_MEDIA_BROWSER_HIDDEN_ELEMENTS_CONFIG,
   HIDDEN_BUTTON_VALUE,
