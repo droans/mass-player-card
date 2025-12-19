@@ -171,7 +171,10 @@ export class MassPlayerArtwork extends LitElement {
   }
 
   private async delayedGoToSlide(idx: number) {
-    const dataID = this.carouselItems[idx].dataset.queueitem;
+    const dataID = this.carouselItems[idx]?.dataset?.queueitem;
+    if (!dataID)  {
+      return;
+    }
     const delays = [
       0,
       25,

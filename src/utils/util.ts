@@ -8,25 +8,6 @@ import { MUSIC_ASSISTANT_APP_NAME } from "../const/player-queue";
 import { ExtendedHass, ExtendedHassEntity, QueueItem } from "../const/types";
 import { getThumbnail } from "./thumbnails.js";
 
-export function testMixedContent(url: string) {
-  try {
-    if (window.location.protocol == "http") {
-      return true;
-    }
-    return isHttpsOrRelative(url);
-  } catch {
-    return false;
-  }
-}
-
-export function isHttpsOrRelative(url: string) {
-  try {
-    return !url.startsWith("http:");
-  } catch {
-    return false;
-  }
-}
-
 export function getDefaultSection(config: Config) {
   const defaults = DEFAULT_SECTION_PRIORITY;
   const sections_conf: Record<string, boolean> = {

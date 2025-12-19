@@ -35,10 +35,8 @@ import styles from "../styles/media-card";
 
 import {
   asyncBackgroundImageFallback,
-  backgroundImageFallback,
-  getFallbackBackgroundImage,
 } from "../utils/thumbnails";
-import { jsonMatch, testMixedContent } from "../utils/util";
+import { jsonMatch } from "../utils/util";
 import {
   DEFAULT_MEDIA_BROWSER_HIDDEN_ELEMENTS_CONFIG,
   HIDDEN_BUTTON_VALUE,
@@ -229,13 +227,6 @@ class MediaCard extends LitElement {
       this.config.fallback,
       this.cardConfig.download_local,
     );
-  }
-  private artworkStyle() {
-    const img = this.config.thumbnail;
-    if (!testMixedContent(img)) {
-      return getFallbackBackgroundImage(this.hass, this.config.fallback);
-    }
-    return backgroundImageFallback(this.hass, img, this.config.fallback);
   }
   protected renderThumbnailFromThumbnail() {
     const thumbnail = this.artwork || "";
