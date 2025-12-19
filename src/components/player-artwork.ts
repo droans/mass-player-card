@@ -40,6 +40,8 @@ export class MassPlayerArtwork extends LitElement {
   @state()
   private playerConfig!: PlayerConfig;
 
+  private _observer!: MutationObserver;
+
   @consume({ context: controllerContext, subscribe: true })
   private controller!: MassCardController;
 
@@ -107,6 +109,14 @@ export class MassPlayerArtwork extends LitElement {
     return queue.slice(startIdx, endIdx)
   }
 
+  private _observerCB = () => {
+    if (this._touchActive) {
+      return;
+    }
+    const idx = this.getActiveIndex()
+    this.delayedGoToSlide(idx);
+  }
+
   private onSwipe = (idx: number) => {
     if (!this?.queue?.length) {
       return;
@@ -126,7 +136,13 @@ export class MassPlayerArtwork extends LitElement {
     window.addEventListener('pointerup', this.onPointerUp)
   }
   private onPointerUp = () => {
-    this._touchActive = false;
+    setTimeout(
+      () => {
+        this._touchActive = false
+      },
+      150
+    )
+    // this._touchActive = false;
     window.removeEventListener('pointerup', this.onPointerUp);
     void this._pointerUpCheckSwipe();
   }
@@ -170,33 +186,20 @@ export class MassPlayerArtwork extends LitElement {
     `
   }
 
-  private async delayedGoToSlide(idx: number) {
+  private delayedGoToSlide(idx: number) {
     const dataID = this.carouselItems[idx]?.dataset?.queueitem;
     if (!dataID)  {
       return;
     }
-    const delays = [
-      0,
-      25,
-      75,
-      150,
-      300,
-      750,
-      1000,
-      1000
-    ]
-    for (const delay_ms of delays) {
-      await delay(delay_ms);
-      if (this._touchActive) {
-        break;
-      }
-      const intersectingSlide = this.getIntersectingSlide();
-      const intersectingDataId = intersectingSlide?.dataset.queueitem;
-      if (dataID == intersectingDataId) {
-        break
-      }
-      this.carouselElement?.goToSlide(idx, 'instant')
+    if (this._touchActive) {
+      return
     }
+    const intersectingSlide = this.getIntersectingSlide();
+    const intersectingDataId = intersectingSlide?.dataset.queueitem;
+    if (dataID == intersectingDataId) {
+      return;
+    }
+    this.carouselElement?.goToSlide(idx, 'instant')
   }
 
   private getIntersectingSlide() {
@@ -210,8 +213,8 @@ export class MassPlayerArtwork extends LitElement {
     const scrollRight = scrollLeft + scrollWidth;
     const result = [...this.carouselItems].filter(
       (item) => {
-        const left = item.offsetLeft;
-        return left >= scrollLeft && left <= scrollRight
+        const mid = item.offsetLeft + (item.offsetWidth / 2);
+        return mid >= scrollLeft && mid <= scrollRight
       }
     );
     if (result?.length) {
@@ -228,7 +231,7 @@ export class MassPlayerArtwork extends LitElement {
     await delay(300);
     this._pushQueueArtwork();
     const activeIdx = this.getActiveIndex();
-    await this.delayedGoToSlide(activeIdx)
+    this.delayedGoToSlide(activeIdx)
     this._pushingArtwork = false;
   }
   protected _pushQueueArtwork() {
@@ -412,7 +415,10 @@ export class MassPlayerArtwork extends LitElement {
   protected updated(): void {
     if (this.activeSlide && this.queue && !this._slidesInserted) {
       void this.pushQueueArtwork()
-      return;
+    }
+    if (!this._observer && this?.carouselItems?.length) {
+      this._observer = new MutationObserver(this._observerCB);
+      this._observer.observe(this.carouselElement, { subtree: true, childList: true, attributes: true});
     }
   }
   protected firstUpdated(): void {
