@@ -52,7 +52,7 @@ export class MassPlayerArtwork extends LitElement {
 
   @state() private _queue!: QueueItems | null;
 
-  @query('#carousel') private carouselElement?: WaCarousel;
+  @query('#carousel') private carouselElement!: WaCarousel;
   @query('#active-slide') private activeSlide!: WaCarouselItem
   @queryAll('wa-carousel-item') private carouselItems!: WaCarouselItem[]
 
@@ -148,7 +148,7 @@ export class MassPlayerArtwork extends LitElement {
   }
 
   private _pointerUpCheckSwipe = async () => {
-    if (!this.carouselElement || !this.queue) {
+    if (!this.queue) {
       return;
     }
     await delay(100)
@@ -199,7 +199,7 @@ export class MassPlayerArtwork extends LitElement {
     if (dataID == intersectingDataId) {
       return;
     }
-    this.carouselElement?.goToSlide(idx, 'instant')
+    this.carouselElement.goToSlide(idx, 'instant')
   }
 
   private getIntersectingSlide() {
@@ -237,7 +237,7 @@ export class MassPlayerArtwork extends LitElement {
   protected _pushQueueArtwork() {
     const queue = this.queue;
     const activeIdx = this.getActiveIndex();
-    if (!queue || !activeIdx || !this.activeSlide || !this.carouselElement) {
+    if (!queue || !activeIdx || !this.activeSlide ) {
       return;
     }
     this.createAndDestroyCarouselItemsAsNeeded();
@@ -264,9 +264,6 @@ export class MassPlayerArtwork extends LitElement {
     )
   }
   protected updateCarouselImg(index: number, img_url: string, queue_item_id: string, fallbacks: string[] = [], playing=false) {
-    if (!this.carouselElement) {
-      return
-    }
     const elem = this.carouselElement.querySelectorAll('img')[index];
     if (!elem) {
       return
@@ -299,7 +296,7 @@ export class MassPlayerArtwork extends LitElement {
 
   private createAndDestroyCarouselItemsAsNeeded() {
     const slides = this.carouselItems;
-    if (!slides || !this.carouselElement || !this.queue) {
+    if (!slides || !this.queue) {
       return
     }
     const artworkIdx = [...slides].findIndex(
@@ -362,9 +359,9 @@ export class MassPlayerArtwork extends LitElement {
         const img = document.createElement('img');
         elem.appendChild(img);
         if (direction == 'start') {
-          this.carouselElement?.insertBefore(elem, insertBefore)
+          this.carouselElement.insertBefore(elem, insertBefore)
         } else {
-          this.carouselElement?.appendChild(elem)
+          this.carouselElement.appendChild(elem)
         }
       }
     )
@@ -422,9 +419,7 @@ export class MassPlayerArtwork extends LitElement {
     }
   }
   protected firstUpdated(): void {
-    if (this.carouselElement) {
-      this.controller.ActivePlayer.carouselElement = this.carouselElement;
-    }
+    this.controller.ActivePlayer.carouselElement = this.carouselElement;
     
   }
 
