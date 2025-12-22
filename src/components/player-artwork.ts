@@ -134,6 +134,7 @@ export class MassPlayerArtwork extends LitElement {
   private onPointerDown = () => {
     this._touchActive = true
     window.addEventListener('pointerup', this.onPointerUp)
+    window.addEventListener('touchend', this.onPointerUp)
   }
   private onPointerUp = () => {
     setTimeout(
@@ -143,6 +144,7 @@ export class MassPlayerArtwork extends LitElement {
       150
     )
     // this._touchActive = false;
+    window.addEventListener('touchend', this.onPointerUp)
     window.removeEventListener('pointerup', this.onPointerUp);
     void this._pointerUpCheckSwipe();
   }
