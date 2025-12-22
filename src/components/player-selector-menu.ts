@@ -45,13 +45,24 @@ export class MassCardPlayerSelector extends LitElement {
     return this.playerEntities.map((item) => {
     const ent = this.hass.states[item.entity_id];
     const name = item.name.length > 0 ? item.name : ent?.attributes?.friendly_name ?? `Missing- ${item.entity_id}`;
+    let url: string
+    let fallback: string;
+    if (
+      ent.attributes.app_id != 'music_assistant'
+    ) {
+      url = '';
+      fallback = '';
+    } else {
+      url = ent.attributes.entity_picture_local ?? ent.attributes.entity_picture ?? '';
+      fallback = ent.attributes.entity_picture ?? '';
+    }
       const r: ListItemData = {
         option: item.entity_id,
         icon: this.Icons.SPEAKER,
         title: name ?? item.name,
         image: {
-          url: ent?.attributes?.entity_picture_local ?? ``,
-          fallback: ent?.attributes?.entity_picture ?? ``
+          url: url,
+          fallback: fallback
         }
       };
       return r;
