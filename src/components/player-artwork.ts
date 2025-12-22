@@ -239,7 +239,7 @@ export class MassPlayerArtwork extends LitElement {
   protected _pushQueueArtwork() {
     const queue = this.queue;
     const activeIdx = this.getActiveIndex();
-    if (!queue || !activeIdx || !this.activeSlide ) {
+    if (!queue || (!activeIdx && activeIdx != 0) || (!this.activeSlide && this.activeSlide != 0) ) {
       return;
     }
     this.createAndDestroyCarouselItemsAsNeeded();
@@ -413,6 +413,7 @@ export class MassPlayerArtwork extends LitElement {
   }
   protected updated(): void {
     if (this.activeSlide && this.queue && !this._slidesInserted) {
+      this._slidesInserted = true;
       void this.pushQueueArtwork()
     }
     if (!this._observer && this?.carouselItems?.length) {
