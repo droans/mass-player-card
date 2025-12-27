@@ -324,6 +324,13 @@ __metadata:
   languageName: node
   linkType: hard
 
+"@ktibow/material-color-utilities-nightly@npm:^0.3.11763580498000":
+  version: 0.3.11763580498000
+  resolution: "@ktibow/material-color-utilities-nightly@npm:0.3.11763580498000"
+  checksum: 10c0/f3fe61be545956f24e5049ccaa3c0dd0cf04120b6d0986bdaba23e6227c30f3ad19b5ef79e3010f25cb5eab8d218985ce7c924bf01d6a090ca7514e1c2921140
+  languageName: node
+  linkType: hard
+
 "@lit-labs/analyzer@npm:^0.13.0":
   version: 0.13.2
   resolution: "@lit-labs/analyzer@npm:0.13.2"
@@ -387,13 +394,6 @@ __metadata:
   dependencies:
     "@lit-labs/ssr-dom-shim": "npm:^1.4.0"
   checksum: 10c0/200d72c3d1bb8babc88123f3684e52cf490ec20cc7974002d666b092afa18e4a7c1ca15883c84c0b8671361a9875905eb18c1f03d20ecbbbaefdaec6e0c7c4eb
-  languageName: node
-  linkType: hard
-
-"@material/material-color-utilities@npm:^0.3.0":
-  version: 0.3.0
-  resolution: "@material/material-color-utilities@npm:0.3.0"
-  checksum: 10c0/3bef025428b893f2acc9e9e2bd186363a60b7c0836fe43c78222e29fe67dc579618e844f0661a20657ed9f7fd8b94fd43a2961892894d0b6a2ba5264ce2673f8
   languageName: node
   linkType: hard
 
@@ -2090,9 +2090,9 @@ __metadata:
   dependencies:
     "@droans/webawesome": "npm:^3.0.0"
     "@eslint/js": "npm:9.39.1"
+    "@ktibow/material-color-utilities-nightly": "npm:^0.3.11763580498000"
     "@lit-labs/compiler": "npm:^1.1.1"
     "@lit/context": "npm:1.1.6"
-    "@material/material-color-utilities": "npm:^0.3.0"
     "@material/web": "npm:2.4.1"
     "@mdi/js": "npm:7.4.47"
     "@rollup/plugin-json": "npm:^6.0.0"

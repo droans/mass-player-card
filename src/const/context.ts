@@ -11,7 +11,7 @@ import { Sections } from "./enums";
 import { ActivePlayerController } from "../controller/active-player";
 import { ActionsController } from "../controller/actions";
 import { MassCardController } from "../controller/controller";
-import { DynamicScheme } from "@material/material-color-utilities";
+import { DynamicScheme } from "@ktibow/material-color-utilities-nightly";
 import { Icons } from "./icons";
 import { QueueController } from "../controller/queue";
 import { MediaBrowserController } from "../controller/browser";

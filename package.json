@@ -3,7 +3,6 @@
   "description": "Custom Music Assistant Player Card for Home Assistant",
   "repository": "https://github.com/droans/mass-player-card",
   "author": "Michael Carroll",
-
   "version": "2.4.1-b.0",
   "module": "mass-player-card.js",
   "keywords": [
@@ -24,8 +23,8 @@
   "type": "module",
   "dependencies": {
     "@droans/webawesome": "^3.0.0",
+    "@ktibow/material-color-utilities-nightly": "^0.3.11763580498000",
     "@lit/context": "1.1.6",
-    "@material/material-color-utilities": "^0.3.0",
     "@material/web": "2.4.1",
     "@mdi/js": "7.4.47",
     "@shoelace-style/shoelace": "^2.20.1",

@@ -20,7 +20,7 @@ import {
   MassGetQueueServiceResponseSchema,
   PlayerData
 } from "../const/types";
-import { DynamicScheme } from "@material/material-color-utilities";
+import { DynamicScheme } from "@ktibow/material-color-utilities-nightly";
 import { getGroupVolumeServiceResponse, getGroupVolumeServiceSchema } from "mass-queue-types/packages/mass_queue/actions/get_group_volume";
 import { setGroupVolumeServiceSchema } from "mass-queue-types/packages/mass_queue/actions/set_group_volume";
 import { isActive, jsonMatch, playerHasUpdated } from "../utils/util";
@@ -220,7 +220,7 @@ export class ActivePlayerController {
     }
   }
   public get expressiveScheme() {
-    return this._expressiveScheme.value;
+    return this?._expressiveScheme?.value;
   }
 
   private set activePlayerData(data: PlayerData) {

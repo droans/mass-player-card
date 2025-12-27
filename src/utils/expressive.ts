@@ -14,7 +14,7 @@ import {
   SchemeTonalSpot,
   SchemeVibrant,
   sourceColorFromImage
-} from "@material/material-color-utilities";
+} from "@ktibow/material-color-utilities-nightly";
 import { ExpressiveScheme } from "../config/config.js";
 import { ExtendedHass } from "../const/types.js";
 import { tryPrefetchImageWithFallbacks } from "./util.js";
