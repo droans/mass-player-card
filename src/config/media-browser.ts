@@ -177,7 +177,7 @@ export function mediaBrowserConfigForm() {
       type: "expandable",
       iconPath: mdiHeart,
       schema: [
-        favoritesConfigForm("album"),
+        favoritesConfigForm("albums"),
         favoritesConfigForm("artists"),
         favoritesConfigForm("audiobooks"),
         favoritesConfigForm("playlists"),

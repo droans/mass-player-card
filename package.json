@@ -3,7 +3,7 @@
   "description": "Custom Music Assistant Player Card for Home Assistant",
   "repository": "https://github.com/droans/mass-player-card",
   "author": "Michael Carroll",
-  "version": "2.4.1-b.0",
+  "version": "2.4.1-b.24",
   "module": "mass-player-card.js",
   "keywords": [
     "home-assistant",
@@ -33,13 +33,13 @@
     "lit": "3.3.1"
   },
   "devDependencies": {
-    "@eslint/js": "9.39.1",
+    "@eslint/js": "9.39.2",
     "@lit-labs/compiler": "^1.1.1",
     "@rollup/plugin-json": "^6.0.0",
     "@rollup/plugin-node-resolve": "^16.0.3",
     "@rollup/plugin-terser": "^0.4.0",
     "@rollup/plugin-typescript": "^12.3.0",
-    "@typescript-eslint/eslint-plugin": "^8.49.0",
+    "@typescript-eslint/eslint-plugin": "^8.50.1",
     "@typescript-eslint/parser": "^8.49.0",
     "eslint": "9.39.1",
     "eslint-config-prettier": "10.1.8",
@@ -48,11 +48,11 @@
     "eslint-plugin-wc": "^3.0.2",
     "mass-queue-types": "^0.8.1",
     "prettier": "^3.7.4",
-    "rollup": "^4.53.3",
+    "rollup": "^4.53.4",
     "rollup-plugin-commonjs": "^10.1.0",
     "rollup-plugin-serve": "^3.0.0",
     "typescript": "5.9.3",
-    "typescript-eslint": "8.49.0"
+    "typescript-eslint": "8.50.0"
   },
   "scripts": {
     "start": "rollup -c rollup.config.dev.js --watch",
