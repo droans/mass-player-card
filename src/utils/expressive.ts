@@ -1,7 +1,6 @@
 import {
   argbFromHex,
   argbFromRgb,
-  argbFromRgba,
   DynamicScheme,
   Hct,
   SchemeContent,
@@ -14,7 +13,7 @@ import {
   SchemeTonalSpot,
   SchemeVibrant,
   sourceColorFromImage
-} from "@material/material-color-utilities";
+} from "@ktibow/material-color-utilities-nightly";
 import { ExpressiveScheme } from "../config/config.js";
 import { ExtendedHass } from "../const/types.js";
 import { tryPrefetchImageWithFallbacks } from "./util.js";
@@ -168,15 +167,5 @@ function _parseColorHex(color: string) {
 
 function _parseColorRgb(color: string) {
   const ints = color.split('(')[1].split(')')[0].split(',').map( (i) => { return parseInt(i) });
-  
-  if (ints.length == 4) {
-    const _rgba = {
-      r: ints[0],
-      g: ints[1],
-      b: ints[2],
-      a: ints[3],
-    }
-    return argbFromRgba(_rgba)
-  }
   return argbFromRgb(ints[0], ints[1], ints[2])
 }
