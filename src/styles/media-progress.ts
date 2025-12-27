@@ -68,5 +68,7 @@ export default css`
   }
   .time-expressive {
     color: var(--md-sys-color-on-primary-container) !important;
+    font-weight: 400;
+    font-size: 16px;
   }
 `;
