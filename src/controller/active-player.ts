@@ -52,7 +52,6 @@ export class ActivePlayerController {
   private _updatingScheme = false;
   private _carouselElement?: WaCarousel;
   private _observer?: MutationObserver;
-  private _activeImageSource = '';
   private _activeSchemeColor!: number;
   private _timeout?: number;
   private _observerDelay = 300;
@@ -436,13 +435,8 @@ export class ActivePlayerController {
     if (!(activeArtwork?.tagName?.toLowerCase() == 'img')) {
       schemeColor = generateDefaultExpressiveSchemeColor();
      } else {
-      const activeImg = (activeArtwork as HTMLImageElement).src
-      if (activeImg == this._activeImageSource) {
-        return;
-      }
-      this._activeImageSource = activeImg
       schemeColor = await generateExpressiveSourceColorFromImageElement(activeArtwork as HTMLImageElement)
-    }
+    } 
     if (schemeColor == this._activeSchemeColor) {
       this._updatingScheme = false;
       return;
