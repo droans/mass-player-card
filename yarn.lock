@@ -2299,8 +2299,8 @@ __metadata:
   resolution: "mass-player-card@workspace:."
   dependencies:
     "@droans/webawesome": "npm:^3.0.0"
-    "@ktibow/material-color-utilities-nightly": "npm:^0.3.11763580498000"
     "@eslint/js": "npm:9.39.2"
+    "@ktibow/material-color-utilities-nightly": "npm:^0.3.11763580498000"
     "@lit-labs/compiler": "npm:^1.1.1"
     "@lit/context": "npm:1.1.6"
     "@material/web": "npm:2.4.1"
