@@ -143,7 +143,6 @@ export class MassPlayerArtwork extends LitElement {
       },
       150
     )
-    // this._touchActive = false;
     window.addEventListener('touchend', this.onPointerUp)
     window.removeEventListener('pointerup', this.onPointerUp);
     void this._pointerUpCheckSwipe();
@@ -165,7 +164,11 @@ export class MassPlayerArtwork extends LitElement {
         return item.playing;
       }
     )
-    if (!activeSlide || !prevSlide) {
+    if (
+      (!activeSlide && activeSlide != 0)
+      || 
+      (!prevSlide && prevSlide != 0)
+    ) {
       return;
     }
     if (activeSlide != prevSlide) {
