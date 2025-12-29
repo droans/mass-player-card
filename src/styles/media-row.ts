@@ -123,6 +123,11 @@ export default css`
     border-radius: var(--media-row-border-radius);
     margin-left: 14px;
   }
+  .thumbnail, .thumbnail-disabled {
+    -webkit-user-select: none;
+    -moz-user-select: none;
+    user-select: none;
+  }
   .thumbnail-disabled {
     width: var(--media-row-thumbnail-height);
     height: var(--media-row-thumbnail-height);

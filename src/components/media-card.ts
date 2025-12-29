@@ -33,9 +33,6 @@ import {
 
 import styles from "../styles/media-card";
 
-import {
-  asyncBackgroundImageFallback,
-} from "../utils/thumbnails";
 import { jsonMatch } from "../utils/util";
 import {
   DEFAULT_MEDIA_BROWSER_HIDDEN_ELEMENTS_CONFIG,
@@ -48,13 +45,13 @@ import { Icons } from "../const/icons";
 import { Config } from "../config/config";
 import { WaAnimation } from "../const/elements";
 import { MenuButtonEventData } from "../const/events";
+import { getThumbnail } from "../utils/thumbnails.js";
 
 class MediaCard extends LitElement {
   @property({ type: Boolean }) queueable = false;
   @state() code!: TemplateResult;
   private _enqueue_buttons!: ListItems;
   private _search_buttons!: ListItems;
-  private _artwork!: string;
 
   @query("#animation") _animation!: WaAnimation;
   private _firstLoaded = false;
@@ -98,9 +95,6 @@ class MediaCard extends LitElement {
     }
     this._config = config;
     this.updateHiddenElements();
-    if (this.cardConfig) {
-      void this.generateArtworkStyle();
-    }
     this.generateCode();
   }
   public get config() {
@@ -115,9 +109,6 @@ class MediaCard extends LitElement {
       return;
     }
     this._cardConfig = config;
-    if (this.config) {
-      void this.generateArtworkStyle();
-    }
   }
   public get cardConfig() {
     return this._cardConfig;
@@ -158,16 +149,6 @@ class MediaCard extends LitElement {
     return this._entityConfig;
   }
 
-  private set artwork(artwork: string) {
-    if (artwork == this._artwork) {
-      return;
-    }
-    this._artwork = artwork;
-    this.generateCode();
-  }
-  private get artwork() {
-    return this._artwork;
-  }
   private updateHiddenElements() {
     if (!this.config || !this.entityConfig || !this.sectionConfig) {
       return;
@@ -219,24 +200,17 @@ class MediaCard extends LitElement {
   protected renderThumbnailFromBackground() {
     return html` ${this.config.background} `;
   }
-  private async generateArtworkStyle() {
-    const img = this.config.thumbnail;
-    this.artwork = await asyncBackgroundImageFallback(
-      this.hass,
-      img,
-      this.config.fallback,
-      this.cardConfig.download_local,
-    );
-  }
   protected renderThumbnailFromThumbnail() {
-    const thumbnail = this.artwork || "";
+    const img = this.config.thumbnail;
+    const fallback = getThumbnail(this.hass, this.config.fallback)
     return html`
-      <div
+      <img
         id="thumbnail-div"
         slot="media"
         class="wa-grid"
-        style="${thumbnail}"
-      ></div>
+        src="${img}"
+        onerror="this.src=${fallback}"
+      >
     `;
   }
   protected renderThumbnail() {

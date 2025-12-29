@@ -61,6 +61,9 @@ export default css`
     background-position: left;
     border-radius: var(--media-row-border-radius);
     margin-left: 14px;
+    -webkit-user-select: none;
+    -moz-user-select: none;
+    user-select: none;
 
   }
   .dialog-playlist-title {

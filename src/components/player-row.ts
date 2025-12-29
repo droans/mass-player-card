@@ -1,6 +1,6 @@
 import { consume } from "@lit/context";
 import { html, type CSSResultGroup, LitElement, PropertyValues } from "lit";
-import { property, state } from "lit/decorators.js";
+import { property } from "lit/decorators.js";
 
 import {
   PlayerJoinService,
@@ -18,12 +18,6 @@ import {
   useExpressiveContext,
 } from "../const/context";
 
-import {
-  backgroundImageFallback,
-  encodeImageIfLocal,
-  getFallbackBackgroundImage,
-  getThumbnail,
-} from "../utils/thumbnails";
 import { isActive, jsonMatch } from "../utils/util";
 
 import styles from "../styles/player-row";
@@ -35,6 +29,7 @@ import {
 import { Icons } from "../const/icons";
 import { ExtendedHass, ExtendedHassEntity } from "../const/types";
 import { Thumbnail } from "../const/enums";
+import { getThumbnail } from "../utils/thumbnails.js";
 
 class PlayerRow extends LitElement {
   @property({ attribute: false }) joined = false;
@@ -52,7 +47,6 @@ class PlayerRow extends LitElement {
   public unjoinService!: PlayerUnjoinService;
   
   private _player_entity!: ExtendedHassEntity;
-  @state() private _artworkStyle!: string;
 
   private _config!: PlayersConfig;
   private _entityConfig!: EntityConfig;
@@ -87,9 +81,6 @@ class PlayerRow extends LitElement {
   @consume({ context: hassContext, subscribe: true })
   public set hass(hass: ExtendedHass) {
     this._hass = hass;
-    if (this.player_entity && !this._artworkStyle) {
-      void this.getArtworkStyle();
-    }
   }
   public get hass() {
     return this._hass;
@@ -98,9 +89,6 @@ class PlayerRow extends LitElement {
   @property({ attribute: false }) 
   public set player_entity(entity: ExtendedHassEntity) {
     this._player_entity = entity;
-    if (this.hass) {
-      void this.getArtworkStyle();
-    }
   }
   public get player_entity() {
     return this._player_entity;
@@ -137,31 +125,21 @@ class PlayerRow extends LitElement {
     this.transferService(this.player_entity.entity_id);
   }
 
-  private async getArtworkStyle() {
-    const attrs = this?.player_entity?.attributes;
-    const hasLocal = !!(attrs?.entity_picture_local?.length)
-    const hasNonlocal = !!(attrs?.entity_picture?.length)
-    let img = '';
-    if (hasLocal) {
-      img = attrs.entity_picture_local
-    } else if (hasNonlocal)  {
-      img = attrs.entity_picture as string;
-    } else {
-      img = getThumbnail(this.hass, Thumbnail.HEADPHONES)
-    }
-    const url = await encodeImageIfLocal(this.hass, img);
-    if (!url.length) {
-      this._artworkStyle = getFallbackBackgroundImage(this.hass, Thumbnail.HEADPHONES)
-    } else {
-      this._artworkStyle = backgroundImageFallback(this.hass, url, Thumbnail.HEADPHONES)
-    }
-  }
-
   private renderThumbnail() {
+    const attrs = this?.player_entity?.attributes;
+    const fallback = getThumbnail(this.hass, Thumbnail.HEADPHONES);
+    const loc = attrs?.entity_picture_local
+    const pic = attrs?.entity_picture;
+    const src = loc ?? pic ?? fallback;
+    
     return html`
-      <span class="thumbnail" slot="start" style="${this._artworkStyle}">
-      </span>
-    `;
+      <img
+        class="thumbnail" 
+        slot="start"
+        src="${src}"
+        onerror="if (src == loc) {src = pic}; if (src == pic) { src == fallback }"
+      >
+    `
   }
   private _calculateTitleWidth() {
     let button_ct = 0;

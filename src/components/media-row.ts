@@ -25,9 +25,7 @@ import { VibrationPattern } from "../const/common";
 import styles from "../styles/media-row";
 
 import {
-  backgroundImageFallback,
-  encodeImageIfLocal,
-  getFallbackBackgroundImage,
+  getThumbnail,
 } from "../utils/thumbnails";
 import {
   jsonMatch,
@@ -60,7 +58,6 @@ class MediaRow extends LitElement {
 
   public showAlbumCovers = true;
   private _media_item!: QueueItem;
-  @state() private _artworkStyle!: string;
 
   private _config!: QueueConfig;
   private _entityConfig!: EntityConfig;
@@ -96,9 +93,6 @@ class MediaRow extends LitElement {
   @consume({ context: hassContext, subscribe: true })
   public set hass(hass: ExtendedHass) {
     this._hass = hass;
-    if (this.media_item && !this._artworkStyle) {
-      void this.getArtworkStyle();
-    }
   }
   public get hass() {
     return this._hass;
@@ -125,9 +119,6 @@ class MediaRow extends LitElement {
   @property({ attribute: false }) 
   public set media_item(media_item: QueueItem) {
     this._media_item = media_item;
-    if (this.hass) {
-      void this.getArtworkStyle();
-    }
   }
   public get media_item() {
     return this._media_item;
@@ -165,29 +156,19 @@ class MediaRow extends LitElement {
     return _changedProperties.size > 0;
   }
 
-  private async getArtworkStyle() {
-    const img = this?.media_item?.local_image_encoded ?? this.media_item.media_image;
-    const url = await encodeImageIfLocal(this.hass, img);
-    if (!url.length) {
-      this._artworkStyle = getFallbackBackgroundImage(this.hass, Thumbnail.CLEFT)
-    } else {
-      this._artworkStyle = backgroundImageFallback(this.hass, url, Thumbnail.CLEFT)
-    }
-  }
   private renderThumbnail(): TemplateResult {
-    const played =
-      !this.media_item.show_action_buttons && !this.media_item?.playing;
-    const img =
-      this.media_item.local_image_encoded ?? this.media_item.media_image;
-    if (img && this.showAlbumCovers && !this.hide.album_covers) {
+    const played = !this.media_item.show_action_buttons && !this.media_item?.playing;
+    const fallback = getThumbnail(this.hass, Thumbnail.DISC)
+    const img = this.media_item.local_image_encoded ?? this.media_item.media_image ?? fallback;
+    if ( this.showAlbumCovers && !this.hide.album_covers) {
       return html`
-        <span
+        <img
           class="thumbnail${played ? "-disabled" : ""}"
           slot="start"
-          style="${this._artworkStyle}"
+          src="${img}"
+          onerror="this.src=${fallback}"
         >
-        </span>
-      `;
+      `
     }
     return html``;
   }

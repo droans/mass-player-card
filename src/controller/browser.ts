@@ -174,7 +174,7 @@ export class MediaBrowserController {
     }
     const i = { ...this.items };
     i.favorites[media_type] = items;
-    const card = await generateFavoriteCard(this.hass, media_type, items);
+    const card = generateFavoriteCard(this.hass, media_type, items);
     i.favorites.main.push(card);
     this.items = { ...i };
   }
@@ -222,7 +222,7 @@ export class MediaBrowserController {
 
     const items = await this.getRecentSection(config, media_type);
     if (items.length) {
-      const card = await generateRecentsCard(this.hass, media_type, items);
+      const card = generateRecentsCard(this.hass, media_type, items);
       const i = { ...this.items };
       i.recents.main.push(card);
       i.recents[media_type] = items;
@@ -231,13 +231,13 @@ export class MediaBrowserController {
   }
 
   //Recommendations
-  private async generateRecommendationSection(section: RecommendationSection) {
+  private generateRecommendationSection(section: RecommendationSection) {
     if (this.items.recommendations[section.name]) {
       return;
     }
     const items = generateRecommendationSectionCards(section);
     if (items.length) {
-      const card = await generateRecommendationsCard(this.hass, section, items);
+      const card = generateRecommendationsCard(this.hass, section, items);
       const i = { ...this.items };
       i.recommendations.main.push(card);
       i.recommendations[section.name] = items;
@@ -252,7 +252,7 @@ export class MediaBrowserController {
     );
     const resp = data.response.response;
     resp.forEach((item) => {
-      void this.generateRecommendationSection(item);
+      this.generateRecommendationSection(item);
     });
     const detail: CardsUpdatedEventDetail = {
       section: "recommendations",
