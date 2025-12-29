@@ -79,6 +79,7 @@ export class MediaBrowser extends LitElement {
   private actions!: BrowserActions;
   private searchTerm = "";
   private _searchTimeout!: number;
+  private searchActivated = false;
 
   @state()
   public set activeCards(cards: MediaCardItem[]) {
@@ -242,6 +243,7 @@ export class MediaBrowser extends LitElement {
     this.activeSection = "search";
     this.cards.search = [];
     this.activeCards = this.cards.search;
+    this.searchActivated = true;
   };
   private onSearchMediaTypeSelect = async (ev: MenuButtonEventData) => {
     const val = ev.detail.option as MediaTypes;
@@ -535,6 +537,18 @@ export class MediaBrowser extends LitElement {
         </div>
       </div>
     `;
+  }
+
+  protected updated(): void {
+    if (this.searchActivated) {
+      setTimeout(
+        () => {
+          this?.shadowRoot?.querySelector('#search')?.querySelector('sl-input')?.shadowRoot?.querySelector('input')?.focus();
+          this.searchActivated = false;
+        },
+        50
+      )
+    }
   }
   static get styles(): CSSResultGroup {
     return styles;
