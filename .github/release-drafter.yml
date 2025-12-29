@@ -22,7 +22,6 @@ categories:
   - title: "🧰 Maintenance"
     labels:
       - "maintenance"
-      - "ci"
   - title: "📚 Documentation"
     labels:
       - "documentation"
@@ -43,7 +42,6 @@ version-resolver:
     labels:
       - "bugfix"
       - "chore"
-      - "ci"
       - "dependencies"
       - "documentation"
       - "enhancement"
