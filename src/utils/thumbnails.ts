@@ -32,38 +32,6 @@ export async function asyncImageURLWithFallback(
   }
 }
 
-export async function asyncBackgroundImageFallback(
-  hass: ExtendedHass,
-  image_url: string,
-  fallback: Thumbnail,
-  download_local = true
-) {
-  const image = await asyncImageURLWithFallback(
-    hass,
-    image_url,
-    fallback,
-    download_local
-  )
-  return `background-image: url(${image.image_url}), url(${image.fallback_url})`;
-}
-
-export function backgroundImageFallback(
-  hass: ExtendedHass,
-  image_url: string,
-  fallback: Thumbnail,
-) {
-  const _fallback: string = getThumbnail(hass, fallback);
-  return `background-image: url(${image_url}), url(${_fallback})`;
-}
-
-export function getFallbackBackgroundImage(
-  hass: ExtendedHass,
-  fallback: Thumbnail,
-) {
-  const _fallback: string = getThumbnail(hass, fallback);
-  return `background-image: url(${_fallback})`;
-}
-
 export function getThumbnail(hass: ExtendedHass, thumbnail: Thumbnail): string {
   if (!hass) {
     return LightModeThumbnails[thumbnail];

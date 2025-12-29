@@ -1,6 +1,6 @@
 import { html, TemplateResult } from "lit";
 import { Thumbnail, MediaTypes } from "../const/enums";
-import { asyncBackgroundImageFallback, getThumbnail } from "./thumbnails";
+import { getThumbnail } from "./thumbnails";
 import {
   MediaTypeThumbnails,
 } from "../const/media-browser";
@@ -13,26 +13,32 @@ import {
   RecommendationSection
 } from "../const/types";
 
-async function generateSectionBackgroundPart(
+function generateSectionBackgroundPart(
   hass: ExtendedHass,
   thumbnail: string,
   fallback: Thumbnail = Thumbnail.DISC,
 ) {
   const thumb = getThumbnail(hass, (thumbnail as Thumbnail)) ?? thumbnail;
-  const image = await asyncBackgroundImageFallback(hass, thumb, fallback);
-  return html` <div class="thumbnail-section" style="${image}"></div> `;
+  const _fallback = getThumbnail(hass, fallback) ?? fallback;
+  return html`
+    <img
+      class="thumbnail-section"
+      src="${thumb}"
+      onerror="this.src = '${_fallback}'"
+    >
+  `
 }
-async function generateSectionBackground(
+function generateSectionBackground(
   hass: ExtendedHass,
   cards: MediaCardItem[],
   fallback: Thumbnail,
 ) {
   const rng = [...Array(4).keys()];
-  const _thumbs: Promise<TemplateResult>[] = [];
+  const thumbnails: TemplateResult[] = [];
 
   rng.forEach((i) => {
     const idx = i % cards.length;
-    _thumbs.push(
+    thumbnails.push(
       generateSectionBackgroundPart(
         hass,
         cards[idx]?.thumbnail ?? fallback,
@@ -40,7 +46,6 @@ async function generateSectionBackground(
       ),
     );
   });
-  const thumbnails = await Promise.all(_thumbs);
   let thumbnail_html = html``;
   thumbnails.forEach((thumbnail) => {
     thumbnail_html = html` ${thumbnail_html} ${thumbnail} `;
@@ -54,17 +59,17 @@ async function generateSectionBackground(
     </div>
   `;
 }
-export async function generateFavoriteCard(
+export function generateFavoriteCard(
   hass: ExtendedHass,
   media_type: MediaTypes,
   cards: MediaCardItem[],
-): Promise<MediaCardItem> {
+): MediaCardItem {
   const thumbnail: Thumbnail = MediaTypeThumbnails[media_type];
   const translate_key = `browser.sections.${media_type}`;
   const title = getTranslation(translate_key, hass);
   return {
     title: title as string,
-    background: await generateSectionBackground(hass, cards, thumbnail),
+    background: generateSectionBackground(hass, cards, thumbnail),
     thumbnail: thumbnail,
     fallback: thumbnail,
     data: {
@@ -74,17 +79,17 @@ export async function generateFavoriteCard(
     },
   };
 }
-export async function generateRecentsCard(
+export function generateRecentsCard(
   hass: ExtendedHass,
   media_type: MediaTypes,
   cards: MediaCardItem[],
-): Promise<MediaCardItem> {
+): MediaCardItem {
   const thumbnail: Thumbnail = MediaTypeThumbnails[media_type];
   const translate_key = `browser.sections.${media_type}`;
   const title = getTranslation(translate_key, hass);
   return {
     title: title as string,
-    background: await generateSectionBackground(hass, cards, thumbnail),
+    background: generateSectionBackground(hass, cards, thumbnail),
     thumbnail: thumbnail,
     fallback: thumbnail,
     data: {
@@ -94,15 +99,15 @@ export async function generateRecentsCard(
     },
   };
 }
-export async function generateRecommendationsCard(
+export function generateRecommendationsCard(
   hass: ExtendedHass,
   section: RecommendationSection,
   cards: MediaCardItem[],
-): Promise<MediaCardItem> {
+): MediaCardItem {
   const thumbnail: Thumbnail = Thumbnail.CLEFT;
   return {
     title: section.name,
-    background: await generateSectionBackground(hass, cards, thumbnail),
+    background: generateSectionBackground(hass, cards, thumbnail),
     thumbnail: thumbnail,
     fallback: thumbnail,
     data: {

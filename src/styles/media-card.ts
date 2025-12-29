@@ -59,6 +59,11 @@ export default css`
     border-radius: var(--browser-card-border-radius);
     overflow: hidden !important;
   }
+  .thumbnail, .thumbnail-section {
+    -webkit-user-select: none;
+    -moz-user-select: none;
+    user-select: none;
+  }
   #thumbnail-div {
     background-size: 100%;
     background-repeat: no-repeat;

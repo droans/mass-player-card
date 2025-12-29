@@ -267,10 +267,6 @@ class MusicPlayerCard extends LitElement {
     );
     this.closeAddToPlaylistDialog();
   };
-  private playlistDialogItemArtworkStyle(playlist: PlaylistDialogItem) {
-    const img = playlist.image
-    return `background-image: url(${img.image_url}), url(${img.fallback_url})`
-  }
   protected renderPlaylistDialogList() {
     if (!this._playlists) {
       return html`
@@ -295,12 +291,12 @@ class MusicPlayerCard extends LitElement {
             data-uri="${playlist.uri}"
             type="button"
           >
-            <span
+            <img
               class="dialog-playlist-thumbnail"
-              style="${this.playlistDialogItemArtworkStyle(playlist)}"
               slot="start"
-              inert
-            ></span>
+              src="${playlist.image.image_url}"
+              onerror="this.src = '${playlist.image.fallback_url}'"
+            >
             <span
               slot="headline"
               class="dialog-playlist-title"

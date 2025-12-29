@@ -164,6 +164,12 @@ export default css`
     color: var(--expressive-row-button-color-text-hover);
   }
 
+  .thumbnail, .thumbnail-disabled {
+    -webkit-user-select: none;
+    -moz-user-select: none;
+    user-select: none;
+  }
+
   .thumbnail {
     width: var(--media-row-thumbnail-height);
     height: var(--media-row-thumbnail-height);
