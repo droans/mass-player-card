@@ -9,6 +9,7 @@ import { getTranslation } from "./translations";
 import {
   ExtendedHass,
   MediaCardItem,
+  mediaCardPlaylistData,
   MediaLibraryItem,
   RecommendationSection
 } from "../const/types";
@@ -119,9 +120,12 @@ export function generateRecommendationsCard(
 }
 export function generateRecommendationSectionCards(
   section: RecommendationSection,
-) {
+): MediaCardItem[] {
   const items = section.items;
   return items.map((item) => {
+    if (item.media_type == 'playlist') {
+      return generatePlaylistCard(item.uri , item.image, item.name)
+    }
     const r: MediaCardItem = {
       title: item.name,
       thumbnail: item.image,
@@ -135,7 +139,7 @@ export function generateRecommendationSectionCards(
     return r;
   });
 }
-export function generateCustomSectionCards(config: customItem[]) {
+export function generateCustomSectionCards(config: customItem[]): MediaCardItem[] {
   return config.map((item) => {
     const r: MediaCardItem = {
       title: item.name,
@@ -154,9 +158,16 @@ export function generateCustomSectionCards(config: customItem[]) {
 export function generateFavoritesSectionCards(
   config: MediaLibraryItem[],
   media_type: MediaTypes,
-) {
+): MediaCardItem[] {
   const thumbnail = MediaTypeThumbnails[media_type];
   return config.map((item) => {
+    if (item.media_type == 'playlist') {
+      return generatePlaylistCard(
+        item.uri,
+        item.image ?? '',
+        item.name
+      )
+    }
     const r: MediaCardItem = {
       title: item.name,
       thumbnail: item.image as string,
@@ -169,4 +180,22 @@ export function generateFavoritesSectionCards(
     };
     return r;
   });
+}
+function generatePlaylistCard(
+  playlist_uri: string,
+  playlist_image: string,
+  playlist_title: string,
+): MediaCardItem {
+  const data: mediaCardPlaylistData = {
+    type: 'playlist',
+    playlist_uri: playlist_uri,
+    playlist_image: playlist_image,
+    playlist_title: playlist_title
+  }
+  return {
+    title: playlist_title,
+    thumbnail: playlist_image,
+    fallback: Thumbnail.PLAYLIST,
+    data: data
+  }
 }

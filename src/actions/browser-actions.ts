@@ -6,7 +6,9 @@ import {
 import { getRecommendationsServiceSchema } from "mass-queue-types/packages/mass_queue/actions/get_recommendations";
 import { getLibraryServiceResponse, getLibraryServiceSchema } from "mass-queue-types/packages/music_assistant/actions/get_library"
 import { searchServiceResponse, searchServiceSchema } from "mass-queue-types/packages/music_assistant/actions/search"
+import { getPlaylistTracksServiceSchema, getPlaylistTracksServiceResponse } from "mass-queue-types/packages/mass_queue/actions/get_playlist_tracks"
 import { ExtendedHass, MediaLibraryItem, RecommendationResponse } from "../const/types";
+import { getInfoWSResponseSchema, getInfoWSServiceSchema } from "mass-queue-types/packages/mass_queue/ws/get_info.js";
 export default class BrowserActions {
   private _hass!: ExtendedHass;
 
@@ -152,6 +154,32 @@ export default class BrowserActions {
       radio_mode: true,
     });
   }
+  async actionGetPlaylistTracks(
+    playlist_uri: string, 
+    entity_id_or_config_entry_id: string,
+  ): Promise<getPlaylistTracksServiceResponse> {
+    let config_entry = '';
+    if (entity_id_or_config_entry_id.includes('.')) {
+      const info = await this.actionGetPlayerInfo(entity_id_or_config_entry_id);
+      if (!info) {
+        throw Error(`Received nothing back when getting tracks for playlist ${playlist_uri}!`)
+      }
+      config_entry = info.entries.mass_queue;
+    } else {
+      config_entry = entity_id_or_config_entry_id
+    }
+    const data: getPlaylistTracksServiceSchema = {
+      type: 'call_service',
+      domain: 'mass_queue',
+      service: 'get_playlist_tracks',
+      service_data: {
+        uri: playlist_uri,
+        config_entry_id: config_entry
+      },
+      return_response: true
+    }
+    return await this.hass.callWS(data)
+  }
   private async getPlayerConfigEntry(entity_id: string): Promise<string> {
     const entry = await this.hass.callWS<{config_entry_id: string}>({
       type: "config/entity_registry/get",
@@ -160,4 +188,14 @@ export default class BrowserActions {
     const result = entry.config_entry_id;
     return result;
   }
+  private async actionGetPlayerInfo(
+    entity_id: string,
+  ): Promise<getInfoWSResponseSchema | null> {
+    const data: getInfoWSServiceSchema = {
+      type: "mass_queue/get_info",
+      entity_id: entity_id
+    };
+    return await this.hass.callWS(data);
+  }
+
 }

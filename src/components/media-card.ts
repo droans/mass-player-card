@@ -195,7 +195,7 @@ class MediaCard extends LitElement {
     this.onEnqueueAction(this._config.data, value);
   };
   private onSelect = () => {
-    this.onSelectAction(this._config.data);
+    this.onSelectAction(this._config.data, this);
   };
   protected renderThumbnailFromBackground() {
     return html` ${this.config.background} `;
