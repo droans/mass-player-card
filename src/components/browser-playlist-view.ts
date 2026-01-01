@@ -1,9 +1,9 @@
 import { CSSResultGroup, html, LitElement, PropertyValues, TemplateResult } from "lit";
-import { customElement, property, query, queryAll, state } from "lit/decorators.js";
+import { customElement, property, query, state } from "lit/decorators.js";
 import styles from '../styles/browser-playlist-view';
 import { consume } from "@lit/context";
 import { activeEntityConfContext, activeMediaPlayerContext, EntityConfig, hassContext, IconsContext, mediaBrowserConfigContext, useExpressiveContext, useVibrantContext } from "../const/context.js";
-import { ExtendedHass, ExtendedHassEntity, ListItems, mediaCardPlaylistData, mediaPlaylistCard } from "../const/types.js";
+import { ExtendedHass, ExtendedHassEntity, ListItems, mediaCardPlaylistData } from "../const/types.js";
 import BrowserActions from "../actions/browser-actions.js";
 import { playlistTrack, playlistTracks } from "mass-queue-types/packages/mass_queue/actions/get_playlist_tracks.js";
 import { DEFAULT_MEDIA_BROWSER_HIDDEN_ELEMENTS_CONFIG, HIDDEN_BUTTON_VALUE, MediaBrowserConfig, MediaBrowserHiddenElementsConfig } from "../config/media-browser.js";
@@ -15,7 +15,6 @@ import { getEnqueueButtons } from "../const/media-browser.js";
 import { MenuButtonEventData } from "../const/events.js";
 import { CardEnqueueService } from "../const/actions.js";
 import './browser-playlist-track-row';
-import { WaAnimation } from "../const/elements.js";
 import { delay } from "../utils/util.js";
 
 @customElement('mpc-browser-playlist-view')
@@ -184,6 +183,12 @@ export class MassBrowserPlaylistView extends LitElement {
         offset: 1,
       }
     ]
+    /* eslint-disable
+      @typescript-eslint/no-explicit-any,
+      @typescript-eslint/no-unsafe-assignment,
+      @typescript-eslint/no-unsafe-call,
+      @typescript-eslint/no-unsafe-member-access,
+    */
     const timeline = new (window as any).ScrollTimeline({
       source: this.tracksElement
     })
@@ -195,6 +200,12 @@ export class MassBrowserPlaylistView extends LitElement {
         iterations: 1,
       }
     )
+    /* eslint-enable
+      @typescript-eslint/no-explicit-any,
+      @typescript-eslint/no-unsafe-assignment,
+      @typescript-eslint/no-unsafe-call,
+      @typescript-eslint/no-unsafe-member-access,
+    */
     animation.play();
     return animation;
   }
@@ -217,9 +228,9 @@ export class MassBrowserPlaylistView extends LitElement {
     }
     this.infoAnimation = this.addScrollAnimation(kf, this.infoElement)
   }
-  private animateHeaderEnqueue() {
+  // private animateHeaderEnqueue() {
     
-  }
+  // }
   private animateHeaderImage() {
     const kf = {
       transform: 'scale(0.5)  translateX(-2em) translateY(-4em)'
@@ -343,7 +354,7 @@ export class MassBrowserPlaylistView extends LitElement {
     return _changedProperties.size > 0;
   }
 
-  protected updated(_changedProperties: PropertyValues): void {
+  protected updated(): void {
     void this.testAnimation()
   }
 
@@ -362,7 +373,7 @@ export class MassBrowserPlaylistView extends LitElement {
       if (delayMs > 1000 ) {
         return;
       }
-      this.testAnimation(delayMs * 2);
+      await this.testAnimation(delayMs * 2);
     }
   }
 

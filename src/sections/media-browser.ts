@@ -210,13 +210,11 @@ export class MediaBrowser extends LitElement {
       data.media_content_type,
     );
   };
-  private onPlaylistSelect = (data: mediaCardPlaylistData, target: HTMLElement) => {
-    const _data = data;
+  private onPlaylistSelect = (data: mediaCardPlaylistData) => {
     this.playlistViewActive = true;
     this.activePlaylistData = data;
-    const _target = target as HTMLElement;
   }
-  private onSelect = (data: mediaCardData, target: HTMLElement) => {
+  private onSelect = (data: mediaCardData) => {
     const funcs = {
       section: this.onSectionSelect,
       item: this.onItemSelect,
@@ -228,7 +226,7 @@ export class MediaBrowser extends LitElement {
       this.playlistViewActive = false;
       func(data);
     } else {
-      this.onPlaylistSelect(data, target);
+      this.onPlaylistSelect(data);
     }
   };
   private onEnqueue = (data: mediaCardItemData, enqueue: EnqueueOptions) => {
@@ -251,7 +249,7 @@ export class MediaBrowser extends LitElement {
   };
   private onPlaylistEnqueue = (data: mediaCardPlaylistData, enqueue: EnqueueOptions) => {
     const content_id: string = data.playlist_uri;
-    const content_type: string = 'playlist';
+    const content_type = 'playlist';
     void this.actions.actionEnqueueMedia(
       this.activeEntityConfig.entity_id,
       content_id,
