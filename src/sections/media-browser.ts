@@ -24,6 +24,7 @@ import { consume, provide } from "@lit/context";
 
 import "../components/media-browser-cards";
 import "../components/section-header";
+import "../components/browser-playlist-view"
 import styles from "../styles/media-browser";
 
 import {
@@ -46,7 +47,16 @@ import { jsonMatch } from "../utils/util";
 import { getTranslation } from "../utils/translations";
 import { CardsUpdatedEvent, MenuButtonEventData, TargetValEventData } from "../const/events";
 import { MediaBrowserCards } from "../components/media-browser-cards";
-import { ExtendedHass, MediaCardData, MediaCardItem, newMediaBrowserItemsConfig } from "../const/types";
+import {
+  ExtendedHass,
+  mediaCardData,
+  MediaCardItem,
+  newMediaBrowserItemsConfig,
+  mediaCardPlaylistData,
+  mediaCardServiceData,
+  mediaCardSectionData,
+  mediaCardItemData,
+} from "../const/types";
 
 @customElement(`mass-media-browser`)
 export class MediaBrowser extends LitElement {
@@ -71,6 +81,8 @@ export class MediaBrowser extends LitElement {
 
   public activeSection = DEFAULT_ACTIVE_SECTION;
   public activeSubSection = DEFAULT_ACTIVE_SUBSECTION;
+  @property() private playlistViewActive = false;
+  @property() private activePlaylistData!: mediaCardPlaylistData;
   private previousSections: string[] = [];
   private previousSubSections: string[] = [];
 
@@ -141,6 +153,7 @@ export class MediaBrowser extends LitElement {
   public setActiveCards() {
     const section = this.activeSection;
     const subsection = this.activeSubSection;
+    this.playlistViewActive = false;
     let new_cards: MediaCardItem[] = [];
     if (!this.cards) {
       return;
@@ -169,7 +182,7 @@ export class MediaBrowser extends LitElement {
     this.previousSubSections = [];
     this.setActiveCards();
   }
-  private onServiceSelect = (data: MediaCardData) => {
+  private onServiceSelect = (data: mediaCardServiceData) => {
     if (data.service) {
       void this.actions.actionPlayMediaFromService(
         data.service,
@@ -179,36 +192,48 @@ export class MediaBrowser extends LitElement {
     }
     void this.actions.actionPlayMedia(
       this.activeEntityConfig.entity_id,
-      data.media_content_id as string,
-      data.media_content_type as string,
+      data.media_content_id,
+      data.media_content_type,
     );
     this.onMediaSelectedAction();
   };
-  private onSectionSelect = (data: MediaCardData) => {
+  private onSectionSelect = (data: mediaCardSectionData) => {
     this.setPreviousSection();
-    this.activeSection = data.subtype as string;
-    this.activeSubSection = data.section as string;
+    this.activeSection = data.subtype;
+    this.activeSubSection = data.section;
     this.setActiveCards();
   };
-  private onItemSelect = (data: MediaCardData) => {
+  private onItemSelect = (data: mediaCardItemData) => {
     void this.actions.actionPlayMedia(
       this.activeEntityConfig.entity_id,
-      data.media_content_id as string,
-      data.media_content_type as string,
+      data.media_content_id,
+      data.media_content_type,
     );
   };
-  private onSelect = (data: MediaCardData) => {
+  private onPlaylistSelect = (data: mediaCardPlaylistData, target: HTMLElement) => {
+    const _data = data;
+    this.playlistViewActive = true;
+    this.activePlaylistData = data;
+    const _target = target as HTMLElement;
+  }
+  private onSelect = (data: mediaCardData, target: HTMLElement) => {
     const funcs = {
       section: this.onSectionSelect,
       item: this.onItemSelect,
       service: this.onServiceSelect,
+      playlist: this.onPlaylistSelect,
     };
-    const func = funcs[data.type as string] as (data: MediaCardData) => void;
-    func(data);
+    const func = funcs[data.type as string] as (data: mediaCardData) => void;
+    if (data.type != 'playlist') {
+      this.playlistViewActive = false;
+      func(data);
+    } else {
+      this.onPlaylistSelect(data, target);
+    }
   };
-  private onEnqueue = (data: MediaCardData, enqueue: EnqueueOptions) => {
-    const content_id: string = data.media_content_id as string;
-    const content_type: string = data.media_content_type as string;
+  private onEnqueue = (data: mediaCardItemData, enqueue: EnqueueOptions) => {
+    const content_id: string = data.media_content_id;
+    const content_type: string = data.media_content_type;
     if (enqueue == EnqueueOptions.RADIO) {
       void this.actions.actionPlayRadio(
         this.activeEntityConfig.entity_id,
@@ -224,10 +249,22 @@ export class MediaBrowser extends LitElement {
       enqueue,
     );
   };
+  private onPlaylistEnqueue = (data: mediaCardPlaylistData, enqueue: EnqueueOptions) => {
+    const content_id: string = data.playlist_uri;
+    const content_type: string = 'playlist';
+    void this.actions.actionEnqueueMedia(
+      this.activeEntityConfig.entity_id,
+      content_id,
+      content_type,
+      enqueue,
+    );
+  }
   private onBack = () => {
+    if (!this.playlistViewActive) {
     this.activeSection = this.previousSections.pop() ?? DEFAULT_ACTIVE_SECTION;
     this.activeSubSection =
       this.previousSubSections.pop() ?? DEFAULT_ACTIVE_SUBSECTION;
+    }
     this.setActiveCards();
   };
   private onSearchButtonPress = () => {
@@ -322,7 +359,18 @@ export class MediaBrowser extends LitElement {
       this.setActiveCards();
     }
   };
+  protected renderPlaylistView(): TemplateResult {
+    return html`
+      <mpc-browser-playlist-view
+        .playlistData=${this.activePlaylistData}
+        .onEnqueueAction=${this.onPlaylistEnqueue}
+      ></mpc-browser-playlist-view>
+    `
+  }
   protected renderBrowserCards(): TemplateResult {
+    if (this.playlistViewActive) {
+      return this.renderPlaylistView();
+    }
     return html`
       <mass-browser-cards
         .onSelectAction=${this.onSelect}

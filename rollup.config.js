@@ -9,8 +9,10 @@ export default [
   {
     input: 'src/main.ts',
     output: {
+      // dir: './dist',
       file: './dist/mass-player-card.js',
       format: 'es',
+      inlineDynamicImports: true,
     },
     plugins: [
       nodeResolve(),

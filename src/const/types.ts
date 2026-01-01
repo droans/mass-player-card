@@ -110,23 +110,80 @@ export interface mediaBrowserSectionConfig {
   [str: string]: MediaCardItem[];
 }
 
-export interface MediaCardData {
-  type?: string;
-  subtype?: string;
-  section?: string;
-  media_content_id?: string;
-  media_content_type?: string;
+export type mediaBrowserSectionSubtypes = 
+  'favorites'
+  | 'recents'
+  | 'recommendations'
+
+// export interface MediaCardData {
+//   type?: string;
+//   subtype?: string;
+//   section?: string;
+//   media_content_id?: string;
+//   media_content_type?: string;
+//   service?: string;
+// }
+
+export type mediaCardData = 
+  mediaCardPlaylistData
+  | mediaCardSectionData
+  | mediaCardItemData
+  | mediaCardServiceData
+  | mediaCardRecommendationData
+
+
+export interface mediaCardItemData {
+  type: 'item';
+  media_content_id: string;
+  media_content_type: string;
+}
+
+export interface mediaCardServiceData {
+  type: 'service';
+  media_content_id: string;
+  media_content_type: string;
   service?: string;
 }
+export interface mediaCardRecommendationData {
+  type: 'service';
+  media_content_id: string;
+  media_content_type: string;
+}
+
+export interface mediaCardSectionData {
+  type: 'section';
+  subtype: mediaBrowserSectionSubtypes;
+  section: string;
+}
+
+export interface mediaCardPlaylistData {
+  type: 'playlist';
+  playlist_uri: string;
+  playlist_image: string;
+  playlist_title: string;
+}
+export interface mediaPlaylistCard extends Omit<MediaCardItem, 'data'> {
+  data: mediaCardPlaylistData
+}
+
 export interface MediaCardItem {
   title: string;
   thumbnail: string;
   fallback: Thumbnail;
-  data: MediaCardData;
+  data: mediaCardData;
   background?: TemplateResult;
 }
 
 export type MediaLibraryItem = MediaItem;
+
+// interface ScrollTimelineOptions {
+//   source: Element;
+//   axis?: 'block' | 'inline' | 'x' | 'y';
+//   scrollOffsets?: any[];
+// }
+// export var ScrollTimeline: {
+//     new(options?: ScrollTimelineOptions): ScrollTimelineOptions;
+// }
 
 export type ServiceNoParams = () => void;
 

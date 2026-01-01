@@ -19,7 +19,7 @@ import {
   hassContext,
   mediaBrowserConfigContext,
 } from "../const/context";
-import { ExtendedHass, MediaCardData, MediaCardItem } from "../const/types";
+import { ExtendedHass, mediaCardData, MediaCardItem } from "../const/types";
 
 import styles from "../styles/media-browser-cards";
 import { MediaBrowserConfig } from "../config/media-browser";
@@ -69,11 +69,11 @@ export class MediaBrowserCards extends LitElement {
     return this._items;
   }
 
-  private onItemSelected = (data: MediaCardData) => {
+  private onItemSelected = (data: mediaCardData, target: HTMLElement) => {
     this.resetScroll();
-    this.onSelectAction(data);
+    this.onSelectAction(data, target);
   };
-  private onEnqueue = (data: MediaCardData, enqueue: EnqueueOptions) => {
+  private onEnqueue = (data: mediaCardData, enqueue: EnqueueOptions) => {
     this.onEnqueueAction(data, enqueue);
   };
   public resetScroll() {
@@ -81,7 +81,7 @@ export class MediaBrowserCards extends LitElement {
   }
   private generateCode() {
     const result = this.items.map((item) => {
-      const queueable = item.data?.media_content_id && item.data?.media_content_type ? literal`queueable` : literal`` 
+      const queueable = ['service', 'playlist'].includes(item.data.type) ? literal`queueable` : literal`` 
       const width = (1 / this.browserConfig.columns) * 100 - 2;
       return html`
         <mass-media-card
