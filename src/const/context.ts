@@ -15,6 +15,7 @@ import { DynamicScheme } from "@ktibow/material-color-utilities-nightly";
 import { Icons } from "./icons";
 import { QueueController } from "../controller/queue";
 import { MediaBrowserController } from "../controller/browser";
+import { uuid4 } from "../utils/util.js";
 export type { EntityConfig } from "../config/config";
 
 export const hassContext = createContext<ExtendedHass>(uuid4());
@@ -65,11 +66,4 @@ export const mediaBrowserCardsContext =
 export const activeMediaBrowserCardsContext =
   createContext<MediaCardItem[]>(uuid4());
 
-function uuid4() {
-  return "10000000-1000-4000-8000-100000000000".replace(/[018]/g, (c) =>
-    (
-      +c ^
-      (crypto.getRandomValues(new Uint8Array(1))[0] & (15 >> (+c / 4)))
-    ).toString(16),
-  );
-}
+
