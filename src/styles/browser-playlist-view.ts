@@ -70,6 +70,8 @@ export default css`
     transition: font-size;
     font-family: "Google Sans Flex";
     font-variation-settings: "slnt" 0, "GRAD" 0, "ROND" 100;
+    font-weight: 800;
+    font-stretch: 50%;
   }
   #tracks {
     height: calc(var(--mass-player-card-height) - 10em);

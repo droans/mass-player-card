@@ -7,6 +7,8 @@ export default css`
   @font-face {
     font-family: "Roboto Flex";
     font-style: normal;
+    font-display: swap;
+    font-weight: 100 700;
     src: url(https://fonts.gstatic.com/s/robotoflex/v30/NaN4epOXO_NexZs0b5QrzlOHb8wCikXpYqmZsWI-__OGbt8jZktqc2V3Zs0KvDLdBP8SBZtOs2IifRuUZQMsPJtUsR4DEK6cULNeUx9XgTnH37Ha_FIAp4Fm0PP1hw45DntW2x0wZGzhPmr1YNMYKYn9_1IQXGwJAiUJVUMdN5YUW4O8HtSoXjC1z3QSabshNFVe3e0O5j3ZjrZCu23Qd4G0EBysQNK-QKavMl12JoUc.woff2)
       format("woff2");
     unicode-range:
@@ -18,8 +20,9 @@ export default css`
   @font-face {
     font-family: 'Google Sans Flex';
     font-style: normal;
-    font-weight: 100 300 400 600 700;
-    font-stretch: 100%;
+    font-weight: 200 900;
+    font-stretch: 25% 151%;
+    font-display: swap;
     src: url(https://fonts.gstatic.com/s/googlesansflex/v16/t5sJIQcYNIWbFgDgAAzZ34auoVyXkJCOvp3SFWJbN5hF8Ju1x6sKCyp0l9sI40swNJwInycYAJzz0m7kJ4qFQOJBOjLvDSndo0SKMpKSTzwliVdHAy4bxTDHg_ugnAakp8ub-cxgUg.woff2)
       format("woff2");
     unicode-range:
