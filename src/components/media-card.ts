@@ -210,6 +210,7 @@ class MediaCard extends LitElement {
         class="wa-grid"
         src="${img}"
         onerror="this.src=${fallback}"
+        loading="lazy"
       >
     `;
   }

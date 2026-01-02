@@ -287,6 +287,7 @@ export class MassBrowserPlaylistView extends LitElement {
           id="img-header"
           class="thumbnail"
           onerror="this.src=${fallback}"
+          loading="lazy"
         >
       </div>
     `

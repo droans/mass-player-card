@@ -137,6 +137,7 @@ class PlayerRow extends LitElement {
         class="thumbnail" 
         slot="start"
         src="${src}"
+        loading="lazy"
         onerror="if (src == '${loc}') {src = '${pic}'}; if (src == '${pic}') { src == '${fallback}' }"
       >
     `

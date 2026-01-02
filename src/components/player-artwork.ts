@@ -362,6 +362,7 @@ export class MassPlayerArtwork extends LitElement {
       () => {
         const elem = document.createElement('wa-carousel-item')
         const img = document.createElement('img');
+        img.loading = "lazy"
         elem.appendChild(img);
         if (direction == 'start') {
           this.carouselElement.insertBefore(elem, insertBefore)
@@ -396,6 +397,7 @@ export class MassPlayerArtwork extends LitElement {
           class="artwork ${size}"
           id="img-playing"
           src="${url}"
+          loading="lazy"
         >
       </wa-carousel-item>
     `
