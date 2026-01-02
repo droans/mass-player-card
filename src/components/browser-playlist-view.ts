@@ -5,7 +5,6 @@ import { consume } from "@lit/context";
 import { activeEntityConfContext, activeMediaPlayerContext, EntityConfig, hassContext, IconsContext, mediaBrowserConfigContext, useExpressiveContext, useVibrantContext } from "../const/context.js";
 import { ExtendedHass, ExtendedHassEntity, ListItems, mediaCardPlaylistData } from "../const/types.js";
 import BrowserActions from "../actions/browser-actions.js";
-import { playlistTrack, playlistTracks } from "mass-queue-types/packages/mass_queue/actions/get_playlist_tracks.js";
 import { DEFAULT_MEDIA_BROWSER_HIDDEN_ELEMENTS_CONFIG, HIDDEN_BUTTON_VALUE, MediaBrowserConfig, MediaBrowserHiddenElementsConfig } from "../config/media-browser.js";
 import "../components/section-header";
 import { Icons } from "../const/icons.js";
@@ -16,6 +15,7 @@ import { MenuButtonEventData } from "../const/events.js";
 import { CardEnqueueService } from "../const/actions.js";
 import './browser-playlist-track-row';
 import { delay } from "../utils/util.js";
+import { Track, Tracks } from "mass-queue-types/packages/mass_queue/utils.js";
 
 @customElement('mpc-browser-playlist-view')
 export class MassBrowserPlaylistView extends LitElement {
@@ -76,7 +76,7 @@ export class MassBrowserPlaylistView extends LitElement {
   
   // Data for all tracks - URI, image, title, album, artist, etc.
   // Set when playlistData changes.
-  @state() public tracks!: playlistTracks;
+  @state() public tracks!: Tracks;
 
   // Ensure style adjustments are handled
   @consume({context: useExpressiveContext})
@@ -315,12 +315,13 @@ export class MassBrowserPlaylistView extends LitElement {
       ></mass-menu-button>
     `;
   }
-  protected renderTrack(track: playlistTrack, divider: boolean): TemplateResult {
+  protected renderTrack(track: Track, divider: boolean): TemplateResult {
     return html`
       <mpc-playlist-track-row
         .track=${track}
         ?divider=${divider}
         .playlistURI=${this.playlistData.playlist_uri}
+        .enqueueButtons=${this._enqueue_buttons}
       ></mpc-playlist-track-row>
     `
   }
