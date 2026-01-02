@@ -4,6 +4,10 @@ export default css`
   :host {
     --playlist-header-height: 12em;
     --playlist-header-min-height: calc(var(--playlist-header-height) / 2);
+    --header-expanded-menu-icon-size: 5em;
+    --header-expanded-menu-control-size: 5em;
+    --header-collapsed-menu-icon-size: 4em;
+    --header-collapsed-menu-control-size: 4em;
   }
   mass-menu-button::part(menu-button) {
     --ha-ripple-color: rgba(0, 0, 0, 0);
@@ -13,9 +17,11 @@ export default css`
     width: 2em;
   }
   mass-menu-button::part(menu-select-menu) {
-    --mdc-icon-size: 5em;
-    --control-select-menu-height: 6em;
+    --mdc-icon-size: var(--header-expanded-menu-icon-size);
+    --control-select-menu-height: var(--header-expanded-menu-control-size);
     --control-select-menu-background-color: unset;
+    --control-select-menu-padding: unset;
+    padding-left: 10px;
   }
   mass-menu-button::part(menu-svg) {
     color: var(--md-sys-color-primary);
@@ -26,12 +32,13 @@ export default css`
     border-radius: 50%;
   }
   #container {
-    height: 100%;
+    height: calc(100% - 1em);
+    overflow: hidden;
   }
   #enqueue {
     width: 20%;
     display: flex;
-    align-self: flex-end;
+    align-self: center;
   }
   #header {
     display: flex;
@@ -68,6 +75,10 @@ export default css`
     font-style: italic;
     will-change: font-size;
     transition: font-size;
+    font-family: "Google Sans Flex";
+    font-variation-settings: "slnt" 0, "GRAD" 0, "ROND" 100;
+    font-weight: 800;
+    font-stretch: 50%;
   }
   #tracks {
     height: calc(var(--mass-player-card-height) - 10em);

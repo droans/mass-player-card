@@ -67,7 +67,8 @@ export class MassMenuButton extends LitElement {
     return this._items ?? [];
   }
 
-  private onSelect = () => {
+  private onSelect = (ev: Event) => {
+    ev.stopPropagation()
     this.menuElement.menuOpen = false;
   };
 
@@ -106,6 +107,7 @@ export class MassMenuButton extends LitElement {
           naturalMenuWidth
           @menu-item-selected=${this.onSelect}
           ?fixedMenuPosition=${this.fixedMenuPosition}
+          @click=${(ev: Event) => {ev.stopPropagation()}}
         >
           <ha-svg-icon
             slot="icon"

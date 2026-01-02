@@ -5,7 +5,6 @@ import { consume } from "@lit/context";
 import { activeEntityConfContext, activeMediaPlayerContext, EntityConfig, hassContext, IconsContext, mediaBrowserConfigContext, useExpressiveContext, useVibrantContext } from "../const/context.js";
 import { ExtendedHass, ExtendedHassEntity, ListItems, mediaCardPlaylistData } from "../const/types.js";
 import BrowserActions from "../actions/browser-actions.js";
-import { playlistTrack, playlistTracks } from "mass-queue-types/packages/mass_queue/actions/get_playlist_tracks.js";
 import { DEFAULT_MEDIA_BROWSER_HIDDEN_ELEMENTS_CONFIG, HIDDEN_BUTTON_VALUE, MediaBrowserConfig, MediaBrowserHiddenElementsConfig } from "../config/media-browser.js";
 import "../components/section-header";
 import { Icons } from "../const/icons.js";
@@ -16,6 +15,7 @@ import { MenuButtonEventData } from "../const/events.js";
 import { CardEnqueueService } from "../const/actions.js";
 import './browser-playlist-track-row';
 import { delay } from "../utils/util.js";
+import { Track, Tracks } from "mass-queue-types/packages/mass_queue/utils.js";
 
 @customElement('mpc-browser-playlist-view')
 export class MassBrowserPlaylistView extends LitElement {
@@ -30,14 +30,17 @@ export class MassBrowserPlaylistView extends LitElement {
   // Header is animated on scroll - query elements for animation
   @query('#title') private titleElement!: HTMLElement
   @query('#playlist-info') private infoElement!: HTMLElement
-  @query('#enqueue') private enqueueElement!: HTMLElement
+  @query('#enqueue-button') private enqueueElement!: HTMLElement
   @query('#img-header') private imageElement!: HTMLElement
   @query('#playlist-image') private imageDivElement!: HTMLElement;
   @query('#tracks') private tracksElement!: HTMLElement;
   @query('#header') private headerElement!: HTMLElement;
+  private enqueueControlElement!: HTMLElement;
+  private enqueueIconElement!: HTMLElement;
   private titleAnimation!: Animation;
   private infoAnimation!: Animation;
-  private enqueueAnimation!: Animation;
+  private enqueueControlAnimation!: Animation;
+  private enqueueIconAnimation!: Animation;
   private imageAnimation!: Animation;
   private imageDivAnimation!: Animation;
   private headerAnimation!: Animation;
@@ -76,7 +79,7 @@ export class MassBrowserPlaylistView extends LitElement {
   
   // Data for all tracks - URI, image, title, album, artist, etc.
   // Set when playlistData changes.
-  @state() public tracks!: playlistTracks;
+  @state() public tracks!: Tracks;
 
   // Ensure style adjustments are handled
   @consume({context: useExpressiveContext})
@@ -218,7 +221,8 @@ export class MassBrowserPlaylistView extends LitElement {
   }
   private animateHeaderTitle() {
     const kf = {
-      fontSize: '2em'
+      fontSize: '2em',
+      fontWeight: '500',
     }
     this.titleAnimation = this.addScrollAnimation(kf, this.titleElement)
   }
@@ -228,9 +232,24 @@ export class MassBrowserPlaylistView extends LitElement {
     }
     this.infoAnimation = this.addScrollAnimation(kf, this.infoElement)
   }
-  // private animateHeaderEnqueue() {
-    
-  // }
+  private animateHeaderEnqueue() {
+    const iconElem = this?.enqueueElement?.shadowRoot?.querySelector('.svg-menu-expressive');
+    const selectElem = this?.enqueueElement?.shadowRoot?.querySelector('#menu-select-menu')?.shadowRoot?.querySelector('.select-anchor')
+    if (!iconElem || !selectElem) {
+      return;
+    }
+    const iconKeyFrames = {
+      'height': 'var(--header-collapsed-menu-icon-size)',
+      'width': 'var(--header-collapsed-menu-icon-size)',
+    }
+    const selectKeyFrames = {
+      'height': 'var(--header-collapsed-menu-control-size)',
+    }
+    this.enqueueIconElement = iconElem as HTMLElement
+    this.enqueueControlElement = selectElem as HTMLElement
+    this.enqueueIconAnimation = this.addScrollAnimation(iconKeyFrames, this.enqueueIconElement);
+    this.enqueueControlAnimation = this.addScrollAnimation(selectKeyFrames, this.enqueueControlElement);
+  }
   private animateHeaderImage() {
     const kf = {
       transform: 'scale(0.5)  translateX(-2em) translateY(-4em)'
@@ -242,6 +261,7 @@ export class MassBrowserPlaylistView extends LitElement {
     this.animateHeaderImage();
     this.animateHeaderTitle();
     this.animateHeaderInfo();
+    this.animateHeaderEnqueue();
   }
   
   private onEnqueue = (ev: MenuButtonEventData) => {
@@ -307,20 +327,22 @@ export class MassBrowserPlaylistView extends LitElement {
   protected renderEnqueue(): TemplateResult {
     return html`
       <mass-menu-button
-        id="enqueue-button-div"
+        id="enqueue-button"
         .iconPath=${this.Icons.PLAY_CIRCLE}
         .items=${this._enqueue_buttons}
         @menu-item-selected=${this.onEnqueue}
         fixedMenuPosition
+        naturalMenuWidth
       ></mass-menu-button>
     `;
   }
-  protected renderTrack(track: playlistTrack, divider: boolean): TemplateResult {
+  protected renderTrack(track: Track, divider: boolean): TemplateResult {
     return html`
       <mpc-playlist-track-row
         .track=${track}
         ?divider=${divider}
         .playlistURI=${this.playlistData.playlist_uri}
+        .enqueueButtons=${this._enqueue_buttons}
       ></mpc-playlist-track-row>
     `
   }
@@ -341,7 +363,7 @@ export class MassBrowserPlaylistView extends LitElement {
     const expressive_class = this.useExpressive ? `expressive` : ``
     const vibrant_class = this.useVibrant ? `vibrant` : ``
     return html`
-      <div id="container ${expressive_class} ${vibrant_class}">
+      <div id="container" class="${expressive_class} ${vibrant_class}">
         <div id="header">
           ${this.renderHeader()}
         </div>
