@@ -68,6 +68,8 @@ export default css`
     font-style: italic;
     will-change: font-size;
     transition: font-size;
+    font-family: "Google Sans Flex";
+    font-variation-settings: "slnt" 0, "GRAD" 0, "ROND" 100;
   }
   #tracks {
     height: calc(var(--mass-player-card-height) - 10em);
