@@ -6,6 +6,8 @@ import {
 import { getRecommendationsServiceSchema } from "mass-queue-types/packages/mass_queue/actions/get_recommendations";
 import { getLibraryServiceResponse, getLibraryServiceSchema } from "mass-queue-types/packages/music_assistant/actions/get_library"
 import { searchServiceResponse, searchServiceSchema } from "mass-queue-types/packages/music_assistant/actions/search"
+import { getAlbumTracksServiceResponse, getAlbumTracksServiceSchema } from "mass-queue-types/packages/mass_queue/actions/get_album_tracks";
+import { getArtistTracksServiceResponse, getArtistTracksServiceSchema } from "mass-queue-types/packages/mass_queue/actions/get_artist_tracks"
 import { getPlaylistTracksServiceResponse, getPlaylistTracksServiceSchema } from "mass-queue-types/packages/mass_queue/actions/get_playlist_tracks"
 import { ExtendedHass, MediaLibraryItem, RecommendationResponse } from "../const/types";
 import { getInfoWSResponseSchema, getInfoWSServiceSchema } from "mass-queue-types/packages/mass_queue/ws/get_info.js";
@@ -172,6 +174,58 @@ export default class BrowserActions {
       type: 'call_service',
       domain: 'mass_queue',
       service: 'get_playlist_tracks',
+      service_data: {
+        uri: playlist_uri,
+        config_entry_id: config_entry
+      },
+      return_response: true
+    }
+    return await this.hass.callWS(data)
+  }
+  async actionGetAlbumTracks(
+    playlist_uri: string, 
+    entity_id_or_config_entry_id: string,
+  ): Promise<getAlbumTracksServiceResponse> {
+    let config_entry = '';
+    if (entity_id_or_config_entry_id.includes('.')) {
+      const info = await this.actionGetPlayerInfo(entity_id_or_config_entry_id);
+      if (!info) {
+        throw Error(`Received nothing back when getting tracks for playlist ${playlist_uri}!`)
+      }
+      config_entry = info.entries.mass_queue;
+    } else {
+      config_entry = entity_id_or_config_entry_id
+    }
+    const data: getAlbumTracksServiceSchema = {
+      type: 'call_service',
+      domain: 'mass_queue',
+      service: 'get_album_tracks',
+      service_data: {
+        uri: playlist_uri,
+        config_entry_id: config_entry
+      },
+      return_response: true
+    }
+    return await this.hass.callWS(data)
+  }
+  async actionGetArtistTracks(
+    playlist_uri: string, 
+    entity_id_or_config_entry_id: string,
+  ): Promise<getArtistTracksServiceResponse> {
+    let config_entry = '';
+    if (entity_id_or_config_entry_id.includes('.')) {
+      const info = await this.actionGetPlayerInfo(entity_id_or_config_entry_id);
+      if (!info) {
+        throw Error(`Received nothing back when getting tracks for playlist ${playlist_uri}!`)
+      }
+      config_entry = info.entries.mass_queue;
+    } else {
+      config_entry = entity_id_or_config_entry_id
+    }
+    const data: getArtistTracksServiceSchema = {
+      type: 'call_service',
+      domain: 'mass_queue',
+      service: 'get_artist_tracks',
       service_data: {
         uri: playlist_uri,
         config_entry_id: config_entry
