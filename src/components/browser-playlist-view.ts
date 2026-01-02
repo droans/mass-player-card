@@ -327,11 +327,12 @@ export class MassBrowserPlaylistView extends LitElement {
   protected renderEnqueue(): TemplateResult {
     return html`
       <mass-menu-button
-        id="enqueue-button-div"
+        id="enqueue-button"
         .iconPath=${this.Icons.PLAY_CIRCLE}
         .items=${this._enqueue_buttons}
         @menu-item-selected=${this.onEnqueue}
         fixedMenuPosition
+        naturalMenuWidth
       ></mass-menu-button>
     `;
   }
