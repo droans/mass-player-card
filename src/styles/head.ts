@@ -23,7 +23,7 @@ export default css`
     font-weight: 200 900;
     font-stretch: 25% 151%;
     font-display: swap;
-    src: url(https://fonts.gstatic.com/s/googlesansflex/v16/t5sJIQcYNIWbFgDgAAzZ34auoVyXkJCOvp3SFWJbN5hF8Ju1x6sKCyp0l9sI40swNJwInycYAJzz0m7kJ4qFQOJBOjLvDSndo0SKMpKSTzwliVdHAy4bxTDHg_ugnAakp8ub-cxgUg.woff2)
+    src: url(https://fonts.gstatic.com/s/googlesansflex/v16/t5tQIQcYNIWbFgDgAAzZ34auoVyXkJCOvp3SFWJbN5hF8Ju1x5Vwd0N3l9sIcwowNJwGpVd4AZzz0v6lDYatsQ.woff2)
       format("woff2");
     unicode-range:
       U+0000-00FF, U+0131, U+0152-0153, U+02BB-02BC, U+02C6, U+02DA, U+02DC,
