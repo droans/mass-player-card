@@ -1,6 +1,14 @@
 import { css } from "lit";
 
 export default css`
+  ha-md-list-item {
+    --md-list-item-top-space: 6px;
+    --md-list-item-bottom-space: 6px;
+    --md-list-item-trailing-space: 0px;
+  }
+  mass-menu-button::part(menu-select-menu) {
+    --control-select-menu-background-opacity: 0;
+  }
   .divider {
     --divider-color: var(--md-sys-color-surface-variant);
   }
@@ -11,6 +19,11 @@ export default css`
     background-color: var(--divider-color);
     margin-left: 64px;
     margin-right: 24px;
+  }
+  .menu-button {
+    height: 100%;
+    padding-top: var(--md-list-item-top-space);
+    padding-bottom: var(--md-list-item-bottom-space);
   }
   .thumbnail {
     width: var(--media-row-thumbnail-height);
