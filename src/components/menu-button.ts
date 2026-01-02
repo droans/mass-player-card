@@ -67,7 +67,8 @@ export class MassMenuButton extends LitElement {
     return this._items ?? [];
   }
 
-  private onSelect = () => {
+  private onSelect = (ev: Event) => {
+    ev.stopPropagation()
     this.menuElement.menuOpen = false;
   };
 
