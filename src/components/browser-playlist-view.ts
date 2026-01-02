@@ -362,7 +362,7 @@ export class MassBrowserPlaylistView extends LitElement {
     const expressive_class = this.useExpressive ? `expressive` : ``
     const vibrant_class = this.useVibrant ? `vibrant` : ``
     return html`
-      <div id="container ${expressive_class} ${vibrant_class}">
+      <div id="container" class="${expressive_class} ${vibrant_class}">
         <div id="header">
           ${this.renderHeader()}
         </div>
