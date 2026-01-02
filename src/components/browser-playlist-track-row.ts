@@ -1,4 +1,4 @@
-import { CSSResultGroup, html, LitElement, TemplateResult } from "lit";
+import { CSSResultGroup, html, LitElement, PropertyValues, TemplateResult } from "lit";
 import { customElement, property } from "lit/decorators.js";
 import styles from '../styles/browser-playlist-track-row';
 import { consume } from "@lit/context";
@@ -180,6 +180,10 @@ export class MassPlaylistTrackRow extends LitElement {
       </ha-md-list-item>
       ${this.divider ? html`<div class="divider"></div>` : ``}
     `
+  }
+
+  protected shouldUpdate(_changedProperties: PropertyValues): boolean {
+    return _changedProperties.size > 0; 
   }
 
   static get styles(): CSSResultGroup {
