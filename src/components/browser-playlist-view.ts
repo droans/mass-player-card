@@ -30,14 +30,17 @@ export class MassBrowserPlaylistView extends LitElement {
   // Header is animated on scroll - query elements for animation
   @query('#title') private titleElement!: HTMLElement
   @query('#playlist-info') private infoElement!: HTMLElement
-  @query('#enqueue') private enqueueElement!: HTMLElement
+  @query('#enqueue-button') private enqueueElement!: HTMLElement
   @query('#img-header') private imageElement!: HTMLElement
   @query('#playlist-image') private imageDivElement!: HTMLElement;
   @query('#tracks') private tracksElement!: HTMLElement;
   @query('#header') private headerElement!: HTMLElement;
+  private enqueueControlElement!: HTMLElement;
+  private enqueueIconElement!: HTMLElement;
   private titleAnimation!: Animation;
   private infoAnimation!: Animation;
-  private enqueueAnimation!: Animation;
+  private enqueueControlAnimation!: Animation;
+  private enqueueIconAnimation!: Animation;
   private imageAnimation!: Animation;
   private imageDivAnimation!: Animation;
   private headerAnimation!: Animation;
@@ -218,7 +221,8 @@ export class MassBrowserPlaylistView extends LitElement {
   }
   private animateHeaderTitle() {
     const kf = {
-      fontSize: '2em'
+      fontSize: '2em',
+      fontWeight: '500',
     }
     this.titleAnimation = this.addScrollAnimation(kf, this.titleElement)
   }
@@ -228,9 +232,24 @@ export class MassBrowserPlaylistView extends LitElement {
     }
     this.infoAnimation = this.addScrollAnimation(kf, this.infoElement)
   }
-  // private animateHeaderEnqueue() {
-    
-  // }
+  private animateHeaderEnqueue() {
+    const iconElem = this?.enqueueElement?.shadowRoot?.querySelector('.svg-menu-expressive');
+    const selectElem = this?.enqueueElement?.shadowRoot?.querySelector('#menu-select-menu')?.shadowRoot?.querySelector('.select-anchor')
+    if (!iconElem || !selectElem) {
+      return;
+    }
+    const iconKeyFrames = {
+      'height': 'var(--header-collapsed-menu-icon-size)',
+      'width': 'var(--header-collapsed-menu-icon-size)',
+    }
+    const selectKeyFrames = {
+      'height': 'var(--header-collapsed-menu-control-size)',
+    }
+    this.enqueueIconElement = iconElem as HTMLElement
+    this.enqueueControlElement = selectElem as HTMLElement
+    this.enqueueIconAnimation = this.addScrollAnimation(iconKeyFrames, this.enqueueIconElement);
+    this.enqueueControlAnimation = this.addScrollAnimation(selectKeyFrames, this.enqueueControlElement);
+  }
   private animateHeaderImage() {
     const kf = {
       transform: 'scale(0.5)  translateX(-2em) translateY(-4em)'
@@ -242,6 +261,7 @@ export class MassBrowserPlaylistView extends LitElement {
     this.animateHeaderImage();
     this.animateHeaderTitle();
     this.animateHeaderInfo();
+    this.animateHeaderEnqueue();
   }
   
   private onEnqueue = (ev: MenuButtonEventData) => {
