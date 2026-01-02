@@ -96,6 +96,7 @@ export class MassMenuItem extends LitElement {
         part="menu-list-item-image"
         src="${this.imgPath}"
         slot="${slot}"
+        loading="lazy"
       >
     `
   }

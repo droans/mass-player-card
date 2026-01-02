@@ -79,6 +79,7 @@ export class MassPlaylistTrackRow extends LitElement {
         slot="start"
         src="${img}"
         onerror="this.src = '${fallback}'"
+        loading="lazy"
       >
     `
   }

@@ -167,6 +167,7 @@ class MediaRow extends LitElement {
           slot="start"
           src="${img}"
           onerror="this.src=${fallback}"
+          loading="lazy"
         >
       `
     }
