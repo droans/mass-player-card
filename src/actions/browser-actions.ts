@@ -12,6 +12,8 @@ import { getPlaylistTracksServiceResponse, getPlaylistTracksServiceSchema } from
 import { getPlaylistServiceSchema, getPlaylistServiceResponse } from "mass-queue-types/packages/mass_queue/actions/get_playlist"
 import { ExtendedHass, MediaLibraryItem, RecommendationResponse } from "../const/types";
 import { getInfoWSResponseSchema, getInfoWSServiceSchema } from "mass-queue-types/packages/mass_queue/ws/get_info.js";
+import { getAlbumServiceResponse, getAlbumServiceSchema } from "mass-queue-types/packages/mass_queue/actions/get_album.js";
+import { getArtistServiceResponse, getArtistServiceSchema } from "mass-queue-types/packages/mass_queue/actions/get_artist.js";
 export default class BrowserActions {
   private _hass!: ExtendedHass;
 
@@ -255,6 +257,58 @@ export default class BrowserActions {
       service: 'get_playlist',
       service_data: {
         uri: playlist_uri,
+        config_entry_id: config_entry
+      },
+      return_response: true
+    }
+    return await this.hass.callWS(data);
+  }
+  async actionGetAlbumData (
+    album_uri: string,
+    entity_id_or_config_entry_id: string,
+  ): Promise<getAlbumServiceResponse> {
+    let config_entry = '';
+    if (entity_id_or_config_entry_id.includes('.')) {
+      const info = await this.actionGetPlayerInfo(entity_id_or_config_entry_id);
+      if (!info) {
+        throw Error(`Received nothing back when getting tracks for album ${album_uri}!`)
+      }
+      config_entry = info.entries.mass_queue;
+    } else {
+      config_entry = entity_id_or_config_entry_id
+    }
+    const data: getAlbumServiceSchema = {
+      type: 'call_service',
+      domain: 'mass_queue',
+      service: 'get_album',
+      service_data: {
+        uri: album_uri,
+        config_entry_id: config_entry
+      },
+      return_response: true
+    }
+    return await this.hass.callWS(data);
+  }
+  async actionGetArtistData (
+    album_uri: string,
+    entity_id_or_config_entry_id: string,
+  ): Promise<getArtistServiceResponse> {
+    let config_entry = '';
+    if (entity_id_or_config_entry_id.includes('.')) {
+      const info = await this.actionGetPlayerInfo(entity_id_or_config_entry_id);
+      if (!info) {
+        throw Error(`Received nothing back when getting tracks for album ${album_uri}!`)
+      }
+      config_entry = info.entries.mass_queue;
+    } else {
+      config_entry = entity_id_or_config_entry_id
+    }
+    const data: getArtistServiceSchema = {
+      type: 'call_service',
+      domain: 'mass_queue',
+      service: 'get_artist',
+      service_data: {
+        uri: album_uri,
         config_entry_id: config_entry
       },
       return_response: true

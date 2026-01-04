@@ -1,13 +1,13 @@
 import { CSSResultOrNative, html, LitElement, PropertyValues, TemplateResult } from "lit";
 import { customElement, property, query, queryAll, state } from "lit/decorators.js";
 import sharedStyles from '../styles/browser-view-shared';
-import styles from '../styles/browser-playlist-view';
+import styles from '../styles/browser-artist-view';
 import { consume } from "@lit/context";
 import { activeEntityConfContext, activeMediaPlayerContext, EntityConfig, hassContext, IconsContext, mediaBrowserConfigContext, useExpressiveContext, useVibrantContext } from "../const/context.js";
-import { ExtendedHass, ExtendedHassEntity, ListItems, mediaCardPlaylistData } from "../const/types.js";
+import { ExtendedHass, ExtendedHassEntity, ListItems, mediaCardArtistData } from "../const/types.js";
 import BrowserActions from "../actions/browser-actions.js";
 import { DEFAULT_MEDIA_BROWSER_HIDDEN_ELEMENTS_CONFIG, HIDDEN_BUTTON_VALUE, MediaBrowserConfig, MediaBrowserHiddenElementsConfig } from "../config/media-browser.js";
-import "../components/section-header";
+import "./section-header";
 import { Icons } from "../const/icons.js";
 import { getThumbnail } from "../utils/thumbnails.js";
 import { EnqueueOptions, Thumbnail } from "../const/enums.js";
@@ -15,15 +15,15 @@ import { getEnqueueButtons } from "../const/media-browser.js";
 import { HTMLImageElementEvent, MenuButtonEventData } from "../const/events.js";
 import { CardEnqueueService } from "../const/actions.js";
 import './browser-track-row';
-import { delay, formatDuration } from "../utils/util.js";
+import { delay } from "../utils/util.js";
 import { Track, Tracks } from "mass-queue-types/packages/mass_queue/utils.js";
-import { getPlaylistServiceResponse } from "mass-queue-types/packages/mass_queue/actions/get_playlist.js";
+import { getArtistServiceResponse } from "mass-queue-types/packages/mass_queue/actions/get_artist";
 import { cache } from "lit/directives/cache.js";
 
-@customElement('mpc-browser-playlist-view')
-export class MassBrowserPlaylistView extends LitElement {
+@customElement('mpc-browser-artist-view')
+export class MassBrowserArtistView extends LitElement {
   // See setter
-  private _playlistData!: mediaCardPlaylistData;
+  private _artistData!: mediaCardArtistData;
   private _hass!: ExtendedHass;
   private _activePlayer!: ExtendedHassEntity;
   private _browserConfig!: MediaBrowserConfig;
@@ -32,16 +32,18 @@ export class MassBrowserPlaylistView extends LitElement {
 
   // Header is animated on scroll - query elements for animation
   @query('#title') private titleElement!: HTMLElement
-  @query('#playlist-info') private infoElement!: HTMLElement
+  @query('#collection-info') private infoElement!: HTMLElement
+  @query('#collection-artists') private artistsElement!: HTMLElement
   @query('#enqueue-button') private enqueueElement!: HTMLElement
   @query('#img-header') private imageElement!: HTMLElement
-  @query('#playlist-image') private imageDivElement!: HTMLElement;
+  @query('#collection-image') private imageDivElement!: HTMLElement;
   @query('#tracks') private tracksElement!: HTMLElement;
   @query('#header') private headerElement!: HTMLElement;
   private enqueueControlElement!: HTMLElement;
   private enqueueIconElement!: HTMLElement;
   private titleAnimation!: Animation;
   private infoAnimation!: Animation;
+  private artistsAnimation!: Animation;
   private enqueueControlAnimation!: Animation;
   private enqueueIconAnimation!: Animation;
   private imageAnimation!: Animation;
@@ -49,11 +51,8 @@ export class MassBrowserPlaylistView extends LitElement {
   private headerAnimation!: Animation;
   private animationsAdded = false;
 
-  // Duration of playlist
-  private playlistDuration = 0;
-
-  // Metadata for playlist
-  @state() private playlistMetadata!: getPlaylistServiceResponse
+  // Metadata for artist
+  @state() private artistMetadata!: getArtistServiceResponse;
 
   // Limit rendered rows to reduce memory usage
   // Current rendered index
@@ -101,7 +100,7 @@ export class MassBrowserPlaylistView extends LitElement {
   }
   
   // Data for all tracks - URI, image, title, album, artist, etc.
-  // Set when playlistData changes.
+  // Set when artistData changes.
   @state() public tracks!: Tracks;
 
   // Ensure style adjustments are handled
@@ -117,7 +116,7 @@ export class MassBrowserPlaylistView extends LitElement {
   public set hass(hass: ExtendedHass) {
     if (!this._hass) {
       this._hass = hass;
-      void this.getPlaylistTracks();
+      void this.getTracks();
       return;
     }
     this._hass = hass;
@@ -130,7 +129,7 @@ export class MassBrowserPlaylistView extends LitElement {
   public set activePlayer(player: ExtendedHassEntity) {
     if (!this.activePlayer) {
       this._activePlayer = player;
-      void this.getPlaylistTracks();
+      void this.getTracks();
       return;
     }
     this._activePlayer = player;
@@ -139,14 +138,14 @@ export class MassBrowserPlaylistView extends LitElement {
     return this._activePlayer;
   }
 
-  // Data about playlist - URI, name, thumbnail, etc.
+  // Data about artist - URI, name, thumbnail, etc.
   @property({ attribute: false })
-  public set playlistData(data: mediaCardPlaylistData) {
-    this._playlistData = data;
-    void this.getPlaylistTracks();
+  public set artistData(data: mediaCardArtistData) {
+    this._artistData = data;
+    void this.getTracks();
   }
-  public get playlistData() {
-    return this._playlistData;
+  public get artistData() {
+    return this._artistData;
   }
 
   private _trackObserverCallback = (e: IntersectionObserverEntry[]) => {
@@ -198,37 +197,30 @@ export class MassBrowserPlaylistView extends LitElement {
     this.updateEnqueueButtons();
   }
 
-  // Ask HA to return the tracks in the playlist
-  public async getPlaylistTracks() {
+  // Ask HA to return the tracks in the artist
+  public async getTracks() {
     if (
       !this.hass 
-      || !this.playlistData
+      || !this.artistData
       || !this.activePlayer
     ) {
       return;
     }
-    const tracks = await this.browserActions.actionGetPlaylistTracks(this.playlistData.media_content_id, this.activePlayer.entity_id);
+    const tracks = await this.browserActions.actionGetArtistTracks(this.artistData.media_content_id, this.activePlayer.entity_id);
     this.tracks = tracks.response.tracks;
-    let dur = 0;
-    this.tracks.forEach(
-      (track) => {
-        dur += track.duration ?? 0;
-      }
-    )
-    this.playlistDuration = dur;
     this.setHiddenElements()
-    await this.getPlaylistMetadata();
+    await this.getMetadata();
   }
-  public async getPlaylistMetadata() {
+  public async getMetadata() {
     if (
       !this.hass 
-      || !this.playlistData
+      || !this.artistData
       || !this.activePlayer
     ) {
       return;
     }
-    const metadata = await this.browserActions.actionGetPlaylistData(this.playlistData.media_content_id, this.activePlayer.entity_id);
-    this.playlistMetadata = metadata;
+    const metadata = await this.browserActions.actionGetArtistData(this.artistData.media_content_id, this.activePlayer.entity_id);
+    this.artistMetadata = metadata;
   }
 
   public get browserActions() {
@@ -290,12 +282,19 @@ export class MassBrowserPlaylistView extends LitElement {
     const kf = {
       fontSize: '2em',
       fontWeight: '500',
+      top: '0em',
     }
     this.titleAnimation = this.addScrollAnimation(kf, this.titleElement)
   }
+  // private animateHeaderArtists() {
+  //   const kf = {
+  //     fontSize: '0.8em'
+  //   }
+  //   this.artistsAnimation = this.addScrollAnimation(kf, this.artistsElement)
+  // }
   private animateHeaderInfo() {
     const kf = {
-      fontSize: '1em'
+      fontSize: '0.7em'
     }
     this.infoAnimation = this.addScrollAnimation(kf, this.infoElement)
   }
@@ -329,6 +328,7 @@ export class MassBrowserPlaylistView extends LitElement {
     this.animateHeaderTitle();
     this.animateHeaderInfo();
     this.animateHeaderEnqueue();
+    // this.animateHeaderArtists();
   }
   
   private onEnqueue = (ev: MenuButtonEventData) => {
@@ -338,7 +338,7 @@ export class MassBrowserPlaylistView extends LitElement {
     if (!value) {
       return;
     }
-    this.onEnqueueAction(this.playlistData, value);
+    this.onEnqueueAction(this.artistData, value);
   };
 
   private updateEnqueueButtons() {
@@ -367,10 +367,10 @@ export class MassBrowserPlaylistView extends LitElement {
     `
   }
   private _renderImageFallback = (ev: HTMLImageElementEvent) => {
-    ev.target.src = getThumbnail(this.hass, Thumbnail.PLAYLIST);
+    ev.target.src = getThumbnail(this.hass, Thumbnail.DISC);
   }
   protected renderImage(): TemplateResult {
-    const img = this.playlistData.media_image;
+    const img = this.artistData.media_image;
     return html`
         <img
           src="${img}"
@@ -383,22 +383,15 @@ export class MassBrowserPlaylistView extends LitElement {
   }
   protected renderOverview(): TemplateResult {
     const trackStr = this.tracks?.length ? `${this.tracks.length.toString()} Tracks` : `Loading...`
-    const owner = this?.playlistMetadata?.response?.owner ?? `Unknown`;
     return html`
       <div id="title">
         <ha-marquee-text>
-          ${this.playlistData.media_title}
+          ${this.artistData.media_title}
         </ha-marquee-text>
       </div>
       <div id="collection-info">
-        <div id="tracks-length">
+        <div id="tracks-length">  
           ${trackStr}
-        </div>
-        <div id="playlist-duration">
-          ${formatDuration(this.playlistDuration)}
-        </div>
-        <div id="playlist-owner">
-          ${owner}
         </div>
       </div>
     `
@@ -419,7 +412,7 @@ export class MassBrowserPlaylistView extends LitElement {
       <mpc-track-row
         .track=${track}
         ?divider=${divider}
-        .collectionURI=${this.playlistData.media_content_id}
+        .collectionURI=${this.artistData.media_content_id}
         .enqueueButtons=${this._enqueue_buttons}
       ></mpc-track-row>
     `)
