@@ -183,7 +183,10 @@ export function uuid4() {
   );
 }
 
-export function formatDuration(dur: number) {
+export function formatDuration(dur: number | undefined) {
+  if (!dur) {
+    return `0 minutes`;
+  }
   let _dur = dur;
   const days_s = 86400;
   const hr_s = 3600;
@@ -193,7 +196,6 @@ export function formatDuration(dur: number) {
   const hrs = Math.floor(_dur / hr_s);
   _dur = _dur % hr_s;
   const mins = Math.floor(_dur / min_s);
-  const secs = _dur % min_s;
   if (days) {
     return `${days.toString()} days, ${hrs.toString()} hours, ${mins.toString()} minutes`
   }

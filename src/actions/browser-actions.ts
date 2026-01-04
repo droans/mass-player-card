@@ -9,6 +9,7 @@ import { searchServiceResponse, searchServiceSchema } from "mass-queue-types/pac
 import { getAlbumTracksServiceResponse, getAlbumTracksServiceSchema } from "mass-queue-types/packages/mass_queue/actions/get_album_tracks";
 import { getArtistTracksServiceResponse, getArtistTracksServiceSchema } from "mass-queue-types/packages/mass_queue/actions/get_artist_tracks"
 import { getPlaylistTracksServiceResponse, getPlaylistTracksServiceSchema } from "mass-queue-types/packages/mass_queue/actions/get_playlist_tracks"
+import { getPlaylistServiceSchema, getPlaylistServiceResponse } from "mass-queue-types/packages/mass_queue/actions/get_playlist"
 import { ExtendedHass, MediaLibraryItem, RecommendationResponse } from "../const/types";
 import { getInfoWSResponseSchema, getInfoWSServiceSchema } from "mass-queue-types/packages/mass_queue/ws/get_info.js";
 export default class BrowserActions {
@@ -233,6 +234,32 @@ export default class BrowserActions {
       return_response: true
     }
     return await this.hass.callWS(data)
+  }
+  async actionGetPlaylistData (
+    playlist_uri: string,
+    entity_id_or_config_entry_id: string,
+  ): Promise<getPlaylistServiceResponse> {
+    let config_entry = '';
+    if (entity_id_or_config_entry_id.includes('.')) {
+      const info = await this.actionGetPlayerInfo(entity_id_or_config_entry_id);
+      if (!info) {
+        throw Error(`Received nothing back when getting tracks for playlist ${playlist_uri}!`)
+      }
+      config_entry = info.entries.mass_queue;
+    } else {
+      config_entry = entity_id_or_config_entry_id
+    }
+    const data: getPlaylistServiceSchema = {
+      type: 'call_service',
+      domain: 'mass_queue',
+      service: 'get_playlist',
+      service_data: {
+        uri: playlist_uri,
+        config_entry_id: config_entry
+      },
+      return_response: true
+    }
+    return await this.hass.callWS(data);
   }
   private async getPlayerConfigEntry(entity_id: string): Promise<string> {
     const entry = await this.hass.callWS<{config_entry_id: string}>({

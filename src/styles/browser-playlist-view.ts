@@ -38,7 +38,8 @@ export default css`
   #enqueue {
     width: 20%;
     display: flex;
-    align-self: center;
+    align-self: end;
+    margin-bottom: 1em;
   }
   #header {
     display: flex;
@@ -67,7 +68,7 @@ export default css`
     justify-items: end;
     line-height: normal;
   }
-  #playlist-duration {
+  #playlist-duration, #playlist-owner {
     font-size: 1em;
     margin-right: 0.5em;
     font-style: italic;
@@ -78,10 +79,7 @@ export default css`
     place-content: center;
   }
   #playlist-info {
-    margin-right: 0.5em;
-    font-size: 1.2em;
-    will-change: font-size;
-    font-family: "Google Sans Flex";
+    text-align: end;
   }
   #title {
     font-size: 3em;
@@ -90,8 +88,8 @@ export default css`
     transition: font-size;
     font-family: "Google Sans Flex";
     font-variation-settings: "slnt" 0, "GRAD" 0, "ROND" 100;
-    font-weight: 800;
-    font-stretch: 50%;
+    font-weight: 900;
+    font-stretch: 25%;
   }
   #tracks {
     height: calc(var(--mass-player-card-height) - 4em);
@@ -104,6 +102,12 @@ export default css`
     border-top-left-radius: var(--default-border-radius);
     border-top-right-radius: var(--default-border-radius);
     overflow: hidden;
+  }
+  #tracks-length {
+    margin-right: 0.5em;
+    font-size: 1.2em;
+    will-change: font-size;
+    font-family: "Google Sans Flex";
   }
   #tracks-padding {
     height: var(--playlist-header-height);

@@ -16,6 +16,7 @@ import { CardEnqueueService } from "../const/actions.js";
 import './browser-playlist-track-row';
 import { delay, formatDuration } from "../utils/util.js";
 import { Track, Tracks } from "mass-queue-types/packages/mass_queue/utils.js";
+import { getPlaylistServiceResponse } from "mass-queue-types/packages/mass_queue/actions/get_playlist.js";
 
 @customElement('mpc-browser-playlist-view')
 export class MassBrowserPlaylistView extends LitElement {
@@ -45,11 +46,16 @@ export class MassBrowserPlaylistView extends LitElement {
   private imageDivAnimation!: Animation;
   private headerAnimation!: Animation;
   private animationsAdded = false;
+
+  // Duration of playlist
   private playlistDuration = 0;
+
+  // Metadata for playlist
+  @state() private playlistMetadata!: getPlaylistServiceResponse
 
   // Limit rendered rows to reduce memory usage
   // Current rendered index
-  @property() private currentIdx = 40;
+  @state() private currentIdx = 40;
   // Additional rows to render
   private indexIncrease = 40;
   // Offset before rendering new rows
@@ -209,6 +215,18 @@ export class MassBrowserPlaylistView extends LitElement {
     )
     this.playlistDuration = dur;
     this.setHiddenElements()
+    await this.getPlaylistMetadata();
+  }
+  public async getPlaylistMetadata() {
+    if (
+      !this.hass 
+      || !this.playlistData
+      || !this.activePlayer
+    ) {
+      return;
+    }
+    const metadata = await this.browserActions.actionGetPlaylistData(this.playlistData.playlist_uri, this.activePlayer.entity_id);
+    this.playlistMetadata = metadata;
   }
 
   public get browserActions() {
@@ -361,6 +379,7 @@ export class MassBrowserPlaylistView extends LitElement {
   }
   protected renderOverview(): TemplateResult {
     const trackStr = this.tracks?.length ? `${this.tracks.length.toString()} Tracks` : `Loading...`
+    const owner = this?.playlistMetadata?.response?.owner ?? `Unknown`;
     return html`
       <div id="title">
         <ha-marquee-text>
@@ -368,10 +387,15 @@ export class MassBrowserPlaylistView extends LitElement {
         </ha-marquee-text>
       </div>
       <div id="playlist-info">
-        ${trackStr}
-      </div>
-      <div id="playlist-duration">
-        ${formatDuration(this.playlistDuration)}
+        <div id="tracks-length">
+          ${trackStr}
+        </div>
+        <div id="playlist-duration">
+          ${formatDuration(this.playlistDuration)}
+        </div>
+        <div id="playlist-owner">
+          ${owner}
+        </div>
       </div>
     `
   }
