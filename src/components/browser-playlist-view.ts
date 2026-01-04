@@ -1,5 +1,5 @@
 import { CSSResultGroup, html, LitElement, PropertyValues, TemplateResult } from "lit";
-import { customElement, property, query, state } from "lit/decorators.js";
+import { customElement, property, query, queryAll, state } from "lit/decorators.js";
 import styles from '../styles/browser-playlist-view';
 import { consume } from "@lit/context";
 import { activeEntityConfContext, activeMediaPlayerContext, EntityConfig, hassContext, IconsContext, mediaBrowserConfigContext, useExpressiveContext, useVibrantContext } from "../const/context.js";
@@ -45,6 +45,20 @@ export class MassBrowserPlaylistView extends LitElement {
   private imageDivAnimation!: Animation;
   private headerAnimation!: Animation;
   private animationsAdded = false;
+
+  // Limit rendered rows to reduce memory usage
+  // Current rendered index
+  @property() private currentIdx = 40;
+  // Additional rows to render
+  private indexIncrease = 40;
+  // Offset before rendering new rows
+  private listenOffset = -10;
+  // Observer for element
+  private observer!: IntersectionObserver;
+  // Has observer been added
+  private observerAdded = false;
+  // Listen on elements
+  @queryAll('mpc-playlist-track-row') trackElements!: HTMLElement[];
 
   // Set which enqueue elements are hidden
   private hide: MediaBrowserHiddenElementsConfig = DEFAULT_MEDIA_BROWSER_HIDDEN_ELEMENTS_CONFIG;
@@ -124,6 +138,30 @@ export class MassBrowserPlaylistView extends LitElement {
   }
   public get playlistData() {
     return this._playlistData;
+  }
+
+  private _trackObserverCallback = (e: IntersectionObserverEntry[]) => {
+    const entry = e[0];
+    if (entry.isIntersecting) {
+      this.observer.disconnect();
+      this.currentIdx = Math.min(this.currentIdx + this.indexIncrease, this.tracks.length);
+    }
+  }
+
+  private addObserver() {
+    if (this.observer) {
+      this.observer.disconnect();
+    }
+    if (!this.trackElements?.length) {
+      return;
+    }
+    const listenIdx = this.currentIdx + this.listenOffset;
+    const observer = new IntersectionObserver(this._trackObserverCallback)
+    const elem = this.trackElements[listenIdx];
+    observer.observe(elem);
+    
+    this.observer = observer;
+    this.observerAdded = true;
   }
 
   private setHiddenElements() {
@@ -313,6 +351,7 @@ export class MassBrowserPlaylistView extends LitElement {
     `
   }
   protected renderOverview(): TemplateResult {
+    const trackStr = this.tracks?.length ? `${this.tracks.length.toString()} Tracks` : `Loading...`
     return html`
       <div id="title">
         <ha-marquee-text>
@@ -320,7 +359,7 @@ export class MassBrowserPlaylistView extends LitElement {
         </ha-marquee-text>
       </div>
       <div id="playlist-info">
-        ${this.tracks?.length?.toString() ?? '0'} Tracks
+        ${trackStr}
       </div>
     `
   }
@@ -348,13 +387,18 @@ export class MassBrowserPlaylistView extends LitElement {
   }
 
   protected renderTracks(): TemplateResult | TemplateResult[] {
-    if (!this.tracks) {
+    if (!this.tracks?.length) {
       return html``;
     }
     const trackCt = this.tracks.length;
+
     return this.tracks.map(
       (track, idx) => {
+        if (idx >= this.currentIdx) {
+          return html``;
+        }
         const div = idx < trackCt - 1;
+
         return this.renderTrack(track, div)
       }
     )
@@ -377,8 +421,24 @@ export class MassBrowserPlaylistView extends LitElement {
     return _changedProperties.size > 0;
   }
 
-  protected updated(): void {
+  protected updated(_changedProperties: PropertyValues): void {
+    if (!this.animationsAdded) {
     void this.testAnimation()
+    }
+    if (
+      _changedProperties.has('currentIdx') 
+      || ( 
+        _changedProperties.has('tracks') && !this.observerAdded)
+    ) {
+      this.addObserver();
+    }
+  }
+
+  disconnectedCallback(): void {
+    if (this.observer) {
+      this.observer.disconnect();
+    }
+    super.disconnectedCallback();
   }
 
   private async testAnimation(delayMs=50) {
