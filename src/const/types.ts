@@ -130,9 +130,16 @@ export type mediaCardData =
 
 export type mediaCardEnqueueType = 
   mediaCardPlaylistData
+  | mediaCardAlbumData
+  | mediaCardArtistData
   | mediaCardItemData
   | mediaCardServiceData
   | mediaCardRecommendationData
+
+export type mediaCardCollectionType = 
+  mediaCardPlaylistData
+  | mediaCardAlbumData
+  | mediaCardArtistData
 
 export interface mediaCardItemData {
   type: 'item';
@@ -158,12 +165,24 @@ export interface mediaCardSectionData {
   section: string;
 }
 
-export interface mediaCardPlaylistData {
-  type: 'playlist';
-  playlist_uri: string;
-  playlist_image: string;
-  playlist_title: string;
+interface mediaCardCollectionData {
+  media_content_id: string;
+  media_image: string;
+  media_title: string;
 }
+
+export interface mediaCardPlaylistData extends mediaCardCollectionData {
+  type: 'playlist';
+}
+
+export interface mediaCardAlbumData extends mediaCardCollectionData {
+  type: 'album';
+}
+
+export interface mediaCardArtistData extends mediaCardCollectionData {
+  type: 'artist';
+}
+
 export interface mediaPlaylistCard extends Omit<MediaCardItem, 'data'> {
   data: mediaCardPlaylistData
 }
@@ -177,15 +196,6 @@ export interface MediaCardItem {
 }
 
 export type MediaLibraryItem = MediaItem;
-
-// interface ScrollTimelineOptions {
-//   source: Element;
-//   axis?: 'block' | 'inline' | 'x' | 'y';
-//   scrollOffsets?: any[];
-// }
-// export var ScrollTimeline: {
-//     new(options?: ScrollTimelineOptions): ScrollTimelineOptions;
-// }
 
 export type ServiceNoParams = () => void;
 

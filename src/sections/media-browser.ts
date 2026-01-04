@@ -25,6 +25,8 @@ import { consume, provide } from "@lit/context";
 import "../components/media-browser-cards";
 import "../components/section-header";
 import "../components/browser-playlist-view"
+import "../components/browser-album-view"
+import "../components/browser-artist-view"
 import styles from "../styles/media-browser";
 
 import {
@@ -57,6 +59,7 @@ import {
   mediaCardSectionData,
   mediaCardItemData,
   mediaCardEnqueueType,
+  mediaCardCollectionType,
 } from "../const/types";
 
 @customElement(`mass-media-browser`)
@@ -82,8 +85,8 @@ export class MediaBrowser extends LitElement {
 
   public activeSection = DEFAULT_ACTIVE_SECTION;
   public activeSubSection = DEFAULT_ACTIVE_SUBSECTION;
-  @property() private playlistViewActive = false;
-  @property() private activePlaylistData!: mediaCardPlaylistData;
+  @property() private collectionViewActive = false;
+  @property() private activeCollectionData!: mediaCardCollectionType;
   private previousSections: string[] = [];
   private previousSubSections: string[] = [];
 
@@ -156,7 +159,7 @@ export class MediaBrowser extends LitElement {
   public setActiveCards() {
     const section = this.activeSection;
     const subsection = this.activeSubSection;
-    this.playlistViewActive = false;
+    this.collectionViewActive = false;
     let new_cards: MediaCardItem[] = [];
     if (!this.cards) {
       return;
@@ -213,28 +216,29 @@ export class MediaBrowser extends LitElement {
       data.media_content_type,
     );
   };
-  private onPlaylistSelect = (data: mediaCardPlaylistData) => {
-    this.playlistViewActive = true;
-    this.activePlaylistData = data;
+  private onCollectionSelect = (data: mediaCardCollectionType) => {
+    this.collectionViewActive = true;
+    this.activeCollectionData = data;
   }
   private onSelect = (data: mediaCardData) => {
     const funcs = {
       section: this.onSectionSelect,
       item: this.onItemSelect,
       service: this.onServiceSelect,
-      playlist: this.onPlaylistSelect,
+      playlist: this.onCollectionSelect,
+      album: this.onCollectionSelect,
+      artist: this.onCollectionSelect,
     };
     const func = funcs[data.type as string] as (data: mediaCardData) => void;
-    if (data.type != 'playlist') {
-      this.playlistViewActive = false;
-      func(data);
-    } else {
-      this.onPlaylistSelect(data);
+    if (["playlist", "album", "artist"].includes(data.type)) {
+      this.onCollectionSelect(data as mediaCardCollectionType);
     }
+    this.collectionViewActive = false;
+    func(data);
   };
   private onEnqueue = (data: mediaCardEnqueueType, enqueue: EnqueueOptions) => {
 
-    const content_id = data.type == 'playlist' ? data.playlist_uri : data.media_content_id;
+    const content_id = data.type == 'playlist' ? data.media_content_id : data.media_content_id;
     const content_type = data.type == 'playlist' ? 'music' : data.media_content_id;
     if (enqueue == EnqueueOptions.RADIO) {
       void this.actions.actionPlayRadio(
@@ -252,7 +256,7 @@ export class MediaBrowser extends LitElement {
     );
   };
   private onPlaylistEnqueue = (data: mediaCardPlaylistData, enqueue: EnqueueOptions) => {
-    const content_id: string = data.playlist_uri;
+    const content_id: string = data.media_content_id;
     const content_type = 'playlist';
     void this.actions.actionEnqueueMedia(
       this.activeEntityConfig.entity_id,
@@ -262,7 +266,7 @@ export class MediaBrowser extends LitElement {
     );
   }
   private onBack = () => {
-    if (!this.playlistViewActive) {
+    if (!this.collectionViewActive) {
     this.activeSection = this.previousSections.pop() ?? DEFAULT_ACTIVE_SECTION;
     this.activeSubSection =
       this.previousSubSections.pop() ?? DEFAULT_ACTIVE_SUBSECTION;
@@ -361,17 +365,34 @@ export class MediaBrowser extends LitElement {
       this.setActiveCards();
     }
   };
-  protected renderPlaylistView(): TemplateResult {
+  protected renderCollectionView(): TemplateResult {
+    const collType = this.activeCollectionData.type;
+    if (collType == 'album') {
+      return html`
+      <mpc-browser-album-view
+        .albumData=${this.activeCollectionData}
+        .onEnqueueAction=${this.onPlaylistEnqueue}
+      ></mpc-browser-playlist-view>
+      `
+    }
+    if (collType == 'artist') {
+      return html`
+      <mpc-browser-artist-view
+        .artistData=${this.activeCollectionData}
+        .onEnqueueAction=${this.onPlaylistEnqueue}
+      ></mpc-browser-playlist-view>
+      `
+    }
     return html`
       <mpc-browser-playlist-view
-        .playlistData=${this.activePlaylistData}
+        .playlistData=${this.activeCollectionData}
         .onEnqueueAction=${this.onPlaylistEnqueue}
       ></mpc-browser-playlist-view>
     `
   }
   protected renderBrowserCards(): TemplateResult {
-    if (this.playlistViewActive) {
-      return this.renderPlaylistView();
+    if (this.collectionViewActive) {
+      return this.renderCollectionView();
     }
     return html`
       <mass-browser-cards

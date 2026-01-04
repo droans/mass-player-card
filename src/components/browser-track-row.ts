@@ -12,12 +12,12 @@ import { Icons } from "../const/icons.js";
 import { HTMLImageElementEvent, MenuButtonEventData } from "../const/events.js";
 import { getTranslation } from "../utils/translations.js";
 
-@customElement('mpc-playlist-track-row')
+@customElement('mpc-track-row')
 export class MassPlaylistTrackRow extends LitElement {
   @property({ attribute: false }) track!: Track;
   @property({ attribute: 'divider', type: Boolean }) divider = false;
 
-  @property({ attribute: false }) playlistURI!: string;
+  @property({ attribute: false }) collectionURI!: string;
   _enqueueButtons!: ListItems;
 
   @consume({ context: useExpressiveContext, subscribe: true })
@@ -103,7 +103,7 @@ export class MassPlaylistTrackRow extends LitElement {
     const actions = this.browserActions;
     const uri = this.track.media_content_id;
     await actions.actionPlayMedia(this.activeEntityId, uri, 'music')
-    await actions.actionEnqueueMedia(this.activeEntityId, this.playlistURI, 'playlist', EnqueueOptions.PLAY_NEXT);
+    await actions.actionEnqueueMedia(this.activeEntityId, this.collectionURI, 'playlist', EnqueueOptions.PLAY_NEXT);
   }
   private removeTrackFromPlaylist() {
     // pass
