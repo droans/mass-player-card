@@ -67,8 +67,12 @@ export class MassMenuButton extends LitElement {
     return this._items ?? [];
   }
 
-  private onSelect = (ev: Event) => {
-    ev.stopPropagation()
+  private onSelect = (ev: CustomEvent) => {
+    ev.stopPropagation();
+    // eslint-disable-next-line @typescript-eslint/no-unsafe-assignment
+    const data = {detail: ev.detail};
+    const _ev = new CustomEvent('menu-item-selected', data)
+    this.dispatchEvent(_ev);
     this.menuElement.menuOpen = false;
   };
 
