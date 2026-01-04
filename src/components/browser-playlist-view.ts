@@ -411,8 +411,12 @@ export class MassBrowserPlaylistView extends LitElement {
         <div id="header">
           ${this.renderHeader()}
         </div>
-        <div id="tracks">
-          ${this.renderTracks()}
+          <div id="tracks-container">
+            <div id="tracks">
+              <div id="tracks-padding"></div>
+              ${this.renderTracks()}
+            </div>
+          </div>
         </div>
       </div>
     `
