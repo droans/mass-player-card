@@ -44,11 +44,17 @@ export default css`
     display: flex;
     height: var(--playlist-header-height);
     will-change: height;
+    position: absolute;
+    width: 100%;
+    z-index: 1;
+    background-color: var(--md-sys-color-background, var(--ha-card-background));
+    border-top-left-radius: var(--default-border-radius);
+    border-top-right-radius: var(--default-border-radius);
   }
   #img-header {
     display: flex;
     height: 10em;
-    margin-top: 1.5em;
+    margin-top: 0.5em;
     margin-left: 1.2em;
     border-radius: 15%;
     will-change: transform;
@@ -81,9 +87,19 @@ export default css`
     font-stretch: 50%;
   }
   #tracks {
-    height: calc(var(--mass-player-card-height) - 10em);
+    height: calc(var(--mass-player-card-height) - 4em);
+    padding-top: calc(var(--playlist-header-height) 0 var(--playlist-header-min-height));
+    position: relative;
     overflow: scroll;
     scrollbar-width: none;
+  }
+  #tracks-container {
+    border-top-left-radius: var(--default-border-radius);
+    border-top-right-radius: var(--default-border-radius);
+    overflow: hidden;
+  }
+  #tracks-padding {
+    height: var(--playlist-header-height);
   }
   @keyframes scroll-image {
     to {
