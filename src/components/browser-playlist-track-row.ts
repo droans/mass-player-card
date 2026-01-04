@@ -154,15 +154,19 @@ export class MassPlaylistTrackRow extends LitElement {
       </span>
     `
   }
+
+  private _renderThumbnailFallback = (ev: Event) => {
+    (ev?.target as HTMLImageElement).src = getThumbnail(this.hass, Thumbnail.CLEFT);
+  }
   protected renderThumbnail(): TemplateResult {
-    const fallback = getThumbnail(this.hass, Thumbnail.CLEFT);
-    const img = this.track.local_image_encoded ?? this.track.media_image ?? fallback;
+    // const fallback = getThumbnail(this.hass, Thumbnail.CLEFT);
+    const img = this.track.local_image_encoded ?? this.track.media_image ?? '';
     return html`
       <img
         class="thumbnail"
         slot="start"
         src="${img}"
-        onerror="this.src = '${fallback}'"
+        onerror=${this._renderThumbnailFallback}
         loading="lazy"
       >
     `
