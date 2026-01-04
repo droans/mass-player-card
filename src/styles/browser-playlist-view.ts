@@ -81,6 +81,7 @@ export default css`
     margin-right: 0.5em;
     font-size: 1.2em;
     will-change: font-size;
+    font-family: "Google Sans Flex";
   }
   #title {
     font-size: 3em;
