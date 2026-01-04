@@ -182,3 +182,23 @@ export function uuid4() {
   ).toString(16)
   );
 }
+
+export function formatDuration(dur: number) {
+  let _dur = dur;
+  const days_s = 86400;
+  const hr_s = 3600;
+  const min_s = 60;
+  const days = Math.floor(_dur / days_s);
+  _dur = _dur % days_s;
+  const hrs = Math.floor(_dur / hr_s);
+  _dur = _dur % hr_s;
+  const mins = Math.floor(_dur / min_s);
+  const secs = _dur % min_s;
+  if (days) {
+    return `${days.toString()} days, ${hrs.toString()} hours, ${mins.toString()} minutes`
+  }
+  if (hrs) {
+    return `${hrs.toString()} hours, ${mins.toString()} minutes`
+  }
+  return `${mins.toString()} minutes`
+}

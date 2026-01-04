@@ -67,6 +67,12 @@ export default css`
     justify-items: end;
     line-height: normal;
   }
+  #playlist-duration {
+    font-size: 1em;
+    margin-right: 0.5em;
+    font-style: italic;
+    font-family: "Google Sans Flex";
+  }
   #playlist-image {
     display: flex;
     place-content: center;

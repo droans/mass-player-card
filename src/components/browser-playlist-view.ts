@@ -14,7 +14,7 @@ import { getEnqueueButtons } from "../const/media-browser.js";
 import { MenuButtonEventData } from "../const/events.js";
 import { CardEnqueueService } from "../const/actions.js";
 import './browser-playlist-track-row';
-import { delay } from "../utils/util.js";
+import { delay, formatDuration } from "../utils/util.js";
 import { Track, Tracks } from "mass-queue-types/packages/mass_queue/utils.js";
 
 @customElement('mpc-browser-playlist-view')
@@ -45,6 +45,7 @@ export class MassBrowserPlaylistView extends LitElement {
   private imageDivAnimation!: Animation;
   private headerAnimation!: Animation;
   private animationsAdded = false;
+  private playlistDuration = 0;
 
   // Limit rendered rows to reduce memory usage
   // Current rendered index
@@ -200,6 +201,13 @@ export class MassBrowserPlaylistView extends LitElement {
     }
     const tracks = await this.browserActions.actionGetPlaylistTracks(this.playlistData.playlist_uri, this.activePlayer.entity_id);
     this.tracks = tracks.response.tracks;
+    let dur = 0;
+    this.tracks.forEach(
+      (track) => {
+        dur += track.duration ?? 0;
+      }
+    )
+    this.playlistDuration = dur;
     this.setHiddenElements()
   }
 
@@ -209,6 +217,7 @@ export class MassBrowserPlaylistView extends LitElement {
     }
     return this._browserActions;
   }
+  
 
   private addScrollAnimation(transforms: Keyframe, elem: HTMLElement) {
     const shrunkHdrHeight = this.headerElement.offsetHeight / 2;
@@ -360,6 +369,9 @@ export class MassBrowserPlaylistView extends LitElement {
       </div>
       <div id="playlist-info">
         ${trackStr}
+      </div>
+      <div id="playlist-duration">
+        ${formatDuration(this.playlistDuration)}
       </div>
     `
   }
