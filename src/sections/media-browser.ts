@@ -142,7 +142,9 @@ export class MediaBrowser extends LitElement {
       this.activeCards = [];
       return;
     }
-    this.setActiveCards();
+    if (!this.activeCards) {
+      this.setActiveCards();
+    }
   }
   public get cards() {
     return this._cards;
