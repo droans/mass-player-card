@@ -20,6 +20,11 @@ export interface CardsUpdatedEventDetail {
 export interface CardsUpdatedEvent extends Omit<CustomEvent, "detail"> {
   detail: CardsUpdatedEventDetail;
 }
+
+export interface HTMLImageElementEvent extends UIEvent {
+  target: HTMLImageElement;
+}
+
 export interface ArtworkUpdatedEventData extends Omit<Event, "detail"> {
   detail: {
     type: string;

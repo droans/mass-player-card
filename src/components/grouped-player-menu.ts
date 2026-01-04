@@ -23,9 +23,8 @@ import { ExtendedHass } from "../const/types.js";
 import { jsonMatch } from "../utils/util.js";
 import { MassCardController } from "../controller/controller.js";
 import PlayerActions from "../actions/player-actions.js";
-import { DetailValEventData, JoinUnjoinEventData } from "../const/events.js";
+import { DetailValEventData, HTMLImageElementEvent, JoinUnjoinEventData } from "../const/events.js";
 import { customElement } from "lit/decorators.js";
-
 
 @customElement('mpc-grouped-player-menu')
 export class MassCardPlayerSelector extends LitElement {
@@ -138,7 +137,7 @@ export class MassCardPlayerSelector extends LitElement {
                 class="grouped-players-select-item-image ${expressive ? `expressive` : ``}"
                 slot="start"
                 src="${img}"
-                onerror="this.src = '${fallback}';"
+                @error${(e: HTMLImageElementEvent) => {e.target.src = fallback}}
               >
               <span slot="headline" class="grouped-title"> ${name} </span>
               <span slot="end">

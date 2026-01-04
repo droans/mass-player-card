@@ -38,6 +38,7 @@ import {
 } from "../config/player-queue";
 import { Icons } from "../const/icons";
 import { queueItem } from "mass-queue-types/packages/mass_queue/actions/get_queue_items.js";
+import { HTMLImageElementEvent } from "../const/events.js";
 
 class MediaRow extends LitElement {
 
@@ -156,9 +157,12 @@ class MediaRow extends LitElement {
     return _changedProperties.size > 0;
   }
 
+  private _renderThumbnailFallback = (ev: HTMLImageElementEvent) => {
+    ev.target.src = getThumbnail(this.hass, Thumbnail.DISC);
+  }
   private renderThumbnail(): TemplateResult {
     const played = !this.media_item.show_action_buttons && !this.media_item?.playing;
-    const fallback = getThumbnail(this.hass, Thumbnail.DISC)
+    const fallback = getThumbnail(this.hass, Thumbnail.DISC);
     const img = this.media_item.local_image_encoded ?? this.media_item.media_image ?? fallback;
     if ( this.showAlbumCovers && !this.hide.album_covers) {
       return html`
@@ -166,7 +170,7 @@ class MediaRow extends LitElement {
           class="thumbnail${played ? "-disabled" : ""}"
           slot="start"
           src="${img}"
-          onerror="this.src=${fallback}"
+          @error=${this._renderThumbnailFallback}
           loading="lazy"
         >
       `

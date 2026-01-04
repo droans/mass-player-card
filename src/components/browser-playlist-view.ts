@@ -11,7 +11,7 @@ import { Icons } from "../const/icons.js";
 import { getThumbnail } from "../utils/thumbnails.js";
 import { EnqueueOptions, Thumbnail } from "../const/enums.js";
 import { getEnqueueButtons } from "../const/media-browser.js";
-import { MenuButtonEventData } from "../const/events.js";
+import { HTMLImageElementEvent, MenuButtonEventData } from "../const/events.js";
 import { CardEnqueueService } from "../const/actions.js";
 import './browser-playlist-track-row';
 import { delay, formatDuration } from "../utils/util.js";
@@ -362,16 +362,18 @@ export class MassBrowserPlaylistView extends LitElement {
       </div>
     `
   }
+  private _renderImageFallback = (ev: HTMLImageElementEvent) => {
+    ev.target.src = getThumbnail(this.hass, Thumbnail.PLAYLIST);
+  }
   protected renderImage(): TemplateResult {
     const img = this.playlistData.playlist_image;
-    const fallback = getThumbnail(this.hass, Thumbnail.PLAYLIST);
     return html`
       <div id="playlist-image">
         <img
           src="${img}"
           id="img-header"
           class="thumbnail"
-          onerror="this.src=${fallback}"
+          @error=${this._renderImageFallback}
           loading="lazy"
         >
       </div>
