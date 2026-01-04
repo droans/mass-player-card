@@ -17,6 +17,7 @@ import './browser-playlist-track-row';
 import { delay, formatDuration } from "../utils/util.js";
 import { Track, Tracks } from "mass-queue-types/packages/mass_queue/utils.js";
 import { getPlaylistServiceResponse } from "mass-queue-types/packages/mass_queue/actions/get_playlist.js";
+import { cache } from "lit/directives/cache.js";
 
 @customElement('mpc-browser-playlist-view')
 export class MassBrowserPlaylistView extends LitElement {
@@ -413,15 +414,15 @@ export class MassBrowserPlaylistView extends LitElement {
       ></mass-menu-button>
     `;
   }
-  protected renderTrack(track: Track, divider: boolean): TemplateResult {
-    return html`
+  protected renderTrack(track: Track, divider: boolean) {
+    return cache(html`
       <mpc-playlist-track-row
         .track=${track}
         ?divider=${divider}
         .playlistURI=${this.playlistData.playlist_uri}
         .enqueueButtons=${this._enqueue_buttons}
       ></mpc-playlist-track-row>
-    `
+    `)
   }
 
   protected renderTracks() {
