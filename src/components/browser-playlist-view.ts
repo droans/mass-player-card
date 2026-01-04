@@ -424,9 +424,15 @@ export class MassBrowserPlaylistView extends LitElement {
     `
   }
 
-  protected renderTracks(): TemplateResult | TemplateResult[] {
+  protected renderTracks() {
     if (!this.tracks?.length) {
-      return html``;
+      return html`
+        <link
+            href="https://cdn.jsdelivr.net/npm/beercss@3.12.11/dist/cdn/beer.min.css"
+            rel="stylesheet"
+          />
+          <div class="shape loading-indicator extra"></div>
+      `;
     }
     const trackCt = this.tracks.length;
 
