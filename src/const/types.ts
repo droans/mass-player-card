@@ -125,12 +125,14 @@ export type mediaBrowserSectionSubtypes =
 // }
 
 export type mediaCardData = 
-  mediaCardPlaylistData
+  mediaCardEnqueueType
   | mediaCardSectionData
+
+export type mediaCardEnqueueType = 
+  mediaCardPlaylistData
   | mediaCardItemData
   | mediaCardServiceData
   | mediaCardRecommendationData
-
 
 export interface mediaCardItemData {
   type: 'item';

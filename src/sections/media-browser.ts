@@ -56,6 +56,7 @@ import {
   mediaCardServiceData,
   mediaCardSectionData,
   mediaCardItemData,
+  mediaCardEnqueueType,
 } from "../const/types";
 
 @customElement(`mass-media-browser`)
@@ -162,7 +163,7 @@ export class MediaBrowser extends LitElement {
     // eslint-disable-next-line @typescript-eslint/no-unsafe-member-access
       new_cards = [...this.cards[section][subsection] as MediaCardItem[]];
     } catch {
-      throw Error(`Failed to get cards for section ${section}, subsection ${subsection}`)
+      return;
     }
     const cur_cards = this.activeCards;
     if (!jsonMatch(new_cards, cur_cards)) {
@@ -229,9 +230,10 @@ export class MediaBrowser extends LitElement {
       this.onPlaylistSelect(data);
     }
   };
-  private onEnqueue = (data: mediaCardItemData, enqueue: EnqueueOptions) => {
-    const content_id: string = data.media_content_id;
-    const content_type: string = data.media_content_type;
+  private onEnqueue = (data: mediaCardEnqueueType, enqueue: EnqueueOptions) => {
+
+    const content_id = data.type == 'playlist' ? data.playlist_uri : data.media_content_id;
+    const content_type = data.type == 'playlist' ? 'music' : data.media_content_id;
     if (enqueue == EnqueueOptions.RADIO) {
       void this.actions.actionPlayRadio(
         this.activeEntityConfig.entity_id,
