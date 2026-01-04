@@ -30,6 +30,7 @@ import { Icons } from "../const/icons";
 import { ExtendedHass, ExtendedHassEntity } from "../const/types";
 import { Thumbnail } from "../const/enums";
 import { getThumbnail } from "../utils/thumbnails.js";
+import { HTMLImageElementEvent } from "../const/events.js";
 
 class PlayerRow extends LitElement {
   @property({ attribute: false }) joined = false;
@@ -125,6 +126,15 @@ class PlayerRow extends LitElement {
     this.transferService(this.player_entity.entity_id);
   }
 
+  private _renderThumbnailFallback = (ev: HTMLImageElementEvent) => {
+    const attrs = this?.player_entity?.attributes;
+    const fallback = getThumbnail(this.hass, Thumbnail.HEADPHONES);
+    const loc = attrs?.entity_picture_local
+    const pic = attrs?.entity_picture ?? fallback;
+    const src = ev.target.src;
+    const newSrc = src == loc ? pic : fallback;
+    ev.target.src = newSrc;
+  }
   private renderThumbnail() {
     const attrs = this?.player_entity?.attributes;
     const fallback = getThumbnail(this.hass, Thumbnail.HEADPHONES);
@@ -138,7 +148,7 @@ class PlayerRow extends LitElement {
         slot="start"
         src="${src}"
         loading="lazy"
-        onerror="if (src == '${loc}') {src = '${pic}'}; if (src == '${pic}') { src == '${fallback}' }"
+        @error=${this._renderThumbnailFallback}
       >
     `
   }

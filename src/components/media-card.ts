@@ -44,7 +44,7 @@ import { EnqueueOptions, Sections } from "../const/enums";
 import { Icons } from "../const/icons";
 import { Config } from "../config/config";
 import { WaAnimation } from "../const/elements";
-import { MenuButtonEventData } from "../const/events";
+import { HTMLImageElementEvent, MenuButtonEventData } from "../const/events";
 import { getThumbnail } from "../utils/thumbnails.js";
 
 class MediaCard extends LitElement {
@@ -200,16 +200,19 @@ class MediaCard extends LitElement {
   protected renderThumbnailFromBackground() {
     return html` ${this.config.background} `;
   }
+  private _renderImageFallback = (ev: HTMLImageElementEvent) => {
+    const fallback = getThumbnail(this.hass, this.config.fallback);
+    ev.target.src = fallback;
+  }
   protected renderThumbnailFromThumbnail() {
     const img = this.config.thumbnail;
-    const fallback = getThumbnail(this.hass, this.config.fallback)
     return html`
       <img
         id="thumbnail-div"
         slot="media"
         class="wa-grid"
         src="${img}"
-        onerror="this.src=${fallback}"
+        @error=${this._renderImageFallback}
         loading="lazy"
       >
     `;

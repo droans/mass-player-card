@@ -9,7 +9,7 @@ import { EnqueueOptions, Thumbnail } from "../const/enums.js";
 import BrowserActions from "../actions/browser-actions.js";
 import { Track } from "mass-queue-types/packages/mass_queue/utils.js";
 import { Icons } from "../const/icons.js";
-import { MenuButtonEventData } from "../const/events.js";
+import { HTMLImageElementEvent, MenuButtonEventData } from "../const/events.js";
 import { getTranslation } from "../utils/translations.js";
 
 @customElement('mpc-playlist-track-row')
@@ -155,8 +155,8 @@ export class MassPlaylistTrackRow extends LitElement {
     `
   }
 
-  private _renderThumbnailFallback = (ev: Event) => {
-    (ev?.target as HTMLImageElement).src = getThumbnail(this.hass, Thumbnail.CLEFT);
+  private _renderThumbnailFallback = (ev: HTMLImageElementEvent) => {
+    ev.target.src = getThumbnail(this.hass, Thumbnail.CLEFT);
   }
   protected renderThumbnail(): TemplateResult {
     // const fallback = getThumbnail(this.hass, Thumbnail.CLEFT);
@@ -166,7 +166,7 @@ export class MassPlaylistTrackRow extends LitElement {
         class="thumbnail"
         slot="start"
         src="${img}"
-        onerror=${this._renderThumbnailFallback}
+        @error=${this._renderThumbnailFallback}
         loading="lazy"
       >
     `
