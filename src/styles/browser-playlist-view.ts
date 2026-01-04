@@ -61,6 +61,11 @@ export default css`
     will-change: transform;
 
   }
+  .loading-indicator {
+    background-color: var(--md-sys-color-primary);
+    justify-self: center;
+    top: 2em;
+  }
   #overview {
     display: block;
     width: 75%;
