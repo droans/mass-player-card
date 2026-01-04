@@ -40,6 +40,8 @@ export default css`
     display: flex;
     align-self: end;
     margin-bottom: 1em;
+    position: absolute;
+    right: 1em;
   }
   #header {
     display: flex;
@@ -72,6 +74,7 @@ export default css`
     align-self: center;
     justify-items: end;
     line-height: normal;
+    margin-right: 1em;
   }
   #playlist-duration, #playlist-owner {
     font-size: 1em;
@@ -82,6 +85,7 @@ export default css`
   #playlist-image {
     display: flex;
     place-content: center;
+    width: 11em;
   }
   #playlist-info {
     text-align: end;
