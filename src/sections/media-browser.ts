@@ -370,7 +370,7 @@ export class MediaBrowser extends LitElement {
     if (collType == 'album') {
       return html`
       <mpc-browser-album-view
-        .albumData=${this.activeCollectionData}
+        .collectionData=${this.activeCollectionData}
         .onEnqueueAction=${this.onPlaylistEnqueue}
       ></mpc-browser-playlist-view>
       `
@@ -378,14 +378,14 @@ export class MediaBrowser extends LitElement {
     if (collType == 'artist') {
       return html`
       <mpc-browser-artist-view
-        .artistData=${this.activeCollectionData}
+        .collectionData=${this.activeCollectionData}
         .onEnqueueAction=${this.onPlaylistEnqueue}
       ></mpc-browser-playlist-view>
       `
     }
     return html`
       <mpc-browser-playlist-view
-        .playlistData=${this.activeCollectionData}
+        .collectionData=${this.activeCollectionData}
         .onEnqueueAction=${this.onPlaylistEnqueue}
       ></mpc-browser-playlist-view>
     `
