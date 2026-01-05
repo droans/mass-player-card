@@ -33,10 +33,10 @@ export class MassBrowserPlaylistView extends LitElement {
 
   // Header is animated on scroll - query elements for animation
   @query('#title') private titleElement!: HTMLElement
-  @query('#playlist-info') private infoElement!: HTMLElement
+  @query('#collection-info') private infoElement!: HTMLElement
   @query('#enqueue-button') private enqueueElement!: HTMLElement
   @query('#img-header') private imageElement!: HTMLElement
-  @query('#playlist-image') private imageDivElement!: HTMLElement;
+  @query('#collection-image') private imageDivElement!: HTMLElement;
   @query('#tracks') private tracksElement!: HTMLElement;
   @query('#header') private headerElement!: HTMLElement;
   private enqueueControlElement!: HTMLElement;
