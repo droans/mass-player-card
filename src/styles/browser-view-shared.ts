@@ -6,8 +6,8 @@ export default css`
     --view-header-min-height: calc(var(--view-header-height) / 2);
     --header-expanded-menu-icon-size: 5em;
     --header-expanded-menu-control-size: 5em;
-    --header-collapsed-menu-icon-size: 4em;
-    --header-collapsed-menu-control-size: 4em;
+    --header-collapsed-menu-icon-size: 3em;
+    --header-collapsed-menu-control-size: 3em;
   }
   mass-menu-button::part(menu-button) {
     --ha-ripple-color: rgba(0, 0, 0, 0);
@@ -40,8 +40,11 @@ export default css`
     display: flex;
     align-self: end;
     margin-bottom: 1em;
-    position: absolute;
-    right: 1em;
+    /* position: absolute; */
+    /* right: 1em; */
+    position: relative;
+    right: 3.5em;
+    bottom: -1.5em;
   }
   #header {
     display: flex;
@@ -57,11 +60,9 @@ export default css`
   #img-header {
     display: flex;
     height: 10em;
-    margin-top: 0.5em;
-    margin-left: 1.2em;
     border-radius: 15%;
     will-change: transform;
-
+    place-self: center;
   }
   .loading-indicator {
     background-color: var(--md-sys-color-primary);
@@ -75,11 +76,15 @@ export default css`
     justify-items: end;
     line-height: normal;
     margin-right: 1em;
+    height: 100%;
   }
   #collection-image {
     display: flex;
     place-content: center;
     width: 11em;
+    height: 12em;
+    --collection-image-div-collapsed-height: 6em;
+    margin-left: 1.2em;
   }
   #collection-info {
     text-align: end;

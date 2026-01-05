@@ -9,6 +9,5 @@ export default css`
   }
   #overview {
     position: relative;
-    top: -1em;
   }
 `
