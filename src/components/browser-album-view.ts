@@ -286,12 +286,6 @@ export class MassBrowserAlbumView extends LitElement {
     }
     this.titleAnimation = this.addScrollAnimation(kf, this.titleElement)
   }
-  // private animateHeaderArtists() {
-  //   const kf = {
-  //     fontSize: '0.8em'
-  //   }
-  //   this.artistsAnimation = this.addScrollAnimation(kf, this.artistsElement)
-  // }
   private animateHeaderInfo() {
     const kf = {
       fontSize: '0.7em'
@@ -328,7 +322,6 @@ export class MassBrowserAlbumView extends LitElement {
     this.animateHeaderTitle();
     this.animateHeaderInfo();
     this.animateHeaderEnqueue();
-    // this.animateHeaderArtists();
   }
   
   private onEnqueue = (ev: MenuButtonEventData) => {
@@ -384,7 +377,7 @@ export class MassBrowserAlbumView extends LitElement {
   protected renderOverview(): TemplateResult {
     const trackStr = this.tracks?.length ? `${this.tracks.length.toString()} Tracks` : `Loading...`
     const metadata = this?.albumMetadata?.response;
-    const artists = metadata.artists ?? 'Loading...';
+    const artists = metadata?.artists ?? 'Loading...';
     const artistLs = artists.map(
       (artist) => {
         return artist.name

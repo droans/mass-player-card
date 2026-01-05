@@ -11,6 +11,7 @@ export interface MediaBrowserConfig {
   sections: customSection[];
   hide: MediaBrowserHiddenElementsConfig;
   columns: number;
+  playlists_allow_removing_tracks: boolean;
 }
 
 export interface FavoritesConfig {
@@ -115,6 +116,7 @@ export const DEFAULT_MEDIA_BROWSER_CONFIG: MediaBrowserConfig = {
   sections: DEFAULT_CUSTOM_SECTION_CONFIG,
   hide: DEFAULT_MEDIA_BROWSER_HIDDEN_ELEMENTS_CONFIG,
   columns: 2,
+  playlists_allow_removing_tracks: false,
 };
 
 const MEDIA_BROWSER_HIDDEN_ITEMS = [
@@ -202,6 +204,7 @@ export function mediaBrowserConfigForm() {
     },
     recommendationsConfigForm(),
     hiddenElementsConfigItem(MEDIA_BROWSER_HIDDEN_ITEMS),
+  { name: "playlists_allow_removing_tracks", selector: { boolean: {} }, default: false },
   ];
 }
 

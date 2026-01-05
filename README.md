@@ -140,6 +140,7 @@ entities:
 type: custom:mass-player-card
 expressive: true
 expressive_theme: expressive
+panel: false
 entities:
   - entity_id: <MEDIA_PLAYER_ENTITY>
     volume_entity_id: <MEDIA_PLAYER_ENTITY>
@@ -249,6 +250,7 @@ media_browser:
       enabled: true
       limit: 25
       favorites_only: true
+playlists_allow_removing_tracks: false
 ```
 
 </details>
@@ -264,6 +266,7 @@ expressive: true
 expressive: true
 expressive_theme: fruit_salad
 download_local: false
+panel: false
 entities:
   - media_player.kitchen_player_music_assistant
   - entity_id: media_player.bedroom_player_music_assistant
@@ -374,6 +377,7 @@ media_browser:
     providers:
       - plex
       - tidal
+playlists_allow_removing_tracks: false
 ```
 
 </details>
@@ -390,6 +394,7 @@ media_browser:
 | queue             | [QueueConfig](#queue-config)                     | No       | 5          | See Below                                             |
 | media_browser     | [MediaBrowserConfig](#media-browser-config)      | No       | 5          | See Below                                             |
 | players           | [PlayersConfig](#players-config)                 | No       | 5          | See Below                                             |
+| panel             | boolean                                          | No       | false      | Displays a full-height card when enabled              |
 
 ## Entity Config
 For each entity, you can either provide the Entity ID by itself or you can provide the Music Assistant media player Entity ID, the media player Entity ID for volume control, and/or the name of the player. Below is the config if you would like to provide the additional details.
@@ -548,15 +553,21 @@ Multiple elements on the queue tab can be hidden. By default, all elements are v
 <img src="https://github.com/droans/mass-player-card/blob/main/static/media_browser/desktop.png" alt="Player Card Media Browser Section Example">
 </details>
 
-| Parameter       | Type                                                                      | Required | Default     | Description                      |
-|-----------------|---------------------------------------------------------------------------|----------|-------------|----------------------------------|
-| enabled         | bool                                                                      | No       | true        | Enable/disable media browser tab |
-| columns         | number                                                                    | No       | 2           | Number of columns for each row.  |
-| favorites       | [FavoritesConfig](#favorites-config)                                      | No       | -           | See below                        |
-| recents         | [FavoritesConfig](#favorites-config)                                      | No       | -           | See below                        |
-| recommendations | [RecommendationsConfig](#recommendations-config)                          | No       | -           | See below                        |
-| sections        | list of [SectionsConfig](#sections-config)                                | No       | -           | See below                        |
-| hide            | [MediaBrowserHiddenElementsConfig](#media-browser-hidden-elements-config) | No       | See below   | See Below                        |
+| Parameter                       | Type                                                                      | Required | Default     | Description                                                        |
+|---------------------------------|---------------------------------------------------------------------------|----------|-------------|--------------------------------------------------------------------|
+| enabled                         | bool                                                                      | No       | true        | Enable/disable media browser tab                                   |
+| columns                         | number                                                                    | No       | 2           | Number of columns for each row.                                    |
+| favorites                       | [FavoritesConfig](#favorites-config)                                      | No       | -           | See below                                                          |
+| recents                         | [FavoritesConfig](#favorites-config)                                      | No       | -           | See below                                                          |
+| recommendations                 | [RecommendationsConfig](#recommendations-config)                          | No       | -           | See below                                                          |
+| sections                        | list of [SectionsConfig](#sections-config)                                | No       | -           | See below                                                          |
+| hide                            | [MediaBrowserHiddenElementsConfig](#media-browser-hidden-elements-config) | No       | See below   | See Below                                                          |
+| playlists_allow_removing_tracks | bool                                                                      | No       | false       | **EXPERIMENTAL - SEE BELOW** Allows removing tracks from playlists |
+
+### WARNING:
+Music Assistant uses the position in a playlist to determine which tracks to remove. However, it does not provide an updated playlist when tracks are removed, instead waiting for its next refresh. 
+
+To work around this, the card will automatically update the playlists when items are removed. **HOWEVER**, this will only work until you leave the playlist view.
 
 ## Media Browser Hidden Elements Config
 Multiple elements on the media browser tab can be hidden. By default, all elements are visible

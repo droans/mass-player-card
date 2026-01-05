@@ -43,6 +43,13 @@ export interface MenuButtonEventData extends Omit<CustomEvent, "detail"> {
   },
 }
 
+export interface TrackRemovedEventData extends Omit<CustomEvent, "detail"> {
+  detail: {
+    playlist: string,
+    position: number
+  },
+}
+
 export type MenuButtonEvent = (ev: MenuButtonEventData) => void;
 
 export interface ForceUpdatePlayerDataEvent extends CustomEvent {

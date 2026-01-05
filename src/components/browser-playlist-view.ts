@@ -12,13 +12,14 @@ import { Icons } from "../const/icons.js";
 import { getThumbnail } from "../utils/thumbnails.js";
 import { EnqueueOptions, Thumbnail } from "../const/enums.js";
 import { getEnqueueButtons } from "../const/media-browser.js";
-import { HTMLImageElementEvent, MenuButtonEventData } from "../const/events.js";
+import { HTMLImageElementEvent, MenuButtonEventData, TrackRemovedEventData } from "../const/events.js";
 import { CardEnqueueService } from "../const/actions.js";
 import './browser-track-row';
 import { delay, formatDuration } from "../utils/util.js";
 import { Track, Tracks } from "mass-queue-types/packages/mass_queue/utils.js";
 import { getPlaylistServiceResponse } from "mass-queue-types/packages/mass_queue/actions/get_playlist.js";
 import { cache } from "lit/directives/cache.js";
+import { PlaylistTrack } from "mass-queue-types/packages/mass_queue/actions/get_playlist_tracks.js";
 
 @customElement('mpc-browser-playlist-view')
 export class MassBrowserPlaylistView extends LitElement {
@@ -341,6 +342,24 @@ export class MassBrowserPlaylistView extends LitElement {
     this.onEnqueueAction(this.playlistData, value);
   };
 
+  private onTrackRemoved = (ev: TrackRemovedEventData) => {
+    const data = ev.detail;
+    const pos = data.position;
+    const tracks = (this.tracks as PlaylistTrack[]).filter(
+      (track) => {
+        return track.position != pos;
+      }
+    ).map(
+      (track) => {
+        if (track.position > pos) {
+          track.position -= 1;
+        }
+        return track
+      }
+    )
+    this.tracks = tracks;
+  }
+
   private updateEnqueueButtons() {
     const default_buttons = getEnqueueButtons(this.Icons, this.hass);
     const button_mapping = HIDDEN_BUTTON_VALUE;
@@ -421,6 +440,8 @@ export class MassBrowserPlaylistView extends LitElement {
         ?divider=${divider}
         .collectionURI=${this.playlistData.media_content_id}
         .enqueueButtons=${this._enqueue_buttons}
+        ?playlist=${this.browserConfig.playlists_allow_removing_tracks}
+        @playlist-track-removed=${this.onTrackRemoved}
       ></mpc-track-row>
     `)
   }

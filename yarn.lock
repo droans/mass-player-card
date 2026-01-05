@@ -2252,7 +2252,7 @@ __metadata:
     eslint-plugin-wc: "npm:^3.0.2"
     home-assistant-js-websocket: "npm:9.6.0"
     lit: "npm:3.3.1"
-    mass-queue-types: "npm:^0.10.4"
+    mass-queue-types: "npm:^1.0.2"
     prettier: "npm:^3.7.4"
     rollup: "npm:^4.53.4"
     rollup-plugin-commonjs: "npm:^10.1.0"
@@ -2262,10 +2262,10 @@ __metadata:
   languageName: unknown
   linkType: soft
 
-"mass-queue-types@npm:^0.10.4":
-  version: 0.10.4
-  resolution: "mass-queue-types@npm:0.10.4"
-  checksum: 10c0/fd23e867360b9707ee216d7ffb6669121b40fd505b54b84be6bd8e87d4aee371375ce26be3ea9ecb7ccf3e5fb76223f2e5fe756ca7b697b63bcf45ff896f915f
+"mass-queue-types@npm:^1.0.2":
+  version: 1.0.2
+  resolution: "mass-queue-types@npm:1.0.2"
+  checksum: 10c0/a77b01d1025e2d5c19e04a09e3a60dc05fefbc25667fb871d32c06bb3ce64fe7bd73211d48ae3a8fbebf991a48d31af1f8d54234af89cfbb3b1ed703620cfbbe
   languageName: node
   linkType: hard
 
