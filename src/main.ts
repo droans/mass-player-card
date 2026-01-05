@@ -292,7 +292,7 @@ export class MusicAssistantPlayerCard extends LitElement {
   }
 
   protected render() {
-    const style = this.config.panel ? `--mass-player-card-height: var(--mass-player-card-section-height, calc(${window.innerHeight.toString()}px - 4rem - var(--header-height)));` : ``
+    const style = this.config.panel ? `--mass-player-card-height: calc(${window.innerHeight.toString()}px - 4rem - var(--header-height));` : ``
     return (
       this.error ??
       html`
