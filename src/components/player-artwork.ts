@@ -7,6 +7,7 @@ import {
 } from "lit";
 import {
   activeMediaPlayerContext,
+  configContext,
   controllerContext,
   IconsContext,
   musicPlayerConfigContext,
@@ -33,6 +34,7 @@ import WaCarousel from "@droans/webawesome/dist/components/carousel/carousel.js"
 import "@droans/webawesome/dist/components/carousel/carousel.js"
 import "@droans/webawesome/dist/components/carousel-item/carousel-item.js"
 import { VibrationPattern } from "../const/common.js";
+import { Config } from "../config/config.js";
 
 @customElement('mpc-artwork')
 export class MassPlayerArtwork extends LitElement {
@@ -47,6 +49,9 @@ export class MassPlayerArtwork extends LitElement {
 
   @consume({ context: IconsContext, subscribe: true })
   private Icons!: Icons;
+
+  @consume({ context: configContext, subscribe: true })
+  private Config!: Config;
 
   @state() private _activePlayer!: ExtendedHassEntity;
 
@@ -361,9 +366,12 @@ export class MassPlayerArtwork extends LitElement {
     rng.forEach(
       () => {
         const elem = document.createElement('wa-carousel-item')
+        const div = document.createElement('div');
+        div.className = "slot"
         const img = document.createElement('img');
         img.loading = "lazy"
-        elem.appendChild(img);
+        div.appendChild(img)
+        elem.appendChild(div);
         if (direction == 'start') {
           this.carouselElement.insertBefore(elem, insertBefore)
         } else {
@@ -393,18 +401,20 @@ export class MassPlayerArtwork extends LitElement {
         id="active-slide" 
         data-queueitem="${activeItem.queue_item_id}"
       >
+        <div class="slot">
         <img
           class="artwork ${size}"
           id="img-playing"
           src="${url}"
           loading="lazy"
         >
+        </div>
       </wa-carousel-item>
     `
   }
 
   protected render(): TemplateResult {
-    const size = this.playerConfig.layout.artwork_size;
+    const size = `${this.playerConfig.layout.artwork_size} ${this.Config.panel ? ` panel` : ``}`;
     return html`
       <wa-carousel
         id="carousel"
@@ -412,7 +422,7 @@ export class MassPlayerArtwork extends LitElement {
         mouse-dragging
         @pointerdown=${this.onPointerDown}
       >
-        ${this.renderActiveItem()}
+          ${this.renderActiveItem()}
       </wa-carousel>
     `
   }

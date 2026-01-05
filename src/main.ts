@@ -292,10 +292,14 @@ export class MusicAssistantPlayerCard extends LitElement {
   }
 
   protected render() {
+    const style = this.config.panel ? `--mass-player-card-height: var(--mass-player-card-section-height, calc(${window.innerHeight.toString()}px - 4rem - var(--header-height)));` : ``
     return (
       this.error ??
       html`
-        <ha-card id="${this.config.expressive ? `expressive` : ``}">
+        <ha-card
+          id="${this.config.expressive ? `expressive` : ``}"
+          style="${style}"
+        >
           ${this.renderSections()} ${this.renderTabs()}
         </ha-card>
       `
