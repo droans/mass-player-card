@@ -111,7 +111,7 @@ export class MassPlaylistTrackRow extends LitElement {
   private removeTrackFromPlaylist() {
     const playlistId = this.collectionURI.split('//')[1].split('/')[1];
     const position = (this.track as PlaylistTrack).position
-    this.browserActions.actionRemovePlaylistTrack(
+    void this.browserActions.actionRemovePlaylistTrack(
       playlistId,
       position,
       this.activeEntityId

@@ -321,7 +321,6 @@ export default class BrowserActions {
     position: number,
     entity_id_or_config_entry_id: string,
   ) {
-    console.log(`Calling remove for playlist ID ${playlist_id}, position ${position}, entity_id/config_id: ${entity_id_or_config_entry_id}`)
     let config_entry = '';
     if (entity_id_or_config_entry_id.includes('.')) {
       const info = await this.actionGetPlayerInfo(entity_id_or_config_entry_id);

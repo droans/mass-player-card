@@ -344,10 +344,7 @@ export class MassBrowserPlaylistView extends LitElement {
 
   private onTrackRemoved = (ev: TrackRemovedEventData) => {
     const data = ev.detail;
-    console.log(`Got track to remove with data:`);
-    console.log(data)
     const pos = data.position;
-    console.log(`Starting tracks len: ${this.tracks.length}`)
     const tracks = (this.tracks as PlaylistTrack[]).filter(
       (track) => {
         return track.position != pos;
@@ -361,7 +358,6 @@ export class MassBrowserPlaylistView extends LitElement {
       }
     )
     this.tracks = tracks;
-    console.log(`Ending tracks len: ${this.tracks.length}`)
   }
 
   private updateEnqueueButtons() {
