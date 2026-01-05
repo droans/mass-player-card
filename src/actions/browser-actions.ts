@@ -14,6 +14,7 @@ import { ExtendedHass, MediaLibraryItem, RecommendationResponse } from "../const
 import { getInfoWSResponseSchema, getInfoWSServiceSchema } from "mass-queue-types/packages/mass_queue/ws/get_info.js";
 import { getAlbumServiceResponse, getAlbumServiceSchema } from "mass-queue-types/packages/mass_queue/actions/get_album.js";
 import { getArtistServiceResponse, getArtistServiceSchema } from "mass-queue-types/packages/mass_queue/actions/get_artist.js";
+import { removePlaylistTracksServiceSchema } from "mass-queue-types/packages/mass_queue/actions/remove_playlist_tracks"
 export default class BrowserActions {
   private _hass!: ExtendedHass;
 
@@ -314,6 +315,34 @@ export default class BrowserActions {
       return_response: true
     }
     return await this.hass.callWS(data);
+  }
+  async actionRemovePlaylistTrack (
+    playlist_id: string,
+    position: number,
+    entity_id_or_config_entry_id: string,
+  ) {
+    console.log(`Calling remove for playlist ID ${playlist_id}, position ${position}, entity_id/config_id: ${entity_id_or_config_entry_id}`)
+    let config_entry = '';
+    if (entity_id_or_config_entry_id.includes('.')) {
+      const info = await this.actionGetPlayerInfo(entity_id_or_config_entry_id);
+      if (!info) {
+        throw Error(`Received nothing back when getting config entry for ${entity_id_or_config_entry_id}!`)
+      }
+      config_entry = info.entries.mass_queue;
+    } else {
+      config_entry = entity_id_or_config_entry_id
+    }
+    const data: removePlaylistTracksServiceSchema = {
+      type: "call_service",
+      domain: "mass_queue",
+      service: "remove_playlist_tracks",
+      service_data: {
+        playlist_id: playlist_id,
+        positions_to_remove: [position],
+        config_entry_id: config_entry
+      }
+    }
+    await this.hass.callWS(data)
   }
   private async getPlayerConfigEntry(entity_id: string): Promise<string> {
     const entry = await this.hass.callWS<{config_entry_id: string}>({

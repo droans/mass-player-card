@@ -11,11 +11,13 @@ import { Track } from "mass-queue-types/packages/mass_queue/utils.js";
 import { Icons } from "../const/icons.js";
 import { HTMLImageElementEvent, MenuButtonEventData } from "../const/events.js";
 import { getTranslation } from "../utils/translations.js";
+import { PlaylistTrack } from "mass-queue-types/packages/mass_queue/actions/get_playlist_tracks.js";
 
 @customElement('mpc-track-row')
 export class MassPlaylistTrackRow extends LitElement {
-  @property({ attribute: false }) track!: Track;
+  @property({ attribute: false }) track!: Track | PlaylistTrack;
   @property({ attribute: 'divider', type: Boolean }) divider = false;
+  @property({ attribute: 'playlist', type: Boolean }) playlist = false;
 
   @property({ attribute: false }) collectionURI!: string;
   _enqueueButtons!: ListItems;
@@ -62,6 +64,7 @@ export class MassPlaylistTrackRow extends LitElement {
     if (
       !this._enqueueButtons
       || !this?.Icons?.CLOSE
+      || !this.playlist
     ) {
       return;
     }
@@ -106,7 +109,21 @@ export class MassPlaylistTrackRow extends LitElement {
     await actions.actionEnqueueMedia(this.activeEntityId, this.collectionURI, 'playlist', EnqueueOptions.PLAY_NEXT);
   }
   private removeTrackFromPlaylist() {
-    // pass
+    const playlistId = this.collectionURI.split('//')[1].split('/')[1];
+    const position = (this.track as PlaylistTrack).position
+    this.browserActions.actionRemovePlaylistTrack(
+      playlistId,
+      position,
+      this.activeEntityId
+    );
+    const data = {
+      detail: {
+        playlist: this.collectionURI,
+        position: position
+      }
+    }
+    const ev = new CustomEvent('playlist-track-removed', data);
+    this.dispatchEvent(ev);
   } 
   private onMenuItemSelected = (ev: MenuButtonEventData) => {
     ev.stopPropagation();
