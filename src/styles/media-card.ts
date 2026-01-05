@@ -14,7 +14,7 @@ export default css`
     width: 2em;
   }
   mass-menu-button::part(menu-select-menu) {
-    --mdc-icon-size: 5em;
+    --mdc-icon-size: calc(10em / var(--columns, 2));
     --control-select-menu-height: 6em;
     --control-select-menu-background-color: unset;
   }
@@ -25,6 +25,12 @@ export default css`
       var(--card-background-color, #fff)
     );
     border-radius: 50%;
+  }
+  .svg-menu-expressive {
+    max-width: 5em;
+    max-height: 5em;
+    min-width: 2em;
+    min-width: 2em;
   }
 
   wa-card {
