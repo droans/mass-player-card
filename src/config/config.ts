@@ -50,6 +50,7 @@ export interface Config {
   expressive: boolean;
   expressive_scheme: ExpressiveScheme;
   download_local: boolean;
+  panel: boolean;
 }
 
 interface HiddenElementsConfig {
@@ -88,6 +89,7 @@ export const DEFAULT_CONFIG: Config = {
   expressive_scheme: "expressive",
   entities: [],
   download_local: false,
+  panel: false
 };
 
 const ENTITY_DEFAULT_HIDDEN_ITEM_CONFIG: HiddenElementsConfig = {
@@ -182,6 +184,11 @@ export function createConfigForm() {
       createExpressiveSchemeConfigForm(),
       {
         name: "download_local",
+        required: false,
+        selector: { boolean: {}, default: false },
+      },
+      {
+        name: "panel",
         required: false,
         selector: { boolean: {}, default: false },
       },

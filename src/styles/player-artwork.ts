@@ -20,9 +20,12 @@ export default css`
     position: absolute;
   }
   #carousel.large {
-    height: var(--artwork-large-height) !important;
+    height: var(--artwork-large-height);
     aspect-ratio: 1;
     width: 100%;
+  }
+  #carousel.large.panel {
+    height: 100% !important;
   }
   #carousel.medium {
     height: var(--artwork-medium-height);
@@ -38,5 +41,18 @@ export default css`
     aspect-ratio: 1;
     left: calc(50% - (var(--artwork-small-height) / 2));
     top: calc(50% - (var(--artwork-small-height) / 2));
+  }
+  wa-carousel-item img {
+    max-height: 100%;
+    max-width: 100%;
+    aspect-ratio: 1;
+    height: 100% !important;
+    width: unset !important;
+  }
+  .panel .slot {
+    max-height: 100%;
+    max-width: 100%;
+    aspect-ratio: 1;
+    height: 100%;
   }
 `;
