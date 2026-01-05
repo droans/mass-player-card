@@ -233,11 +233,13 @@ class MediaCard extends LitElement {
     if (this.hide.enqueue_menu || !this.queueable) {
       return html``;
     }
+    const cols = this.cardConfig.media_browser.columns;
     return html`
       <mass-menu-button
         id="enqueue-button-div"
         .iconPath=${this.Icons.PLAY_CIRCLE}
         .items=${this._enqueue_buttons}
+        style="--columns: ${cols};"
         @menu-item-selected=${this.onEnqueue}
         fixedMenuPosition
       ></mass-menu-button>
