@@ -54,9 +54,9 @@ class QueueCard extends LitElement {
   @provide({ context: playerQueueConfigContext })
   public _config!: QueueConfig;
   @state() private _queue: QueueItems = [];
-  private _queueController!: QueueController;
+  private _queueController?: QueueController;
 
-  @queryAll("#animation") _animations!: WaAnimation[];
+  @queryAll("#animation") _animations?: WaAnimation[];
   @query(".media-active") _activeElement!: HTMLElement;
   @query(".list") _items!: HTMLElement;
 
@@ -65,7 +65,7 @@ class QueueCard extends LitElement {
   @state() public _tabSwitchFirstUpdate = false;
 
   @consume({ context: queueControllerContext, subscribe: true })
-  public set queueController(controller: QueueController) {
+  public set queueController(controller: QueueController | undefined) {
     this._queueController = controller;
   }
   public get queueController() {
@@ -105,7 +105,7 @@ class QueueCard extends LitElement {
   }
 
   private _active_player_entity!: string;
-  private _hass!: ExtendedHass;
+  private _hass?: ExtendedHass;
   private error?: TemplateResult;
 
   @provide({ context: mediaCardDisplayContext })
@@ -121,7 +121,7 @@ class QueueCard extends LitElement {
     return this._section;
   }
   @consume({ context: hassContext, subscribe: true })
-  public set hass(hass: ExtendedHass) {
+  public set hass(hass: ExtendedHass | undefined) {
     if (!hass) {
       return;
     }
@@ -154,7 +154,7 @@ class QueueCard extends LitElement {
     return this._config;
   }
 
-  private testConfig(config: QueueConfig, test_active = true) {
+  private testConfig(config: QueueConfig | undefined, test_active = true) {
     if (!config) {
       return QueueConfigErrors.CONFIG_MISSING;
     }
@@ -167,7 +167,7 @@ class QueueCard extends LitElement {
       }
     }
     if (this.hass) {
-      if (!this.hass.states[this.active_player_entity]) {
+      if (!(this.hass.states[this.active_player_entity])) {
         return QueueConfigErrors.MISSING_ENTITY;
       }
     }
@@ -183,23 +183,41 @@ class QueueCard extends LitElement {
     this._items.scrollTop = scroll;
   }
   private onQueueItemSelected = async (queue_item_id: string) => {
+    if (!this.queueController) {
+      return
+    }
     await this.queueController.playQueueItem(queue_item_id);
     void this.queueController.getQueue();
     this.scrollToActive();
   };
   private onQueueItemRemoved = async (queue_item_id: string) => {
+    if (!this.queueController) {
+      return
+    }
     await this.queueController.removeQueueItem(queue_item_id);
   };
   private onQueueItemMoveNext = async (queue_item_id: string) => {
+    if (!this.queueController) {
+      return
+    }
     await this.queueController.moveQueueItemNext(queue_item_id);
   };
   private onQueueItemMoveUp = async (queue_item_id: string) => {
+    if (!this.queueController) {
+      return
+    }
     await this.queueController.moveQueueItemUp(queue_item_id);
   };
   private onQueueItemMoveDown = async (queue_item_id: string) => {
+    if (!this.queueController) {
+      return
+    }
     await this.queueController.moveQueueItemDown(queue_item_id);
   };
   private onClearQueue = async () => {
+    if (!this.queueController) {
+      return
+    }
     await this.queueController.clearQueue(this.active_player_entity);
   };
   private onTabSwitch = (ev: Event) => {
@@ -303,7 +321,10 @@ class QueueCard extends LitElement {
 
   public disconnectedCallback(): void {
     super.disconnectedCallback();
-    if (this?.queueController?.isSubscribed)
+    if (!this.queueController) {
+      return
+    }
+    if (this.queueController.isSubscribed)
       this.queueController.unsubscribeUpdates();
     super.disconnectedCallback();
   }
@@ -319,6 +340,9 @@ class QueueCard extends LitElement {
   }
   protected firstUpdated(): void {
     this._firstLoaded = true;
+    if (!this.queueController) {
+      return
+    }
     this.queueController._host.addEventListener(
       "section-changed",
       this.onTabSwitch,

@@ -19,6 +19,17 @@ __metadata:
   languageName: node
   linkType: hard
 
+"@droans/ha-components@npm:^0.1.0":
+  version: 0.1.0
+  resolution: "@droans/ha-components@npm:0.1.0"
+  dependencies:
+    "@droans/webawesome": "npm:^3.0.0"
+    "@mdi/js": "npm:^7.4.47"
+    lit: "npm:^3.3.2"
+  checksum: 10c0/724a5945a55d2e35422b9dfaf8768829edb143554d8b6494c0a031c3e40115524ee99908ef3eb0e363b17dc7d6d3c2869150739e61f02a61a9300f9d9a8c402d
+  languageName: node
+  linkType: hard
+
 "@droans/webawesome@npm:^3.0.0":
   version: 3.0.0
   resolution: "@droans/webawesome@npm:3.0.0"
@@ -414,7 +425,7 @@ __metadata:
   languageName: node
   linkType: hard
 
-"@mdi/js@npm:7.4.47":
+"@mdi/js@npm:7.4.47, @mdi/js@npm:^7.4.47":
   version: 7.4.47
   resolution: "@mdi/js@npm:7.4.47"
   checksum: 10c0/4364d4dff943c630f9cdddba1a74d3713654e4da1b85bc7a307b2285447a57c41434a39a8520b39957df1028186a2e5944102fd1386d6c0c73e709335f5ccb3e
@@ -2175,6 +2186,17 @@ __metadata:
   languageName: node
   linkType: hard
 
+"lit@npm:^3.3.2":
+  version: 3.3.2
+  resolution: "lit@npm:3.3.2"
+  dependencies:
+    "@lit/reactive-element": "npm:^2.1.0"
+    lit-element: "npm:^4.2.0"
+    lit-html: "npm:^3.3.0"
+  checksum: 10c0/50563fd9c7bf546f8fdc6a936321b5be581ce440a359b06048ae5d44c1ecf6c38c2ded708e97d36a1ce70da1a7ad569890e40e0fb5ed040ec42d5ed2365f468d
+  languageName: node
+  linkType: hard
+
 "locate-path@npm:^6.0.0":
   version: 6.0.0
   resolution: "locate-path@npm:6.0.0"
@@ -2230,6 +2252,7 @@ __metadata:
   version: 0.0.0-use.local
   resolution: "mass-player-card@workspace:."
   dependencies:
+    "@droans/ha-components": "npm:^0.1.0"
     "@droans/webawesome": "npm:^3.0.0"
     "@eslint/js": "npm:9.39.2"
     "@ktibow/material-color-utilities-nightly": "npm:^0.3.11763580498000"

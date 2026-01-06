@@ -21,7 +21,7 @@ export async function asyncImageURLWithFallback(
   download_local = true
 ): Promise<ImageURLWithFallback> {
   if (Object.values(Thumbnail).includes(fallback as Thumbnail)) {
-    fallback = getThumbnail(hass, fallback as Thumbnail);
+    fallback = getThumbnail(hass, fallback as Thumbnail) ?? '';
   }
   if (download_local) {
     image_url = await encodeImageIfLocal(hass, image_url);
@@ -32,7 +32,7 @@ export async function asyncImageURLWithFallback(
   }
 }
 
-export function getThumbnail(hass: ExtendedHass, thumbnail: Thumbnail): string {
+export function getThumbnail(hass: ExtendedHass | undefined, thumbnail: Thumbnail): string | undefined {
   if (!hass) {
     return LightModeThumbnails[thumbnail];
   }

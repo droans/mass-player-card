@@ -22,6 +22,7 @@ export default class BrowserActions {
     this.hass = hass;
   }
   public set hass(hass: ExtendedHass) {
+    // eslint-disable-next-line @typescript-eslint/no-unnecessary-condition
     if (hass) {
       this._hass = hass;
     }

@@ -14,6 +14,7 @@ export default class QueueActions {
     this.player_entity = player_entity;
   }
   public set hass(hass: ExtendedHass) {
+    // eslint-disable-next-line @typescript-eslint/no-unnecessary-condition
     if (hass) {
       this._hass = hass;
     }

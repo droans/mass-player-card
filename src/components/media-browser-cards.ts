@@ -41,8 +41,8 @@ export class MediaBrowserCards extends LitElement {
   private _items!: MediaCardItem[];
 
   @consume({ context: mediaBrowserConfigContext, subscribe: true })
-  public set browserConfig(conf: MediaBrowserConfig) {
-    if (!jsonMatch(this._browserConfig, conf)) {
+  public set browserConfig(conf: MediaBrowserConfig | undefined) {
+    if (!jsonMatch(this._browserConfig, conf) && conf) {
       this._browserConfig = conf;
       if (this.items) {
         this.generateCode();
@@ -54,7 +54,7 @@ export class MediaBrowserCards extends LitElement {
   }
 
   @consume({ context: activeMediaBrowserCardsContext, subscribe: true })
-  public set items(items: MediaCardItem[]) {
+  public set items(items: MediaCardItem[] | undefined) {
     if (!items?.length) {
       return;
     }
@@ -77,12 +77,12 @@ export class MediaBrowserCards extends LitElement {
     this.onEnqueueAction(data, enqueue);
   };
   public resetScroll() {
-    this?._iconsElement?.scrollTo({top: 0});
+    this._iconsElement?.scrollTo({top: 0});
   }
   private generateCode() {
-    const result = this.items.map((item) => {
+    const result = this.items?.map((item) => {
       const queueable = ['service', 'playlist', 'album', 'artist'].includes(item.data.type) ? literal`queueable` : literal`` 
-      const width = (1 / this.browserConfig.columns) * 100 - 2;
+      const width = (1 / (this.browserConfig?.columns ?? 1)) * 100 - 2;
       return html`
         <mass-media-card
           style="max-width: ${width.toString()}%"

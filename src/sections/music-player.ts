@@ -56,21 +56,21 @@ import { asyncImageURLWithFallback } from "../utils/thumbnails";
 import { DialogElement } from "../const/elements";
 
 class MusicPlayerCard extends LitElement {
-  @query('#dialog-favorites') favoritesDialog!: DialogElement;
-  @state() protected _playlists!: PlaylistDialogItem[];
+  @query('#dialog-favorites') favoritesDialog?: DialogElement;
+  @state() protected _playlists?: PlaylistDialogItem[];
 
   @consume({ context: entitiesConfigContext, subscribe: true })
   public playerEntities!: EntityConfig[];
 
   @consume({ context: configContext, subscribe: true })
-  private cardConfig!: Config;
+  private cardConfig?: Config;
 
   @consume({ context: controllerContext, subscribe: true })
   private controller!: MassCardController;
 
   @consume({ context: activePlayerDataContext, subscribe: true })
   @state()
-  public player_data!: PlayerData;
+  public player_data?: PlayerData;
 
   private _activeEntityConfig!: EntityConfig;
   private _activeEntity!: ExtendedHassEntity;
@@ -78,7 +78,7 @@ class MusicPlayerCard extends LitElement {
 
   public selectedPlayerService!: PlayerSelectedService;
   private _hass!: ExtendedHass;
-  private _groupedPlayers!: EntityConfig[];
+  private _groupedPlayers?: EntityConfig[];
   private actions!: PlayerActions;
 
   private _artworkHeaderClass!: string;
@@ -87,7 +87,7 @@ class MusicPlayerCard extends LitElement {
   private _artworkMediaControlsClass!: string;
   private _artworkActiveTrackClass!: string;
   @state()
-  private _activePlayerController!: ActivePlayerController;
+  private _activePlayerController?: ActivePlayerController;
 
   @consume({ context: activeEntityConfContext, subscribe: true })
   public set activeEntityConfig(entity: EntityConfig) {
@@ -98,7 +98,7 @@ class MusicPlayerCard extends LitElement {
     return this._activeEntityConfig;
   }
   public get activeMediaPlayer() {
-    return this?.activePlayerController?.activeMediaPlayer;
+    return this.activePlayerController?.activeMediaPlayer;
   }
 
   @consume({ context: activeMediaPlayerContext, subscribe: true })
@@ -114,11 +114,11 @@ class MusicPlayerCard extends LitElement {
   }
 
   @consume({ context: hassContext, subscribe: true })
-  public set hass(hass: ExtendedHass) {
+  public set hass(hass: ExtendedHass | undefined) {
     if (hass) {
       this.actions = new PlayerActions(hass);
+      this._hass = hass;
     }
-    this._hass = hass;
   }
   public get hass() {
     return this._hass;
@@ -158,13 +158,14 @@ class MusicPlayerCard extends LitElement {
   }
 
   @consume({ context: activePlayerControllerContext, subscribe: true })
-  private set activePlayerController(controller: ActivePlayerController) {
+  private set activePlayerController(controller: ActivePlayerController | undefined) {
     if (!controller) {
       return;
     }
     this._activePlayerController = controller;
     if (!this.player_data) {
-      void this.activePlayerController.updateActivePlayerData();
+      // eslint-disable-next-line @typescript-eslint/no-non-null-assertion
+      void this.activePlayerController!.updateActivePlayerData();
     }
   }
   private get activePlayerController() {
@@ -172,7 +173,7 @@ class MusicPlayerCard extends LitElement {
   }
 
   @consume({ context: groupedPlayersContext, subscribe: true })
-  private set groupedPlayersList(players: string[]) {
+  private set groupedPlayersList(players: string[] | undefined) {
     const card_players = this.playerEntities.filter((entity) =>
       players?.includes(entity.entity_id),
     );
@@ -187,6 +188,9 @@ class MusicPlayerCard extends LitElement {
   }
 
   public forceUpdatePlayerDataValue(key: string, value: string) {
+    if (!this.player_data) {
+      return;
+    }
     const data = this.player_data;
     if (!Object.keys(data).includes(key)) {
       return;
@@ -198,15 +202,20 @@ class MusicPlayerCard extends LitElement {
     return {
       name: playlist.name,
       image: await asyncImageURLWithFallback(
-        this.controller.hass,
+        // eslint-disable-next-line @typescript-eslint/no-non-null-assertion
+        this.controller.hass!,
         playlist.image ?? ``,
         Thumbnail.PLAYLIST,
-        this.controller.config.download_local
+        // eslint-disable-next-line @typescript-eslint/no-non-null-assertion
+        this.controller.config!.download_local
       ),
       uri: playlist.uri
     }
   }
   public async updatePlaylists() {
+    if (!this.controller.Actions) {
+      return;
+    }
     const playlistData = await this.controller.Actions.browserActions.actionGetLibrary(
       this.activeEntityConfig.entity_id,
       MediaTypes.PLAYLIST,
@@ -222,13 +231,13 @@ class MusicPlayerCard extends LitElement {
   }
 
   protected openAddToPlaylistDialog() {
-    if (!this?.favoritesDialog) {
+    if (!this.favoritesDialog) {
       throw new Error(`Dialog element doesn't exist!`)
     }
     this.favoritesDialog.open = true;
   }
   protected closeAddToPlaylistDialog() {
-    if (!this?.favoritesDialog) {
+    if (!this.favoritesDialog) {
       throw new Error(`Dialog element doesn't exist!`)
     }
     this.favoritesDialog.open = false;
@@ -259,8 +268,18 @@ class MusicPlayerCard extends LitElement {
   };
 
   protected onAddToPlaylist = (ev: Event) => {
+    if (!this.activeMediaPlayer || !this.hass) {
+      return
+    }
     const uri = (ev.target as HTMLElement).dataset.uri as string;
-    const media_id = this.hass.states[this.activeEntity.entity_id].attributes.media_content_id;
+    const ent = this.hass.states[this.activeEntity.entity_id];
+    if (!ent) {
+      return;
+    }
+    const media_id = ent.attributes.media_content_id;
+    if (!media_id) {
+      return;
+    }
     void this.actions.actionAddToPlaylist(
       media_id,
       uri,
@@ -268,7 +287,7 @@ class MusicPlayerCard extends LitElement {
     );
     this.closeAddToPlaylistDialog();
   };
-  protected renderPlaylistDialogList() {
+  protected renderPlaylistDialogList(): TemplateResult | TemplateResult[] {
     if (!this._playlists) {
       return html`
         <div class="dialog-playlists-none-loading">
@@ -312,6 +331,9 @@ class MusicPlayerCard extends LitElement {
     )
   }
   protected renderAddToPlaylistDialog(): TemplateResult {
+    if (!this.cardConfig) {
+      return html``;
+    }
     const cls = `dialog-favorites${this.cardConfig.expressive ? `-expressive` : ``}`
     return html`
       <ha-dialog
@@ -325,7 +347,10 @@ class MusicPlayerCard extends LitElement {
       </ha-dialog>
     `
   }
-  protected wrapTitleMarquee() {
+  protected wrapTitleMarquee(): TemplateResult {
+    if (!this.player_data) {
+      return html``;
+    }
     const title = `${this.player_data.track_title} - ${this.player_data.track_album}`;
     return html`
       <mpc-marquee-text class="player-track-title marquee">
@@ -333,7 +358,10 @@ class MusicPlayerCard extends LitElement {
       </mpc-marquee-text>
     `;
   }
-  protected renderPlayerName() {
+  protected renderPlayerName(): TemplateResult {
+    if (!this.activePlayerController || !this.cardConfig) {
+      return html``;
+    }
     return html`
       <div
         class="player-name ${this.cardConfig.expressive
@@ -345,7 +373,7 @@ class MusicPlayerCard extends LitElement {
       </div>
     `;
   }
-  protected renderTitle() {
+  protected renderTitle(): TemplateResult {
     if (!isActive(this.hass, this.activeMediaPlayer, this.activeEntityConfig)) {
       return html`
         <div class="player-track-title">
@@ -355,18 +383,21 @@ class MusicPlayerCard extends LitElement {
     }
     return this.wrapTitleMarquee();
   }
-  protected renderGrouped() {
+  protected renderGrouped(): TemplateResult {
     const hide =
       this.config.hide.group_volume ||
       this.activeEntityConfig.hide.player.group_volume;
-    if (this?.groupedPlayers?.length > 1 && !hide) {
+    if (this.groupedPlayers && this.groupedPlayers.length > 1 && !hide) {
       return html`
         <mpc-grouped-player-menu slot="end"></mpc-grouped-player-menu>
       `
     }
     return html``;
   }
-  protected renderArtist() {
+  protected renderArtist(): TemplateResult {
+    if (!this.player_data || !this.cardConfig) {
+      return html``;
+    }
     if (!isActive(this.hass, this.activeMediaPlayer, this.activeEntityConfig)) {
       const msgs: string[] = this.controller.translate(
         "player.messages.inactive",
@@ -391,11 +422,14 @@ class MusicPlayerCard extends LitElement {
       ${this.player_data.track_artist}
     </div>`;
   }
-  protected renderSectionTitle() {
+  protected renderSectionTitle(): TemplateResult {
     const label = this.controller.translate("player.header") as string;
     return html` <span slot="label">${label}</span> `;
   }
   protected renderHeader(): TemplateResult {
+    if (!this.cardConfig) {
+      return html``;
+    }
     const expressive = this.cardConfig.expressive;
     return html`
       <div
@@ -424,7 +458,10 @@ class MusicPlayerCard extends LitElement {
       </span>
     `
   }
-  protected renderActiveItemSection() {
+  protected renderActiveItemSection(): TemplateResult {
+    if (!this.cardConfig) {
+      return html``;
+    }
     return html`
       <div id="${this._artworkActiveTrackClass}">
         <div
@@ -440,14 +477,14 @@ class MusicPlayerCard extends LitElement {
       </div>
     `;
   }
-  protected renderPlayerHeader() {
+  protected renderPlayerHeader(): TemplateResult {
     return html`
       <div class="player-header">
         ${this.renderPlayerName()} ${this.renderTitle()} ${this.renderArtist()}
       </div>
     `;
   }
-  protected renderProgress() {
+  protected renderProgress(): TemplateResult {
     return html`
       <mass-progress-bar
         class="${this._artworkProgressClass}"
@@ -455,10 +492,13 @@ class MusicPlayerCard extends LitElement {
       ></mass-progress-bar>
     `;
   }
-  protected renderArtwork() {
+  protected renderArtwork(): TemplateResult {
     return html` <mpc-artwork></mpc-artwork>`;
   }
-  protected renderVolumeRow() {
+  protected renderVolumeRow(): TemplateResult {
+    if (!this.cardConfig) {
+      return html``;
+    }
     return html`
       <div id="volume">
         <mass-volume-row
@@ -469,7 +509,10 @@ class MusicPlayerCard extends LitElement {
       </div>
     `;
   }
-  protected renderControls() {
+  protected renderControls(): TemplateResult {
+    if (!this.cardConfig) {
+      return html``;
+    }
     return html`
       <div
         class="media-controls ${this._artworkMediaControlsClass} ${this
@@ -477,14 +520,17 @@ class MusicPlayerCard extends LitElement {
           ? `media-controls-expressive`
           : ``}"
       >
-        ${this?.cardConfig?.expressive
+        ${this.cardConfig.expressive
           ? html`<mass-player-controls-expressive></mass-player-controls-expressive>`
           : html`<mass-player-controls></mass-player-controls>`}
         ${this.renderVolumeRow()}
       </div>
     `;
   }
-  protected render() {
+  protected render(): TemplateResult {
+    if (!this.cardConfig) {
+      return html``;
+    }
     const expressive = this.cardConfig.expressive;
     return html`
       <div id="container" class="${expressive ? `container-expressive` : ``}">
@@ -501,6 +547,9 @@ class MusicPlayerCard extends LitElement {
   }
   private delayedUpdatePlayerData = () => {
     setTimeout(() => {
+      if (!this.activePlayerController) {
+        return;
+      }
       void this.activePlayerController.updateActivePlayerData();
     }, 2000);
   };
@@ -517,6 +566,9 @@ class MusicPlayerCard extends LitElement {
       this.onForceLoadEvent,
     );
     this.controller.host.addEventListener("active-player-updated", () => {
+      if (!this.activePlayerController) {
+        return;
+      }
       void this.activePlayerController.updateActivePlayerData();
     });
     this.controller.host.addEventListener(
@@ -525,15 +577,15 @@ class MusicPlayerCard extends LitElement {
     );
   }
   protected updated(): void {
-    const favoritesDialog = this?.favoritesDialog
+    const favoritesDialog = this.favoritesDialog
     if (!favoritesDialog) {
       return;
     }
-    const actions_div = favoritesDialog.shadowRoot?.querySelector('#actions') as HTMLElement;
+    const actions_div = favoritesDialog.shadowRoot?.querySelector('#actions') as HTMLElement | undefined;
     if (actions_div && actions_div.style.display != 'none'){
       actions_div.style.display = 'none';
     }
-    const content_div = favoritesDialog.shadowRoot?.querySelector('#content') as HTMLElement;
+    const content_div = favoritesDialog.shadowRoot?.querySelector('#content') as HTMLElement | undefined;
     if (content_div && content_div.style.scrollbarWidth != 'none'){
       content_div.style.scrollbarWidth = 'none';
     }

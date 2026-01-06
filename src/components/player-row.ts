@@ -57,8 +57,8 @@ class PlayerRow extends LitElement {
     DEFAULT_PLAYERS_HIDDEN_ELEMENTS_CONFIG;
 
   @consume({ context: playersConfigContext, subscribe: true })
-  public set config(config: PlayersConfig) {
-    if (jsonMatch(this._config, config)) {
+  public set config(config: PlayersConfig | undefined) {
+    if (jsonMatch(this._config, config) || !config) {
       return;
     }
     this._config = config;
@@ -68,8 +68,8 @@ class PlayerRow extends LitElement {
     return this._config;
   }
   @consume({ context: activeEntityConfContext, subscribe: true })
-  public set entityConfig(config: EntityConfig) {
-    if (jsonMatch(this._entityConfig, config)) {
+  public set entityConfig(config: EntityConfig | undefined) {
+    if (jsonMatch(this._entityConfig, config) || !config) {
       return;
     }
     this._entityConfig = config;
@@ -88,8 +88,10 @@ class PlayerRow extends LitElement {
   }
 
   @property({ attribute: false }) 
-  public set player_entity(entity: ExtendedHassEntity) {
+  public set player_entity(entity: ExtendedHassEntity | undefined) {
+    if (entity) {
     this._player_entity = entity;
+  }
   }
   public get player_entity() {
     return this._player_entity;
@@ -108,6 +110,9 @@ class PlayerRow extends LitElement {
     };
   }
   private callOnPlayerSelectedService = () => {
+    if (!this.player_entity) {
+      return;
+    }
     this.selectedService(this.player_entity.entity_id);
   }
   protected shouldUpdate(_changedProperties: PropertyValues<this>): boolean {
@@ -117,26 +122,32 @@ class PlayerRow extends LitElement {
     navigator.vibrate(VibrationPattern.Players.ACTION_JOIN);
     e.stopPropagation();
     const service = this.joined ? this.unjoinService : this.joinService;
+    if (!this.player_entity) {
+      return;
+    }
     await service([this.player_entity.entity_id]);
     this.joined = !this.joined;
   }
   private onTransferPressed = (e: Event) => {
     e.stopPropagation();
     navigator.vibrate(VibrationPattern.Players.ACTION_TRANSFER);
+    if (!this.player_entity) {
+      return;
+    }
     this.transferService(this.player_entity.entity_id);
   }
 
   private _renderThumbnailFallback = (ev: HTMLImageElementEvent) => {
-    const attrs = this?.player_entity?.attributes;
+    const attrs = this.player_entity?.attributes;
     const fallback = getThumbnail(this.hass, Thumbnail.HEADPHONES);
     const loc = attrs?.entity_picture_local
     const pic = attrs?.entity_picture ?? fallback;
     const src = ev.target.src;
     const newSrc = src == loc ? pic : fallback;
-    ev.target.src = newSrc;
+    ev.target.src = newSrc ?? '';
   }
   private renderThumbnail() {
-    const attrs = this?.player_entity?.attributes;
+    const attrs = this.player_entity?.attributes;
     const fallback = getThumbnail(this.hass, Thumbnail.HEADPHONES);
     const loc = attrs?.entity_picture_local
     const pic = attrs?.entity_picture;
@@ -154,10 +165,13 @@ class PlayerRow extends LitElement {
   }
   private _calculateTitleWidth() {
     let button_ct = 0;
+    if (!this.config) {
+      return;
+    }
     const hide = this.config.hide;
     if (
       !hide.join_button &&
-      this.player_entity.attributes?.group_members &&
+      this.player_entity?.attributes.group_members &&
       this.allowJoin
     ) {
       button_ct += 1;
@@ -174,11 +188,11 @@ class PlayerRow extends LitElement {
   private renderTitle() {
     let title = this.playerName;
     if (!title.length) {
-      title = this.player_entity.attributes?.friendly_name ?? "Media Player";
+      title = this.player_entity?.attributes.friendly_name ?? "Media Player";
     }
     const active_style =
       isActive(this.hass, this.player_entity, this._entityConfig) &&
-      this.player_entity.state == "playing"
+      this.player_entity?.state == "playing"
         ? `audio-bars`
         : `audio-bars-inactive`;
     const active_expressive_style = this.useExpressive
@@ -228,7 +242,7 @@ class PlayerRow extends LitElement {
     if (this.hide.join_button || !this.canGroup) {
       return html``;
     }
-    if (!this.player_entity.attributes?.group_members || !this.allowJoin) {
+    if (!this.player_entity?.attributes.group_members || !this.allowJoin) {
       return;
     }
     return html`

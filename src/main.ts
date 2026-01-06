@@ -54,6 +54,7 @@ declare global {
   no-console,
 */
 console.info(
+  /* eslint-disable @typescript-eslint/no-unnecessary-condition */
   `%c ${cardName}${DEV ? " DEV" : ""} \n%c Version v${version}`,
   "color: teal; font-weight: bold; background: lightgray",
   "color: darkblue; font-weight: bold; background: white",
@@ -66,7 +67,6 @@ console.info(
 */
 (window as any).customCards = (window as any).customCards ?? [];
 (window as any).customCards.push({
-  /* eslint-enable */
   type: `${cardId}${DEV ? "-dev" : ""}`,
   name: `${cardName}${DEV ? " DEV" : ""}`,
   preview: false,
@@ -75,16 +75,17 @@ console.info(
 });
 
 @customElement(`${cardId}${DEV ? "-dev" : ""}`)
+  /* eslint-enable */
 export class MusicAssistantPlayerCard extends LitElement {
   @state() private entities!: HassEntity[];
   @state() private error?: TemplateResult;
-  @state() private _activeSection!: Sections;
+  @state() private _activeSection?: Sections;
 
   @provide({ context: controllerContext })
   private _controller = new MassCardController(this);
   @provide({ context: configContext })
   private _config!: Config;
-  public set hass(hass: ExtendedHass) {
+  public set hass(hass: ExtendedHass | undefined) {
     if (!hass) {
       return;
     }
@@ -93,13 +94,16 @@ export class MusicAssistantPlayerCard extends LitElement {
     this._controller.hass = hass;
     const new_ents: HassEntity[] = [];
     ents.forEach((entity) => {
-      const old_state = this.hass.states[entity.entity_id];
+      const old_state = this.hass?.states[entity.entity_id];
       const new_state = hass.states[entity.entity_id];
-      new_ents.push(hass.states[entity.entity_id]);
+      if (new_state) {
+        new_ents.push(new_state);
+      }
       if (!jsonMatch(old_state, new_state)) {
         should_update = true;
       }
     });
+    // eslint-disable-next-line @typescript-eslint/no-unnecessary-condition
     if (should_update) {
       this._controller.hass = hass;
       this.entities = new_ents;
@@ -113,12 +117,13 @@ export class MusicAssistantPlayerCard extends LitElement {
     this._controller.config = config;
   }
   public get config() {
-    return this._controller.config;
+    // eslint-disable-next-line @typescript-eslint/no-non-null-assertion
+    return this._controller.config!;
   }
 
   @consume({ context: activeSectionContext, subscribe: true })
   @state()
-  public set active_section(section: Sections) {
+  public set active_section(section: Sections | undefined) {
     this._activeSection = section;
   }
   public get active_section() {
@@ -138,6 +143,7 @@ export class MusicAssistantPlayerCard extends LitElement {
     if (!config) {
       throw this.createError("Invalid configuration");
     }
+    /* eslint-disable @typescript-eslint/no-unnecessary-condition */
     if (!config.entities) {
       throw this.createError("You need to define entities.");
     }
@@ -145,6 +151,7 @@ export class MusicAssistantPlayerCard extends LitElement {
     this.config = this._controller.config;
     if (!this.active_section) {
       this.setDefaultActiveSection();
+    /* eslint-enable @typescript-eslint/no-unnecessary-condition */
     }
     this.requestUpdate();
   }
@@ -169,11 +176,14 @@ export class MusicAssistantPlayerCard extends LitElement {
       return true;
     }
     if (_changedProperties.has("hass")) {
-      const oldHass = _changedProperties.get("hass") as ExtendedHass;
+      const oldHass = _changedProperties.get("hass") as ExtendedHass | undefined;
       if (!oldHass) {
         return true;
       }
       const oldStates = oldHass.states;
+      if (!this.hass) {
+        return false
+      }
       const newStates = this.hass.states;
       let result = false;
       this.config.entities.forEach((element) => {
@@ -310,7 +320,7 @@ export class MusicAssistantPlayerCard extends LitElement {
   }
   connectedCallback() {
     super.connectedCallback();
-    if (this._controller) {
+    if (this._controller.Queue) {
       this._controller.Queue.resetQueueFailures();
       void this._controller.Queue.subscribeUpdates();
       if (this.hasUpdated) {
@@ -324,8 +334,7 @@ export class MusicAssistantPlayerCard extends LitElement {
   }
   protected firstUpdated(): void {
     if (this.config.expressive) {
-      //eslint-disable-next-line @typescript-eslint/no-non-null-assertion
-      const stylesheet = head_styles.styleSheet!;
+      const stylesheet = head_styles.styleSheet as CSSStyleSheet;
       document.adoptedStyleSheets.push(stylesheet);
     }
     this.addEventListener("section-changed", this.onSectionChangedEvent);

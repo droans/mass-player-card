@@ -28,7 +28,7 @@ export class QueueController {
   private _nextQueueItem!: ContextProvider<typeof nextQueueItemContext>;
   private _previousQueueItem!: ContextProvider<typeof previousQueueItemContext>;
   private _hass!: ExtendedHass;
-  private _activeMediaPlayer!: ExtendedHassEntity;
+  private _activeMediaPlayer?: ExtendedHassEntity;
   private _config!: Config;
   private _actions!: QueueActions;
   private _fails = 0;
@@ -69,6 +69,10 @@ export class QueueController {
     if (jsonMatch(this._queue.value, queue_items)) {
       return;
     }
+    if (!this.activeMediaPlayer) {
+      this._queue.setValue([])
+      return;
+    }
     if (this.activeMediaPlayer.state == 'playing' && !queue_items?.length) {
       // If the player is playing, there must be active player items; assume then that we received bad data.
       return
@@ -89,17 +93,19 @@ export class QueueController {
     return this._hass;
   }
 
-  private set activeMediaPlayer(player: ExtendedHassEntity) {
+  private set activeMediaPlayer(player: ExtendedHassEntity | undefined) {
     if (this._activeMediaPlayer) {
       const updated = playerHasUpdated(player, this._activeMediaPlayer);
       if (!updated) {
         return;
       }
     }
-    this._activeMediaPlayer = player;
-    this._activeQueueID = player.attributes.active_queue;
-    this.actions.player_entity = player.entity_id;
-    void this.getQueue();
+    if (player) {
+      this._activeMediaPlayer = player;
+      this._activeQueueID = player.attributes.active_queue ?? '';
+      this.actions.player_entity = player.entity_id;
+      void this.getQueue();
+    }
   }
   public get activeMediaPlayer() {
     return this._activeMediaPlayer;
@@ -159,6 +165,9 @@ export class QueueController {
     );
   }
   public getQueue = async () => {
+    if (!this.activeMediaPlayer) {
+      return;
+    }
     const ents = this.config.entities;
     const ent_id = this.activeMediaPlayer.entity_id;
     const activeEntityConfig = ents.find((item) => item.entity_id == ent_id);
@@ -171,9 +180,12 @@ export class QueueController {
     return [];
   };
   private setActiveTrack(queue: QueueItems) {
+    if (!this.activeMediaPlayer) {
+      return;
+    }
     const active_track = this.activeMediaPlayer.attributes.media_content_id;
     const active_idx =
-      queue.findIndex((i) => i.media_content_id == active_track) ?? -1;
+      queue.findIndex((i) => i.media_content_id == active_track);
     if (active_idx >= 0) {
       queue[active_idx].playing = true;
     }
@@ -184,6 +196,9 @@ export class QueueController {
     void this.getQueue();
   }
   public async _getQueue(attempt = 0) {
+    if (!this.activeMediaPlayer) {
+      return;
+    }
     if (this._updatingQueue) {
       return;
     }
@@ -196,7 +211,7 @@ export class QueueController {
       return;
     }
     try {
-      let queue = await this.actions.getQueue(limit_before, limit_after);
+      let queue = await this.actions.getQueue(limit_before, limit_after) ?? null;
       if (!queue?.length && ["playing", "paused"].includes(this.activeMediaPlayer.state)) {
         if (attempt >= MAX_GET_QUEUE_FAILURES) {
           return []
@@ -214,7 +229,7 @@ export class QueueController {
           return;
         }
         this._fails = 0;
-        queue = this.setActiveTrack(queue);
+        queue = this.setActiveTrack(queue) ?? null;
         this.queue = queue;
         this.getCurNextPrQueueItems();
         this._updatingQueue = false;
@@ -241,7 +256,7 @@ export class QueueController {
 
   private eventListener = (event: MassQueueEvent) => {
     const event_data = event.data;
-    const queue_id = event_data.data?.queue_id;
+    const queue_id = event_data.data.queue_id;
     if (event_data.type == "queue_updated" && queue_id == this._activeQueueID) {
       if (this._updatingQueue) {
         return;
@@ -366,7 +381,7 @@ export class QueueController {
     await this.actions.removeQueueItem(queue_item_id);
   }
   public async clearQueue(
-    entity_id: string = this.activeMediaPlayer.entity_id,
+    entity_id: string = this.activeMediaPlayer?.entity_id ?? '',
   ) {
     await this.actions.clearQueue(entity_id);
   }

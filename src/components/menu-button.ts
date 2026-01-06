@@ -54,8 +54,11 @@ export class MassMenuButton extends LitElement {
     return this._initialSelection ?? ``;
   }
 
-  public set items(items: ListItems) {
+  public set items(items: ListItems | undefined) {
     if (jsonMatch(this._items, items)) {
+      return;
+    }
+    if (!items) {
       return;
     }
     this._items = items;
@@ -77,7 +80,7 @@ export class MassMenuButton extends LitElement {
   };
 
   protected renderMenuItems(): TemplateResult | TemplateResult[] {
-    if (!this?.items?.length) {
+    if (!this.items?.length) {
       return html``;
     }
     const ct = this.items.length;

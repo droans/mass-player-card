@@ -42,7 +42,7 @@ export class MassPlayerArtwork extends LitElement {
   @state()
   private playerConfig!: PlayerConfig;
 
-  private _observer!: MutationObserver;
+  private _observer?: MutationObserver;
 
   @consume({ context: controllerContext, subscribe: true })
   private controller!: MassCardController;
@@ -55,11 +55,11 @@ export class MassPlayerArtwork extends LitElement {
 
   @state() private _activePlayer!: ExtendedHassEntity;
 
-  @state() private _queue!: QueueItems | null;
+  @state() private _queue: QueueItems | null = null;
 
-  @query('#carousel') private carouselElement!: WaCarousel;
-  @query('#active-slide') private activeSlide!: WaCarouselItem
-  @queryAll('wa-carousel-item') private carouselItems!: WaCarouselItem[]
+  @query('#carousel') private carouselElement?: WaCarousel;
+  @query('#active-slide') private activeSlide?: WaCarouselItem
+  @queryAll('wa-carousel-item') private carouselItems?: WaCarouselItem[]
 
 
   private _slidesInserted = false;
@@ -95,7 +95,7 @@ export class MassPlayerArtwork extends LitElement {
   private getActiveIndex() {
     return this.queue?.findIndex(
       (item) => {
-        return item?.playing
+        return item.playing
       }
     ) ?? 0;
   }
@@ -103,7 +103,7 @@ export class MassPlayerArtwork extends LitElement {
   private _filterQueue(queue: QueueItems) {
     const playIdx = queue.findIndex(
       (item) => {
-        return item?.playing
+        return item.playing
       }
     );
     if (!(playIdx == 0) && !playIdx) {
@@ -123,7 +123,7 @@ export class MassPlayerArtwork extends LitElement {
   }
 
   private onSwipe = (idx: number) => {
-    if (!this?.queue?.length) {
+    if (!this.queue?.length) {
       return;
     }
     this.queue[idx].playing = true;
@@ -133,6 +133,9 @@ export class MassPlayerArtwork extends LitElement {
       return;
     }
     navigator.vibrate(VibrationPattern.Player.ACTION_SWIPE);
+    if (!this.controller.Queue) {
+      return;
+    }
     void this.controller.Queue.playQueueItem(item.queue_item_id)
   }
 
@@ -158,6 +161,9 @@ export class MassPlayerArtwork extends LitElement {
       return;
     }
     await delay(100)
+    if (!this.carouselItems) {
+      return;
+    }
     const slides = [...this.carouselItems];
     const activeSlide = slides.findIndex(
       (item) => {
@@ -184,7 +190,7 @@ export class MassPlayerArtwork extends LitElement {
 
   
   protected renderEmptyQueue(): TemplateResult {
-    const expressive = this.controller.config.expressive ? 'expressive' : ``
+    const expressive = this.controller.config?.expressive ? 'expressive' : ``
     return html`
       <wa-carousel-item>
         <ha-svg-icon
@@ -197,6 +203,9 @@ export class MassPlayerArtwork extends LitElement {
   }
 
   private delayedGoToSlide(idx: number) {
+    if (!this.carouselItems) {
+      return;
+    }
     const dataID = this.carouselItems[idx]?.dataset?.queueitem;
     if (!dataID)  {
       return;
@@ -205,7 +214,10 @@ export class MassPlayerArtwork extends LitElement {
       return
     }
     const intersectingSlide = this.getIntersectingSlide();
-    const intersectingDataId = intersectingSlide?.dataset.queueitem;
+    if (!intersectingSlide || !this.carouselElement) {
+      return;
+    }
+    const intersectingDataId = intersectingSlide.dataset.queueitem;
     if (dataID == intersectingDataId) {
       return;
     }
@@ -213,6 +225,9 @@ export class MassPlayerArtwork extends LitElement {
   }
 
   private getIntersectingSlide() {
+    if (!this.carouselItems?.length) {
+      return;
+    }
     const firstSlide = this.carouselItems[0];
     const scrollContainer = firstSlide.assignedSlot?.parentElement;
     if (!scrollContainer) {
@@ -227,7 +242,7 @@ export class MassPlayerArtwork extends LitElement {
         return mid >= scrollLeft && mid <= scrollRight
       }
     );
-    if (result?.length) {
+    if (result.length) {
       return result[0]
     }
     return firstSlide;
@@ -247,19 +262,19 @@ export class MassPlayerArtwork extends LitElement {
   protected _pushQueueArtwork() {
     const queue = this.queue;
     const activeIdx = this.getActiveIndex();
-    if (!queue || (!activeIdx && activeIdx != 0) || (!this.activeSlide && this.activeSlide != 0) ) {
+    if (!queue || (!activeIdx && activeIdx != 0) || (!this.activeSlide) ) {
       return;
     }
     this.createAndDestroyCarouselItemsAsNeeded();
     queue.forEach(
       (item, idx) => {
-        let url = item.media_image ?? '';
+        let url = item.media_image;
         if (!url.length) {
           url = item.local_image_encoded ?? ''
         }
-        if (item?.playing) {
+        if (item.playing) {
           const attrs = this.activePlayer.attributes;
-          const ent_img_local = attrs.entity_picture_local;
+          const ent_img_local = attrs.entity_picture_local ?? '';
           const fallbacks: string[] = []
           const ent_img = attrs.entity_picture;
           if (ent_img) {
@@ -274,7 +289,7 @@ export class MassPlayerArtwork extends LitElement {
     )
   }
   protected updateCarouselImg(index: number, img_url: string, queue_item_id: string, fallbacks: string[] = [], playing=false) {
-    const elem = this.carouselElement.querySelectorAll('img')[index];
+    const elem = this.carouselElement?.querySelectorAll('img')[index];
     if (!elem) {
       return
     }
@@ -289,7 +304,7 @@ export class MassPlayerArtwork extends LitElement {
         (item) => {
           return elem.src == item
         }
-      ) ?? 0;
+      );
       const url = urls[curIdx + 1] ?? Thumbnail.CLEFT;
       elem.src = url;
     }
@@ -311,13 +326,13 @@ export class MassPlayerArtwork extends LitElement {
     }
     const artworkIdx = [...slides].findIndex(
       (item) => { return item.id == 'active-slide'}
-    ) ?? 0;
+    );
     const slidesLength = slides.length;
     const actSlidesBefore = artworkIdx;
     const actSlidesAfter = slidesLength - artworkIdx - 1
     
     const queueIdx = this.queue.findIndex(
-    (item) => { return item?.playing }
+    (item) => { return item.playing }
     )
     const queueLength = this.queue.length;
     const reqSlidesBefore = queueIdx;
@@ -345,6 +360,9 @@ export class MassPlayerArtwork extends LitElement {
   }
 
   private removeSlides(ct: number, direction: 'start' | 'end') {
+    if (!this.carouselItems) {
+      return;
+    }
     const elems = [...this.carouselItems];
     let remove: WaCarouselItem[] = [];
     if (direction == 'start') {
@@ -360,6 +378,9 @@ export class MassPlayerArtwork extends LitElement {
   }
 
   private insertSlides(ct: number, direction: 'start' | 'end') {
+    if (!this.carouselItems || !this.carouselElement) {
+      return;
+    }
     const rng = [...Array(ct).keys()]
 
     const insertBefore = this.carouselItems[0];
@@ -373,21 +394,21 @@ export class MassPlayerArtwork extends LitElement {
         div.appendChild(img)
         elem.appendChild(div);
         if (direction == 'start') {
-          this.carouselElement.insertBefore(elem, insertBefore)
+          (this.carouselElement as WaCarousel).insertBefore(elem, insertBefore)
         } else {
-          this.carouselElement.appendChild(elem)
+          (this.carouselElement as WaCarousel).appendChild(elem)
         }
       }
     )
   }
 
   protected renderActiveItem(): TemplateResult {
-    if (!this?.queue?.length) {
+    if (!this.queue?.length) {
       return this.renderEmptyQueue();
     }
     const activeItem = this.queue.find(
       (item) => {
-        return item?.playing
+        return item.playing
       }
     )
     if (!activeItem) {
@@ -431,13 +452,15 @@ export class MassPlayerArtwork extends LitElement {
       this._slidesInserted = true;
       void this.pushQueueArtwork()
     }
-    if (!this._observer && this?.carouselItems?.length) {
+    if (!this._observer && this.carouselItems?.length && this.carouselElement) {
       this._observer = new MutationObserver(this._observerCB);
       this._observer.observe(this.carouselElement, { subtree: true, childList: true, attributes: true});
     }
   }
   protected firstUpdated(): void {
-    this.controller.ActivePlayer.carouselElement = this.carouselElement;
+    if (this.controller.ActivePlayer) {
+      this.controller.ActivePlayer.carouselElement = this.carouselElement;
+    }
     
   }
 

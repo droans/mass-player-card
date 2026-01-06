@@ -21,7 +21,7 @@ import { Icons } from "../const/icons";
 
 class MassNavBar extends LitElement {
   private _controller!: MassCardController;
-  private _config!: Config;
+  private _config?: Config;
   private _activeSection!: Sections;
   @consume({ context: IconsContext }) private Icons!: Icons;
 
@@ -38,25 +38,38 @@ class MassNavBar extends LitElement {
   }
 
   @consume({ context: controllerContext, subscribe: true })
-  private set controller(controller: MassCardController) {
+  private set controller(controller: MassCardController | undefined) {
+    if (!controller) {
+      return;
+    }
     this._controller = controller;
-    this.active_section = controller.activeSection;
-    this.config = controller.config;
+    if (controller.activeSection) {
+      this.active_section = controller.activeSection;
+    }
+    if (controller.config) {
+      this.config = controller.config;
+    }
   }
   private get controller() {
     return this._controller;
   }
-  private set config(config: Config) {
+  private set config(config: Config | undefined) {
     this._config = config;
   }
   private get config() {
     return this._config;
   }
 
-  private handleTabChanged = (section: Sections) => {
+  private handleTabChanged = (section: Sections | undefined) => {
+    if (!section || !this.controller) {
+      return;
+    }
     this.controller.activeSection = section;
   };
   protected returnMediaBrowserToHome = () => {
+    if (!this.controller) {
+      return;
+    }
     const host = this.controller.host;
     const el: MediaBrowser | null | undefined =
       host.shadowRoot?.querySelector("mass-media-browser");
@@ -69,7 +82,7 @@ class MassNavBar extends LitElement {
   protected renderMusicPlayerTab(): TemplateResult {
     const section = Sections.MUSIC_PLAYER;
     const icon = this.Icons.MUSIC;
-    if (this.config.player.enabled) {
+    if (this.config?.player.enabled) {
       return this.renderTab(section, icon);
     }
     return html``;
@@ -77,7 +90,7 @@ class MassNavBar extends LitElement {
   protected renderQueueTab(): TemplateResult {
     const section = Sections.QUEUE;
     const icon = this.Icons.PLAYLIST;
-    if (this.config.queue.enabled) {
+    if (this.config?.queue.enabled) {
       return this.renderTab(section, icon);
     }
     return html``;
@@ -85,7 +98,7 @@ class MassNavBar extends LitElement {
   protected renderMediaBrowserTab(): TemplateResult {
     const section = Sections.MEDIA_BROWSER;
     const icon = this.Icons.ALBUM;
-    if (this.config.media_browser.enabled) {
+    if (this.config?.media_browser.enabled) {
       return this.renderTab(section, icon);
     }
     return html``;
@@ -93,7 +106,7 @@ class MassNavBar extends LitElement {
   protected renderPlayersTab(): TemplateResult {
     const section = Sections.PLAYERS;
     const icon = this.Icons.SPEAKER_MULTIPLE;
-    if (this.config.players.enabled) {
+    if (this.config?.players.enabled) {
       return this.renderTab(section, icon);
     }
     return html``;
@@ -132,9 +145,6 @@ class MassNavBar extends LitElement {
     `;
   }
   protected shouldUpdate(_changedProperties: PropertyValues): boolean {
-    if (!this.config) {
-      return false;
-    }
     return _changedProperties.size > 0;
   }
   static get styles(): CSSResultGroup {

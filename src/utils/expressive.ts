@@ -94,8 +94,9 @@ const EXPRESSIVE_KEYS: Record<string, string> = {
 const DEFAULT_PRIMARY_COLOR = '#009ac7'
 
 export function generateDefaultExpressiveSchemeColor(): number {
-  const color = window.getComputedStyle(document.body).getPropertyValue('--primary-color').replace('#','') ?? DEFAULT_PRIMARY_COLOR;
-  const argb = color.startsWith('rgb') ?_parseColorRgb(color) : _parseColorHex(color);
+  const color = window.getComputedStyle(document.body).getPropertyValue('--primary-color').replace('#','');
+  const usedColor = color.length ? color : DEFAULT_PRIMARY_COLOR
+  const argb = color.startsWith('rgb') ?_parseColorRgb(usedColor) : _parseColorHex(usedColor);
   return argb;
 }
 

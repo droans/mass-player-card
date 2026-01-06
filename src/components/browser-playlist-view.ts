@@ -2,7 +2,6 @@ import { CSSResultOrNative, html, TemplateResult } from "lit";
 import { customElement, query, state } from "lit/decorators.js";
 import sharedStyles from '../styles/browser-view-shared';
 import styles from '../styles/browser-playlist-view';
-import BrowserActions from "../actions/browser-actions.js";
 import { TrackRemovedEventData } from "../const/events.js";
 import './browser-track-row';
 import { delay, formatDuration } from "../utils/util.js";
@@ -12,15 +11,14 @@ import { BrowserViewBase } from "./browser-view-base.js";
 
 @customElement('mpc-browser-playlist-view')
 export class MassBrowserPlaylistView extends BrowserViewBase {
-  // See setter
-  @query('#collection-info') private infoElement!: HTMLElement
+  @query('#collection-info') private infoElement?: HTMLElement
   private infoAnimation!: Animation;
 
   // Duration of playlist
   private playlistDuration = 0;
 
   // Metadata for playlist
-  @state() private playlistMetadata!: getPlaylistServiceResponse
+  @state() private playlistMetadata?: getPlaylistServiceResponse
 
   // Ask HA to return the tracks in the playlist
   public async getTracks() {
@@ -55,19 +53,11 @@ export class MassBrowserPlaylistView extends BrowserViewBase {
     this.playlistMetadata = metadata;
   }
 
-  public get browserActions() {
-    if (!this._browserActions) {
-      this._browserActions = new BrowserActions(this.hass);
-    }
-    return this._browserActions;
-  }
-  
-
   private animateHeaderInfo() {
     const kf = {
       fontSize: '0.8em'
     }
-    this.infoAnimation = this.addScrollAnimation(kf, this.infoElement)
+    this.infoAnimation = this.addScrollAnimation(kf, this.infoElement as HTMLElement)
   }
   private animateHeader() {
     this.animateHeaderElement();
@@ -111,7 +101,7 @@ export class MassBrowserPlaylistView extends BrowserViewBase {
   }
   protected renderOverview(): TemplateResult {
     const trackStr = this.tracks?.length ? `${this.tracks.length.toString()} Tracks` : `Loading...`
-    const owner = this?.playlistMetadata?.response?.owner ?? `Unknown`;
+    const owner = this.playlistMetadata?.response.owner ?? `Unknown`;
     return html`
       ${this.renderTitle()}
       <div id="collection-info">
@@ -131,7 +121,7 @@ export class MassBrowserPlaylistView extends BrowserViewBase {
   protected async testAnimation(delayMs=50) {
     await delay(delayMs);
     if (!this.animationsAdded
-      && this?.tracksElement?.scrollHeight > this?.tracksElement?.offsetHeight
+      && (this.tracksElement?.scrollHeight ?? 0) > (this.tracksElement?.offsetHeight ?? 1)
       && this.titleElement
       && this.infoElement
       && this.enqueueElement

@@ -35,8 +35,8 @@ import { DetailValEventData } from "../const/events";
 class VolumeRow extends LitElement {
   private maxVolume!: number;
 
-  private _config!: PlayerConfig;
-  private _entityConfig!: EntityConfig;
+  private _config?: PlayerConfig;
+  private _entityConfig?: EntityConfig;
   @consume({ context: controllerContext })
   private controller!: MassCardController;
   @consume({ context: IconsContext }) private Icons!: Icons;
@@ -51,12 +51,12 @@ class VolumeRow extends LitElement {
   private actions!: ActionsController;
 
   @consume({ context: musicPlayerConfigContext, subscribe: true })
-  public set config(config: PlayerConfig) {
-    if (jsonMatch(this._config, config)) {
+  public set config(config: PlayerConfig | undefined) {
+    if (jsonMatch(this._config, config) || !config) {
       return;
     }
     this._config = config;
-    if (this._config && this._entityConfig) {
+    if (this._entityConfig) {
       this.updateHiddenElements();
     }
   }
@@ -65,13 +65,13 @@ class VolumeRow extends LitElement {
   }
 
   @consume({ context: activeEntityConfContext, subscribe: true })
-  public set entityConfig(config: EntityConfig) {
-    if (jsonMatch(this._entityConfig, config)) {
+  public set entityConfig(config: EntityConfig | undefined) {
+    if (jsonMatch(this._entityConfig, config) || !config) {
       return;
     }
     this._entityConfig = config;
     this.maxVolume = config.max_volume;
-    if (this._config && this._entityConfig) {
+    if (this._config) {
       this.updateHiddenElements();
     }
   }
@@ -91,14 +91,14 @@ class VolumeRow extends LitElement {
   }
 
   private updateHiddenElements() {
-    const entity = this.entityConfig.hide.player;
-    const card = this.config.hide;
-    const expressive = this.controller.config.expressive;
+    const entity = this.entityConfig?.hide.player;
+    const card = this.config?.hide;
+    const expressive = this.controller.config?.expressive ?? true;
     this.hide = {
-      favorite: entity.favorite || card.favorite || expressive,
-      mute: entity.mute || card.mute,
-      power: entity.power || card.power || expressive,
-      volume: entity.volume || card.volume,
+      favorite: entity?.favorite ?? card?.favorite ?? expressive,
+      mute: entity?.mute ?? card?.mute ?? false,
+      power: entity?.power ?? card?.power ?? false,
+      volume: entity?.volume ?? card?.volume ?? false,
       player_selector: false,
       repeat: false,
       shuffle: false,
@@ -191,8 +191,8 @@ class VolumeRow extends LitElement {
     `;
   }
   protected renderTicks() {
-    if (!this.controller.config.expressive) {
-      return;
+    if (!this.controller.config?.expressive) {
+      return html``;
     }
     const tickCt = 19;
     const rng = [...Array(tickCt).keys()];
@@ -227,7 +227,7 @@ class VolumeRow extends LitElement {
           .max=${this.maxVolume}
           @value-changed=${this.onVolume}
           id="volume-slider"
-          class="${this.controller.ActivePlayer.useExpressive
+          class="${this.controller.ActivePlayer?.useExpressive
             ? `volume-slider-expressive`
             : ``}"
           part="volume-slider"

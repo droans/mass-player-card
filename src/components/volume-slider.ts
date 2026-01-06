@@ -1,5 +1,5 @@
 import { consume } from "@lit/context";
-import { CSSResultGroup, html, LitElement, PropertyValues } from "lit";
+import { CSSResultGroup, html, LitElement, PropertyValues, TemplateResult } from "lit";
 import { property, state } from "lit/decorators.js";
 
 import { ExtendedHass, ExtendedHassEntity } from "../const/types";
@@ -9,7 +9,7 @@ import styles from "../styles/volume-slider";
 import { DetailValEventData } from "../const/events";
 class VolumeSlider extends LitElement {
   @property({ attribute: false }) public maxVolume = 100;
-  @state() private entity!: ExtendedHassEntity;
+  @state() private entity?: ExtendedHassEntity;
   private _entityId!: string;
   private _actions!: PlayerActions;
   private _hass!: ExtendedHass;
@@ -20,34 +20,49 @@ class VolumeSlider extends LitElement {
     if (!this.hass) {
       return;
     }
-    this.entity = this.hass.states[entity_id];
+    const ent = this.hass.states[entity_id];
+    if (ent) {
+      this.entity = ent;
+    }
   }
   public get entityId() {
     return this._entityId;
   }
   @consume({ context: hassContext, subscribe: true })
-  public set hass(hass: ExtendedHass) {
+  public set hass(hass: ExtendedHass | undefined) {
+    if (!hass) {
+      return;
+    }
     this._hass = hass;
     this._actions = new PlayerActions(hass);
-    this.entity = hass.states[this.entityId];
+    const ent = hass.states[this.entityId]
+    if (ent) {
+      this.entity = ent;
+    }
   }
   public get hass() {
     return this._hass;
   }
   private onVolumeChange = async (ev: DetailValEventData) => {
+    if (!this.entity) {
+      return;
+    }
     let volume: number = ev.detail.value;
     volume = volume / 100;
     this.requestUpdate("volume", volume);
     await this._actions.actionSetVolume(this.entity, volume);
   };
-  protected render() {
+  protected render(): TemplateResult {
+    if (!this.entity) {
+      return html``;
+    }
     return html`
       <ha-control-slider
         part="slider"
         style="--control-slider-color: var(--md-sys-color-primary) !important;"
         .disabled=${this.entity.attributes.is_volume_muted}
         .unit="%"
-        .value=${this.entity.attributes.volume_level * 100}
+        .value=${this.entity.attributes.volume_level ?? 0 * 100}
         .min="0"
         .max=${this.maxVolume}
         @value-changed=${this.onVolumeChange}

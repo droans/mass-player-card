@@ -1,5 +1,5 @@
 /* eslint-disable no-console */
-import { ExtendedHass } from "../const/types";
+import { ExtendedHass, ExtendedHassEntity } from "../const/types";
 
 export default class PlayersActions {
   private _hass!: ExtendedHass;
@@ -7,6 +7,7 @@ export default class PlayersActions {
     this.hass = hass;
   }
   public set hass(hass: ExtendedHass) {
+    // eslint-disable-next-line @typescript-eslint/no-unnecessary-condition
     if (hass) {
       this._hass = hass;
     }
@@ -26,12 +27,13 @@ export default class PlayersActions {
     }
   }
   async actionJoinPlayers(target_player: string, group_members: string[]) {
-    const cur_members = this.hass.states[target_player].attributes.group_members.filter(
+    const ent = (this.hass.states[target_player] as ExtendedHassEntity)
+    const cur_members = ent.attributes.group_members?.filter(
       (player) => {
         return player != target_player
       }
     )
-    const members = cur_members.concat (group_members);    
+    const members = cur_members?.concat(group_members);
     await this.hass.callService("media_player", "join", {
       entity_id: target_player,
       group_members: members,

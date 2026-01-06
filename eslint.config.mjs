@@ -42,7 +42,7 @@ export default tseslint.config(
   {
     rules: {
       "no-console": "warn",
-      "@typescript-eslint/no-unnecessary-condition": "off",
+      "@typescript-eslint/no-unnecessary-condition": "warn",
       "@typescript-eslint/non-nullable-type-assertion-style": "off"
     },
   },

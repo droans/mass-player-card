@@ -1,6 +1,6 @@
 import { consume, provide } from "@lit/context";
 
-import { CSSResultGroup, html, LitElement, PropertyValues } from "lit";
+import { CSSResultGroup, html, LitElement, PropertyValues, TemplateResult } from "lit";
 import { property, query } from "lit/decorators.js";
 import { keyed } from "lit/directives/keyed.js";
 
@@ -37,21 +37,24 @@ class PlayersCard extends LitElement {
   @consume({ context: controllerContext, subscribe: true })
   private controller!: MassCardController;
 
-  @query("#animation") _animation!: WaAnimation;
+  @query("#animation") _animation?: WaAnimation;
   private _firstLoaded = false;
 
-  private _config!: Config;
+  private _config?: Config;
 
   @provide({ context: playersConfigContext })
   private _sectionConfig!: PlayersConfig;
   public selectedPlayerService!: PlayerSelectedService;
 
-  private _hass!: ExtendedHass;
-  private actions!: PlayersActions;
+  private _hass?: ExtendedHass;
+  private actions?: PlayersActions;
 
   @property({ attribute: false })
-  public set config(config: Config) {
-    if (this._hass && config) {
+  public set config(config: Config | undefined) {
+    if (!config) {
+      return;
+    }
+    if (this._hass) {
       this.setEntities(this._hass);
     }
     this._config = {
@@ -65,7 +68,7 @@ class PlayersCard extends LitElement {
   }
 
   @consume({ context: hassContext, subscribe: true })
-  public set hass(hass: ExtendedHass) {
+  public set hass(hass: ExtendedHass | undefined) {
     if (!hass) {
       return;
     }
@@ -86,6 +89,7 @@ class PlayersCard extends LitElement {
         update_entities = true;
       }
     });
+    // eslint-disable-next-line @typescript-eslint/no-unnecessary-condition
     if (update_entities) {
       this.setEntities(hass);
     }
@@ -94,21 +98,30 @@ class PlayersCard extends LitElement {
     return this._hass;
   }
   private joinPlayers = async (group_member: string[]) => {
+    if (!this.actions) {
+      return
+    }
     await this.actions.actionJoinPlayers(
       this.activePlayerEntity.entity_id,
       group_member,
     );
   };
   private unjoinPlayers = async (player_entity: string[]) => {
+    if (!this.actions) {
+      return
+    }
     await this.actions.actionUnjoinPlayers(player_entity);
   };
   private transferQueue = async (target_player: string) => {
+    if (!this.actions) {
+      return
+    }
     await this.actions.actionTransferQueue(
       this.activePlayerEntity.entity_id,
       target_player,
     );
     // eslint-disable-next-line @typescript-eslint/no-non-null-assertion
-    const player = this.config.entities.find(
+    const player = (this.config!).entities.find(
       (entity) => entity.entity_id == target_player,
     )!;
     this.activePlayerEntity = player;
@@ -122,21 +135,25 @@ class PlayersCard extends LitElement {
     this._config.entities.forEach((item) => {
       const state = hass.states[item.entity_id];
       if (state) {
-        entities.push(hass.states[item.entity_id]);
+        entities.push(state);
       }
     });
     this.entities = entities;
   }
   protected renderPlayerRows() {
+    if (!this._hass || !this.controller.ActivePlayer) {
+      return html``;
+    }
     const attrs =
-      this._hass.states[this.activePlayerEntity.entity_id].attributes;
+      this._hass.states[this.activePlayerEntity.entity_id]?.attributes;
     const group_members: string[] = attrs?.group_members ?? [];
     const canGroupWith = this.controller.ActivePlayer.canGroupWith;
     return this.entities.map((item) => {
       // eslint-disable-next-line @typescript-eslint/no-non-null-assertion
-      const player = this.config.entities.find(
+      const player = (this.config!).entities.find(
         (entity) => entity.entity_id == item.entity_id,
       )!;
+      const allowJoin = attrs?.group_members !== undefined;
       return keyed(
         item.entity_id,
         html`
@@ -149,7 +166,7 @@ class PlayersCard extends LitElement {
             .unjoinService=${this.unjoinPlayers}
             .transferService=${this.transferQueue}
             .joined=${group_members.includes(item.entity_id)}
-            .allowJoin=${attrs.group_members !== undefined}
+            .allowJoin=${allowJoin}
             ?can-group=${canGroupWith.includes(player.entity_id)}
           >
           </mass-player-player-row>
@@ -157,9 +174,9 @@ class PlayersCard extends LitElement {
       );
     });
   }
-  protected render() {
+  protected render(): TemplateResult {
     const label = getTranslation("players.header", this.hass) as string;
-    const expressive = this.config.expressive;
+    const expressive = this.config?.expressive ?? false;
     return html`
       <div id="container" class="${expressive ? `container-expressive` : ``}">
         <mass-section-header>
