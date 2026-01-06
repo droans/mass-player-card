@@ -5,6 +5,7 @@ import styles from '../styles/browser-album-view';
 import { delay } from "../utils/util.js";
 import { getAlbumServiceResponse } from "mass-queue-types/packages/mass_queue/actions/get_album";
 import { BrowserViewBase } from "./browser-view-base.js";
+import './marquee-text'
 
 @customElement('mpc-browser-album-view')
 export class MassBrowserAlbumView extends BrowserViewBase {
@@ -84,9 +85,9 @@ export class MassBrowserAlbumView extends BrowserViewBase {
     const artistStr = artistLs.length ? artistLs.join(', ') : `Loading...`
     return html`
       <div id="title">
-        <ha-marquee-text>
+        <mpc-marquee-text>
           ${this.collectionData.media_title}
-        </ha-marquee-text>
+        </mpc-marquee-text>
       </div>
       <div id="collection-info">
         <div id="collection-artists">

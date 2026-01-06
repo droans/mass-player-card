@@ -6,6 +6,7 @@ import BrowserActions from "../actions/browser-actions.js";
 import { delay } from "../utils/util.js";
 import { getArtistServiceResponse } from "mass-queue-types/packages/mass_queue/actions/get_artist";
 import { BrowserViewBase } from "./browser-view-base.js";
+import './marquee-text'
 
 @customElement('mpc-browser-artist-view')
 export class MassBrowserArtistView extends BrowserViewBase {
@@ -88,9 +89,9 @@ export class MassBrowserArtistView extends BrowserViewBase {
     const trackStr = this.tracks?.length ? `${this.tracks.length.toString()} Tracks` : `Loading...`
     return html`
       <div id="title">
-        <ha-marquee-text>
+        <mpc-marquee-text>
           ${this.collectionData.media_title}
-        </ha-marquee-text>
+        </mpc-marquee-text>
       </div>
       <div id="collection-info">
         <div id="tracks-length">  
