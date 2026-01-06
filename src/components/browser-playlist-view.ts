@@ -113,11 +113,7 @@ export class MassBrowserPlaylistView extends BrowserViewBase {
     const trackStr = this.tracks?.length ? `${this.tracks.length.toString()} Tracks` : `Loading...`
     const owner = this?.playlistMetadata?.response?.owner ?? `Unknown`;
     return html`
-      <div id="title">
-        <ha-marquee-text>
-          ${this.collectionData.media_title}
-        </ha-marquee-text>
-      </div>
+      ${this.renderTitle()}
       <div id="collection-info">
         <div id="tracks-length">
           ${trackStr}

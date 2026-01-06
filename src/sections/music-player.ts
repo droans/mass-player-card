@@ -19,6 +19,7 @@ import "../components/player-selector-menu";
 import "../components/section-header";
 import "../components/volume-row";
 import "../components/volume-slider";
+import "../components/marquee-text";
 
 import PlayerActions from "../actions/player-actions";
 
@@ -327,9 +328,9 @@ class MusicPlayerCard extends LitElement {
   protected wrapTitleMarquee() {
     const title = `${this.player_data.track_title} - ${this.player_data.track_album}`;
     return html`
-      <ha-marquee-text class="player-track-title marquee">
+      <mpc-marquee-text class="player-track-title marquee">
         ${title}
-      </ha-marquee-text>
+      </mpc-marquee-text>
     `;
   }
   protected renderPlayerName() {

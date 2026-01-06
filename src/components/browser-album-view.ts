@@ -83,11 +83,7 @@ export class MassBrowserAlbumView extends BrowserViewBase {
     );
     const artistStr = artistLs.length ? artistLs.join(', ') : `Loading...`
     return html`
-      <div id="title">
-        <ha-marquee-text>
-          ${this.collectionData.media_title}
-        </ha-marquee-text>
-      </div>
+      ${this.renderTitle()}
       <div id="collection-info">
         <div id="collection-artists">
           ${artistStr}
