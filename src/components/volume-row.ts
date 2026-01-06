@@ -21,6 +21,7 @@ import {
   EntityConfig,
   IconsContext,
   musicPlayerConfigContext,
+  useExpressiveContext,
 } from "../const/context";
 import { PlayerData } from "../const/types";
 
@@ -49,6 +50,9 @@ class VolumeRow extends LitElement {
 
   @consume({ context: actionsControllerContext, subscribe: true })
   private actions!: ActionsController;
+
+  @consume({ context: useExpressiveContext, subscribe: true })
+  private useExpressive?: boolean;
 
   @consume({ context: musicPlayerConfigContext, subscribe: true })
   public set config(config: PlayerConfig | undefined) {
@@ -93,11 +97,11 @@ class VolumeRow extends LitElement {
   private updateHiddenElements() {
     const entity = this.entityConfig?.hide.player;
     const card = this.config?.hide;
-    const expressive = this.controller.config?.expressive ?? true;
+    const expressive = this.useExpressive ?? true;
     this.hide = {
-      favorite: entity?.favorite ?? card?.favorite ?? expressive,
+      favorite: expressive || (entity?.favorite ?? card?.favorite ?? false),
       mute: entity?.mute ?? card?.mute ?? false,
-      power: entity?.power ?? card?.power ?? false,
+      power: expressive || (entity?.power ?? card?.power ?? false),
       volume: entity?.volume ?? card?.volume ?? false,
       player_selector: false,
       repeat: false,
@@ -191,7 +195,7 @@ class VolumeRow extends LitElement {
     `;
   }
   protected renderTicks() {
-    if (!this.controller.config?.expressive) {
+    if (!this.useExpressive) {
       return html``;
     }
     const tickCt = 19;

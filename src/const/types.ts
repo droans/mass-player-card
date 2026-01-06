@@ -8,12 +8,13 @@ import {
   recommendationSection
 } from "mass-queue-types/packages/mass_queue/actions/get_recommendations.js";
 import {
+  getQueuePartialServiceResponse,
   getQueueServiceResponse,
   getQueueServiceSchema
 } from "mass-queue-types/packages/music_assistant/actions/get_queue"
 
 import { MediaTypes, RepeatMode, Thumbnail } from "./enums";
-import { MediaItem } from "mass-queue-types/packages/music_assistant/types.js";
+import { MediaItem, QueueItemSchema } from "mass-queue-types/packages/music_assistant/types.js";
 import { ImageURLWithFallback } from "../utils/thumbnails";
 import { queueItem } from "mass-queue-types/packages/mass_queue/actions/get_queue_items.js";
 import { QueueConfig } from "../config/player-queue";
@@ -241,3 +242,8 @@ export type RecommendationItems = recommendationItems;
 export type RecommendationResponse = getRecommendationsServiceResponse;
 
 export type RecommendationSection = recommendationSection;
+
+export interface getQueueResponse extends Omit<Omit<getQueuePartialServiceResponse, 'current_item'>, "next_item"> {
+  current_item: QueueItemSchema | null
+  next_item: QueueItemSchema | null
+} 
