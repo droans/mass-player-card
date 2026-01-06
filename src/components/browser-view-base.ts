@@ -14,6 +14,7 @@ import { getEnqueueButtons } from "../const/media-browser.js";
 import { EnqueueOptions, Thumbnail } from "../const/enums.js";
 import { getThumbnail } from "../utils/thumbnails.js";
 import { cache } from "lit/directives/cache.js";
+import './marquee-text'
 
 export class BrowserViewBase extends LitElement {
   protected _collectionData!: mediaCardPlaylistData | mediaCardAlbumData | mediaCardArtistData;
@@ -316,6 +317,15 @@ export class BrowserViewBase extends LitElement {
           @error=${this._renderImageFallback}
           loading="lazy"
         >
+    `
+  }
+  protected renderTitle(): TemplateResult {
+    return html`
+      <mpc-marquee-text id="title">
+        <div id="title-text">
+          ${this.collectionData.media_title}
+        </div>
+      </mpc-marquee-text>
     `
   }
 

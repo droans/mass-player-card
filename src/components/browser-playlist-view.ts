@@ -9,7 +9,6 @@ import { delay, formatDuration } from "../utils/util.js";
 import { getPlaylistServiceResponse } from "mass-queue-types/packages/mass_queue/actions/get_playlist.js";
 import { PlaylistTrack } from "mass-queue-types/packages/mass_queue/actions/get_playlist_tracks.js";
 import { BrowserViewBase } from "./browser-view-base.js";
-import './marquee-text'
 
 @customElement('mpc-browser-playlist-view')
 export class MassBrowserPlaylistView extends BrowserViewBase {
@@ -114,11 +113,7 @@ export class MassBrowserPlaylistView extends BrowserViewBase {
     const trackStr = this.tracks?.length ? `${this.tracks.length.toString()} Tracks` : `Loading...`
     const owner = this?.playlistMetadata?.response?.owner ?? `Unknown`;
     return html`
-      <div id="title">
-        <mpc-marquee-text>
-          ${this.collectionData.media_title}
-        </mpc-marquee-text>
-      </div>
+      ${this.renderTitle()}
       <div id="collection-info">
         <div id="tracks-length">
           ${trackStr}
