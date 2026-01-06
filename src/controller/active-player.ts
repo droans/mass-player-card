@@ -16,6 +16,7 @@ import { Config, EntityConfig } from "../config/config";
 import {
   ExtendedHass,
   ExtendedHassEntity,
+  getQueueResponse,
   MassGetQueueServiceDataSchema,
   MassGetQueueServiceResponseSchema,
   PlayerData
@@ -385,7 +386,7 @@ export class ActivePlayerController {
       muted: vol_player?.attributes.is_volume_muted ?? true,
       volume: Math.floor(vol_player?.attributes.volume_level ?? 0 * 100),
       player_name: this.activePlayerName,
-      favorite: current_item.media_item?.favorite ?? false,
+      favorite: current_item?.media_item?.favorite ?? false,
     };
   }
   public async getPlayerProgress(): Promise<number> {
@@ -401,9 +402,9 @@ export class ActivePlayerController {
       return 1;
     }
     const current_queue = await this.actionGetCurrentQueue();
-    return current_queue.current_item.duration ?? 1;
+    return current_queue.current_item?.duration ?? 1;
   }
-  async actionGetCurrentQueue() {
+  async actionGetCurrentQueue(): Promise<getQueueResponse> {
     const entity_id = this.activeEntityID;
     const data: MassGetQueueServiceDataSchema = {
       type: "call_service",
