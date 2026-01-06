@@ -71,12 +71,13 @@ export default css`
   }
   #overview {
     display: block;
-    width: 75%;
+    width: 0%;
     align-self: center;
     justify-items: end;
     line-height: normal;
     margin-right: 1em;
     height: 100%;
+    flex: 1 1 100%;
   }
   #collection-image {
     display: flex;
@@ -90,6 +91,9 @@ export default css`
     text-align: end;
   }
   #title {
+    display: block;
+    text-wrap: nowrap;
+    width: 100%;
     font-size: 3em;
     font-style: italic;
     will-change: font-size;
@@ -98,6 +102,9 @@ export default css`
     font-variation-settings: "slnt" 0, "GRAD" 0, "ROND" 100;
     font-weight: 900;
     font-stretch: 25%;
+  }
+  #title-text {
+    padding-right: 4px;
   }
   #tracks {
     height: calc(var(--mass-player-card-height) - 4em);
