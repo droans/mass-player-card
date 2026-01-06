@@ -1,4 +1,4 @@
-import { Config, EntityConfig } from "../config/config";
+import { Config, ConfigSections, EntityConfig } from "../config/config";
 import { DEFAULT_SECTION_PRIORITY } from "../const/card";
 import {
   MAX_ACTIVE_LAST_ACTIVE_DURATION,
@@ -8,8 +8,18 @@ import { MUSIC_ASSISTANT_APP_NAME } from "../const/player-queue";
 import { ExtendedHass, ExtendedHassEntity, QueueItem } from "../const/types";
 import { getThumbnail } from "./thumbnails.js";
 
+const ConfigSectionMap: Record<ConfigSections, Sections> = {
+  music_player: Sections.MUSIC_PLAYER,
+  queue: Sections.QUEUE,
+  media_browser: Sections.MEDIA_BROWSER,
+  players: Sections.PLAYERS,
+}
+
 export function getDefaultSection(config: Config) {
   const defaults = DEFAULT_SECTION_PRIORITY;
+  if (config.default_section) {
+    return ConfigSectionMap[config.default_section];
+  }
   const sections_conf: Record<string, boolean> = {
     [Sections.MUSIC_PLAYER]: config.player.enabled,
     [Sections.QUEUE]: config.queue.enabled,
