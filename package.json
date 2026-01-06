@@ -22,6 +22,7 @@
   "license": "MIT",
   "type": "module",
   "dependencies": {
+    "@droans/ha-components": "^0.1.0",
     "@droans/webawesome": "^3.0.0",
     "@ktibow/material-color-utilities-nightly": "^0.3.11763580498000",
     "@lit/context": "1.1.6",
