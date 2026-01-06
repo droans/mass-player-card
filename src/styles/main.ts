@@ -188,6 +188,9 @@ export default css`
     background-color: var(--expressive-player-blur-color);
     border-radius: 0px 0px var(--default-border-radius)
       var(--default-border-radius);
+    position: absolute;
+    bottom: -4em;
+    width: 100%;
   }
 
   .section-hidden {

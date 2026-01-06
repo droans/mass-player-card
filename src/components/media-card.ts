@@ -40,7 +40,7 @@ import {
   MediaBrowserConfig,
   MediaBrowserHiddenElementsConfig,
 } from "../config/media-browser";
-import { EnqueueOptions, Sections } from "../const/enums";
+import { EnqueueOptions, Sections, Thumbnail } from "../const/enums";
 import { Icons } from "../const/icons";
 import { Config } from "../config/config";
 import { WaAnimation } from "../const/elements";
@@ -50,7 +50,7 @@ import { getThumbnail } from "../utils/thumbnails.js";
 class MediaCard extends LitElement {
   @property({ type: Boolean }) queueable = false;
   @state() code!: TemplateResult;
-  private _enqueue_buttons!: ListItems;
+  private _enqueue_buttons?: ListItems;
   private _search_buttons!: ListItems;
 
   @query("#animation") _animation!: WaAnimation;
@@ -59,7 +59,7 @@ class MediaCard extends LitElement {
   private _icons!: Icons;
 
   @consume({ context: hassContext })
-  public hass!: ExtendedHass;
+  public hass?: ExtendedHass;
 
   @consume({ context: useExpressiveContext })
   private useExpressive!: boolean;
@@ -78,7 +78,10 @@ class MediaCard extends LitElement {
   private hide: MediaBrowserHiddenElementsConfig =
     DEFAULT_MEDIA_BROWSER_HIDDEN_ELEMENTS_CONFIG;
   @consume({ context: activeSectionContext, subscribe: true })
-  public set activeSection(section: Sections) {
+  public set activeSection(section: Sections | undefined) {
+    if (!section) {
+      return;
+    }
     this._play = section == Sections.MEDIA_BROWSER;
     this._activeSection = section;
     this.generateCode();
@@ -86,7 +89,7 @@ class MediaCard extends LitElement {
   public get activeSection() {
     return this._activeSection;
   }
-  public set config(config: MediaCardItem) {
+  public set config(config: MediaCardItem | undefined) {
     if (!config) {
       return;
     }
@@ -101,7 +104,7 @@ class MediaCard extends LitElement {
     return this._config;
   }
   @consume({ context: configContext, subscribe: true })
-  public set cardConfig(config: Config) {
+  public set cardConfig(config: Config | undefined) {
     if (!config) {
       return;
     }
@@ -115,8 +118,8 @@ class MediaCard extends LitElement {
   }
 
   @consume({ context: mediaBrowserConfigContext, subscribe: true })
-  public set sectionConfig(config: MediaBrowserConfig) {
-    if (jsonMatch(this._sectionConfig, config)) {
+  public set sectionConfig(config: MediaBrowserConfig | undefined) {
+    if (jsonMatch(this._sectionConfig, config) || !config) {
       return;
     }
     this._sectionConfig = config;
@@ -126,8 +129,8 @@ class MediaCard extends LitElement {
     return this._sectionConfig;
   }
   @consume({ context: IconsContext, subscribe: true })
-  public set Icons(icons: Icons) {
-    if (jsonMatch(this._icons, icons)) {
+  public set Icons(icons: Icons | undefined) {
+    if (jsonMatch(this._icons, icons) || !icons) {
       return;
     }
     this._icons = icons;
@@ -137,13 +140,15 @@ class MediaCard extends LitElement {
   }
 
   @consume({ context: activeEntityConfContext, subscribe: true })
-  public set entityConfig(config: EntityConfig) {
-    if (jsonMatch(this._entityConfig, config)) {
+  public set entityConfig(config: EntityConfig | undefined) {
+    if (jsonMatch(this._entityConfig, config) || !config) {
       return;
     }
     this._entityConfig = config;
     this.updateHiddenElements();
-    this._search_buttons = getSearchMediaButtons(this.Icons, this.hass);
+    if (this.hass && this.Icons) {
+      this._search_buttons = getSearchMediaButtons(this.Icons, this.hass);
+    }
   }
   public get entityConfig() {
     return this._entityConfig;
@@ -175,6 +180,9 @@ class MediaCard extends LitElement {
     this.generateCode();
   }
   private updateEnqueueButtons() {
+    if (!this.hass || !this.Icons) {
+      return;
+    }
     const default_buttons = getEnqueueButtons(this.Icons, this.hass);
     const button_mapping = HIDDEN_BUTTON_VALUE;
     const opts = default_buttons.filter((item) => {
@@ -189,23 +197,20 @@ class MediaCard extends LitElement {
     ev.stopPropagation();
     const target = ev.detail;
     const value = target.option as EnqueueOptions;
-    if (!value) {
-      return;
-    }
     this.onEnqueueAction(this._config.data, value);
   };
   private onSelect = () => {
     this.onSelectAction(this._config.data, this);
   };
   protected renderThumbnailFromBackground() {
-    return html` ${this.config.background} `;
+    return html` ${this.config?.background} `;
   }
   private _renderImageFallback = (ev: HTMLImageElementEvent) => {
-    const fallback = getThumbnail(this.hass, this.config.fallback);
-    ev.target.src = fallback;
+    const fallback = getThumbnail(this.hass, this.config?.fallback ?? Thumbnail.DISC);
+    ev.target.src = fallback as string;
   }
   protected renderThumbnailFromThumbnail() {
-    const img = this.config.thumbnail;
+    const img = this.config?.thumbnail;
     return html`
       <img
         id="thumbnail-div"
@@ -218,7 +223,7 @@ class MediaCard extends LitElement {
     `;
   }
   protected renderThumbnail() {
-    if (this.config.background) {
+    if (this.config?.background) {
       return this.renderThumbnailFromBackground();
     }
     return this.renderThumbnailFromThumbnail();
@@ -227,13 +232,13 @@ class MediaCard extends LitElement {
     if (this.hide.titles) {
       return html``;
     }
-    return html` <div id="title-div">${this.config.title}</div> `;
+    return html` <div id="title-div">${this.config?.title}</div> `;
   }
   protected renderEnqueueButton() {
-    if (this.hide.enqueue_menu || !this.queueable) {
+    if (this.hide.enqueue_menu || !this.queueable || !this.Icons) {
       return html``;
     }
-    const cols = this.cardConfig.media_browser.columns;
+    const cols = this.cardConfig?.media_browser.columns;
     return html`
       <mass-menu-button
         id="enqueue-button-div"

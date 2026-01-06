@@ -73,7 +73,7 @@ class MassPlayerControlsExpressive extends MassPlayerControlsBase {
     if (this.hiddenElements.power) {
       return html``;
     }
-    const label = this.renderLabel("player.controls.power", this.layoutConfig.icons.power);
+    const label = this.renderLabel("player.controls.power", this.layoutConfig.icons.power) as string | undefined;
     const icon = this.renderLowerIcon(this.Icons.POWER, `icons-power icons-lower`);
     const no_label_class = !label?.length ? `no-label` : ``;
     return html`
@@ -94,7 +94,7 @@ class MassPlayerControlsExpressive extends MassPlayerControlsBase {
       return html``;
     }
     const shuffle = this.shuffle;
-    const label = this.renderLabel("player.controls.shuffle", this.layoutConfig.icons.power);
+    const label = this.renderLabel("player.controls.shuffle", this.layoutConfig.icons.power) as string | undefined;
     const _icon = shuffle ? this.Icons.SHUFFLE : this.Icons.SHUFFLE_DISABLED;
     const no_label_class = !label?.length ? `no-label` : ``;
     const active_class = shuffle ? `button-lower-active` : ``
@@ -127,7 +127,7 @@ class MassPlayerControlsExpressive extends MassPlayerControlsBase {
     const repeat = this.repeat;
     const repeat_on = repeat != RepeatMode.OFF;
 
-    const label = this.renderLabel("player.controls.repeat", this.layoutConfig.icons.power);
+    const label = this.renderLabel("player.controls.repeat", this.layoutConfig.icons.power) as string | undefined;
     const _icon = getRepeatIcon(repeat, this.Icons);
     const no_label_class = !label?.length ? `no-label` : ``;
     const active_class = repeat_on ? `button-lower-active` : ``
@@ -158,7 +158,7 @@ class MassPlayerControlsExpressive extends MassPlayerControlsBase {
       return html``;
     }
     const favorite = this.favorite;
-    const label = this.renderLabel("player.controls.favorite", this.layoutConfig.icons.favorite);
+    const label = this.renderLabel("player.controls.favorite", this.layoutConfig.icons.favorite) as string | undefined;
     const no_label_class = !label?.length ? `no-label` : ``;
     const active_class = favorite ? `button-lower-active` : ``
     const _icon = favorite ? this.Icons.HEART_ALT : this.Icons.HEART_PLUS;

@@ -46,15 +46,26 @@ export class MediaBrowserController {
     this._host = host;
     this._items = new ContextProvider(host, {
       context: mediaBrowserCardsContext,
+      initialValue: {
+        favorites: { main: [] },
+        recents: { main: [] },
+        recommendations: { main: [] },
+        search: [],
+      }
     });
     this.actions = new BrowserActions(hass);
     this.browserConfig = config.media_browser;
     this.activeEntityId = activeEntityId;
-    if (!this.items) {
+    // eslint-disable-next-line @typescript-eslint/no-unnecessary-condition
+    if (this.items) {
       this.resetAndGenerateSections();
     }
   }
   private set items(items: newMediaBrowserItemsConfig) {
+    // eslint-disable-next-line @typescript-eslint/no-unnecessary-condition
+    if (!items) {
+      return;
+    }
     if (jsonMatch(this._items.value, items)) {
       return;
     }
@@ -81,6 +92,10 @@ export class MediaBrowserController {
     ];
     void Promise.all(promises).then(() => {
       this.generateCustomSections();
+      // eslint-disable-next-line @typescript-eslint/no-unnecessary-condition
+      if (!this.items) {
+        return;
+      }
       const data: CardsUpdatedEventDetail = {
         section: "all",
         cards: this.items,
@@ -133,7 +148,8 @@ export class MediaBrowserController {
     await Promise.all(promises);
     const data: CardsUpdatedEventDetail = {
       section: "favorites",
-      cards: this.items.favorites,
+      // eslint-disable-next-line @typescript-eslint/no-non-null-assertion, @typescript-eslint/no-unnecessary-type-assertion
+      cards: this.items!.favorites!,
     };
     const ev = new CustomEvent("cards-updated", { detail: data });
     this._host.dispatchEvent(ev);
@@ -161,9 +177,13 @@ export class MediaBrowserController {
     media_type: MediaTypes,
     favorites_only = true,
   ) {
-    if (this.items.favorites[media_type] || !config.enabled) {
-      return;
-    }
+      if (
+        // eslint-disable-next-line @typescript-eslint/prefer-optional-chain, @typescript-eslint/no-unnecessary-condition
+        (this.items?.favorites ?? {})[media_type]
+        || !config.enabled
+      ) {
+        return;
+      }
     const items = await this.getFavoriteSection(
       config,
       media_type,
@@ -216,6 +236,7 @@ export class MediaBrowserController {
     config: FavoriteItemConfig,
     media_type: MediaTypes,
   ) {
+    // eslint-disable-next-line @typescript-eslint/no-unnecessary-condition
     if (this.items.recents[media_type] || !config.enabled) {
       return;
     }
@@ -232,6 +253,7 @@ export class MediaBrowserController {
 
   //Recommendations
   private generateRecommendationSection(section: RecommendationSection) {
+    // eslint-disable-next-line @typescript-eslint/no-unnecessary-condition
     if (this.items.recommendations[section.name]) {
       return;
     }

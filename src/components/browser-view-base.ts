@@ -17,20 +17,20 @@ import { cache } from "lit/directives/cache.js";
 import './marquee-text'
 
 export class BrowserViewBase extends LitElement {
-  protected _collectionData!: mediaCardPlaylistData | mediaCardAlbumData | mediaCardArtistData;
-  protected _hass!: ExtendedHass;
-  protected _activePlayer!: ExtendedHassEntity;
-  protected _browserConfig!: MediaBrowserConfig;
-  protected _activeEntityConf!: EntityConfig;
-  protected _Icons!: Icons;
+  protected _collectionData?: mediaCardPlaylistData | mediaCardAlbumData | mediaCardArtistData;
+  protected _hass?: ExtendedHass;
+  protected _activePlayer?: ExtendedHassEntity;
+  protected _browserConfig?: MediaBrowserConfig;
+  protected _activeEntityConf?: EntityConfig;
+  protected _Icons?: Icons;
 
-  @query('#title') protected titleElement!: HTMLElement
-  @query('#enqueue-button') protected enqueueElement!: HTMLElement
-  @query('#enqueue') protected enqueueDiv!: HTMLElement
-  @query('#img-header') protected imageElement!: HTMLElement
-  @query('#collection-image') protected imageDivElement!: HTMLElement;
-  @query('#tracks') protected tracksElement!: HTMLElement;
-  @query('#header') protected headerElement!: HTMLElement;
+  @query('#title') protected titleElement?: HTMLElement
+  @query('#enqueue-button') protected enqueueElement?: HTMLElement
+  @query('#enqueue') protected enqueueDiv?: HTMLElement
+  @query('#img-header') protected imageElement?: HTMLElement
+  @query('#collection-image') protected imageDivElement?: HTMLElement;
+  @query('#tracks') protected tracksElement?: HTMLElement;
+  @query('#header') protected headerElement?: HTMLElement;
   protected enqueueControlElement!: HTMLElement;
   protected enqueueIconElement!: HTMLElement;
   protected titleAnimation!: Animation;
@@ -50,7 +50,7 @@ export class BrowserViewBase extends LitElement {
   // Offset before rendering new rows
   protected listenOffset = -10;
   // Observer for element
-  protected observer!: IntersectionObserver;
+  protected observer?: IntersectionObserver;
   // Has observer been added
   protected observerAdded = false;
   // Listen on elements
@@ -64,14 +64,14 @@ export class BrowserViewBase extends LitElement {
 
   // Used to get hidden elements, etc.
   @consume({ context: mediaBrowserConfigContext, subscribe: true })
-  protected set browserConfig(config: MediaBrowserConfig) {
+  protected set browserConfig(config: MediaBrowserConfig | undefined) {
     this._browserConfig = config;
   }
   protected get browserConfig() {
     return this._browserConfig;
   }
   @consume({ context: activeEntityConfContext, subscribe: true })
-  protected set activeEntityConf(config: EntityConfig) {
+  protected set activeEntityConf(config: EntityConfig | undefined) {
     this._activeEntityConf = config;
   }
   protected get activeEntityConf() {
@@ -80,14 +80,14 @@ export class BrowserViewBase extends LitElement {
 
   // Make sure we're using the right icons
   @consume({ context: IconsContext, subscribe: true })
-  protected set Icons(icons: Icons) {
+  protected set Icons(icons: Icons | undefined) {
     this._Icons = icons;
   }
   protected get Icons() {
     return this._Icons;
   }
   
-  @state() public tracks!: Tracks;
+  @state() public tracks?: Tracks;
 
   // Ensure style adjustments are handled
   @consume({context: useExpressiveContext})
@@ -96,10 +96,10 @@ export class BrowserViewBase extends LitElement {
   @consume({context: useVibrantContext})
   protected useVibrant!: boolean;
 
-  protected _browserActions!: BrowserActions;
+  protected _browserActions?: BrowserActions;
 
   @consume({ context: hassContext, subscribe: true })
-  public set hass(hass: ExtendedHass) {
+  public set hass(hass: ExtendedHass | undefined) {
     if (!this._hass) {
       this._hass = hass;
       void this.getTracks();
@@ -112,7 +112,7 @@ export class BrowserViewBase extends LitElement {
   }
 
   @consume({ context: activeMediaPlayerContext, subscribe: true })
-  public set activePlayer(player: ExtendedHassEntity) {
+  public set activePlayer(player: ExtendedHassEntity | undefined) {
     if (!this.activePlayer) {
       this._activePlayer = player;
       void this.getTracks();
@@ -125,7 +125,7 @@ export class BrowserViewBase extends LitElement {
   }
 
   @property({ attribute: false })
-  public set collectionData(data: mediaCardPlaylistData | mediaCardAlbumData | mediaCardArtistData) {
+  public set collectionData(data: mediaCardPlaylistData | mediaCardAlbumData | mediaCardArtistData | undefined) {
     this._collectionData = data;
     void this.getTracks();
   }
@@ -136,8 +136,8 @@ export class BrowserViewBase extends LitElement {
   protected _trackObserverCallback = (e: IntersectionObserverEntry[]) => {
     const entry = e[0];
     if (entry.isIntersecting) {
-      this.observer.disconnect();
-      this.currentIdx = Math.min(this.currentIdx + this.indexIncrease, this.tracks.length);
+      this.observer?.disconnect();
+      this.currentIdx = Math.min(this.currentIdx + this.indexIncrease, this.tracks?.length ?? 0);
     }
   }
 
@@ -145,7 +145,7 @@ export class BrowserViewBase extends LitElement {
     if (this.observer) {
       this.observer.disconnect();
     }
-    if (!this.trackElements?.length || this.trackElements.length == this.tracks.length) {
+    if (!this.trackElements.length || this.trackElements.length == this.tracks?.length) {
       return;
     }
     const listenIdx = this.currentIdx + this.listenOffset;
@@ -186,16 +186,14 @@ export class BrowserViewBase extends LitElement {
   }
   
   public get browserActions() {
-    if (!this._browserActions) {
-      this._browserActions = new BrowserActions(this.hass);
-    }
+    this._browserActions ??= new BrowserActions(this.hass as ExtendedHass);
     return this._browserActions;
   }
   
 
   protected addScrollAnimation(transforms: Keyframe, elem: HTMLElement) {
-    const shrunkHdrHeight = this.headerElement.offsetHeight / 2;
-    const scrollHeight = this.tracksElement.scrollHeight;
+    const shrunkHdrHeight = this.headerElement?.offsetHeight ?? 0 / 2;
+    const scrollHeight = this.tracksElement?.scrollHeight ?? 1;
     const duration = shrunkHdrHeight / scrollHeight;
     const keyframes = [
       {
@@ -237,7 +235,7 @@ export class BrowserViewBase extends LitElement {
     const kf = {
       height: 'var(--view-header-min-height)'
     }
-    this.headerAnimation = this.addScrollAnimation(kf, this.headerElement);
+    this.headerAnimation = this.addScrollAnimation(kf, this.headerElement as HTMLElement);
 
   }
   protected animateHeaderTitle() {
@@ -246,11 +244,11 @@ export class BrowserViewBase extends LitElement {
       fontWeight: '500',
       top: '0em',
     }
-    this.titleAnimation = this.addScrollAnimation(kf, this.titleElement)
+    this.titleAnimation = this.addScrollAnimation(kf, this.titleElement as HTMLElement)
   }
   protected animateHeaderEnqueue() {
-    const iconElem = this?.enqueueElement?.shadowRoot?.querySelector('.svg-menu-expressive');
-    const selectElem = this?.enqueueElement?.shadowRoot?.querySelector('#menu-select-menu')?.shadowRoot?.querySelector('.select-anchor')
+    const iconElem = this.enqueueElement?.shadowRoot?.querySelector('.svg-menu-expressive');
+    const selectElem = this.enqueueElement?.shadowRoot?.querySelector('#menu-select-menu')?.shadowRoot?.querySelector('.select-anchor')
     if (!iconElem || !selectElem) {
       return;
     }
@@ -268,7 +266,7 @@ export class BrowserViewBase extends LitElement {
     this.enqueueControlElement = selectElem as HTMLElement
     this.enqueueIconAnimation = this.addScrollAnimation(iconKeyFrames, this.enqueueIconElement);
     this.enqueueControlAnimation = this.addScrollAnimation(selectKeyFrames, this.enqueueControlElement);
-    this.enqueueAnimation = this.addScrollAnimation(divKeyFrames, this.enqueueDiv);
+    this.enqueueAnimation = this.addScrollAnimation(divKeyFrames, this.enqueueDiv as HTMLElement);
   }
   protected animateHeaderImage() {
     const imgKf = {
@@ -278,22 +276,25 @@ export class BrowserViewBase extends LitElement {
       height: 'var(--collection-image-div-collapsed-height)',
       transform: 'translateX(-2em) translateY(-0.5em)'
     }
-    this.imageAnimation = this.addScrollAnimation(imgKf, this.imageElement)
-    this.imageDivAnimation = this.addScrollAnimation(imgDivKf, this.imageDivElement)
+    this.imageAnimation = this.addScrollAnimation(imgKf, this.imageElement as HTMLElement)
+    this.imageDivAnimation = this.addScrollAnimation(imgDivKf, this.imageDivElement as HTMLElement)
   }
   
   protected onEnqueue = (ev: MenuButtonEventData) => {
+    if (!this.collectionData) {
+      return;
+    }
     ev.stopPropagation();
     const target = ev.detail;
     const value = target.option as EnqueueOptions;
-    if (!value) {
-      return;
-    }
     this.onEnqueueAction(this.collectionData, value);
   };
 
   protected updateEnqueueButtons() {
-    const default_buttons = getEnqueueButtons(this.Icons, this.hass);
+    if (!this.Icons) {
+      return;
+    }
+    const default_buttons = getEnqueueButtons(this.Icons, this.hass as ExtendedHass);
     const button_mapping = HIDDEN_BUTTON_VALUE;
     const opts = default_buttons.filter((item) => {
       //eslint-disable-next-line @typescript-eslint/no-unsafe-assignment
@@ -305,10 +306,10 @@ export class BrowserViewBase extends LitElement {
   }
   
   protected _renderImageFallback = (ev: HTMLImageElementEvent) => {
-    ev.target.src = getThumbnail(this.hass, Thumbnail.PLAYLIST);
+    ev.target.src = getThumbnail(this.hass, Thumbnail.PLAYLIST) as string;
   }
   protected renderImage(): TemplateResult {
-    const img = this.collectionData.media_image;
+    const img = this.collectionData?.media_image;
     return html`
         <img
           src="${img}"
@@ -323,7 +324,7 @@ export class BrowserViewBase extends LitElement {
     return html`
       <mpc-marquee-text id="title">
         <div id="title-text">
-          ${this.collectionData.media_title}
+          ${this.collectionData?.media_title}
         </div>
       </mpc-marquee-text>
     `
@@ -338,7 +339,7 @@ export class BrowserViewBase extends LitElement {
     return html`
       <mass-menu-button
         id="enqueue-button"
-        .iconPath=${this.Icons.PLAY_CIRCLE}
+        .iconPath=${this.Icons?.PLAY_CIRCLE}
         .items=${this._enqueue_buttons}
         @menu-item-selected=${this.onEnqueue}
         naturalMenuWidth
@@ -350,7 +351,7 @@ export class BrowserViewBase extends LitElement {
       <mpc-track-row
         .track=${track}
         ?divider=${divider}
-        .collectionURI=${this.collectionData.media_content_id}
+        .collectionURI=${this.collectionData?.media_content_id}
         .enqueueButtons=${this._enqueue_buttons}
       ></mpc-track-row>
     `)

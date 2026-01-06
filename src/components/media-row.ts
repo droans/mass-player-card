@@ -68,8 +68,8 @@ class MediaRow extends LitElement {
     DEFAULT_PLAYER_QUEUE_HIDDEN_ELEMENTS_CONFIG;
 
   @consume({ context: playerQueueConfigContext, subscribe: true })
-  public set config(config: QueueConfig) {
-    if (jsonMatch(this._config, config)) {
+  public set config(config: QueueConfig | undefined) {
+    if (jsonMatch(this._config, config) || !config) {
       return;
     }
     this._config = config;
@@ -80,8 +80,8 @@ class MediaRow extends LitElement {
   }
 
   @consume({ context: activeEntityConfContext, subscribe: true })
-  public set entityConfig(config: EntityConfig) {
-    if (jsonMatch(this._entityConfig, config)) {
+  public set entityConfig(config: EntityConfig | undefined) {
+    if (jsonMatch(this._entityConfig, config) || !config) {
       return;
     }
     this._entityConfig = config;
@@ -118,7 +118,10 @@ class MediaRow extends LitElement {
   }
 
   @property({ attribute: false }) 
-  public set media_item(media_item: QueueItem) {
+  public set media_item(media_item: QueueItem | undefined) {
+    if (!media_item) {
+      return;
+    }
     this._media_item = media_item;
   }
   public get media_item() {
@@ -127,26 +130,41 @@ class MediaRow extends LitElement {
 
 
   private callMoveItemUpService = (e: Event) => {
+    if (!this.media_item) {
+      return;
+    }
     navigator.vibrate(VibrationPattern.Queue.ACTION_MOVE_UP);
     e.stopPropagation();
     this.moveQueueItemUpService(this.media_item.queue_item_id);
   }
   private callMoveItemDownService = (e: Event) => {
+    if (!this.media_item) {
+      return;
+    }
     navigator.vibrate(VibrationPattern.Queue.ACTION_MOVE_DOWN);
     e.stopPropagation();
     this.moveQueueItemDownService(this.media_item.queue_item_id);
   }
   private callMoveItemNextService = (e: Event) => {
+    if (!this.media_item) {
+      return;
+    }
     navigator.vibrate(VibrationPattern.Queue.ACTION_MOVE_NEXT);
     e.stopPropagation();
     this.moveQueueItemNextService(this.media_item.queue_item_id);
   }
   private callRemoveItemService = (e: Event) => {
+    if (!this.media_item) {
+      return;
+    }
     e.stopPropagation();
     navigator.vibrate(VibrationPattern.Queue.ACTION_REMOVE);
     this.removeService(this.media_item.queue_item_id);
   }
   private callOnQueueItemSelectedService = () => {
+    if (!this.media_item) {
+      return;
+    }
     this.selectedService(this.media_item.queue_item_id);
   }
   protected shouldUpdate(_changedProperties: PropertyValues<this>): boolean {
@@ -158,12 +176,19 @@ class MediaRow extends LitElement {
   }
 
   private _renderThumbnailFallback = (ev: HTMLImageElementEvent) => {
-    ev.target.src = getThumbnail(this.hass, Thumbnail.DISC);
+    ev.target.src = getThumbnail(this.hass, Thumbnail.DISC) ?? '';
   }
   private renderThumbnail(): TemplateResult {
+    if (!this.media_item) {
+      return html``;
+    }
+    // eslint-disable-next-line @typescript-eslint/no-unnecessary-condition
     const played = !this.media_item.show_action_buttons && !this.media_item?.playing;
     const fallback = getThumbnail(this.hass, Thumbnail.DISC);
-    const img = this.media_item.local_image_encoded ?? this.media_item.media_image ?? fallback;
+    const item = this.media_item;
+    const local_img = item.local_image_encoded?.length ? item.local_image_encoded : undefined;
+    const media_img = item.media_image.length ? item.media_image : undefined;
+    const img = local_img ?? media_img ?? fallback;
     if ( this.showAlbumCovers && !this.hide.album_covers) {
       return html`
         <img
@@ -178,6 +203,9 @@ class MediaRow extends LitElement {
     return html``;
   }
   private _calculateTitleWidth() {
+    if (!this.config || !this.media_item) {
+      return;
+    }
     let button_ct = 0;
     const hide = this.config.hide;
     const media_item = this.media_item;
@@ -205,14 +233,14 @@ class MediaRow extends LitElement {
   }
   private renderTitle(): TemplateResult {
     const played =
-      !this.media_item.show_action_buttons && !this.media_item?.playing;
+      !this.media_item?.show_action_buttons && !this.media_item?.playing;
     return html`
       <span
         slot="headline"
         class="title ${played ? "title-disabled" : ""}"
         style="width: ${this._calculateTitleWidth()}"
       >
-        ${this.media_item.media_title}
+        ${this.media_item?.media_title}
       </span>
     `;
   }
@@ -221,19 +249,19 @@ class MediaRow extends LitElement {
       return html``;
     }
     const played =
-      !this.media_item.show_action_buttons && !this.media_item?.playing;
+      !this.media_item?.show_action_buttons && !this.media_item?.playing;
     return html`
       <span
         slot="supporting-text"
         class="title ${played ? "title-disabled" : ""}"
         style="width: ${this._calculateTitleWidth()}"
       >
-        ${this.media_item.media_artist}
+        ${this.media_item?.media_artist}
       </span>
     `;
   }
   private renderActionButtons(): TemplateResult {
-    if (this.hide.action_buttons || !this.media_item.show_action_buttons) {
+    if (this.hide.action_buttons || !this.media_item?.show_action_buttons) {
       return html``;
     }
     return html`
@@ -250,7 +278,7 @@ class MediaRow extends LitElement {
     `;
   }
   private renderMoveNextButton(): TemplateResult {
-    if (this.hide.move_next_button || !this.media_item.show_move_up_next) {
+    if (this.hide.move_next_button || !this.media_item?.show_move_up_next) {
       return html``;
     }
     return html`
@@ -271,7 +299,7 @@ class MediaRow extends LitElement {
     `;
   }
   private renderMoveUpButton(): TemplateResult {
-    if (this.hide.move_up_button || !this.media_item.show_move_up_next) {
+    if (this.hide.move_up_button || !this.media_item?.show_move_up_next) {
       return html``;
     }
     return html`
@@ -335,7 +363,7 @@ class MediaRow extends LitElement {
   }
 
   render(): TemplateResult {
-    const playing = this.media_item.playing ? `-active` : ``;
+    const playing = this.media_item?.playing ? `-active` : ``;
     const expressive = this.useExpressive ? `button-expressive${playing}` : ``;
     return html`
       <ha-md-list-item

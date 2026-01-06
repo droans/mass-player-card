@@ -32,11 +32,17 @@ export function secondsToTime(seconds: number) {
   return `${mins.toString()}:${secs < 10 ? "0" : ""}${secs.toString()}`;
 }
 export function playerHasUpdated(
-  old_player: ExtendedHassEntity,
-  new_player: ExtendedHassEntity,
+  old_player: ExtendedHassEntity | undefined,
+  new_player: ExtendedHassEntity | undefined,
 ): boolean {
-  const old_attrs = old_player?.attributes;
-  const new_attrs = new_player?.attributes;
+  if (!new_player && !old_player) {
+    return false
+  }
+  if (!new_player ||  !old_player) {
+    return true;
+  }
+  const old_attrs = old_player.attributes;
+  const new_attrs = new_player.attributes;
   const attrs = [
     "active_queue",
     "app_id",
@@ -53,8 +59,8 @@ export function playerHasUpdated(
     "shuffle",
     "volume_level",
   ];
-  const old_state = old_player?.state;
-  const new_state = new_player?.state;
+  const old_state = old_player.state;
+  const new_state = new_player.state;
   const changed_attrs = attrs.filter((attr) => {
     try {
       return old_attrs[attr] !== new_attrs[attr];
@@ -68,8 +74,8 @@ export function playerHasUpdated(
 }
 
 export function queueItemhasUpdated(
-  old_item: QueueItem,
-  new_item: QueueItem,
+  old_item: QueueItem | undefined,
+  new_item: QueueItem | undefined,
 ): boolean {
   return (
     old_item?.media_content_id !== new_item?.media_content_id ||
@@ -81,8 +87,8 @@ export function queueItemhasUpdated(
   );
 }
 export function isActive(
-  hass: ExtendedHass,
-  entity: ExtendedHassEntity,
+  hass: ExtendedHass | undefined,
+  entity: ExtendedHassEntity | undefined,
   entity_config: EntityConfig,
 ): boolean {
   if (!entity || !hass) {
@@ -91,12 +97,12 @@ export function isActive(
   const inactive_states = entity_config.inactive_when_idle
     ? ["off", "idle"]
     : ["off"];
-  const not_off = !inactive_states.includes(entity?.state);
-  const has_item = !!entity?.attributes?.media_content_id;
-  const is_mass = entity?.attributes?.app_id == MUSIC_ASSISTANT_APP_NAME;
-  const has_queue = !!entity?.attributes?.active_queue;
+  const not_off = !inactive_states.includes(entity.state);
+  const has_item = !!entity.attributes.media_content_id;
+  const is_mass = entity.attributes.app_id == MUSIC_ASSISTANT_APP_NAME;
+  const has_queue = !!entity.attributes.active_queue;
   const connected = hass.connected;
-  const updated_ms = new Date(entity?.last_updated).getTime();
+  const updated_ms = new Date(entity.last_updated).getTime();
   const now_ms = new Date().getTime();
   const updated_recently =
     now_ms - updated_ms <= MAX_ACTIVE_LAST_ACTIVE_DURATION;
@@ -118,7 +124,8 @@ export function ensureThumbnail(img: string, hass: ExtendedHass): string {
   // If `img` is a Thumbnail enum, returns the image related to the enum.
   // Otherwise, returns `img`
   if (Object.values(Thumbnail).includes(img as Thumbnail)) {
-    return getThumbnail(hass, img as Thumbnail)
+    // eslint-disable-next-line @typescript-eslint/no-non-null-assertion
+    return getThumbnail(hass, img as Thumbnail)!
   }
   return img
 }

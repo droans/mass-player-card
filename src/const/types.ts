@@ -18,7 +18,7 @@ import { ImageURLWithFallback } from "../utils/thumbnails";
 import { queueItem } from "mass-queue-types/packages/mass_queue/actions/get_queue_items.js";
 import { QueueConfig } from "../config/player-queue";
 
-export interface ExtendedHass extends HomeAssistant {
+export interface ExtendedHass extends Omit<HomeAssistant, "states"> {
   entities: ExtendedEntitiesBase;
   states: ExtendedHassEntities;
   themes: ExtendedThemes;
@@ -33,25 +33,25 @@ type ExtendedEntitiesBase = Record<string, ExtendedEntityBase>;
 export interface ExtendedHassEntity extends HassEntity {
   attributes: ExtendedHassEntityAttributes;
 }
-type ExtendedHassEntities = Record<string, ExtendedHassEntity>;
+export type ExtendedHassEntities = Record<string, ExtendedHassEntity | undefined>;
 
 interface ExtendedHassEntityAttributes extends HassEntityAttributeBase {
-  app_id: string;
-  active_queue: string;
-  entity_picture_local: string;
-  group_members: string[];
-  is_volume_muted: boolean;
-  mass_player_type: string;
-  media_album_name: string;
-  media_artist: string;
-  media_title: string;
-  media_content_id: string;
-  media_content_type: string;
-  media_duration: number;
-  media_position: number;
-  repeat: RepeatMode;
-  shuffle: boolean;
-  volume_level: number;
+  app_id?: string;
+  active_queue?: string;
+  entity_picture_local?: string;
+  group_members?: string[];
+  is_volume_muted?: boolean;
+  mass_player_type?: string;
+  media_album_name?: string;
+  media_artist?: string;
+  media_title?: string;
+  media_content_id?: string;
+  media_content_type?: string;
+  media_duration?: number;
+  media_position?: number;
+  repeat?: RepeatMode;
+  shuffle?: boolean;
+  volume_level?: number;
 }
 
 export interface ExtendedThemes extends Themes {
@@ -221,8 +221,8 @@ export interface PlaylistDialogItem {
   uri: string;
 }
 
-export interface QueueItem extends queueItem {
-  playing: boolean;
+export interface QueueItem extends Omit<queueItem, "playing"> {
+  playing?: boolean;
   show_action_buttons: boolean;
   show_artist_name: boolean;
   show_move_up_next: boolean;

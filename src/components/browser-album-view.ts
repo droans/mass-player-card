@@ -8,16 +8,14 @@ import { BrowserViewBase } from "./browser-view-base.js";
 
 @customElement('mpc-browser-album-view')
 export class MassBrowserAlbumView extends BrowserViewBase {
-  // See setter
-  // private _collectionData!: mediaCardAlbumData;
 
-  @query('#collection-info') private infoElement!: HTMLElement
-  @query('#collection-artists') private artistsElement!: HTMLElement
+  @query('#collection-info') private infoElement?: HTMLElement
+  @query('#collection-artists') private artistsElement?: HTMLElement
   private infoAnimation!: Animation;
   private artistsAnimation!: Animation;
 
   // Metadata for album
-  @state() private albumMetadata!: getAlbumServiceResponse;
+  @state() private albumMetadata?: getAlbumServiceResponse;
 
   // Ask HA to return the tracks in the album
   public async getTracks() {
@@ -49,7 +47,7 @@ export class MassBrowserAlbumView extends BrowserViewBase {
     const kf = {
       fontSize: '0.7em'
     }
-    this.infoAnimation = this.addScrollAnimation(kf, this.infoElement)
+    this.infoAnimation = this.addScrollAnimation(kf, this.infoElement as HTMLElement)
   }
   private animateHeader() {
     this.animateHeaderElement();
@@ -74,7 +72,7 @@ export class MassBrowserAlbumView extends BrowserViewBase {
   }
   protected renderOverview(): TemplateResult {
     const trackStr = this.tracks?.length ? `${this.tracks.length.toString()} Tracks` : `Loading...`
-    const metadata = this?.albumMetadata?.response;
+    const metadata = this.albumMetadata?.response;
     const artists = metadata?.artists ?? [];
     const artistLs = artists.map(
       (artist) => {
@@ -92,7 +90,7 @@ export class MassBrowserAlbumView extends BrowserViewBase {
           ${trackStr}
         </div>
         <div id="collection-year">
-          ${this?.albumMetadata?.response?.year ?? ``}
+          ${this.albumMetadata?.response.year ?? ``}
         </div>
       </div>
     `
@@ -101,7 +99,7 @@ export class MassBrowserAlbumView extends BrowserViewBase {
   protected async testAnimation(delayMs=50) {
     await delay(delayMs);
     if (!this.animationsAdded
-      && this?.tracksElement?.scrollHeight > this?.tracksElement?.offsetHeight
+      && (this.tracksElement?.scrollHeight ?? 0) > (this.tracksElement?.offsetHeight ?? 0)
       && this.titleElement
       && this.infoElement
       && this.enqueueElement

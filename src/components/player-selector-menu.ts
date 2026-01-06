@@ -44,12 +44,13 @@ export class MassCardPlayerSelector extends LitElement {
   protected renderPlayerItems() {
     return this.playerEntities.map((item) => {
     const ent = this.hass.states[item.entity_id];
-    const name = item.name.length > 0 ? item.name : ent?.attributes?.friendly_name ?? `Missing- ${item.entity_id}`;
+    if (!ent) {
+      return;
+    }
+    const name = item.name.length > 0 ? item.name : ent.attributes.friendly_name ?? `Missing- ${item.entity_id}`;
     let url: string
     let fallback: string;
-    if (
-      ent.attributes.app_id != 'music_assistant'
-    ) {
+    if ( ent.attributes.app_id != 'music_assistant' ) {
       url = '';
       fallback = '';
     } else {
@@ -59,7 +60,7 @@ export class MassCardPlayerSelector extends LitElement {
       const r: ListItemData = {
         option: item.entity_id,
         icon: this.Icons.SPEAKER,
-        title: name ?? item.name,
+        title: name,
         image: {
           url: url,
           fallback: fallback

@@ -46,19 +46,19 @@ export class MassCardPlayerSelector extends LitElement {
   private groupVolumeLevel!: number;
 
   @consume({ context: entitiesConfigContext, subscribe: true })
-  private playerEntities!: EntityConfig[];
+  private playerEntities?: EntityConfig[];
 
   @consume({ context: controllerContext, subscribe: true })
   private controller!: MassCardController;
 
   @consume({ context: groupedPlayersContext, subscribe: true })
   private set groupedPlayersList(players: string[]) {
-    const card_players = this.playerEntities.filter(
+    const card_players = this.playerEntities?.filter(
       (entity) => {
-        return players?.includes(entity.entity_id)
+        return players.includes(entity.entity_id)
       }
     )
-    if (jsonMatch(this._groupedPlayers, card_players)) {
+    if (jsonMatch(this._groupedPlayers, card_players) || !card_players) {
       return;
     }
     this._groupedPlayers = card_players;
@@ -75,7 +75,7 @@ export class MassCardPlayerSelector extends LitElement {
   }
   private onGroupVolumeChange = (ev: DetailValEventData) => {
     const vol = ev.detail.value;
-    void this.controller.ActivePlayer.setActiveGroupVolume(vol); 
+    void this.controller.ActivePlayer?.setActiveGroupVolume(vol); 
   }
 
   protected renderGroupedVolume(): TemplateResult {
@@ -120,10 +120,10 @@ export class MassCardPlayerSelector extends LitElement {
       const name =
         item.name.length > 0
           ? item.name
-          : this.hass.states[item.entity_id].attributes.friendly_name;
+          : this.hass.states[item.entity_id]?.attributes.friendly_name ?? '';
       const state = this.hass.states[item.entity_id];
-      const img = state.attributes.entity_picture ?? state.attributes.entity_picture_local;
-      const fallback = state.attributes.entity_picture_local ?? this.Icons.SPEAKER;
+      const img = state?.attributes.entity_picture ?? state?.attributes.entity_picture_local;
+      const fallback = state?.attributes.entity_picture_local ?? this.Icons.SPEAKER;
       return html`
         <div class="grouped-players-item">
           <div class="player-name-icon">

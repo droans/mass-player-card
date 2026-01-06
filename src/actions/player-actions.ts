@@ -11,6 +11,7 @@ export default class PlayerActions {
     this.hass = hass;
   }
   public set hass(hass: ExtendedHass) {
+    // eslint-disable-next-line @typescript-eslint/no-unnecessary-condition
     if (hass) {
       this._hass = hass;
     }
@@ -30,7 +31,7 @@ export default class PlayerActions {
   }
   async actionMuteToggle(entity: HassEntity) {
     // Assume that entity might not be updated
-    const e = this.hass.states[entity.entity_id];
+    const e = this.hass.states[entity.entity_id] as ExtendedHassEntity;
     const is_muted = e.attributes.is_volume_muted;
     const mute = !is_muted;
     try {

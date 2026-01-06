@@ -21,27 +21,27 @@ import { Icons } from "../const/icons";
 import { WaAnimation } from "../const/elements";
 
 class MassNavBar extends LitElement {
-  private _controller!: MassCardController;
-  private _config!: Config;
-  private _activeSection!: Sections;
+  private _controller?: MassCardController;
+  private _config?: Config;
+  private _activeSection?: Sections;
   @consume({ context: IconsContext }) private Icons!: Icons;
   @query('#tab-music-player') playerTab?: HTMLAnchorElement;
   @query('#tab-queue') queueTab?: HTMLAnchorElement;
   @query('#tab-media-browser') browserTab?: HTMLAnchorElement;
   @query('#tab-players') playersTab?: HTMLAnchorElement;
-  @query('#tab-indicator') tabIndicator!: HTMLDivElement;
-  @query('#animation') animationElement!: WaAnimation;
-  @query('#navigation') navbar!: HTMLDivElement;
+  @query('#tab-indicator') tabIndicator?: HTMLDivElement;
+  @query('#animation') animationElement?: WaAnimation;
+  @query('#navigation') navbar?: HTMLDivElement;
   private animationLength = 350;
   private animating = false;
 
   @consume({ context: activeSectionContext, subscribe: true })
   @state()
-  public set active_section(section: Sections) {
+  public set active_section(section: Sections | undefined) {
     if (!this.controller) {
       return;
     }
-    if (section != this.active_section) {
+    if (section != this.active_section && section) {
       this.handleTabChanged(section)
     }
     this._activeSection = section;
@@ -50,19 +50,22 @@ class MassNavBar extends LitElement {
     return this._activeSection;
   }
   private setActiveSection(section: Sections) {
-    this.controller.activeSection = section;
+    if (this.controller) this.controller.activeSection = section;
   }
 
   @consume({ context: controllerContext, subscribe: true })
-  private set controller(controller: MassCardController) {
+  private set controller(controller: MassCardController | undefined) {
+    if (!controller) {
+      return;
+    }
     this._controller = controller;
-    this.active_section = controller.activeSection;
-    this.config = controller.config;
+    this.active_section = controller.activeSection as Sections;
+    this.config = controller.config as Config;
   }
   private get controller() {
     return this._controller;
   }
-  private set config(config: Config) {
+  private set config(config: Config | undefined) {
     this._config = config;
   }
   private get config() {
@@ -71,16 +74,18 @@ class MassNavBar extends LitElement {
 
   private handleTabChanged = (section: Sections) => {
     const cur_section = this.active_section;
-    this.animateTabChange(cur_section, section);
+    if (cur_section) {
+      this.animateTabChange(cur_section, section);
+    }
     this.setActiveSection(section);
     if (section == Sections.MEDIA_BROWSER) {
       this.returnMediaBrowserToHome();
     }
   };
   protected returnMediaBrowserToHome = () => {
-    const host = this.controller.host;
+    const host = this.controller?.host;
     const el: MediaBrowser | null | undefined =
-      host.shadowRoot?.querySelector("mass-media-browser");
+      host?.shadowRoot?.querySelector("mass-media-browser");
     if (!el) {
       return;
     }
@@ -123,7 +128,7 @@ class MassNavBar extends LitElement {
     const to_width = to_element.offsetWidth;
     
     const bounce_move = to_width * 0.2;
-    const navbarWidth = this.navbar.offsetWidth;
+    const navbarWidth = this.navbar?.offsetWidth ?? 0;
     const to_elem_x_end = to_left + to_width;
     
     const bounce_left = to_left + bounce_move;
@@ -169,13 +174,17 @@ class MassNavBar extends LitElement {
       }
     ]
     const animation = this.animationElement;
+    const indicator = this.tabIndicator;
+    if (!animation || !indicator) {
+      return;
+    }
     animation.keyframes = _keyframes;
     animation.addEventListener(
       'wa-finish',
       () => {
         this.animating = false;
-        this.tabIndicator.style.left = `${to_left.toString()}px`;
-        this.tabIndicator.style.width = `${to_width.toString()}px`;
+        indicator.style.left = `${to_left.toString()}px`;
+        indicator.style.width = `${to_width.toString()}px`;
       }
     )
     animation.play = true;
@@ -184,7 +193,7 @@ class MassNavBar extends LitElement {
   protected renderMusicPlayerTab(): TemplateResult {
     const section = Sections.MUSIC_PLAYER;
     const icon = this.Icons.MUSIC;
-    if (this.config.player.enabled) {
+    if (this.config?.player.enabled) {
       return this.renderTab(section, icon);
     }
     return html``;
@@ -192,7 +201,7 @@ class MassNavBar extends LitElement {
   protected renderQueueTab(): TemplateResult {
     const section = Sections.QUEUE;
     const icon = this.Icons.PLAYLIST;
-    if (this.config.queue.enabled) {
+    if (this.config?.queue.enabled) {
       return this.renderTab(section, icon);
     }
     return html``;
@@ -200,7 +209,7 @@ class MassNavBar extends LitElement {
   protected renderMediaBrowserTab(): TemplateResult {
     const section = Sections.MEDIA_BROWSER;
     const icon = this.Icons.ALBUM;
-    if (this.config.media_browser.enabled) {
+    if (this.config?.media_browser.enabled) {
       return this.renderTab(section, icon);
     }
     return html``;
@@ -208,7 +217,7 @@ class MassNavBar extends LitElement {
   protected renderPlayersTab(): TemplateResult {
     const section = Sections.PLAYERS;
     const icon = this.Icons.SPEAKER_MULTIPLE;
-    if (this.config.players.enabled) {
+    if (this.config?.players.enabled) {
       return this.renderTab(section, icon);
     }
     return html``;
@@ -253,8 +262,8 @@ class MassNavBar extends LitElement {
     return _changedProperties.size > 0;
   }
   protected firstUpdated(): void {
-    if (!this.tabIndicator) {
-      const tabs = this.navbar.querySelectorAll('a').length;
+    if (!this.tabIndicator && this.active_section) {
+      const tabs = this.navbar?.querySelectorAll('a').length ?? 0;
       const width = Math.round((1 / Math.max(1, tabs)) * 100);
       const indicator = document.createElement('div');
       indicator.id = 'tab-indicator';
@@ -267,7 +276,7 @@ class MassNavBar extends LitElement {
       animation.duration = this.animationLength;
       animation.iterations = 1;
       animation.appendChild(indicator)
-      this.navbar.appendChild(animation)
+      this.navbar?.appendChild(animation)
     }
   }
   static get styles(): CSSResultGroup {

@@ -32,6 +32,7 @@ import {
 } from "../utils/expressive.js";
 import { getInfoWSResponseSchema, getInfoWSServiceSchema } from "mass-queue-types/packages/mass_queue/ws/get_info.js";
 import WaCarousel from "@droans/webawesome/dist/components/carousel/carousel.js";
+import { RepeatMode } from "../const/enums.js";
 
 export class ActivePlayerController {
   private _activeEntityConfig: ContextProvider<typeof activeEntityConfContext>;
@@ -152,12 +153,15 @@ export class ActivePlayerController {
     return this._activeEntityID.value;
   }
 
-  private set activeMediaPlayer(player: ExtendedHassEntity) {
+  private set activeMediaPlayer(player: ExtendedHassEntity | undefined) {
+    if (!player) {
+      return;
+    }
     if (playerHasUpdated(this.activeMediaPlayer, player)) {
       this._activeMediaPlayer.setValue(player);
       this.dispatchUpdatedActivePlayer();
       void this.updateActivePlayerData();
-      if (player.attributes?.group_members) {
+      if (player.attributes.group_members) {
         this.setGroupAttributes();
       }
     }
@@ -172,12 +176,14 @@ export class ActivePlayerController {
       return;
     }
     const ent = this.hass.states[this.activeEntityConfig.entity_id];
-    this._activePlayerName.setValue(ent.attributes.friendly_name ?? "");
+    if (ent) {
+      this._activePlayerName.setValue(ent.attributes.friendly_name ?? "");
+    }
   }
   public get activePlayerName() {
     return this._activePlayerName.value;
   }
-  private set groupMembers(members: string[]) {
+  private set groupMembers(members: string[] | undefined) {
     if (jsonMatch(this._groupMembers.value, members) || !members) {
       return;
     }
@@ -196,15 +202,15 @@ export class ActivePlayerController {
     return this._groupVolume.value;
   }
 
-  private set volumeMediaPlayer(player: ExtendedHassEntity) {
+  private set volumeMediaPlayer(player: ExtendedHassEntity | undefined) {
     if (!player) {
       return;
     }
     const old_attrs = this.volumeMediaPlayer?.attributes;
-    const new_attrs = player?.attributes;
+    const new_attrs = player.attributes;
     if (
-      old_attrs?.volume_level != new_attrs?.volume_level ||
-      old_attrs?.is_volume_muted != new_attrs?.is_volume_muted || 
+      old_attrs?.volume_level != new_attrs.volume_level ||
+      old_attrs?.is_volume_muted != new_attrs.is_volume_muted || 
       !old_attrs
     ) {
       this._volumeMediaPlayer.setValue(player);
@@ -220,7 +226,7 @@ export class ActivePlayerController {
     }
   }
   public get expressiveScheme() {
-    return this?._expressiveScheme?.value;
+    return this._expressiveScheme.value;
   }
 
   private set activePlayerData(data: PlayerData) {
@@ -321,13 +327,20 @@ export class ActivePlayerController {
     void this._getAndSetGroupedVolume();
   }
   public getGroupedPlayers() {
+    if (!this.activeMediaPlayer) {
+      return [];
+    }
     const active_queue = this.activeMediaPlayer.attributes.active_queue;
     const ents = this.config.entities;
     return ents.filter((item) => {
-      const attrs = this.hass.states[item.entity_id]?.attributes;
-      return (
-        attrs?.active_queue == active_queue && attrs.mass_player_type != "group"
-      );
+      const ent = this.hass.states[item.entity_id];
+      if (ent) {
+        const attrs = ent.attributes;
+        return (
+          attrs.active_queue == active_queue && attrs.mass_player_type != "group"
+        );
+      }
+      return false;
     });
   }
   private setDefaultActivePlayer() {
@@ -361,18 +374,18 @@ export class ActivePlayerController {
 
     return {
       playing: player?.state == "playing",
-      repeat: player?.attributes?.repeat ?? false,
-      shuffle: player?.attributes?.shuffle ?? false,
-      track_album: player?.attributes?.media_album_name ?? "",
-      track_artist: player?.attributes?.media_artist ?? "",
+      repeat: player?.attributes.repeat ?? RepeatMode.OFF,
+      shuffle: player?.attributes.shuffle ?? false,
+      track_album: player?.attributes.media_album_name ?? "",
+      track_artist: player?.attributes.media_artist ?? "",
       track_artwork:
-        player?.attributes?.entity_picture_local ??
-        player?.attributes?.entity_picture,
-      track_title: player?.attributes?.media_title ?? "",
-      muted: vol_player?.attributes?.is_volume_muted ?? true,
-      volume: Math.floor(vol_player?.attributes?.volume_level * 100) ?? 0,
+        player?.attributes.entity_picture_local ??
+        player?.attributes.entity_picture ?? "",
+      track_title: player?.attributes.media_title ?? "",
+      muted: vol_player?.attributes.is_volume_muted ?? true,
+      volume: Math.floor(vol_player?.attributes.volume_level ?? 0 * 100),
       player_name: this.activePlayerName,
-      favorite: current_item?.media_item?.favorite ?? false,
+      favorite: current_item.media_item?.favorite ?? false,
     };
   }
   public async getPlayerProgress(): Promise<number> {
@@ -380,7 +393,7 @@ export class ActivePlayerController {
       return 0;
     }
     const current_queue = await this.actionGetCurrentQueue();
-    const elapsed = current_queue?.elapsed_time ?? 0;
+    const elapsed = current_queue.elapsed_time;
     return elapsed;
   }
   public async getPlayerActiveItemDuration(): Promise<number> {
@@ -388,7 +401,7 @@ export class ActivePlayerController {
       return 1;
     }
     const current_queue = await this.actionGetCurrentQueue();
-    return current_queue?.current_item?.duration ?? 1;
+    return current_queue.current_item.duration ?? 1;
   }
   async actionGetCurrentQueue() {
     const entity_id = this.activeEntityID;
@@ -432,7 +445,7 @@ export class ActivePlayerController {
     this._updatingScheme = true;
     let schemeColor: number; 
     const activeArtwork = this.getActiveArtwork();
-    if (!(activeArtwork?.tagName?.toLowerCase() == 'img')) {
+    if (!(activeArtwork?.tagName.toLowerCase() == 'img')) {
       schemeColor = generateDefaultExpressiveSchemeColor();
      } else {
       schemeColor = await generateExpressiveSourceColorFromImageElement(activeArtwork as HTMLImageElement)
@@ -449,6 +462,9 @@ export class ActivePlayerController {
     return this.expressiveScheme;
   }
   private async _getAndSetGroupedVolume() {
+    if (!this.activeMediaPlayer) {
+      return;
+    }
     const entity = this.activeMediaPlayer.entity_id;
     const vol = await this.getGroupedVolume(entity);
     this.groupVolume = vol;
@@ -469,10 +485,16 @@ export class ActivePlayerController {
     await this.hass.callWS(data);
   }
   public async setActiveGroupVolume(volume_level: number): Promise<void> {
+    if (!this.activeMediaPlayer) {
+      return;
+    }
     await this.setGroupedVolume(this.activeMediaPlayer.entity_id, volume_level);
     this.groupVolume = volume_level;
   }
   public async getActiveGroupVolume(): Promise<number> {
+    if (!this.activeMediaPlayer) {
+      return 0;
+    }
     return await this.getGroupedVolume(this.activeMediaPlayer.entity_id);
   }
   public async getGroupedVolume(entity_id: string): Promise<number> {
@@ -486,7 +508,7 @@ export class ActivePlayerController {
       return_response: true,
     };
     const ret = await this.hass.callWS<getGroupVolumeServiceResponse>(data);
-    const vol = ret.response.volume_level ?? 0;
+    const vol = ret.response.volume_level;
     return vol;
   }
   public async getEntityInfo(entity_id = this.activeEntityID): Promise<getInfoWSResponseSchema> {
@@ -515,7 +537,7 @@ export class ActivePlayerController {
     return result
   }
   private async setCanGroupWith() {
-    if (this.hass && this.activeEntityID) {
+    if (this.activeEntityID) {
       this.canGroupWith = await this.playerCanGroupWith();
     }
   }

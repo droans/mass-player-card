@@ -32,10 +32,10 @@ const funcs: viewCardFuncMap = {
 function generateSectionBackgroundPart(
   hass: ExtendedHass,
   thumbnail: string,
-  fallback: Thumbnail = Thumbnail.DISC,
+  fallback: Thumbnail | string = Thumbnail.DISC,
 ) {
   const thumb = getThumbnail(hass, (thumbnail as Thumbnail)) ?? thumbnail;
-  const _fallback = getThumbnail(hass, fallback) ?? fallback;
+  const _fallback = getThumbnail(hass, (fallback as Thumbnail)) ?? fallback;
   return html`
     <img
       class="thumbnail-section"
@@ -140,6 +140,7 @@ export function generateRecommendationSectionCards(
   const items = section.items;
   return items.map((item) => {
     const func = funcs[item.media_type];
+    // eslint-disable-next-line @typescript-eslint/no-unnecessary-condition
     if (func) {
       return func(item.uri, item.image, item.name)
     }
@@ -149,7 +150,7 @@ export function generateRecommendationSectionCards(
       fallback: Thumbnail.CLEFT,
       data: {
         type: "service",
-        media_content_id: item.uri ?? item.item_id,
+        media_content_id: item.uri,
         media_content_type: item.media_type,
       },
     };
@@ -179,12 +180,13 @@ export function generateFavoritesSectionCards(
   const thumbnail = MediaTypeThumbnails[media_type];
   return config.map((item) => {
     const func = funcs[item.media_type];
+    // eslint-disable-next-line @typescript-eslint/no-unnecessary-condition
     if (func) {
       return func(item.uri, item.image ?? '', item.name)
     }
     const r: MediaCardItem = {
       title: item.name,
-      thumbnail: item.image as string,
+      thumbnail: item.image ?? Thumbnail.CLEFT,
       fallback: thumbnail,
       data: {
         type: "service",

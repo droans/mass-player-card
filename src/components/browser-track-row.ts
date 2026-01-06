@@ -20,30 +20,28 @@ export class MassPlaylistTrackRow extends LitElement {
   @property({ attribute: 'playlist', type: Boolean }) playlist = false;
 
   @property({ attribute: false }) collectionURI!: string;
-  _enqueueButtons!: ListItems;
+  _enqueueButtons?: ListItems;
 
   @consume({ context: useExpressiveContext, subscribe: true })
-  private useExpressive!: boolean;
+  private useExpressive?: boolean;
   @consume({ context: useVibrantContext, subscribe: true })
-  private useVibrant!: boolean;
-  private _Icons!: Icons;
+  private useVibrant?: boolean;
+  private _Icons?: Icons;
 
   @consume({ context: hassContext, subscribe: true })
-  private hass!: ExtendedHass
+  private hass?: ExtendedHass
 
   @consume({ context: activeEntityIDContext, subscribe: true })
-  private activeEntityId!: string;
+  private activeEntityId?: string;
 
-  private _browserActions!: BrowserActions;
+  private _browserActions?: BrowserActions;
 
   private get browserActions() {
-    if (!this._browserActions) {
-      this._browserActions = new BrowserActions(this.hass);
-    }
+    this._browserActions ??= new BrowserActions(this.hass as ExtendedHass);
     return this._browserActions
   }
   @consume({ context: IconsContext, subscribe: true })
-  public set Icons(icons: Icons) {
+  public set Icons(icons: Icons | undefined) {
     this._Icons = icons;
     this.setEnqueueButtons();
   }
@@ -52,7 +50,7 @@ export class MassPlaylistTrackRow extends LitElement {
   }
 
   @property({ attribute: false })   
-  private set enqueueButtons(buttons: ListItems) {
+  private set enqueueButtons(buttons: ListItems | undefined) {
     this._enqueueButtons = buttons;
     this.setEnqueueButtons();
   }
@@ -63,13 +61,14 @@ export class MassPlaylistTrackRow extends LitElement {
   private setEnqueueButtons() {
     if (
       !this._enqueueButtons
-      || !this?.Icons?.CLOSE
+      || !this.Icons?.CLOSE
       || !this.playlist
     ) {
       return;
     }
     const buttons = this._enqueueButtons;
     let shouldUpdate = true;
+    // eslint-disable-next-line @typescript-eslint/no-unnecessary-condition
     if (buttons) {
       shouldUpdate = (buttons.findIndex(
         (item) => {
@@ -90,8 +89,9 @@ export class MassPlaylistTrackRow extends LitElement {
     }
   }
   private enqueueTrack = (enqueue: EnqueueOptions) => {
+    const ent = this.activeEntityId as string
     void this.browserActions.actionEnqueueMedia(
-      this.activeEntityId,
+      ent,
       this.track.media_content_id,
       'music',
       enqueue,
@@ -103,10 +103,11 @@ export class MassPlaylistTrackRow extends LitElement {
     void this.playTrackEnqueuePlaylist();
   }
   private async playTrackEnqueuePlaylist() {
+    const ent = this.activeEntityId as string
     const actions = this.browserActions;
     const uri = this.track.media_content_id;
-    await actions.actionPlayMedia(this.activeEntityId, uri, 'music')
-    await actions.actionEnqueueMedia(this.activeEntityId, this.collectionURI, 'playlist', EnqueueOptions.PLAY_NEXT);
+    await actions.actionPlayMedia(ent, uri, 'music')
+    await actions.actionEnqueueMedia(ent, this.collectionURI, 'playlist', EnqueueOptions.PLAY_NEXT);
   }
   private removeTrackFromPlaylist() {
     const playlistId = this.collectionURI.split('//')[1].split('/')[1];
@@ -114,7 +115,7 @@ export class MassPlaylistTrackRow extends LitElement {
     void this.browserActions.actionRemovePlaylistTrack(
       playlistId,
       position,
-      this.activeEntityId
+      this.activeEntityId as string
     );
     const data = {
       detail: {
@@ -161,7 +162,7 @@ export class MassPlaylistTrackRow extends LitElement {
       <span slot="end" class="menu-button">
         <mass-menu-button
           id="menu-button"
-          .iconPath=${this.Icons.OVERFLOW}
+          .iconPath=${this.Icons?.OVERFLOW}
           @menu-item-selected=${this.onMenuItemSelected}
           fixedMenuPosition
           naturalMenuWidth
@@ -173,11 +174,13 @@ export class MassPlaylistTrackRow extends LitElement {
   }
 
   private _renderThumbnailFallback = (ev: HTMLImageElementEvent) => {
-    ev.target.src = getThumbnail(this.hass, Thumbnail.CLEFT);
+    ev.target.src = getThumbnail(this.hass, Thumbnail.CLEFT) as string;
   }
   protected renderThumbnail(): TemplateResult {
     // const fallback = getThumbnail(this.hass, Thumbnail.CLEFT);
-    const img = this.track.local_image_encoded ?? this.track.media_image ?? '';
+    const loc_img = this.track.local_image_encoded?.length ? this.track.local_image_encoded : undefined;
+    const media_img = this.track.media_image.length ? this.track.media_image : undefined;
+    const img = loc_img ?? media_img ?? '';
     return html`
       <img
         class="thumbnail"
