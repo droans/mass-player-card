@@ -52,7 +52,14 @@ export interface Config {
   expressive_scheme: ExpressiveScheme;
   download_local: boolean;
   panel: boolean;
+  default_section: ConfigSections| undefined
 }
+
+export type ConfigSections = 
+  "music_player"
+  | "queue"
+  | "media_browser"
+  | "players"
 
 interface HiddenElementsConfig {
   player: PlayerHiddenElementsConfig;
@@ -81,6 +88,7 @@ export type ExpressiveScheme =
   | "tonal_spot"
   | "vibrant";
 
+
 export const DEFAULT_CONFIG: Config = {
   queue: DEFAULT_QUEUE_CONFIG,
   player: DEFAULT_PLAYER_CONFIG,
@@ -90,7 +98,8 @@ export const DEFAULT_CONFIG: Config = {
   expressive_scheme: "expressive",
   entities: [],
   download_local: false,
-  panel: false
+  panel: false,
+  default_section: undefined
 };
 
 const ENTITY_DEFAULT_HIDDEN_ITEM_CONFIG: HiddenElementsConfig = {

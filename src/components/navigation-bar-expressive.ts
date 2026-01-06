@@ -32,6 +32,7 @@ class MassNavBar extends LitElement {
   @query('#tab-indicator') tabIndicator?: HTMLDivElement;
   @query('#animation') animationElement?: WaAnimation;
   @query('#navigation') navbar?: HTMLDivElement;
+  @query('.icon-active') activeIconElem?: HTMLElement;
   private animationLength = 350;
   private animating = false;
 
@@ -232,7 +233,7 @@ class MassNavBar extends LitElement {
           this.handleTabChanged(section);
         }}
       >
-        <i class="icon-i">
+        <i class="icon-i ${active ? `icon-active` : ``}">
           <ha-svg-icon
             .path=${icon}
             class="action-button-svg${active ? "" : "-inactive"}"
@@ -267,10 +268,26 @@ class MassNavBar extends LitElement {
       const width = Math.round((1 / Math.max(1, tabs)) * 100);
       const indicator = document.createElement('div');
       indicator.id = 'tab-indicator';
-      const elem = this.getSectionElement(this.active_section);
-      const left = elem?.offsetLeft ?? 0;
-      indicator.style = `left: ${left.toString()}px; width: ${width.toString()}%;`
-
+      const conf = this.config;
+      if (!conf) {
+        return;
+      }
+      const sections: Sections[] = [];
+      if (conf.player.enabled) sections.push(Sections.MUSIC_PLAYER);
+      if (conf.queue.enabled) sections.push(Sections.QUEUE);
+      if (conf.media_browser.enabled) sections.push(Sections.MEDIA_BROWSER);
+      if (conf.players.enabled) sections.push(Sections.PLAYERS);
+      const activeSection = this.active_section;
+      const idx = sections.findIndex(
+        (item) => {
+          return item == activeSection
+        }
+      )
+      if (!idx) {
+        return;
+      }
+      const leftPct = (idx / sections.length) * 100
+      indicator.style = `left: ${leftPct.toString()}%; width: ${width.toString()}%;`
       const animation = document.createElement('wa-animation') as WaAnimation;
       animation.id = 'animation'
       animation.duration = this.animationLength;

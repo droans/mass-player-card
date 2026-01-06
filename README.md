@@ -141,6 +141,7 @@ type: custom:mass-player-card
 expressive: true
 expressive_theme: expressive
 panel: false
+default_section: music_player
 entities:
   - entity_id: <MEDIA_PLAYER_ENTITY>
     volume_entity_id: <MEDIA_PLAYER_ENTITY>
@@ -267,6 +268,7 @@ expressive: true
 expressive_theme: fruit_salad
 download_local: false
 panel: false
+default_section: media_browser
 entities:
   - media_player.kitchen_player_music_assistant
   - entity_id: media_player.bedroom_player_music_assistant
@@ -383,18 +385,19 @@ playlists_allow_removing_tracks: false
 </details>
 
 ## Base Config
-| Parameter         | Type                                             | Required | Default    | Description                                           |
-|-------------------|--------------------------------------------------|----------|------------|-------------------------------------------------------|
-| type              | str                                              | Yes      | n/a        | Use `custom:mass-player-card`                         |
-| expressive        | boolean                                          | No       | true       | Enables Material Expressive theme                     |
-| expressive_scheme | str                                              | No       | expressive | The expressive scheme to use for the theme, see below |
-| download_local    | boolean                                          | No       | false      | Download and encode images if not remotely accessible |
-| entities          | list of string or [EntityConfig](#entity-config) | Yes      | n/a        | The Music Assistant `media_player` entities to use    |
-| player            | [MusicPlayerConfig](#music-player-config)        | No       | 5          | See Below                                             |
-| queue             | [QueueConfig](#queue-config)                     | No       | 5          | See Below                                             |
-| media_browser     | [MediaBrowserConfig](#media-browser-config)      | No       | 5          | See Below                                             |
-| players           | [PlayersConfig](#players-config)                 | No       | 5          | See Below                                             |
-| panel             | boolean                                          | No       | false      | Displays a full-height card when enabled              |
+| Parameter         | Type                                             | Required | Default      | Description                                           |
+|-------------------|--------------------------------------------------|----------|--------------|-------------------------------------------------------|
+| type              | str                                              | Yes      | n/a          | Use `custom:mass-player-card`                         |
+| expressive        | boolean                                          | No       | true         | Enables Material Expressive theme                     |
+| expressive_scheme | str                                              | No       | expressive   | The expressive scheme to use for the theme, see below |
+| download_local    | boolean                                          | No       | false        | Download and encode images if not remotely accessible |
+| entities          | list of string or [EntityConfig](#entity-config) | Yes      | n/a          | The Music Assistant `media_player` entities to use    |
+| player            | [MusicPlayerConfig](#music-player-config)        | No       | 5            | See Below                                             |
+| queue             | [QueueConfig](#queue-config)                     | No       | 5            | See Below                                             |
+| media_browser     | [MediaBrowserConfig](#media-browser-config)      | No       | 5            | See Below                                             |
+| players           | [PlayersConfig](#players-config)                 | No       | 5            | See Below                                             |
+| panel             | boolean                                          | No       | false        | Displays a full-height card when enabled              |
+| default_section   | str                                              | No       | music_player | Default starting section, see below                   |
 
 ## Entity Config
 For each entity, you can either provide the Entity ID by itself or you can provide the Music Assistant media player Entity ID, the media player Entity ID for volume control, and/or the name of the player. Below is the config if you would like to provide the additional details.
@@ -431,6 +434,15 @@ There are a handful of different options for the scheme:
 * rainbow
 * tonal_spot
 * vibrant
+
+## Default Section
+
+You can choose which section to start on by default. By default, the first enabled section listed below will be chosen. Any of these options are valid for the default section:
+
+* music_player
+* queue
+* media_browser
+* players
 
 ## Music Player Config
 
