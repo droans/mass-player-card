@@ -6,7 +6,7 @@
     "homeassistant"
   ],
   "typescript.tsdk": "node_modules/typescript/lib",
-  "editor.defaultFormatter": "ms-vscode.vscode-typescript-tslint-plugin",
+  "editor.defaultFormatter": "vscode.typescript-language-features",
   "[typescript]": {
     "editor.defaultFormatter": "esbenp.prettier-vscode"
   },
