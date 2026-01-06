@@ -92,7 +92,7 @@ export class MassBrowserAlbumView extends BrowserViewBase {
           ${trackStr}
         </div>
         <div id="collection-year">
-          ${this?.albumMetadata.response?.year ?? ``}
+          ${this?.albumMetadata?.response?.year ?? ``}
         </div>
       </div>
     `
