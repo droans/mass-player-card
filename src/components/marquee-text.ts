@@ -34,7 +34,6 @@ export class MPCMarqueeText extends LitElement {
 
   protected firstUpdated(changedProps: PropertyValues) {
     super.firstUpdated(changedProps);
-    console.log(changedProps);
 
     setTimeout(
       () => {
@@ -47,7 +46,6 @@ export class MPCMarqueeText extends LitElement {
 
   protected updated(changedProps: PropertyValues) {
     super.updated(changedProps);
-    console.log(changedProps);
 
     if (changedProps.has("text")) {
       this._setupAnimation();
@@ -125,7 +123,7 @@ export class MPCMarqueeText extends LitElement {
         reachedEnd = true;
       }
     }
-    this._textSpan.style.transform = `translateX(${this._position}px)`;
+    this._textSpan.style.transform = `translateX(${this._position.toString()}px)`;
     if (reachedEnd) {
       this._pauseTimeout = window.setTimeout(() => {
         this._pauseTimeout = undefined;
@@ -137,7 +135,7 @@ export class MPCMarqueeText extends LitElement {
   };
 
   @eventOptions({ passive: true })
-  private _handleMouseEnter() {
+  private _handleMouseEnter = () => {
     if (this.pauseOnHover && this._animationFrame) {
       cancelAnimationFrame(this._animationFrame);
       this._animationFrame = undefined;
@@ -148,7 +146,7 @@ export class MPCMarqueeText extends LitElement {
     }
   }
 
-  private _handleMouseLeave() {
+  private _handleMouseLeave = () => {
     if (this.pauseOnHover && !this._animationFrame && !this._pauseTimeout) {
       this._animate();
     }

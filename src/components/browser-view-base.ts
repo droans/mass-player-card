@@ -421,7 +421,7 @@ export class BrowserViewBase extends LitElement {
   }
 
   // eslint-disable-next-line @typescript-eslint/no-unused-vars
-  protected async testAnimation(delayMs=50) {
+  protected async testAnimation(_delayMs=50) {
     // Implemented by components
   }
 
