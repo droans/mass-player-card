@@ -53,6 +53,10 @@ export class MassPlayerArtwork extends LitElement {
   @consume({ context: configContext, subscribe: true })
   private Config!: Config;
 
+  private _interval!: number | undefined;
+  private _intervalSet = false;
+  private _intervalMs = 250;
+
   @state() private _activePlayer!: ExtendedHassEntity;
 
   @state() private _queue: QueueItems | null = null;
@@ -202,6 +206,9 @@ export class MassPlayerArtwork extends LitElement {
     `
   }
 
+  private _intervalGoToSlide = () => {
+    this.delayedGoToSlide(this.getActiveIndex());
+  }
   private delayedGoToSlide(idx: number) {
     if (!this.carouselItems) {
       return;
@@ -456,12 +463,32 @@ export class MassPlayerArtwork extends LitElement {
       this._observer = new MutationObserver(this._observerCB);
       this._observer.observe(this.carouselElement, { subtree: true, childList: true, attributes: true});
     }
+    if (!this._intervalSet && this.carouselItems?.length && this.carouselElement) {
+      this._intervalSet = true
+      this._interval = setInterval(
+        () => {
+          this._intervalGoToSlide()
+        },
+        this._intervalMs
+      )
+    }
   }
   protected firstUpdated(): void {
     if (this.controller.ActivePlayer) {
       this.controller.ActivePlayer.carouselElement = this.carouselElement;
     }
     
+  }
+
+  disconnectedCallback(): void {
+    super.disconnectedCallback();
+    if (this._interval) {
+      try {
+        this._interval = undefined; 
+      } finally {
+        this._intervalSet = false;
+      }
+    }
   }
 
   static get styles(): CSSResultGroup {
