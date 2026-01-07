@@ -442,7 +442,7 @@ export class MassPlayerArtwork extends LitElement {
       this.carouselElement
     ) {
       this._intervalSet = true;
-      this._interval = setInterval(() => {
+      this._interval = window.setInterval(() => {
         this._intervalGoToSlide();
       }, this._intervalMs);
     }

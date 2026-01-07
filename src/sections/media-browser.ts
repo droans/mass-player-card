@@ -345,7 +345,7 @@ export class MediaBrowser extends LitElement {
         this._searchTimeout = 0;
       }
     }
-    this._searchTimeout = setTimeout(() => {
+    this._searchTimeout = window.setTimeout(() => {
       this._searchTimeout = 0;
       void this.searchMedia();
     }, SEARCH_UPDATE_DELAY);

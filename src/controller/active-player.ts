@@ -300,7 +300,7 @@ export class ActivePlayerController {
         // assume already canceled
       }
     }
-    this._timeout = setTimeout(() => {
+    this._timeout = window.setTimeout(() => {
       this._timeout = undefined;
       this.createAndApplyExpressiveScheme();
     }, this._observerDelay);
