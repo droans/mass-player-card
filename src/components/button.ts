@@ -52,7 +52,7 @@ class MassButton extends LitElement {
     if (!this.onHoldService) {
       return;
     }
-    this.timeout = setTimeout(() => {
+    this.timeout = window.setTimeout(() => {
       if (!this.timeout) {
         return;
       }

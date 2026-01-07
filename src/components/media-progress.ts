@@ -159,7 +159,10 @@ class MassPlayerProgressBar extends LitElement {
 
   private startProgressTick() {
     this.stopProgressTick();
-    this._tickListener = setInterval(this.tickProgress, this._tick_duration_ms);
+    this._tickListener = window.setInterval(
+      this.tickProgress,
+      this._tick_duration_ms,
+    );
   }
   private stopProgressTick() {
     if (this._tickListener) {
@@ -218,7 +221,7 @@ class MassPlayerProgressBar extends LitElement {
       clearTimeout(this._updateTimeout);
     }
     this._dragging = false;
-    this._updateTimeout = setTimeout(() => {
+    this._updateTimeout = window.setTimeout(() => {
       this._requestProgress = true;
       this.requestProgress();
     }, 5000);
@@ -286,7 +289,7 @@ class MassPlayerProgressBar extends LitElement {
   }
 
   connectedCallback(): void {
-    this._tickListener ??= setInterval(
+    this._tickListener ??= window.setInterval(
       this.tickProgress,
       this._tick_duration_ms,
     );

@@ -223,7 +223,7 @@ export class QueueController {
         }
         // If queue length is zero and player is playing/paused, assume we refreshed at a bad time. Set a short delay and try again.
         setTimeout(() => {
-          return this._getQueue(attempt + 1);
+          void this._getQueue(attempt + 1);
         }, 75);
       } else {
         if (!queue) {
@@ -252,7 +252,10 @@ export class QueueController {
     } finally {
       this._interval = undefined;
     }
-    this._interval = setInterval(this.timedListener, TIMED_LISTENER_DELAY_MS);
+    this._interval = window.setInterval(
+      this.timedListener,
+      TIMED_LISTENER_DELAY_MS,
+    );
     void this.getQueue();
   };
 
