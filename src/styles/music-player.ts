@@ -17,7 +17,9 @@ export default css`
     justify-content: center;
   }
 
-  #active-track-lg, #active-track-med, #active-track-sm {
+  #active-track-lg,
+  #active-track-med,
+  #active-track-sm {
     width: 100%;
   }
 
@@ -38,7 +40,7 @@ export default css`
     border-radius: var(--expressive-border-radius-container);
   }
 
-  #dialog-favorites { 
+  #dialog-favorites {
     --dialog-content-padding: 12px;
   }
   .dialog-playlist-item {
@@ -64,7 +66,6 @@ export default css`
     -webkit-user-select: none;
     -moz-user-select: none;
     user-select: none;
-
   }
   .dialog-playlist-title {
     font-size: 1.1rem;
@@ -73,11 +74,9 @@ export default css`
     white-space: nowrap;
     min-width: 0;
     color: var(--font-color);
-    
   }
   #dialog-favorites-expressive .dialog-playlist-title {
     color: var(--expressive-row-color-text);
-    
   }
   .dialog-playlist-divider {
     --divider-color: var(--md-sys-color-outline-variant);
@@ -122,7 +121,7 @@ export default css`
       rgb(from var(--expressive-player-blur-color) r g b / 0.7) 40%,
       rgb(from var(--expressive-player-blur-color) r g b / 0.4) 75%,
       transparent 100%
-    ) !important
+    ) !important;
   }
   #player-card {
     z-index: 0;
@@ -153,7 +152,7 @@ export default css`
     ) !important;
   }
   .player-card-header-expressive::before {
-    content: '';
+    content: "";
     height: 100%;
     width: 100%;
     display: block;
@@ -167,10 +166,9 @@ export default css`
       rgb(from var(--expressive-player-blur-color) r g b / 0.4) 75%,
       transparent 100%
     ) !important;
-    
   }
   #player-card-header::before {
-    content: '';
+    content: "";
     height: 100%;
     width: 100%;
     display: block;
@@ -178,7 +176,8 @@ export default css`
     top: 0;
     mask: linear-gradient(black, black 95%, transparent);
     backdrop-filter: blur(8px);
-    border-radius: var(--default-border-radius) var(--default-border-radius) 0px 0px;
+    border-radius: var(--default-border-radius) var(--default-border-radius) 0px
+      0px;
     overflow: hidden;
   }
   .player-header {
@@ -195,7 +194,7 @@ export default css`
   .player-name-expressive {
     color: var(--md-sys-color-on-primary-container) !important;
   }
-  
+
   .player-track-artist {
     font-size: 1em;
     text-shadow: 0 0 var(--md-sys-color-on-primary-container);

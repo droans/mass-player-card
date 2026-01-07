@@ -19,7 +19,10 @@ export default css`
   }
   .container-expressive {
     border-radius: var(--expressive-border-radius-container);
-    background-color: var(--expressive-color-container, var(--ha-card-background));
+    background-color: var(
+      --expressive-color-container,
+      var(--ha-card-background)
+    );
   }
 
   .header {

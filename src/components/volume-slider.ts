@@ -1,5 +1,11 @@
 import { consume } from "@lit/context";
-import { CSSResultGroup, html, LitElement, PropertyValues, TemplateResult } from "lit";
+import {
+  CSSResultGroup,
+  html,
+  LitElement,
+  PropertyValues,
+  TemplateResult,
+} from "lit";
 import { property, state } from "lit/decorators.js";
 
 import { ExtendedHass, ExtendedHassEntity } from "../const/types";
@@ -35,7 +41,7 @@ class VolumeSlider extends LitElement {
     }
     this._hass = hass;
     this._actions = new PlayerActions(hass);
-    const ent = hass.states[this.entityId]
+    const ent = hass.states[this.entityId];
     if (ent) {
       this.entity = ent;
     }

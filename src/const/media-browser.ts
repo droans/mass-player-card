@@ -1,9 +1,8 @@
-import { Thumbnail, MediaTypes } from "./enums";
+import { Thumbnail, MediaTypes, EnqueueOptions } from "./enums";
 import { Icons } from "./icons";
 import { getTranslation } from "../utils/translations";
 import { MediaBrowserConfig } from "../config/media-browser";
 import { ExtendedHass, ListItems } from "./types";
-import { EnqueueOptions } from "./enums";
 
 export const MediaTypeThumbnails = {
   album: Thumbnail.DISC,

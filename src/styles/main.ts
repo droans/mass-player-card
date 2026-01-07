@@ -96,7 +96,8 @@ export default css`
     );
     --expressive-row-button-color-hover: var(
       --mass-player-card-expressive-row-button-color-hover,
-      rgba(from var(--expressive-row-button-color-hover) r g b / 0.38) !important
+      rgba(from var(--expressive-row-button-color-hover) r g b / 0.38)
+        !important
     );
     --expressive-row-button-color-text-hover: var(
       --mass-player-card-expressive-row-button-color-text-hover,
@@ -164,14 +165,32 @@ export default css`
       --mass-player-card-row-icon-button-height,
       1.5rem
     );
-    --menu-item-padding-left: var(--mass-player-card-menu-item-padding-left, 20px);
+    --menu-item-padding-left: var(
+      --mass-player-card-menu-item-padding-left,
+      20px
+    );
 
     --md-sys-elevation-level0: none;
-    --md-sys-elevation-level1: rgba(from #000000 r g b / 0.2) 0px 2px 1px -1px, rgba(from #000000 r g b / 0.14) 0px 1px 1px 0px, rgba(from #000000 r g b / 0.12) 0px 1px 3px 0px;
-    --md-sys-elevation-level2: rgba(from #000000 r g b / 0.2) 0px 3px 3px -2px, rgba(from #000000 r g b / 0.14) 0px 3px 4px 0px, rgba(from #000000 r g b / 0.12) 0px 1px 8px 0px;
-    --md-sys-elevation-level3: rgba(from #000000 r g b / 0.2) 0px 3px 5px -1px, rgba(from #000000 r g b / 0.14) 0px 6px 10px 0px, rgba(from #000000 r g b / 0.12) 0px 1px 18px 0px;
-    --md-sys-elevation-level4: rgba(from #000000 r g b / 0.2) 0px 5px 5px -3px, rgba(from #000000 r g b / 0.14) 0px 8px 10px 1px, rgba(from #000000 r g b / 0.12) 0px 3px 14px 2px;
-    --md-sys-elevation-level5: rgba(from #000000 r g b / 0.2) 0px 7px 8px -4px, rgba(from #000000 r g b / 0.14) 0px 12px 17px 2px, rgba(from #000000 r g b / 0.12) 0px 5px 22px 4px;
+    --md-sys-elevation-level1:
+      rgba(from #000000 r g b / 0.2) 0px 2px 1px -1px,
+      rgba(from #000000 r g b / 0.14) 0px 1px 1px 0px,
+      rgba(from #000000 r g b / 0.12) 0px 1px 3px 0px;
+    --md-sys-elevation-level2:
+      rgba(from #000000 r g b / 0.2) 0px 3px 3px -2px,
+      rgba(from #000000 r g b / 0.14) 0px 3px 4px 0px,
+      rgba(from #000000 r g b / 0.12) 0px 1px 8px 0px;
+    --md-sys-elevation-level3:
+      rgba(from #000000 r g b / 0.2) 0px 3px 5px -1px,
+      rgba(from #000000 r g b / 0.14) 0px 6px 10px 0px,
+      rgba(from #000000 r g b / 0.12) 0px 1px 18px 0px;
+    --md-sys-elevation-level4:
+      rgba(from #000000 r g b / 0.2) 0px 5px 5px -3px,
+      rgba(from #000000 r g b / 0.14) 0px 8px 10px 1px,
+      rgba(from #000000 r g b / 0.12) 0px 3px 14px 2px;
+    --md-sys-elevation-level5:
+      rgba(from #000000 r g b / 0.2) 0px 7px 8px -4px,
+      rgba(from #000000 r g b / 0.14) 0px 12px 17px 2px,
+      rgba(from #000000 r g b / 0.12) 0px 5px 22px 4px;
   }
 
   ha-card {

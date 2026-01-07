@@ -60,7 +60,6 @@ console.info(
   "color: darkblue; font-weight: bold; background: white",
 );
 /* eslint-disable
-  @typescript-eslint/no-explicit-any,
   @typescript-eslint/no-unsafe-assignment,
   @typescript-eslint/no-unsafe-member-access,
   @typescript-eslint/no-unsafe-call
@@ -75,7 +74,7 @@ console.info(
 });
 
 @customElement(`${cardId}${DEV ? "-dev" : ""}`)
-  /* eslint-enable */
+/* eslint-enable */
 export class MusicAssistantPlayerCard extends LitElement {
   @state() private entities!: HassEntity[];
   @state() private error?: TemplateResult;
@@ -151,7 +150,7 @@ export class MusicAssistantPlayerCard extends LitElement {
     this.config = this._controller.config;
     if (!this.active_section) {
       this.setDefaultActiveSection();
-    /* eslint-enable @typescript-eslint/no-unnecessary-condition */
+      /* eslint-enable @typescript-eslint/no-unnecessary-condition */
     }
     this.requestUpdate();
   }
@@ -176,13 +175,15 @@ export class MusicAssistantPlayerCard extends LitElement {
       return true;
     }
     if (_changedProperties.has("hass")) {
-      const oldHass = _changedProperties.get("hass") as ExtendedHass | undefined;
+      const oldHass = _changedProperties.get("hass") as
+        | ExtendedHass
+        | undefined;
       if (!oldHass) {
         return true;
       }
       const oldStates = oldHass.states;
       if (!this.hass) {
-        return false
+        return false;
       }
       const newStates = this.hass.states;
       let result = false;
@@ -302,7 +303,9 @@ export class MusicAssistantPlayerCard extends LitElement {
   }
 
   protected render() {
-    const style = this.config.panel ? `--mass-player-card-height: calc(${window.innerHeight.toString()}px - 4rem - var(--header-height));` : ``
+    const style = this.config.panel
+      ? `--mass-player-card-height: calc(${window.innerHeight.toString()}px - 4rem - var(--header-height));`
+      : ``;
     return (
       this.error ??
       html`

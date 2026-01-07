@@ -18,7 +18,7 @@ export default css`
   }
   /* Google Sans Flex */
   @font-face {
-    font-family: 'Google Sans Flex';
+    font-family: "Google Sans Flex";
     font-style: normal;
     font-weight: 200 900;
     font-stretch: 25% 151%;

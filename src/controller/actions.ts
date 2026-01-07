@@ -35,7 +35,7 @@ export class ActionsController {
     const entity_id = config.entity_id;
     const volume_entity_id = config.volume_entity_id;
     const ent = this._hass.states[entity_id];
-    const volEnt = this._hass.states[volume_entity_id]
+    const volEnt = this._hass.states[volume_entity_id];
     if (ent) {
       this._activeEntity = ent;
     }

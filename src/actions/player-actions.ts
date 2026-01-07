@@ -1,9 +1,15 @@
 /* eslint-disable no-console */
 import { HassEntity } from "home-assistant-js-websocket";
-import {  RepeatMode } from "../const/enums";
+import { RepeatMode } from "../const/enums";
 import { ExtendedHass, ExtendedHassEntity, QueueItem } from "../const/types";
-import { getQueueItemsServiceResponse, getQueueItemsServiceSchema } from "mass-queue-types/packages/mass_queue/actions/get_queue_items";
-import { getInfoWSResponseSchema, getInfoWSServiceSchema } from "mass-queue-types/packages/mass_queue/ws/get_info"
+import {
+  getQueueItemsServiceResponse,
+  getQueueItemsServiceSchema,
+} from "mass-queue-types/packages/mass_queue/actions/get_queue_items";
+import {
+  getInfoWSResponseSchema,
+  getInfoWSServiceSchema,
+} from "mass-queue-types/packages/mass_queue/ws/get_info";
 
 export default class PlayerActions {
   private _hass!: ExtendedHass;
@@ -31,8 +37,8 @@ export default class PlayerActions {
   }
   async actionMuteToggle(entity: HassEntity) {
     // Assume that entity might not be updated
-    const e = this.hass.states[entity.entity_id] as ExtendedHassEntity;
-    const is_muted = e.attributes.is_volume_muted;
+    const ent = this.hass.states[entity.entity_id] as ExtendedHassEntity;
+    const is_muted = ent.attributes.is_volume_muted;
     const mute = !is_muted;
     try {
       await this.hass.callService("media_player", "volume_mute", {
@@ -66,7 +72,7 @@ export default class PlayerActions {
     try {
       await this.hass.callService("media_player", "shuffle_set", {
         entity_id: entity.entity_id,
-        shuffle: shuffle,
+        shuffle,
       });
     } catch (e) {
       console.error(`Error calling shuffle`, e);
@@ -164,12 +170,12 @@ export default class PlayerActions {
   async actionAddToPlaylist(
     media_uri: string,
     playlist_uri: string,
-    entity: ExtendedHassEntity
+    entity: ExtendedHassEntity,
   ): Promise<void> {
     const player_info = await this.actionGetPlayerInfo(entity);
     const mass_entry = player_info?.entries.mass_queue;
-    const playlist_uri_split = playlist_uri.split('/');
-    const playlist_id = playlist_uri_split[playlist_uri_split.length - 1]
+    const playlist_uri_split = playlist_uri.split("/");
+    const playlist_id = playlist_uri_split[playlist_uri_split.length - 1];
     const data = {
       type: "call_service",
       domain: "mass_queue",
@@ -179,9 +185,9 @@ export default class PlayerActions {
         config_entry_id: mass_entry,
         data: {
           db_playlist_id: playlist_id,
-          uris: [media_uri]
-        }
-      }
+          uris: [media_uri],
+        },
+      },
     };
     await this.hass.callWS(data);
   }
@@ -190,7 +196,7 @@ export default class PlayerActions {
   ): Promise<getInfoWSResponseSchema | null> {
     const data: getInfoWSServiceSchema = {
       type: "mass_queue/get_info",
-      entity_id: entity.entity_id
+      entity_id: entity.entity_id,
     };
     return await this.hass.callWS(data);
   }

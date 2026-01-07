@@ -29,25 +29,25 @@ export interface ArtworkUpdatedEventData extends Omit<Event, "detail"> {
   detail: {
     type: string;
     image: string;
-  }
+  };
 }
 export interface JoinUnjoinEventData extends Omit<Event, "target"> {
   target: {
     entity: string;
-  }
+  };
 }
 
 export interface MenuButtonEventData extends Omit<CustomEvent, "detail"> {
   detail: {
-    option: string,
-  },
+    option: string;
+  };
 }
 
 export interface TrackRemovedEventData extends Omit<CustomEvent, "detail"> {
   detail: {
-    playlist: string,
-    position: number
-  },
+    playlist: string;
+    position: number;
+  };
 }
 
 export type MenuButtonEvent = (ev: MenuButtonEventData) => void;

@@ -1,11 +1,6 @@
-import {
-  CSSResultGroup,
-  html,
-  LitElement,
-  TemplateResult
-} from "lit";
+import { CSSResultGroup, html, LitElement, TemplateResult } from "lit";
 import "./menu-button";
-import styles from '../styles/player-selector-menu';
+import styles from "../styles/player-selector-menu";
 import { consume } from "@lit/context";
 import {
   activeEntityConfContext,
@@ -14,14 +9,14 @@ import {
   hassContext,
   IconsContext,
   musicPlayerConfigContext,
-  useExpressiveContext
-} from "../const/context.js";
-import { PlayerConfig } from "../config/player.js";
-import { Icons } from "../const/icons.js";
-import { ExtendedHass, ListItemData } from "../const/types.js";
+  useExpressiveContext,
+} from "../const/context";
+import { PlayerConfig } from "../config/player";
+import { Icons } from "../const/icons";
+import { ExtendedHass, ListItemData } from "../const/types";
 import { customElement } from "lit/decorators.js";
 
-@customElement('mpc-player-selector')
+@customElement("mpc-player-selector")
 export class MassCardPlayerSelector extends LitElement {
   @consume({ context: musicPlayerConfigContext, subscribe: true })
   private config!: PlayerConfig;
@@ -43,28 +38,34 @@ export class MassCardPlayerSelector extends LitElement {
 
   protected renderPlayerItems() {
     return this.playerEntities.map((item) => {
-    const ent = this.hass.states[item.entity_id];
-    if (!ent) {
-      return;
-    }
-    const name = item.name.length > 0 ? item.name : ent.attributes.friendly_name ?? `Missing- ${item.entity_id}`;
-    let url: string
-    let fallback: string;
-    if ( ent.attributes.app_id != 'music_assistant' ) {
-      url = '';
-      fallback = '';
-    } else {
-      url = ent.attributes.entity_picture_local ?? ent.attributes.entity_picture ?? '';
-      fallback = ent.attributes.entity_picture ?? '';
-    }
+      const ent = this.hass.states[item.entity_id];
+      if (!ent) {
+        return;
+      }
+      const name =
+        item.name.length > 0
+          ? item.name
+          : (ent.attributes.friendly_name ?? `Missing- ${item.entity_id}`);
+      let url: string;
+      let fallback: string;
+      if (ent.attributes.app_id != "music_assistant") {
+        url = "";
+        fallback = "";
+      } else {
+        url =
+          ent.attributes.entity_picture_local ??
+          ent.attributes.entity_picture ??
+          "";
+        fallback = ent.attributes.entity_picture ?? "";
+      }
       const r: ListItemData = {
         option: item.entity_id,
         icon: this.Icons.SPEAKER,
         title: name,
         image: {
-          url: url,
-          fallback: fallback
-        }
+          url,
+          fallback,
+        },
       };
       return r;
     });
@@ -73,8 +74,8 @@ export class MassCardPlayerSelector extends LitElement {
   protected render(): TemplateResult {
     const config_hide = this.config.hide.player_selector;
     const entity_hide = this.activeEntityConfig.hide.player.player_selector;
-    if (config_hide || entity_hide ) {
-      return html``
+    if (config_hide || entity_hide) {
+      return html``;
     }
     return html`
       <mass-menu-button
@@ -86,7 +87,7 @@ export class MassCardPlayerSelector extends LitElement {
         dividers
         use-md
       ></mass-menu-button>
-    `
+    `;
   }
 
   static get styles(): CSSResultGroup {

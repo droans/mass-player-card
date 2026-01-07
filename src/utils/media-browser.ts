@@ -1,9 +1,7 @@
 import { html, TemplateResult } from "lit";
 import { Thumbnail, MediaTypes } from "../const/enums";
 import { getThumbnail } from "./thumbnails";
-import {
-  MediaTypeThumbnails,
-} from "../const/media-browser";
+import { MediaTypeThumbnails } from "../const/media-browser";
 import { customItem } from "../config/media-browser";
 import { getTranslation } from "./translations";
 import {
@@ -13,7 +11,7 @@ import {
   MediaCardItem,
   mediaCardPlaylistData,
   MediaLibraryItem,
-  RecommendationSection
+  RecommendationSection,
 } from "../const/types";
 
 type viewCardFunc = (
@@ -28,21 +26,21 @@ const funcs: viewCardFuncMap = {
   playlist: generatePlaylistCard,
   album: generateAlbumCard,
   artist: generateArtistCard,
-}
+};
 function generateSectionBackgroundPart(
   hass: ExtendedHass,
   thumbnail: string,
   fallback: Thumbnail | string = Thumbnail.DISC,
 ) {
-  const thumb = getThumbnail(hass, (thumbnail as Thumbnail)) ?? thumbnail;
-  const _fallback = getThumbnail(hass, (fallback as Thumbnail)) ?? fallback;
+  const thumb = getThumbnail(hass, thumbnail as Thumbnail) ?? thumbnail;
+  const _fallback = getThumbnail(hass, fallback as Thumbnail) ?? fallback;
   return html`
     <img
       class="thumbnail-section"
       src="${thumb}"
       onerror="this.src = '${_fallback}'"
-    >
-  `
+    />
+  `;
 }
 function generateSectionBackground(
   hass: ExtendedHass,
@@ -86,7 +84,7 @@ export function generateFavoriteCard(
   return {
     title: title as string,
     background: generateSectionBackground(hass, cards, thumbnail),
-    thumbnail: thumbnail,
+    thumbnail,
     fallback: thumbnail,
     data: {
       type: "section",
@@ -106,7 +104,7 @@ export function generateRecentsCard(
   return {
     title: title as string,
     background: generateSectionBackground(hass, cards, thumbnail),
-    thumbnail: thumbnail,
+    thumbnail,
     fallback: thumbnail,
     data: {
       type: "section",
@@ -124,7 +122,7 @@ export function generateRecommendationsCard(
   return {
     title: section.name,
     background: generateSectionBackground(hass, cards, thumbnail),
-    thumbnail: thumbnail,
+    thumbnail,
     fallback: thumbnail,
     data: {
       type: "section",
@@ -142,7 +140,7 @@ export function generateRecommendationSectionCards(
     const func = funcs[item.media_type];
     // eslint-disable-next-line @typescript-eslint/no-unnecessary-condition
     if (func) {
-      return func(item.uri, item.image, item.name)
+      return func(item.uri, item.image, item.name);
     }
     const r: MediaCardItem = {
       title: item.name,
@@ -157,7 +155,9 @@ export function generateRecommendationSectionCards(
     return r;
   });
 }
-export function generateCustomSectionCards(config: customItem[]): MediaCardItem[] {
+export function generateCustomSectionCards(
+  config: customItem[],
+): MediaCardItem[] {
   return config.map((item) => {
     const r: MediaCardItem = {
       title: item.name,
@@ -182,7 +182,7 @@ export function generateFavoritesSectionCards(
     const func = funcs[item.media_type];
     // eslint-disable-next-line @typescript-eslint/no-unnecessary-condition
     if (func) {
-      return func(item.uri, item.image ?? '', item.name)
+      return func(item.uri, item.image ?? "", item.name);
     }
     const r: MediaCardItem = {
       title: item.name,
@@ -203,17 +203,17 @@ function generatePlaylistCard(
   media_title: string,
 ): MediaCardItem {
   const data: mediaCardPlaylistData = {
-    type: 'playlist',
-    media_content_id: media_content_id,
-    media_image: media_image,
-    media_title: media_title
-  }
+    type: "playlist",
+    media_content_id,
+    media_image,
+    media_title,
+  };
   return {
     title: media_title,
     thumbnail: media_image,
     fallback: Thumbnail.PLAYLIST,
-    data: data
-  }
+    data,
+  };
 }
 function generateAlbumCard(
   media_content_id: string,
@@ -221,17 +221,17 @@ function generateAlbumCard(
   media_title: string,
 ): MediaCardItem {
   const data: mediaCardAlbumData = {
-    type: 'album',
-    media_content_id: media_content_id,
-    media_image: media_image,
-    media_title: media_title
-  }
+    type: "album",
+    media_content_id,
+    media_image,
+    media_title,
+  };
   return {
     title: media_title,
     thumbnail: media_image,
     fallback: Thumbnail.PLAYLIST,
-    data: data
-  }
+    data,
+  };
 }
 function generateArtistCard(
   media_content_id: string,
@@ -239,15 +239,15 @@ function generateArtistCard(
   media_title: string,
 ): MediaCardItem {
   const data: mediaCardArtistData = {
-    type: 'artist',
-    media_content_id: media_content_id,
-    media_image: media_image,
-    media_title: media_title
-  }
+    type: "artist",
+    media_content_id,
+    media_image,
+    media_title,
+  };
   return {
     title: media_title,
     thumbnail: media_image,
     fallback: Thumbnail.PLAYLIST,
-    data: data
-  }
+    data,
+  };
 }

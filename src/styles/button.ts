@@ -6,22 +6,30 @@ export default css`
   :host {
     --button-default-height-small: 32px;
     --button-default-border-radius-small: 40%;
-    
+
     --button-default-height-medium: 40px;
     --button-default-border-radius-medium: 40%;
-    
+
     --button-default-height-large: 64px;
     --button-default-border-radius-large: 40%;
 
     --animation-duration: 0.25s;
     --used-button-height: var(--button-button-height);
     --used-button-width: var(--button-button-width);
-    
   }
   ha-button:not(.expressive)::part(base) {
-    --inherited-background-color: var(--used-button-background-color, var(--button-background-color));
-    background-color: var(--used-button-background-color, var(--button-background-color));
-    --inherited-text-color: var(--used-button-text-color, var(--button-text-color));
+    --inherited-background-color: var(
+      --used-button-background-color,
+      var(--button-background-color)
+    );
+    background-color: var(
+      --used-button-background-color,
+      var(--button-background-color)
+    );
+    --inherited-text-color: var(
+      --used-button-text-color,
+      var(--button-text-color)
+    );
     color: var(--used-button-text-color, var(--button-text-color));
     --ha-button-border-radius: 12px !important;
   }
@@ -29,37 +37,58 @@ export default css`
     width: var(--used-button-width, 100%);
     box-shadow: var(--button-elevation);
     padding: unset;
-    background-color: var(--used-button-background-color, var(--button-background-color));
-    --inherited-background-color: var(--used-button-background-color, var(--button-background-color));
+    background-color: var(
+      --used-button-background-color,
+      var(--button-background-color)
+    );
+    --inherited-background-color: var(
+      --used-button-background-color,
+      var(--button-background-color)
+    );
     color: var(--used-button-text-color, var(--button-text-color));
-    --inherited-text-color: var(--used-button-text-color, var(--button-text-color));
+    --inherited-text-color: var(
+      --used-button-text-color,
+      var(--button-text-color)
+    );
     --used-button-height: var(--button-button-height);
     --used-button-width: var(--button-button-width);
   }
 
   .small::part(base) {
     height: var(--used-button-height, var(--button-default-height-small));
-    --ha-button-border-radius: var(--button-border-radius, var(--button-default-border-radius-small));
+    --ha-button-border-radius: var(
+      --button-border-radius,
+      var(--button-default-border-radius-small)
+    );
     padding-left: var(--button-padding-left, var(--button-padding, 0px));
     padding-right: var(--button-padding-right, var(--button-padding, 0px));
   }
 
   .medium::part(base) {
     height: var(--used-button-height, var(--button-default-height-medium));
-    --ha-button-border-radius: var(--button-border-radius, var(--button-default-border-radius-medium));
+    --ha-button-border-radius: var(
+      --button-border-radius,
+      var(--button-default-border-radius-medium)
+    );
     padding-left: var(--button-padding-left, var(--button-padding, 16px));
     padding-right: var(--button-padding-right, var(--button-padding, 16px));
   }
-  
+
   .large::part(base) {
     height: var(--used-button-height, var(--button-default-height-large));
-    --ha-button-border-radius: var(--button-border-radius, var(--button-default-border-radius-large));
+    --ha-button-border-radius: var(
+      --button-border-radius,
+      var(--button-default-border-radius-large)
+    );
     padding-left: var(--button-padding-left, var(--button-padding, 24px));
     padding-right: var(--button-padding-right, var(--button-padding, 24px));
   }
 
   .filled {
-    --button-outline-color: var(--md-sys-color-outline-variant, var(--outline-color));
+    --button-outline-color: var(
+      --md-sys-color-outline-variant,
+      var(--outline-color)
+    );
     --button-background-color: var(--md-sys-color-secondary-container);
   }
   .filled.expressive {
@@ -71,9 +100,9 @@ export default css`
 
     --button-unselected-background-color: var(--md-sys-color-surface-container);
     --button-unselected-text-color: var(--md-sys-color-on-surface-variant);
-    
+
     --button-disabled-background-color: var(--md-sys-color-on-surface);
-    --button-disabled-text-color: var(--md-sys-color-on-surface);    
+    --button-disabled-text-color: var(--md-sys-color-on-surface);
   }
 
   .filled-variant {
@@ -88,15 +117,17 @@ export default css`
 
     --button-unselected-background-color: var(--md-sys-color-surface-container);
     --button-unselected-text-color: var(--md-sys-color-on-surface-variant);
-    
+
     --button-disabled-background-color: var(--md-sys-color-on-surface-variant);
     --button-disabled-text-color: var(--md-sys-color-on-surface-variant);
   }
-  
+
   .standard {
-    --button-outline-color: var(--md-sys-color-outline-variant, var(--outline-color));
+    --button-outline-color: var(
+      --md-sys-color-outline-variant,
+      var(--outline-color)
+    );
     --button-background-color: var(--md-sys-color-secondary-container);
-    
   }
   .standard.expressive {
     --button-background-color: var(--md-sys-color-primary);
@@ -107,10 +138,9 @@ export default css`
 
     --button-unselected-background-color: var(--md-sys-color-surface-container);
     --button-unselected-text-color: var(--md-sys-color-on-surface-variant);
-    
+
     --button-disabled-background-color: var(--md-sys-color-on-surface);
     --button-disabled-text-color: var(--md-sys-color-on-surface);
-    
   }
 
   .tonal {
@@ -124,14 +154,15 @@ export default css`
     --button-selected-background-color: var(--md-sys-color-secondary);
     --button-selected-text-color: var(--md-sys-color-on-secondary);
 
-    --button-unselected-background-color: var(--md-sys-color-secondary-container);
+    --button-unselected-background-color: var(
+      --md-sys-color-secondary-container
+    );
     --button-unselected-text-color: var(--md-sys-color-on-secondary-container);
-    
+
     --button-disabled-background-color: var(--md-sys-color-on-surface);
     --button-disabled-text-color: var(--md-sys-color-on-surface);
-
   }
-  
+
   .variant {
     --button-outline-color: var(--md-sys-color-outline, var(--outline-color));
     --button-background-color: var(--md-sys-color-secondary-container);
@@ -143,12 +174,13 @@ export default css`
     --button-selected-background-color: var(--md-sys-color-tertiary-fixed-dim);
     --button-selected-text-color: var(--md-sys-color-on-tertiary-fixed-variant);
 
-    --button-unselected-background-color: var(--md-sys-color-tertiary-container);
+    --button-unselected-background-color: var(
+      --md-sys-color-tertiary-container
+    );
     --button-unselected-text-color: var(--md-sys-color-on-tertiary-container);
-    
+
     --button-disabled-background-color: var(--md-sys-color-on-surface-variant);
     --button-disabled-text-color: var(--md-sys-color-on-surface-variant);
-
   }
 
   .plain.expressive {
@@ -160,17 +192,16 @@ export default css`
 
     --button-unselected-background-color: transparent;
     --button-unselected-text-color: var(--md-sys-color-on-tertiary-container);
-    
+
     --button-disabled-background-color: transparent;
     --button-disabled-text-color: var(--md-sys-color-on-surface-variant);
-
   }
 
   .elevation-0 {
     --button-elevation: none;
     --hover-button-elevation: var(--md-sys-elevation-level1);
   }
-  
+
   .elevation-1 {
     --button-elevation: var(--md-sys-elevation-level1);
     --hover-button-elevation: var(--md-sys-elevation-level2);
@@ -195,10 +226,20 @@ export default css`
     --hover-button-elevation: var(--md-sys-elevation-level5);
   }
 
-  .elevation-0, .elevation-1, .elevation-2, .elevation-3, .elevation-4, .elevation-5 {
+  .elevation-0,
+  .elevation-1,
+  .elevation-2,
+  .elevation-3,
+  .elevation-4,
+  .elevation-5 {
     animation: elevate-hover-off var(--animation-duration) linear forwards;
   }
-  .elevation-0:hover, .elevation-1:hover, .elevation-2:hover, .elevation-3:hover, .elevation-4:hover, .elevation-5:hover {
+  .elevation-0:hover,
+  .elevation-1:hover,
+  .elevation-2:hover,
+  .elevation-3:hover,
+  .elevation-4:hover,
+  .elevation-5:hover {
     animation: elevate-hover var(--animation-duration) linear forwards;
   }
 
@@ -214,14 +255,12 @@ export default css`
   .selected {
     --used-button-background-color: var(--button-selected-background-color);
     --used-button-text-color: var(--button-selected-text-color);
-
   }
   .unselected {
     --used-button-background-color: var(--button-unselected-background-color);
     --used-button-text-color: var(--button-unselected-text-color);
-
   }
-  
+
   @keyframes elevate-hover {
     to {
       box-shadow: var(--hover-button-elevation);
@@ -232,6 +271,4 @@ export default css`
       box-shadow: var(--button-elevation);
     }
   }
-
-  
 `;

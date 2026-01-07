@@ -25,14 +25,14 @@ class MassNavBar extends LitElement {
   private _config?: Config;
   private _activeSection?: Sections;
   @consume({ context: IconsContext }) private Icons!: Icons;
-  @query('#tab-music-player') playerTab?: HTMLAnchorElement;
-  @query('#tab-queue') queueTab?: HTMLAnchorElement;
-  @query('#tab-media-browser') browserTab?: HTMLAnchorElement;
-  @query('#tab-players') playersTab?: HTMLAnchorElement;
-  @query('#tab-indicator') tabIndicator?: HTMLDivElement;
-  @query('#animation') animationElement?: WaAnimation;
-  @query('#navigation') navbar?: HTMLDivElement;
-  @query('.icon-active') activeIconElem?: HTMLElement;
+  @query("#tab-music-player") playerTab?: HTMLAnchorElement;
+  @query("#tab-queue") queueTab?: HTMLAnchorElement;
+  @query("#tab-media-browser") browserTab?: HTMLAnchorElement;
+  @query("#tab-players") playersTab?: HTMLAnchorElement;
+  @query("#tab-indicator") tabIndicator?: HTMLDivElement;
+  @query("#animation") animationElement?: WaAnimation;
+  @query("#navigation") navbar?: HTMLDivElement;
+  @query(".icon-active") activeIconElem?: HTMLElement;
   private animationLength = 350;
   private animating = false;
 
@@ -43,7 +43,7 @@ class MassNavBar extends LitElement {
       return;
     }
     if (section != this.active_section && section) {
-      this.handleTabChanged(section)
+      this.handleTabChanged(section);
     }
     this._activeSection = section;
   }
@@ -94,53 +94,60 @@ class MassNavBar extends LitElement {
   };
   private getSectionElement(section: Sections): HTMLAnchorElement | undefined {
     const elems = {
-      'media-browser': this.browserTab,
-      'music-player': this.playerTab,
-      'queue': this.queueTab,
-      'players': this.playersTab,
-    }
+      "media-browser": this.browserTab,
+      "music-player": this.playerTab,
+      queue: this.queueTab,
+      players: this.playersTab,
+    };
     return elems[section];
   }
-  private animateBounceLeft(from_element: HTMLAnchorElement, to_element: HTMLAnchorElement): Keyframe {
+  private animateBounceLeft(
+    from_element: HTMLAnchorElement,
+    to_element: HTMLAnchorElement,
+  ): Keyframe {
     const from_left = from_element.offsetLeft;
     const from_width = from_element.offsetWidth;
 
     const to_left = to_element.offsetLeft;
     const to_width = to_element.offsetWidth;
-    
+
     const bounce_move = to_width * 0.2;
 
     const bounce_left = Math.max(0, to_left - bounce_move);
-    const bounce_width = bounce_left > 0 ? to_width : to_width - bounce_move
-    const extra_left = to_left == 0 ? (bounce_move / 2) : 0;
+    const bounce_width = bounce_left > 0 ? to_width : to_width - bounce_move;
+    const extra_left = to_left == 0 ? bounce_move / 2 : 0;
     const translate_x = bounce_left - from_left - extra_left;
     const scale_x = bounce_width / from_width;
 
     return {
       transform: `translateX(${translate_x.toString()}px) scaleX(${scale_x.toString()})`,
       offset: 0.8,
-    }
+    };
   }
-  private animateBounceRight(from_element: HTMLAnchorElement, to_element: HTMLAnchorElement): Keyframe {
+  private animateBounceRight(
+    from_element: HTMLAnchorElement,
+    to_element: HTMLAnchorElement,
+  ): Keyframe {
     const from_left = from_element.offsetLeft;
     const from_width = from_element.offsetWidth;
 
     const to_left = to_element.offsetLeft;
     const to_width = to_element.offsetWidth;
-    
+
     const bounce_move = to_width * 0.2;
     const navbarWidth = this.navbar?.offsetWidth ?? 0;
     const to_elem_x_end = to_left + to_width;
-    
+
     const bounce_left = to_left + bounce_move;
-    const bounce_width = to_elem_x_end >= navbarWidth ? navbarWidth - bounce_left : to_width;
-    const extra_left = to_elem_x_end >= navbarWidth ? (bounce_move / 2) : 0;
+    const bounce_width =
+      to_elem_x_end >= navbarWidth ? navbarWidth - bounce_left : to_width;
+    const extra_left = to_elem_x_end >= navbarWidth ? bounce_move / 2 : 0;
     const translate_x = bounce_left - from_left - extra_left;
     const scale_x = bounce_width / from_width;
     return {
       transform: `translateX(${translate_x.toString()}px) scaleX(${scale_x.toString()})`,
       offset: 0.8,
-    }
+    };
   }
   private animateTabChange(from_section: Sections, to_section: Sections) {
     this.animating = true;
@@ -156,15 +163,15 @@ class MassNavBar extends LitElement {
     const from_left = from_elem.offsetLeft;
     const to_width = to_elem.offsetWidth;
     const to_left = to_elem.offsetLeft;
-    const bounce = (from_left - to_left > 0) 
-      ? this.animateBounceLeft(from_elem, to_elem) 
-      : this.animateBounceRight(from_elem, to_elem)
-    
+    const bounce =
+      from_left - to_left > 0
+        ? this.animateBounceLeft(from_elem, to_elem)
+        : this.animateBounceRight(from_elem, to_elem);
+
     const translate_x = to_left - from_left;
     const scale_x = to_width / from_width;
-    
+
     const _keyframes = [
-      
       {
         transform: `translateX(${translate_x.toString()}px) scaleX(${scale_x.toString()})`,
         offset: 0.6,
@@ -172,22 +179,19 @@ class MassNavBar extends LitElement {
       bounce,
       {
         transform: `translateX(${translate_x.toString()}px) scaleX(${scale_x.toString()})`,
-      }
-    ]
+      },
+    ];
     const animation = this.animationElement;
     const indicator = this.tabIndicator;
     if (!animation || !indicator) {
       return;
     }
     animation.keyframes = _keyframes;
-    animation.addEventListener(
-      'wa-finish',
-      () => {
-        this.animating = false;
-        indicator.style.left = `${to_left.toString()}px`;
-        indicator.style.width = `${to_width.toString()}px`;
-      }
-    )
+    animation.addEventListener("wa-finish", () => {
+      this.animating = false;
+      indicator.style.left = `${to_left.toString()}px`;
+      indicator.style.width = `${to_width.toString()}px`;
+    });
     animation.play = true;
   }
 
@@ -264,10 +268,10 @@ class MassNavBar extends LitElement {
   }
   protected firstUpdated(): void {
     if (!this.tabIndicator && this.active_section) {
-      const tabs = this.navbar?.querySelectorAll('a').length ?? 0;
+      const tabs = this.navbar?.querySelectorAll("a").length ?? 0;
       const width = Math.round((1 / Math.max(1, tabs)) * 100);
-      const indicator = document.createElement('div');
-      indicator.id = 'tab-indicator';
+      const indicator = document.createElement("div");
+      indicator.id = "tab-indicator";
       const conf = this.config;
       if (!conf) {
         return;
@@ -278,22 +282,20 @@ class MassNavBar extends LitElement {
       if (conf.media_browser.enabled) sections.push(Sections.MEDIA_BROWSER);
       if (conf.players.enabled) sections.push(Sections.PLAYERS);
       const activeSection = this.active_section;
-      const idx = sections.findIndex(
-        (item) => {
-          return item == activeSection
-        }
-      )
+      const idx = sections.findIndex((item) => {
+        return item == activeSection;
+      });
       if (!idx) {
         return;
       }
-      const leftPct = (idx / sections.length) * 100
-      indicator.style = `left: ${leftPct.toString()}%; width: ${width.toString()}%;`
-      const animation = document.createElement('wa-animation') as WaAnimation;
-      animation.id = 'animation'
+      const leftPct = (idx / sections.length) * 100;
+      indicator.style = `left: ${leftPct.toString()}%; width: ${width.toString()}%;`;
+      const animation = document.createElement("wa-animation") as WaAnimation;
+      animation.id = "animation";
       animation.duration = this.animationLength;
       animation.iterations = 1;
-      animation.appendChild(indicator)
-      this.navbar?.appendChild(animation)
+      animation.appendChild(indicator);
+      this.navbar?.appendChild(animation);
     }
   }
   static get styles(): CSSResultGroup {

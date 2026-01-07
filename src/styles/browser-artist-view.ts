@@ -1,4 +1,3 @@
 import { css } from "lit";
 
-export default css`
-`
+export default css``;

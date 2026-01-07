@@ -99,7 +99,10 @@ export default css`
     will-change: font-size;
     transition: font-size;
     font-family: "Google Sans Flex";
-    font-variation-settings: "slnt" 0, "GRAD" 0, "ROND" 100;
+    font-variation-settings:
+      "slnt" 0,
+      "GRAD" 0,
+      "ROND" 100;
     font-weight: 900;
     font-stretch: 25%;
   }
@@ -108,7 +111,9 @@ export default css`
   }
   #tracks {
     height: calc(var(--mass-player-card-height) - 4em);
-    padding-top: calc(var(--view-header-height) 0 var(--view-header-min-height));
+    padding-top: calc(
+      var(--view-header-height) 0 var(--view-header-min-height)
+    );
     position: relative;
     overflow: scroll;
     scrollbar-width: none;
@@ -131,4 +136,4 @@ export default css`
       transform: scale(0.5);
     }
   }
-`
+`;

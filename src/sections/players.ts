@@ -1,6 +1,12 @@
 import { consume, provide } from "@lit/context";
 
-import { CSSResultGroup, html, LitElement, PropertyValues, TemplateResult } from "lit";
+import {
+  CSSResultGroup,
+  html,
+  LitElement,
+  PropertyValues,
+  TemplateResult,
+} from "lit";
 import { property, query } from "lit/decorators.js";
 import { keyed } from "lit/directives/keyed.js";
 
@@ -25,7 +31,7 @@ import {
 import styles from "../styles/player-queue";
 import { getTranslation } from "../utils/translations";
 import { WaAnimation } from "../const/elements";
-import { MassCardController } from "../controller/controller.js";
+import { MassCardController } from "../controller/controller";
 
 class PlayersCard extends LitElement {
   @property({ attribute: false }) private entities: ExtendedHassEntity[] = [];
@@ -99,7 +105,7 @@ class PlayersCard extends LitElement {
   }
   private joinPlayers = async (group_member: string[]) => {
     if (!this.actions) {
-      return
+      return;
     }
     await this.actions.actionJoinPlayers(
       this.activePlayerEntity.entity_id,
@@ -108,20 +114,20 @@ class PlayersCard extends LitElement {
   };
   private unjoinPlayers = async (player_entity: string[]) => {
     if (!this.actions) {
-      return
+      return;
     }
     await this.actions.actionUnjoinPlayers(player_entity);
   };
   private transferQueue = async (target_player: string) => {
     if (!this.actions) {
-      return
+      return;
     }
     await this.actions.actionTransferQueue(
       this.activePlayerEntity.entity_id,
       target_player,
     );
     // eslint-disable-next-line @typescript-eslint/no-non-null-assertion
-    const player = (this.config!).entities.find(
+    const player = this.config!.entities.find(
       (entity) => entity.entity_id == target_player,
     )!;
     this.activePlayerEntity = player;
@@ -150,7 +156,7 @@ class PlayersCard extends LitElement {
     const canGroupWith = this.controller.ActivePlayer.canGroupWith;
     return this.entities.map((item) => {
       // eslint-disable-next-line @typescript-eslint/no-non-null-assertion
-      const player = (this.config!).entities.find(
+      const player = this.config!.entities.find(
         (entity) => entity.entity_id == item.entity_id,
       )!;
       const allowJoin = attrs?.group_members !== undefined;

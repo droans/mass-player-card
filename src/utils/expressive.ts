@@ -12,11 +12,11 @@ import {
   SchemeRainbow,
   SchemeTonalSpot,
   SchemeVibrant,
-  sourceColorFromImage
+  sourceColorFromImage,
 } from "@ktibow/material-color-utilities-nightly";
-import { ExpressiveScheme } from "../config/config.js";
-import { ExtendedHass } from "../const/types.js";
-import { tryPrefetchImageWithFallbacks } from "./util.js";
+import { ExpressiveScheme } from "../config/config";
+import { ExtendedHass } from "../const/types";
+import { tryPrefetchImageWithFallbacks } from "./util";
 
 type dynamicSchemeType = new (
   sourceColorHct: Hct,
@@ -91,12 +91,17 @@ const EXPRESSIVE_KEYS: Record<string, string> = {
   tertiaryFixedDim: "--md-sys-color-tertiary-fixed-dim",
 };
 
-const DEFAULT_PRIMARY_COLOR = '#009ac7'
+const DEFAULT_PRIMARY_COLOR = "#009ac7";
 
 export function generateDefaultExpressiveSchemeColor(): number {
-  const color = window.getComputedStyle(document.body).getPropertyValue('--primary-color').replace('#','');
-  const usedColor = color.length ? color : DEFAULT_PRIMARY_COLOR
-  const argb = color.startsWith('rgb') ?_parseColorRgb(usedColor) : _parseColorHex(usedColor);
+  const color = window
+    .getComputedStyle(document.body)
+    .getPropertyValue("--primary-color")
+    .replace("#", "");
+  const usedColor = color.length ? color : DEFAULT_PRIMARY_COLOR;
+  const argb = color.startsWith("rgb")
+    ? _parseColorRgb(usedColor)
+    : _parseColorHex(usedColor);
   return argb;
 }
 
@@ -105,8 +110,9 @@ export async function generateImageElement(
   hass: ExtendedHass,
   fallbacks: string[] = [],
 ): Promise<HTMLImageElement | false> {
-    
-  return await tryPrefetchImageWithFallbacks(img, fallbacks, hass, true) as HTMLImageElement | false;
+  return (await tryPrefetchImageWithFallbacks(img, fallbacks, hass, true)) as
+    | HTMLImageElement
+    | false;
 }
 
 export async function generateExpressiveSourceColorFromImage(
@@ -115,11 +121,11 @@ export async function generateExpressiveSourceColorFromImage(
   fallbacks: string[] = [],
 ): Promise<number> {
   try {
-    const elem = await generateImageElement(img, hass, fallbacks)
+    const elem = await generateImageElement(img, hass, fallbacks);
     if (!elem) {
       return generateDefaultExpressiveSchemeColor();
     }
-    return await sourceColorFromImage(elem)
+    return await sourceColorFromImage(elem);
   } catch {
     return generateDefaultExpressiveSchemeColor();
   }
@@ -128,8 +134,8 @@ export async function generateExpressiveSourceColorFromImage(
 export async function generateExpressiveSourceColorFromImageElement(
   elem: HTMLImageElement,
 ): Promise<number> {
-  elem.crossOrigin = 'Anonymous';
-  return await sourceColorFromImage(elem)
+  elem.crossOrigin = "Anonymous";
+  return await sourceColorFromImage(elem);
 }
 
 export function generateExpressiveSchemeFromColor(
@@ -139,17 +145,11 @@ export function generateExpressiveSchemeFromColor(
 ): DynamicScheme {
   const cls = ExpressiveSchemes[scheme];
   const _hct = Hct.fromInt(color);
-  return new cls(
-    _hct,
-    darkMode,
-    0,
-    "2025",
-    "phone"
-  )
+  return new cls(_hct, darkMode, 0, "2025", "phone");
 }
 export function applyExpressiveScheme(
   scheme: DynamicScheme,
-  elem: HTMLElement
+  elem: HTMLElement,
 ) {
   const entries = Object.entries(EXPRESSIVE_KEYS);
   entries.forEach((entry) => {
@@ -167,6 +167,12 @@ function _parseColorHex(color: string) {
 }
 
 function _parseColorRgb(color: string) {
-  const ints = color.split('(')[1].split(')')[0].split(',').map( (i) => { return parseInt(i) });
-  return argbFromRgb(ints[0], ints[1], ints[2])
+  const ints = color
+    .split("(")[1]
+    .split(")")[0]
+    .split(",")
+    .map((i) => {
+      return parseInt(i);
+    });
+  return argbFromRgb(ints[0], ints[1], ints[2]);
 }

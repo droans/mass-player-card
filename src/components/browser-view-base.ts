@@ -1,36 +1,59 @@
 import { html, LitElement, PropertyValues, TemplateResult } from "lit";
-import { ExtendedHass, ExtendedHassEntity, ListItems, mediaCardAlbumData, mediaCardArtistData, mediaCardPlaylistData } from "../const/types.js";
-import { DEFAULT_MEDIA_BROWSER_HIDDEN_ELEMENTS_CONFIG, HIDDEN_BUTTON_VALUE, MediaBrowserConfig, MediaBrowserHiddenElementsConfig } from "../config/media-browser.js";
-import { Icons } from "../const/icons.js";
+import {
+  ExtendedHass,
+  ExtendedHassEntity,
+  ListItems,
+  mediaCardAlbumData,
+  mediaCardArtistData,
+  mediaCardPlaylistData,
+} from "../const/types";
+import {
+  DEFAULT_MEDIA_BROWSER_HIDDEN_ELEMENTS_CONFIG,
+  HIDDEN_BUTTON_VALUE,
+  MediaBrowserConfig,
+  MediaBrowserHiddenElementsConfig,
+} from "../config/media-browser";
+import { Icons } from "../const/icons";
 import { property, query, queryAll, state } from "lit/decorators.js";
-import { EntityConfig } from "../config/config.js";
-import { CardEnqueueService } from "../const/actions.js";
-import { activeEntityConfContext, activeMediaPlayerContext, hassContext, IconsContext, mediaBrowserConfigContext, useExpressiveContext, useVibrantContext } from "../const/context.js";
+import { EntityConfig } from "../config/config";
+import { CardEnqueueService } from "../const/actions";
+import {
+  activeEntityConfContext,
+  activeMediaPlayerContext,
+  hassContext,
+  IconsContext,
+  mediaBrowserConfigContext,
+  useExpressiveContext,
+  useVibrantContext,
+} from "../const/context";
 import { consume } from "@lit/context";
-import BrowserActions from "../actions/browser-actions.js";
-import { Track, Tracks } from "mass-queue-types/packages/mass_queue/utils.js";
-import { HTMLImageElementEvent, MenuButtonEventData } from "../const/events.js";
-import { getEnqueueButtons } from "../const/media-browser.js";
-import { EnqueueOptions, Thumbnail } from "../const/enums.js";
-import { getThumbnail } from "../utils/thumbnails.js";
+import BrowserActions from "../actions/browser-actions";
+import { Track, Tracks } from "mass-queue-types/packages/mass_queue/utils";
+import { HTMLImageElementEvent, MenuButtonEventData } from "../const/events";
+import { getEnqueueButtons } from "../const/media-browser";
+import { EnqueueOptions, Thumbnail } from "../const/enums";
+import { getThumbnail } from "../utils/thumbnails";
 import { cache } from "lit/directives/cache.js";
-import './marquee-text'
+import "./marquee-text";
 
 export class BrowserViewBase extends LitElement {
-  protected _collectionData?: mediaCardPlaylistData | mediaCardAlbumData | mediaCardArtistData;
+  protected _collectionData?:
+    | mediaCardPlaylistData
+    | mediaCardAlbumData
+    | mediaCardArtistData;
   protected _hass?: ExtendedHass;
   protected _activePlayer?: ExtendedHassEntity;
   protected _browserConfig?: MediaBrowserConfig;
   protected _activeEntityConf?: EntityConfig;
   protected _Icons?: Icons;
 
-  @query('#title') protected titleElement?: HTMLElement
-  @query('#enqueue-button') protected enqueueElement?: HTMLElement
-  @query('#enqueue') protected enqueueDiv?: HTMLElement
-  @query('#img-header') protected imageElement?: HTMLElement
-  @query('#collection-image') protected imageDivElement?: HTMLElement;
-  @query('#tracks') protected tracksElement?: HTMLElement;
-  @query('#header') protected headerElement?: HTMLElement;
+  @query("#title") protected titleElement?: HTMLElement;
+  @query("#enqueue-button") protected enqueueElement?: HTMLElement;
+  @query("#enqueue") protected enqueueDiv?: HTMLElement;
+  @query("#img-header") protected imageElement?: HTMLElement;
+  @query("#collection-image") protected imageDivElement?: HTMLElement;
+  @query("#tracks") protected tracksElement?: HTMLElement;
+  @query("#header") protected headerElement?: HTMLElement;
   protected enqueueControlElement!: HTMLElement;
   protected enqueueIconElement!: HTMLElement;
   protected titleAnimation!: Animation;
@@ -54,10 +77,11 @@ export class BrowserViewBase extends LitElement {
   // Has observer been added
   protected observerAdded = false;
   // Listen on elements
-  @queryAll('mpc-track-row') trackElements!: HTMLElement[];
-  
+  @queryAll("mpc-track-row") trackElements!: HTMLElement[];
+
   // Set which enqueue elements are hidden
-  protected hide: MediaBrowserHiddenElementsConfig = DEFAULT_MEDIA_BROWSER_HIDDEN_ELEMENTS_CONFIG;
+  protected hide: MediaBrowserHiddenElementsConfig =
+    DEFAULT_MEDIA_BROWSER_HIDDEN_ELEMENTS_CONFIG;
   protected _enqueue_buttons!: ListItems;
 
   public onEnqueueAction!: CardEnqueueService;
@@ -86,14 +110,14 @@ export class BrowserViewBase extends LitElement {
   protected get Icons() {
     return this._Icons;
   }
-  
+
   @state() public tracks?: Tracks;
 
   // Ensure style adjustments are handled
-  @consume({context: useExpressiveContext})
+  @consume({ context: useExpressiveContext })
   protected useExpressive!: boolean;
 
-  @consume({context: useVibrantContext})
+  @consume({ context: useVibrantContext })
   protected useVibrant!: boolean;
 
   protected _browserActions?: BrowserActions;
@@ -125,34 +149,46 @@ export class BrowserViewBase extends LitElement {
   }
 
   @property({ attribute: false })
-  public set collectionData(data: mediaCardPlaylistData | mediaCardAlbumData | mediaCardArtistData | undefined) {
+  public set collectionData(
+    data:
+      | mediaCardPlaylistData
+      | mediaCardAlbumData
+      | mediaCardArtistData
+      | undefined,
+  ) {
     this._collectionData = data;
     void this.getTracks();
   }
   public get collectionData() {
     return this._collectionData;
   }
-  
+
   protected _trackObserverCallback = (e: IntersectionObserverEntry[]) => {
     const entry = e[0];
     if (entry.isIntersecting) {
       this.observer?.disconnect();
-      this.currentIdx = Math.min(this.currentIdx + this.indexIncrease, this.tracks?.length ?? 0);
+      this.currentIdx = Math.min(
+        this.currentIdx + this.indexIncrease,
+        this.tracks?.length ?? 0,
+      );
     }
-  }
+  };
 
   protected addObserver() {
     if (this.observer) {
       this.observer.disconnect();
     }
-    if (!this.trackElements.length || this.trackElements.length == this.tracks?.length) {
+    if (
+      !this.trackElements.length ||
+      this.trackElements.length == this.tracks?.length
+    ) {
       return;
     }
     const listenIdx = this.currentIdx + this.listenOffset;
-    const observer = new IntersectionObserver(this._trackObserverCallback)
+    const observer = new IntersectionObserver(this._trackObserverCallback);
     const elem = this.trackElements[listenIdx];
     observer.observe(elem);
-    
+
     this.observer = observer;
     this.observerAdded = true;
   }
@@ -184,12 +220,11 @@ export class BrowserViewBase extends LitElement {
   protected async getTracks() {
     // Implemented by components
   }
-  
+
   public get browserActions() {
     this._browserActions ??= new BrowserActions(this.hass as ExtendedHass);
     return this._browserActions;
   }
-  
 
   protected addScrollAnimation(transforms: Keyframe, elem: HTMLElement) {
     const shrunkHdrHeight = this.headerElement?.offsetHeight ?? 0 / 2;
@@ -203,8 +238,8 @@ export class BrowserViewBase extends LitElement {
       {
         ...transforms,
         offset: 1,
-      }
-    ]
+      },
+    ];
     /* eslint-disable
       @typescript-eslint/no-explicit-any,
       @typescript-eslint/no-unsafe-assignment,
@@ -212,16 +247,13 @@ export class BrowserViewBase extends LitElement {
       @typescript-eslint/no-unsafe-member-access,
     */
     const timeline = new (window as any).ScrollTimeline({
-      source: this.tracksElement
-    })
-    const animation = elem.animate(
-      keyframes,
-      {
-        timeline: timeline,
-        direction: 'normal',
-        iterations: 1,
-      }
-    )
+      source: this.tracksElement,
+    });
+    const animation = elem.animate(keyframes, {
+      timeline,
+      direction: "normal",
+      iterations: 1,
+    });
     /* eslint-enable
       @typescript-eslint/no-explicit-any,
       @typescript-eslint/no-unsafe-assignment,
@@ -233,53 +265,77 @@ export class BrowserViewBase extends LitElement {
   }
   protected animateHeaderElement() {
     const kf = {
-      height: 'var(--view-header-min-height)'
-    }
-    this.headerAnimation = this.addScrollAnimation(kf, this.headerElement as HTMLElement);
-
+      height: "var(--view-header-min-height)",
+    };
+    this.headerAnimation = this.addScrollAnimation(
+      kf,
+      this.headerElement as HTMLElement,
+    );
   }
   protected animateHeaderTitle() {
     const kf = {
-      fontSize: '2em',
-      fontWeight: '500',
-      top: '0em',
-    }
-    this.titleAnimation = this.addScrollAnimation(kf, this.titleElement as HTMLElement)
+      fontSize: "2em",
+      fontWeight: "500",
+      top: "0em",
+    };
+    this.titleAnimation = this.addScrollAnimation(
+      kf,
+      this.titleElement as HTMLElement,
+    );
   }
   protected animateHeaderEnqueue() {
-    const iconElem = this.enqueueElement?.shadowRoot?.querySelector('.svg-menu-expressive');
-    const selectElem = this.enqueueElement?.shadowRoot?.querySelector('#menu-select-menu')?.shadowRoot?.querySelector('.select-anchor')
+    const iconElem = this.enqueueElement?.shadowRoot?.querySelector(
+      ".svg-menu-expressive",
+    );
+    const selectElem = this.enqueueElement?.shadowRoot
+      ?.querySelector("#menu-select-menu")
+      ?.shadowRoot?.querySelector(".select-anchor");
     if (!iconElem || !selectElem) {
       return;
     }
     const iconKeyFrames = {
-      'height': 'var(--header-collapsed-menu-icon-size)',
-      'width': 'var(--header-collapsed-menu-icon-size)',
-    }
+      height: "var(--header-collapsed-menu-icon-size)",
+      width: "var(--header-collapsed-menu-icon-size)",
+    };
     const selectKeyFrames = {
-      'height': 'var(--header-collapsed-menu-control-size)',
-    }
+      height: "var(--header-collapsed-menu-control-size)",
+    };
     const divKeyFrames = {
-      transform: 'translateX(-2em)'
-    }
-    this.enqueueIconElement = iconElem as HTMLElement
-    this.enqueueControlElement = selectElem as HTMLElement
-    this.enqueueIconAnimation = this.addScrollAnimation(iconKeyFrames, this.enqueueIconElement);
-    this.enqueueControlAnimation = this.addScrollAnimation(selectKeyFrames, this.enqueueControlElement);
-    this.enqueueAnimation = this.addScrollAnimation(divKeyFrames, this.enqueueDiv as HTMLElement);
+      transform: "translateX(-2em)",
+    };
+    this.enqueueIconElement = iconElem as HTMLElement;
+    this.enqueueControlElement = selectElem as HTMLElement;
+    this.enqueueIconAnimation = this.addScrollAnimation(
+      iconKeyFrames,
+      this.enqueueIconElement,
+    );
+    this.enqueueControlAnimation = this.addScrollAnimation(
+      selectKeyFrames,
+      this.enqueueControlElement,
+    );
+    this.enqueueAnimation = this.addScrollAnimation(
+      divKeyFrames,
+      this.enqueueDiv as HTMLElement,
+    );
   }
   protected animateHeaderImage() {
     const imgKf = {
-      transform: 'scale(0.5)'
-    }
+      transform: "scale(0.5)",
+    };
     const imgDivKf = {
-      height: 'var(--collection-image-div-collapsed-height)',
-      transform: 'translateX(-2em) translateY(-0.5em)'
-    }
-    this.imageAnimation = this.addScrollAnimation(imgKf, this.imageElement as HTMLElement)
-    this.imageDivAnimation = this.addScrollAnimation(imgDivKf, this.imageDivElement as HTMLElement)
+      height: "var(--collection-image-div-collapsed-height)",
+      transform: "translateX(-2em) translateY(-0.5em)",
+    };
+    this.imageAnimation = this.addScrollAnimation(
+      imgKf,
+      this.imageElement as HTMLElement,
+    );
+    this.imageDivAnimation = this.addScrollAnimation(
+      imgDivKf,
+      this.imageDivElement as HTMLElement,
+    );
   }
-  
+
   protected onEnqueue = (ev: MenuButtonEventData) => {
     if (!this.collectionData) {
       return;
@@ -294,7 +350,10 @@ export class BrowserViewBase extends LitElement {
     if (!this.Icons) {
       return;
     }
-    const default_buttons = getEnqueueButtons(this.Icons, this.hass as ExtendedHass);
+    const default_buttons = getEnqueueButtons(
+      this.Icons,
+      this.hass as ExtendedHass,
+    );
     const button_mapping = HIDDEN_BUTTON_VALUE;
     const opts = default_buttons.filter((item) => {
       //eslint-disable-next-line @typescript-eslint/no-unsafe-assignment
@@ -304,35 +363,33 @@ export class BrowserViewBase extends LitElement {
     });
     this._enqueue_buttons = opts;
   }
-  
+
   protected _renderImageFallback = (ev: HTMLImageElementEvent) => {
     ev.target.src = getThumbnail(this.hass, Thumbnail.PLAYLIST) as string;
-  }
+  };
   protected renderImage(): TemplateResult {
     const img = this.collectionData?.media_image;
     return html`
-        <img
-          src="${img}"
-          id="img-header"
-          class="thumbnail"
-          @error=${this._renderImageFallback}
-          loading="lazy"
-        >
-    `
+      <img
+        src="${img}"
+        id="img-header"
+        class="thumbnail"
+        @error=${this._renderImageFallback}
+        loading="lazy"
+      />
+    `;
   }
   protected renderTitle(): TemplateResult {
     return html`
       <mpc-marquee-text id="title">
-        <div id="title-text">
-          ${this.collectionData?.media_title}
-        </div>
+        <div id="title-text">${this.collectionData?.media_title}</div>
       </mpc-marquee-text>
-    `
+    `;
   }
 
   protected renderHeader(): TemplateResult {
     // Implemented by components
-    return html``
+    return html``;
   }
 
   protected renderEnqueue(): TemplateResult {
@@ -354,35 +411,33 @@ export class BrowserViewBase extends LitElement {
         .collectionURI=${this.collectionData?.media_content_id}
         .enqueueButtons=${this._enqueue_buttons}
       ></mpc-track-row>
-    `)
+    `);
   }
 
   protected renderTracks() {
     if (!this.tracks?.length) {
       return html`
         <link
-            href="https://cdn.jsdelivr.net/npm/beercss@3.12.11/dist/cdn/beer.min.css"
-            rel="stylesheet"
-          />
-          <div class="shape loading-indicator extra"></div>
+          href="https://cdn.jsdelivr.net/npm/beercss@3.12.11/dist/cdn/beer.min.css"
+          rel="stylesheet"
+        />
+        <div class="shape loading-indicator extra"></div>
       `;
     }
     const trackCt = this.tracks.length;
 
-    return this.tracks.map(
-      (track, idx) => {
-        if (idx >= this.currentIdx) {
-          return html``;
-        }
-        const div = idx < trackCt - 1;
-
-        return this.renderTrack(track, div)
+    return this.tracks.map((track, idx) => {
+      if (idx >= this.currentIdx) {
+        return html``;
       }
-    )
+      const div = idx < trackCt - 1;
+
+      return this.renderTrack(track, div);
+    });
   }
   protected render(): TemplateResult {
-    const expressive_class = this.useExpressive ? `expressive` : ``
-    const vibrant_class = this.useVibrant ? `vibrant` : ``
+    const expressive_class = this.useExpressive ? `expressive` : ``;
+    const vibrant_class = this.useVibrant ? `vibrant` : ``;
     return html`
       <div id="container" class="${expressive_class} ${vibrant_class}">
         <div id="header">
@@ -396,7 +451,7 @@ export class BrowserViewBase extends LitElement {
           </div>
         </div>
       </div>
-    `
+    `;
   }
   protected shouldUpdate(_changedProperties: PropertyValues): boolean {
     return _changedProperties.size > 0;
@@ -404,12 +459,11 @@ export class BrowserViewBase extends LitElement {
 
   protected updated(_changedProperties: PropertyValues): void {
     if (!this.animationsAdded) {
-    void this.testAnimation()
+      void this.testAnimation();
     }
     if (
-      _changedProperties.has('currentIdx') 
-      || ( 
-        _changedProperties.has('tracks') && !this.observerAdded)
+      _changedProperties.has("currentIdx") ||
+      (_changedProperties.has("tracks") && !this.observerAdded)
     ) {
       this.addObserver();
     }
@@ -422,8 +476,7 @@ export class BrowserViewBase extends LitElement {
   }
 
   // eslint-disable-next-line @typescript-eslint/no-unused-vars
-  protected async testAnimation(_delayMs=50) {
+  protected async testAnimation(_delayMs = 50) {
     // Implemented by components
   }
-
 }

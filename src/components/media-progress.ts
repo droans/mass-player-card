@@ -17,9 +17,8 @@ import {
   controllerContext,
 } from "../const/context";
 import { ActionsController } from "../controller/actions";
-import { playerHasUpdated } from "../utils/util";
+import { playerHasUpdated, secondsToTime } from "../utils/util";
 import { ExtendedHassEntity, PlayerData } from "../const/types";
-import { secondsToTime } from "../utils/util";
 import { MassCardController } from "../controller/controller";
 class MassPlayerProgressBar extends LitElement {
   @state() private _media_duration!: number;
@@ -53,7 +52,7 @@ class MassPlayerProgressBar extends LitElement {
   private set media_position(pos: number | undefined) {
     pos ??= 0;
     this._media_position = pos;
-    const prog = Math.min(1, pos / (this._media_duration));
+    const prog = Math.min(1, pos / this._media_duration);
     this._prog_pct = prog;
   }
   private get media_position() {
@@ -84,13 +83,12 @@ class MassPlayerProgressBar extends LitElement {
       }
     }
     if (!player) {
-      return
+      return;
     }
     const cur_dur = player.attributes.media_duration ?? 1;
     const cur_pos =
       !this._activePlayer?.attributes.media_title ||
-      player.attributes.media_title ==
-        this._activePlayer.attributes.media_title
+      player.attributes.media_title == this._activePlayer.attributes.media_title
         ? player.attributes.media_position
         : 1;
     this._activePlayer = player;
@@ -116,10 +114,10 @@ class MassPlayerProgressBar extends LitElement {
 
   private requestProgress() {
     if (!this.activePlayerController) {
-      return
+      return;
     }
     void this.activePlayerController.getPlayerProgress().then((progress) => {
-      const prog = progress as number | undefined
+      const prog = progress as number | undefined;
       progress = Math.min(prog ?? 1, this.entity_duration);
       this.entity_position = prog ?? this.entity_position;
       this._newSetPosition = prog ?? this.entity_position;
@@ -130,11 +128,11 @@ class MassPlayerProgressBar extends LitElement {
         this.media_duration = duration;
         this.entity_duration = duration;
       });
-      if (this.activePlayer?.state == 'playing') {
-        this.startProgressTick()
-      } else {
-        this.stopProgressTick();
-      }
+    if (this.activePlayer?.state == "playing") {
+      this.startProgressTick();
+    } else {
+      this.stopProgressTick();
+    }
   }
   private tickProgress = () => {
     const playing = this.player_data?.playing;
@@ -161,21 +159,21 @@ class MassPlayerProgressBar extends LitElement {
 
   private startProgressTick() {
     this.stopProgressTick();
-    this._tickListener = setInterval(this.tickProgress, this._tick_duration_ms)
+    this._tickListener = setInterval(this.tickProgress, this._tick_duration_ms);
   }
   private stopProgressTick() {
     if (this._tickListener) {
       try {
-        clearInterval(this._tickListener)
+        clearInterval(this._tickListener);
       } catch {
         // Assume interval already cleared
       }
     }
-    this._tickListener = undefined;    
+    this._tickListener = undefined;
   }
   private onSeek = async (e: MouseEvent) => {
     if (!this.actions) {
-      return
+      return;
     }
     const prog_width = this.progressBar?.offsetWidth ?? 1;
     const seek = e.offsetX / prog_width;
@@ -206,7 +204,7 @@ class MassPlayerProgressBar extends LitElement {
   };
   protected onPointerUp = () => {
     if (!this.actions) {
-      return
+      return;
     }
     try {
       void this.actions.actionSeek(this._newSetPosition);
@@ -244,14 +242,18 @@ class MassPlayerProgressBar extends LitElement {
     `;
   }
   protected render(): TemplateResult {
-    const cls = !(this.player_data?.playing && this.controller?.config?.expressive)
+    const cls = !(
+      this.player_data?.playing && this.controller?.config?.expressive
+    )
       ? `medium progress-plain`
       : `wavy medium`;
     return html`
       <div class="progress">
         <div
           id="time"
-          class="${this.controller?.config?.expressive ? `time-expressive` : ``}"
+          class="${this.controller?.config?.expressive
+            ? `time-expressive`
+            : ``}"
         >
           ${this.renderTime()}
         </div>
@@ -283,7 +285,10 @@ class MassPlayerProgressBar extends LitElement {
   }
 
   connectedCallback(): void {
-    this._tickListener ??= setInterval(this.tickProgress, this._tick_duration_ms)
+    this._tickListener ??= setInterval(
+      this.tickProgress,
+      this._tick_duration_ms,
+    );
     if (this.activePlayerController && this.hasUpdated) {
       this.requestProgress();
     }
@@ -300,8 +305,8 @@ class MassPlayerProgressBar extends LitElement {
     super.disconnectedCallback();
   }
   protected shouldUpdate(_changedProperties: PropertyValues): boolean {
-    const bar_playing = this.progressBar?.classList.contains('wavy');
-    const playing_changed = (bar_playing != this.player_data?.playing)
+    const bar_playing = this.progressBar?.classList.contains("wavy");
+    const playing_changed = bar_playing != this.player_data?.playing;
     return _changedProperties.size > 0 || playing_changed;
   }
 

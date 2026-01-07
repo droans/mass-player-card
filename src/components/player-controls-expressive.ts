@@ -4,7 +4,7 @@ import { MassPlayerControlsBase } from "./player-controls-base";
 import { VibrationPattern } from "../const/common";
 import { getRepeatIcon } from "../utils/music-player";
 import styles from "../styles/player-controls-expressive";
-import './button'
+import "./button";
 import { PlayerIcon } from "../config/player";
 import { RepeatMode } from "../const/enums";
 
@@ -13,7 +13,7 @@ class MassPlayerControlsExpressive extends MassPlayerControlsBase {
     navigator.vibrate(VibrationPattern.Player.ACTION_FAVORITE_HOLD);
     const e = new Event("open-add-to-playlist-dialog");
     this.controller.host.dispatchEvent(e);
-  }
+  };
   protected renderPrevious(): TemplateResult {
     return html`
       <mass-player-card-button
@@ -38,7 +38,7 @@ class MassPlayerControlsExpressive extends MassPlayerControlsBase {
         .onPressService=${this.onPlayPause}
         role="filled-variant"
         size="large"
-        elevation=1
+        elevation="1"
         selectable
         ?selected=${playing}
         id="${playing ? `button-play` : `button-pause`}"
@@ -73,8 +73,14 @@ class MassPlayerControlsExpressive extends MassPlayerControlsBase {
     if (this.hiddenElements.power) {
       return html``;
     }
-    const label = this.renderLabel("player.controls.power", this.layoutConfig.icons.power) as string | undefined;
-    const icon = this.renderLowerIcon(this.Icons.POWER, `icons-power icons-lower`);
+    const label = this.renderLabel(
+      "player.controls.power",
+      this.layoutConfig.icons.power,
+    ) as string | undefined;
+    const icon = this.renderLowerIcon(
+      this.Icons.POWER,
+      `icons-power icons-lower`,
+    );
     const no_label_class = !label?.length ? `no-label` : ``;
     return html`
       <mass-player-card-button
@@ -84,8 +90,7 @@ class MassPlayerControlsExpressive extends MassPlayerControlsBase {
         id="button-power"
         class="button-lower ${no_label_class}"
       >
-        ${icon}
-        ${label}
+        ${icon} ${label}
       </mass-player-card-button>
     `;
   }
@@ -94,16 +99,19 @@ class MassPlayerControlsExpressive extends MassPlayerControlsBase {
       return html``;
     }
     const shuffle = this.shuffle;
-    const label = this.renderLabel("player.controls.shuffle", this.layoutConfig.icons.power) as string | undefined;
+    const label = this.renderLabel(
+      "player.controls.shuffle",
+      this.layoutConfig.icons.power,
+    ) as string | undefined;
     const _icon = shuffle ? this.Icons.SHUFFLE : this.Icons.SHUFFLE_DISABLED;
     const no_label_class = !label?.length ? `no-label` : ``;
-    const active_class = shuffle ? `button-lower-active` : ``
+    const active_class = shuffle ? `button-lower-active` : ``;
 
     const icon_html = this.renderLowerIcon(
       _icon,
       `icons-shuffle icons-lower${shuffle ? `-active` : ``}`,
-      label
-    )
+      label,
+    );
     return html`
       <mass-player-card-button
         .onPressService=${this.onShuffle}
@@ -115,8 +123,7 @@ class MassPlayerControlsExpressive extends MassPlayerControlsBase {
         id="button-shuffle"
         class="button-lower ${active_class} ${no_label_class}"
       >
-        ${icon_html}
-        ${label}
+        ${icon_html} ${label}
       </mass-player-card-button>
     `;
   }
@@ -127,16 +134,19 @@ class MassPlayerControlsExpressive extends MassPlayerControlsBase {
     const repeat = this.repeat;
     const repeat_on = repeat != RepeatMode.OFF;
 
-    const label = this.renderLabel("player.controls.repeat", this.layoutConfig.icons.power) as string | undefined;
+    const label = this.renderLabel(
+      "player.controls.repeat",
+      this.layoutConfig.icons.power,
+    ) as string | undefined;
     const _icon = getRepeatIcon(repeat, this.Icons);
     const no_label_class = !label?.length ? `no-label` : ``;
-    const active_class = repeat_on ? `button-lower-active` : ``
+    const active_class = repeat_on ? `button-lower-active` : ``;
 
     const icon_html = this.renderLowerIcon(
       _icon,
       `icons-repeat icons-lower${repeat_on ? `-active` : ``}`,
-      label
-    )
+      label,
+    );
     return html`
       <mass-player-card-button
         .onPressService=${this.onRepeat}
@@ -148,8 +158,7 @@ class MassPlayerControlsExpressive extends MassPlayerControlsBase {
         id="button-repeat"
         class="button-lower ${active_class} ${no_label_class}"
       >
-        ${icon_html}
-        ${label}
+        ${icon_html} ${label}
       </mass-player-card-button>
     `;
   }
@@ -158,16 +167,19 @@ class MassPlayerControlsExpressive extends MassPlayerControlsBase {
       return html``;
     }
     const favorite = this.favorite;
-    const label = this.renderLabel("player.controls.favorite", this.layoutConfig.icons.favorite) as string | undefined;
+    const label = this.renderLabel(
+      "player.controls.favorite",
+      this.layoutConfig.icons.favorite,
+    ) as string | undefined;
     const no_label_class = !label?.length ? `no-label` : ``;
-    const active_class = favorite ? `button-lower-active` : ``
+    const active_class = favorite ? `button-lower-active` : ``;
     const _icon = favorite ? this.Icons.HEART_ALT : this.Icons.HEART_PLUS;
 
     const icon_html = this.renderLowerIcon(
       _icon,
       `icons-favorite icons-lower${favorite ? `-active` : ``}`,
-      label
-    )
+      label,
+    );
     return html`
       <mass-player-card-button
         .onPressService=${this.onFavorite}
@@ -180,8 +192,7 @@ class MassPlayerControlsExpressive extends MassPlayerControlsBase {
         id="button-favorite"
         class="button-lower ${active_class} ${no_label_class}"
       >
-        ${icon_html}
-        ${label}
+        ${icon_html} ${label}
       </mass-player-card-button>
     `;
   }
@@ -233,20 +244,16 @@ class MassPlayerControlsExpressive extends MassPlayerControlsBase {
     _class: string,
     _label: string | null = null,
   ) {
-    const slot_attr = _label?.length ? literal`slot="start"` : ``
+    const slot_attr = _label?.length ? literal`slot="start"` : ``;
     return html`
-      <ha-svg-icon
-        ${slot_attr}
-        .path=${path}
-        class="${_class}"
-      ></ha-svg-icon>
-    `
+      <ha-svg-icon ${slot_attr} .path=${path} class="${_class}"></ha-svg-icon>
+    `;
   }
   private renderLabel(label_key: string, icon_config: PlayerIcon): string {
     const hide_labels = this.layoutConfig.hide_labels;
-    const hide_icon = !icon_config.label
+    const hide_icon = !icon_config.label;
     if (hide_labels || hide_icon) {
-      return ``
+      return ``;
     }
     return this.controller.translate(label_key) as string;
   }

@@ -15,7 +15,11 @@ export function generateControlLabelHtml(
   label: string,
   hide_labels: boolean,
 ) {
-  if (icon_style.size == PlayerIconSize.LARGE || !icon_style.label || hide_labels) {
+  if (
+    icon_style.size == PlayerIconSize.LARGE ||
+    !icon_style.label ||
+    hide_labels
+  ) {
     return html``;
   }
   return html`${label}`;

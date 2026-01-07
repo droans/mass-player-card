@@ -17,7 +17,7 @@ import {
   ExtendedHassEntity,
   QueueItem,
   QueueItems,
-  SubscriptionUnsubscribe
+  SubscriptionUnsubscribe,
 } from "../const/types";
 import { MassQueueEvent } from "../const/events";
 
@@ -70,12 +70,12 @@ export class QueueController {
       return;
     }
     if (!this.activeMediaPlayer) {
-      this._queue.setValue([])
+      this._queue.setValue([]);
       return;
     }
-    if (this.activeMediaPlayer.state == 'playing' && !queue_items?.length) {
+    if (this.activeMediaPlayer.state == "playing" && !queue_items?.length) {
       // If the player is playing, there must be active player items; assume then that we received bad data.
-      return
+      return;
     }
     this._queue.setValue(queue_items);
   }
@@ -102,7 +102,7 @@ export class QueueController {
     }
     if (player) {
       this._activeMediaPlayer = player;
-      this._activeQueueID = player.attributes.active_queue ?? '';
+      this._activeQueueID = player.attributes.active_queue ?? "";
       this.actions.player_entity = player.entity_id;
       void this.getQueue();
     }
@@ -184,8 +184,9 @@ export class QueueController {
       return;
     }
     const active_track = this.activeMediaPlayer.attributes.media_content_id;
-    const active_idx =
-      queue.findIndex((i) => i.media_content_id == active_track);
+    const active_idx = queue.findIndex(
+      (i) => i.media_content_id == active_track,
+    );
     if (active_idx >= 0) {
       queue[active_idx].playing = true;
     }
@@ -211,18 +212,19 @@ export class QueueController {
       return;
     }
     try {
-      let queue = await this.actions.getQueue(limit_before, limit_after) ?? null;
-      if (!queue?.length && ["playing", "paused"].includes(this.activeMediaPlayer.state)) {
+      let queue =
+        (await this.actions.getQueue(limit_before, limit_after)) ?? null;
+      if (
+        !queue?.length &&
+        ["playing", "paused"].includes(this.activeMediaPlayer.state)
+      ) {
         if (attempt >= MAX_GET_QUEUE_FAILURES) {
-          return []
+          return [];
         }
         // If queue length is zero and player is playing/paused, assume we refreshed at a bad time. Set a short delay and try again.
-        setTimeout(
-          () => {
-            return this._getQueue(attempt+ 1)
-          },
-          75
-        )
+        setTimeout(() => {
+          return this._getQueue(attempt + 1);
+        }, 75);
       } else {
         if (!queue) {
           this._updatingQueue = false;
@@ -235,7 +237,7 @@ export class QueueController {
         this._updatingQueue = false;
         return queue;
       }
-    } catch(e) {
+    } catch (e) {
       this._fails++;
       throw e;
     } finally {
@@ -381,7 +383,7 @@ export class QueueController {
     await this.actions.removeQueueItem(queue_item_id);
   }
   public async clearQueue(
-    entity_id: string = this.activeMediaPlayer?.entity_id ?? '',
+    entity_id: string = this.activeMediaPlayer?.entity_id ?? "",
   ) {
     await this.actions.clearQueue(entity_id);
   }

@@ -3,7 +3,6 @@ import { css } from "lit";
 // Styles belonging to the card
 // https://lit.dev/docs/components/styles/
 export default css`
-
   .divider {
     margin-top: 2px;
     margin-bottom: 2px;
@@ -44,11 +43,13 @@ export default css`
     width: 320px;
     height: 100%;
   }
-  .grouped-players-select-item-image, .grouped-players-select-item-icon {
+  .grouped-players-select-item-image,
+  .grouped-players-select-item-icon {
     height: 3em;
     width: 3em;
   }
-  .grouped-players-select-item-icon.expressive, .grouped-players-select-item-image.expressive {
+  .grouped-players-select-item-icon.expressive,
+  .grouped-players-select-item-image.expressive {
     margin-left: 14px;
   }
   .grouped-players-select-item-image.expressive {
@@ -77,7 +78,7 @@ export default css`
   .grouped-volume .player-name-icon {
     margin-top: 10px;
     color: var(--md-sys-color-primary);
-  }  
+  }
   .menu-header::part(menu-select-menu) {
     border-radius: 50%;
     height: 2.5em;

@@ -1,63 +1,62 @@
 import { CSSResultOrNative, html, TemplateResult } from "lit";
 import { customElement, query, state } from "lit/decorators.js";
-import sharedStyles from '../styles/browser-view-shared';
-import styles from '../styles/browser-playlist-view';
-import { TrackRemovedEventData } from "../const/events.js";
-import './browser-track-row';
-import { delay, formatDuration } from "../utils/util.js";
-import { getPlaylistServiceResponse } from "mass-queue-types/packages/mass_queue/actions/get_playlist.js";
-import { PlaylistTrack } from "mass-queue-types/packages/mass_queue/actions/get_playlist_tracks.js";
-import { BrowserViewBase } from "./browser-view-base.js";
+import sharedStyles from "../styles/browser-view-shared";
+import styles from "../styles/browser-playlist-view";
+import { TrackRemovedEventData } from "../const/events";
+import "./browser-track-row";
+import { delay, formatDuration } from "../utils/util";
+import { getPlaylistServiceResponse } from "mass-queue-types/packages/mass_queue/actions/get_playlist";
+import { PlaylistTrack } from "mass-queue-types/packages/mass_queue/actions/get_playlist_tracks";
+import { BrowserViewBase } from "./browser-view-base";
 
-@customElement('mpc-browser-playlist-view')
+@customElement("mpc-browser-playlist-view")
 export class MassBrowserPlaylistView extends BrowserViewBase {
-  @query('#collection-info') private infoElement?: HTMLElement
+  @query("#collection-info") private infoElement?: HTMLElement;
   private infoAnimation!: Animation;
 
   // Duration of playlist
   private playlistDuration = 0;
 
   // Metadata for playlist
-  @state() private playlistMetadata?: getPlaylistServiceResponse
+  @state() private playlistMetadata?: getPlaylistServiceResponse;
 
   // Ask HA to return the tracks in the playlist
   public async getTracks() {
-    if (
-      !this.hass 
-      || !this.collectionData
-      || !this.activePlayer
-    ) {
+    if (!this.hass || !this.collectionData || !this.activePlayer) {
       return;
     }
-    const tracks = await this.browserActions.actionGetPlaylistTracks(this.collectionData.media_content_id, this.activePlayer.entity_id);
+    const tracks = await this.browserActions.actionGetPlaylistTracks(
+      this.collectionData.media_content_id,
+      this.activePlayer.entity_id,
+    );
     this.tracks = tracks.response.tracks;
     let dur = 0;
-    this.tracks.forEach(
-      (track) => {
-        dur += track.duration ?? 0;
-      }
-    )
+    this.tracks.forEach((track) => {
+      dur += track.duration ?? 0;
+    });
     this.playlistDuration = dur;
-    this.setHiddenElements()
+    this.setHiddenElements();
     await this.getPlaylistMetadata();
   }
   public async getPlaylistMetadata() {
-    if (
-      !this.hass 
-      || !this.collectionData
-      || !this.activePlayer
-    ) {
+    if (!this.hass || !this.collectionData || !this.activePlayer) {
       return;
     }
-    const metadata = await this.browserActions.actionGetPlaylistData(this.collectionData.media_content_id, this.activePlayer.entity_id);
+    const metadata = await this.browserActions.actionGetPlaylistData(
+      this.collectionData.media_content_id,
+      this.activePlayer.entity_id,
+    );
     this.playlistMetadata = metadata;
   }
 
   private animateHeaderInfo() {
     const kf = {
-      fontSize: '0.8em'
-    }
-    this.infoAnimation = this.addScrollAnimation(kf, this.infoElement as HTMLElement)
+      fontSize: "0.8em",
+    };
+    this.infoAnimation = this.addScrollAnimation(
+      kf,
+      this.infoElement as HTMLElement,
+    );
   }
   private animateHeader() {
     this.animateHeaderElement();
@@ -70,67 +69,60 @@ export class MassBrowserPlaylistView extends BrowserViewBase {
   private onTrackRemoved = (ev: TrackRemovedEventData) => {
     const data = ev.detail;
     const pos = data.position;
-    const tracks = (this.tracks as PlaylistTrack[]).filter(
-      (track) => {
+    const tracks = (this.tracks as PlaylistTrack[])
+      .filter((track) => {
         return track.position != pos;
-      }
-    ).map(
-      (track) => {
+      })
+      .map((track) => {
         if (track.position > pos) {
           track.position -= 1;
         }
-        return track
-      }
-    )
+        return track;
+      });
     this.tracks = tracks;
-  }
-
+  };
 
   protected renderHeader(): TemplateResult {
     return html`
       <div id="collection-image">
         ${this.renderImage()}
-        <div id="enqueue">
-          ${this.renderEnqueue()}
-        </div>
+        <div id="enqueue">${this.renderEnqueue()}</div>
       </div>
-      <div id="overview">
-        ${this.renderOverview()}
-      </div>
-    `
+      <div id="overview">${this.renderOverview()}</div>
+    `;
   }
   protected renderOverview(): TemplateResult {
-    const trackStr = this.tracks?.length ? `${this.tracks.length.toString()} Tracks` : `Loading...`
+    const trackStr = this.tracks?.length
+      ? `${this.tracks.length.toString()} Tracks`
+      : `Loading...`;
     const owner = this.playlistMetadata?.response.owner ?? `Unknown`;
     return html`
       ${this.renderTitle()}
       <div id="collection-info">
-        <div id="tracks-length">
-          ${trackStr}
-        </div>
+        <div id="tracks-length">${trackStr}</div>
         <div id="playlist-duration">
           ${formatDuration(this.playlistDuration)}
         </div>
-        <div id="playlist-owner">
-          ${owner}
-        </div>
+        <div id="playlist-owner">${owner}</div>
       </div>
-    `
+    `;
   }
 
-  protected async testAnimation(delayMs=50) {
+  protected async testAnimation(delayMs = 50) {
     await delay(delayMs);
-    if (!this.animationsAdded
-      && (this.tracksElement?.scrollHeight ?? 0) > (this.tracksElement?.offsetHeight ?? 1)
-      && this.titleElement
-      && this.infoElement
-      && this.enqueueElement
-      && this.imageElement
+    if (
+      !this.animationsAdded &&
+      (this.tracksElement?.scrollHeight ?? 0) >
+        (this.tracksElement?.offsetHeight ?? 1) &&
+      this.titleElement &&
+      this.infoElement &&
+      this.enqueueElement &&
+      this.imageElement
     ) {
       this.animationsAdded = true;
-      this.animateHeader()
+      this.animateHeader();
     } else {
-      if (delayMs > 1000 ) {
+      if (delayMs > 1000) {
         return;
       }
       await this.testAnimation(delayMs * 2);

@@ -25,7 +25,7 @@ export default css`
     height: var(--player-volume-slider-height);
     position: relative;
     border-radius: 24px;
-    overflow: hidden
+    overflow: hidden;
   }
 
   .svg-plain {

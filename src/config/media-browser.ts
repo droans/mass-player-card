@@ -204,7 +204,11 @@ export function mediaBrowserConfigForm() {
     },
     recommendationsConfigForm(),
     hiddenElementsConfigItem(MEDIA_BROWSER_HIDDEN_ITEMS),
-  { name: "playlists_allow_removing_tracks", selector: { boolean: {} }, default: false },
+    {
+      name: "playlists_allow_removing_tracks",
+      selector: { boolean: {} },
+      default: false,
+    },
   ];
 }
 

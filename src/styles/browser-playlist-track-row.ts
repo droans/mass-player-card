@@ -37,4 +37,4 @@ export default css`
     -moz-user-select: none;
     user-select: none;
   }
-`
+`;
