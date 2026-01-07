@@ -120,6 +120,38 @@ export function createStubConfig(hass: ExtendedHass, entities: string[]) {
   };
 }
 
+
+function createDefaultSectionConfigForm() {
+  return {
+    name: "default_section",
+    required: false,
+    selector: {
+      select: {
+        multiple: false,
+        mode: "dropdown",
+        options: [
+          {
+            value: "music_player",
+            label: "Music Player",
+          },
+          {
+            value: "queue",
+            label: "Player Queue",
+          },
+          {
+            value: "media_browser",
+            label: "Media Browser",
+          },
+          {
+            value: "players",
+            label: "Players",
+          },
+        ],
+      },
+    },
+  };
+}
+
 function createExpressiveSchemeConfigForm() {
   return {
     name: "expressive_scheme",
@@ -191,6 +223,7 @@ export function createConfigForm() {
         selector: { boolean: {}, default: true },
       },
       createExpressiveSchemeConfigForm(),
+      createDefaultSectionConfigForm(),
       {
         name: "download_local",
         required: false,
