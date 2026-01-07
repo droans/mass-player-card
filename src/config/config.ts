@@ -120,7 +120,6 @@ export function createStubConfig(hass: ExtendedHass, entities: string[]) {
   };
 }
 
-
 function createDefaultSectionConfigForm() {
   return {
     name: "default_section",

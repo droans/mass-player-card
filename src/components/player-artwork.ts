@@ -459,8 +459,9 @@ export class MassPlayerArtwork extends LitElement {
 
     if (this._interval) {
       try {
-        this._interval = undefined;
+        clearInterval(this._interval);
       } finally {
+        this._interval = undefined;
         this._intervalSet = false;
       }
     }
