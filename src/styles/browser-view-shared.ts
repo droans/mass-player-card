@@ -105,6 +105,7 @@ export default css`
       "ROND" 100;
     font-weight: 900;
     font-stretch: 25%;
+    text-align: end;
   }
   #title-text {
     padding-right: 4px;
