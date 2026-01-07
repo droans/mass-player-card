@@ -41,8 +41,8 @@ export class MassPlayerControlsBase extends LitElement {
   }
   @consume({ context: actionsControllerContext })
   private actions!: ActionsController;
-  private _entityHiddenElements!: PlayerControlsHiddenElementsConfig;
-  private _configHiddenElements!: PlayerControlsHiddenElementsConfig;
+  private _entityHiddenElements?: PlayerControlsHiddenElementsConfig;
+  private _configHiddenElements?: PlayerControlsHiddenElementsConfig;
   @state() private _hiddenElements!: PlayerControlsHiddenElementsConfig;
 
   @consume({ context: controllerContext, subscribe: true })
@@ -72,9 +72,20 @@ export class MassPlayerControlsBase extends LitElement {
     this.setHiddenElements();
   }
 
+  private _processHiddenElement(
+    hiddenElements: PlayerControlsHiddenElementsConfig | undefined,
+  ): PlayerControlsHiddenElementsConfig {
+    return {
+      power: hiddenElements?.power ?? false,
+      repeat: hiddenElements?.repeat ?? false,
+      shuffle: hiddenElements?.shuffle ?? false,
+      favorite: hiddenElements?.favorite ?? false,
+    };
+  }
+
   private setHiddenElements() {
-    const e = this._entityHiddenElements;
-    const c = this._configHiddenElements;
+    const e = this._processHiddenElement(this._entityHiddenElements);
+    const c = this._processHiddenElement(this._configHiddenElements);
     const result: PlayerControlsHiddenElementsConfig = {
       power: e.power || c.power || false,
       repeat: e.repeat || c.repeat || false,
