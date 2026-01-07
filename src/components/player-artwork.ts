@@ -453,6 +453,10 @@ export class MassPlayerArtwork extends LitElement {
 
   disconnectedCallback(): void {
     super.disconnectedCallback();
+    window.removeEventListener("pointerup", this.onPointerUp);
+    window.removeEventListener("touchend", this.onPointerUp);
+    this._observer?.disconnect();
+
     if (this._interval) {
       try {
         this._interval = undefined;
@@ -461,7 +465,6 @@ export class MassPlayerArtwork extends LitElement {
       }
     }
   }
-
   static get styles(): CSSResultGroup {
     return styles;
   }

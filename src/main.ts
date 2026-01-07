@@ -321,6 +321,14 @@ export class MusicAssistantPlayerCard extends LitElement {
   static get styles(): CSSResultGroup {
     return styles;
   }
+  protected firstUpdated(): void {
+    if (this.config.expressive) {
+      const stylesheet = head_styles.styleSheet as CSSStyleSheet;
+      document.adoptedStyleSheets.push(stylesheet);
+    }
+    // eslint-disable-next-line listeners/no-missing-remove-event-listener
+    this.addEventListener("section-changed", this.onSectionChangedEvent);
+  }
   connectedCallback() {
     super.connectedCallback();
     if (this._controller.Queue) {
@@ -333,14 +341,8 @@ export class MusicAssistantPlayerCard extends LitElement {
   }
   disconnectedCallback(): void {
     super.disconnectedCallback();
+    this.removeEventListener("section-changed", this.onSectionChangedEvent);
     this._controller.disconnected();
-  }
-  protected firstUpdated(): void {
-    if (this.config.expressive) {
-      const stylesheet = head_styles.styleSheet as CSSStyleSheet;
-      document.adoptedStyleSheets.push(stylesheet);
-    }
-    this.addEventListener("section-changed", this.onSectionChangedEvent);
   }
   public getCardSize() {
     return 3;

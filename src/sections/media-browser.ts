@@ -656,6 +656,25 @@ export class MediaBrowser extends LitElement {
     `;
   }
 
+  disconnectedCallback(): void {
+    super.disconnectedCallback();
+    // eslint-disable-next-line @typescript-eslint/no-non-null-assertion
+    this.browserController!._host.removeEventListener(
+      "cards-updated",
+      this.onCardsUpdated,
+    );
+  }
+  connectedCallback(): void {
+    super.connectedCallback();
+    if (this.browserController?._host) {
+      // eslint-disable-next-line @typescript-eslint/no-non-null-assertion, @typescript-eslint/no-unnecessary-type-assertion
+      this.browserController!._host.addEventListener(
+        "cards-updated",
+        this.onCardsUpdated,
+      );
+    }
+  }
+
   protected updated(): void {
     if (this.searchActivated) {
       setTimeout(() => {

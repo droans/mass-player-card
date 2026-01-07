@@ -35,6 +35,8 @@ class MassNavBar extends LitElement {
   @query(".icon-active") activeIconElem?: HTMLElement;
   private animationLength = 350;
   private animating = false;
+  private tabIndicatorLeftPx = 0;
+  private tabIndicatorWidthPx = 0;
 
   @consume({ context: activeSectionContext, subscribe: true })
   @state()
@@ -181,19 +183,25 @@ class MassNavBar extends LitElement {
         transform: `translateX(${translate_x.toString()}px) scaleX(${scale_x.toString()})`,
       },
     ];
-    const animation = this.animationElement;
     const indicator = this.tabIndicator;
-    if (!animation || !indicator) {
+    if (!this.animationElement || !indicator) {
       return;
     }
-    animation.keyframes = _keyframes;
-    animation.addEventListener("wa-finish", () => {
-      this.animating = false;
-      indicator.style.left = `${to_left.toString()}px`;
-      indicator.style.width = `${to_width.toString()}px`;
-    });
-    animation.play = true;
+    this.animationElement.keyframes = _keyframes;
+    this.tabIndicatorLeftPx = to_left;
+    this.tabIndicatorWidthPx = to_width;
+    this.animationElement.addEventListener("wa-finish", this.onAnimationFinish);
+    this.animationElement.play = true;
   }
+
+  private onAnimationFinish = () => {
+    this.animating = false;
+    if (!this.tabIndicator) {
+      return;
+    }
+    this.tabIndicator.style.left = `${this.tabIndicatorLeftPx.toString()}px`;
+    this.tabIndicator.style.width = `${this.tabIndicatorWidthPx.toString()}px`;
+  };
 
   protected renderMusicPlayerTab(): TemplateResult {
     const section = Sections.MUSIC_PLAYER;
@@ -297,6 +305,16 @@ class MassNavBar extends LitElement {
       animation.appendChild(indicator);
       this.navbar?.appendChild(animation);
     }
+  }
+  disconnectedCallback(): void {
+    super.disconnectedCallback();
+    if (!this.animationElement) {
+      return;
+    }
+    this.animationElement.removeEventListener(
+      "wa-finish",
+      this.onAnimationFinish,
+    );
   }
   static get styles(): CSSResultGroup {
     return styles;

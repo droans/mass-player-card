@@ -326,6 +326,10 @@ class QueueCard extends LitElement {
     }
     if (this.queueController.isSubscribed)
       this.queueController.unsubscribeUpdates();
+    this.queueController._host.removeEventListener(
+      "section-changed",
+      this.onTabSwitch,
+    );
     super.disconnectedCallback();
   }
   public connectedCallback(): void {
@@ -336,6 +340,10 @@ class QueueCard extends LitElement {
     if (this._animations && this._firstLoaded) {
       this._animations.forEach((animation) => (animation.play = true));
     }
+    this.queueController?._host.addEventListener(
+      "section-changed",
+      this.onTabSwitch,
+    );
     super.connectedCallback();
   }
   protected firstUpdated(): void {

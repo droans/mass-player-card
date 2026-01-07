@@ -566,17 +566,21 @@ class MusicPlayerCard extends LitElement {
       "force-update-player",
       this.onForceLoadEvent,
     );
-    this.controller.host.addEventListener("active-player-updated", () => {
-      if (!this.activePlayerController) {
-        return;
-      }
-      void this.activePlayerController.updateActivePlayerData();
-    });
+    this.controller.host.addEventListener(
+      "active-player-updated",
+      this.onActivePlayerUpdated,
+    );
     this.controller.host.addEventListener(
       "open-add-to-playlist-dialog",
       this.openPlaylistDialogOnEvent,
     );
   }
+  protected onActivePlayerUpdated = () => {
+    if (!this.activePlayerController) {
+      return;
+    }
+    void this.activePlayerController.updateActivePlayerData();
+  };
   protected updated(): void {
     const favoritesDialog = this.favoritesDialog;
     if (!favoritesDialog) {
@@ -600,6 +604,48 @@ class MusicPlayerCard extends LitElement {
       return false;
     }
     return super.shouldUpdate(_changedProperties);
+  }
+
+  disconnectedCallback(): void {
+    super.disconnectedCallback();
+    this.controller.host.removeEventListener(
+      "request-player-data-update",
+      this.delayedUpdatePlayerData,
+    );
+    this.controller.host.removeEventListener(
+      "force-update-player",
+      this.onForceLoadEvent,
+    );
+    this.controller.host.removeEventListener(
+      "active-player-updated",
+      this.onActivePlayerUpdated,
+    );
+    this.controller.host.removeEventListener(
+      "open-add-to-playlist-dialog",
+      this.openPlaylistDialogOnEvent,
+    );
+  }
+  connectedCallback(): void {
+    super.connectedCallback();
+    // eslint-disable-next-line @typescript-eslint/no-unnecessary-condition
+    if (this.controller?.host) {
+      this.controller.host.addEventListener(
+        "request-player-data-update",
+        this.delayedUpdatePlayerData,
+      );
+      this.controller.host.addEventListener(
+        "force-update-player",
+        this.onForceLoadEvent,
+      );
+      this.controller.host.addEventListener(
+        "active-player-updated",
+        this.onActivePlayerUpdated,
+      );
+      this.controller.host.addEventListener(
+        "open-add-to-playlist-dialog",
+        this.openPlaylistDialogOnEvent,
+      );
+    }
   }
   static get styles(): CSSResultGroup {
     return styles;

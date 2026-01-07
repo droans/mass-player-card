@@ -5,6 +5,8 @@ import tseslint from "typescript-eslint";
 import lit from "eslint-plugin-lit";
 import wc from 'eslint-plugin-wc';
 import github from 'eslint-plugin-github';
+import observers from "eslint-plugin-observers";
+import listeners from "eslint-plugin-listeners";
 
 const rootConfigFiles = [".prettierrc.js", "eslint.config.mjs"];
 
@@ -21,10 +23,17 @@ export default tseslint.config(
     plugins: {
       lit: lit,
       wc: wc,
+      listeners: listeners,
+      observers: observers,
     },
     rules: {
       ...lit.configs.recommended.rules,
       ...wc.configs.recommended.rules,
+      "listeners/no-missing-remove-event-listener": "error",
+      "listeners/matching-remove-event-listener": "error",
+      "listeners/no-inline-function-event-listener": "error",
+      "observers/no-missing-unobserve-or-disconnect": "error",
+      "observers/matching-unobserve-target": "error",
     }
   },
   // default language/parser options

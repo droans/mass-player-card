@@ -2303,6 +2303,15 @@ __metadata:
   languageName: node
   linkType: hard
 
+"eslint-plugin-listeners@npm:^1.5.1":
+  version: 1.5.1
+  resolution: "eslint-plugin-listeners@npm:1.5.1"
+  peerDependencies:
+    eslint: ">=0.8.0"
+  checksum: 10c0/405b3ff8d5fa4d26d78b28e8e206e6b35cac680061f3ef417465513ad15ed3b78199f580eab57fae69ff903cda9b0655a79323e54d85c758b4a02a03cb9d6986
+  languageName: node
+  linkType: hard
+
 "eslint-plugin-lit@npm:^2.1.1":
   version: 2.1.1
   resolution: "eslint-plugin-lit@npm:2.1.1"
@@ -2319,6 +2328,17 @@ __metadata:
   version: 3.3.0
   resolution: "eslint-plugin-no-only-tests@npm:3.3.0"
   checksum: 10c0/a04425d9d3bcd745267168782eb12a3a712b8357264ddd4e204204318975c2c21e2c1efe68113181de908548a85762205b61d8f92ec9dc5e0a5ae54c0240a24d
+  languageName: node
+  linkType: hard
+
+"eslint-plugin-observers@npm:^1.0.1":
+  version: 1.0.1
+  resolution: "eslint-plugin-observers@npm:1.0.1"
+  dependencies:
+    lodash.merge: "npm:4.6.2"
+  peerDependencies:
+    eslint: ">=0.8.0"
+  checksum: 10c0/829794d67d592d2f304165cdc2c66b07ffd799f4b6f9d908f0219c08d34d4ed295d5adb9d7a966dfb9c4c3ae14afdebff075ec7a8cf41de01a3741763415b91e
   languageName: node
   linkType: hard
 
@@ -3468,7 +3488,7 @@ __metadata:
   languageName: node
   linkType: hard
 
-"lodash.merge@npm:^4.6.2":
+"lodash.merge@npm:4.6.2, lodash.merge@npm:^4.6.2":
   version: 4.6.2
   resolution: "lodash.merge@npm:4.6.2"
   checksum: 10c0/402fa16a1edd7538de5b5903a90228aa48eb5533986ba7fa26606a49db2572bf414ff73a2c9f5d5fd36b31c46a5d5c7e1527749c07cbcf965ccff5fbdf32c506
@@ -3548,7 +3568,9 @@ __metadata:
     eslint-config-prettier: "npm:10.1.8"
     eslint-plugin-github: "npm:^6.0.0"
     eslint-plugin-jest: "npm:29.2.1"
+    eslint-plugin-listeners: "npm:^1.5.1"
     eslint-plugin-lit: "npm:^2.1.1"
+    eslint-plugin-observers: "npm:^1.0.1"
     eslint-plugin-wc: "npm:^3.0.2"
     home-assistant-js-websocket: "npm:9.6.0"
     lit: "npm:3.3.1"

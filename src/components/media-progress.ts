@@ -200,6 +200,7 @@ class MassPlayerProgressBar extends LitElement {
     this._dragging = true;
     this._requestProgress = false;
     window.addEventListener("pointerup", this.onPointerUp);
+    // eslint-disable-next-line listeners/no-missing-remove-event-listener
     this.addEventListener("pointermove", this.pointerMoveListener);
   };
   protected onPointerUp = () => {
@@ -295,6 +296,8 @@ class MassPlayerProgressBar extends LitElement {
     super.connectedCallback();
   }
   disconnectedCallback(): void {
+    this.removeEventListener("pointermove", this.pointerMoveListener);
+    window.removeEventListener("pointerup", this.onPointerUp);
     if (this._tickListener) {
       try {
         clearInterval(this._tickListener);
