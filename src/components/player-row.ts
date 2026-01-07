@@ -29,8 +29,8 @@ import {
 import { Icons } from "../const/icons";
 import { ExtendedHass, ExtendedHassEntity } from "../const/types";
 import { Thumbnail } from "../const/enums";
-import { getThumbnail } from "../utils/thumbnails.js";
-import { HTMLImageElementEvent } from "../const/events.js";
+import { getThumbnail } from "../utils/thumbnails";
+import { HTMLImageElementEvent } from "../const/events";
 
 class PlayerRow extends LitElement {
   @property({ attribute: false }) joined = false;
@@ -38,7 +38,7 @@ class PlayerRow extends LitElement {
   @consume({ context: IconsContext }) private Icons!: Icons;
   @consume({ context: useExpressiveContext, subscribe: true })
   private useExpressive!: boolean;
-  @property({ attribute: 'can-group', type: Boolean }) canGroup = false;
+  @property({ attribute: "can-group", type: Boolean }) canGroup = false;
 
   public allowJoin = true;
   public playerName!: string;
@@ -46,7 +46,7 @@ class PlayerRow extends LitElement {
   public selectedService!: PlayerSelectedService;
   public transferService!: PlayerTransferService;
   public unjoinService!: PlayerUnjoinService;
-  
+
   private _player_entity!: ExtendedHassEntity;
 
   private _config!: PlayersConfig;
@@ -87,11 +87,11 @@ class PlayerRow extends LitElement {
     return this._hass;
   }
 
-  @property({ attribute: false }) 
+  @property({ attribute: false })
   public set player_entity(entity: ExtendedHassEntity | undefined) {
     if (entity) {
-    this._player_entity = entity;
-  }
+      this._player_entity = entity;
+    }
   }
   public get player_entity() {
     return this._player_entity;
@@ -114,7 +114,7 @@ class PlayerRow extends LitElement {
       return;
     }
     this.selectedService(this.player_entity.entity_id);
-  }
+  };
   protected shouldUpdate(_changedProperties: PropertyValues<this>): boolean {
     return _changedProperties.size > 0;
   }
@@ -127,7 +127,7 @@ class PlayerRow extends LitElement {
     }
     await service([this.player_entity.entity_id]);
     this.joined = !this.joined;
-  }
+  };
   private onTransferPressed = (e: Event) => {
     e.stopPropagation();
     navigator.vibrate(VibrationPattern.Players.ACTION_TRANSFER);
@@ -135,33 +135,33 @@ class PlayerRow extends LitElement {
       return;
     }
     this.transferService(this.player_entity.entity_id);
-  }
+  };
 
   private _renderThumbnailFallback = (ev: HTMLImageElementEvent) => {
     const attrs = this.player_entity?.attributes;
     const fallback = getThumbnail(this.hass, Thumbnail.HEADPHONES);
-    const loc = attrs?.entity_picture_local
+    const loc = attrs?.entity_picture_local;
     const pic = attrs?.entity_picture ?? fallback;
     const src = ev.target.src;
     const newSrc = src == loc ? pic : fallback;
-    ev.target.src = newSrc ?? '';
-  }
+    ev.target.src = newSrc ?? "";
+  };
   private renderThumbnail() {
     const attrs = this.player_entity?.attributes;
     const fallback = getThumbnail(this.hass, Thumbnail.HEADPHONES);
-    const loc = attrs?.entity_picture_local
+    const loc = attrs?.entity_picture_local;
     const pic = attrs?.entity_picture;
     const src = loc ?? pic ?? fallback;
-    
+
     return html`
       <img
-        class="thumbnail" 
+        class="thumbnail"
         slot="start"
         src="${src}"
         loading="lazy"
         @error=${this._renderThumbnailFallback}
-      >
-    `
+      />
+    `;
   }
   private _calculateTitleWidth() {
     let button_ct = 0;
@@ -226,8 +226,10 @@ class PlayerRow extends LitElement {
         .onPressService=${this.onTransferPressed}
         role="tonal"
         size="small"
-        elevation=1
-        class="action-button ${this.useExpressive ? `action-button-expressive` : ``}"
+        elevation="1"
+        class="action-button ${this.useExpressive
+          ? `action-button-expressive`
+          : ``}"
       >
         <ha-svg-icon
           .path=${this.Icons.SWAP}
@@ -250,8 +252,10 @@ class PlayerRow extends LitElement {
         .onPressService=${this.onJoinPressed}
         role="tonal"
         size="small"
-        elevation=1
-        class="action-button ${this.useExpressive ? `action-button-expressive` : ``}"
+        elevation="1"
+        class="action-button ${this.useExpressive
+          ? `action-button-expressive`
+          : ``}"
       >
         <ha-svg-icon
           .path=${this.joined ? this.Icons.LINK_OFF : this.Icons.LINK}

@@ -1,7 +1,8 @@
 import { css } from "lit";
 
 export default css`
-  #playlist-duration, #playlist-owner {
+  #playlist-duration,
+  #playlist-owner {
     font-size: 1em;
     margin-right: 0.5em;
     font-style: italic;
@@ -10,4 +11,4 @@ export default css`
   #overview {
     position: relative;
   }
-`
+`;

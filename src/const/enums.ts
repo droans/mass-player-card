@@ -1,10 +1,10 @@
 export enum ButtonColorRole {
-  Filled = 'filled',
-  FilledVariant = 'filled-variant',
-  Plain = 'plain',
-  Standard = 'standard',
-  Tonal = 'tonal',
-  Variant = 'variant',
+  Filled = "filled",
+  FilledVariant = "filled-variant",
+  Plain = "plain",
+  Standard = "standard",
+  Tonal = "tonal",
+  Variant = "variant",
 }
 
 export enum EnqueueOptions {
@@ -59,4 +59,3 @@ export enum VibrateDuration {
   LONG = 300,
   VERY_LONG = 500,
 }
-

@@ -24,24 +24,18 @@ import { VibrationPattern } from "../const/common";
 
 import styles from "../styles/media-row";
 
-import {
-  getThumbnail,
-} from "../utils/thumbnails";
-import {
-  jsonMatch,
-  queueItemhasUpdated,
-} from "../utils/util";
+import { getThumbnail } from "../utils/thumbnails";
+import { jsonMatch, queueItemhasUpdated } from "../utils/util";
 import {
   DEFAULT_PLAYER_QUEUE_HIDDEN_ELEMENTS_CONFIG,
   PlayerQueueHiddenElementsConfig,
   QueueConfig,
 } from "../config/player-queue";
 import { Icons } from "../const/icons";
-import { queueItem } from "mass-queue-types/packages/mass_queue/actions/get_queue_items.js";
-import { HTMLImageElementEvent } from "../const/events.js";
+import { queueItem } from "mass-queue-types/packages/mass_queue/actions/get_queue_items";
+import { HTMLImageElementEvent } from "../const/events";
 
 class MediaRow extends LitElement {
-
   @consume({ context: IconsContext }) public Icons!: Icons;
 
   @consume({ context: mediaCardDisplayContext, subscribe: true })
@@ -90,7 +84,7 @@ class MediaRow extends LitElement {
   public get entityConfig() {
     return this._entityConfig;
   }
-  
+
   @consume({ context: hassContext, subscribe: true })
   public set hass(hass: ExtendedHass) {
     this._hass = hass;
@@ -117,7 +111,7 @@ class MediaRow extends LitElement {
     };
   }
 
-  @property({ attribute: false }) 
+  @property({ attribute: false })
   public set media_item(media_item: QueueItem | undefined) {
     if (!media_item) {
       return;
@@ -128,7 +122,6 @@ class MediaRow extends LitElement {
     return this._media_item;
   }
 
-
   private callMoveItemUpService = (e: Event) => {
     if (!this.media_item) {
       return;
@@ -136,7 +129,7 @@ class MediaRow extends LitElement {
     navigator.vibrate(VibrationPattern.Queue.ACTION_MOVE_UP);
     e.stopPropagation();
     this.moveQueueItemUpService(this.media_item.queue_item_id);
-  }
+  };
   private callMoveItemDownService = (e: Event) => {
     if (!this.media_item) {
       return;
@@ -144,7 +137,7 @@ class MediaRow extends LitElement {
     navigator.vibrate(VibrationPattern.Queue.ACTION_MOVE_DOWN);
     e.stopPropagation();
     this.moveQueueItemDownService(this.media_item.queue_item_id);
-  }
+  };
   private callMoveItemNextService = (e: Event) => {
     if (!this.media_item) {
       return;
@@ -152,7 +145,7 @@ class MediaRow extends LitElement {
     navigator.vibrate(VibrationPattern.Queue.ACTION_MOVE_NEXT);
     e.stopPropagation();
     this.moveQueueItemNextService(this.media_item.queue_item_id);
-  }
+  };
   private callRemoveItemService = (e: Event) => {
     if (!this.media_item) {
       return;
@@ -160,13 +153,13 @@ class MediaRow extends LitElement {
     e.stopPropagation();
     navigator.vibrate(VibrationPattern.Queue.ACTION_REMOVE);
     this.removeService(this.media_item.queue_item_id);
-  }
+  };
   private callOnQueueItemSelectedService = () => {
     if (!this.media_item) {
       return;
     }
     this.selectedService(this.media_item.queue_item_id);
-  }
+  };
   protected shouldUpdate(_changedProperties: PropertyValues<this>): boolean {
     if (_changedProperties.has("media_item")) {
       const oldItem = _changedProperties.get("media_item") as queueItem;
@@ -176,20 +169,25 @@ class MediaRow extends LitElement {
   }
 
   private _renderThumbnailFallback = (ev: HTMLImageElementEvent) => {
-    ev.target.src = getThumbnail(this.hass, Thumbnail.DISC) ?? '';
-  }
+    ev.target.src = getThumbnail(this.hass, Thumbnail.DISC) ?? "";
+  };
   private renderThumbnail(): TemplateResult {
     if (!this.media_item) {
       return html``;
     }
-    // eslint-disable-next-line @typescript-eslint/no-unnecessary-condition
-    const played = !this.media_item.show_action_buttons && !this.media_item?.playing;
+
+    /* eslint-disable @typescript-eslint/no-unnecessary-condition */
+    const played =
+      !this.media_item.show_action_buttons && !this.media_item?.playing;
+    /* eslint-enable @typescript-eslint/no-unnecessary-condition */
     const fallback = getThumbnail(this.hass, Thumbnail.DISC);
     const item = this.media_item;
-    const local_img = item.local_image_encoded?.length ? item.local_image_encoded : undefined;
+    const local_img = item.local_image_encoded?.length
+      ? item.local_image_encoded
+      : undefined;
     const media_img = item.media_image.length ? item.media_image : undefined;
     const img = local_img ?? media_img ?? fallback;
-    if ( this.showAlbumCovers && !this.hide.album_covers) {
+    if (this.showAlbumCovers && !this.hide.album_covers) {
       return html`
         <img
           class="thumbnail${played ? "-disabled" : ""}"
@@ -197,8 +195,8 @@ class MediaRow extends LitElement {
           src="${img}"
           @error=${this._renderThumbnailFallback}
           loading="lazy"
-        >
-      `
+        />
+      `;
     }
     return html``;
   }
@@ -286,8 +284,10 @@ class MediaRow extends LitElement {
         .onPressService=${this.callMoveItemNextService}
         role="tonal"
         size="small"
-        elevation=1
-        class="action-button ${this.useExpressive ? `action-button-expressive` : ``}"
+        elevation="1"
+        class="action-button ${this.useExpressive
+          ? `action-button-expressive`
+          : ``}"
       >
         <ha-svg-icon
           .path=${this.Icons.ARROW_PLAY_NEXT}
@@ -307,8 +307,10 @@ class MediaRow extends LitElement {
         .onPressService=${this.callMoveItemUpService}
         role="tonal"
         size="small"
-        elevation=1
-        class="action-button ${this.useExpressive ? `action-button-expressive` : ``}"
+        elevation="1"
+        class="action-button ${this.useExpressive
+          ? `action-button-expressive`
+          : ``}"
       >
         <ha-svg-icon
           .path=${this.Icons.ARROW_UP}
@@ -328,8 +330,10 @@ class MediaRow extends LitElement {
         .onPressService=${this.callMoveItemDownService}
         role="tonal"
         size="small"
-        elevation=1
-        class="action-button ${this.useExpressive ? `action-button-expressive` : ``}"
+        elevation="1"
+        class="action-button ${this.useExpressive
+          ? `action-button-expressive`
+          : ``}"
       >
         <ha-svg-icon
           .path=${this.Icons.ARROW_DOWN}
@@ -349,8 +353,10 @@ class MediaRow extends LitElement {
         .onPressService=${this.callRemoveItemService}
         role="tonal"
         size="small"
-        elevation=1
-        class="action-button ${this.useExpressive ? `action-button-expressive` : ``}"
+        elevation="1"
+        class="action-button ${this.useExpressive
+          ? `action-button-expressive`
+          : ``}"
       >
         <ha-svg-icon
           .path=${this.Icons.CLOSE}

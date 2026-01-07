@@ -12,4 +12,4 @@ export default css`
     font-style: italic;
     font-family: "Google Sans Flex";
   }
-`
+`;

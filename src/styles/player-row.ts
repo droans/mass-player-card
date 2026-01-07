@@ -23,13 +23,15 @@ export default css`
     --button-border-radius: var(--button-small-border-radius) !important;
   }
   .action-button-expressive:first-of-type::part(button) {
-    --button-border-radius: var(--button-small-border-radius) 4px 4px var(--button-small-border-radius) !important;
+    --button-border-radius: var(--button-small-border-radius) 4px 4px
+      var(--button-small-border-radius) !important;
   }
   .action-button-expressive:first-of-type::part(button):hover {
     --button-border-radius: var(--button-small-border-radius) !important;
   }
   .action-button-expressive:last-of-type::part(button) {
-    --button-border-radius: 4px var(--button-small-border-radius) var(--button-small-border-radius) 4px !important;
+    --button-border-radius: 4px var(--button-small-border-radius)
+      var(--button-small-border-radius) 4px !important;
   }
   .action-button-expressive:last-of-type::part(button):hover {
     --button-border-radius: var(--button-small-border-radius) !important;
@@ -155,7 +157,10 @@ export default css`
   .svg-action-button {
     height: var(--row-icon-button-height);
     width: var(--row-icon-button-height);
-    color: var(--md-sys-color-on-secondary-container, var(--md-sys-color-on-secondary-container)) !important;
+    color: var(
+      --md-sys-color-on-secondary-container,
+      var(--md-sys-color-on-secondary-container)
+    ) !important;
   }
   .svg-action-button-expressive {
     color: var(--expressive-row-button-color-text);
@@ -164,7 +169,8 @@ export default css`
     color: var(--expressive-row-button-color-text-hover);
   }
 
-  .thumbnail, .thumbnail-disabled {
+  .thumbnail,
+  .thumbnail-disabled {
     -webkit-user-select: none;
     -moz-user-select: none;
     user-select: none;

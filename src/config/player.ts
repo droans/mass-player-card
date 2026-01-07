@@ -14,8 +14,7 @@ export interface PlayerControlsHiddenElementsConfig {
   favorite: boolean;
 }
 
-export interface PlayerHiddenElementsConfig
-  extends PlayerControlsHiddenElementsConfig {
+export interface PlayerHiddenElementsConfig extends PlayerControlsHiddenElementsConfig {
   mute: boolean;
   player_selector: boolean;
   volume: boolean;
@@ -136,15 +135,15 @@ function iconConfigForm(icon_name: string) {
       {
         name: "label",
         selector: {
-          boolean: {}
+          boolean: {},
         },
         default: true,
         description: {
           suffix: `Show/hide the label for ${icon_name}`,
-        }
-      }
+        },
+      },
     ],
-  }
+  };
 }
 
 function iconsConfigForm() {
@@ -156,8 +155,8 @@ function iconsConfigForm() {
       iconConfigForm("shuffle"),
       iconConfigForm("repeat"),
       iconConfigForm("favorite"),
-    ]
-  }
+    ],
+  };
 }
 
 function artworkSizeConfigForm() {
@@ -170,40 +169,40 @@ function artworkSizeConfigForm() {
         mode: "dropdown",
         options: [
           {
-            "label": "Small (14em, Apx < 200px)",
-            "value": "small",
-            "description": "14em, apx 200px"
+            label: "Small (14em, Apx < 200px)",
+            value: "small",
+            description: "14em, apx 200px",
           },
           {
-            "label": "Medium",
-            "value": "medium",
-            "description": "22em, apx 300px"
+            label: "Medium",
+            value: "medium",
+            description: "22em, apx 300px",
           },
           {
-            "label": "Large",
-            "value": "large",
-            "description": "Full Card"
-          }
-        ]
+            label: "Large",
+            value: "large",
+            description: "Full Card",
+          },
+        ],
       },
       default: "large",
       description: {
         suffix: `Set the size of the artwork in the card`,
-      }
-    }
-  }
+      },
+    },
+  };
 }
 
 function layoutConfigForm() {
-  return { 
+  return {
     name: "layout",
     type: "expandable",
     schema: [
-     artworkSizeConfigForm(), 
-     { name: "hide_labels", selector: { boolean: {} }, default: false },
-     iconsConfigForm(),
-    ]
-  }
+      artworkSizeConfigForm(),
+      { name: "hide_labels", selector: { boolean: {} }, default: false },
+      iconsConfigForm(),
+    ],
+  };
 }
 
 export function playerConfigForm() {

@@ -10,10 +10,7 @@ import { html, literal } from "lit/static-html.js";
 
 import "./media-card";
 
-import {
-  CardEnqueueService,
-  CardSelectedService,
-} from "../const/actions";
+import { CardEnqueueService, CardSelectedService } from "../const/actions";
 import {
   activeMediaBrowserCardsContext,
   hassContext,
@@ -77,11 +74,15 @@ export class MediaBrowserCards extends LitElement {
     this.onEnqueueAction(data, enqueue);
   };
   public resetScroll() {
-    this._iconsElement?.scrollTo({top: 0});
+    this._iconsElement?.scrollTo({ top: 0 });
   }
   private generateCode() {
     const result = this.items?.map((item) => {
-      const queueable = ['service', 'playlist', 'album', 'artist'].includes(item.data.type) ? literal`queueable` : literal`` 
+      const queueable = ["service", "playlist", "album", "artist"].includes(
+        item.data.type,
+      )
+        ? literal`queueable`
+        : literal``;
       const width = (1 / (this.browserConfig?.columns ?? 1)) * 100 - 2;
       return html`
         <mass-media-card

@@ -44,7 +44,9 @@ export default css`
     left: 2.5px;
   }
   #filter-menu:not(.filter-menu-expressive)::part(menu-select-menu) {
-    --control-select-menu-background-color: var(--md-sys-color-secondary-container);
+    --control-select-menu-background-color: var(
+      --md-sys-color-secondary-container
+    );
     background-color: var(--md-sys-color-secondary-container);
     border-radius: 12px;
   }
@@ -72,7 +74,7 @@ export default css`
     border-radius: var(--expressive-border-radius-container);
   }
   sl-input::part(base) {
-    background-color: var(--md-sys-color-surface-container-high)
+    background-color: var(--md-sys-color-surface-container-high);
   }
   sl-input::part(input)::placeholder {
     color: var(--md-sys-color-on-surface);
@@ -108,8 +110,9 @@ export default css`
     top: 2.5px;
     left: 2.5px;
   }
-  .search-media-type-menu-expressive::part(menu-svg), .search-library-button-expressive .svg-menu-expressive {
-    color: var(--md-sys-color-on-surface-variant) !important
+  .search-media-type-menu-expressive::part(menu-svg),
+  .search-library-button-expressive .svg-menu-expressive {
+    color: var(--md-sys-color-on-surface-variant) !important;
   }
   #search-options {
     height: 35px;

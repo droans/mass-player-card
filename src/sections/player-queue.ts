@@ -167,7 +167,7 @@ class QueueCard extends LitElement {
       }
     }
     if (this.hass) {
-      if (!(this.hass.states[this.active_player_entity])) {
+      if (!this.hass.states[this.active_player_entity]) {
         return QueueConfigErrors.MISSING_ENTITY;
       }
     }
@@ -184,7 +184,7 @@ class QueueCard extends LitElement {
   }
   private onQueueItemSelected = async (queue_item_id: string) => {
     if (!this.queueController) {
-      return
+      return;
     }
     await this.queueController.playQueueItem(queue_item_id);
     void this.queueController.getQueue();
@@ -192,31 +192,31 @@ class QueueCard extends LitElement {
   };
   private onQueueItemRemoved = async (queue_item_id: string) => {
     if (!this.queueController) {
-      return
+      return;
     }
     await this.queueController.removeQueueItem(queue_item_id);
   };
   private onQueueItemMoveNext = async (queue_item_id: string) => {
     if (!this.queueController) {
-      return
+      return;
     }
     await this.queueController.moveQueueItemNext(queue_item_id);
   };
   private onQueueItemMoveUp = async (queue_item_id: string) => {
     if (!this.queueController) {
-      return
+      return;
     }
     await this.queueController.moveQueueItemUp(queue_item_id);
   };
   private onQueueItemMoveDown = async (queue_item_id: string) => {
     if (!this.queueController) {
-      return
+      return;
     }
     await this.queueController.moveQueueItemDown(queue_item_id);
   };
   private onClearQueue = async () => {
     if (!this.queueController) {
-      return
+      return;
     }
     await this.queueController.clearQueue(this.active_player_entity);
   };
@@ -262,16 +262,18 @@ class QueueCard extends LitElement {
   }
   protected renderClearQueueButton(): TemplateResult {
     const expressive = this.activePlayerController.useExpressive;
-    const hide = this.config.hide.clear_queue_button || this.entityConf.hide.queue.clear_queue_button;
+    const hide =
+      this.config.hide.clear_queue_button ||
+      this.entityConf.hide.queue.clear_queue_button;
     if (hide) {
-      return html``
+      return html``;
     }
     return html`
       <mass-player-card-button
         .onPressService=${this.onClearQueue}
         role="filled"
         size="small"
-        elevation=1
+        elevation="1"
         id="button-back"
         class="button-min ${expressive ? `button-expressive` : ``}"
       >
@@ -280,15 +282,13 @@ class QueueCard extends LitElement {
           class="header-icon"
         ></ha-svg-icon>
       </mass-player-card-button>
-    `
+    `;
   }
   protected renderHeader(): TemplateResult {
     const label = getTranslation("queue.header", this.hass) as string;
     return html`
       <mass-section-header>
-        <span slot="label" id="title">
-          ${label}
-        </span>
+        <span slot="label" id="title"> ${label} </span>
         <span slot="end" id="clear-queue">
           ${this.renderClearQueueButton()}
         </span>
@@ -322,10 +322,14 @@ class QueueCard extends LitElement {
   public disconnectedCallback(): void {
     super.disconnectedCallback();
     if (!this.queueController) {
-      return
+      return;
     }
     if (this.queueController.isSubscribed)
       this.queueController.unsubscribeUpdates();
+    this.queueController._host.removeEventListener(
+      "section-changed",
+      this.onTabSwitch,
+    );
     super.disconnectedCallback();
   }
   public connectedCallback(): void {
@@ -336,12 +340,16 @@ class QueueCard extends LitElement {
     if (this._animations && this._firstLoaded) {
       this._animations.forEach((animation) => (animation.play = true));
     }
+    this.queueController?._host.addEventListener(
+      "section-changed",
+      this.onTabSwitch,
+    );
     super.connectedCallback();
   }
   protected firstUpdated(): void {
     this._firstLoaded = true;
     if (!this.queueController) {
-      return
+      return;
     }
     this.queueController._host.addEventListener(
       "section-changed",

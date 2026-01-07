@@ -9,11 +9,15 @@ import { property, query, state } from "lit/decorators.js";
 
 import { ListItems } from "../const/types";
 import { consume } from "@lit/context";
-import { controllerContext, useExpressiveContext, useVibrantContext } from "../const/context";
+import {
+  controllerContext,
+  useExpressiveContext,
+  useVibrantContext,
+} from "../const/context";
 import styles from "../styles/menu-button";
 import { jsonMatch } from "../utils/util";
 import { MassCardController } from "../controller/controller";
-import './menu-item';
+import "./menu-item";
 import { ControlSelectMenuElement } from "../const/elements";
 
 export class MassMenuButton extends LitElement {
@@ -27,10 +31,10 @@ export class MassMenuButton extends LitElement {
   @property({ type: Boolean, attribute: "dividers" })
   public dividers = false;
 
-  @property({ type: Boolean, attribute: 'use-md' })
+  @property({ type: Boolean, attribute: "use-md" })
   public useMD = false;
 
-  @query('#menu-select-menu')
+  @query("#menu-select-menu")
   public menuElement!: ControlSelectMenuElement;
 
   @consume({ context: useExpressiveContext, subscribe: true })
@@ -73,8 +77,8 @@ export class MassMenuButton extends LitElement {
   private onSelect = (ev: CustomEvent) => {
     ev.stopPropagation();
     // eslint-disable-next-line @typescript-eslint/no-unsafe-assignment
-    const data = {detail: ev.detail};
-    const _ev = new CustomEvent('menu-item-selected', data)
+    const data = { detail: ev.detail };
+    const _ev = new CustomEvent("menu-item-selected", data);
     this.dispatchEvent(_ev);
     this.menuElement.menuOpen = false;
   };
@@ -84,22 +88,20 @@ export class MassMenuButton extends LitElement {
       return html``;
     }
     const ct = this.items.length;
-    return this.items.map(
-      (item, idx) => {
-        const use_dividers = idx < ct - 1 && this.dividers;
-        return html`
-          <mpc-menu-item
-            class="menu-items"
-            ?divider=${use_dividers}
-            ?expressive=${this.useExpressive}
-            ?vibrant=${this.useVibrant}
-            ?selected=${this._selectedItem == item.option}
-            .menuItem=${item}
-            ?use-md=${this.useMD}
-          ></mpc-menu-item>
-        `
-      }
-    );
+    return this.items.map((item, idx) => {
+      const use_dividers = idx < ct - 1 && this.dividers;
+      return html`
+        <mpc-menu-item
+          class="menu-items"
+          ?divider=${use_dividers}
+          ?expressive=${this.useExpressive}
+          ?vibrant=${this.useVibrant}
+          ?selected=${this._selectedItem == item.option}
+          .menuItem=${item}
+          ?use-md=${this.useMD}
+        ></mpc-menu-item>
+      `;
+    });
   }
 
   protected render() {
@@ -114,7 +116,9 @@ export class MassMenuButton extends LitElement {
           naturalMenuWidth
           @menu-item-selected=${this.onSelect}
           ?fixedMenuPosition=${this.fixedMenuPosition}
-          @click=${(ev: Event) => {ev.stopPropagation()}}
+          @click=${(ev: Event) => {
+            ev.stopPropagation();
+          }}
         >
           <ha-svg-icon
             slot="icon"

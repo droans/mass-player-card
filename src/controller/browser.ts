@@ -6,13 +6,8 @@ import {
   FavoriteItemConfig,
   MediaBrowserConfig,
 } from "../config/media-browser";
-import {
-  MediaTypes,
-  Thumbnail,
-} from "../const/enums";
-import {
-  DEFAULT_SEARCH_LIMIT,
-} from "../const/media-browser";
+import { MediaTypes, Thumbnail } from "../const/enums";
+import { DEFAULT_SEARCH_LIMIT } from "../const/media-browser";
 import {
   generateCustomSectionCards,
   generateFavoriteCard,
@@ -24,7 +19,13 @@ import {
 import { mediaBrowserCardsContext } from "../const/context";
 import { jsonMatch } from "../utils/util";
 import { CardsUpdatedEventDetail } from "../const/events";
-import { ExtendedHass, MediaCardItem, MediaLibraryItem, newMediaBrowserItemsConfig, RecommendationSection } from "../const/types";
+import {
+  ExtendedHass,
+  MediaCardItem,
+  MediaLibraryItem,
+  newMediaBrowserItemsConfig,
+  RecommendationSection,
+} from "../const/types";
 
 export class MediaBrowserController {
   private hass!: ExtendedHass;
@@ -51,7 +52,7 @@ export class MediaBrowserController {
         recents: { main: [] },
         recommendations: { main: [] },
         search: [],
-      }
+      },
     });
     this.actions = new BrowserActions(hass);
     this.browserConfig = config.media_browser;
@@ -177,13 +178,13 @@ export class MediaBrowserController {
     media_type: MediaTypes,
     favorites_only = true,
   ) {
-      if (
-        // eslint-disable-next-line @typescript-eslint/prefer-optional-chain, @typescript-eslint/no-unnecessary-condition
-        (this.items?.favorites ?? {})[media_type]
-        || !config.enabled
-      ) {
-        return;
-      }
+    if (
+      // eslint-disable-next-line @typescript-eslint/prefer-optional-chain, @typescript-eslint/no-unnecessary-condition
+      (this.items?.favorites ?? {})[media_type] ||
+      !config.enabled
+    ) {
+      return;
+    }
     const items = await this.getFavoriteSection(
       config,
       media_type,
@@ -280,7 +281,7 @@ export class MediaBrowserController {
       section: "recommendations",
       cards: this.items.recommendations,
     };
-    const ev = new CustomEvent("cards-updated", { detail: detail });
+    const ev = new CustomEvent("cards-updated", { detail });
     this._host.dispatchEvent(ev);
   }
 

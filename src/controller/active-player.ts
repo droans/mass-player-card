@@ -19,21 +19,27 @@ import {
   getQueueResponse,
   MassGetQueueServiceDataSchema,
   MassGetQueueServiceResponseSchema,
-  PlayerData
+  PlayerData,
 } from "../const/types";
 import { DynamicScheme } from "@ktibow/material-color-utilities-nightly";
-import { getGroupVolumeServiceResponse, getGroupVolumeServiceSchema } from "mass-queue-types/packages/mass_queue/actions/get_group_volume";
+import {
+  getGroupVolumeServiceResponse,
+  getGroupVolumeServiceSchema,
+} from "mass-queue-types/packages/mass_queue/actions/get_group_volume";
 import { setGroupVolumeServiceSchema } from "mass-queue-types/packages/mass_queue/actions/set_group_volume";
 import { isActive, jsonMatch, playerHasUpdated } from "../utils/util";
 import {
   applyExpressiveScheme,
   generateDefaultExpressiveSchemeColor,
   generateExpressiveSchemeFromColor,
-  generateExpressiveSourceColorFromImageElement
-} from "../utils/expressive.js";
-import { getInfoWSResponseSchema, getInfoWSServiceSchema } from "mass-queue-types/packages/mass_queue/ws/get_info.js";
-import WaCarousel from "@droans/webawesome/dist/components/carousel/carousel.js";
-import { RepeatMode } from "../const/enums.js";
+  generateExpressiveSourceColorFromImageElement,
+} from "../utils/expressive";
+import {
+  getInfoWSResponseSchema,
+  getInfoWSServiceSchema,
+} from "mass-queue-types/packages/mass_queue/ws/get_info";
+import WaCarousel from "@droans/webawesome/dist/components/carousel/carousel";
+import { RepeatMode } from "../const/enums";
 
 export class ActivePlayerController {
   private _activeEntityConfig: ContextProvider<typeof activeEntityConfContext>;
@@ -114,7 +120,7 @@ export class ActivePlayerController {
   public set config(config: Config) {
     this._config = config;
     this.useExpressive = config.expressive;
-    this.useVibrant = config.expressive_scheme == 'vibrant';
+    this.useVibrant = config.expressive_scheme == "vibrant";
   }
   public get config() {
     return this._config;
@@ -128,10 +134,10 @@ export class ActivePlayerController {
   }
 
   public set useVibrant(vibrant: boolean) {
-    this._useVibrant.setValue(vibrant)
+    this._useVibrant.setValue(vibrant);
   }
   public get useVibrant() {
-    return this._useVibrant.value
+    return this._useVibrant.value;
   }
 
   private set activeEntityConfig(conf: EntityConfig) {
@@ -211,7 +217,7 @@ export class ActivePlayerController {
     const new_attrs = player.attributes;
     if (
       old_attrs?.volume_level != new_attrs.volume_level ||
-      old_attrs?.is_volume_muted != new_attrs.is_volume_muted || 
+      old_attrs?.is_volume_muted != new_attrs.is_volume_muted ||
       !old_attrs
     ) {
       this._volumeMediaPlayer.setValue(player);
@@ -259,7 +265,7 @@ export class ActivePlayerController {
     }
     if (this._observer) {
       try {
-        this._observer.disconnect()
+        this._observer.disconnect();
       } catch {
         // pass
       }
@@ -267,12 +273,12 @@ export class ActivePlayerController {
     if (!this.carouselElement) {
       return;
     }
-    const config = { 
+    const config = {
       subtree: true,
       childList: true,
       attributes: true,
-      attributeFilter: ["src", "data-playing"]
-    }
+      attributeFilter: ["src", "data-playing"],
+    };
     const observer = new MutationObserver(this.observerCallback);
     observer.observe(this.carouselElement, config);
     if (!this.expressiveScheme) {
@@ -282,29 +288,30 @@ export class ActivePlayerController {
   }
   public getActiveArtwork(): HTMLElement | undefined {
     if (!this.carouselElement) {
-      return
+      return;
     }
-    return this.carouselElement.querySelector('#img-playing') as HTMLElement;
+    return this.carouselElement.querySelector("#img-playing") as HTMLElement;
   }
   private observerCallback = () => {
     if (this._timeout) {
       try {
-        clearTimeout(this._timeout)
+        clearTimeout(this._timeout);
       } catch {
         // assume already canceled
       }
     }
-    this._timeout = setTimeout(
-      () => {
-        this._timeout = undefined;
-        this.createAndApplyExpressiveScheme();
-      },
-      this._observerDelay
-    )
-  }
+    this._timeout = setTimeout(() => {
+      this._timeout = undefined;
+      this.createAndApplyExpressiveScheme();
+    }, this._observerDelay);
+  };
 
   public async updateActivePlayerData() {
-    if (!this.activeMediaPlayer || !this.volumeMediaPlayer || !this.activeEntityID) {
+    if (
+      !this.activeMediaPlayer ||
+      !this.volumeMediaPlayer ||
+      !this.activeEntityID
+    ) {
       return;
     }
     const data = await this.getactivePlayerData();
@@ -338,7 +345,8 @@ export class ActivePlayerController {
       if (ent) {
         const attrs = ent.attributes;
         return (
-          attrs.active_queue == active_queue && attrs.mass_player_type != "group"
+          attrs.active_queue == active_queue &&
+          attrs.mass_player_type != "group"
         );
       }
       return false;
@@ -381,7 +389,8 @@ export class ActivePlayerController {
       track_artist: player?.attributes.media_artist ?? "",
       track_artwork:
         player?.attributes.entity_picture_local ??
-        player?.attributes.entity_picture ?? "",
+        player?.attributes.entity_picture ??
+        "",
       track_title: player?.attributes.media_title ?? "",
       muted: vol_player?.attributes.is_volume_muted ?? true,
       volume: Math.floor(vol_player?.attributes.volume_level ?? 0 * 100),
@@ -411,7 +420,7 @@ export class ActivePlayerController {
       domain: "music_assistant",
       service: "get_queue",
       service_data: {
-        entity_id: entity_id,
+        entity_id,
       },
       return_response: true,
     };
@@ -423,41 +432,47 @@ export class ActivePlayerController {
     if (!this.config.expressive) {
       return;
     }
-    void this.createExpressiveSchemeFromArtwork().then(
-      (result) => {
-        if (!result) {
-          return;
-        }
-        this.applyExpressiveScheme();
+    void this.createExpressiveSchemeFromArtwork().then((result) => {
+      if (!result) {
+        return;
       }
-    );
+      this.applyExpressiveScheme();
+    });
   }
   public applyExpressiveScheme() {
     const scheme = this.expressiveScheme;
     if (!scheme) {
       return;
     }
-    applyExpressiveScheme(scheme, this._host)
+    applyExpressiveScheme(scheme, this._host);
   }
-  public async createExpressiveSchemeFromArtwork(): Promise<DynamicScheme | undefined> {
+  public async createExpressiveSchemeFromArtwork(): Promise<
+    DynamicScheme | undefined
+  > {
     if (this._updatingScheme) {
       return;
     }
     this._updatingScheme = true;
-    let schemeColor: number; 
+    let schemeColor: number;
     const activeArtwork = this.getActiveArtwork();
-    if (!(activeArtwork?.tagName.toLowerCase() == 'img')) {
+    if (!(activeArtwork?.tagName.toLowerCase() == "img")) {
       schemeColor = generateDefaultExpressiveSchemeColor();
-     } else {
-      schemeColor = await generateExpressiveSourceColorFromImageElement(activeArtwork as HTMLImageElement)
-    } 
+    } else {
+      schemeColor = await generateExpressiveSourceColorFromImageElement(
+        activeArtwork as HTMLImageElement,
+      );
+    }
     if (schemeColor == this._activeSchemeColor) {
       this._updatingScheme = false;
       return;
     }
     this._activeSchemeColor = schemeColor;
     const schemeName = this.config.expressive_scheme;
-    const scheme = generateExpressiveSchemeFromColor(schemeColor, schemeName, this.hass.themes.darkMode);
+    const scheme = generateExpressiveSchemeFromColor(
+      schemeColor,
+      schemeName,
+      this.hass.themes.darkMode,
+    );
     this.expressiveScheme = scheme;
     this._updatingScheme = false;
     return this.expressiveScheme;
@@ -480,7 +495,7 @@ export class ActivePlayerController {
       service: "set_group_volume",
       service_data: {
         entity: entity_id,
-        volume_level: volume_level,
+        volume_level,
       },
     };
     await this.hass.callWS(data);
@@ -512,30 +527,34 @@ export class ActivePlayerController {
     const vol = ret.response.volume_level;
     return vol;
   }
-  public async getEntityInfo(entity_id = this.activeEntityID): Promise<getInfoWSResponseSchema> {
+  public async getEntityInfo(
+    entity_id = this.activeEntityID,
+  ): Promise<getInfoWSResponseSchema> {
     const data: getInfoWSServiceSchema = {
       type: "mass_queue/get_info",
-      entity_id: entity_id
-    }
+      entity_id,
+    };
     const resp = await this.hass.callWS<getInfoWSResponseSchema>(data);
     return resp;
   }
   private async getPlayerProvider(entity_id: string) {
     const resp = await this.getEntityInfo(entity_id);
-    return resp.provider
+    return resp.provider;
   }
-  public async playerCanGroupWith(entity_id = this.activeEntityID): Promise<string[]> {
-    const provider = await this.getPlayerProvider(entity_id)
+  public async playerCanGroupWith(
+    entity_id = this.activeEntityID,
+  ): Promise<string[]> {
+    const provider = await this.getPlayerProvider(entity_id);
     const ents = this.config.entities;
     const result: string[] = [];
     for (const ent of ents) {
       const _id = ent.entity_id;
       const _prov = await this.getPlayerProvider(_id);
       if (_prov == provider && _id != entity_id) {
-        result.push(_id)
+        result.push(_id);
       }
     }
-    return result
+    return result;
   }
   private async setCanGroupWith() {
     if (this.activeEntityID) {

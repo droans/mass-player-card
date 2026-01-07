@@ -176,7 +176,7 @@ export class MassCardController {
     }
   }
   public get activeEntityId(): string {
-    return this.ActivePlayer?.activeEntityID ?? '';
+    return this.ActivePlayer?.activeEntityID ?? "";
   }
   public get activeEntity() {
     return this.ActivePlayer?.activeMediaPlayer;

@@ -11,10 +11,7 @@ import "@droans/webawesome/dist/components/card/card.js";
 
 import "./menu-button";
 
-import {
-  CardEnqueueService,
-  CardSelectedService,
-} from "../const/actions";
+import { CardEnqueueService, CardSelectedService } from "../const/actions";
 import { ExtendedHass, ListItems, MediaCardItem } from "../const/types";
 import {
   activeEntityConfContext,
@@ -45,7 +42,7 @@ import { Icons } from "../const/icons";
 import { Config } from "../config/config";
 import { WaAnimation } from "../const/elements";
 import { HTMLImageElementEvent, MenuButtonEventData } from "../const/events";
-import { getThumbnail } from "../utils/thumbnails.js";
+import { getThumbnail } from "../utils/thumbnails";
 
 class MediaCard extends LitElement {
   @property({ type: Boolean }) queueable = false;
@@ -206,9 +203,12 @@ class MediaCard extends LitElement {
     return html` ${this.config?.background} `;
   }
   private _renderImageFallback = (ev: HTMLImageElementEvent) => {
-    const fallback = getThumbnail(this.hass, this.config?.fallback ?? Thumbnail.DISC);
+    const fallback = getThumbnail(
+      this.hass,
+      this.config?.fallback ?? Thumbnail.DISC,
+    );
     ev.target.src = fallback as string;
-  }
+  };
   protected renderThumbnailFromThumbnail() {
     const img = this.config?.thumbnail;
     return html`
@@ -219,7 +219,7 @@ class MediaCard extends LitElement {
         src="${img}"
         @error=${this._renderImageFallback}
         loading="lazy"
-      >
+      />
     `;
   }
   protected renderThumbnail() {

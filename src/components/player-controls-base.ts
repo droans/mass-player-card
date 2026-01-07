@@ -119,8 +119,8 @@ export class MassPlayerControlsBase extends LitElement {
   */
   private forceUpdatePlayerData(key: string, value: any) {
     const data: ForceUpdatePlayerDataEventData = {
-      key: key,
-      value: value,
+      key,
+      value,
     };
     const ev = new CustomEvent("force-update-player", { detail: data });
     this.controller.host.dispatchEvent(ev);

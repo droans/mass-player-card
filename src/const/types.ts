@@ -1,22 +1,28 @@
 import { HomeAssistant, Themes } from "custom-card-helpers";
-import { HassEntity, HassEntityAttributeBase } from "home-assistant-js-websocket";
+import {
+  HassEntity,
+  HassEntityAttributeBase,
+} from "home-assistant-js-websocket";
 import { TemplateResult } from "lit";
 import {
   getRecommendationsServiceResponse,
   recommendationItem,
   recommendationItems,
-  recommendationSection
-} from "mass-queue-types/packages/mass_queue/actions/get_recommendations.js";
+  recommendationSection,
+} from "mass-queue-types/packages/mass_queue/actions/get_recommendations";
 import {
   getQueuePartialServiceResponse,
   getQueueServiceResponse,
-  getQueueServiceSchema
-} from "mass-queue-types/packages/music_assistant/actions/get_queue"
+  getQueueServiceSchema,
+} from "mass-queue-types/packages/music_assistant/actions/get_queue";
 
 import { MediaTypes, RepeatMode, Thumbnail } from "./enums";
-import { MediaItem, QueueItemSchema } from "mass-queue-types/packages/music_assistant/types.js";
+import {
+  MediaItem,
+  QueueItemSchema,
+} from "mass-queue-types/packages/music_assistant/types";
 import { ImageURLWithFallback } from "../utils/thumbnails";
-import { queueItem } from "mass-queue-types/packages/mass_queue/actions/get_queue_items.js";
+import { queueItem } from "mass-queue-types/packages/mass_queue/actions/get_queue_items";
 import { QueueConfig } from "../config/player-queue";
 
 export interface ExtendedHass extends Omit<HomeAssistant, "states"> {
@@ -34,7 +40,10 @@ type ExtendedEntitiesBase = Record<string, ExtendedEntityBase>;
 export interface ExtendedHassEntity extends HassEntity {
   attributes: ExtendedHassEntityAttributes;
 }
-export type ExtendedHassEntities = Record<string, ExtendedHassEntity | undefined>;
+export type ExtendedHassEntities = Record<
+  string,
+  ExtendedHassEntity | undefined
+>;
 
 interface ExtendedHassEntityAttributes extends HassEntityAttributeBase {
   app_id?: string;
@@ -111,10 +120,10 @@ export interface mediaBrowserSectionConfig {
   [str: string]: MediaCardItem[];
 }
 
-export type mediaBrowserSectionSubtypes = 
-  'favorites'
-  | 'recents'
-  | 'recommendations'
+export type mediaBrowserSectionSubtypes =
+  | "favorites"
+  | "recents"
+  | "recommendations";
 
 // export interface MediaCardData {
 //   type?: string;
@@ -125,43 +134,41 @@ export type mediaBrowserSectionSubtypes =
 //   service?: string;
 // }
 
-export type mediaCardData = 
-  mediaCardEnqueueType
-  | mediaCardSectionData
+export type mediaCardData = mediaCardEnqueueType | mediaCardSectionData;
 
-export type mediaCardEnqueueType = 
-  mediaCardPlaylistData
+export type mediaCardEnqueueType =
+  | mediaCardPlaylistData
   | mediaCardAlbumData
   | mediaCardArtistData
   | mediaCardItemData
   | mediaCardServiceData
-  | mediaCardRecommendationData
+  | mediaCardRecommendationData;
 
-export type mediaCardCollectionType = 
-  mediaCardPlaylistData
+export type mediaCardCollectionType =
+  | mediaCardPlaylistData
   | mediaCardAlbumData
-  | mediaCardArtistData
+  | mediaCardArtistData;
 
 export interface mediaCardItemData {
-  type: 'item';
+  type: "item";
   media_content_id: string;
   media_content_type: string;
 }
 
 export interface mediaCardServiceData {
-  type: 'service';
+  type: "service";
   media_content_id: string;
   media_content_type: string;
   service?: string;
 }
 export interface mediaCardRecommendationData {
-  type: 'service';
+  type: "service";
   media_content_id: string;
   media_content_type: string;
 }
 
 export interface mediaCardSectionData {
-  type: 'section';
+  type: "section";
   subtype: mediaBrowserSectionSubtypes;
   section: string;
 }
@@ -173,19 +180,19 @@ interface mediaCardCollectionData {
 }
 
 export interface mediaCardPlaylistData extends mediaCardCollectionData {
-  type: 'playlist';
+  type: "playlist";
 }
 
 export interface mediaCardAlbumData extends mediaCardCollectionData {
-  type: 'album';
+  type: "album";
 }
 
 export interface mediaCardArtistData extends mediaCardCollectionData {
-  type: 'artist';
+  type: "artist";
 }
 
-export interface mediaPlaylistCard extends Omit<MediaCardItem, 'data'> {
-  data: mediaCardPlaylistData
+export interface mediaPlaylistCard extends Omit<MediaCardItem, "data"> {
+  data: mediaCardPlaylistData;
 }
 
 export interface MediaCardItem {
@@ -200,7 +207,7 @@ export type MediaLibraryItem = MediaItem;
 
 export type ServiceNoParams = () => void;
 
-export type SubscriptionUnsubscribe = () => Promise<void>
+export type SubscriptionUnsubscribe = () => Promise<void>;
 
 export interface PlayerData {
   playing: boolean;
@@ -243,7 +250,10 @@ export type RecommendationResponse = getRecommendationsServiceResponse;
 
 export type RecommendationSection = recommendationSection;
 
-export interface getQueueResponse extends Omit<Omit<getQueuePartialServiceResponse, 'current_item'>, "next_item"> {
-  current_item: QueueItemSchema | null
-  next_item: QueueItemSchema | null
-} 
+export interface getQueueResponse extends Omit<
+  Omit<getQueuePartialServiceResponse, "current_item">,
+  "next_item"
+> {
+  current_item: QueueItemSchema | null;
+  next_item: QueueItemSchema | null;
+}

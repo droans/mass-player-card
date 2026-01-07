@@ -1,23 +1,35 @@
-import { CSSResultGroup, html, LitElement, PropertyValues, TemplateResult } from "lit";
+import {
+  CSSResultGroup,
+  html,
+  LitElement,
+  PropertyValues,
+  TemplateResult,
+} from "lit";
 import { customElement, property } from "lit/decorators.js";
-import styles from '../styles/browser-playlist-track-row';
+import styles from "../styles/browser-playlist-track-row";
 import { consume } from "@lit/context";
-import { activeEntityIDContext, hassContext, IconsContext, useExpressiveContext, useVibrantContext } from "../const/context.js";
-import { ExtendedHass, ListItemData, ListItems } from "../const/types.js";
-import { getThumbnail } from "../utils/thumbnails.js";
-import { EnqueueOptions, Thumbnail } from "../const/enums.js";
-import BrowserActions from "../actions/browser-actions.js";
-import { Track } from "mass-queue-types/packages/mass_queue/utils.js";
-import { Icons } from "../const/icons.js";
-import { HTMLImageElementEvent, MenuButtonEventData } from "../const/events.js";
-import { getTranslation } from "../utils/translations.js";
-import { PlaylistTrack } from "mass-queue-types/packages/mass_queue/actions/get_playlist_tracks.js";
+import {
+  activeEntityIDContext,
+  hassContext,
+  IconsContext,
+  useExpressiveContext,
+  useVibrantContext,
+} from "../const/context";
+import { ExtendedHass, ListItemData, ListItems } from "../const/types";
+import { getThumbnail } from "../utils/thumbnails";
+import { EnqueueOptions, Thumbnail } from "../const/enums";
+import BrowserActions from "../actions/browser-actions";
+import { Track } from "mass-queue-types/packages/mass_queue/utils";
+import { Icons } from "../const/icons";
+import { HTMLImageElementEvent, MenuButtonEventData } from "../const/events";
+import { getTranslation } from "../utils/translations";
+import { PlaylistTrack } from "mass-queue-types/packages/mass_queue/actions/get_playlist_tracks";
 
-@customElement('mpc-track-row')
+@customElement("mpc-track-row")
 export class MassPlaylistTrackRow extends LitElement {
   @property({ attribute: false }) track!: Track | PlaylistTrack;
-  @property({ attribute: 'divider', type: Boolean }) divider = false;
-  @property({ attribute: 'playlist', type: Boolean }) playlist = false;
+  @property({ attribute: "divider", type: Boolean }) divider = false;
+  @property({ attribute: "playlist", type: Boolean }) playlist = false;
 
   @property({ attribute: false }) collectionURI!: string;
   _enqueueButtons?: ListItems;
@@ -29,7 +41,7 @@ export class MassPlaylistTrackRow extends LitElement {
   private _Icons?: Icons;
 
   @consume({ context: hassContext, subscribe: true })
-  private hass?: ExtendedHass
+  private hass?: ExtendedHass;
 
   @consume({ context: activeEntityIDContext, subscribe: true })
   private activeEntityId?: string;
@@ -38,7 +50,7 @@ export class MassPlaylistTrackRow extends LitElement {
 
   private get browserActions() {
     this._browserActions ??= new BrowserActions(this.hass as ExtendedHass);
-    return this._browserActions
+    return this._browserActions;
   }
   @consume({ context: IconsContext, subscribe: true })
   public set Icons(icons: Icons | undefined) {
@@ -49,7 +61,7 @@ export class MassPlaylistTrackRow extends LitElement {
     return this._Icons;
   }
 
-  @property({ attribute: false })   
+  @property({ attribute: false })
   private set enqueueButtons(buttons: ListItems | undefined) {
     this._enqueueButtons = buttons;
     this.setEnqueueButtons();
@@ -59,41 +71,36 @@ export class MassPlaylistTrackRow extends LitElement {
   }
 
   private setEnqueueButtons() {
-    if (
-      !this._enqueueButtons
-      || !this.Icons?.CLOSE
-      || !this.playlist
-    ) {
+    if (!this._enqueueButtons || !this.Icons?.CLOSE || !this.playlist) {
       return;
     }
     const buttons = this._enqueueButtons;
     let shouldUpdate = true;
     // eslint-disable-next-line @typescript-eslint/no-unnecessary-condition
     if (buttons) {
-      shouldUpdate = (buttons.findIndex(
-        (item) => {
-          return item.option == 'remove'
-        }
-      ) == -1)
+      shouldUpdate =
+        buttons.findIndex((item) => {
+          return item.option == "remove";
+        }) == -1;
     }
     if (shouldUpdate) {
       const removePlaylistButton: ListItemData = {
-        option: 'remove',
+        option: "remove",
         icon: this.Icons.CLOSE,
-        title: getTranslation("browser.playlists.remove_track", this.hass) as string
-      }
-      this._enqueueButtons = [
-        ...this._enqueueButtons,
-        removePlaylistButton
-      ]
+        title: getTranslation(
+          "browser.playlists.remove_track",
+          this.hass,
+        ) as string,
+      };
+      this._enqueueButtons = [...this._enqueueButtons, removePlaylistButton];
     }
   }
   private enqueueTrack = (enqueue: EnqueueOptions) => {
-    const ent = this.activeEntityId as string
+    const ent = this.activeEntityId as string;
     void this.browserActions.actionEnqueueMedia(
       ent,
       this.track.media_content_id,
-      'music',
+      "music",
       enqueue,
     );
   };
@@ -101,61 +108,59 @@ export class MassPlaylistTrackRow extends LitElement {
   private onPlaylistItemSelected = (ev: Event) => {
     ev.stopPropagation();
     void this.playTrackEnqueuePlaylist();
-  }
+  };
   private async playTrackEnqueuePlaylist() {
-    const ent = this.activeEntityId as string
+    const ent = this.activeEntityId as string;
     const actions = this.browserActions;
     const uri = this.track.media_content_id;
-    await actions.actionPlayMedia(ent, uri, 'music')
-    await actions.actionEnqueueMedia(ent, this.collectionURI, 'playlist', EnqueueOptions.PLAY_NEXT);
+    await actions.actionPlayMedia(ent, uri, "music");
+    await actions.actionEnqueueMedia(
+      ent,
+      this.collectionURI,
+      "playlist",
+      EnqueueOptions.PLAY_NEXT,
+    );
   }
   private removeTrackFromPlaylist() {
-    const playlistId = this.collectionURI.split('//')[1].split('/')[1];
-    const position = (this.track as PlaylistTrack).position
+    const playlistId = this.collectionURI.split("//")[1].split("/")[1];
+    const position = (this.track as PlaylistTrack).position;
     void this.browserActions.actionRemovePlaylistTrack(
       playlistId,
       position,
-      this.activeEntityId as string
+      this.activeEntityId as string,
     );
     const data = {
       detail: {
         playlist: this.collectionURI,
-        position: position
-      }
-    }
-    const ev = new CustomEvent('playlist-track-removed', data);
+        position,
+      },
+    };
+    const ev = new CustomEvent("playlist-track-removed", data);
     this.dispatchEvent(ev);
-  } 
+  }
   private onMenuItemSelected = (ev: MenuButtonEventData) => {
     ev.stopPropagation();
     const option = ev.detail.option;
-    if (option == 'remove') {
+    if (option == "remove") {
       this.removeTrackFromPlaylist();
     } else {
-      this.enqueueTrack(option as EnqueueOptions)
+      this.enqueueTrack(option as EnqueueOptions);
     }
-  }
-
+  };
 
   protected renderTitle(): TemplateResult {
     return html`
-      <span
-        slot="headline"
-        class="track-title"
-      >
+      <span slot="headline" class="track-title">
         ${this.track.media_title}
       </span>
     `;
   }
   protected renderArtist(): TemplateResult {
     return html`
-      <span
-        slot="supporting-text"
-        class="track-artist"
-      >
+      <span slot="supporting-text" class="track-artist">
         ${this.track.media_artist}
       </span>
-    `
+    `;
   }
   protected renderMenuButton(): TemplateResult {
     return html`
@@ -170,17 +175,21 @@ export class MassPlaylistTrackRow extends LitElement {
         >
         </mass-menu-button>
       </span>
-    `
+    `;
   }
 
   private _renderThumbnailFallback = (ev: HTMLImageElementEvent) => {
     ev.target.src = getThumbnail(this.hass, Thumbnail.CLEFT) as string;
-  }
+  };
   protected renderThumbnail(): TemplateResult {
     // const fallback = getThumbnail(this.hass, Thumbnail.CLEFT);
-    const loc_img = this.track.local_image_encoded?.length ? this.track.local_image_encoded : undefined;
-    const media_img = this.track.media_image.length ? this.track.media_image : undefined;
-    const img = loc_img ?? media_img ?? '';
+    const loc_img = this.track.local_image_encoded?.length
+      ? this.track.local_image_encoded
+      : undefined;
+    const media_img = this.track.media_image.length
+      ? this.track.media_image
+      : undefined;
+    const img = loc_img ?? media_img ?? "";
     return html`
       <img
         class="thumbnail"
@@ -188,29 +197,30 @@ export class MassPlaylistTrackRow extends LitElement {
         src="${img}"
         @error=${this._renderThumbnailFallback}
         loading="lazy"
-      >
-    `
+      />
+    `;
   }
   protected render(): TemplateResult {
-    const expressiveClass = this.useExpressive ? `expressive`: ``;
-    const vibrantClass = this.useVibrant ? `vibrant`: ``;
+    const expressiveClass = this.useExpressive ? `expressive` : ``;
+    const vibrantClass = this.useVibrant ? `vibrant` : ``;
     return html`
       <ha-md-list-item
         class="button ${expressiveClass} ${vibrantClass}"
         @click=${this.onPlaylistItemSelected}
         type="button"
       >
-      ${this.renderThumbnail()} ${this.renderTitle()} ${this.renderArtist()} ${this.renderMenuButton()}
+        ${this.renderThumbnail()} ${this.renderTitle()} ${this.renderArtist()}
+        ${this.renderMenuButton()}
       </ha-md-list-item>
       ${this.divider ? html`<div class="divider"></div>` : ``}
-    `
+    `;
   }
 
   protected shouldUpdate(_changedProperties: PropertyValues): boolean {
-    return _changedProperties.size > 0; 
+    return _changedProperties.size > 0;
   }
 
   static get styles(): CSSResultGroup {
-    return styles
+    return styles;
   }
 }

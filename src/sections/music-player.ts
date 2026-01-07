@@ -23,10 +23,7 @@ import "../components/marquee-text";
 
 import PlayerActions from "../actions/player-actions";
 
-import {
-  MediaTypes,
-  Thumbnail,
-} from "../const/enums";
+import { MediaTypes, Thumbnail } from "../const/enums";
 import {
   activeEntityConfContext,
   activeMediaPlayerContext,
@@ -40,7 +37,13 @@ import {
   hassContext,
   musicPlayerConfigContext,
 } from "../const/context";
-import { ExtendedHass, ExtendedHassEntity, MediaLibraryItem, PlayerData, PlaylistDialogItem } from "../const/types";
+import {
+  ExtendedHass,
+  ExtendedHassEntity,
+  MediaLibraryItem,
+  PlayerData,
+  PlaylistDialogItem,
+} from "../const/types";
 import { PLAYLIST_DIALOG_MAX_ITEMS } from "../const/music-player";
 
 import styles from "../styles/music-player";
@@ -51,12 +54,15 @@ import { ActivePlayerController } from "../controller/active-player";
 import { Config } from "../config/config";
 import { isActive, jsonMatch, playerHasUpdated } from "../utils/util";
 import { MassCardController } from "../controller/controller";
-import { ForceUpdatePlayerDataEvent, MenuButtonEventData } from "../const/events";
+import {
+  ForceUpdatePlayerDataEvent,
+  MenuButtonEventData,
+} from "../const/events";
 import { asyncImageURLWithFallback } from "../utils/thumbnails";
 import { DialogElement } from "../const/elements";
 
 class MusicPlayerCard extends LitElement {
-  @query('#dialog-favorites') favoritesDialog?: DialogElement;
+  @query("#dialog-favorites") favoritesDialog?: DialogElement;
   @state() protected _playlists?: PlaylistDialogItem[];
 
   @consume({ context: entitiesConfigContext, subscribe: true })
@@ -92,7 +98,7 @@ class MusicPlayerCard extends LitElement {
   @consume({ context: activeEntityConfContext, subscribe: true })
   public set activeEntityConfig(entity: EntityConfig) {
     this._activeEntityConfig = entity;
-    void this.updatePlaylists()
+    void this.updatePlaylists();
   }
   public get activeEntityConfig() {
     return this._activeEntityConfig;
@@ -158,7 +164,9 @@ class MusicPlayerCard extends LitElement {
   }
 
   @consume({ context: activePlayerControllerContext, subscribe: true })
-  private set activePlayerController(controller: ActivePlayerController | undefined) {
+  private set activePlayerController(
+    controller: ActivePlayerController | undefined,
+  ) {
     if (!controller) {
       return;
     }
@@ -198,7 +206,9 @@ class MusicPlayerCard extends LitElement {
     data[key] = value;
     this.player_data = { ...data };
   }
-  private async generatePlaylistData(playlist: MediaLibraryItem): Promise<PlaylistDialogItem> {
+  private async generatePlaylistData(
+    playlist: MediaLibraryItem,
+  ): Promise<PlaylistDialogItem> {
     return {
       name: playlist.name,
       image: await asyncImageURLWithFallback(
@@ -207,38 +217,37 @@ class MusicPlayerCard extends LitElement {
         playlist.image ?? ``,
         Thumbnail.PLAYLIST,
         // eslint-disable-next-line @typescript-eslint/no-non-null-assertion
-        this.controller.config!.download_local
+        this.controller.config!.download_local,
       ),
-      uri: playlist.uri
-    }
+      uri: playlist.uri,
+    };
   }
   public async updatePlaylists() {
     if (!this.controller.Actions) {
       return;
     }
-    const playlistData = await this.controller.Actions.browserActions.actionGetLibrary(
-      this.activeEntityConfig.entity_id,
-      MediaTypes.PLAYLIST,
-      PLAYLIST_DIALOG_MAX_ITEMS,
-      null
-    );
-    const _promises = playlistData.map(
-      (playlist) => {
-        return this.generatePlaylistData(playlist)
-      }
-    );
+    const playlistData =
+      await this.controller.Actions.browserActions.actionGetLibrary(
+        this.activeEntityConfig.entity_id,
+        MediaTypes.PLAYLIST,
+        PLAYLIST_DIALOG_MAX_ITEMS,
+        null,
+      );
+    const _promises = playlistData.map((playlist) => {
+      return this.generatePlaylistData(playlist);
+    });
     this._playlists = await Promise.all(_promises);
   }
 
   protected openAddToPlaylistDialog() {
     if (!this.favoritesDialog) {
-      throw new Error(`Dialog element doesn't exist!`)
+      throw new Error(`Dialog element doesn't exist!`);
     }
     this.favoritesDialog.open = true;
   }
   protected closeAddToPlaylistDialog() {
     if (!this.favoritesDialog) {
-      throw new Error(`Dialog element doesn't exist!`)
+      throw new Error(`Dialog element doesn't exist!`);
     }
     this.favoritesDialog.open = false;
   }
@@ -269,7 +278,7 @@ class MusicPlayerCard extends LitElement {
 
   protected onAddToPlaylist = (ev: Event) => {
     if (!this.activeMediaPlayer || !this.hass) {
-      return
+      return;
     }
     const uri = (ev.target as HTMLElement).dataset.uri as string;
     const ent = this.hass.states[this.activeEntity.entity_id];
@@ -283,69 +292,57 @@ class MusicPlayerCard extends LitElement {
     void this.actions.actionAddToPlaylist(
       media_id,
       uri,
-      this.activeMediaPlayer
+      this.activeMediaPlayer,
     );
     this.closeAddToPlaylistDialog();
   };
   protected renderPlaylistDialogList(): TemplateResult | TemplateResult[] {
     if (!this._playlists) {
       return html`
-        <div class="dialog-playlists-none-loading">
-          Loading Playlists...
-        </div>
-      `
+        <div class="dialog-playlists-none-loading">Loading Playlists...</div>
+      `;
     }
     if (!this._playlists.length) {
       return html`
-        <div class="dialog-playlists-none-loading">
-          No playlists found!
-        </div>
-      `
+        <div class="dialog-playlists-none-loading">No playlists found!</div>
+      `;
     }
-    return this._playlists.map(
-      (playlist) => {
-        return html`
-          <ha-md-list-item
-            class="dialog-playlist-item"
-            @click=${this.onAddToPlaylist}
-            data-uri="${playlist.uri}"
-            type="button"
-          >
-            <img
-              class="dialog-playlist-thumbnail"
-              slot="start"
-              src="${playlist.image.image_url}"
-              onerror="this.src = '${playlist.image.fallback_url}'"
-            >
-            <span
-              slot="headline"
-              class="dialog-playlist-title"
-              inert
-            >
-              ${playlist.name}
-            </span>
-          </ha-md-list-item>
-          <div class="dialog-playlist-divider"></div>
-        `
-      }
-    )
+    return this._playlists.map((playlist) => {
+      return html`
+        <ha-md-list-item
+          class="dialog-playlist-item"
+          @click=${this.onAddToPlaylist}
+          data-uri="${playlist.uri}"
+          type="button"
+        >
+          <img
+            class="dialog-playlist-thumbnail"
+            slot="start"
+            src="${playlist.image.image_url}"
+            onerror="this.src = '${playlist.image.fallback_url}'"
+          />
+          <span slot="headline" class="dialog-playlist-title" inert>
+            ${playlist.name}
+          </span>
+        </ha-md-list-item>
+        <div class="dialog-playlist-divider"></div>
+      `;
+    });
   }
   protected renderAddToPlaylistDialog(): TemplateResult {
     if (!this.cardConfig) {
       return html``;
     }
-    const cls = `dialog-favorites${this.cardConfig.expressive ? `-expressive` : ``}`
+    const cls = `dialog-favorites${this.cardConfig.expressive ? `-expressive` : ``}`;
     return html`
       <ha-dialog
         id="dialog-favorites"
         class="${cls}"
         heading="${this.controller.translate("player.playlist_dialog.header")}"
       >
-        <div class="dialog-items">
-          ${this.renderPlaylistDialogList()}
-        </div>
+        <div class="dialog-items">${this.renderPlaylistDialogList()}</div>
       </ha-dialog>
-    `
+    `;
   }
   protected wrapTitleMarquee(): TemplateResult {
     if (!this.player_data) {
@@ -390,7 +387,7 @@ class MusicPlayerCard extends LitElement {
     if (this.groupedPlayers && this.groupedPlayers.length > 1 && !hide) {
       return html`
         <mpc-grouped-player-menu slot="end"></mpc-grouped-player-menu>
-      `
+      `;
     }
     return html``;
   }
@@ -451,12 +448,10 @@ class MusicPlayerCard extends LitElement {
   protected renderPlayerSelector(): TemplateResult {
     return html`
       <span slot="start">
-        <mpc-player-selector
-          @menu-item-selected=${this.onPlayerSelect}
-        >
+        <mpc-player-selector @menu-item-selected=${this.onPlayerSelect}>
         </mpc-player-selector>
       </span>
-    `
+    `;
   }
   protected renderActiveItemSection(): TemplateResult {
     if (!this.cardConfig) {
@@ -488,7 +483,13 @@ class MusicPlayerCard extends LitElement {
     return html`
       <mass-progress-bar
         class="${this._artworkProgressClass}"
-        style="${isActive(this.hass,this.activeMediaPlayer,this.activeEntityConfig,) ? `` : `opacity: 0;`}"
+        style="${isActive(
+          this.hass,
+          this.activeMediaPlayer,
+          this.activeEntityConfig,
+        )
+          ? ``
+          : `opacity: 0;`}"
       ></mass-progress-bar>
     `;
   }
@@ -555,7 +556,7 @@ class MusicPlayerCard extends LitElement {
   };
   private openPlaylistDialogOnEvent = () => {
     this.openAddToPlaylistDialog();
-  }
+  };
   protected firstUpdated(): void {
     this.controller.host.addEventListener(
       "request-player-data-update",
@@ -565,37 +566,86 @@ class MusicPlayerCard extends LitElement {
       "force-update-player",
       this.onForceLoadEvent,
     );
-    this.controller.host.addEventListener("active-player-updated", () => {
-      if (!this.activePlayerController) {
-        return;
-      }
-      void this.activePlayerController.updateActivePlayerData();
-    });
+    this.controller.host.addEventListener(
+      "active-player-updated",
+      this.onActivePlayerUpdated,
+    );
     this.controller.host.addEventListener(
       "open-add-to-playlist-dialog",
       this.openPlaylistDialogOnEvent,
     );
   }
+  protected onActivePlayerUpdated = () => {
+    if (!this.activePlayerController) {
+      return;
+    }
+    void this.activePlayerController.updateActivePlayerData();
+  };
   protected updated(): void {
-    const favoritesDialog = this.favoritesDialog
+    const favoritesDialog = this.favoritesDialog;
     if (!favoritesDialog) {
       return;
     }
-    const actions_div = favoritesDialog.shadowRoot?.querySelector('#actions') as HTMLElement | undefined;
-    if (actions_div && actions_div.style.display != 'none'){
-      actions_div.style.display = 'none';
+    const actions_div = favoritesDialog.shadowRoot?.querySelector(
+      "#actions",
+    ) as HTMLElement | undefined;
+    if (actions_div && actions_div.style.display != "none") {
+      actions_div.style.display = "none";
     }
-    const content_div = favoritesDialog.shadowRoot?.querySelector('#content') as HTMLElement | undefined;
-    if (content_div && content_div.style.scrollbarWidth != 'none'){
-      content_div.style.scrollbarWidth = 'none';
+    const content_div = favoritesDialog.shadowRoot?.querySelector(
+      "#content",
+    ) as HTMLElement | undefined;
+    if (content_div && content_div.style.scrollbarWidth != "none") {
+      content_div.style.scrollbarWidth = "none";
     }
-    
   }
   protected shouldUpdate(_changedProperties: PropertyValues): boolean {
     if (!this.player_data || !_changedProperties.size) {
       return false;
     }
     return super.shouldUpdate(_changedProperties);
+  }
+
+  disconnectedCallback(): void {
+    super.disconnectedCallback();
+    this.controller.host.removeEventListener(
+      "request-player-data-update",
+      this.delayedUpdatePlayerData,
+    );
+    this.controller.host.removeEventListener(
+      "force-update-player",
+      this.onForceLoadEvent,
+    );
+    this.controller.host.removeEventListener(
+      "active-player-updated",
+      this.onActivePlayerUpdated,
+    );
+    this.controller.host.removeEventListener(
+      "open-add-to-playlist-dialog",
+      this.openPlaylistDialogOnEvent,
+    );
+  }
+  connectedCallback(): void {
+    super.connectedCallback();
+    // eslint-disable-next-line @typescript-eslint/no-unnecessary-condition
+    if (this.controller?.host) {
+      this.controller.host.addEventListener(
+        "request-player-data-update",
+        this.delayedUpdatePlayerData,
+      );
+      this.controller.host.addEventListener(
+        "force-update-player",
+        this.onForceLoadEvent,
+      );
+      this.controller.host.addEventListener(
+        "active-player-updated",
+        this.onActivePlayerUpdated,
+      );
+      this.controller.host.addEventListener(
+        "open-add-to-playlist-dialog",
+        this.openPlaylistDialogOnEvent,
+      );
+    }
   }
   static get styles(): CSSResultGroup {
     return styles;

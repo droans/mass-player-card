@@ -1,13 +1,10 @@
-import { MediaTypes } from "mass-queue-types/packages/music_assistant/types.js";
-import {
-  DarkModeThumbnails,
-  LightModeThumbnails,
-} from "../const/common";
+import { MediaTypes } from "mass-queue-types/packages/music_assistant/types";
+import { DarkModeThumbnails, LightModeThumbnails } from "../const/common";
 import { Thumbnail } from "../const/enums";
 import { Icons } from "../const/icons";
 import { getSearchMediaButtons } from "../const/media-browser";
 import { ExtendedHass } from "../const/types";
-import { CheckURLResult, getUrlAccessibility } from "./url.js";
+import { CheckURLResult, getUrlAccessibility } from "./url";
 
 export interface ImageURLWithFallback {
   image_url: string;
@@ -18,21 +15,24 @@ export async function asyncImageURLWithFallback(
   hass: ExtendedHass,
   image_url: string,
   fallback: string,
-  download_local = true
+  download_local = true,
 ): Promise<ImageURLWithFallback> {
   if (Object.values(Thumbnail).includes(fallback as Thumbnail)) {
-    fallback = getThumbnail(hass, fallback as Thumbnail) ?? '';
+    fallback = getThumbnail(hass, fallback as Thumbnail) ?? "";
   }
   if (download_local) {
     image_url = await encodeImageIfLocal(hass, image_url);
-  };
-  return {
-    image_url: image_url,
-    fallback_url: fallback
   }
+  return {
+    image_url,
+    fallback_url: fallback,
+  };
 }
 
-export function getThumbnail(hass: ExtendedHass | undefined, thumbnail: Thumbnail): string | undefined {
+export function getThumbnail(
+  hass: ExtendedHass | undefined,
+  thumbnail: Thumbnail,
+): string | undefined {
   if (!hass) {
     return LightModeThumbnails[thumbnail];
   }
@@ -59,10 +59,10 @@ export async function encodeImageIfLocal(
 ): Promise<string> {
   const accessible = getUrlAccessibility(image_url);
   if (accessible == CheckURLResult.NOT_URL) {
-    return ''
-  };
+    return "";
+  }
   if (accessible == CheckURLResult.ACCESSIBLE) {
-    return image_url
+    return image_url;
   }
   return await getLocalImage(hass, image_url);
 }
@@ -74,7 +74,7 @@ async function getLocalImage(hass: ExtendedHass, url: string): Promise<string> {
   try {
     const result: string = await hass.callWS({
       type: "mass_queue/download_and_encode_image",
-      url: url,
+      url,
     });
     return result;
   } catch (e) {

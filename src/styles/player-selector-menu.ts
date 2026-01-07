@@ -38,5 +38,4 @@ export default css`
     color: var(--wa-color-brand-on-normal, var(--wa-color-neutral-on-normal));
     border-radius: 50%;
   }
-
 `;

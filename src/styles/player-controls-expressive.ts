@@ -4,13 +4,10 @@ import { css } from "lit";
 // https://lit.dev/docs/components/styles/
 export default css`
   :host {
-
-
     --lower-button-border-radius: 8px;
     --lower-button-start-border-radius: 24px 8px 8px 24px;
     --lower-button-end-border-radius: 8px 24px 24px 8px;
     --lower-button-only-border-radius: 24px 24px 24px 24px;
-
 
     --next-prev-button-height: var(--play-pause-icon-height);
     --next-prev-button-width: 48px;
@@ -40,9 +37,7 @@ export default css`
     --button-border-radius: var(--lower-button-end-border-radius);
   }
   .button-lower:only-of-type::part(button) {
-    --button-border-radius: var(
-      --lower-button-only-border-radius
-    ) !important;
+    --button-border-radius: var(--lower-button-only-border-radius) !important;
   }
 
   .button-lower-active::part(button) {
@@ -90,7 +85,8 @@ export default css`
     color: var(--md-sys-color-tertiary);
   }
 
-  .icons-lower, .icons-lower-active {
+  .icons-lower,
+  .icons-lower-active {
     height: var(--icon-height);
     width: var(--icon-height);
   }
