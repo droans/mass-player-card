@@ -293,7 +293,7 @@ class MassNavBar extends LitElement {
       const idx = sections.findIndex((item) => {
         return item == activeSection;
       });
-      if (!idx) {
+      if (!idx && idx != 0) {
         return;
       }
       const leftPct = (idx / sections.length) * 100;
