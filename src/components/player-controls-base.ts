@@ -41,8 +41,8 @@ export class MassPlayerControlsBase extends LitElement {
   }
   @consume({ context: actionsControllerContext })
   private actions!: ActionsController;
-  private _entityHiddenElements?: PlayerControlsHiddenElementsConfig;
-  private _configHiddenElements?: PlayerControlsHiddenElementsConfig;
+  private _entityHiddenElements!: PlayerControlsHiddenElementsConfig;
+  private _configHiddenElements!: PlayerControlsHiddenElementsConfig;
   @state() private _hiddenElements!: PlayerControlsHiddenElementsConfig;
 
   @consume({ context: controllerContext, subscribe: true })
@@ -76,10 +76,10 @@ export class MassPlayerControlsBase extends LitElement {
     const e = this._entityHiddenElements;
     const c = this._configHiddenElements;
     const result: PlayerControlsHiddenElementsConfig = {
-      power: e?.power ?? c?.power ?? false,
-      repeat: e?.repeat ?? c?.repeat ?? false,
-      shuffle: e?.shuffle ?? c?.shuffle ?? false,
-      favorite: e?.favorite ?? c?.favorite ?? false,
+      power: e.power || c.power || false,
+      repeat: e.repeat || c.repeat || false,
+      shuffle: e.shuffle || c.shuffle || false,
+      favorite: e.favorite || c.favorite || false,
     };
     if (jsonMatch(result, this._hiddenElements)) {
       return;
