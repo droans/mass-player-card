@@ -39,7 +39,6 @@ export class MediaBrowserCards extends LitElement {
 
   @consume({ context: mediaBrowserConfigContext, subscribe: true })
   public set browserConfig(conf: MediaBrowserConfig | undefined) {
-    console.log(conf)
     if (!jsonMatch(this._browserConfig, conf) && conf) {
       this._browserConfig = conf;
       if (this.items) {

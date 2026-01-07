@@ -20,7 +20,7 @@ import {
 } from "../const/media-browser";
 import { consume, provide } from "@lit/context";
 
-import { MediaBrowserCards } from "../components/media-browser-cards";
+import { type MediaBrowserCards } from "../components/media-browser-cards";
 import "../components/media-browser-cards";
 import "../components/section-header";
 import "../components/browser-playlist-view";
