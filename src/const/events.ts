@@ -1,6 +1,6 @@
 import { mediaBrowserSectionConfig, newMediaBrowserItemsConfig } from "./types";
 
-export type TargetValEvent = (ev: TargetValEventData) => void;
+export type TargetValEvent = (event_: TargetValEventData) => void;
 
 export interface TargetValEventData extends Omit<Event, "target"> {
   target: {
@@ -50,7 +50,7 @@ export interface TrackRemovedEventData extends Omit<CustomEvent, "detail"> {
   };
 }
 
-export type MenuButtonEvent = (ev: MenuButtonEventData) => void;
+export type MenuButtonEvent = (event_: MenuButtonEventData) => void;
 
 export interface ForceUpdatePlayerDataEvent extends CustomEvent {
   detail: ForceUpdatePlayerDataEventData;

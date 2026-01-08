@@ -252,8 +252,8 @@ class MusicPlayerCard extends LitElement {
     this.favoritesDialog.open = false;
   }
 
-  private onForceLoadEvent = (ev: Event) => {
-    const e = ev as ForceUpdatePlayerDataEvent;
+  private onForceLoadEvent = (event_: Event) => {
+    const e = event_ as ForceUpdatePlayerDataEvent;
     const key = e.detail.key;
     /* eslint-disable
       @typescript-eslint/no-unsafe-argument,
@@ -266,9 +266,9 @@ class MusicPlayerCard extends LitElement {
       @typescript-eslint/no-unsafe-assignment
     */
   };
-  private onPlayerSelect = (ev: MenuButtonEventData) => {
-    ev.stopPropagation();
-    const target = ev.detail;
+  private onPlayerSelect = (event_: MenuButtonEventData) => {
+    event_.stopPropagation();
+    const target = event_.detail;
     const player = target.option;
     if (!player.length) {
       return;
@@ -276,11 +276,11 @@ class MusicPlayerCard extends LitElement {
     this.selectedPlayerService(player);
   };
 
-  protected onAddToPlaylist = (ev: Event) => {
+  protected onAddToPlaylist = (event_: Event) => {
     if (!this.activeMediaPlayer || !this.hass) {
       return;
     }
-    const uri = (ev.target as HTMLElement).dataset.uri as string;
+    const uri = (event_.target as HTMLElement).dataset.uri as string;
     const ent = this.hass.states[this.activeEntity.entity_id];
     if (!ent) {
       return;

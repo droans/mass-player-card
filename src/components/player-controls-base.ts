@@ -145,42 +145,42 @@ export class MassPlayerControlsBase extends LitElement {
     const ev = new Event("request-player-data-update");
     this.controller.host.dispatchEvent(ev);
   }
-  protected onPrevious = async (e: Event) => {
-    e.stopPropagation();
+  protected onPrevious = async (event_: Event) => {
+    event_.stopPropagation();
     await this.actions.actionPlayPrevious();
     this.requestPlayerDataUpdate();
   };
-  protected onNext = async (e: Event) => {
-    e.stopPropagation();
+  protected onNext = async (event_: Event) => {
+    event_.stopPropagation();
     await this.actions.actionPlayNext();
     this.requestPlayerDataUpdate();
   };
-  protected onPlayPause = async (e: Event) => {
-    e.stopPropagation();
+  protected onPlayPause = async (event_: Event) => {
+    event_.stopPropagation();
     this.playing = !this.playing;
     this.forceUpdatePlayerData("playing", this.playing);
     await this.actions.actionPlayPause();
   };
-  protected onShuffle = async (e: Event) => {
-    e.stopPropagation();
+  protected onShuffle = async (event_: Event) => {
+    event_.stopPropagation();
     this.shuffle = !this.shuffle;
     this.requestUpdate("shuffle", this.shuffle);
     await this.actions.actionToggleShuffle();
   };
-  protected onRepeat = async (e: Event) => {
-    e.stopPropagation();
+  protected onRepeat = async (event_: Event) => {
+    event_.stopPropagation();
     const cur_repeat = this.repeat;
     const repeat = getIteratedRepeatMode(cur_repeat);
     this.repeat = repeat;
     this.requestUpdate("repeat", this.repeat);
     await this.actions.actionSetRepeat(repeat);
   };
-  protected onPower = async (e: Event) => {
-    e.stopPropagation();
+  protected onPower = async (event_: Event) => {
+    event_.stopPropagation();
     await this.actions.actionTogglePower();
   };
-  protected onFavorite = async (e: Event) => {
-    e.stopPropagation();
+  protected onFavorite = async (event_: Event) => {
+    event_.stopPropagation();
     this.favorite = !this.favorite;
     this.requestUpdate("favorite", this.favorite);
     if (this.playerData.favorite) {

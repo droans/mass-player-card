@@ -66,8 +66,8 @@ export class MassBrowserPlaylistView extends BrowserViewBase {
     this.animateHeaderEnqueue();
   }
 
-  private onTrackRemoved = (ev: TrackRemovedEventData) => {
-    const data = ev.detail;
+  private onTrackRemoved = (event_: TrackRemovedEventData) => {
+    const data = event_.detail;
     const pos = data.position;
     const tracks = (this.tracks as PlaylistTrack[])
       .filter((track) => {

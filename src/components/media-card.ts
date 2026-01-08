@@ -190,9 +190,9 @@ class MediaCard extends LitElement {
     });
     this._enqueue_buttons = opts;
   }
-  private onEnqueue = (ev: MenuButtonEventData) => {
-    ev.stopPropagation();
-    const target = ev.detail;
+  private onEnqueue = (event_: MenuButtonEventData) => {
+    event_.stopPropagation();
+    const target = event_.detail;
     const value = target.option as EnqueueOptions;
     this.onEnqueueAction(this._config.data, value);
   };
@@ -202,12 +202,12 @@ class MediaCard extends LitElement {
   protected renderThumbnailFromBackground() {
     return html` ${this.config?.background} `;
   }
-  private _renderImageFallback = (ev: HTMLImageElementEvent) => {
+  private _renderImageFallback = (event_: HTMLImageElementEvent) => {
     const fallback = getThumbnail(
       this.hass,
       this.config?.fallback ?? Thumbnail.DISC,
     );
-    ev.target.src = fallback as string;
+    event_.target.src = fallback as string;
   };
   protected renderThumbnailFromThumbnail() {
     const img = this.config?.thumbnail;

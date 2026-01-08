@@ -105,8 +105,8 @@ export class MassPlaylistTrackRow extends LitElement {
     );
   };
 
-  private onPlaylistItemSelected = (ev: Event) => {
-    ev.stopPropagation();
+  private onPlaylistItemSelected = (event_: Event) => {
+    event_.stopPropagation();
     void this.playTrackEnqueuePlaylist();
   };
   private async playTrackEnqueuePlaylist() {
@@ -138,9 +138,9 @@ export class MassPlaylistTrackRow extends LitElement {
     const ev = new CustomEvent("playlist-track-removed", data);
     this.dispatchEvent(ev);
   }
-  private onMenuItemSelected = (ev: MenuButtonEventData) => {
-    ev.stopPropagation();
-    const option = ev.detail.option;
+  private onMenuItemSelected = (event_: MenuButtonEventData) => {
+    event_.stopPropagation();
+    const option = event_.detail.option;
     if (option == "remove") {
       this.removeTrackFromPlaylist();
     } else {
@@ -178,8 +178,8 @@ export class MassPlaylistTrackRow extends LitElement {
     `;
   }
 
-  private _renderThumbnailFallback = (ev: HTMLImageElementEvent) => {
-    ev.target.src = getThumbnail(this.hass, Thumbnail.CLEFT) as string;
+  private _renderThumbnailFallback = (event_: HTMLImageElementEvent) => {
+    event_.target.src = getThumbnail(this.hass, Thumbnail.CLEFT) as string;
   };
   protected renderThumbnail(): TemplateResult {
     // const fallback = getThumbnail(this.hass, Thumbnail.CLEFT);

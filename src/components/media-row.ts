@@ -122,35 +122,35 @@ class MediaRow extends LitElement {
     return this._media_item;
   }
 
-  private callMoveItemUpService = (e: Event) => {
+  private callMoveItemUpService = (event_: Event) => {
     if (!this.media_item) {
       return;
     }
     navigator.vibrate(VibrationPattern.Queue.ACTION_MOVE_UP);
-    e.stopPropagation();
+    event_.stopPropagation();
     this.moveQueueItemUpService(this.media_item.queue_item_id);
   };
-  private callMoveItemDownService = (e: Event) => {
+  private callMoveItemDownService = (event_: Event) => {
     if (!this.media_item) {
       return;
     }
     navigator.vibrate(VibrationPattern.Queue.ACTION_MOVE_DOWN);
-    e.stopPropagation();
+    event_.stopPropagation();
     this.moveQueueItemDownService(this.media_item.queue_item_id);
   };
-  private callMoveItemNextService = (e: Event) => {
+  private callMoveItemNextService = (event_: Event) => {
     if (!this.media_item) {
       return;
     }
     navigator.vibrate(VibrationPattern.Queue.ACTION_MOVE_NEXT);
-    e.stopPropagation();
+    event_.stopPropagation();
     this.moveQueueItemNextService(this.media_item.queue_item_id);
   };
-  private callRemoveItemService = (e: Event) => {
+  private callRemoveItemService = (event_: Event) => {
     if (!this.media_item) {
       return;
     }
-    e.stopPropagation();
+    event_.stopPropagation();
     navigator.vibrate(VibrationPattern.Queue.ACTION_REMOVE);
     this.removeService(this.media_item.queue_item_id);
   };
@@ -168,8 +168,8 @@ class MediaRow extends LitElement {
     return _changedProperties.size > 0;
   }
 
-  private _renderThumbnailFallback = (ev: HTMLImageElementEvent) => {
-    ev.target.src = getThumbnail(this.hass, Thumbnail.DISC) ?? "";
+  private _renderThumbnailFallback = (event_: HTMLImageElementEvent) => {
+    event_.target.src = getThumbnail(this.hass, Thumbnail.DISC) ?? "";
   };
   private renderThumbnail(): TemplateResult {
     if (!this.media_item) {
@@ -266,8 +266,8 @@ class MediaRow extends LitElement {
       <span
         slot="end"
         class="button-group"
-        @click=${(e: Event) => {
-          e.stopPropagation();
+        @click=${(event_: Event) => {
+          event_.stopPropagation();
         }}
       >
         ${this.renderMoveNextButton()} ${this.renderMoveUpButton()}

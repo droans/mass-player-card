@@ -220,8 +220,8 @@ class QueueCard extends LitElement {
     }
     await this.queueController.clearQueue(this.active_player_entity);
   };
-  private onTabSwitch = (ev: Event) => {
-    if ((ev as CustomEvent).detail == Sections.QUEUE) {
+  private onTabSwitch = (event_: Event) => {
+    if ((event_ as CustomEvent).detail == Sections.QUEUE) {
       this._tabSwitchFirstUpdate = true;
       this.scrollToActive();
     }

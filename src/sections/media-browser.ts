@@ -322,11 +322,11 @@ export class MediaBrowser extends LitElement {
     this.activeCards = this.cards.search;
     this.searchActivated = true;
   };
-  private onSearchMediaTypeSelect = async (ev: MenuButtonEventData) => {
+  private onSearchMediaTypeSelect = async (event_: MenuButtonEventData) => {
     if (!this.hass) {
       return;
     }
-    const val = ev.detail.option as MediaTypes;
+    const val = event_.detail.option as MediaTypes;
     this.searchMediaType = val;
     this.searchMediaTypeIcon = getMediaTypeSvg(val, this.Icons, this.hass);
     await this.searchMedia();
@@ -335,8 +335,8 @@ export class MediaBrowser extends LitElement {
     this.searchLibrary = !this.searchLibrary;
     await this.searchMedia();
   };
-  private onSearchInput = (ev: TargetValEventData) => {
-    const val = ev.target.value.trim();
+  private onSearchInput = (event_: TargetValEventData) => {
+    const val = event_.target.value.trim();
     if (val.length < SEARCH_TERM_MIN_LENGTH) {
       return;
     }
@@ -353,11 +353,11 @@ export class MediaBrowser extends LitElement {
       void this.searchMedia();
     }, SEARCH_UPDATE_DELAY);
   };
-  private onFilterType = (ev: MenuButtonEventData) => {
+  private onFilterType = (event_: MenuButtonEventData) => {
     if (!this.cards) {
       return;
     }
-    const val = ev.detail.option;
+    const val = event_.detail.option;
     if (!val.length) {
       return;
     }
@@ -394,8 +394,8 @@ export class MediaBrowser extends LitElement {
       this.searchLoading = false;
     }
   }
-  private onCardsUpdated = (ev: Event) => {
-    const _ev = ev as CardsUpdatedEvent;
+  private onCardsUpdated = (event_: Event) => {
+    const _ev = event_ as CardsUpdatedEvent;
     const detail = _ev.detail;
     const section = detail.section;
     if (section == "all") {

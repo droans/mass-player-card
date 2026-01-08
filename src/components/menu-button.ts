@@ -74,10 +74,10 @@ export class MassMenuButton extends LitElement {
     return this._items ?? [];
   }
 
-  private onSelect = (ev: CustomEvent) => {
-    ev.stopPropagation();
+  private onSelect = (event_: CustomEvent) => {
+    event_.stopPropagation();
     // eslint-disable-next-line @typescript-eslint/no-unsafe-assignment
-    const data = { detail: ev.detail };
+    const data = { detail: event_.detail };
     const _ev = new CustomEvent("menu-item-selected", data);
     this.dispatchEvent(_ev);
     this.menuElement.menuOpen = false;
@@ -116,8 +116,8 @@ export class MassMenuButton extends LitElement {
           naturalMenuWidth
           @menu-item-selected=${this.onSelect}
           ?fixedMenuPosition=${this.fixedMenuPosition}
-          @click=${(ev: Event) => {
-            ev.stopPropagation();
+          @click=${(event_: Event) => {
+            event_.stopPropagation();
           }}
         >
           <ha-svg-icon

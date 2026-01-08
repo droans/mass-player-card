@@ -115,8 +115,8 @@ class VolumeRow extends LitElement {
   private onVolumeMuteToggle = async () => {
     await this.actions.actionToggleMute();
   };
-  private onVolume = async (ev: DetailValEventData) => {
-    let volume: number = ev.detail.value;
+  private onVolume = async (event_: DetailValEventData) => {
+    let volume: number = event_.detail.value;
     if (isNaN(volume)) return;
     this.player_data.volume = volume;
     volume = volume / 100;

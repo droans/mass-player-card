@@ -118,9 +118,9 @@ class PlayerRow extends LitElement {
   protected shouldUpdate(_changedProperties: PropertyValues<this>): boolean {
     return _changedProperties.size > 0;
   }
-  private onJoinPressed = async (e: Event) => {
+  private onJoinPressed = async (event_: Event) => {
     navigator.vibrate(VibrationPattern.Players.ACTION_JOIN);
-    e.stopPropagation();
+    event_.stopPropagation();
     const service = this.joined ? this.unjoinService : this.joinService;
     if (!this.player_entity) {
       return;
@@ -128,8 +128,8 @@ class PlayerRow extends LitElement {
     await service([this.player_entity.entity_id]);
     this.joined = !this.joined;
   };
-  private onTransferPressed = (e: Event) => {
-    e.stopPropagation();
+  private onTransferPressed = (event_: Event) => {
+    event_.stopPropagation();
     navigator.vibrate(VibrationPattern.Players.ACTION_TRANSFER);
     if (!this.player_entity) {
       return;
@@ -137,14 +137,14 @@ class PlayerRow extends LitElement {
     this.transferService(this.player_entity.entity_id);
   };
 
-  private _renderThumbnailFallback = (ev: HTMLImageElementEvent) => {
+  private _renderThumbnailFallback = (event_: HTMLImageElementEvent) => {
     const attrs = this.player_entity?.attributes;
     const fallback = getThumbnail(this.hass, Thumbnail.HEADPHONES);
     const loc = attrs?.entity_picture_local;
     const pic = attrs?.entity_picture ?? fallback;
-    const src = ev.target.src;
+    const src = event_.target.src;
     const newSrc = src == loc ? pic : fallback;
-    ev.target.src = newSrc ?? "";
+    event_.target.src = newSrc ?? "";
   };
   private renderThumbnail() {
     const attrs = this.player_entity?.attributes;
@@ -272,8 +272,8 @@ class PlayerRow extends LitElement {
         <span
           slot="end"
           class="button-group"
-          @click=${(ev: Event) => {
-            ev.stopPropagation();
+          @click=${(event_: Event) => {
+            event_.stopPropagation();
           }}
         >
           ${this.renderJoinButon()} ${this.renderTransferButton()}

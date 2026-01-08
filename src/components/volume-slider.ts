@@ -49,11 +49,11 @@ class VolumeSlider extends LitElement {
   public get hass() {
     return this._hass;
   }
-  private onVolumeChange = async (ev: DetailValEventData) => {
+  private onVolumeChange = async (event_: DetailValEventData) => {
     if (!this.entity) {
       return;
     }
-    let volume: number = ev.detail.value;
+    let volume: number = event_.detail.value;
     volume = volume / 100;
     this.requestUpdate("volume", volume);
     await this._actions.actionSetVolume(this.entity, volume);

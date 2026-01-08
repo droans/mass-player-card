@@ -164,8 +164,8 @@ export class BrowserViewBase extends LitElement {
     return this._collectionData;
   }
 
-  protected _trackObserverCallback = (e: IntersectionObserverEntry[]) => {
-    const entry = e[0];
+  protected _trackObserverCallback = (event_: IntersectionObserverEntry[]) => {
+    const entry = event_[0];
     if (entry.isIntersecting) {
       this.observer?.disconnect();
       this.currentIdx = Math.min(
@@ -337,12 +337,12 @@ export class BrowserViewBase extends LitElement {
     );
   }
 
-  protected onEnqueue = (ev: MenuButtonEventData) => {
+  protected onEnqueue = (event_: MenuButtonEventData) => {
     if (!this.collectionData) {
       return;
     }
-    ev.stopPropagation();
-    const target = ev.detail;
+    event_.stopPropagation();
+    const target = event_.detail;
     const value = target.option as EnqueueOptions;
     this.onEnqueueAction(this.collectionData, value);
   };
@@ -365,8 +365,8 @@ export class BrowserViewBase extends LitElement {
     this._enqueue_buttons = opts;
   }
 
-  protected _renderImageFallback = (ev: HTMLImageElementEvent) => {
-    ev.target.src = getThumbnail(this.hass, Thumbnail.PLAYLIST) as string;
+  protected _renderImageFallback = (event_: HTMLImageElementEvent) => {
+    event_.target.src = getThumbnail(this.hass, Thumbnail.PLAYLIST) as string;
   };
   protected renderImage(): TemplateResult {
     const img = this.collectionData?.media_image;

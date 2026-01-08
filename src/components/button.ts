@@ -19,7 +19,7 @@ const BUTTON_ROLE_MAP: Record<ButtonColorRole, string> = {
 };
 
 class MassButton extends LitElement {
-  @property({ attribute: false }) onPressService!: (ev: Event) => void;
+  @property({ attribute: false }) onPressService!: (event_: Event) => void;
   @property({ attribute: "role", type: String }) colorRole: ButtonColorRole =
     DEFAULT_COLOR_ROLE;
   @property({ attribute: "size", type: String }) size:
@@ -31,24 +31,24 @@ class MassButton extends LitElement {
   @property({ attribute: "selectable", type: Boolean }) selectable = false;
   @property({ attribute: "elevation", type: Number }) elevation = 0;
   @property({ attribute: "outlined", type: Boolean }) outlined = false;
-  @property({ attribute: false }) private onHoldService?: (ev: Event) => void;
+  @property({ attribute: false }) private onHoldService?: (event_: Event) => void;
   @property({ attribute: "hold-delay", type: Number }) holdDelayMs = 1000;
   private timeout!: number | undefined;
 
   @consume({ context: configContext, subscribe: true }) config!: Config;
 
-  private onHold = (ev: Event) => {
+  private onHold = (event_: Event) => {
     const func = this.onHoldService ?? this.onPressService;
-    func(ev);
+    func(event_);
   };
-  private onPointerUp = (ev: Event) => {
+  private onPointerUp = (event_: Event) => {
     if (this.timeout || !this.onHoldService) {
       clearTimeout(this.timeout);
-      this.onPressService(ev);
+      this.onPressService(event_);
       this.timeout = undefined;
     }
   };
-  private onPointerDown = (ev: Event) => {
+  private onPointerDown = (event_: Event) => {
     if (!this.onHoldService) {
       return;
     }
@@ -57,7 +57,7 @@ class MassButton extends LitElement {
         return;
       }
       this.timeout = undefined;
-      this.onHold(ev);
+      this.onHold(event_);
     }, this.holdDelayMs);
   };
 
