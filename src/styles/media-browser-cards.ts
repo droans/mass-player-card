@@ -20,5 +20,6 @@ export default css`
     overflow-y: scroll;
     max-height: calc(var(--mass-player-card-height) - 4em);
     scrollbar-width: none;
+    padding-bottom: 1em;
   }
 `;
