@@ -15,7 +15,7 @@ import {
 
 import {
   actionsControllerContext,
-  activeEntityConfContext,
+  activeEntityConfigContext,
   activePlayerDataContext,
   controllerContext,
   EntityConfig,
@@ -68,7 +68,7 @@ class VolumeRow extends LitElement {
     return this._config;
   }
 
-  @consume({ context: activeEntityConfContext, subscribe: true })
+  @consume({ context: activeEntityConfigContext, subscribe: true })
   public set entityConfig(config: EntityConfig | undefined) {
     if (jsonMatch(this._entityConfig, config) || !config) {
       return;

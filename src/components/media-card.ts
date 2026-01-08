@@ -14,7 +14,7 @@ import "./menu-button";
 import { CardEnqueueService, CardSelectedService } from "../const/actions";
 import { ExtendedHass, ListItems, MediaCardItem } from "../const/types";
 import {
-  activeEntityConfContext,
+  activeEntityConfigContext,
   activeSectionContext,
   configContext,
   EntityConfig,
@@ -136,7 +136,7 @@ class MediaCard extends LitElement {
     return this._icons;
   }
 
-  @consume({ context: activeEntityConfContext, subscribe: true })
+  @consume({ context: activeEntityConfigContext, subscribe: true })
   public set entityConfig(config: EntityConfig | undefined) {
     if (jsonMatch(this._entityConfig, config) || !config) {
       return;

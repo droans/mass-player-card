@@ -27,7 +27,7 @@ import { uuid4 } from "../utils/utility";
 export type { EntityConfig } from "../config/config";
 
 export const hassContext = createContext<ExtendedHass>(uuid4());
-export const activeEntityConfContext = createContext<EntityConfig>(uuid4());
+export const activeEntityConfigContext = createContext<EntityConfig>(uuid4());
 export const activeEntityIDContext = createContext<string>(uuid4());
 export const activePlayerNameContext = createContext<string>(uuid4());
 export const activeMediaPlayerContext =

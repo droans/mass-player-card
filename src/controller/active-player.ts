@@ -1,6 +1,6 @@
 import { ContextProvider } from "@lit/context";
 import {
-  activeEntityConfContext,
+  activeEntityConfigContext,
   activeEntityIDContext,
   activeMediaPlayerContext,
   activePlayerDataContext,
@@ -42,7 +42,7 @@ import WaCarousel from "@droans/webawesome/dist/components/carousel/carousel";
 import { RepeatMode } from "../const/enums";
 
 export class ActivePlayerController {
-  private _activeEntityConfig: ContextProvider<typeof activeEntityConfContext>;
+  private _activeEntityConfig: ContextProvider<typeof activeEntityConfigContext>;
   private _activeEntityID: ContextProvider<typeof activeEntityIDContext>;
   private _activeMediaPlayer: ContextProvider<typeof activeMediaPlayerContext>;
   private _activePlayerName: ContextProvider<typeof activePlayerNameContext>;
@@ -82,7 +82,7 @@ export class ActivePlayerController {
       context: groupVolumeContext,
     });
     this._activeEntityConfig = new ContextProvider(host, {
-      context: activeEntityConfContext,
+      context: activeEntityConfigContext,
     });
     this._activeEntityID = new ContextProvider(host, {
       context: activeEntityIDContext,

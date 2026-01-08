@@ -19,7 +19,7 @@ import {
 
 import { ExtendedHass, QueueItem, QueueItems } from "../const/types";
 import {
-  activeEntityConfContext,
+  activeEntityConfigContext,
   activeEntityIDContext,
   activePlayerControllerContext,
   activeSectionContext,
@@ -45,7 +45,7 @@ class QueueCard extends LitElement {
   @consume({ context: activePlayerControllerContext })
   private activePlayerController!: ActivePlayerController;
 
-  @consume({ context: activeEntityConfContext, subscribe: true })
+  @consume({ context: activeEntityConfigContext, subscribe: true })
   private entityConf!: EntityConfig;
 
   @consume({ context: IconsContext, subscribe: true })

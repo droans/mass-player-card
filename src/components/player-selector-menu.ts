@@ -3,7 +3,7 @@ import "./menu-button";
 import styles from "../styles/player-selector-menu";
 import { consume } from "@lit/context";
 import {
-  activeEntityConfContext,
+  activeEntityConfigContext,
   entitiesConfigContext,
   EntityConfig,
   hassContext,
@@ -21,7 +21,7 @@ export class MassCardPlayerSelector extends LitElement {
   @consume({ context: musicPlayerConfigContext, subscribe: true })
   private config!: PlayerConfig;
 
-  @consume({ context: activeEntityConfContext, subscribe: true })
+  @consume({ context: activeEntityConfigContext, subscribe: true })
   private activeEntityConfig!: EntityConfig;
 
   @consume({ context: useExpressiveContext, subscribe: true })

@@ -11,7 +11,7 @@ import { property, state } from "lit/decorators.js";
 import { QueueItemSelectedService, QueueService } from "../const/actions";
 import { Thumbnail } from "../const/enums";
 import {
-  activeEntityConfContext,
+  activeEntityConfigContext,
   EntityConfig,
   hassContext,
   IconsContext,
@@ -73,7 +73,7 @@ class MediaRow extends LitElement {
     return this._config;
   }
 
-  @consume({ context: activeEntityConfContext, subscribe: true })
+  @consume({ context: activeEntityConfigContext, subscribe: true })
   public set entityConfig(config: EntityConfig | undefined) {
     if (jsonMatch(this._entityConfig, config) || !config) {
       return;

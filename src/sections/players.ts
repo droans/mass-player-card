@@ -22,7 +22,7 @@ import { DEFAULT_PLAYERS_CONFIG, PlayersConfig } from "../config/players";
 import { PlayerSelectedService } from "../const/actions";
 import { ExtendedHass, ExtendedHassEntity } from "../const/types";
 import {
-  activeEntityConfContext,
+  activeEntityConfigContext,
   controllerContext,
   hassContext,
   playersConfigContext,
@@ -36,7 +36,7 @@ import { MassCardController } from "../controller/controller";
 class PlayersCard extends LitElement {
   @property({ attribute: false }) private entities: ExtendedHassEntity[] = [];
 
-  @consume({ context: activeEntityConfContext, subscribe: true })
+  @consume({ context: activeEntityConfigContext, subscribe: true })
   @property({ attribute: false })
   public activePlayerEntity!: EntityConfig;
 

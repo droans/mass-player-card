@@ -30,7 +30,7 @@ import "../components/browser-podcast-view";
 import styles from "../styles/media-browser";
 
 import {
-  activeEntityConfContext,
+  activeEntityConfigContext,
   activeMediaBrowserCardsContext,
   browserControllerContext,
   EntityConfig,
@@ -82,7 +82,7 @@ export class MediaBrowser extends LitElement {
   @consume({ context: useExpressiveContext, subscribe: true })
   private useExpressive!: boolean;
   @consume({ context: IconsContext }) private Icons!: Icons;
-  @consume({ context: activeEntityConfContext, subscribe: true })
+  @consume({ context: activeEntityConfigContext, subscribe: true })
   private activeEntityConfig!: EntityConfig;
 
   public activeSection = DEFAULT_ACTIVE_SECTION;

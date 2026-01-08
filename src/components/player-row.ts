@@ -10,7 +10,7 @@ import {
 } from "../const/actions";
 import { VibrationPattern } from "../const/common";
 import {
-  activeEntityConfContext,
+  activeEntityConfigContext,
   EntityConfig,
   hassContext,
   IconsContext,
@@ -67,7 +67,7 @@ class PlayerRow extends LitElement {
   public get config() {
     return this._config;
   }
-  @consume({ context: activeEntityConfContext, subscribe: true })
+  @consume({ context: activeEntityConfigContext, subscribe: true })
   public set entityConfig(config: EntityConfig | undefined) {
     if (jsonMatch(this._entityConfig, config) || !config) {
       return;

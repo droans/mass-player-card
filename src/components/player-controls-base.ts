@@ -3,7 +3,7 @@ import { LitElement, PropertyValues } from "lit";
 import { state } from "lit/decorators.js";
 import {
   actionsControllerContext,
-  activeEntityConfContext,
+  activeEntityConfigContext,
   activePlayerDataContext,
   controllerContext,
   EntityConfig,
@@ -60,7 +60,7 @@ export class MassPlayerControlsBase extends LitElement {
     this.setHiddenElements();
   }
 
-  @consume({ context: activeEntityConfContext, subscribe: true })
+  @consume({ context: activeEntityConfigContext, subscribe: true })
   private set activeEntityConfig(config: EntityConfig) {
     const c = config.hide.player;
     this._entityHiddenElements = {

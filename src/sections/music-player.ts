@@ -25,7 +25,7 @@ import PlayerActions from "../actions/player-actions";
 
 import { MediaTypes, Thumbnail } from "../const/enums";
 import {
-  activeEntityConfContext,
+  activeEntityConfigContext,
   activeMediaPlayerContext,
   activePlayerControllerContext,
   activePlayerDataContext,
@@ -95,7 +95,7 @@ class MusicPlayerCard extends LitElement {
   @state()
   private _activePlayerController?: ActivePlayerController;
 
-  @consume({ context: activeEntityConfContext, subscribe: true })
+  @consume({ context: activeEntityConfigContext, subscribe: true })
   public set activeEntityConfig(entity: EntityConfig) {
     this._activeEntityConfig = entity;
     void this.updatePlaylists();

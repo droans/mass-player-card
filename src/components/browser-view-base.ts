@@ -20,7 +20,7 @@ import { property, query, queryAll, state } from "lit/decorators.js";
 import { EntityConfig } from "../config/config";
 import { CardEnqueueService } from "../const/actions";
 import {
-  activeEntityConfContext,
+  activeEntityConfigContext,
   activeMediaPlayerContext,
   hassContext,
   IconsContext,
@@ -94,7 +94,7 @@ export class BrowserViewBase extends LitElement {
   protected get browserConfig() {
     return this._browserConfig;
   }
-  @consume({ context: activeEntityConfContext, subscribe: true })
+  @consume({ context: activeEntityConfigContext, subscribe: true })
   protected set activeEntityConf(config: EntityConfig | undefined) {
     this._activeEntityConf = config;
   }
