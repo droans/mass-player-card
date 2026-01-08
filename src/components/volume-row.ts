@@ -31,7 +31,7 @@ import { MassCardController } from "../controller/controller";
 import { Icons } from "../const/icons";
 import { jsonMatch } from "../utils/utility";
 import { state } from "lit/decorators.js";
-import { DetailValEventData } from "../const/events";
+import { DetailValueEventData } from "../const/events";
 
 class VolumeRow extends LitElement {
   private maxVolume!: number;
@@ -115,20 +115,18 @@ class VolumeRow extends LitElement {
   private onVolumeMuteToggle = async () => {
     await this.actions.actionToggleMute();
   };
-  private onVolume = async (event_: DetailValEventData) => {
+  private onVolume = async (event_: DetailValueEventData) => {
     let volume: number = event_.detail.value;
-    if (isNaN(volume)) return;
+    if (Number.isNaN(volume)) return;
     this.player_data.volume = volume;
     volume = volume / 100;
     this.requestUpdate("volume", this.player_data.volume);
     await this.actions.actionSetVolume(volume);
   };
   private onFavorite = async () => {
-    if (this.player_data.favorite) {
-      await this.actions.actionRemoveFavorite();
-    } else {
-      await this.actions.actionAddFavorite();
-    }
+    await (this.player_data.favorite
+      ? this.actions.actionRemoveFavorite()
+      : this.actions.actionAddFavorite());
   };
   protected renderPower(): TemplateResult {
     if (this.hide.power) {

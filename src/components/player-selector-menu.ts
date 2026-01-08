@@ -48,6 +48,7 @@ export class MassCardPlayerSelector extends LitElement {
           : (ent.attributes.friendly_name ?? `Missing- ${item.entity_id}`);
       let url: string;
       let fallback: string;
+      // eslint-disable-next-line unicorn/no-negated-condition
       if (ent.attributes.app_id != "music_assistant") {
         url = "";
         fallback = "";

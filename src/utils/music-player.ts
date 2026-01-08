@@ -25,11 +25,11 @@ export function generateControlLabelHtml(
   return html`${label}`;
 }
 
-export function getIteratedRepeatMode(cur_repeat: RepeatMode): RepeatMode {
-  if (cur_repeat == RepeatMode.ALL) {
+export function getIteratedRepeatMode(current_repeat: RepeatMode): RepeatMode {
+  if (current_repeat == RepeatMode.ALL) {
     return RepeatMode.ONCE;
   }
-  if (cur_repeat == RepeatMode.ONCE) {
+  if (current_repeat == RepeatMode.ONCE) {
     return RepeatMode.OFF;
   }
   return RepeatMode.ALL;

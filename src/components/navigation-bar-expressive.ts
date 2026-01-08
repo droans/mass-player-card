@@ -76,9 +76,9 @@ class MassNavBar extends LitElement {
   }
 
   private handleTabChanged = (section: Sections) => {
-    const cur_section = this.active_section;
-    if (cur_section) {
-      this.animateTabChange(cur_section, section);
+    const current_section = this.active_section;
+    if (current_section) {
+      this.animateTabChange(current_section, section);
     }
     this.setActiveSection(section);
     if (section == Sections.MEDIA_BROWSER) {
@@ -87,21 +87,21 @@ class MassNavBar extends LitElement {
   };
   protected returnMediaBrowserToHome = () => {
     const host = this.controller?.host;
-    const el: MediaBrowser | null | undefined =
+    const element: MediaBrowser | null | undefined =
       host?.shadowRoot?.querySelector("mass-media-browser");
-    if (!el) {
+    if (!element) {
       return;
     }
-    el.resetActiveSections();
+    element.resetActiveSections();
   };
   private getSectionElement(section: Sections): HTMLAnchorElement | undefined {
-    const elems = {
+    const elements = {
       "media-browser": this.browserTab,
       "music-player": this.playerTab,
       queue: this.queueTab,
       players: this.playersTab,
     };
-    return elems[section];
+    return elements[section];
   }
   private animateBounceLeft(
     from_element: HTMLAnchorElement,
@@ -138,12 +138,12 @@ class MassNavBar extends LitElement {
 
     const bounce_move = to_width * 0.2;
     const navbarWidth = this.navbar?.offsetWidth ?? 0;
-    const to_elem_x_end = to_left + to_width;
+    const to_element_x_end = to_left + to_width;
 
     const bounce_left = to_left + bounce_move;
     const bounce_width =
-      to_elem_x_end >= navbarWidth ? navbarWidth - bounce_left : to_width;
-    const extra_left = to_elem_x_end >= navbarWidth ? bounce_move / 2 : 0;
+      to_element_x_end >= navbarWidth ? navbarWidth - bounce_left : to_width;
+    const extra_left = to_element_x_end >= navbarWidth ? bounce_move / 2 : 0;
     const translate_x = bounce_left - from_left - extra_left;
     const scale_x = bounce_width / from_width;
     return {
@@ -156,19 +156,19 @@ class MassNavBar extends LitElement {
     if (from_section == to_section) {
       return;
     }
-    const from_elem = this.getSectionElement(from_section);
-    const to_elem = this.getSectionElement(to_section);
-    if (!from_elem || !to_elem) {
+    const from_element = this.getSectionElement(from_section);
+    const to_element = this.getSectionElement(to_section);
+    if (!from_element || !to_element) {
       return;
     }
-    const from_width = from_elem.offsetWidth;
-    const from_left = from_elem.offsetLeft;
-    const to_width = to_elem.offsetWidth;
-    const to_left = to_elem.offsetLeft;
+    const from_width = from_element.offsetWidth;
+    const from_left = from_element.offsetLeft;
+    const to_width = to_element.offsetWidth;
+    const to_left = to_element.offsetLeft;
     const bounce =
       from_left - to_left > 0
-        ? this.animateBounceLeft(from_elem, to_elem)
-        : this.animateBounceRight(from_elem, to_elem);
+        ? this.animateBounceLeft(from_element, to_element)
+        : this.animateBounceRight(from_element, to_element);
 
     const translate_x = to_left - from_left;
     const scale_x = to_width / from_width;
@@ -280,15 +280,15 @@ class MassNavBar extends LitElement {
       const width = Math.round((1 / Math.max(1, tabs)) * 100);
       const indicator = document.createElement("div");
       indicator.id = "tab-indicator";
-      const conf = this.config;
-      if (!conf) {
+      const config = this.config;
+      if (!config) {
         return;
       }
       const sections: Sections[] = [];
-      if (conf.player.enabled) sections.push(Sections.MUSIC_PLAYER);
-      if (conf.queue.enabled) sections.push(Sections.QUEUE);
-      if (conf.media_browser.enabled) sections.push(Sections.MEDIA_BROWSER);
-      if (conf.players.enabled) sections.push(Sections.PLAYERS);
+      if (config.player.enabled) sections.push(Sections.MUSIC_PLAYER);
+      if (config.queue.enabled) sections.push(Sections.QUEUE);
+      if (config.media_browser.enabled) sections.push(Sections.MEDIA_BROWSER);
+      if (config.players.enabled) sections.push(Sections.PLAYERS);
       const activeSection = this.active_section;
       const idx = sections.findIndex((item) => {
         return item == activeSection;
@@ -302,8 +302,8 @@ class MassNavBar extends LitElement {
       animation.id = "animation";
       animation.duration = this.animationLength;
       animation.iterations = 1;
-      animation.appendChild(indicator);
-      this.navbar?.appendChild(animation);
+      animation.append(indicator);
+      this.navbar?.append(animation);
     }
   }
   disconnectedCallback(): void {

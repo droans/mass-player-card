@@ -19,7 +19,7 @@ import { jsonMatch } from "../utils/utility";
 import { MassCardController } from "../controller/controller";
 import PlayerActions from "../actions/player-actions";
 import {
-  DetailValEventData,
+  DetailValueEventData,
   HTMLImageElementEvent,
   JoinUnjoinEventData,
 } from "../const/events";
@@ -69,7 +69,7 @@ export class MassCardPlayerSelector extends LitElement {
     const ent = event_.target.entity;
     void actions.actionUnjoinPlayers(ent);
   };
-  private onGroupVolumeChange = (event_: DetailValEventData) => {
+  private onGroupVolumeChange = (event_: DetailValueEventData) => {
     const vol = event_.detail.value;
     void this.controller.ActivePlayer?.setActiveGroupVolume(vol);
   };

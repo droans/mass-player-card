@@ -166,10 +166,8 @@ class QueueCard extends LitElement {
         return QueueConfigErrors.ENTITY_TYPE;
       }
     }
-    if (this.hass) {
-      if (!this.hass.states[this.active_player_entity]) {
-        return QueueConfigErrors.MISSING_ENTITY;
-      }
+    if (this.hass && !this.hass.states[this.active_player_entity]) {
+      return QueueConfigErrors.MISSING_ENTITY;
     }
     return QueueConfigErrors.OK;
   }
@@ -310,7 +308,7 @@ class QueueCard extends LitElement {
     );
   }
   protected shouldUpdate(_changedProperties: PropertyValues): boolean {
-    if (!_changedProperties.size) {
+    if (_changedProperties.size === 0) {
       return false;
     }
     if (_changedProperties.has("_config") || _changedProperties.has("queue")) {

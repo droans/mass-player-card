@@ -68,13 +68,13 @@ export class MassBrowserArtistView extends BrowserViewBase {
     `;
   }
   protected renderOverview(): TemplateResult {
-    const trackStr = this.tracks?.length
+    const trackString = this.tracks?.length
       ? `${this.tracks.length.toString()} Tracks`
       : `Loading...`;
     return html`
       ${this.renderTitle()}
       <div id="collection-info">
-        <div id="tracks-length">${trackStr}</div>
+        <div id="tracks-length">${trackString}</div>
       </div>
     `;
   }

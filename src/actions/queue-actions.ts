@@ -44,8 +44,8 @@ export default class QueueActions {
       },
       return_response: true,
     };
-    const ret = await this.hass.callWS<getQueueItemsServiceResponse>(data);
-    const result: QueueItems = ret.response[this.player_entity];
+    const resp = await this.hass.callWS<getQueueItemsServiceResponse>(data);
+    const result: QueueItems = resp.response[this.player_entity];
     return result;
   }
   async playQueueItem(queue_item_id: string) {
@@ -54,8 +54,8 @@ export default class QueueActions {
         entity: this.player_entity,
         queue_item_id,
       });
-    } catch (e) {
-      console.error("Error selecting queue item", e);
+    } catch (error) {
+      console.error("Error selecting queue item", error);
     }
   }
   async removeQueueItem(queue_item_id: string) {
@@ -64,8 +64,8 @@ export default class QueueActions {
         entity: this.player_entity,
         queue_item_id,
       });
-    } catch (e) {
-      console.error("Error removing queue item", e);
+    } catch (error) {
+      console.error("Error removing queue item", error);
     }
   }
   async MoveQueueItemNext(queue_item_id: string) {
@@ -74,8 +74,8 @@ export default class QueueActions {
         entity: this.player_entity,
         queue_item_id,
       });
-    } catch (e) {
-      console.error("Error moving queue item next", e);
+    } catch (error) {
+      console.error("Error moving queue item next", error);
     }
   }
   async MoveQueueItemUp(queue_item_id: string) {
@@ -84,8 +84,8 @@ export default class QueueActions {
         entity: this.player_entity,
         queue_item_id,
       });
-    } catch (e) {
-      console.error("Error moving queue item up", e);
+    } catch (error) {
+      console.error("Error moving queue item up", error);
     }
   }
   async MoveQueueItemDown(queue_item_id: string) {
@@ -94,8 +94,8 @@ export default class QueueActions {
         entity: this.player_entity,
         queue_item_id,
       });
-    } catch (e) {
-      console.error("Error moving queue item down", e);
+    } catch (error) {
+      console.error("Error moving queue item down", error);
     }
   }
   async clearQueue(entity_id: string = this.player_entity) {
@@ -113,8 +113,8 @@ export default class QueueActions {
         url,
       });
       return result;
-    } catch (e) {
-      console.error("Error getting image", e);
+    } catch (error) {
+      console.error("Error getting image", error);
       return "";
     }
   }

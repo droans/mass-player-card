@@ -92,14 +92,14 @@ export class MassBrowserPlaylistView extends BrowserViewBase {
     `;
   }
   protected renderOverview(): TemplateResult {
-    const trackStr = this.tracks?.length
+    const trackString = this.tracks?.length
       ? `${this.tracks.length.toString()} Tracks`
       : `Loading...`;
     const owner = this.playlistMetadata?.response.owner ?? `Unknown`;
     return html`
       ${this.renderTitle()}
       <div id="collection-info">
-        <div id="tracks-length">${trackStr}</div>
+        <div id="tracks-length">${trackString}</div>
         <div id="playlist-duration">
           ${formatDuration(this.playlistDuration)}
         </div>

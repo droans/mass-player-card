@@ -78,8 +78,8 @@ export class MassMenuButton extends LitElement {
     event_.stopPropagation();
     // eslint-disable-next-line @typescript-eslint/no-unsafe-assignment
     const data = { detail: event_.detail };
-    const _ev = new CustomEvent("menu-item-selected", data);
-    this.dispatchEvent(_ev);
+    const _event = new CustomEvent("menu-item-selected", data);
+    this.dispatchEvent(_event);
     this.menuElement.menuOpen = false;
   };
 

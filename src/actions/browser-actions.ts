@@ -90,13 +90,13 @@ export default class BrowserActions {
     content_type: string,
     enqueue: EnqueueOptions,
   ) {
-    const args = {
+    const arguments_ = {
       entity_id,
       media_id: content_id,
       media_type: content_type,
       enqueue,
     };
-    await this.hass.callService("music_assistant", "play_media", args);
+    await this.hass.callService("music_assistant", "play_media", arguments_);
   }
   async actionGetLibraryRecents(
     player_entity_id: string,
@@ -150,7 +150,7 @@ export default class BrowserActions {
     limit: number = DEFAULT_SEARCH_LIMIT,
   ): Promise<MediaLibraryItem[]> {
     const config_id = await this.getPlayerConfigEntry(player_entity_id);
-    const args = {
+    const arguments_ = {
       limit,
       library_only,
       config_entry_id: config_id,
@@ -161,7 +161,7 @@ export default class BrowserActions {
       type: "call_service",
       domain: "music_assistant",
       service: "search",
-      service_data: args,
+      service_data: arguments_,
       return_response: true,
     };
     const response = await this.hass.callWS<searchServiceResponse>(data);
@@ -206,7 +206,7 @@ export default class BrowserActions {
     if (entity_id_or_config_entry_id.includes(".")) {
       const info = await this.actionGetPlayerInfo(entity_id_or_config_entry_id);
       if (!info) {
-        throw Error(
+        throw new Error(
           `Received nothing back when getting tracks for playlist ${playlist_uri}!`,
         );
       }
@@ -234,7 +234,7 @@ export default class BrowserActions {
     if (entity_id_or_config_entry_id.includes(".")) {
       const info = await this.actionGetPlayerInfo(entity_id_or_config_entry_id);
       if (!info) {
-        throw Error(
+        throw new Error(
           `Received nothing back when getting tracks for playlist ${playlist_uri}!`,
         );
       }
@@ -262,7 +262,7 @@ export default class BrowserActions {
     if (entity_id_or_config_entry_id.includes(".")) {
       const info = await this.actionGetPlayerInfo(entity_id_or_config_entry_id);
       if (!info) {
-        throw Error(
+        throw new Error(
           `Received nothing back when getting tracks for playlist ${playlist_uri}!`,
         );
       }
@@ -290,7 +290,7 @@ export default class BrowserActions {
     if (entity_id_or_config_entry_id.includes(".")) {
       const info = await this.actionGetPlayerInfo(entity_id_or_config_entry_id);
       if (!info) {
-        throw Error(
+        throw new Error(
           `Received nothing back when getting tracks for playlist ${podcast_uri}!`,
         );
       }
@@ -318,7 +318,7 @@ export default class BrowserActions {
     if (entity_id_or_config_entry_id.includes(".")) {
       const info = await this.actionGetPlayerInfo(entity_id_or_config_entry_id);
       if (!info) {
-        throw Error(
+        throw new Error(
           `Received nothing back when getting tracks for playlist ${playlist_uri}!`,
         );
       }
@@ -346,7 +346,7 @@ export default class BrowserActions {
     if (entity_id_or_config_entry_id.includes(".")) {
       const info = await this.actionGetPlayerInfo(entity_id_or_config_entry_id);
       if (!info) {
-        throw Error(
+        throw new Error(
           `Received nothing back when getting tracks for album ${album_uri}!`,
         );
       }
@@ -374,7 +374,7 @@ export default class BrowserActions {
     if (entity_id_or_config_entry_id.includes(".")) {
       const info = await this.actionGetPlayerInfo(entity_id_or_config_entry_id);
       if (!info) {
-        throw Error(
+        throw new Error(
           `Received nothing back when getting tracks for album ${album_uri}!`,
         );
       }
@@ -402,7 +402,7 @@ export default class BrowserActions {
     if (entity_id_or_config_entry_id.includes(".")) {
       const info = await this.actionGetPlayerInfo(entity_id_or_config_entry_id);
       if (!info) {
-        throw Error(
+        throw new Error(
           `Received nothing back when getting episodes for podcast ${podcast_uri}!`,
         );
       }
@@ -431,7 +431,7 @@ export default class BrowserActions {
     if (entity_id_or_config_entry_id.includes(".")) {
       const info = await this.actionGetPlayerInfo(entity_id_or_config_entry_id);
       if (!info) {
-        throw Error(
+        throw new Error(
           `Received nothing back when getting config entry for ${entity_id_or_config_entry_id}!`,
         );
       }

@@ -185,7 +185,8 @@ class MediaRow extends LitElement {
     const local_img = item.local_image_encoded?.length
       ? item.local_image_encoded
       : undefined;
-    const media_img = item.media_image.length ? item.media_image : undefined;
+    const media_img =
+      item.media_image.length > 0 ? item.media_image : undefined;
     const img = local_img ?? media_img ?? fallback;
     if (this.showAlbumCovers && !this.hide.album_covers) {
       return html`

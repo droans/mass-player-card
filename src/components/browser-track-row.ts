@@ -135,8 +135,8 @@ export class MassPlaylistTrackRow extends LitElement {
         position,
       },
     };
-    const ev = new CustomEvent("playlist-track-removed", data);
-    this.dispatchEvent(ev);
+    const event_ = new CustomEvent("playlist-track-removed", data);
+    this.dispatchEvent(event_);
   }
   private onMenuItemSelected = (event_: MenuButtonEventData) => {
     event_.stopPropagation();
@@ -186,9 +186,8 @@ export class MassPlaylistTrackRow extends LitElement {
     const loc_img = this.track.local_image_encoded?.length
       ? this.track.local_image_encoded
       : undefined;
-    const media_img = this.track.media_image.length
-      ? this.track.media_image
-      : undefined;
+    const media_img =
+      this.track.media_image.length > 0 ? this.track.media_image : undefined;
     const img = loc_img ?? media_img ?? "";
     return html`
       <img

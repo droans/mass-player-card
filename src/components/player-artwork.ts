@@ -152,13 +152,16 @@ export class MassPlayerArtwork extends LitElement {
     const activeSlide = slides.findIndex((item) => {
       return item.classList.contains("--in-view");
     });
-    const prevSlide = this.queue.findIndex((item) => {
+    const previousSlide = this.queue.findIndex((item) => {
       return item.playing;
     });
-    if ((!activeSlide && activeSlide != 0) || (!prevSlide && prevSlide != 0)) {
+    if (
+      (!activeSlide && activeSlide != 0) ||
+      (!previousSlide && previousSlide != 0)
+    ) {
       return;
     }
-    if (activeSlide != prevSlide) {
+    if (activeSlide != previousSlide) {
       this.onSwipe(activeSlide);
     }
   };
@@ -217,7 +220,7 @@ export class MassPlayerArtwork extends LitElement {
       const mid = item.offsetLeft + item.offsetWidth / 2;
       return mid >= scrollLeft && mid <= scrollRight;
     });
-    if (result.length) {
+    if (result.length > 0) {
       return result[0];
     }
     return firstSlide;
@@ -243,14 +246,14 @@ export class MassPlayerArtwork extends LitElement {
     this.createAndDestroyCarouselItemsAsNeeded();
     queue.forEach((item, idx) => {
       let url = item.media_image;
-      if (!url.length) {
+      if (url.length === 0) {
         url = item.local_image_encoded ?? "";
       }
       if (item.playing) {
-        const attrs = this.activePlayer.attributes;
-        const ent_img_local = attrs.entity_picture_local ?? "";
+        const attributes = this.activePlayer.attributes;
+        const ent_img_local = attributes.entity_picture_local ?? "";
         const fallbacks: string[] = [];
-        const ent_img = attrs.entity_picture;
+        const ent_img = attributes.entity_picture;
         if (ent_img) {
           fallbacks.push(ent_img);
         }
@@ -274,27 +277,28 @@ export class MassPlayerArtwork extends LitElement {
     fallbacks: string[] = [],
     playing = false,
   ) {
-    const elem = this.carouselElement?.querySelectorAll("img")[index];
-    if (!elem) {
+    const element = this.carouselElement?.querySelectorAll("img")[index];
+    if (!element) {
       return;
     }
-    elem.src = img_url;
-    elem.onerror = () => {
+    element.src = img_url;
+    // eslint-disable-next-line unicorn/prefer-add-event-listener
+    element.onerror = () => {
       const urls = [img_url, ...fallbacks, Thumbnail.CLEFT];
-      const curIdx = urls.findIndex((item) => {
-        return elem.src == item;
+      const currentIdx = urls.findIndex((item) => {
+        return element.src == item;
       });
-      const url = urls[curIdx + 1] ?? Thumbnail.CLEFT;
-      elem.src = url;
+      const url = urls[currentIdx + 1] ?? Thumbnail.CLEFT;
+      element.src = url;
     };
-    elem.parentElement?.setAttribute("data-queueitem", queue_item_id);
+    element.parentElement?.setAttribute("data-queueitem", queue_item_id);
     if (playing) {
-      elem.setAttribute("id", "img-playing");
-      elem.parentElement?.setAttribute("id", "active-slide");
-    } else if (elem.id) {
-      elem.id = "";
-      elem.removeAttribute("id");
-      elem.parentElement?.removeAttribute("id");
+      element.setAttribute("id", "img-playing");
+      element.parentElement?.setAttribute("id", "active-slide");
+    } else if (element.id) {
+      element.id = "";
+      element.removeAttribute("id");
+      element.parentElement?.removeAttribute("id");
     }
   }
 
@@ -314,29 +318,29 @@ export class MassPlayerArtwork extends LitElement {
       return item.playing;
     });
     const queueLength = this.queue.length;
-    const reqSlidesBefore = queueIdx;
-    const reqSlidesAfter = queueLength - queueIdx - 1;
+    const requestSlidesBefore = queueIdx;
+    const requestSlidesAfter = queueLength - queueIdx - 1;
 
     if (
-      actSlidesBefore == reqSlidesBefore &&
-      actSlidesAfter == reqSlidesAfter
+      actSlidesBefore == requestSlidesBefore &&
+      actSlidesAfter == requestSlidesAfter
     ) {
       return;
     }
 
-    if (actSlidesBefore < reqSlidesBefore) {
-      const insertBeforeCt = reqSlidesBefore - actSlidesBefore;
+    if (actSlidesBefore < requestSlidesBefore) {
+      const insertBeforeCt = requestSlidesBefore - actSlidesBefore;
       this.insertSlides(insertBeforeCt, "start");
-    } else if (actSlidesBefore > reqSlidesBefore) {
-      const removeBeforeCt = actSlidesBefore - reqSlidesBefore;
+    } else if (actSlidesBefore > requestSlidesBefore) {
+      const removeBeforeCt = actSlidesBefore - requestSlidesBefore;
       this.removeSlides(removeBeforeCt, "start");
     }
 
-    if (actSlidesAfter < reqSlidesAfter) {
-      const insertAfterCt = reqSlidesAfter - actSlidesAfter;
+    if (actSlidesAfter < requestSlidesAfter) {
+      const insertAfterCt = requestSlidesAfter - actSlidesAfter;
       this.insertSlides(insertAfterCt, "end");
-    } else if (actSlidesAfter > reqSlidesAfter) {
-      const removeAfterct = actSlidesAfter - reqSlidesAfter;
+    } else if (actSlidesAfter > requestSlidesAfter) {
+      const removeAfterct = actSlidesAfter - requestSlidesAfter;
       this.removeSlides(removeAfterct, "end");
     }
   }
@@ -345,13 +349,11 @@ export class MassPlayerArtwork extends LitElement {
     if (!this.carouselItems) {
       return;
     }
-    const elems = [...this.carouselItems];
-    let remove: WaCarouselItem[] = [];
-    if (direction == "start") {
-      remove = elems.slice(0, ct);
-    } else {
-      remove = elems.slice(elems.length - ct, elems.length);
-    }
+    const elements = [...this.carouselItems];
+    const remove =
+      direction == "start"
+        ? elements.slice(0, ct)
+        : elements.slice(elements.length - ct);
     remove.forEach((item) => {
       item.remove();
     });
@@ -365,17 +367,20 @@ export class MassPlayerArtwork extends LitElement {
 
     const insertBefore = this.carouselItems[0];
     rng.forEach(() => {
-      const elem = document.createElement("wa-carousel-item");
+      const element = document.createElement("wa-carousel-item");
       const div = document.createElement("div");
       div.className = "slot";
       const img = document.createElement("img");
       img.loading = "lazy";
-      div.appendChild(img);
-      elem.appendChild(div);
+      div.append(img);
+      element.append(div);
       if (direction == "start") {
-        (this.carouselElement as WaCarousel).insertBefore(elem, insertBefore);
+        (this.carouselElement as WaCarousel).insertBefore(
+          element,
+          insertBefore,
+        );
       } else {
-        (this.carouselElement as WaCarousel).appendChild(elem);
+        (this.carouselElement as WaCarousel).append(element);
       }
     });
   }
@@ -391,8 +396,8 @@ export class MassPlayerArtwork extends LitElement {
       return this.renderEmptyQueue();
     }
     const size = this.playerConfig.layout.artwork_size;
-    const attrs = this.activePlayer.attributes;
-    const url = attrs.entity_picture_local;
+    const attributes = this.activePlayer.attributes;
+    const url = attributes.entity_picture_local;
     return html`
       <wa-carousel-item
         id="active-slide"

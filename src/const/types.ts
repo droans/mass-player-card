@@ -201,6 +201,7 @@ export interface MediaCardItem {
 
 export type MediaLibraryItem = MediaItem;
 
+// eslint-disable-next-line unicorn/prevent-abbreviations
 export type ServiceNoParams = () => void;
 
 export type SubscriptionUnsubscribe = () => Promise<void>;

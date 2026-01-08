@@ -179,16 +179,10 @@ export class BrowserViewBase extends LitElement {
     if (this.observer) {
       this.observer.disconnect();
     }
-    if (
-      !this.trackElements.length ||
-      this.trackElements.length == this.tracks?.length
-    ) {
-      return;
-    }
     const listenIdx = this.currentIdx + this.listenOffset;
     const observer = new IntersectionObserver(this._trackObserverCallback);
-    const elem = this.trackElements[listenIdx];
-    observer.observe(elem);
+    const element = this.trackElements[listenIdx];
+    observer.observe(element);
 
     this.observer = observer;
     this.observerAdded = true;
@@ -227,7 +221,7 @@ export class BrowserViewBase extends LitElement {
     return this._browserActions;
   }
 
-  protected addScrollAnimation(transforms: Keyframe, elem: HTMLElement) {
+  protected addScrollAnimation(transforms: Keyframe, element: HTMLElement) {
     const shrunkHdrHeight = this.headerElement?.offsetHeight ?? 0 / 2;
     const scrollHeight = this.tracksElement?.scrollHeight ?? 1;
     const duration = shrunkHdrHeight / scrollHeight;
@@ -250,7 +244,7 @@ export class BrowserViewBase extends LitElement {
     const timeline = new (window as any).ScrollTimeline({
       source: this.tracksElement,
     });
-    const animation = elem.animate(keyframes, {
+    const animation = element.animate(keyframes, {
       timeline,
       direction: "normal",
       iterations: 1,
@@ -285,13 +279,13 @@ export class BrowserViewBase extends LitElement {
     );
   }
   protected animateHeaderEnqueue() {
-    const iconElem = this.enqueueElement?.shadowRoot?.querySelector(
+    const iconElement = this.enqueueElement?.shadowRoot?.querySelector(
       ".svg-menu-expressive",
     );
-    const selectElem = this.enqueueElement?.shadowRoot
+    const selectElement = this.enqueueElement?.shadowRoot
       ?.querySelector("#menu-select-menu")
       ?.shadowRoot?.querySelector(".select-anchor");
-    if (!iconElem || !selectElem) {
+    if (!iconElement || !selectElement) {
       return;
     }
     const iconKeyFrames = {
@@ -304,8 +298,8 @@ export class BrowserViewBase extends LitElement {
     const divKeyFrames = {
       transform: "translateX(-2em)",
     };
-    this.enqueueIconElement = iconElem as HTMLElement;
-    this.enqueueControlElement = selectElem as HTMLElement;
+    this.enqueueIconElement = iconElement as HTMLElement;
+    this.enqueueControlElement = selectElement as HTMLElement;
     this.enqueueIconAnimation = this.addScrollAnimation(
       iconKeyFrames,
       this.enqueueIconElement,
@@ -356,13 +350,13 @@ export class BrowserViewBase extends LitElement {
       this.hass as ExtendedHass,
     );
     const button_mapping = HIDDEN_BUTTON_VALUE;
-    const opts = default_buttons.filter((item) => {
+    const options = default_buttons.filter((item) => {
       //eslint-disable-next-line @typescript-eslint/no-unsafe-assignment
-      const hide_val = button_mapping[item.option];
+      const hide_value = button_mapping[item.option];
       //eslint-disable-next-line @typescript-eslint/no-unsafe-member-access
-      return !this.hide[hide_val];
+      return !this.hide[hide_value];
     });
-    this._enqueue_buttons = opts;
+    this._enqueue_buttons = options;
   }
 
   protected _renderImageFallback = (event_: HTMLImageElementEvent) => {

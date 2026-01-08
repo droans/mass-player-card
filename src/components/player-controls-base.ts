@@ -84,13 +84,13 @@ export class MassPlayerControlsBase extends LitElement {
   }
 
   private setHiddenElements() {
-    const e = this._processHiddenElement(this._entityHiddenElements);
+    const element = this._processHiddenElement(this._entityHiddenElements);
     const c = this._processHiddenElement(this._configHiddenElements);
     const result: PlayerControlsHiddenElementsConfig = {
-      power: e.power || c.power || false,
-      repeat: e.repeat || c.repeat || false,
-      shuffle: e.shuffle || c.shuffle || false,
-      favorite: e.favorite || c.favorite || false,
+      power: element.power || c.power || false,
+      repeat: element.repeat || c.repeat || false,
+      shuffle: element.shuffle || c.shuffle || false,
+      favorite: element.favorite || c.favorite || false,
     };
     if (jsonMatch(result, this._hiddenElements)) {
       return;
@@ -133,8 +133,8 @@ export class MassPlayerControlsBase extends LitElement {
       key,
       value,
     };
-    const ev = new CustomEvent("force-update-player", { detail: data });
-    this.controller.host.dispatchEvent(ev);
+    const event_ = new CustomEvent("force-update-player", { detail: data });
+    this.controller.host.dispatchEvent(event_);
   }
   /* 
     eslint-enable 
@@ -142,8 +142,8 @@ export class MassPlayerControlsBase extends LitElement {
       @typescript-eslint/no-unsafe-assignment
   */
   private requestPlayerDataUpdate() {
-    const ev = new Event("request-player-data-update");
-    this.controller.host.dispatchEvent(ev);
+    const event_ = new Event("request-player-data-update");
+    this.controller.host.dispatchEvent(event_);
   }
   protected onPrevious = async (event_: Event) => {
     event_.stopPropagation();
@@ -169,8 +169,8 @@ export class MassPlayerControlsBase extends LitElement {
   };
   protected onRepeat = async (event_: Event) => {
     event_.stopPropagation();
-    const cur_repeat = this.repeat;
-    const repeat = getIteratedRepeatMode(cur_repeat);
+    const current_repeat = this.repeat;
+    const repeat = getIteratedRepeatMode(current_repeat);
     this.repeat = repeat;
     this.requestUpdate("repeat", this.repeat);
     await this.actions.actionSetRepeat(repeat);
@@ -183,6 +183,7 @@ export class MassPlayerControlsBase extends LitElement {
     event_.stopPropagation();
     this.favorite = !this.favorite;
     this.requestUpdate("favorite", this.favorite);
+    // eslint-disable-next-line unicorn/prefer-ternary
     if (this.playerData.favorite) {
       await this.actions.actionRemoveFavorite();
     } else {

@@ -77,23 +77,21 @@ class MassPlayerProgressBar extends LitElement {
 
   @consume({ context: activeMediaPlayerContext, subscribe: true })
   public set activePlayer(player: ExtendedHassEntity | undefined) {
-    if (this._activePlayer) {
-      if (!playerHasUpdated(this._activePlayer, player)) {
-        return;
-      }
+    if (this._activePlayer && !playerHasUpdated(this._activePlayer, player)) {
+      return;
     }
     if (!player) {
       return;
     }
-    const cur_dur = player.attributes.media_duration ?? 1;
-    const cur_pos =
+    const current_dur = player.attributes.media_duration ?? 1;
+    const current_pos =
       !this._activePlayer?.attributes.media_title ||
       player.attributes.media_title == this._activePlayer.attributes.media_title
         ? player.attributes.media_position
         : 1;
     this._activePlayer = player;
-    this.media_duration ??= cur_dur;
-    this.media_position ??= cur_pos;
+    this.media_duration ??= current_dur;
+    this.media_position ??= current_pos;
     this.requestProgress();
   }
   public get activePlayer() {
@@ -139,7 +137,7 @@ class MassPlayerProgressBar extends LitElement {
     if (!playing || this._dragging) {
       return;
     }
-    const t = new Date().getTime();
+    const t = Date.now();
     if (
       this._requestProgress &&
       (!this.media_duration ||
@@ -246,11 +244,10 @@ class MassPlayerProgressBar extends LitElement {
     `;
   }
   protected render(): TemplateResult {
-    const cls = !(
+    const cls =
       this.player_data?.playing && this.controller?.config?.expressive
-    )
-      ? `medium progress-plain`
-      : `wavy medium`;
+        ? `wavy medium`
+        : `medium progress-plain`;
     return html`
       <div class="progress">
         <div

@@ -40,9 +40,9 @@ export class MediaBrowserCards extends LitElement {
   private _items!: MediaCardItem[];
 
   @consume({ context: mediaBrowserConfigContext, subscribe: true })
-  public set browserConfig(conf: MediaBrowserConfig | undefined) {
-    if (!jsonMatch(this._browserConfig, conf) && conf) {
-      this._browserConfig = conf;
+  public set browserConfig(config: MediaBrowserConfig | undefined) {
+    if (!jsonMatch(this._browserConfig, config) && config) {
+      this._browserConfig = config;
       if (this.items) {
         this.generateCode();
       }

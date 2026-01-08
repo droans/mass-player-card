@@ -138,26 +138,26 @@ class PlayerRow extends LitElement {
   };
 
   private _renderThumbnailFallback = (event_: HTMLImageElementEvent) => {
-    const attrs = this.player_entity?.attributes;
+    const attributes = this.player_entity?.attributes;
     const fallback = getThumbnail(this.hass, Thumbnail.HEADPHONES);
-    const loc = attrs?.entity_picture_local;
-    const pic = attrs?.entity_picture ?? fallback;
-    const src = event_.target.src;
-    const newSrc = src == loc ? pic : fallback;
-    event_.target.src = newSrc ?? "";
+    const loc = attributes?.entity_picture_local;
+    const pic = attributes?.entity_picture ?? fallback;
+    const source = event_.target.src;
+    const newSource = source == loc ? pic : fallback;
+    event_.target.src = newSource ?? "";
   };
   private renderThumbnail() {
-    const attrs = this.player_entity?.attributes;
+    const attributes = this.player_entity?.attributes;
     const fallback = getThumbnail(this.hass, Thumbnail.HEADPHONES);
-    const loc = attrs?.entity_picture_local;
-    const pic = attrs?.entity_picture;
-    const src = loc ?? pic ?? fallback;
+    const loc = attributes?.entity_picture_local;
+    const pic = attributes?.entity_picture;
+    const source = loc ?? pic ?? fallback;
 
     return html`
       <img
         class="thumbnail"
         slot="start"
-        src="${src}"
+        src="${source}"
         loading="lazy"
         @error=${this._renderThumbnailFallback}
       />
@@ -187,7 +187,7 @@ class PlayerRow extends LitElement {
   }
   private renderTitle() {
     let title = this.playerName;
-    if (!title.length) {
+    if (title.length === 0) {
       title = this.player_entity?.attributes.friendly_name ?? "Media Player";
     }
     const active_style =

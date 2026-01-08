@@ -15,15 +15,15 @@ import {
   RecommendationSection,
 } from "../const/types";
 
-type viewCardFunc = (
+type viewCardFunction = (
   media_content_id: string,
   media_image: string,
   media_title: string,
 ) => MediaCardItem;
 
-type viewCardFuncMap = Record<string, viewCardFunc>;
+type viewCardFunctionMap = Record<string, viewCardFunction>;
 
-const funcs: viewCardFuncMap = {
+const funcs: viewCardFunctionMap = {
   playlist: generatePlaylistCard,
   album: generateAlbumCard,
   artist: generateArtistCard,
@@ -139,10 +139,10 @@ export function generateRecommendationSectionCards(
 ): MediaCardItem[] {
   const items = section.items;
   return items.map((item) => {
-    const func = funcs[item.media_type];
+    const function_ = funcs[item.media_type];
     // eslint-disable-next-line @typescript-eslint/no-unnecessary-condition
-    if (func) {
-      return func(item.uri, item.image, item.name);
+    if (function_) {
+      return function_(item.uri, item.image, item.name);
     }
     const r: MediaCardItem = {
       title: item.name,
@@ -181,10 +181,10 @@ export function generateFavoritesSectionCards(
 ): MediaCardItem[] {
   const thumbnail = MediaTypeThumbnails[media_type];
   return config.map((item) => {
-    const func = funcs[item.media_type];
+    const function_ = funcs[item.media_type];
     // eslint-disable-next-line @typescript-eslint/no-unnecessary-condition
-    if (func) {
-      return func(item.uri, item.image ?? "", item.name);
+    if (function_) {
+      return function_(item.uri, item.image ?? "", item.name);
     }
     const r: MediaCardItem = {
       title: item.name,

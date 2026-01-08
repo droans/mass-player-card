@@ -182,13 +182,13 @@ class MediaCard extends LitElement {
     }
     const default_buttons = getEnqueueButtons(this.Icons, this.hass);
     const button_mapping = HIDDEN_BUTTON_VALUE;
-    const opts = default_buttons.filter((item) => {
+    const options = default_buttons.filter((item) => {
       //eslint-disable-next-line @typescript-eslint/no-unsafe-assignment
-      const hide_val = button_mapping[item.option];
+      const hide_value = button_mapping[item.option];
       //eslint-disable-next-line @typescript-eslint/no-unsafe-member-access
-      return !this.hide[hide_val];
+      return !this.hide[hide_value];
     });
-    this._enqueue_buttons = opts;
+    this._enqueue_buttons = options;
   }
   private onEnqueue = (event_: MenuButtonEventData) => {
     event_.stopPropagation();

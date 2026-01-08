@@ -1,13 +1,13 @@
 import { mediaBrowserSectionConfig, newMediaBrowserItemsConfig } from "./types";
 
-export type TargetValEvent = (event_: TargetValEventData) => void;
+export type TargetValueEvent = (event_: TargetValueEventData) => void;
 
-export interface TargetValEventData extends Omit<Event, "target"> {
+export interface TargetValueEventData extends Omit<Event, "target"> {
   target: {
     value: string;
   };
 }
-export interface DetailValEventData extends Omit<Event, "target"> {
+export interface DetailValueEventData extends Omit<Event, "target"> {
   detail: {
     value: number;
   };

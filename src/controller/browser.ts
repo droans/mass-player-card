@@ -106,8 +106,8 @@ export class MediaBrowserController {
           section: "all",
           cards: this.items,
         };
-        const ev = new CustomEvent("cards-updated", { detail: data });
-        this._host.dispatchEvent(ev);
+        const event_ = new CustomEvent("cards-updated", { detail: data });
+        this._host.dispatchEvent(event_);
       })
       .finally(() => {
         this._updatingCards = false;
@@ -160,8 +160,8 @@ export class MediaBrowserController {
       // eslint-disable-next-line @typescript-eslint/no-non-null-assertion, @typescript-eslint/no-unnecessary-type-assertion
       cards: this.items!.favorites!,
     };
-    const ev = new CustomEvent("cards-updated", { detail: data });
-    this._host.dispatchEvent(ev);
+    const event_ = new CustomEvent("cards-updated", { detail: data });
+    this._host.dispatchEvent(event_);
   }
   private async getFavoriteSection(
     config: FavoriteItemConfig,
@@ -198,7 +198,7 @@ export class MediaBrowserController {
       media_type,
       favorites_only,
     );
-    if (!items.length) {
+    if (items.length === 0) {
       return;
     }
     const i = { ...this.items };
@@ -225,8 +225,8 @@ export class MediaBrowserController {
       section: "recents",
       cards: this.items.recents,
     };
-    const ev = new CustomEvent("cards-updated", { detail: data });
-    this._host.dispatchEvent(ev);
+    const event_ = new CustomEvent("cards-updated", { detail: data });
+    this._host.dispatchEvent(event_);
   }
   private async getRecentSection(
     config: FavoriteItemConfig,
@@ -251,7 +251,7 @@ export class MediaBrowserController {
     }
 
     const items = await this.getRecentSection(config, media_type);
-    if (items.length) {
+    if (items.length > 0) {
       const card = generateRecentsCard(this.hass, media_type, items);
       const i = { ...this.items };
       i.recents.main.push(card);
@@ -267,7 +267,7 @@ export class MediaBrowserController {
       return;
     }
     const items = generateRecommendationSectionCards(section);
-    if (items.length) {
+    if (items.length > 0) {
       const card = generateRecommendationsCard(this.hass, section, items);
       const i = { ...this.items };
       i.recommendations.main.push(card);
@@ -289,8 +289,8 @@ export class MediaBrowserController {
       section: "recommendations",
       cards: this.items.recommendations,
     };
-    const ev = new CustomEvent("cards-updated", { detail });
-    this._host.dispatchEvent(ev);
+    const event_ = new CustomEvent("cards-updated", { detail });
+    this._host.dispatchEvent(event_);
   }
 
   //Custom Sections
