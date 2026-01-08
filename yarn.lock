@@ -394,26 +394,29 @@ __metadata:
   languageName: node
   linkType: hard
 
-"@lit-labs/analyzer@npm:^0.13.0":
-  version: 0.13.2
-  resolution: "@lit-labs/analyzer@npm:0.13.2"
+"@lit-labs/analyzer@npm:^0.14.0":
+  version: 0.14.0
+  resolution: "@lit-labs/analyzer@npm:0.14.0"
   dependencies:
+    "@parse5/tools": "npm:^0.7.0"
+    lit-html: "npm:^3.1.2"
     package-json-type: "npm:^1.0.3"
-    typescript: "npm:~5.5.0"
-  checksum: 10c0/5cd0a7033c9964f571e702930646c75bf3610572586403cf71ba0a72100b5606195eca2db99b717fe9b82ee1ece9ed079cb622b1f237a02b1b7ae96f14386381
+    parse5: "npm:^7.3.0"
+    typescript: "npm:~5.9.0"
+  checksum: 10c0/5e59e16631bc203313905e202b7d5ca3dda2675bedc5de858032fe420446cdad96f3804a57a6ddffedbf22fd5d3471f27a07b78bb8dc4c8ee866ce01f1c8272c
   languageName: node
   linkType: hard
 
-"@lit-labs/compiler@npm:^1.1.1":
-  version: 1.1.1
-  resolution: "@lit-labs/compiler@npm:1.1.1"
+"@lit-labs/compiler@npm:^1.1.2":
+  version: 1.1.2
+  resolution: "@lit-labs/compiler@npm:1.1.2"
   dependencies:
-    "@lit-labs/analyzer": "npm:^0.13.0"
+    "@lit-labs/analyzer": "npm:^0.14.0"
     "@parse5/tools": "npm:^0.3.0"
     lit-html: "npm:^3.2.0"
     parse5: "npm:^7.1.2"
-    typescript: "npm:~5.5.0"
-  checksum: 10c0/7cb1d98ac4bebeae75df99ab48ebd10f68061ae82feca46907fa1591f06159db4070302f340d2aa2db1734847ecdd24412b933acdb1545d2e330cdafbb9d700d
+    typescript: "npm:~5.9.0"
+  checksum: 10c0/5bbcab565f83a45147b0796ea0c8eb4bfede22f129d4603db1e90ab4bdf366cf73ef7670c016a9c9fbf6e03e464274ae4d643a4c15e036bc54df561a1c9e0cec
   languageName: node
   linkType: hard
 
@@ -505,6 +508,15 @@ __metadata:
   dependencies:
     parse5: "npm:^7.0.0"
   checksum: 10c0/2bee032a2567e15cf8d403db386644f430c6ee3ea8300f7f386502ea6d0e74adbc0f60c6a825fd0f657027e2b0f20e52ad973ad875892b4dad0e50f1332c9179
+  languageName: node
+  linkType: hard
+
+"@parse5/tools@npm:^0.7.0":
+  version: 0.7.0
+  resolution: "@parse5/tools@npm:0.7.0"
+  peerDependencies:
+    parse5: 7.x || 8.x
+  checksum: 10c0/7793d0e9ad8f7266535dbca6254857194193cc0d0afec658397f448c534ebe1565b59adac38d1dc38242c3de6a586733668e6b51bdfd6b6314db3ca1c1032ce9
   languageName: node
   linkType: hard
 
@@ -3149,6 +3161,15 @@ __metadata:
   languageName: node
   linkType: hard
 
+"lit-html@npm:^3.1.2":
+  version: 3.3.2
+  resolution: "lit-html@npm:3.3.2"
+  dependencies:
+    "@types/trusted-types": "npm:^2.0.2"
+  checksum: 10c0/0a6763875acd03dfc5d4483ea74ca4bfe5d71a90b05bfc484e8201721c8603db982760fd27566a69a834f21d34437f7c390e21cd4c6bff149ca7e3a46d3b217a
+  languageName: node
+  linkType: hard
+
 "lit-html@npm:^3.2.0, lit-html@npm:^3.3.0":
   version: 3.3.1
   resolution: "lit-html@npm:3.3.1"
@@ -3278,7 +3299,7 @@ __metadata:
     "@droans/webawesome": "npm:^3.0.0"
     "@eslint/js": "npm:9.39.2"
     "@ktibow/material-color-utilities-nightly": "npm:^0.3.11763580498000"
-    "@lit-labs/compiler": "npm:^1.1.1"
+    "@lit-labs/compiler": "npm:^1.1.2"
     "@lit/context": "npm:1.1.6"
     "@material/web": "npm:2.4.1"
     "@mdi/js": "npm:7.4.47"
@@ -3672,7 +3693,7 @@ __metadata:
   languageName: node
   linkType: hard
 
-"parse5@npm:^7.0.0, parse5@npm:^7.1.2":
+"parse5@npm:^7.0.0, parse5@npm:^7.1.2, parse5@npm:^7.3.0":
   version: 7.3.0
   resolution: "parse5@npm:7.3.0"
   dependencies:
@@ -4631,7 +4652,7 @@ __metadata:
   languageName: node
   linkType: hard
 
-"typescript@npm:5.9.3, typescript@npm:^5.7.3":
+"typescript@npm:5.9.3, typescript@npm:^5.7.3, typescript@npm:~5.9.0":
   version: 5.9.3
   resolution: "typescript@npm:5.9.3"
   bin:
@@ -4651,17 +4672,7 @@ __metadata:
   languageName: node
   linkType: hard
 
-"typescript@npm:~5.5.0":
-  version: 5.5.4
-  resolution: "typescript@npm:5.5.4"
-  bin:
-    tsc: bin/tsc
-    tsserver: bin/tsserver
-  checksum: 10c0/422be60f89e661eab29ac488c974b6cc0a660fb2228003b297c3d10c32c90f3bcffc1009b43876a082515a3c376b1eefcce823d6e78982e6878408b9a923199c
-  languageName: node
-  linkType: hard
-
-"typescript@patch:typescript@npm%3A5.9.3#optional!builtin<compat/typescript>, typescript@patch:typescript@npm%3A^5.7.3#optional!builtin<compat/typescript>":
+"typescript@patch:typescript@npm%3A5.9.3#optional!builtin<compat/typescript>, typescript@patch:typescript@npm%3A^5.7.3#optional!builtin<compat/typescript>, typescript@patch:typescript@npm%3A~5.9.0#optional!builtin<compat/typescript>":
   version: 5.9.3
   resolution: "typescript@patch:typescript@npm%3A5.9.3#optional!builtin<compat/typescript>::version=5.9.3&hash=5786d5"
   bin:
@@ -4678,16 +4689,6 @@ __metadata:
     tsc: bin/tsc
     tsserver: bin/tsserver
   checksum: 10c0/e3333f887c6829dfe0ab6c1dbe0dd1e3e2aeb56c66460cb85c5440c566f900c833d370ca34eb47558c0c69e78ced4bfe09b8f4f98b6de7afed9b84b8d1dd06a1
-  languageName: node
-  linkType: hard
-
-"typescript@patch:typescript@npm%3A~5.5.0#optional!builtin<compat/typescript>":
-  version: 5.5.4
-  resolution: "typescript@patch:typescript@npm%3A5.5.4#optional!builtin<compat/typescript>::version=5.5.4&hash=379a07"
-  bin:
-    tsc: bin/tsc
-    tsserver: bin/tsserver
-  checksum: 10c0/73409d7b9196a5a1217b3aaad929bf76294d3ce7d6e9766dd880ece296ee91cf7d7db6b16c6c6c630ee5096eccde726c0ef17c7dfa52b01a243e57ae1f09ef07
   languageName: node
   linkType: hard
 
