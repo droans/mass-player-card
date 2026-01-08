@@ -141,7 +141,7 @@ export default css`
     position: absolute;
     top: 0;
     width: 100%;
-    z-index: 1;
+    z-index: 3;
     border-radius: var(--default-border-radius) var(--default-border-radius) 0px
       0px;
   }
