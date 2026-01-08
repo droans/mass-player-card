@@ -32,7 +32,7 @@ import { version } from "../package.json";
 import styles from "./styles/main";
 import head_styles from "./styles/head";
 
-import { getDefaultSection, jsonMatch } from "./utils/util";
+import { getDefaultSection, jsonMatch } from "./utils/utility";
 import { MassCardController } from "./controller/controller";
 import { ExtendedHass } from "./const/types";
 
@@ -161,7 +161,7 @@ export class MusicAssistantPlayerCard extends LitElement {
     this._controller.activeSection = getDefaultSection(this.config);
   }
   private setActivePlayer = (player_entity: string) => {
-    if (!player_entity.length) {
+    if (player_entity.length === 0) {
       return;
     }
     this._controller.activeEntityId = player_entity;
@@ -209,8 +209,8 @@ export class MusicAssistantPlayerCard extends LitElement {
       this._controller.activeSection = Sections.MUSIC_PLAYER;
     }
   };
-  private onSectionChangedEvent = (ev: Event) => {
-    this.active_section = (ev as CustomEvent).detail as Sections;
+  private onSectionChangedEvent = (event_: Event) => {
+    this.active_section = (event_ as CustomEvent).detail as Sections;
   };
 
   protected renderPlayers() {

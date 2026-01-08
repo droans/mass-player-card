@@ -3,7 +3,7 @@ import { customElement, query, state } from "lit/decorators.js";
 import sharedStyles from "../styles/browser-view-shared";
 import styles from "../styles/browser-podcast-view";
 import "./browser-track-row";
-import { delay } from "../utils/util";
+import { delay } from "../utils/utility";
 import { BrowserViewBase } from "./browser-view-base";
 import { getPodcastServiceResponse } from "mass-queue-types/packages/mass_queue/actions/get_podcast";
 
@@ -29,7 +29,8 @@ export class MassBrowserPodcastView extends BrowserViewBase {
     }
     const img = this.collectionData.media_image;
     const tracks = resp.response.episodes.map((track) => {
-      track.media_image = track.media_image.length ? track.media_image : img;
+      track.media_image =
+        track.media_image.length > 0 ? track.media_image : img;
       return track;
     });
     this.tracks = tracks;
@@ -74,14 +75,14 @@ export class MassBrowserPodcastView extends BrowserViewBase {
     `;
   }
   protected renderOverview(): TemplateResult {
-    const trackStr = this.tracks?.length
+    const trackString = this.tracks?.length
       ? `${this.tracks.length.toString()} Episodes`
       : `Loading...`;
     const desc = this.podcastMetadata?.response.metadata.description ?? ``;
     return html`
       ${this.renderTitle()}
       <div id="collection-info">
-        <div id="tracks-length">${trackStr}</div>
+        <div id="tracks-length">${trackString}</div>
         <div id="collection-description">${desc}</div>
       </div>
     `;

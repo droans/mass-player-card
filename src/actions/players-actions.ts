@@ -22,16 +22,16 @@ export default class PlayersActions {
         entity_id: target_players,
         source_player,
       });
-    } catch (e) {
-      console.error(`Error calling transfer player`, e);
+    } catch (error) {
+      console.error(`Error calling transfer player`, error);
     }
   }
   async actionJoinPlayers(target_player: string, group_members: string[]) {
     const ent = this.hass.states[target_player] as ExtendedHassEntity;
-    const cur_members = ent.attributes.group_members?.filter((player) => {
+    const current_members = ent.attributes.group_members?.filter((player) => {
       return player != target_player;
     });
-    const members = cur_members?.concat(group_members);
+    const members = current_members?.concat(group_members);
     await this.hass.callService("media_player", "join", {
       entity_id: target_player,
       group_members: members,

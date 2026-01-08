@@ -20,7 +20,7 @@ import { ExtendedHass, mediaCardData, MediaCardItem } from "../const/types";
 
 import styles from "../styles/media-browser-cards";
 import { MediaBrowserConfig } from "../config/media-browser";
-import { jsonMatch } from "../utils/util";
+import { jsonMatch } from "../utils/utility";
 import { EnqueueOptions } from "../const/enums";
 
 export class MediaBrowserCards extends LitElement {
@@ -40,9 +40,9 @@ export class MediaBrowserCards extends LitElement {
   private _items!: MediaCardItem[];
 
   @consume({ context: mediaBrowserConfigContext, subscribe: true })
-  public set browserConfig(conf: MediaBrowserConfig | undefined) {
-    if (!jsonMatch(this._browserConfig, conf) && conf) {
-      this._browserConfig = conf;
+  public set browserConfig(config: MediaBrowserConfig | undefined) {
+    if (!jsonMatch(this._browserConfig, config) && config) {
+      this._browserConfig = config;
       if (this.items) {
         this.generateCode();
       }

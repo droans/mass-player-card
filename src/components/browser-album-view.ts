@@ -2,7 +2,7 @@ import { CSSResultOrNative, html, TemplateResult } from "lit";
 import { customElement, query, state } from "lit/decorators.js";
 import sharedStyles from "../styles/browser-view-shared";
 import styles from "../styles/browser-album-view";
-import { delay } from "../utils/util";
+import { delay } from "../utils/utility";
 import { getAlbumServiceResponse } from "mass-queue-types/packages/mass_queue/actions/get_album";
 import { BrowserViewBase } from "./browser-view-base";
 
@@ -67,7 +67,7 @@ export class MassBrowserAlbumView extends BrowserViewBase {
     `;
   }
   protected renderOverview(): TemplateResult {
-    const trackStr = this.tracks?.length
+    const trackString = this.tracks?.length
       ? `${this.tracks.length.toString()} Tracks`
       : `Loading...`;
     const metadata = this.albumMetadata?.response;
@@ -75,12 +75,13 @@ export class MassBrowserAlbumView extends BrowserViewBase {
     const artistLs = artists.map((artist) => {
       return artist.name;
     });
-    const artistStr = artistLs.length ? artistLs.join(", ") : `Loading...`;
+    const artistString =
+      artistLs.length > 0 ? artistLs.join(", ") : `Loading...`;
     return html`
       ${this.renderTitle()}
       <div id="collection-info">
-        <div id="collection-artists">${artistStr}</div>
-        <div id="tracks-length">${trackStr}</div>
+        <div id="collection-artists">${artistString}</div>
+        <div id="tracks-length">${trackString}</div>
         <div id="collection-year">
           ${this.albumMetadata?.response.year ?? ``}
         </div>

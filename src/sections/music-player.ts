@@ -25,7 +25,7 @@ import PlayerActions from "../actions/player-actions";
 
 import { MediaTypes, Thumbnail } from "../const/enums";
 import {
-  activeEntityConfContext,
+  activeEntityConfigContext,
   activeMediaPlayerContext,
   activePlayerControllerContext,
   activePlayerDataContext,
@@ -52,7 +52,7 @@ import { PlayerSelectedService } from "../const/actions";
 import { ArtworkSize, PlayerConfig } from "../config/player";
 import { ActivePlayerController } from "../controller/active-player";
 import { Config } from "../config/config";
-import { isActive, jsonMatch, playerHasUpdated } from "../utils/util";
+import { isActive, jsonMatch, playerHasUpdated } from "../utils/utility";
 import { MassCardController } from "../controller/controller";
 import {
   ForceUpdatePlayerDataEvent,
@@ -95,7 +95,7 @@ class MusicPlayerCard extends LitElement {
   @state()
   private _activePlayerController?: ActivePlayerController;
 
-  @consume({ context: activeEntityConfContext, subscribe: true })
+  @consume({ context: activeEntityConfigContext, subscribe: true })
   public set activeEntityConfig(entity: EntityConfig) {
     this._activeEntityConfig = entity;
     void this.updatePlaylists();
@@ -137,26 +137,29 @@ class MusicPlayerCard extends LitElement {
     }
     this._config = config;
     switch (config.layout.artwork_size) {
-      case ArtworkSize.LARGE:
+      case ArtworkSize.LARGE: {
         this._artworkHeaderClass = "header-art-lg";
         this._artworkProgressClass = "bg-art-lg";
         this._artworkVolumeClass = "vol-art-lg";
         this._artworkMediaControlsClass = "controls-art-lg";
         this._artworkActiveTrackClass = "active-track-lg";
         break;
-      case ArtworkSize.MEDIUM:
+      }
+      case ArtworkSize.MEDIUM: {
         this._artworkHeaderClass = "header-art-med";
         this._artworkProgressClass = "bg-art-med";
         this._artworkVolumeClass = "vol-art-med";
         this._artworkMediaControlsClass = "controls-art-med";
         this._artworkActiveTrackClass = "active-track-med";
         break;
-      case ArtworkSize.SMALL:
+      }
+      case ArtworkSize.SMALL: {
         this._artworkHeaderClass = "header-art-sm";
         this._artworkProgressClass = "bg-art-sm";
         this._artworkVolumeClass = "vol-art-sm";
         this._artworkMediaControlsClass = "controls-art-sm";
         this._artworkActiveTrackClass = "active-track-sm";
+      }
     }
   }
   public get config() {
@@ -252,35 +255,35 @@ class MusicPlayerCard extends LitElement {
     this.favoritesDialog.open = false;
   }
 
-  private onForceLoadEvent = (ev: Event) => {
-    const e = ev as ForceUpdatePlayerDataEvent;
-    const key = e.detail.key;
+  private onForceLoadEvent = (event_: Event) => {
+    const coaxed_event = event_ as ForceUpdatePlayerDataEvent;
+    const key = coaxed_event.detail.key;
     /* eslint-disable
       @typescript-eslint/no-unsafe-argument,
       @typescript-eslint/no-unsafe-assignment
     */
-    const val = e.detail.value;
-    this.forceUpdatePlayerDataValue(key, val);
+    const value = coaxed_event.detail.value;
+    this.forceUpdatePlayerDataValue(key, value);
     /* eslint-enable
       @typescript-eslint/no-unsafe-argument,
       @typescript-eslint/no-unsafe-assignment
     */
   };
-  private onPlayerSelect = (ev: MenuButtonEventData) => {
-    ev.stopPropagation();
-    const target = ev.detail;
+  private onPlayerSelect = (event_: MenuButtonEventData) => {
+    event_.stopPropagation();
+    const target = event_.detail;
     const player = target.option;
-    if (!player.length) {
+    if (player.length === 0) {
       return;
     }
     this.selectedPlayerService(player);
   };
 
-  protected onAddToPlaylist = (ev: Event) => {
+  protected onAddToPlaylist = (event_: Event) => {
     if (!this.activeMediaPlayer || !this.hass) {
       return;
     }
-    const uri = (ev.target as HTMLElement).dataset.uri as string;
+    const uri = (event_.target as HTMLElement).dataset.uri as string;
     const ent = this.hass.states[this.activeEntity.entity_id];
     if (!ent) {
       return;
@@ -302,7 +305,7 @@ class MusicPlayerCard extends LitElement {
         <div class="dialog-playlists-none-loading">Loading Playlists...</div>
       `;
     }
-    if (!this._playlists.length) {
+    if (this._playlists.length === 0) {
       return html`
         <div class="dialog-playlists-none-loading">No playlists found!</div>
       `;
@@ -411,13 +414,15 @@ class MusicPlayerCard extends LitElement {
         ;
       `;
     }
-    return html` <div
-      class="player-track-artist ${this.cardConfig.expressive
-        ? `player-track-artist-expressive`
-        : ``}"
-    >
-      ${this.player_data.track_artist}
-    </div>`;
+    return html`
+      <div
+        class="player-track-artist ${this.cardConfig.expressive
+          ? `player-track-artist-expressive`
+          : ``}"
+      >
+        ${this.player_data.track_artist}
+      </div>
+    `;
   }
   protected renderSectionTitle(): TemplateResult {
     const label = this.controller.translate("player.header") as string;
@@ -463,9 +468,9 @@ class MusicPlayerCard extends LitElement {
           id="active-track-text"
           class="${this.cardConfig.expressive
             ? `active-track-text-expressive`
-            : ``} ${this.config.layout.artwork_size != ArtworkSize.LARGE
-            ? `active-track-text-rounded`
-            : ``}"
+            : ``} ${this.config.layout.artwork_size == ArtworkSize.LARGE
+            ? ``
+            : `active-track-text-rounded`}"
         >
           ${this.renderPlayerHeader()} ${this.renderProgress()}
         </div>
@@ -600,7 +605,7 @@ class MusicPlayerCard extends LitElement {
     }
   }
   protected shouldUpdate(_changedProperties: PropertyValues): boolean {
-    if (!this.player_data || !_changedProperties.size) {
+    if (!this.player_data || _changedProperties.size === 0) {
       return false;
     }
     return super.shouldUpdate(_changedProperties);

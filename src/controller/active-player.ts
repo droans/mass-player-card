@@ -1,6 +1,6 @@
 import { ContextProvider } from "@lit/context";
 import {
-  activeEntityConfContext,
+  activeEntityConfigContext,
   activeEntityIDContext,
   activeMediaPlayerContext,
   activePlayerDataContext,
@@ -27,7 +27,7 @@ import {
   getGroupVolumeServiceSchema,
 } from "mass-queue-types/packages/mass_queue/actions/get_group_volume";
 import { setGroupVolumeServiceSchema } from "mass-queue-types/packages/mass_queue/actions/set_group_volume";
-import { isActive, jsonMatch, playerHasUpdated } from "../utils/util";
+import { isActive, jsonMatch, playerHasUpdated } from "../utils/utility";
 import {
   applyExpressiveScheme,
   generateDefaultExpressiveSchemeColor,
@@ -42,7 +42,9 @@ import WaCarousel from "@droans/webawesome/dist/components/carousel/carousel";
 import { RepeatMode } from "../const/enums";
 
 export class ActivePlayerController {
-  private _activeEntityConfig: ContextProvider<typeof activeEntityConfContext>;
+  private _activeEntityConfig: ContextProvider<
+    typeof activeEntityConfigContext
+  >;
   private _activeEntityID: ContextProvider<typeof activeEntityIDContext>;
   private _activeMediaPlayer: ContextProvider<typeof activeMediaPlayerContext>;
   private _activePlayerName: ContextProvider<typeof activePlayerNameContext>;
@@ -82,7 +84,7 @@ export class ActivePlayerController {
       context: groupVolumeContext,
     });
     this._activeEntityConfig = new ContextProvider(host, {
-      context: activeEntityConfContext,
+      context: activeEntityConfigContext,
     });
     this._activeEntityID = new ContextProvider(host, {
       context: activeEntityIDContext,
@@ -106,9 +108,9 @@ export class ActivePlayerController {
   }
   public set hass(hass: ExtendedHass) {
     this._hass = hass;
-    const cur_entity = this.activeMediaPlayer;
+    const current_entity = this.activeMediaPlayer;
     const new_entity = hass.states[this.activeEntityID];
-    if (playerHasUpdated(cur_entity, new_entity)) {
+    if (playerHasUpdated(current_entity, new_entity)) {
       this.setActivePlayer(this.activeEntityID);
     }
     void this.updateActivePlayerData();
@@ -140,13 +142,13 @@ export class ActivePlayerController {
     return this._useVibrant.value;
   }
 
-  private set activeEntityConfig(conf: EntityConfig) {
-    this._activeEntityConfig.setValue(conf);
+  private set activeEntityConfig(config: EntityConfig) {
+    this._activeEntityConfig.setValue(config);
     const states = this.hass.states;
-    this.activePlayerName = conf.name;
-    this.volumeMediaPlayer = states[conf.volume_entity_id];
-    this.activeMediaPlayer = states[conf.entity_id];
-    this.activeEntityID = conf.entity_id;
+    this.activePlayerName = config.name;
+    this.volumeMediaPlayer = states[config.volume_entity_id];
+    this.activeMediaPlayer = states[config.entity_id];
+    this.activeEntityID = config.entity_id;
     void this.setCanGroupWith();
   }
   public get activeEntityConfig() {
@@ -178,7 +180,7 @@ export class ActivePlayerController {
   }
 
   private set activePlayerName(name: string) {
-    if (name.length) {
+    if (name.length > 0) {
       this._activePlayerName.setValue(name);
       return;
     }
@@ -213,12 +215,12 @@ export class ActivePlayerController {
     if (!player) {
       return;
     }
-    const old_attrs = this.volumeMediaPlayer?.attributes;
-    const new_attrs = player.attributes;
+    const old_attributes = this.volumeMediaPlayer?.attributes;
+    const new_attributes = player.attributes;
     if (
-      old_attrs?.volume_level != new_attrs.volume_level ||
-      old_attrs?.is_volume_muted != new_attrs.is_volume_muted ||
-      !old_attrs
+      old_attributes?.volume_level != new_attributes.volume_level ||
+      old_attributes?.is_volume_muted != new_attributes.is_volume_muted ||
+      !old_attributes
     ) {
       this._volumeMediaPlayer.setValue(player);
     }
@@ -242,9 +244,9 @@ export class ActivePlayerController {
   public get activePlayerData() {
     return this._activePlayerData.value;
   }
-  public set carouselElement(elem: WaCarousel | undefined) {
-    if (elem) {
-      this._carouselElement = elem;
+  public set carouselElement(element: WaCarousel | undefined) {
+    if (element) {
+      this._carouselElement = element;
       this.createObserver();
     }
   }
@@ -316,17 +318,17 @@ export class ActivePlayerController {
     }
     const data = await this.getactivePlayerData();
     const new_data = JSON.stringify(data);
-    const cur_data = JSON.stringify(this.activePlayerData);
-    if (new_data != cur_data) {
+    const current_data = JSON.stringify(this.activePlayerData);
+    if (new_data != current_data) {
       this.activePlayerData = data;
     }
   }
 
   private dispatchUpdatedActivePlayer() {
-    const ev = new CustomEvent("active-player-updated", {
+    const event_ = new CustomEvent("active-player-updated", {
       detail: this.activeMediaPlayer,
     });
-    this._host.dispatchEvent(ev);
+    this._host.dispatchEvent(event_);
   }
   private setGroupAttributes() {
     this.groupMembers = this.getGroupedPlayers().map((item) => {
@@ -343,10 +345,10 @@ export class ActivePlayerController {
     return ents.filter((item) => {
       const ent = this.hass.states[item.entity_id];
       if (ent) {
-        const attrs = ent.attributes;
+        const attributes = ent.attributes;
         return (
-          attrs.active_queue == active_queue &&
-          attrs.mass_player_type != "group"
+          attributes.active_queue == active_queue &&
+          attributes.mass_player_type != "group"
         );
       }
       return false;
@@ -359,11 +361,8 @@ export class ActivePlayerController {
       const ent = states[entity.entity_id];
       return isActive(this.hass, ent, entity);
     });
-    if (active_players.length) {
-      this.activeEntityConfig = active_players[0];
-    } else {
-      this.activeEntityConfig = players[0];
-    }
+    this.activeEntityConfig =
+      active_players.length > 0 ? active_players[0] : players[0];
   }
   public setActivePlayer(entity_id: string) {
     const entities_config = this.config.entities;
@@ -424,8 +423,9 @@ export class ActivePlayerController {
       },
       return_response: true,
     };
-    const ret = await this.hass.callWS<MassGetQueueServiceResponseSchema>(data);
-    const result = ret.response[entity_id];
+    const returnValue =
+      await this.hass.callWS<MassGetQueueServiceResponseSchema>(data);
+    const result = returnValue.response[entity_id];
     return result;
   }
   public createAndApplyExpressiveScheme() {
@@ -453,15 +453,13 @@ export class ActivePlayerController {
       return;
     }
     this._updatingScheme = true;
-    let schemeColor: number;
     const activeArtwork = this.getActiveArtwork();
-    if (!(activeArtwork?.tagName.toLowerCase() == "img")) {
-      schemeColor = generateDefaultExpressiveSchemeColor();
-    } else {
-      schemeColor = await generateExpressiveSourceColorFromImageElement(
-        activeArtwork as HTMLImageElement,
-      );
-    }
+    const schemeColor =
+      activeArtwork?.tagName.toLowerCase() == "img"
+        ? await generateExpressiveSourceColorFromImageElement(
+            activeArtwork as HTMLImageElement,
+          )
+        : generateDefaultExpressiveSchemeColor();
     if (schemeColor == this._activeSchemeColor) {
       this._updatingScheme = false;
       return;
@@ -523,8 +521,9 @@ export class ActivePlayerController {
       },
       return_response: true,
     };
-    const ret = await this.hass.callWS<getGroupVolumeServiceResponse>(data);
-    const vol = ret.response.volume_level;
+    const returnValue =
+      await this.hass.callWS<getGroupVolumeServiceResponse>(data);
+    const vol = returnValue.response.volume_level;
     return vol;
   }
   public async getEntityInfo(

@@ -9,7 +9,7 @@ import {
   playersConfigContext,
 } from "../const/context";
 import { getIcons, Icons } from "../const/icons";
-import { jsonMatch } from "../utils/util";
+import { jsonMatch } from "../utils/utility";
 
 export class MassCardConfigController {
   private _config!: Config;
@@ -46,14 +46,14 @@ export class MassCardConfigController {
     if (jsonMatch(this._config, config)) {
       return;
     }
-    const conf = processConfig(config);
-    this._config = conf;
-    this._entitiesConfig.value = conf.entities;
-    this._playerQueueConfig.value = conf.queue;
-    this._musicPlayerConfig.value = conf.player;
-    this._playersConfig.value = conf.players;
-    this._mediaBrowserConfig.value = conf.media_browser;
-    this.Icons = getIcons(conf.expressive);
+    const config_ = processConfig(config);
+    this._config = config_;
+    this._entitiesConfig.value = config_.entities;
+    this._playerQueueConfig.value = config_.queue;
+    this._musicPlayerConfig.value = config_.player;
+    this._playersConfig.value = config_.players;
+    this._mediaBrowserConfig.value = config_.media_browser;
+    this.Icons = getIcons(config_.expressive);
   }
   public get config() {
     return this._config;

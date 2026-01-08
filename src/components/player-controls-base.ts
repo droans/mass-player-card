@@ -3,7 +3,7 @@ import { LitElement, PropertyValues } from "lit";
 import { state } from "lit/decorators.js";
 import {
   actionsControllerContext,
-  activeEntityConfContext,
+  activeEntityConfigContext,
   activePlayerDataContext,
   controllerContext,
   EntityConfig,
@@ -15,7 +15,7 @@ import { PlayerData } from "../const/types";
 import { Icons } from "../const/icons";
 import { getIteratedRepeatMode } from "../utils/music-player";
 import { RepeatMode } from "../const/enums";
-import { jsonMatch } from "../utils/util";
+import { jsonMatch } from "../utils/utility";
 import {
   PlayerConfig,
   PlayerControlsHiddenElementsConfig,
@@ -60,7 +60,7 @@ export class MassPlayerControlsBase extends LitElement {
     this.setHiddenElements();
   }
 
-  @consume({ context: activeEntityConfContext, subscribe: true })
+  @consume({ context: activeEntityConfigContext, subscribe: true })
   private set activeEntityConfig(config: EntityConfig) {
     const c = config.hide.player;
     this._entityHiddenElements = {
@@ -84,13 +84,13 @@ export class MassPlayerControlsBase extends LitElement {
   }
 
   private setHiddenElements() {
-    const e = this._processHiddenElement(this._entityHiddenElements);
+    const element = this._processHiddenElement(this._entityHiddenElements);
     const c = this._processHiddenElement(this._configHiddenElements);
     const result: PlayerControlsHiddenElementsConfig = {
-      power: e.power || c.power || false,
-      repeat: e.repeat || c.repeat || false,
-      shuffle: e.shuffle || c.shuffle || false,
-      favorite: e.favorite || c.favorite || false,
+      power: element.power || c.power || false,
+      repeat: element.repeat || c.repeat || false,
+      shuffle: element.shuffle || c.shuffle || false,
+      favorite: element.favorite || c.favorite || false,
     };
     if (jsonMatch(result, this._hiddenElements)) {
       return;
@@ -133,8 +133,8 @@ export class MassPlayerControlsBase extends LitElement {
       key,
       value,
     };
-    const ev = new CustomEvent("force-update-player", { detail: data });
-    this.controller.host.dispatchEvent(ev);
+    const event_ = new CustomEvent("force-update-player", { detail: data });
+    this.controller.host.dispatchEvent(event_);
   }
   /* 
     eslint-enable 
@@ -142,47 +142,48 @@ export class MassPlayerControlsBase extends LitElement {
       @typescript-eslint/no-unsafe-assignment
   */
   private requestPlayerDataUpdate() {
-    const ev = new Event("request-player-data-update");
-    this.controller.host.dispatchEvent(ev);
+    const event_ = new Event("request-player-data-update");
+    this.controller.host.dispatchEvent(event_);
   }
-  protected onPrevious = async (e: Event) => {
-    e.stopPropagation();
+  protected onPrevious = async (event_: Event) => {
+    event_.stopPropagation();
     await this.actions.actionPlayPrevious();
     this.requestPlayerDataUpdate();
   };
-  protected onNext = async (e: Event) => {
-    e.stopPropagation();
+  protected onNext = async (event_: Event) => {
+    event_.stopPropagation();
     await this.actions.actionPlayNext();
     this.requestPlayerDataUpdate();
   };
-  protected onPlayPause = async (e: Event) => {
-    e.stopPropagation();
+  protected onPlayPause = async (event_: Event) => {
+    event_.stopPropagation();
     this.playing = !this.playing;
     this.forceUpdatePlayerData("playing", this.playing);
     await this.actions.actionPlayPause();
   };
-  protected onShuffle = async (e: Event) => {
-    e.stopPropagation();
+  protected onShuffle = async (event_: Event) => {
+    event_.stopPropagation();
     this.shuffle = !this.shuffle;
     this.requestUpdate("shuffle", this.shuffle);
     await this.actions.actionToggleShuffle();
   };
-  protected onRepeat = async (e: Event) => {
-    e.stopPropagation();
-    const cur_repeat = this.repeat;
-    const repeat = getIteratedRepeatMode(cur_repeat);
+  protected onRepeat = async (event_: Event) => {
+    event_.stopPropagation();
+    const current_repeat = this.repeat;
+    const repeat = getIteratedRepeatMode(current_repeat);
     this.repeat = repeat;
     this.requestUpdate("repeat", this.repeat);
     await this.actions.actionSetRepeat(repeat);
   };
-  protected onPower = async (e: Event) => {
-    e.stopPropagation();
+  protected onPower = async (event_: Event) => {
+    event_.stopPropagation();
     await this.actions.actionTogglePower();
   };
-  protected onFavorite = async (e: Event) => {
-    e.stopPropagation();
+  protected onFavorite = async (event_: Event) => {
+    event_.stopPropagation();
     this.favorite = !this.favorite;
     this.requestUpdate("favorite", this.favorite);
+    // eslint-disable-next-line unicorn/prefer-ternary
     if (this.playerData.favorite) {
       await this.actions.actionRemoveFavorite();
     } else {

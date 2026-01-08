@@ -12,7 +12,7 @@ import { ExtendedHass, ExtendedHassEntity } from "../const/types";
 import { hassContext } from "../const/context";
 import PlayerActions from "../actions/player-actions";
 import styles from "../styles/volume-slider";
-import { DetailValEventData } from "../const/events";
+import { DetailValueEventData } from "../const/events";
 class VolumeSlider extends LitElement {
   @property({ attribute: false }) public maxVolume = 100;
   @state() private entity?: ExtendedHassEntity;
@@ -49,11 +49,11 @@ class VolumeSlider extends LitElement {
   public get hass() {
     return this._hass;
   }
-  private onVolumeChange = async (ev: DetailValEventData) => {
+  private onVolumeChange = async (event_: DetailValueEventData) => {
     if (!this.entity) {
       return;
     }
-    let volume: number = ev.detail.value;
+    let volume: number = event_.detail.value;
     volume = volume / 100;
     this.requestUpdate("volume", volume);
     await this._actions.actionSetVolume(this.entity, volume);

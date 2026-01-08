@@ -71,12 +71,12 @@ class MassNavBar extends LitElement {
       return;
     }
     const host = this.controller.host;
-    const el: MediaBrowser | null | undefined =
+    const element: MediaBrowser | null | undefined =
       host.shadowRoot?.querySelector("mass-media-browser");
-    if (!el) {
+    if (!element) {
       return;
     }
-    el.resetActiveSections();
+    element.resetActiveSections();
   };
 
   protected renderMusicPlayerTab(): TemplateResult {

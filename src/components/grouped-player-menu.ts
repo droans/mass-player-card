@@ -15,11 +15,11 @@ import {
 } from "../const/context";
 import { Icons } from "../const/icons";
 import { ExtendedHass } from "../const/types";
-import { jsonMatch } from "../utils/util";
+import { jsonMatch } from "../utils/utility";
 import { MassCardController } from "../controller/controller";
 import PlayerActions from "../actions/player-actions";
 import {
-  DetailValEventData,
+  DetailValueEventData,
   HTMLImageElementEvent,
   JoinUnjoinEventData,
 } from "../const/events";
@@ -64,13 +64,13 @@ export class MassCardPlayerSelector extends LitElement {
     return this._groupedPlayers;
   }
 
-  private onUnjoinSelect = (ev: JoinUnjoinEventData) => {
+  private onUnjoinSelect = (event_: JoinUnjoinEventData) => {
     const actions = new PlayerActions(this.hass);
-    const ent = ev.target.entity;
+    const ent = event_.target.entity;
     void actions.actionUnjoinPlayers(ent);
   };
-  private onGroupVolumeChange = (ev: DetailValEventData) => {
-    const vol = ev.detail.value;
+  private onGroupVolumeChange = (event_: DetailValueEventData) => {
+    const vol = event_.detail.value;
     void this.controller.ActivePlayer?.setActiveGroupVolume(vol);
   };
 
@@ -140,8 +140,8 @@ export class MassCardPlayerSelector extends LitElement {
                   : ``}"
                 slot="start"
                 src="${img}"
-                @error${(e: HTMLImageElementEvent) => {
-                  e.target.src = fallback;
+                @error${(event_: HTMLImageElementEvent) => {
+                  event_.target.src = fallback;
                 }}
               />
               <span slot="headline" class="grouped-title"> ${name} </span>

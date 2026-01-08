@@ -22,7 +22,7 @@ import { DEFAULT_PLAYERS_CONFIG, PlayersConfig } from "../config/players";
 import { PlayerSelectedService } from "../const/actions";
 import { ExtendedHass, ExtendedHassEntity } from "../const/types";
 import {
-  activeEntityConfContext,
+  activeEntityConfigContext,
   controllerContext,
   hassContext,
   playersConfigContext,
@@ -36,7 +36,7 @@ import { MassCardController } from "../controller/controller";
 class PlayersCard extends LitElement {
   @property({ attribute: false }) private entities: ExtendedHassEntity[] = [];
 
-  @consume({ context: activeEntityConfContext, subscribe: true })
+  @consume({ context: activeEntityConfigContext, subscribe: true })
   @property({ attribute: false })
   public activePlayerEntity!: EntityConfig;
 
@@ -79,12 +79,12 @@ class PlayersCard extends LitElement {
       return;
     }
     this._hass = hass;
-    if (!this.actions) {
-      this.actions = new PlayersActions(hass);
-    } else {
+    if (this.actions) {
       this.actions.hass = hass;
+    } else {
+      this.actions = new PlayersActions(hass);
     }
-    if (!this.entities.length) {
+    if (this.entities.length === 0) {
       this.setEntities(hass);
       return;
     }
@@ -150,16 +150,16 @@ class PlayersCard extends LitElement {
     if (!this._hass || !this.controller.ActivePlayer) {
       return html``;
     }
-    const attrs =
+    const attributes =
       this._hass.states[this.activePlayerEntity.entity_id]?.attributes;
-    const group_members: string[] = attrs?.group_members ?? [];
+    const group_members: string[] = attributes?.group_members ?? [];
     const canGroupWith = this.controller.ActivePlayer.canGroupWith;
     return this.entities.map((item) => {
       // eslint-disable-next-line @typescript-eslint/no-non-null-assertion
       const player = this.config!.entities.find(
         (entity) => entity.entity_id == item.entity_id,
       )!;
-      const allowJoin = attrs?.group_members !== undefined;
+      const allowJoin = attributes?.group_members !== undefined;
       return keyed(
         item.entity_id,
         html`

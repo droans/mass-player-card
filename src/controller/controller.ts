@@ -15,7 +15,7 @@ import { Sections } from "../const/enums";
 import { ActionsController } from "./actions";
 import { QueueController } from "./queue";
 import { MediaBrowserController } from "./browser";
-import { jsonMatch } from "../utils/util";
+import { jsonMatch } from "../utils/utility";
 import { getTranslation } from "../utils/translations";
 
 export class MassCardController {
@@ -190,8 +190,8 @@ export class MassCardController {
     }
     if (section != this.activeSection) {
       this._activeSection.setValue(section);
-      const ev = new CustomEvent("section-changed", { detail: section });
-      this.host.dispatchEvent(ev);
+      const event_ = new CustomEvent("section-changed", { detail: section });
+      this.host.dispatchEvent(event_);
     }
   }
   public get activeSection() {

@@ -23,11 +23,11 @@ import { DynamicScheme } from "@ktibow/material-color-utilities-nightly";
 import { Icons } from "./icons";
 import { QueueController } from "../controller/queue";
 import { MediaBrowserController } from "../controller/browser";
-import { uuid4 } from "../utils/util";
+import { uuid4 } from "../utils/utility";
 export type { EntityConfig } from "../config/config";
 
 export const hassContext = createContext<ExtendedHass>(uuid4());
-export const activeEntityConfContext = createContext<EntityConfig>(uuid4());
+export const activeEntityConfigContext = createContext<EntityConfig>(uuid4());
 export const activeEntityIDContext = createContext<string>(uuid4());
 export const activePlayerNameContext = createContext<string>(uuid4());
 export const activeMediaPlayerContext =

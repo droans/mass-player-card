@@ -18,21 +18,21 @@ export function getDefaultSection(config: Config) {
   if (config.default_section) {
     return ConfigSectionMap[config.default_section];
   }
-  const sections_conf: Record<string, boolean> = {
+  const sections_config: Record<string, boolean> = {
     [Sections.MUSIC_PLAYER]: config.player.enabled,
     [Sections.QUEUE]: config.queue.enabled,
     [Sections.PLAYERS]: config.players.enabled,
     [Sections.MEDIA_BROWSER]: config.media_browser.enabled,
   };
-  const filtered = Object.entries(sections_conf)
+  const filtered = Object.entries(sections_config)
     .filter((item) => item[1])
     .map((item) => item[0]);
-  const enabled_defaults = defaults.filter((item) => filtered.includes(item));
-  return enabled_defaults[0];
+  const enabled_default = defaults.find((item) => filtered.includes(item));
+  return enabled_default;
 }
 
 export function secondsToTime(seconds: number) {
-  if (isNaN(seconds)) {
+  if (Number.isNaN(seconds)) {
     return "0:00";
   }
   const mins = Math.floor(seconds / 60);
@@ -49,9 +49,9 @@ export function playerHasUpdated(
   if (!new_player || !old_player) {
     return true;
   }
-  const old_attrs = old_player.attributes;
-  const new_attrs = new_player.attributes;
-  const attrs = [
+  const old_attributes = old_player.attributes;
+  const new_attributes = new_player.attributes;
+  const attributes = [
     "active_queue",
     "app_id",
     "entity_picture_local",
@@ -69,16 +69,16 @@ export function playerHasUpdated(
   ];
   const old_state = old_player.state;
   const new_state = new_player.state;
-  const changed_attrs = attrs.filter((attr) => {
+  const changed_attributes = attributes.filter((attribute) => {
     try {
-      return old_attrs[attr] !== new_attrs[attr];
+      return old_attributes[attribute] !== new_attributes[attribute];
     } catch {
       return true;
     }
   });
   const state_changed = old_state != new_state;
-  const attrs_changed = changed_attrs.length > 0;
-  return state_changed || attrs_changed;
+  const attributes_changed = changed_attributes.length > 0;
+  return state_changed || attributes_changed;
 }
 
 export function queueItemhasUpdated(
@@ -111,7 +111,7 @@ export function isActive(
   const has_queue = !!entity.attributes.active_queue;
   const connected = hass.connected;
   const updated_ms = new Date(entity.last_updated).getTime();
-  const now_ms = new Date().getTime();
+  const now_ms = Date.now();
   const updated_recently =
     now_ms - updated_ms <= MAX_ACTIVE_LAST_ACTIVE_DURATION;
   return (
@@ -163,6 +163,7 @@ function findFirstAccessibleImage(
       const img = new Image();
       const url = ensureThumbnail(urls[index], hass);
 
+      // eslint-disable-next-line unicorn/prefer-add-event-listener
       img.onload = () => {
         if (returnElement) {
           resolve(img);
@@ -171,6 +172,7 @@ function findFirstAccessibleImage(
         return;
       };
 
+      // eslint-disable-next-line unicorn/prefer-add-event-listener
       img.onerror = () => {
         index++;
         tryNextImage();
@@ -185,7 +187,7 @@ export function delay(ms: number) {
   return new Promise((resolve) => setTimeout(resolve, ms));
 }
 export function uuid4() {
-  return "10000000-1000-4000-8000-100000000000".replace(/[018]/g, (c) =>
+  return "10000000-1000-4000-8000-100000000000".replaceAll(/[018]/g, (c) =>
     (
       +c ^
       (crypto.getRandomValues(new Uint8Array(1))[0] & (15 >> (+c / 4)))
@@ -198,7 +200,7 @@ export function formatDuration(dur: number | undefined) {
     return `0 minutes`;
   }
   let _dur = dur;
-  const days_s = 86400;
+  const days_s = 86_400;
   const hr_s = 3600;
   const min_s = 60;
   const days = Math.floor(_dur / days_s);

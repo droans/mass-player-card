@@ -105,8 +105,8 @@ export class MassPlaylistTrackRow extends LitElement {
     );
   };
 
-  private onPlaylistItemSelected = (ev: Event) => {
-    ev.stopPropagation();
+  private onPlaylistItemSelected = (event_: Event) => {
+    event_.stopPropagation();
     void this.playTrackEnqueuePlaylist();
   };
   private async playTrackEnqueuePlaylist() {
@@ -135,12 +135,12 @@ export class MassPlaylistTrackRow extends LitElement {
         position,
       },
     };
-    const ev = new CustomEvent("playlist-track-removed", data);
-    this.dispatchEvent(ev);
+    const event_ = new CustomEvent("playlist-track-removed", data);
+    this.dispatchEvent(event_);
   }
-  private onMenuItemSelected = (ev: MenuButtonEventData) => {
-    ev.stopPropagation();
-    const option = ev.detail.option;
+  private onMenuItemSelected = (event_: MenuButtonEventData) => {
+    event_.stopPropagation();
+    const option = event_.detail.option;
     if (option == "remove") {
       this.removeTrackFromPlaylist();
     } else {
@@ -178,17 +178,16 @@ export class MassPlaylistTrackRow extends LitElement {
     `;
   }
 
-  private _renderThumbnailFallback = (ev: HTMLImageElementEvent) => {
-    ev.target.src = getThumbnail(this.hass, Thumbnail.CLEFT) as string;
+  private _renderThumbnailFallback = (event_: HTMLImageElementEvent) => {
+    event_.target.src = getThumbnail(this.hass, Thumbnail.CLEFT) as string;
   };
   protected renderThumbnail(): TemplateResult {
     // const fallback = getThumbnail(this.hass, Thumbnail.CLEFT);
     const loc_img = this.track.local_image_encoded?.length
       ? this.track.local_image_encoded
       : undefined;
-    const media_img = this.track.media_image.length
-      ? this.track.media_image
-      : undefined;
+    const media_img =
+      this.track.media_image.length > 0 ? this.track.media_image : undefined;
     const img = loc_img ?? media_img ?? "";
     return html`
       <img

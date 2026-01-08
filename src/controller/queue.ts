@@ -11,7 +11,7 @@ import {
 } from "../const/player-queue";
 import { Config } from "../config/config";
 import QueueActions from "../actions/queue-actions";
-import { isActive, jsonMatch, playerHasUpdated } from "../utils/util";
+import { isActive, jsonMatch, playerHasUpdated } from "../utils/utility";
 import {
   ExtendedHass,
   ExtendedHassEntity,
@@ -187,7 +187,7 @@ export class QueueController {
     const active_idx = queue.findIndex(
       (i) => i.media_content_id == active_track,
     );
-    if (active_idx >= 0) {
+    if (active_idx !== -1) {
       queue[active_idx].playing = true;
     }
     return queue;
@@ -237,9 +237,9 @@ export class QueueController {
         this._updatingQueue = false;
         return queue;
       }
-    } catch (e) {
+    } catch (error) {
       this._fails++;
-      throw e;
+      throw error;
     } finally {
       this._updatingQueue = false;
     }
@@ -309,16 +309,8 @@ export class QueueController {
     }
     const idx = queue.findIndex((i) => i.playing);
     this.currentQueueItem = queue[idx];
-    if (idx > 0) {
-      this.previousQueueItem = queue[idx - 1];
-    } else {
-      this.previousQueueItem = null;
-    }
-    if (idx < queue.length - 1) {
-      this.nextQueueItem = queue[idx + 1];
-    } else {
-      this.nextQueueItem = null;
-    }
+    this.previousQueueItem = idx > 0 ? queue[idx - 1] : null;
+    this.nextQueueItem = idx < queue.length - 1 ? queue[idx + 1] : null;
   }
 
   private setItemActive(queue_item_id: string) {
@@ -328,8 +320,8 @@ export class QueueController {
     const new_idx = this.getIndex(queue_item_id);
     if (!new_idx || !this.queue[new_idx]) return;
     this.queue[new_idx].playing = true;
-    const cur_idx = this.queue.findIndex((i) => i.playing);
-    this.queue[cur_idx].playing = false;
+    const current_idx = this.queue.findIndex((i) => i.playing);
+    this.queue[current_idx].playing = false;
   }
   private getIndex(queue_item_id: string) {
     if (!this.queue) {
@@ -355,29 +347,29 @@ export class QueueController {
   }
 
   public async moveQueueItemUp(queue_item_id: string) {
-    const cur_idx = this.getIndex(queue_item_id);
-    if (!cur_idx) {
+    const current_idx = this.getIndex(queue_item_id);
+    if (!current_idx) {
       return;
     }
-    this.moveQueueItem(cur_idx, cur_idx - 1);
+    this.moveQueueItem(current_idx, current_idx - 1);
     await this.actions.MoveQueueItemUp(queue_item_id);
   }
   public async moveQueueItemDown(queue_item_id: string) {
-    const cur_idx = this.getIndex(queue_item_id);
-    if (!cur_idx) return;
-    this.moveQueueItem(cur_idx, cur_idx + 1);
+    const current_idx = this.getIndex(queue_item_id);
+    if (!current_idx) return;
+    this.moveQueueItem(current_idx, current_idx + 1);
     await this.actions.MoveQueueItemDown(queue_item_id);
   }
   public async moveQueueItemNext(queue_item_id: string) {
     if (!this.queue) {
       return;
     }
-    const cur_idx = this.getIndex(queue_item_id);
-    if (!cur_idx) {
+    const current_idx = this.getIndex(queue_item_id);
+    if (!current_idx) {
       return;
     }
     const new_idx = this.queue.findIndex((i) => i.playing) + 1;
-    this.moveQueueItem(cur_idx, new_idx);
+    this.moveQueueItem(current_idx, new_idx);
     await this.actions.MoveQueueItemNext(queue_item_id);
   }
   public async removeQueueItem(queue_item_id: string) {

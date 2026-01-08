@@ -11,8 +11,8 @@ import { RepeatMode } from "../const/enums";
 class MassPlayerControlsExpressive extends MassPlayerControlsBase {
   protected onFavoriteHold = () => {
     navigator.vibrate(VibrationPattern.Player.ACTION_FAVORITE_HOLD);
-    const e = new Event("open-add-to-playlist-dialog");
-    this.controller.host.dispatchEvent(e);
+    const event_ = new Event("open-add-to-playlist-dialog");
+    this.controller.host.dispatchEvent(event_);
   };
   protected renderPrevious(): TemplateResult {
     return html`
@@ -81,7 +81,7 @@ class MassPlayerControlsExpressive extends MassPlayerControlsBase {
       this.Icons.POWER,
       `icons-power icons-lower`,
     );
-    const no_label_class = !label?.length ? `no-label` : ``;
+    const no_label_class = label?.length ? `` : `no-label`;
     return html`
       <mass-player-card-button
         .onPressService=${this.onPower}
@@ -104,7 +104,7 @@ class MassPlayerControlsExpressive extends MassPlayerControlsBase {
       this.layoutConfig.icons.power,
     ) as string | undefined;
     const _icon = shuffle ? this.Icons.SHUFFLE : this.Icons.SHUFFLE_DISABLED;
-    const no_label_class = !label?.length ? `no-label` : ``;
+    const no_label_class = label?.length ? `` : `no-label`;
     const active_class = shuffle ? `button-lower-active` : ``;
 
     const icon_html = this.renderLowerIcon(
@@ -139,7 +139,7 @@ class MassPlayerControlsExpressive extends MassPlayerControlsBase {
       this.layoutConfig.icons.power,
     ) as string | undefined;
     const _icon = getRepeatIcon(repeat, this.Icons);
-    const no_label_class = !label?.length ? `no-label` : ``;
+    const no_label_class = label?.length ? `` : `no-label`;
     const active_class = repeat_on ? `button-lower-active` : ``;
 
     const icon_html = this.renderLowerIcon(
@@ -171,7 +171,7 @@ class MassPlayerControlsExpressive extends MassPlayerControlsBase {
       "player.controls.favorite",
       this.layoutConfig.icons.favorite,
     ) as string | undefined;
-    const no_label_class = !label?.length ? `no-label` : ``;
+    const no_label_class = label?.length ? `` : `no-label`;
     const active_class = favorite ? `button-lower-active` : ``;
     const _icon = favorite ? this.Icons.HEART_ALT : this.Icons.HEART_PLUS;
 
@@ -244,9 +244,13 @@ class MassPlayerControlsExpressive extends MassPlayerControlsBase {
     _class: string,
     _label: string | null = null,
   ) {
-    const slot_attr = _label?.length ? literal`slot="start"` : ``;
+    const slot_attribute = _label?.length ? literal`slot="start"` : ``;
     return html`
-      <ha-svg-icon ${slot_attr} .path=${path} class="${_class}"></ha-svg-icon>
+      <ha-svg-icon
+        ${slot_attribute}
+        .path=${path}
+        class="${_class}"
+      ></ha-svg-icon>
     `;
   }
   private renderLabel(label_key: string, icon_config: PlayerIcon): string {

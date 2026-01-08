@@ -4,7 +4,7 @@ import sharedStyles from "../styles/browser-view-shared";
 import styles from "../styles/browser-playlist-view";
 import { TrackRemovedEventData } from "../const/events";
 import "./browser-track-row";
-import { delay, formatDuration } from "../utils/util";
+import { delay, formatDuration } from "../utils/utility";
 import { getPlaylistServiceResponse } from "mass-queue-types/packages/mass_queue/actions/get_playlist";
 import { PlaylistTrack } from "mass-queue-types/packages/mass_queue/actions/get_playlist_tracks";
 import { BrowserViewBase } from "./browser-view-base";
@@ -66,8 +66,8 @@ export class MassBrowserPlaylistView extends BrowserViewBase {
     this.animateHeaderEnqueue();
   }
 
-  private onTrackRemoved = (ev: TrackRemovedEventData) => {
-    const data = ev.detail;
+  private onTrackRemoved = (event_: TrackRemovedEventData) => {
+    const data = event_.detail;
     const pos = data.position;
     const tracks = (this.tracks as PlaylistTrack[])
       .filter((track) => {
@@ -92,14 +92,14 @@ export class MassBrowserPlaylistView extends BrowserViewBase {
     `;
   }
   protected renderOverview(): TemplateResult {
-    const trackStr = this.tracks?.length
+    const trackString = this.tracks?.length
       ? `${this.tracks.length.toString()} Tracks`
       : `Loading...`;
     const owner = this.playlistMetadata?.response.owner ?? `Unknown`;
     return html`
       ${this.renderTitle()}
       <div id="collection-info">
-        <div id="tracks-length">${trackStr}</div>
+        <div id="tracks-length">${trackString}</div>
         <div id="playlist-duration">
           ${formatDuration(this.playlistDuration)}
         </div>

@@ -14,7 +14,7 @@ import "./menu-button";
 import { CardEnqueueService, CardSelectedService } from "../const/actions";
 import { ExtendedHass, ListItems, MediaCardItem } from "../const/types";
 import {
-  activeEntityConfContext,
+  activeEntityConfigContext,
   activeSectionContext,
   configContext,
   EntityConfig,
@@ -30,7 +30,7 @@ import {
 
 import styles from "../styles/media-card";
 
-import { jsonMatch } from "../utils/util";
+import { jsonMatch } from "../utils/utility";
 import {
   DEFAULT_MEDIA_BROWSER_HIDDEN_ELEMENTS_CONFIG,
   HIDDEN_BUTTON_VALUE,
@@ -136,7 +136,7 @@ class MediaCard extends LitElement {
     return this._icons;
   }
 
-  @consume({ context: activeEntityConfContext, subscribe: true })
+  @consume({ context: activeEntityConfigContext, subscribe: true })
   public set entityConfig(config: EntityConfig | undefined) {
     if (jsonMatch(this._entityConfig, config) || !config) {
       return;
@@ -182,17 +182,17 @@ class MediaCard extends LitElement {
     }
     const default_buttons = getEnqueueButtons(this.Icons, this.hass);
     const button_mapping = HIDDEN_BUTTON_VALUE;
-    const opts = default_buttons.filter((item) => {
+    const options = default_buttons.filter((item) => {
       //eslint-disable-next-line @typescript-eslint/no-unsafe-assignment
-      const hide_val = button_mapping[item.option];
+      const hide_value = button_mapping[item.option];
       //eslint-disable-next-line @typescript-eslint/no-unsafe-member-access
-      return !this.hide[hide_val];
+      return !this.hide[hide_value];
     });
-    this._enqueue_buttons = opts;
+    this._enqueue_buttons = options;
   }
-  private onEnqueue = (ev: MenuButtonEventData) => {
-    ev.stopPropagation();
-    const target = ev.detail;
+  private onEnqueue = (event_: MenuButtonEventData) => {
+    event_.stopPropagation();
+    const target = event_.detail;
     const value = target.option as EnqueueOptions;
     this.onEnqueueAction(this._config.data, value);
   };
@@ -202,12 +202,12 @@ class MediaCard extends LitElement {
   protected renderThumbnailFromBackground() {
     return html` ${this.config?.background} `;
   }
-  private _renderImageFallback = (ev: HTMLImageElementEvent) => {
+  private _renderImageFallback = (event_: HTMLImageElementEvent) => {
     const fallback = getThumbnail(
       this.hass,
       this.config?.fallback ?? Thumbnail.DISC,
     );
-    ev.target.src = fallback as string;
+    event_.target.src = fallback as string;
   };
   protected renderThumbnailFromThumbnail() {
     const img = this.config?.thumbnail;

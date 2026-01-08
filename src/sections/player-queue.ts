@@ -19,7 +19,7 @@ import {
 
 import { ExtendedHass, QueueItem, QueueItems } from "../const/types";
 import {
-  activeEntityConfContext,
+  activeEntityConfigContext,
   activeEntityIDContext,
   activePlayerControllerContext,
   activeSectionContext,
@@ -36,7 +36,7 @@ import styles from "../styles/player-queue";
 import { Sections } from "../const/enums";
 import { ActivePlayerController } from "../controller/active-player";
 import { QueueController } from "../controller/queue";
-import { jsonMatch } from "../utils/util";
+import { jsonMatch } from "../utils/utility";
 import { getTranslation } from "../utils/translations";
 import { Icons } from "../const/icons";
 import { WaAnimation } from "../const/elements";
@@ -45,7 +45,7 @@ class QueueCard extends LitElement {
   @consume({ context: activePlayerControllerContext })
   private activePlayerController!: ActivePlayerController;
 
-  @consume({ context: activeEntityConfContext, subscribe: true })
+  @consume({ context: activeEntityConfigContext, subscribe: true })
   private entityConf!: EntityConfig;
 
   @consume({ context: IconsContext, subscribe: true })
@@ -166,10 +166,8 @@ class QueueCard extends LitElement {
         return QueueConfigErrors.ENTITY_TYPE;
       }
     }
-    if (this.hass) {
-      if (!this.hass.states[this.active_player_entity]) {
-        return QueueConfigErrors.MISSING_ENTITY;
-      }
+    if (this.hass && !this.hass.states[this.active_player_entity]) {
+      return QueueConfigErrors.MISSING_ENTITY;
     }
     return QueueConfigErrors.OK;
   }
@@ -220,8 +218,8 @@ class QueueCard extends LitElement {
     }
     await this.queueController.clearQueue(this.active_player_entity);
   };
-  private onTabSwitch = (ev: Event) => {
-    if ((ev as CustomEvent).detail == Sections.QUEUE) {
+  private onTabSwitch = (event_: Event) => {
+    if ((event_ as CustomEvent).detail == Sections.QUEUE) {
       this._tabSwitchFirstUpdate = true;
       this.scrollToActive();
     }
@@ -310,7 +308,7 @@ class QueueCard extends LitElement {
     );
   }
   protected shouldUpdate(_changedProperties: PropertyValues): boolean {
-    if (!_changedProperties.size) {
+    if (_changedProperties.size === 0) {
       return false;
     }
     if (_changedProperties.has("_config") || _changedProperties.has("queue")) {

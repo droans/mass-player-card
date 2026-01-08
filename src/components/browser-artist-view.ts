@@ -2,7 +2,7 @@ import { CSSResultOrNative, html, TemplateResult } from "lit";
 import { customElement, query, state } from "lit/decorators.js";
 import sharedStyles from "../styles/browser-view-shared";
 import styles from "../styles/browser-artist-view";
-import { delay } from "../utils/util";
+import { delay } from "../utils/utility";
 import { getArtistServiceResponse } from "mass-queue-types/packages/mass_queue/actions/get_artist";
 import { BrowserViewBase } from "./browser-view-base";
 
@@ -68,13 +68,13 @@ export class MassBrowserArtistView extends BrowserViewBase {
     `;
   }
   protected renderOverview(): TemplateResult {
-    const trackStr = this.tracks?.length
+    const trackString = this.tracks?.length
       ? `${this.tracks.length.toString()} Tracks`
       : `Loading...`;
     return html`
       ${this.renderTitle()}
       <div id="collection-info">
-        <div id="tracks-length">${trackStr}</div>
+        <div id="tracks-length">${trackString}</div>
       </div>
     `;
   }

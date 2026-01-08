@@ -10,7 +10,7 @@ import {
 } from "../const/actions";
 import { VibrationPattern } from "../const/common";
 import {
-  activeEntityConfContext,
+  activeEntityConfigContext,
   EntityConfig,
   hassContext,
   IconsContext,
@@ -18,7 +18,7 @@ import {
   useExpressiveContext,
 } from "../const/context";
 
-import { isActive, jsonMatch } from "../utils/util";
+import { isActive, jsonMatch } from "../utils/utility";
 
 import styles from "../styles/player-row";
 import {
@@ -67,7 +67,7 @@ class PlayerRow extends LitElement {
   public get config() {
     return this._config;
   }
-  @consume({ context: activeEntityConfContext, subscribe: true })
+  @consume({ context: activeEntityConfigContext, subscribe: true })
   public set entityConfig(config: EntityConfig | undefined) {
     if (jsonMatch(this._entityConfig, config) || !config) {
       return;
@@ -118,9 +118,9 @@ class PlayerRow extends LitElement {
   protected shouldUpdate(_changedProperties: PropertyValues<this>): boolean {
     return _changedProperties.size > 0;
   }
-  private onJoinPressed = async (e: Event) => {
+  private onJoinPressed = async (event_: Event) => {
     navigator.vibrate(VibrationPattern.Players.ACTION_JOIN);
-    e.stopPropagation();
+    event_.stopPropagation();
     const service = this.joined ? this.unjoinService : this.joinService;
     if (!this.player_entity) {
       return;
@@ -128,8 +128,8 @@ class PlayerRow extends LitElement {
     await service([this.player_entity.entity_id]);
     this.joined = !this.joined;
   };
-  private onTransferPressed = (e: Event) => {
-    e.stopPropagation();
+  private onTransferPressed = (event_: Event) => {
+    event_.stopPropagation();
     navigator.vibrate(VibrationPattern.Players.ACTION_TRANSFER);
     if (!this.player_entity) {
       return;
@@ -137,27 +137,27 @@ class PlayerRow extends LitElement {
     this.transferService(this.player_entity.entity_id);
   };
 
-  private _renderThumbnailFallback = (ev: HTMLImageElementEvent) => {
-    const attrs = this.player_entity?.attributes;
+  private _renderThumbnailFallback = (event_: HTMLImageElementEvent) => {
+    const attributes = this.player_entity?.attributes;
     const fallback = getThumbnail(this.hass, Thumbnail.HEADPHONES);
-    const loc = attrs?.entity_picture_local;
-    const pic = attrs?.entity_picture ?? fallback;
-    const src = ev.target.src;
-    const newSrc = src == loc ? pic : fallback;
-    ev.target.src = newSrc ?? "";
+    const loc = attributes?.entity_picture_local;
+    const pic = attributes?.entity_picture ?? fallback;
+    const source = event_.target.src;
+    const newSource = source == loc ? pic : fallback;
+    event_.target.src = newSource ?? "";
   };
   private renderThumbnail() {
-    const attrs = this.player_entity?.attributes;
+    const attributes = this.player_entity?.attributes;
     const fallback = getThumbnail(this.hass, Thumbnail.HEADPHONES);
-    const loc = attrs?.entity_picture_local;
-    const pic = attrs?.entity_picture;
-    const src = loc ?? pic ?? fallback;
+    const loc = attributes?.entity_picture_local;
+    const pic = attributes?.entity_picture;
+    const source = loc ?? pic ?? fallback;
 
     return html`
       <img
         class="thumbnail"
         slot="start"
-        src="${src}"
+        src="${source}"
         loading="lazy"
         @error=${this._renderThumbnailFallback}
       />
@@ -187,7 +187,7 @@ class PlayerRow extends LitElement {
   }
   private renderTitle() {
     let title = this.playerName;
-    if (!title.length) {
+    if (title.length === 0) {
       title = this.player_entity?.attributes.friendly_name ?? "Media Player";
     }
     const active_style =
@@ -272,8 +272,8 @@ class PlayerRow extends LitElement {
         <span
           slot="end"
           class="button-group"
-          @click=${(ev: Event) => {
-            ev.stopPropagation();
+          @click=${(event_: Event) => {
+            event_.stopPropagation();
           }}
         >
           ${this.renderJoinButon()} ${this.renderTransferButton()}

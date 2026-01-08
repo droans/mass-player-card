@@ -16,7 +16,7 @@ import {
 } from "@ktibow/material-color-utilities-nightly";
 import { ExpressiveScheme } from "../config/config";
 import { ExtendedHass } from "../const/types";
-import { tryPrefetchImageWithFallbacks } from "./util";
+import { tryPrefetchImageWithFallbacks } from "./utility";
 
 type dynamicSchemeType = new (
   sourceColorHct: Hct,
@@ -98,7 +98,7 @@ export function generateDefaultExpressiveSchemeColor(): number {
     .getComputedStyle(document.body)
     .getPropertyValue("--primary-color")
     .replace("#", "");
-  const usedColor = color.length ? color : DEFAULT_PRIMARY_COLOR;
+  const usedColor = color.length > 0 ? color : DEFAULT_PRIMARY_COLOR;
   const argb = color.startsWith("rgb")
     ? _parseColorRgb(usedColor)
     : _parseColorHex(usedColor);
@@ -121,21 +121,21 @@ export async function generateExpressiveSourceColorFromImage(
   fallbacks: string[] = [],
 ): Promise<number> {
   try {
-    const elem = await generateImageElement(img, hass, fallbacks);
-    if (!elem) {
+    const element = await generateImageElement(img, hass, fallbacks);
+    if (!element) {
       return generateDefaultExpressiveSchemeColor();
     }
-    return await sourceColorFromImage(elem);
+    return await sourceColorFromImage(element);
   } catch {
     return generateDefaultExpressiveSchemeColor();
   }
 }
 
 export async function generateExpressiveSourceColorFromImageElement(
-  elem: HTMLImageElement,
+  element: HTMLImageElement,
 ): Promise<number> {
-  elem.crossOrigin = "Anonymous";
-  return await sourceColorFromImage(elem);
+  element.crossOrigin = "Anonymous";
+  return await sourceColorFromImage(element);
 }
 
 export function generateExpressiveSchemeFromColor(
@@ -149,7 +149,7 @@ export function generateExpressiveSchemeFromColor(
 }
 export function applyExpressiveScheme(
   scheme: DynamicScheme,
-  elem: HTMLElement,
+  element: HTMLElement,
 ) {
   const entries = Object.entries(EXPRESSIVE_KEYS);
   entries.forEach((entry) => {
@@ -158,7 +158,7 @@ export function applyExpressiveScheme(
     const colorInt = scheme[schemeKey] as number;
     if (colorInt) {
       const color = `#${colorInt.toString(16).slice(2)}`;
-      elem.style.setProperty(colorKey, color);
+      element.style.setProperty(colorKey, color);
     }
   });
 }
@@ -172,7 +172,7 @@ function _parseColorRgb(color: string) {
     .split(")")[0]
     .split(",")
     .map((i) => {
-      return parseInt(i);
+      return Number.parseInt(i);
     });
   return argbFromRgb(ints[0], ints[1], ints[2]);
 }

@@ -71,24 +71,26 @@ class MassPlayerControls extends MassPlayerControlsBase {
       label,
       this.layoutConfig.hide_labels,
     );
-    return html` <div class="track-previous div-${icon_size} ${div_layout}">
-      <ha-button
-        appearance="outlined"
-        variant="brand"
-        @click=${this.onPrevious}
-        size="${icon_size}"
-        class="icon-${icon_size} ${icon_style.box_shadow
-          ? `has-box-shadow`
-          : ``}"
-      >
-        <ha-svg-icon
-          ${slotHtml}
-          .path=${this.Icons.SKIP_PREVIOUS}
-          class="svg-${icon_size} icon-outlined"
-        ></ha-svg-icon>
-        ${labelHtml}
-      </ha-button>
-    </div>`;
+    return html`
+      <div class="track-previous div-${icon_size} ${div_layout}">
+        <ha-button
+          appearance="outlined"
+          variant="brand"
+          @click=${this.onPrevious}
+          size="${icon_size}"
+          class="icon-${icon_size} ${icon_style.box_shadow
+            ? `has-box-shadow`
+            : ``}"
+        >
+          <ha-svg-icon
+            ${slotHtml}
+            .path=${this.Icons.SKIP_PREVIOUS}
+            class="svg-${icon_size} icon-outlined"
+          ></ha-svg-icon>
+          ${labelHtml}
+        </ha-button>
+      </div>
+    `;
   }
   protected renderPlayPause(): TemplateResult {
     const icon_style = this.layoutConfig.icons.play_pause;

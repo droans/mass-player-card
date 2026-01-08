@@ -8,7 +8,7 @@ import {
 import styles from "../styles/menu-item";
 import { customElement, property, state } from "lit/decorators.js";
 import { ExtendedHass, ListItemData } from "../const/types";
-import { tryPrefetchImageWithFallbacks } from "../utils/util";
+import { tryPrefetchImageWithFallbacks } from "../utils/utility";
 import { consume } from "@lit/context";
 import { hassContext } from "../const/context";
 
@@ -49,12 +49,8 @@ export class MassMenuItem extends LitElement {
     this.getImagePath();
   }
 
-  private getImageCallback = (src: string | false) => {
-    if (typeof src == "string") {
-      this.imgPath = src;
-    } else {
-      this.imgPath = undefined;
-    }
+  private getImageCallback = (source: string | false) => {
+    this.imgPath = typeof source == "string" ? source : undefined;
   };
 
   private getImagePath() {
@@ -66,8 +62,8 @@ export class MassMenuItem extends LitElement {
         default_img ?? (fallback as string),
         [fallback ?? (default_img as string)],
         this.hass,
-      ).then((src) => {
-        this.getImageCallback(src as string | false);
+      ).then((source) => {
+        this.getImageCallback(source as string | false);
       });
     }
   }
