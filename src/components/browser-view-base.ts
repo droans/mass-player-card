@@ -5,7 +5,9 @@ import {
   ListItems,
   mediaCardAlbumData,
   mediaCardArtistData,
+  mediaCardCollectionType,
   mediaCardPlaylistData,
+  mediaCardPodcastData,
 } from "../const/types";
 import {
   DEFAULT_MEDIA_BROWSER_HIDDEN_ELEMENTS_CONFIG,
@@ -35,12 +37,10 @@ import { EnqueueOptions, Thumbnail } from "../const/enums";
 import { getThumbnail } from "../utils/thumbnails";
 import { cache } from "lit/directives/cache.js";
 import "./marquee-text";
+import { PodcastEpisode } from "mass-queue-types/packages/mass_queue/types/media-items";
 
 export class BrowserViewBase extends LitElement {
-  protected _collectionData?:
-    | mediaCardPlaylistData
-    | mediaCardAlbumData
-    | mediaCardArtistData;
+  protected _collectionData?: mediaCardCollectionType | undefined;
   protected _hass?: ExtendedHass;
   protected _activePlayer?: ExtendedHassEntity;
   protected _browserConfig?: MediaBrowserConfig;
@@ -111,7 +111,7 @@ export class BrowserViewBase extends LitElement {
     return this._Icons;
   }
 
-  @state() public tracks?: Tracks;
+  @state() public tracks?: Tracks | PodcastEpisode[];
 
   // Ensure style adjustments are handled
   @consume({ context: useExpressiveContext })
@@ -154,6 +154,7 @@ export class BrowserViewBase extends LitElement {
       | mediaCardPlaylistData
       | mediaCardAlbumData
       | mediaCardArtistData
+      | mediaCardPodcastData
       | undefined,
   ) {
     this._collectionData = data;
@@ -425,8 +426,8 @@ export class BrowserViewBase extends LitElement {
       `;
     }
     const trackCt = this.tracks.length;
-
-    return this.tracks.map((track, idx) => {
+    const tracks = this.tracks as Tracks;
+    return tracks.map((track, idx) => {
       if (idx >= this.currentIdx) {
         return html``;
       }

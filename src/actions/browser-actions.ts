@@ -22,6 +22,10 @@ import {
   getPlaylistTracksServiceSchema,
 } from "mass-queue-types/packages/mass_queue/actions/get_playlist_tracks";
 import {
+  getPodcastEpisodesServiceRespnse,
+  getPodcastEpisodeServiceSchema,
+} from "mass-queue-types/packages/mass_queue/actions/get_podcast_episodes";
+import {
   getPlaylistServiceSchema,
   getPlaylistServiceResponse,
 } from "mass-queue-types/packages/mass_queue/actions/get_playlist";
@@ -42,6 +46,10 @@ import {
   getArtistServiceResponse,
   getArtistServiceSchema,
 } from "mass-queue-types/packages/mass_queue/actions/get_artist";
+import {
+  getPodcastServiceResponse,
+  getPodcastServiceSchema,
+} from "mass-queue-types/packages/mass_queue/actions/get_podcast";
 import { removePlaylistTracksServiceSchema } from "mass-queue-types/packages/mass_queue/actions/remove_playlist_tracks";
 export default class BrowserActions {
   private _hass!: ExtendedHass;
@@ -274,6 +282,34 @@ export default class BrowserActions {
     };
     return await this.hass.callWS(data);
   }
+  async actionGetPodcastEpisodes(
+    podcast_uri: string,
+    entity_id_or_config_entry_id: string,
+  ): Promise<getPodcastEpisodesServiceRespnse> {
+    let config_entry = "";
+    if (entity_id_or_config_entry_id.includes(".")) {
+      const info = await this.actionGetPlayerInfo(entity_id_or_config_entry_id);
+      if (!info) {
+        throw Error(
+          `Received nothing back when getting tracks for playlist ${podcast_uri}!`,
+        );
+      }
+      config_entry = info.entries.mass_queue;
+    } else {
+      config_entry = entity_id_or_config_entry_id;
+    }
+    const data: getPodcastEpisodeServiceSchema = {
+      type: "call_service",
+      domain: "mass_queue",
+      service: "get_podcast_episodes",
+      service_data: {
+        uri: podcast_uri,
+        config_entry_id: config_entry,
+      },
+      return_response: true,
+    };
+    return await this.hass.callWS(data);
+  }
   async actionGetPlaylistData(
     playlist_uri: string,
     entity_id_or_config_entry_id: string,
@@ -352,6 +388,34 @@ export default class BrowserActions {
       service: "get_artist",
       service_data: {
         uri: album_uri,
+        config_entry_id: config_entry,
+      },
+      return_response: true,
+    };
+    return await this.hass.callWS(data);
+  }
+  async actionGetPodcastData(
+    podcast_uri: string,
+    entity_id_or_config_entry_id: string,
+  ): Promise<getPodcastServiceResponse> {
+    let config_entry = "";
+    if (entity_id_or_config_entry_id.includes(".")) {
+      const info = await this.actionGetPlayerInfo(entity_id_or_config_entry_id);
+      if (!info) {
+        throw Error(
+          `Received nothing back when getting episodes for podcast ${podcast_uri}!`,
+        );
+      }
+      config_entry = info.entries.mass_queue;
+    } else {
+      config_entry = entity_id_or_config_entry_id;
+    }
+    const data: getPodcastServiceSchema = {
+      type: "call_service",
+      domain: "mass_queue",
+      service: "get_podcast",
+      service_data: {
+        uri: podcast_uri,
         config_entry_id: config_entry,
       },
       return_response: true,
