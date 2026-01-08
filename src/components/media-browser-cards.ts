@@ -5,7 +5,7 @@ import {
   PropertyValues,
   TemplateResult,
 } from "lit";
-import { query, state } from "lit/decorators.js";
+import { property, query, state } from "lit/decorators.js";
 import { html, literal } from "lit/static-html.js";
 
 import "./media-card";
@@ -28,6 +28,8 @@ export class MediaBrowserCards extends LitElement {
 
   @consume({ context: hassContext, subscribe: true })
   public hass!: ExtendedHass;
+
+  private _loading = false;
 
   @query(".icons") private _iconsElement?: HTMLDivElement;
 
@@ -66,6 +68,15 @@ export class MediaBrowserCards extends LitElement {
     return this._items;
   }
 
+  @property({ attribute: "loading", type: Boolean })
+  public set loading(loading: boolean) {
+    this._loading = loading;
+    this.generateCode();
+  }
+  public get loading() {
+    return this._loading;
+  }
+
   private onItemSelected = (data: mediaCardData, target: HTMLElement) => {
     this.resetScroll();
     this.onSelectAction(data, target);
@@ -77,6 +88,16 @@ export class MediaBrowserCards extends LitElement {
     this._iconsElement?.scrollTo({ top: 0 });
   }
   private generateCode() {
+    if (this.loading) {
+      this.code = html`
+        <link
+          href="https://cdn.jsdelivr.net/npm/beercss@3.12.11/dist/cdn/beer.min.css"
+          rel="stylesheet"
+        />
+        <div class="shape loading-indicator extra"></div>
+      `;
+      return;
+    }
     const result = this.items?.map((item) => {
       const queueable = [
         "service",

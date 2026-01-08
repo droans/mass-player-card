@@ -98,6 +98,7 @@ export class MediaBrowser extends LitElement {
   private searchTerm = "";
   private _searchTimeout!: number;
   private searchActivated = false;
+  @state() private searchLoading = false;
 
   @state()
   public set activeCards(cards: MediaCardItem[] | undefined) {
@@ -378,14 +379,20 @@ export class MediaBrowser extends LitElement {
     if (search_term.length < SEARCH_TERM_MIN_LENGTH) {
       return;
     }
-    const cards = await this.browserController.search(
-      this.activeEntityConfig.entity_id,
-      search_term,
-      this.searchMediaType,
-      this.searchLibrary,
-      DEFAULT_SEARCH_LIMIT,
-    );
-    this.activeCards = cards;
+    this.searchLoading = true;
+    try {
+      const cards = await this.browserController.search(
+        this.activeEntityConfig.entity_id,
+        search_term,
+        this.searchMediaType,
+        this.searchLibrary,
+        DEFAULT_SEARCH_LIMIT,
+      );
+      this.searchLoading = false;
+      this.activeCards = cards;
+    } finally {
+      this.searchLoading = false;
+    }
   }
   private onCardsUpdated = (ev: Event) => {
     const _ev = ev as CardsUpdatedEvent;
@@ -445,6 +452,7 @@ export class MediaBrowser extends LitElement {
       <mass-browser-cards
         .onSelectAction=${this.onSelect}
         .onEnqueueAction=${this.onEnqueue}
+        ?loading=${this.searchLoading}
       ></mass-browser-cards>
     `;
   }
