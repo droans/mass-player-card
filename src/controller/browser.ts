@@ -35,7 +35,7 @@ export class MediaBrowserController {
   private actions!: BrowserActions;
   private _activeEntityId!: string;
   private _items!: ContextProvider<typeof mediaBrowserCardsContext>;
-
+  private _updatingCards = false;
   constructor(
     hass: ExtendedHass,
     config: Config,
@@ -77,6 +77,10 @@ export class MediaBrowserController {
     return this._items.value;
   }
   private resetAndGenerateSections() {
+    if (this._updatingCards) {
+      return;
+    }
+    this._updatingCards = true;
     this.items = {
       favorites: { main: [] },
       recents: { main: [] },
@@ -91,19 +95,23 @@ export class MediaBrowserController {
       this.generateAllRecents(),
       this.generateAllRecommendations(),
     ];
-    void Promise.all(promises).then(() => {
-      this.generateCustomSections();
-      // eslint-disable-next-line @typescript-eslint/no-unnecessary-condition
-      if (!this.items) {
-        return;
-      }
-      const data: CardsUpdatedEventDetail = {
-        section: "all",
-        cards: this.items,
-      };
-      const ev = new CustomEvent("cards-updated", { detail: data });
-      this._host.dispatchEvent(ev);
-    });
+    void Promise.all(promises)
+      .then(() => {
+        this.generateCustomSections();
+        // eslint-disable-next-line @typescript-eslint/no-unnecessary-condition
+        if (!this.items) {
+          return;
+        }
+        const data: CardsUpdatedEventDetail = {
+          section: "all",
+          cards: this.items,
+        };
+        const ev = new CustomEvent("cards-updated", { detail: data });
+        this._host.dispatchEvent(ev);
+      })
+      .finally(() => {
+        this._updatingCards = false;
+      });
   }
 
   public set activeEntityId(entityId: string) {

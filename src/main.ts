@@ -326,8 +326,6 @@ export class MusicAssistantPlayerCard extends LitElement {
       const stylesheet = head_styles.styleSheet as CSSStyleSheet;
       document.adoptedStyleSheets.push(stylesheet);
     }
-    // eslint-disable-next-line listeners/no-missing-remove-event-listener
-    this.addEventListener("section-changed", this.onSectionChangedEvent);
   }
   connectedCallback() {
     super.connectedCallback();
@@ -338,6 +336,8 @@ export class MusicAssistantPlayerCard extends LitElement {
         this._controller.connected();
       }
     }
+    // eslint-disable-next-line listeners/no-missing-remove-event-listener
+    this.addEventListener("section-changed", this.onSectionChangedEvent);
   }
   disconnectedCallback(): void {
     super.disconnectedCallback();
