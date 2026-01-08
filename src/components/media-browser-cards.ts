@@ -78,9 +78,13 @@ export class MediaBrowserCards extends LitElement {
   }
   private generateCode() {
     const result = this.items?.map((item) => {
-      const queueable = ["service", "playlist", "album", "artist"].includes(
-        item.data.type,
-      )
+      const queueable = [
+        "service",
+        "playlist",
+        "album",
+        "artist",
+        "podcast",
+      ].includes(item.data.type)
         ? literal`queueable`
         : literal``;
       const width = (1 / (this.browserConfig?.columns ?? 1)) * 100 - 2;

@@ -10,6 +10,7 @@ import {
   mediaCardArtistData,
   MediaCardItem,
   mediaCardPlaylistData,
+  mediaCardPodcastData,
   MediaLibraryItem,
   RecommendationSection,
 } from "../const/types";
@@ -26,6 +27,7 @@ const funcs: viewCardFuncMap = {
   playlist: generatePlaylistCard,
   album: generateAlbumCard,
   artist: generateArtistCard,
+  podcast: generatePodcastCard,
 };
 function generateSectionBackgroundPart(
   hass: ExtendedHass,
@@ -240,6 +242,24 @@ function generateArtistCard(
 ): MediaCardItem {
   const data: mediaCardArtistData = {
     type: "artist",
+    media_content_id,
+    media_image,
+    media_title,
+  };
+  return {
+    title: media_title,
+    thumbnail: media_image,
+    fallback: Thumbnail.PLAYLIST,
+    data,
+  };
+}
+function generatePodcastCard(
+  media_content_id: string,
+  media_image: string,
+  media_title: string,
+): MediaCardItem {
+  const data: mediaCardPodcastData = {
+    type: "podcast",
     media_content_id,
     media_image,
     media_title,

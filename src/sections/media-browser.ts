@@ -26,6 +26,7 @@ import "../components/section-header";
 import "../components/browser-playlist-view";
 import "../components/browser-album-view";
 import "../components/browser-artist-view";
+import "../components/browser-podcast-view";
 import styles from "../styles/media-browser";
 
 import {
@@ -242,6 +243,7 @@ export class MediaBrowser extends LitElement {
       playlist: this.onCollectionSelect,
       album: this.onCollectionSelect,
       artist: this.onCollectionSelect,
+      podcast: this.onCollectionSelect,
     };
     const func = funcs[data.type as string] as (data: mediaCardData) => void;
     if (["playlist", "album", "artist"].includes(data.type)) {
@@ -406,18 +408,26 @@ export class MediaBrowser extends LitElement {
     const collType = this.activeCollectionData.type;
     if (collType == "album") {
       return html`
-      <mpc-browser-album-view
-        .collectionData=${this.activeCollectionData}
-        .onEnqueueAction=${this.onPlaylistEnqueue}
-      ></mpc-browser-playlist-view>
+        <mpc-browser-album-view
+          .collectionData=${this.activeCollectionData}
+          .onEnqueueAction=${this.onPlaylistEnqueue}
+        ></mpc-browser-album-view>
       `;
     }
     if (collType == "artist") {
       return html`
-      <mpc-browser-artist-view
-        .collectionData=${this.activeCollectionData}
-        .onEnqueueAction=${this.onPlaylistEnqueue}
-      ></mpc-browser-playlist-view>
+        <mpc-browser-artist-view
+          .collectionData=${this.activeCollectionData}
+          .onEnqueueAction=${this.onPlaylistEnqueue}
+        ></mpc-browser-artist-view>
+      `;
+    }
+    if (collType == "podcast") {
+      return html`
+        <mpc-browser-podcast-view
+          .collectionData=${this.activeCollectionData}
+          .onEnqueueAction=${this.onPlaylistEnqueue}
+        ></mpc-browser-podcast-view>
       `;
     }
     return html`

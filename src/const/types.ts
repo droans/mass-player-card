@@ -125,15 +125,6 @@ export type mediaBrowserSectionSubtypes =
   | "recents"
   | "recommendations";
 
-// export interface MediaCardData {
-//   type?: string;
-//   subtype?: string;
-//   section?: string;
-//   media_content_id?: string;
-//   media_content_type?: string;
-//   service?: string;
-// }
-
 export type mediaCardData = mediaCardEnqueueType | mediaCardSectionData;
 
 export type mediaCardEnqueueType =
@@ -142,12 +133,14 @@ export type mediaCardEnqueueType =
   | mediaCardArtistData
   | mediaCardItemData
   | mediaCardServiceData
-  | mediaCardRecommendationData;
+  | mediaCardRecommendationData
+  | mediaCardPodcastData;
 
 export type mediaCardCollectionType =
   | mediaCardPlaylistData
   | mediaCardAlbumData
-  | mediaCardArtistData;
+  | mediaCardArtistData
+  | mediaCardPodcastData;
 
 export interface mediaCardItemData {
   type: "item";
@@ -191,6 +184,9 @@ export interface mediaCardArtistData extends mediaCardCollectionData {
   type: "artist";
 }
 
+export interface mediaCardPodcastData extends mediaCardCollectionData {
+  type: "podcast";
+}
 export interface mediaPlaylistCard extends Omit<MediaCardItem, "data"> {
   data: mediaCardPlaylistData;
 }
