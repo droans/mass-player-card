@@ -59,6 +59,10 @@ export default css`
     );
     --mdc-theme-surface: var(--mass-menu-background-color-expressive-vibrant);
   }
+  #menu-select-menu {
+    --control-select-menu-padding: unset;
+    --ha-ripple-hover-opacity: 0%;
+  }
   .svg-menu {
     color: var(--md-sys-color-primary);
   }
