@@ -37,7 +37,26 @@ export default tseslint.config(
       "listeners/no-inline-function-event-listener": "error",
       "observers/no-missing-unobserve-or-disconnect": "error",
       "observers/matching-unobserve-target": "error",
+      "unicorn/new-for-builtins": "off",
+      "unicorn/no-null": "off",
+      "unicorn/prefer-array-some": "off",
+      "unicorn/prefer-at": "off",
+      "unicorn/prefer-global-this": "off",
       "unicorn/prefer-set-has": "off",
+      "unicorn/prevent-abbreviations": [
+        "error",
+        {
+          replacements: {
+            i: {
+              index: false,
+            },
+            idx: {
+              index: false,
+            },
+          },
+        },
+      ],
+      "unicorn/no-array-for-each": "off",
     },
   },
   // default language/parser options
