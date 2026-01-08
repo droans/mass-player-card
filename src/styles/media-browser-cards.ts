@@ -22,4 +22,9 @@ export default css`
     scrollbar-width: none;
     padding-bottom: 1em;
   }
+  .loading-indicator {
+    background-color: var(--md-sys-color-primary);
+    justify-self: center;
+    top: 2em;
+  }
 `;
