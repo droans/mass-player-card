@@ -3247,14 +3247,14 @@ __metadata:
   languageName: node
   linkType: hard
 
-"lit@npm:3.3.1, lit@npm:^2.8.0 || ^3.0.0, lit@npm:^3.2.1":
-  version: 3.3.1
-  resolution: "lit@npm:3.3.1"
+"lit@npm:3.3.2, lit@npm:^3.3.2":
+  version: 3.3.2
+  resolution: "lit@npm:3.3.2"
   dependencies:
     "@lit/reactive-element": "npm:^2.1.0"
     lit-element: "npm:^4.2.0"
     lit-html: "npm:^3.3.0"
-  checksum: 10c0/9f3e171e211be7cd3e01693eac4ba4752fc7bafebc8298fc5b9cb70ff279dd4dc292f1cb425ca42f61c3767a75b7557295c2f6b16335719bc8cf1ca6f3622fb7
+  checksum: 10c0/50563fd9c7bf546f8fdc6a936321b5be581ce440a359b06048ae5d44c1ecf6c38c2ded708e97d36a1ce70da1a7ad569890e40e0fb5ed040ec42d5ed2365f468d
   languageName: node
   linkType: hard
 
@@ -3269,14 +3269,14 @@ __metadata:
   languageName: node
   linkType: hard
 
-"lit@npm:^3.3.2":
-  version: 3.3.2
-  resolution: "lit@npm:3.3.2"
+"lit@npm:^2.8.0 || ^3.0.0, lit@npm:^3.2.1":
+  version: 3.3.1
+  resolution: "lit@npm:3.3.1"
   dependencies:
     "@lit/reactive-element": "npm:^2.1.0"
     lit-element: "npm:^4.2.0"
     lit-html: "npm:^3.3.0"
-  checksum: 10c0/50563fd9c7bf546f8fdc6a936321b5be581ce440a359b06048ae5d44c1ecf6c38c2ded708e97d36a1ce70da1a7ad569890e40e0fb5ed040ec42d5ed2365f468d
+  checksum: 10c0/9f3e171e211be7cd3e01693eac4ba4752fc7bafebc8298fc5b9cb70ff279dd4dc292f1cb425ca42f61c3767a75b7557295c2f6b16335719bc8cf1ca6f3622fb7
   languageName: node
   linkType: hard
 
@@ -3387,7 +3387,7 @@ __metadata:
     eslint-plugin-observers: "npm:^1.0.1"
     eslint-plugin-wc: "npm:^3.0.2"
     home-assistant-js-websocket: "npm:9.6.0"
-    lit: "npm:3.3.1"
+    lit: "npm:3.3.2"
     mass-queue-types: "npm:^1.1.2"
     prettier: "npm:^3.7.4"
     rollup: "npm:^4.53.4"
