@@ -20,7 +20,7 @@ import { ExtendedHass, mediaCardData, MediaCardItem } from "../const/types";
 
 import styles from "../styles/media-browser-cards";
 import { MediaBrowserConfig } from "../config/media-browser";
-import { jsonMatch } from "../utils/util";
+import { jsonMatch } from "../utils/utility";
 import { EnqueueOptions } from "../const/enums";
 
 export class MediaBrowserCards extends LitElement {

@@ -44,7 +44,7 @@ import { Icons } from "../const/icons";
 import { MediaBrowserController } from "../controller/browser";
 import BrowserActions from "../actions/browser-actions";
 import { getMediaTypeSvg } from "../utils/thumbnails";
-import { jsonMatch } from "../utils/util";
+import { jsonMatch } from "../utils/utility";
 import { getTranslation } from "../utils/translations";
 import {
   CardsUpdatedEvent,

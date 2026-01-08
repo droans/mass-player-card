@@ -27,7 +27,7 @@ import {
   getGroupVolumeServiceSchema,
 } from "mass-queue-types/packages/mass_queue/actions/get_group_volume";
 import { setGroupVolumeServiceSchema } from "mass-queue-types/packages/mass_queue/actions/set_group_volume";
-import { isActive, jsonMatch, playerHasUpdated } from "../utils/util";
+import { isActive, jsonMatch, playerHasUpdated } from "../utils/utility";
 import {
   applyExpressiveScheme,
   generateDefaultExpressiveSchemeColor,

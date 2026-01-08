@@ -52,7 +52,7 @@ import { PlayerSelectedService } from "../const/actions";
 import { ArtworkSize, PlayerConfig } from "../config/player";
 import { ActivePlayerController } from "../controller/active-player";
 import { Config } from "../config/config";
-import { isActive, jsonMatch, playerHasUpdated } from "../utils/util";
+import { isActive, jsonMatch, playerHasUpdated } from "../utils/utility";
 import { MassCardController } from "../controller/controller";
 import {
   ForceUpdatePlayerDataEvent,

@@ -16,7 +16,7 @@ import {
 } from "@ktibow/material-color-utilities-nightly";
 import { ExpressiveScheme } from "../config/config";
 import { ExtendedHass } from "../const/types";
-import { tryPrefetchImageWithFallbacks } from "./util";
+import { tryPrefetchImageWithFallbacks } from "./utility";
 
 type dynamicSchemeType = new (
   sourceColorHct: Hct,

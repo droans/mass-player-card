@@ -17,7 +17,7 @@ import {
   controllerContext,
 } from "../const/context";
 import { ActionsController } from "../controller/actions";
-import { playerHasUpdated, secondsToTime } from "../utils/util";
+import { playerHasUpdated, secondsToTime } from "../utils/utility";
 import { ExtendedHassEntity, PlayerData } from "../const/types";
 import { MassCardController } from "../controller/controller";
 class MassPlayerProgressBar extends LitElement {

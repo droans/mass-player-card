@@ -29,7 +29,7 @@ import styles from "../styles/volume-row";
 import { ActionsController } from "../controller/actions";
 import { MassCardController } from "../controller/controller";
 import { Icons } from "../const/icons";
-import { jsonMatch } from "../utils/util";
+import { jsonMatch } from "../utils/utility";
 import { state } from "lit/decorators.js";
 import { DetailValEventData } from "../const/events";
 

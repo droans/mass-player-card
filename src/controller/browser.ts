@@ -17,7 +17,7 @@ import {
   generateRecommendationSectionCards,
 } from "../utils/media-browser";
 import { mediaBrowserCardsContext } from "../const/context";
-import { jsonMatch } from "../utils/util";
+import { jsonMatch } from "../utils/utility";
 import { CardsUpdatedEventDetail } from "../const/events";
 import {
   ExtendedHass,

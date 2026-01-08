@@ -2,7 +2,7 @@ import { CSSResultOrNative, html, TemplateResult } from "lit";
 import { customElement, query, state } from "lit/decorators.js";
 import sharedStyles from "../styles/browser-view-shared";
 import styles from "../styles/browser-artist-view";
-import { delay } from "../utils/util";
+import { delay } from "../utils/utility";
 import { getArtistServiceResponse } from "mass-queue-types/packages/mass_queue/actions/get_artist";
 import { BrowserViewBase } from "./browser-view-base";
 

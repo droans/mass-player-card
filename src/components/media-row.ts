@@ -25,7 +25,7 @@ import { VibrationPattern } from "../const/common";
 import styles from "../styles/media-row";
 
 import { getThumbnail } from "../utils/thumbnails";
-import { jsonMatch, queueItemhasUpdated } from "../utils/util";
+import { jsonMatch, queueItemhasUpdated } from "../utils/utility";
 import {
   DEFAULT_PLAYER_QUEUE_HIDDEN_ELEMENTS_CONFIG,
   PlayerQueueHiddenElementsConfig,

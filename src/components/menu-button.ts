@@ -15,7 +15,7 @@ import {
   useVibrantContext,
 } from "../const/context";
 import styles from "../styles/menu-button";
-import { jsonMatch } from "../utils/util";
+import { jsonMatch } from "../utils/utility";
 import { MassCardController } from "../controller/controller";
 import "./menu-item";
 import { ControlSelectMenuElement } from "../const/elements";

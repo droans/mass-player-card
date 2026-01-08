@@ -23,7 +23,7 @@ import { DynamicScheme } from "@ktibow/material-color-utilities-nightly";
 import { Icons } from "./icons";
 import { QueueController } from "../controller/queue";
 import { MediaBrowserController } from "../controller/browser";
-import { uuid4 } from "../utils/util";
+import { uuid4 } from "../utils/utility";
 export type { EntityConfig } from "../config/config";
 
 export const hassContext = createContext<ExtendedHass>(uuid4());

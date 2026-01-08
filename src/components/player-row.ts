@@ -18,7 +18,7 @@ import {
   useExpressiveContext,
 } from "../const/context";
 
-import { isActive, jsonMatch } from "../utils/util";
+import { isActive, jsonMatch } from "../utils/utility";
 
 import styles from "../styles/player-row";
 import {

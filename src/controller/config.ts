@@ -9,7 +9,7 @@ import {
   playersConfigContext,
 } from "../const/context";
 import { getIcons, Icons } from "../const/icons";
-import { jsonMatch } from "../utils/util";
+import { jsonMatch } from "../utils/utility";
 
 export class MassCardConfigController {
   private _config!: Config;

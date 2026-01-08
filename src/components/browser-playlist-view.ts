@@ -4,7 +4,7 @@ import sharedStyles from "../styles/browser-view-shared";
 import styles from "../styles/browser-playlist-view";
 import { TrackRemovedEventData } from "../const/events";
 import "./browser-track-row";
-import { delay, formatDuration } from "../utils/util";
+import { delay, formatDuration } from "../utils/utility";
 import { getPlaylistServiceResponse } from "mass-queue-types/packages/mass_queue/actions/get_playlist";
 import { PlaylistTrack } from "mass-queue-types/packages/mass_queue/actions/get_playlist_tracks";
 import { BrowserViewBase } from "./browser-view-base";

@@ -32,7 +32,7 @@ import { version } from "../package.json";
 import styles from "./styles/main";
 import head_styles from "./styles/head";
 
-import { getDefaultSection, jsonMatch } from "./utils/util";
+import { getDefaultSection, jsonMatch } from "./utils/utility";
 import { MassCardController } from "./controller/controller";
 import { ExtendedHass } from "./const/types";
 

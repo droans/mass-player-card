@@ -8,7 +8,7 @@ import {
 import styles from "../styles/menu-item";
 import { customElement, property, state } from "lit/decorators.js";
 import { ExtendedHass, ListItemData } from "../const/types";
-import { tryPrefetchImageWithFallbacks } from "../utils/util";
+import { tryPrefetchImageWithFallbacks } from "../utils/utility";
 import { consume } from "@lit/context";
 import { hassContext } from "../const/context";
 

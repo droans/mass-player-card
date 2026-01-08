@@ -13,7 +13,7 @@ import { PlayerConfig } from "../config/player";
 import { ExtendedHassEntity, QueueItems } from "../const/types";
 import { MassCardController } from "../controller/controller";
 import { Icons } from "../const/icons";
-import { delay, jsonMatch, playerHasUpdated } from "../utils/util";
+import { delay, jsonMatch, playerHasUpdated } from "../utils/utility";
 import styles from "../styles/player-artwork";
 import { Thumbnail } from "../const/enums";
 import type WaCarouselItem from "@droans/webawesome/dist/components/carousel-item/carousel-item";

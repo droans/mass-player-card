@@ -15,7 +15,7 @@ import { PlayerData } from "../const/types";
 import { Icons } from "../const/icons";
 import { getIteratedRepeatMode } from "../utils/music-player";
 import { RepeatMode } from "../const/enums";
-import { jsonMatch } from "../utils/util";
+import { jsonMatch } from "../utils/utility";
 import {
   PlayerConfig,
   PlayerControlsHiddenElementsConfig,

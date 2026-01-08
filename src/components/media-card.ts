@@ -30,7 +30,7 @@ import {
 
 import styles from "../styles/media-card";
 
-import { jsonMatch } from "../utils/util";
+import { jsonMatch } from "../utils/utility";
 import {
   DEFAULT_MEDIA_BROWSER_HIDDEN_ELEMENTS_CONFIG,
   HIDDEN_BUTTON_VALUE,

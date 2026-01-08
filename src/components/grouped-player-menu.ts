@@ -15,7 +15,7 @@ import {
 } from "../const/context";
 import { Icons } from "../const/icons";
 import { ExtendedHass } from "../const/types";
-import { jsonMatch } from "../utils/util";
+import { jsonMatch } from "../utils/utility";
 import { MassCardController } from "../controller/controller";
 import PlayerActions from "../actions/player-actions";
 import {

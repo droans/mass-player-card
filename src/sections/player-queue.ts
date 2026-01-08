@@ -36,7 +36,7 @@ import styles from "../styles/player-queue";
 import { Sections } from "../const/enums";
 import { ActivePlayerController } from "../controller/active-player";
 import { QueueController } from "../controller/queue";
-import { jsonMatch } from "../utils/util";
+import { jsonMatch } from "../utils/utility";
 import { getTranslation } from "../utils/translations";
 import { Icons } from "../const/icons";
 import { WaAnimation } from "../const/elements";

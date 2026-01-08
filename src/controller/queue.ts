@@ -11,7 +11,7 @@ import {
 } from "../const/player-queue";
 import { Config } from "../config/config";
 import QueueActions from "../actions/queue-actions";
-import { isActive, jsonMatch, playerHasUpdated } from "../utils/util";
+import { isActive, jsonMatch, playerHasUpdated } from "../utils/utility";
 import {
   ExtendedHass,
   ExtendedHassEntity,
