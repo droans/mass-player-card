@@ -86,6 +86,8 @@ export class MassCardPlayerSelector extends LitElement {
         .items=${this.renderPlayerItems()}
         dividers
         use-md
+        fixedMenuPosition
+        naturalMenuWidth
       ></mass-menu-button>
     `;
   }
