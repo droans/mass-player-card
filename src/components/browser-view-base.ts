@@ -175,7 +175,24 @@ export class BrowserViewBase extends LitElement {
     }
   };
 
-  protected addObserver() {
+  protected addObserver(retryDelay = 0) {
+    if (retryDelay > 6000) {
+      return;
+    }
+    try {
+      if (retryDelay > 0) {
+        setTimeout(() => {
+          this._addObserver();
+        }, retryDelay);
+      } else {
+        this._addObserver();
+      }
+    } catch {
+      retryDelay = retryDelay > 0 ? retryDelay * 2 : 100;
+      this.addObserver(retryDelay);
+    }
+  }
+  protected _addObserver() {
     if (this.observer) {
       this.observer.disconnect();
     }
