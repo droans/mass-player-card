@@ -485,16 +485,17 @@ class MusicPlayerCard extends LitElement {
     `;
   }
   protected renderProgress(): TemplateResult {
+    const style = isActive(
+      this.hass,
+      this.activeMediaPlayer,
+      this.activeEntityConfig,
+    )
+      ? ``
+      : `opacity: 0;`;
     return html`
       <mass-progress-bar
         class="${this._artworkProgressClass}"
-        style="${isActive(
-          this.hass,
-          this.activeMediaPlayer,
-          this.activeEntityConfig,
-        )
-          ? ``
-          : `opacity: 0;`}"
+        style="${style}"
       ></mass-progress-bar>
     `;
   }
