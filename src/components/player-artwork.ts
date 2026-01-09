@@ -91,6 +91,9 @@ export class MassPlayerArtwork extends LitElement {
   }
 
   private _filterQueue(queue: QueueItems) {
+    if (queue.length <= 10) {
+      return queue;
+    }
     const playIdx = queue.findIndex((item) => {
       return item.playing;
     });
@@ -98,7 +101,7 @@ export class MassPlayerArtwork extends LitElement {
       return queue.slice(0, 10);
     }
     const startIdx = Math.max(0, playIdx - 5);
-    const endIdx = Math.min(queue.length - 1, playIdx + 5);
+    const endIdx = Math.min(queue.length, playIdx + 6);
     return queue.slice(startIdx, endIdx);
   }
 
