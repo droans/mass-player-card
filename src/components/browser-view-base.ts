@@ -198,6 +198,10 @@ export class BrowserViewBase extends LitElement {
     const listenIdx = this.currentIdx + this.listenOffset;
     const observer = new IntersectionObserver(this._trackObserverCallback);
     const element = this.trackElements[listenIdx];
+    // eslint-disable-next-line @typescript-eslint/no-unnecessary-condition
+    if (!element) {
+      return;
+    }
     observer.observe(element);
 
     this.observer = observer;
