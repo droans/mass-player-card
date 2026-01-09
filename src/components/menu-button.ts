@@ -35,7 +35,7 @@ export class MassMenuButton extends LitElement {
   public useMD = false;
 
   @query("#menu-select-menu")
-  public menuElement!: ControlSelectMenuElement;
+  public menuElement?: ControlSelectMenuElement;
 
   @consume({ context: useExpressiveContext, subscribe: true })
   private useExpressive!: boolean;
@@ -48,6 +48,9 @@ export class MassMenuButton extends LitElement {
 
   @state() private _selectedItem!: string;
   private _initialSelection?: string;
+
+  // Need to remove gap from the select-anchor div
+  private gapReset = false;
 
   @property({ attribute: false })
   public set initialSelection(selection: string) {
@@ -74,12 +77,25 @@ export class MassMenuButton extends LitElement {
     return this._items ?? [];
   }
 
+  private attemptGapReset() {
+    const anchor =
+      this.menuElement?.shadowRoot?.querySelector(".select-anchor");
+    if (!anchor) {
+      return;
+    }
+    (anchor as HTMLElement).style.gap = "unset";
+    this.gapReset = true;
+  }
+
   private onSelect = (event_: CustomEvent) => {
     event_.stopPropagation();
     // eslint-disable-next-line @typescript-eslint/no-unsafe-assignment
     const data = { detail: event_.detail };
     const _event = new CustomEvent("menu-item-selected", data);
     this.dispatchEvent(_event);
+    if (!this.menuElement) {
+      return;
+    }
     this.menuElement.menuOpen = false;
   };
 
@@ -134,6 +150,12 @@ export class MassMenuButton extends LitElement {
   }
   protected shouldUpdate(_changedProperties: PropertyValues): boolean {
     return _changedProperties.size > 0;
+  }
+
+  protected updated(): void {
+    if (!this.gapReset) {
+      this.attemptGapReset();
+    }
   }
   static get styles(): CSSResultGroup {
     return styles;
