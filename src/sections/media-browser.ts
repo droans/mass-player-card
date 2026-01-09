@@ -87,7 +87,6 @@ export class MediaBrowser extends LitElement {
 
   public activeSection = DEFAULT_ACTIVE_SECTION;
   public activeSubSection = DEFAULT_ACTIVE_SUBSECTION;
-  @property() private collectionViewActive = false;
   @property() private activeCollectionData!: mediaCardCollectionType;
   private previousSections: string[] = [];
   private previousSubSections: string[] = [];
@@ -169,7 +168,6 @@ export class MediaBrowser extends LitElement {
   public setActiveCards() {
     const section = this.activeSection;
     const subsection = this.activeSubSection;
-    this.collectionViewActive = false;
     let new_cards: MediaCardItem[] = [];
     if (!this.cards) {
       return;
@@ -233,8 +231,11 @@ export class MediaBrowser extends LitElement {
     );
   };
   private onCollectionSelect = (data: mediaCardCollectionType) => {
-    this.collectionViewActive = true;
+    this.setPreviousSection();
     this.activeCollectionData = data;
+    this.activeSubSection = "collection";
+    this.searchActivated = false;
+    this.requestUpdate("collection", "selected");
   };
   private onSelect = (data: mediaCardData) => {
     const funcs = {
@@ -252,7 +253,7 @@ export class MediaBrowser extends LitElement {
     if (["playlist", "album", "artist"].includes(data.type)) {
       this.onCollectionSelect(data as mediaCardCollectionType);
     }
-    this.collectionViewActive = false;
+    // this.collectionViewActive = false;
     function_(data);
   };
   private onEnqueue = (data: mediaCardEnqueueType, enqueue: EnqueueOptions) => {
@@ -295,12 +296,9 @@ export class MediaBrowser extends LitElement {
     );
   };
   private onBack = () => {
-    if (!this.collectionViewActive) {
-      this.activeSection =
-        this.previousSections.pop() ?? DEFAULT_ACTIVE_SECTION;
-      this.activeSubSection =
-        this.previousSubSections.pop() ?? DEFAULT_ACTIVE_SUBSECTION;
-    }
+    this.activeSection = this.previousSections.pop() ?? DEFAULT_ACTIVE_SECTION;
+    this.activeSubSection =
+      this.previousSubSections.pop() ?? DEFAULT_ACTIVE_SUBSECTION;
     this.setActiveCards();
   };
   private onSearchButtonPress = () => {
@@ -447,7 +445,7 @@ export class MediaBrowser extends LitElement {
     `;
   }
   protected renderBrowserCards(): TemplateResult {
-    if (this.collectionViewActive) {
+    if (this.activeSubSection == "collection") {
       return this.renderCollectionView();
     }
     return html`
