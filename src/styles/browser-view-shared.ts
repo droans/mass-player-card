@@ -31,6 +31,20 @@ export default css`
     );
     border-radius: 50%;
   }
+  #animation-image {
+    display: block;
+  }
+  #collection-image {
+    display: flex;
+    place-content: center;
+    width: 11em;
+    height: 12em;
+    --collection-image-div-collapsed-height: 6em;
+    margin-left: 1.2em;
+  }
+  #collection-info {
+    text-align: end;
+  }
   #container {
     height: calc(100% - 1em);
     overflow: hidden;
@@ -39,12 +53,9 @@ export default css`
     width: 20%;
     display: flex;
     align-self: end;
-    margin-bottom: 1em;
-    /* position: absolute; */
-    /* right: 1em; */
     position: relative;
-    right: 3.5em;
-    bottom: -1.5em;
+    right: 67px;
+    bottom: 15px;
   }
   #header {
     display: flex;
@@ -78,17 +89,6 @@ export default css`
     margin-right: 1em;
     height: 100%;
     flex: 1 1 100%;
-  }
-  #collection-image {
-    display: flex;
-    place-content: center;
-    width: 11em;
-    height: 12em;
-    --collection-image-div-collapsed-height: 6em;
-    margin-left: 1.2em;
-  }
-  #collection-info {
-    text-align: end;
   }
   #title {
     display: block;
