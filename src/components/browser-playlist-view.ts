@@ -117,7 +117,7 @@ export class MassBrowserPlaylistView extends BrowserViewBase {
       this.titleElement &&
       this.infoElement &&
       this.enqueueElement &&
-      this.imageElement
+      this.imageDivElement
     ) {
       this.animationsAdded = true;
       this.animateHeader();

@@ -3,11 +3,23 @@ import { css } from "lit";
 export default css`
   :host {
     --view-header-height: 12em;
-    --view-header-min-height: calc(var(--view-header-height) / 2);
+    --view-header-min-height: 8em;
+    --view-header-wrapper-border-div-height: 1em;
+    --view-header-wrapper-height: calc(
+      var(--view-header-height) + var(--view-header-wrapper-border-div-height)
+    );
+    --view-header-wrapper-min-height: calc(
+      var(--view-header-min-height) +
+        var(--view-header-wrapper-border-div-height)
+    );
     --header-expanded-menu-icon-size: 5em;
     --header-expanded-menu-control-size: 5em;
     --header-collapsed-menu-icon-size: 3em;
     --header-collapsed-menu-control-size: 3em;
+  }
+  :host {
+    display: block;
+    margin-top: -8px;
   }
   mass-menu-button::part(menu-button) {
     --ha-ripple-color: rgba(0, 0, 0, 0);
@@ -21,7 +33,7 @@ export default css`
     --control-select-menu-height: var(--header-expanded-menu-control-size);
     --control-select-menu-background-color: unset;
     --control-select-menu-padding: unset;
-    padding-left: 10px;
+    /* padding-left: 10px; */
   }
   mass-menu-button::part(menu-svg) {
     color: var(--md-sys-color-primary);
@@ -36,11 +48,12 @@ export default css`
   }
   #collection-image {
     display: flex;
-    place-content: center;
-    width: 11em;
-    height: 12em;
+    /* place-content: center; */
+    height: 10em;
+    aspect-ratio: 1;
     --collection-image-div-collapsed-height: 6em;
-    margin-left: 1.2em;
+    margin-left: 1em;
+    margin-top: 1em;
   }
   #collection-info {
     text-align: end;
@@ -50,28 +63,42 @@ export default css`
     overflow: hidden;
   }
   #enqueue {
-    width: 20%;
     display: flex;
     align-self: end;
     position: relative;
-    right: 67px;
-    bottom: 15px;
+    right: 37.5%;
+    bottom: -12.5%;
   }
   #header {
-    display: flex;
     height: var(--view-header-height);
-    will-change: height;
+    display: flex;
     position: absolute;
     width: 100%;
+    background-color: var(
+      --md-sys-color-secondary-container,
+      var(--ha-card-background)
+    );
     z-index: 1;
-    background-color: var(--md-sys-color-background, var(--ha-card-background));
+    height: var(--view-header-height);
     border-top-left-radius: var(--default-border-radius);
     border-top-right-radius: var(--default-border-radius);
   }
+  /* #header-wrapper {
+    height: var(--view-header-wrapper-height);
+    position: absolute;
+    width: 100%;
+  }
+  #header-wrapper::before {
+    content: " ";
+    display: block;
+    height: 1em;
+    width: 100%;
+  } */
   #img-header {
     display: flex;
-    height: 10em;
     border-radius: 15%;
+    height: 100%;
+    width: 100%;
     will-change: transform;
     place-self: center;
   }
@@ -83,12 +110,12 @@ export default css`
   #overview {
     display: block;
     width: 0%;
-    align-self: center;
     justify-items: end;
     line-height: normal;
     margin-right: 1em;
     height: 100%;
     flex: 1 1 100%;
+    padding-top: 1em;
   }
   #title {
     display: block;

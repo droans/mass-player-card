@@ -51,7 +51,6 @@ export class BrowserViewBase extends LitElement {
   @query("#title") protected titleElement?: HTMLElement;
   @query("#enqueue-button") protected enqueueElement?: HTMLElement;
   @query("#enqueue") protected enqueueDiv?: HTMLElement;
-  @query("#img-header") protected imageElement?: HTMLElement;
   @query("#collection-image") protected imageDivElement?: HTMLElement;
   @query("#tracks") protected tracksElement?: HTMLElement;
   @query("#header") protected headerElement?: HTMLElement;
@@ -61,7 +60,6 @@ export class BrowserViewBase extends LitElement {
   protected enqueueAnimation!: Animation;
   protected enqueueControlAnimation!: Animation;
   protected enqueueIconAnimation!: Animation;
-  protected imageAnimation!: Animation;
   protected imageDivAnimation!: Animation;
   protected headerAnimation!: Animation;
   protected animationsAdded = false;
@@ -243,7 +241,7 @@ export class BrowserViewBase extends LitElement {
   }
 
   protected addScrollAnimation(transforms: Keyframe, element: HTMLElement) {
-    const shrunkHdrHeight = this.headerElement?.offsetHeight ?? 0 / 2;
+    const shrunkHdrHeight = (this.headerElement?.offsetHeight ?? 0) * (1 / 3);
     const scrollHeight = this.tracksElement?.scrollHeight ?? 1;
     const duration = shrunkHdrHeight / scrollHeight;
     const keyframes = [
@@ -316,9 +314,6 @@ export class BrowserViewBase extends LitElement {
     const selectKeyFrames = {
       height: "var(--header-collapsed-menu-control-size)",
     };
-    const divKeyFrames = {
-      transform: "translateX(-2em)",
-    };
     this.enqueueIconElement = iconElement as HTMLElement;
     this.enqueueControlElement = selectElement as HTMLElement;
     this.enqueueIconAnimation = this.addScrollAnimation(
@@ -329,23 +324,11 @@ export class BrowserViewBase extends LitElement {
       selectKeyFrames,
       this.enqueueControlElement,
     );
-    this.enqueueAnimation = this.addScrollAnimation(
-      divKeyFrames,
-      this.enqueueDiv as HTMLElement,
-    );
   }
   protected animateHeaderImage() {
-    const imgKf = {
-      transform: "scale(0.5)",
-    };
     const imgDivKf = {
       height: "var(--collection-image-div-collapsed-height)",
-      transform: "translateX(-2em) translateY(-0.5em)",
     };
-    this.imageAnimation = this.addScrollAnimation(
-      imgKf,
-      this.imageElement as HTMLElement,
-    );
     this.imageDivAnimation = this.addScrollAnimation(
       imgDivKf,
       this.imageDivElement as HTMLElement,
