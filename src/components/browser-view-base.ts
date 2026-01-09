@@ -38,6 +38,7 @@ import { getThumbnail } from "../utils/thumbnails";
 import { cache } from "lit/directives/cache.js";
 import "./marquee-text";
 import { PodcastEpisode } from "mass-queue-types/packages/mass_queue/types/media-items";
+import { delay } from "../utils/utility";
 
 export class BrowserViewBase extends LitElement {
   protected _collectionData?: mediaCardCollectionType | undefined;
@@ -175,21 +176,20 @@ export class BrowserViewBase extends LitElement {
     }
   };
 
-  protected addObserver(retryDelay = 0) {
-    if (retryDelay > 6000) {
-      return;
+  protected async addObserver(retryDelay = 0) {
+    if (this.observer) {
+      this.observer.disconnect();
+      this.observer = undefined;
     }
-    try {
-      if (retryDelay > 0) {
-        setTimeout(() => {
-          this._addObserver();
-        }, retryDelay);
-      } else {
-        this._addObserver();
-      }
-    } catch {
-      retryDelay = retryDelay > 0 ? retryDelay * 2 : 100;
-      this.addObserver(retryDelay);
+    if (retryDelay > 6000) {
+      throw new Error(`Exceeded max timeout creating observer`);
+    }
+    await delay(retryDelay);
+    this._addObserver();
+    // eslint-disable-next-line @typescript-eslint/no-unnecessary-condition
+    if (!this.observer) {
+      retryDelay = retryDelay > 0 ? retryDelay * 2 : 50;
+      await this.addObserver(retryDelay);
     }
   }
   protected _addObserver() {
@@ -199,6 +199,10 @@ export class BrowserViewBase extends LitElement {
     const listenIdx = this.currentIdx + this.listenOffset;
     const observer = new IntersectionObserver(this._trackObserverCallback);
     const element = this.trackElements[listenIdx];
+    // eslint-disable-next-line @typescript-eslint/no-unnecessary-condition
+    if (!element) {
+      return;
+    }
     observer.observe(element);
 
     this.observer = observer;
@@ -477,7 +481,7 @@ export class BrowserViewBase extends LitElement {
       _changedProperties.has("currentIdx") ||
       (_changedProperties.has("tracks") && !this.observerAdded)
     ) {
-      this.addObserver();
+      void this.addObserver();
     }
   }
   disconnectedCallback(): void {
