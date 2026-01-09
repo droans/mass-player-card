@@ -38,6 +38,7 @@ import { getThumbnail } from "../utils/thumbnails";
 import { cache } from "lit/directives/cache.js";
 import "./marquee-text";
 import { PodcastEpisode } from "mass-queue-types/packages/mass_queue/types/media-items";
+import { delay } from "../utils/utility";
 
 export class BrowserViewBase extends LitElement {
   protected _collectionData?: mediaCardCollectionType | undefined;
@@ -480,7 +481,7 @@ export class BrowserViewBase extends LitElement {
       _changedProperties.has("currentIdx") ||
       (_changedProperties.has("tracks") && !this.observerAdded)
     ) {
-      this.addObserver();
+      void this.addObserver();
     }
   }
   disconnectedCallback(): void {
