@@ -392,7 +392,7 @@ export class ActivePlayerController {
         "",
       track_title: player?.attributes.media_title ?? "",
       muted: vol_player?.attributes.is_volume_muted ?? true,
-      volume: Math.floor(vol_player?.attributes.volume_level ?? 0 * 100),
+      volume: Math.floor((vol_player?.attributes.volume_level ?? 0) * 100),
       player_name: this.activePlayerName,
       favorite: current_item?.media_item?.favorite ?? false,
     };
