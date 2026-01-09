@@ -169,6 +169,13 @@ export class MediaBrowser extends LitElement {
     const section = this.activeSection;
     const subsection = this.activeSubSection;
     let new_cards: MediaCardItem[] = [];
+    if (
+      this.activeSubSection == "collection" &&
+      this.activeSection != "search"
+    ) {
+      this.requestUpdate("collection", "selected");
+      return;
+    }
     if (!this.cards) {
       return;
     }
@@ -445,7 +452,10 @@ export class MediaBrowser extends LitElement {
     `;
   }
   protected renderBrowserCards(): TemplateResult {
-    if (this.activeSubSection == "collection") {
+    if (
+      this.activeSubSection == "collection" &&
+      this.activeSection != "search"
+    ) {
       return this.renderCollectionView();
     }
     return html`
