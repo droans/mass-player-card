@@ -119,7 +119,10 @@ class PlayerRow extends LitElement {
     return _changedProperties.size > 0;
   }
   private onJoinPressed = async (event_: Event) => {
-    navigator.vibrate(VibrationPattern.Players.ACTION_JOIN);
+    // eslint-disable-next-line @typescript-eslint/no-unnecessary-condition
+    if (navigator.vibrate) {
+      navigator.vibrate(VibrationPattern.Players.ACTION_JOIN);
+    }
     event_.stopPropagation();
     const service = this.joined ? this.unjoinService : this.joinService;
     if (!this.player_entity) {
@@ -130,7 +133,10 @@ class PlayerRow extends LitElement {
   };
   private onTransferPressed = (event_: Event) => {
     event_.stopPropagation();
-    navigator.vibrate(VibrationPattern.Players.ACTION_TRANSFER);
+    // eslint-disable-next-line @typescript-eslint/no-unnecessary-condition
+    if (navigator.vibrate) {
+      navigator.vibrate(VibrationPattern.Players.ACTION_TRANSFER);
+    }
     if (!this.player_entity) {
       return;
     }

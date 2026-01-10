@@ -123,7 +123,10 @@ export class MassPlayerArtwork extends LitElement {
     if (media_content_id == this.activePlayer.attributes.media_content_id) {
       return;
     }
-    navigator.vibrate(VibrationPattern.Player.ACTION_SWIPE);
+    // eslint-disable-next-line @typescript-eslint/no-unnecessary-condition
+    if (navigator.vibrate) {
+      navigator.vibrate(VibrationPattern.Player.ACTION_SWIPE);
+    }
     if (!this.controller.Queue) {
       return;
     }

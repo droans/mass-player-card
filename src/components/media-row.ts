@@ -126,7 +126,10 @@ class MediaRow extends LitElement {
     if (!this.media_item) {
       return;
     }
-    navigator.vibrate(VibrationPattern.Queue.ACTION_MOVE_UP);
+    // eslint-disable-next-line @typescript-eslint/no-unnecessary-condition
+    if (navigator.vibrate) {
+      navigator.vibrate(VibrationPattern.Queue.ACTION_MOVE_UP);
+    }
     event_.stopPropagation();
     this.moveQueueItemUpService(this.media_item.queue_item_id);
   };
@@ -134,7 +137,10 @@ class MediaRow extends LitElement {
     if (!this.media_item) {
       return;
     }
-    navigator.vibrate(VibrationPattern.Queue.ACTION_MOVE_DOWN);
+    // eslint-disable-next-line @typescript-eslint/no-unnecessary-condition
+    if (navigator.vibrate) {
+      navigator.vibrate(VibrationPattern.Queue.ACTION_MOVE_DOWN);
+    }
     event_.stopPropagation();
     this.moveQueueItemDownService(this.media_item.queue_item_id);
   };
@@ -142,7 +148,10 @@ class MediaRow extends LitElement {
     if (!this.media_item) {
       return;
     }
-    navigator.vibrate(VibrationPattern.Queue.ACTION_MOVE_NEXT);
+    // eslint-disable-next-line @typescript-eslint/no-unnecessary-condition
+    if (navigator.vibrate) {
+      navigator.vibrate(VibrationPattern.Queue.ACTION_MOVE_NEXT);
+    }
     event_.stopPropagation();
     this.moveQueueItemNextService(this.media_item.queue_item_id);
   };
@@ -151,7 +160,10 @@ class MediaRow extends LitElement {
       return;
     }
     event_.stopPropagation();
-    navigator.vibrate(VibrationPattern.Queue.ACTION_REMOVE);
+    // eslint-disable-next-line @typescript-eslint/no-unnecessary-condition
+    if (navigator.vibrate) {
+      navigator.vibrate(VibrationPattern.Queue.ACTION_REMOVE);
+    }
     this.removeService(this.media_item.queue_item_id);
   };
   private callOnQueueItemSelectedService = () => {
