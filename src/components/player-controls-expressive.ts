@@ -10,7 +10,10 @@ import { RepeatMode } from "../const/enums";
 
 class MassPlayerControlsExpressive extends MassPlayerControlsBase {
   protected onFavoriteHold = () => {
-    navigator.vibrate(VibrationPattern.Player.ACTION_FAVORITE_HOLD);
+    // eslint-disable-next-line @typescript-eslint/no-unnecessary-condition
+    if (navigator.vibrate) {
+      navigator.vibrate(VibrationPattern.Player.ACTION_FAVORITE_HOLD);
+    }
     const event_ = new Event("open-add-to-playlist-dialog");
     this.controller.host.dispatchEvent(event_);
   };
