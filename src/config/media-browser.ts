@@ -23,6 +23,7 @@ export interface FavoritesConfig {
   podcasts: FavoriteItemConfig;
   radios: FavoriteItemConfig;
   tracks: FavoriteItemConfig;
+  show_collection_view: boolean;
 }
 export interface FavoriteItemConfig {
   enabled: boolean;
@@ -41,6 +42,7 @@ export interface customItem {
 export interface RecommendationsConfig {
   enabled: boolean;
   providers?: string[];
+  show_collection_view: boolean;
 }
 
 export interface customSection {
@@ -78,6 +80,7 @@ const DEFAULT_FAVORITES_CONFIG: FavoritesConfig = {
   podcasts: DEFAULT_FAVORITE_ITEM_CONFIG,
   radios: DEFAULT_FAVORITE_ITEM_CONFIG,
   tracks: DEFAULT_FAVORITE_ITEM_CONFIG,
+  show_collection_view: true,
 };
 
 export const DEFAULT_MEDIA_BROWSER_HIDDEN_ELEMENTS_CONFIG: MediaBrowserHiddenElementsConfig =
@@ -106,6 +109,7 @@ const DEFAULT_CUSTOM_SECTION_CONFIG = [];
 
 const DEFAULT_RECOMMENDATIONS_CONFIG: RecommendationsConfig = {
   enabled: true,
+  show_collection_view: true,
 };
 
 export const DEFAULT_MEDIA_BROWSER_CONFIG: MediaBrowserConfig = {
@@ -166,6 +170,11 @@ function recommendationsConfigForm() {
         name: "providers",
         selector: { text: { multiple: true } },
       },
+      {
+        name: "show_collection_view",
+        selector: { boolean: {} },
+        default: true,
+      },
     ],
   };
 }
@@ -179,6 +188,11 @@ export function mediaBrowserConfigForm() {
       type: "expandable",
       iconPath: mdiHeart,
       schema: [
+        {
+          name: "show_collection_view",
+          selector: { boolean: {} },
+          default: true,
+        },
         favoritesConfigForm("albums"),
         favoritesConfigForm("artists"),
         favoritesConfigForm("audiobooks"),
@@ -193,6 +207,11 @@ export function mediaBrowserConfigForm() {
       type: "expandable",
       iconPath: mdiHistory,
       schema: [
+        {
+          name: "show_collection_view",
+          selector: { boolean: {} },
+          default: true,
+        },
         favoritesConfigForm("album"),
         favoritesConfigForm("artists"),
         favoritesConfigForm("audiobooks"),

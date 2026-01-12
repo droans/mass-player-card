@@ -136,12 +136,13 @@ export function generateRecommendationsCard(
 
 export function generateRecommendationSectionCards(
   section: RecommendationSection,
+  show_track_view: boolean,
 ): MediaCardItem[] {
   const items = section.items;
   return items.map((item) => {
     const function_ = funcs[item.media_type];
     // eslint-disable-next-line @typescript-eslint/no-unnecessary-condition
-    if (function_) {
+    if (function_ && show_track_view) {
       return function_(item.uri, item.image, item.name);
     }
     const r: MediaCardItem = {
@@ -178,12 +179,13 @@ export function generateCustomSectionCards(
 export function generateFavoritesSectionCards(
   config: MediaLibraryItem[],
   media_type: MediaTypes,
+  show_track_view: boolean,
 ): MediaCardItem[] {
   const thumbnail = MediaTypeThumbnails[media_type];
   return config.map((item) => {
     const function_ = funcs[item.media_type];
     // eslint-disable-next-line @typescript-eslint/no-unnecessary-condition
-    if (function_) {
+    if (function_ && show_track_view) {
       return function_(item.uri, item.image ?? "", item.name);
     }
     const r: MediaCardItem = {

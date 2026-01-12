@@ -603,24 +603,31 @@ Multiple elements on the media browser tab can be hidden. By default, all elemen
 | play_next_clear_queue_button | bool  | No       | false       | Hides the "Play Next & Clear Queue" button |
 
 ## Favorites Config
-| Parameter  | Type                            | Required | Default | Description                     |
-|------------|---------------------------------|----------|---------|---------------------------------|
-| enabled    | bool                            | No       | true    | Enable/disable music player tab |
-| albums     | [FavoriteItem](#favorite-items) | No       | true    | See below                       |
-| artists    | [FavoriteItem](#favorite-items) | No       | true    | See below                       |
-| audiobooks | [FavoriteItem](#favorite-items) | No       | true    | See below                       |
-| playlists  | [FavoriteItem](#favorite-items) | No       | true    | See below                       |
-| podcasts   | [FavoriteItem](#favorite-items) | No       | true    | See below                       |
-| radios     | [FavoriteItem](#favorite-items) | No       | true    | See below                       |
-| tracks     | [FavoriteItem](#favorite-items) | No       | true    | See below                       |
+| Parameter            | Type                            | Required | Default | Description                     |
+|----------------------|---------------------------------|----------|---------|---------------------------------|
+| enabled              | bool                            | No       | true    | Enable/disable music player tab |
+| albums               | [FavoriteItem](#favorite-items) | No       | -       | See below                       |
+| artists              | [FavoriteItem](#favorite-items) | No       | -       | See below                       |
+| audiobooks           | [FavoriteItem](#favorite-items) | No       | -       | See below                       |
+| playlists            | [FavoriteItem](#favorite-items) | No       | -       | See below                       |
+| podcasts             | [FavoriteItem](#favorite-items) | No       | -       | See below                       |
+| radios               | [FavoriteItem](#favorite-items) | No       | -       | See below                       |
+| tracks               | [FavoriteItem](#favorite-items) | No       | -       | See below                       |
+| show_collection_view | bool                            | No       | true    | See below                       |
 
 ## Recommendations Config
 Recommendations can be enabled/disabled. You can also choose which providers can supply recommendations.
 
-| Parameter | Type            | Required | Default | Description                                       |
-|-----------|-----------------|----------|---------|---------------------------------------------------|
-| enabled   | bool            | No       | true    | Enable/disable music player tab                   |
-| providers | list of strings | No       | true    | Choose whcih providers to use for recommendations |
+| Parameter            | Type            | Required | Default | Description                                       |
+|----------------------|-----------------|----------|---------|---------------------------------------------------|
+| enabled              | bool            | No       | true    | Enable/disable music player tab                   |
+| providers            | list of strings | No       | true    | Choose whcih providers to use for recommendations |
+| show_collection_view | bool            | No       | true    | See below                                         |
+
+
+### show_collection_view
+
+When `show_collection_view` is enabled, clicking on an album, artist, playlist, or podcast will open up a collection view displaying information on the collection, enqueue options, and individual tracks/episodes. When disabled, clicking on the items will instead enqueue the item. By default, this is enabled. 
 
 ### Favorite Items
 You can select which favorite items you'd like to display in the media browser. Use the example below to help set it up. By default, all favorites are enabled. If no favorites exist for a category, the section will not be displayed. You can also add your own custom items to the favorite section by specifying it under `items`.
