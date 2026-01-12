@@ -139,7 +139,11 @@ export class MediaBrowserController {
       library_only,
       limit,
     );
-    return generateFavoritesSectionCards(search_result, media_type);
+    return generateFavoritesSectionCards(
+      search_result,
+      media_type,
+      this.browserConfig.favorites.show_collection_view,
+    );
   }
 
   // Favorites
@@ -177,7 +181,11 @@ export class MediaBrowserController {
       favorites_only ? true : null,
     );
     return [
-      ...generateFavoritesSectionCards(resp, media_type),
+      ...generateFavoritesSectionCards(
+        resp,
+        media_type,
+        this.browserConfig.favorites.show_collection_view,
+      ),
       ...generateCustomSectionCards(custom_items),
     ];
   }
@@ -238,7 +246,11 @@ export class MediaBrowserController {
       media_type,
       limit,
     );
-    const items = generateFavoritesSectionCards(resp, media_type);
+    const items = generateFavoritesSectionCards(
+      resp,
+      media_type,
+      this.browserConfig.recents.show_collection_view,
+    );
     return [...items];
   }
   private async generateRecentsData(
@@ -266,7 +278,10 @@ export class MediaBrowserController {
     if (this.items.recommendations[section.name]) {
       return;
     }
-    const items = generateRecommendationSectionCards(section);
+    const items = generateRecommendationSectionCards(
+      section,
+      this.browserConfig.recommendations.show_collection_view,
+    );
     if (items.length > 0) {
       const card = generateRecommendationsCard(this.hass, section, items);
       const i = { ...this.items };
