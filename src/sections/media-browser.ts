@@ -259,6 +259,7 @@ export class MediaBrowser extends LitElement {
     ) => void;
     if (["playlist", "album", "artist"].includes(data.type)) {
       this.onCollectionSelect(data as mediaCardCollectionType);
+      return;
     }
     // this.collectionViewActive = false;
     function_(data);
@@ -303,10 +304,16 @@ export class MediaBrowser extends LitElement {
     );
   };
   private onBack = () => {
+    const update =
+      this.activeSubSection == "collection" && this.activeSection != "search";
+
     this.activeSection = this.previousSections.pop() ?? DEFAULT_ACTIVE_SECTION;
     this.activeSubSection =
       this.previousSubSections.pop() ?? DEFAULT_ACTIVE_SUBSECTION;
     this.setActiveCards();
+    if (update) {
+      this.requestUpdate("collections", "back");
+    }
   };
   private onSearchButtonPress = () => {
     if (!this.hass) {
