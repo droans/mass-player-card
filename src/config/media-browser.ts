@@ -246,6 +246,27 @@ function processFavoriteItemConfig(config: FavoriteItemConfig) {
   };
 }
 
+function processRecents(config: MediaBrowserConfig): MediaBrowserConfig {
+  let recents_config = config.recents;
+  recents_config = {
+    ...DEFAULT_FAVORITES_CONFIG,
+    ...recents_config,
+  };
+  recents_config = {
+    ...recents_config,
+    albums: processFavoriteItemConfig(recents_config.albums),
+    artists: processFavoriteItemConfig(recents_config.artists),
+    audiobooks: processFavoriteItemConfig(recents_config.audiobooks),
+    playlists: processFavoriteItemConfig(recents_config.playlists),
+    podcasts: processFavoriteItemConfig(recents_config.podcasts),
+    radios: processFavoriteItemConfig(recents_config.radios),
+    tracks: processFavoriteItemConfig(recents_config.tracks),
+  };
+  return {
+    ...config,
+    recents: recents_config,
+  };
+}
 function processFavorites(config: MediaBrowserConfig): MediaBrowserConfig {
   let favorites_config = config.favorites;
   favorites_config = {
@@ -285,6 +306,7 @@ export function processMediaBrowserConfig(config: Config): Config {
   let browser_config = config.media_browser;
   browser_config = processDefaults(browser_config);
   browser_config = processFavorites(browser_config);
+  browser_config = processRecents(browser_config);
   browser_config = processSections(browser_config);
   browser_config = processRecommendations(browser_config);
   browser_config = processHiddenElementsConfig(browser_config);
