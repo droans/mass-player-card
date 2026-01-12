@@ -306,6 +306,7 @@ export function processMediaBrowserConfig(config: Config): Config {
   let browser_config = config.media_browser;
   browser_config = processDefaults(browser_config);
   browser_config = processFavorites(browser_config);
+  browser_config = processRecents(browser_config);
   browser_config = processSections(browser_config);
   browser_config = processRecommendations(browser_config);
   browser_config = processHiddenElementsConfig(browser_config);
