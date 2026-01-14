@@ -1,4 +1,10 @@
-import { CSSResultGroup, html, LitElement, TemplateResult } from "lit";
+import {
+  CSSResultGroup,
+  html,
+  LitElement,
+  PropertyValues,
+  TemplateResult,
+} from "lit";
 import "./menu-button";
 import styles from "../styles/grouped-player-menu";
 import { consume } from "@lit/context";
@@ -23,15 +29,20 @@ import {
   HTMLImageElementEvent,
   JoinUnjoinEventData,
 } from "../const/events";
-import { customElement } from "lit/decorators.js";
+import { customElement, state } from "lit/decorators.js";
+import { getThumbnail } from "../utils/thumbnails";
+import { Thumbnail } from "../const/enums";
 
 @customElement("mpc-grouped-player-menu")
 export class MassCardPlayerSelector extends LitElement {
+  @state()
   private _groupedPlayers: EntityConfig[] = [];
 
+  @state()
   @consume({ context: useExpressiveContext, subscribe: true })
   private useExpressive!: boolean;
 
+  @state()
   @consume({ context: useVibrantContext, subscribe: true })
   private useVibrant!: boolean;
 
@@ -41,9 +52,11 @@ export class MassCardPlayerSelector extends LitElement {
   @consume({ context: hassContext, subscribe: true })
   private hass!: ExtendedHass;
 
+  @state()
   @consume({ context: groupVolumeContext, subscribe: true })
   private groupVolumeLevel!: number;
 
+  @state()
   @consume({ context: entitiesConfigContext, subscribe: true })
   private playerEntities?: EntityConfig[];
 
@@ -108,6 +121,18 @@ export class MassCardPlayerSelector extends LitElement {
       </div>
     `;
   }
+  private onImgErr = (
+    event_: HTMLImageElementEvent,
+    entityConfig: EntityConfig,
+  ) => {
+    const attributes = this.hass.states[entityConfig.entity_id]?.attributes;
+    const locImg = attributes?.entity_picture_local;
+    const nonLocImg = attributes?.entity_picture;
+    const fallback = getThumbnail(this.hass, Thumbnail.HEADPHONES) as string;
+    const currentSource = event_.target.src;
+    event_.target.src =
+      currentSource == locImg ? (nonLocImg ?? fallback) : fallback;
+  };
 
   protected renderGroupedPlayers(): TemplateResult[] {
     const players = this.groupedPlayers;
@@ -119,12 +144,9 @@ export class MassCardPlayerSelector extends LitElement {
         item.name.length > 0
           ? item.name
           : (this.hass.states[item.entity_id]?.attributes.friendly_name ?? "");
-      const state = this.hass.states[item.entity_id];
+      const ent = this.hass.states[item.entity_id];
       const img =
-        state?.attributes.entity_picture ??
-        state?.attributes.entity_picture_local;
-      const fallback =
-        state?.attributes.entity_picture_local ?? this.Icons.SPEAKER;
+        ent?.attributes.entity_picture_local ?? ent?.attributes.entity_picture;
       return html`
         <div class="grouped-players-item">
           <div class="player-name-icon">
@@ -140,8 +162,8 @@ export class MassCardPlayerSelector extends LitElement {
                   : ``}"
                 slot="start"
                 src="${img}"
-                @error${(event_: HTMLImageElementEvent) => {
-                  event_.target.src = fallback;
+                @error=${(event: HTMLImageElementEvent) => {
+                  this.onImgErr(event, item);
                 }}
               />
               <span slot="headline" class="grouped-title"> ${name} </span>
@@ -190,6 +212,10 @@ export class MassCardPlayerSelector extends LitElement {
         ${this.renderGroupedVolume()} ${this.renderGroupedPlayers()}
       </mass-menu-button>
     `;
+  }
+
+  protected shouldUpdate(_changedProperties: PropertyValues): boolean {
+    return _changedProperties.size > 0 || !this.hasUpdated;
   }
 
   static get styles(): CSSResultGroup {
