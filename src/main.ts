@@ -15,8 +15,8 @@ import "./sections/music-player";
 import "./sections/player-queue";
 import "./sections/players";
 
-import "./components/navigation-bar-expressive";
-import "./components/navigation-bar";
+import "./components/navigation-bar/navigation-bar-expressive";
+import "./components/navigation-bar/navigation-bar";
 
 import { Config, createConfigForm, createStubConfig } from "./config/config";
 

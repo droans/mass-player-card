@@ -8,8 +8,8 @@ import {
   TemplateResult,
 } from "lit";
 import { property, query, queryAll, state } from "lit/decorators.js";
-import "../components/media-row";
-import "../components/section-header";
+import "../components/media-row/media-row";
+import "../components/section-header/section-header";
 
 import {
   DEFAULT_QUEUE_CONFIG,
