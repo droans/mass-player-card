@@ -71,6 +71,13 @@ export class MassCardPlayerSelector extends LitElement {
       return r;
     });
   }
+  private onSelect = (event_: CustomEvent) => {
+    event_.stopPropagation();
+    // eslint-disable-next-line @typescript-eslint/no-unsafe-assignment
+    const data = { detail: event_.detail };
+    const _event = new CustomEvent("menu-item-selected", data);
+    this.dispatchEvent(_event);
+  };
 
   protected render(): TemplateResult {
     const config_hide = this.config.hide.player_selector;
@@ -89,6 +96,7 @@ export class MassCardPlayerSelector extends LitElement {
         use-md
         fixedMenuPosition
         naturalMenuWidth
+        @menu-item-selected=${this.onSelect}
       ></mass-menu-button>
     `;
   }
