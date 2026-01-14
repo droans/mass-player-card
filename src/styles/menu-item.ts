@@ -21,14 +21,22 @@ export default css`
     --icon-color-expressive-vibrant-active: var(--md-sys-color-on-tertiary);
 
     --ripple-hover-color-expressive: var(--md-sys-color-on-surface);
-    --ripple-hover-color-expressive-vibrant: ;
-    --ripple-hover-color-expressive-active: ;
-    --ripple-hover-color-expressive-vibrant-active: ;
+    --ripple-hover-color-expressive-vibrant: var(
+      --md-sys-color-on-tertiary-container
+    );
+    --ripple-hover-color-expressive-active: var(--md-sys-color-on-surface);
+    --ripple-hover-color-expressive-vibrant-active: var(
+      --md-sys-color-on-tertiary-container
+    );
 
     --ripple-pressed-color-expressive: var(--md-sys-color-on-surface);
-    --ripple-pressed-color-expressive-vibrant: ;
-    --ripple-pressed-color-expressive-active: ;
-    --ripple-pressed-color-expressive-vibrant-active: ;
+    --ripple-pressed-color-expressive-vibrant: var(
+      --md-sys-color-on-tertiary-container
+    );
+    --ripple-pressed-color-expressive-active: var(--md-sys-color-on-surface);
+    --ripple-pressed-color-expressive-vibrant-active: var(
+      --md-sys-color-on-tertiary-container
+    );
   }
   .divider {
     margin-top: 2px;
@@ -103,10 +111,10 @@ export default css`
   }
   .menu-list-item-md.expressive.selected:not(.vibrant) {
     background-color: var(--background-color-expressive-active);
-    --md-list-item-label-text-color: var(--text-color-expressive);
-    --md-list-item-leading-icon-color: var(--icon-color-expressive);
-    --ha-ripple-hover-color: var(--ripple-hover-color-expressive);
-    --ha-ripple-pressed-color: var(--ripple-pressed-color-expressive);
+    --md-list-item-label-text-color: var(--text-color-expressive-active);
+    --md-list-item-leading-icon-color: var(--icon-color-expressive-active);
+    --ha-ripple-hover-color: var(--ripple-hover-color-expressive-active);
+    --ha-ripple-pressed-color: var(--ripple-pressed-color-expressive-active);
   }
 
   /* 
