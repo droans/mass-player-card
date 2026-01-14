@@ -197,7 +197,7 @@ export default css`
     max-width: var(--mass-player-card-max-width, 100%);
     font-family: "Roboto Flex", var(--ha-font-family-body), "Roboto" !important;
     border-radius: var(--default-border-radius);
-    height: var(--mass-player-card-height);
+    height: calc(var(--mass-player-card-height) + 4em);
   }
   ha-card#expressive {
     background-color: var(--md-sys-color-background, var(--ha-card-background));
@@ -208,7 +208,7 @@ export default css`
     border-radius: 0px 0px var(--default-border-radius)
       var(--default-border-radius);
     position: absolute;
-    bottom: -4em;
+    bottom: 0;
     width: 100%;
   }
 
