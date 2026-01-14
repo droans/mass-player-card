@@ -20,13 +20,13 @@ import {
 } from "../const/media-browser";
 import { consume, provide } from "@lit/context";
 
-import { type MediaBrowserCards } from "../components/media-browser-cards";
-import "../components/media-browser-cards";
-import "../components/section-header";
-import "../components/browser-playlist-view";
-import "../components/browser-album-view";
-import "../components/browser-artist-view";
-import "../components/browser-podcast-view";
+import { type MediaBrowserCards } from "../components/media-browser-cards/media-browser-cards";
+import "../components/media-browser-cards/media-browser-cards";
+import "../components/section-header/section-header";
+import "../components/browser-collection-view/browser-playlist-view";
+import "../components/browser-collection-view/browser-album-view";
+import "../components/browser-collection-view/browser-artist-view";
+import "../components/browser-collection-view/browser-podcast-view";
 import styles from "../styles/media-browser";
 
 import {

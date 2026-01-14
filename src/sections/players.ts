@@ -10,11 +10,11 @@ import {
 import { property, query } from "lit/decorators.js";
 import { keyed } from "lit/directives/keyed.js";
 
-import "../components/player-row";
+import "../components/player-row/player-row";
 
 import PlayersActions from "../actions/players-actions";
 
-import "../components/section-header";
+import "../components/section-header/section-header";
 
 import { Config, EntityConfig } from "../config/config";
 import { DEFAULT_PLAYERS_CONFIG, PlayersConfig } from "../config/players";

@@ -10,16 +10,15 @@ import {
 import { query, state } from "lit/decorators.js";
 import { html } from "lit/static-html.js";
 
-import "../components/grouped-player-menu";
-import "../components/media-progress";
-import "../components/player-artwork";
-import "../components/player-controls";
-import "../components/player-controls-expressive";
-import "../components/player-selector-menu";
-import "../components/section-header";
-import "../components/volume-row";
-import "../components/volume-slider";
-import "../components/marquee-text";
+import "../components/grouped-player-menu/grouped-player-menu";
+import "../components/media-progress/media-progress";
+import "../components/player-artwork/player-artwork";
+import "../components/player-controls/player-controls";
+import "../components/player-controls/player-controls-expressive";
+import "../components/player-selector-menu/player-selector-menu";
+import "../components/section-header/section-header";
+import "../components/volume-row/volume-row";
+import "../components/marquee-text/marquee-text";
 
 import PlayerActions from "../actions/player-actions";
 
