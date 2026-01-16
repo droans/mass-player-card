@@ -2,12 +2,15 @@ import { mediaBrowserSectionConfig, newMediaBrowserItemsConfig } from "./types";
 
 export type TargetValueEvent = (event_: TargetValueEventData) => void;
 
-export interface TargetValueEventData extends Omit<Event, "target"> {
+export type EventNoTarget = Omit<Event, "target">;
+export type CustomEventNoDetail = Omit<Event, "detail">;
+
+export interface TargetValueEventData extends EventNoTarget {
   target: {
     value: string;
   };
 }
-export interface DetailValueEventData extends Omit<Event, "target"> {
+export interface DetailValueEventData extends EventNoTarget {
   detail: {
     value: number;
   };
@@ -17,7 +20,7 @@ export interface CardsUpdatedEventDetail {
   section: string;
   cards: newMediaBrowserItemsConfig | mediaBrowserSectionConfig;
 }
-export interface CardsUpdatedEvent extends Omit<CustomEvent, "detail"> {
+export interface CardsUpdatedEvent extends CustomEventNoDetail {
   detail: CardsUpdatedEventDetail;
 }
 
@@ -31,22 +34,27 @@ export interface ArtworkUpdatedEventData extends Omit<Event, "detail"> {
     image: string;
   };
 }
-export interface JoinUnjoinEventData extends Omit<Event, "target"> {
+export interface JoinUnjoinEventData extends EventNoTarget {
   target: {
     entity: string;
   };
 }
 
-export interface MenuButtonEventData extends Omit<CustomEvent, "detail"> {
+export interface MenuButtonEventData extends CustomEventNoDetail {
   detail: {
     option: string;
   };
 }
 
-export interface TrackRemovedEventData extends Omit<CustomEvent, "detail"> {
+export interface TrackRemovedEventData extends CustomEventNoDetail {
   detail: {
     playlist: string;
     position: number;
+  };
+}
+export interface PlayerSyncEvent extends CustomEventNoDetail {
+  detail: {
+    player: string;
   };
 }
 

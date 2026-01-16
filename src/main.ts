@@ -32,9 +32,10 @@ import { version } from "../package.json";
 import styles from "./styles/main";
 import head_styles from "./styles/head";
 
-import { getDefaultSection, jsonMatch } from "./utils/utility";
+import { delay, getDefaultSection, jsonMatch } from "./utils/utility";
 import { MassCardController } from "./controller/controller";
 import { ExtendedHass } from "./const/types";
+import { PlayerSyncEvent } from "./const/events";
 
 const DEV = false;
 
@@ -84,6 +85,8 @@ export class MusicAssistantPlayerCard extends LitElement {
   private _controller = new MassCardController(this);
   @provide({ context: configContext })
   private _config!: Config;
+  private syncPlayerAcrossDashboard = false;
+  private listenElem!: HTMLElement;
   public set hass(hass: ExtendedHass | undefined) {
     if (!hass) {
       return;
@@ -114,10 +117,31 @@ export class MusicAssistantPlayerCard extends LitElement {
   public set config(config: Config) {
     this._config = config;
     this._controller.config = config;
+    if (config.sync_player_across_dashboard) {
+      this.syncPlayerAcrossDashboard = true;
+    }
   }
   public get config() {
     // eslint-disable-next-line @typescript-eslint/no-non-null-assertion
     return this._controller.config!;
+  }
+
+  private onPlayerSync = (event_: Event) => {
+    const syncEvent = event_ as PlayerSyncEvent;
+    const player = syncEvent.detail.player;
+    this.setActivePlayer(player, true);
+  };
+  private syncPlayerSelection = () => {
+    const detail = {
+      player: this._controller.ActivePlayer?.activeEntityID ?? "",
+    };
+    const event = new CustomEvent("mpc-player-sync", { detail });
+    globalThis.dispatchEvent(event);
+  };
+  private async prepareSyncPlayerAcrossDashboard() {
+    await delay(5000);
+    window.addEventListener("mpc-player-sync", this.onPlayerSync);
+    this.syncPlayerAcrossDashboard = true;
   }
 
   @consume({ context: activeSectionContext, subscribe: true })
@@ -160,11 +184,17 @@ export class MusicAssistantPlayerCard extends LitElement {
     }
     this._controller.activeSection = getDefaultSection(this.config);
   }
-  private setActivePlayer = (player_entity: string) => {
+  private setActivePlayer = (
+    player_entity: string,
+    playerWasSynced = false,
+  ) => {
     if (player_entity.length === 0) {
       return;
     }
     this._controller.activeEntityId = player_entity;
+    if (!playerWasSynced && this.syncPlayerAcrossDashboard) {
+      this.syncPlayerSelection();
+    }
   };
 
   protected shouldUpdate(_changedProperties: PropertyValues): boolean {
@@ -326,6 +356,9 @@ export class MusicAssistantPlayerCard extends LitElement {
       const stylesheet = head_styles.styleSheet as CSSStyleSheet;
       document.adoptedStyleSheets.push(stylesheet);
     }
+    if (this.syncPlayerAcrossDashboard) {
+      void this.prepareSyncPlayerAcrossDashboard();
+    }
   }
   connectedCallback() {
     super.connectedCallback();
@@ -343,6 +376,9 @@ export class MusicAssistantPlayerCard extends LitElement {
     super.disconnectedCallback();
     this.removeEventListener("section-changed", this.onSectionChangedEvent);
     this._controller.disconnected();
+    if (this.syncPlayerAcrossDashboard) {
+      window.removeEventListener("mpc-player-sync", this.onPlayerSync);
+    }
   }
   public getCardSize() {
     return 3;

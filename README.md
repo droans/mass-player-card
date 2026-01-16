@@ -391,19 +391,20 @@ playlists_allow_removing_tracks: false
 </details>
 
 ## Base Config
-| Parameter         | Type                                             | Required | Default      | Description                                           |
-|-------------------|--------------------------------------------------|----------|--------------|-------------------------------------------------------|
-| type              | str                                              | Yes      | n/a          | Use `custom:mass-player-card`                         |
-| expressive        | boolean                                          | No       | true         | Enables Material Expressive theme                     |
-| expressive_scheme | str                                              | No       | expressive   | The expressive scheme to use for the theme, see below |
-| download_local    | boolean                                          | No       | false        | Download and encode images if not remotely accessible |
-| entities          | list of string or [EntityConfig](#entity-config) | Yes      | n/a          | The Music Assistant `media_player` entities to use    |
-| player            | [MusicPlayerConfig](#music-player-config)        | No       | 5            | See Below                                             |
-| queue             | [QueueConfig](#queue-config)                     | No       | 5            | See Below                                             |
-| media_browser     | [MediaBrowserConfig](#media-browser-config)      | No       | 5            | See Below                                             |
-| players           | [PlayersConfig](#players-config)                 | No       | 5            | See Below                                             |
-| panel             | boolean                                          | No       | false        | Displays a full-height card when enabled              |
-| default_section   | str                                              | No       | music_player | Default starting section, see below                   |
+| Parameter                    | Type                                             | Required | Default      | Description                                                  |
+|------------------------------|--------------------------------------------------|----------|--------------|--------------------------------------------------------------|
+| type                         | str                                              | Yes      | n/a          | Use `custom:mass-player-card`                                |
+| expressive                   | boolean                                          | No       | true         | Enables Material Expressive theme                            |
+| expressive_scheme            | str                                              | No       | expressive   | The expressive scheme to use for the theme, see below        |
+| download_local               | boolean                                          | No       | false        | Download and encode images if not remotely accessible        |
+| entities                     | list of string or [EntityConfig](#entity-config) | Yes      | n/a          | The Music Assistant `media_player` entities to use           |
+| player                       | [MusicPlayerConfig](#music-player-config)        | No       | 5            | See Below                                                    |
+| queue                        | [QueueConfig](#queue-config)                     | No       | 5            | See Below                                                    |
+| media_browser                | [MediaBrowserConfig](#media-browser-config)      | No       | 5            | See Below                                                    |
+| players                      | [PlayersConfig](#players-config)                 | No       | 5            | See Below                                                    |
+| panel                        | boolean                                          | No       | false        | Displays a full-height card when enabled                     |
+| default_section              | str                                              | No       | music_player | Default starting section, see below                          |
+| sync_player_across_dashboard | boolean                                          | No       | false        | Syncs the selected player across all cards on the dashboard. |
 
 ## Entity Config
 For each entity, you can either provide the Entity ID by itself or you can provide the Music Assistant media player Entity ID, the media player Entity ID for volume control, and/or the name of the player. Below is the config if you would like to provide the additional details.
