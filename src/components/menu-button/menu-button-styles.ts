@@ -1,6 +1,11 @@
 import { css } from "lit";
 export default css`
   :host {
+    --default-border-radius: var(--control-select-menu-border-radius, 6px);
+    --used-border-radius: var(
+      --menu-button-border-radius,
+      var(--default-border-radius)
+    );
     --mass-menu-background-color-expressive: var(
       --md-sys-color-surface-container-low
     );
@@ -47,7 +52,7 @@ export default css`
     );
     --mdc-theme-text-icon-on-background: var(--mass-menu-icon-color-expressive);
     --mdc-theme-surface: var(--mass-menu-background-color-expressive);
-    --mdc-shape-medium: var(--menu-border-radius);
+    --mdc-shape-medium: var(--default-border-radius);
     --mdc-list-vertical-padding: 0px;
   }
   .menu-expressive.vibrant {
@@ -63,8 +68,10 @@ export default css`
     --control-select-menu-padding: unset;
     --ha-ripple-hover-opacity: 8%;
     --ha-ripple-pressed-opacity: 8%;
+    border-radius: var(--used-border-radius);
   }
   .svg-menu {
+    border-radius: var(--used-border-radius);
     color: var(--md-sys-color-primary);
   }
   .inactive-item {
