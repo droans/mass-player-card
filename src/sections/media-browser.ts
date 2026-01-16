@@ -16,6 +16,7 @@ import {
   DEFAULT_ACTIVE_SECTION,
   DEFAULT_ACTIVE_SUBSECTION,
   DEFAULT_SEARCH_LIMIT,
+  EnqueueConfigMap,
   getFilterButtons,
   getSearchMediaButtons,
   SEARCH_TERM_MIN_LENGTH,
@@ -233,10 +234,12 @@ export class MediaBrowser extends LitElement {
       );
       return;
     }
-    void this.actions.actionPlayMedia(
+    const enqueue = EnqueueConfigMap[this.config.default_enqueue_option];
+    void this.actions.actionEnqueueMedia(
       this.activeEntityConfig.entity_id,
       data.media_content_id,
       data.media_content_type,
+      enqueue,
     );
     this.onMediaSelectedAction();
   };

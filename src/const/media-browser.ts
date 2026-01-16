@@ -1,7 +1,10 @@
 import { Thumbnail, MediaTypes, EnqueueOptions } from "./enums";
 import { Icons } from "./icons";
 import { getTranslation } from "../utils/translations";
-import { MediaBrowserConfig } from "../config/media-browser";
+import {
+  EnqueueConfigOptions,
+  MediaBrowserConfig,
+} from "../config/media-browser";
 import { ExtendedHass, ListItems } from "./types";
 
 export const MediaTypeThumbnails = {
@@ -126,3 +129,12 @@ export const SEARCH_TERM_MIN_LENGTH = 3;
 
 export const DEFAULT_ACTIVE_SECTION = "favorites";
 export const DEFAULT_ACTIVE_SUBSECTION = "main";
+
+export const EnqueueConfigMap: Record<EnqueueConfigOptions, EnqueueOptions> = {
+  add_to_queue: EnqueueOptions.ADD_TO_QUEUE,
+  play_next: EnqueueOptions.PLAY_NEXT,
+  play_next_clear_queue: EnqueueOptions.PLAY_NEXT_CLEAR_QUEUE,
+  play_now: EnqueueOptions.PLAY_NOW,
+  play_now_clear_queue: EnqueueOptions.PLAY_NOW_CLEAR_QUEUE,
+  radio: EnqueueOptions.RADIO,
+};

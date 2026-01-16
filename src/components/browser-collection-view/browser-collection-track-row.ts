@@ -12,6 +12,7 @@ import {
   activeEntityIDContext,
   hassContext,
   IconsContext,
+  mediaBrowserConfigContext,
   useExpressiveContext,
   useVibrantContext,
 } from "../../const/context";
@@ -24,6 +25,8 @@ import { Icons } from "../../const/icons";
 import { HTMLImageElementEvent, MenuButtonEventData } from "../../const/events";
 import { getTranslation } from "../../utils/translations";
 import { PlaylistTrack } from "mass-queue-types/packages/mass_queue/actions/get_playlist_tracks";
+import { EnqueueConfigMap } from "../../const/media-browser";
+import { MediaBrowserConfig } from "../../config/media-browser";
 
 @customElement("mpc-track-row")
 export class MassPlaylistTrackRow extends LitElement {
@@ -33,6 +36,9 @@ export class MassPlaylistTrackRow extends LitElement {
 
   @property({ attribute: false }) collectionURI!: string;
   _enqueueButtons?: ListItems;
+
+  @consume({ context: mediaBrowserConfigContext, subscribe: true })
+  private browserConfig!: MediaBrowserConfig;
 
   @consume({ context: useExpressiveContext, subscribe: true })
   private useExpressive?: boolean;
@@ -113,7 +119,13 @@ export class MassPlaylistTrackRow extends LitElement {
     const ent = this.activeEntityId as string;
     const actions = this.browserActions;
     const uri = this.track.media_content_id;
-    await actions.actionPlayMedia(ent, uri, "music");
+    const enqueue = EnqueueConfigMap[this.browserConfig.default_enqueue_option];
+    await actions.actionEnqueueMedia(
+      ent,
+      uri,
+      "music",
+      enqueue == EnqueueOptions.RADIO ? EnqueueOptions.PLAY_NOW : enqueue,
+    );
     await actions.actionEnqueueMedia(
       ent,
       this.collectionURI,
