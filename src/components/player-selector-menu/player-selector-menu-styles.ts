@@ -26,7 +26,7 @@ export default css`
     ) !important;
   }
   .menu-header.expressive::part(menu-svg) {
-    color: var(--md-sys-color-secondary-on-container) !important;
+    color: var(--md-sys-color-on-secondary-container);
   }
   .menu-header:not(.expressive)::part(menu-select-menu) {
     background-color: var(--control-select-menu-background-color);
