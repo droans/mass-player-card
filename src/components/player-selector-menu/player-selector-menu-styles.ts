@@ -6,9 +6,6 @@ export default css`
   #players-select-menu::part(menu-list-item) {
     height: 3.5em;
   }
-  #players-select-menu::part(menu-button) {
-    --ha-ripple-color: rgba(0, 0, 0, 0);
-  }
   #players-select-menu::part(menu-list-item-svg) {
     height: 2em;
     width: 2em;
