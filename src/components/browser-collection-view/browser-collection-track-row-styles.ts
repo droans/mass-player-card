@@ -8,6 +8,9 @@ export default css`
   }
   mass-menu-button::part(menu-select-menu) {
     --control-select-menu-background-opacity: 0;
+    width: 2.5em;
+    margin-top: var(--md-list-item-top-space);
+    margin-bottom: var(--md-list-item-bottom-space);
   }
   .divider {
     --divider-color: var(--md-sys-color-surface-variant);
@@ -22,8 +25,6 @@ export default css`
   }
   .menu-button {
     height: 100%;
-    padding-top: var(--md-list-item-top-space);
-    padding-bottom: var(--md-list-item-bottom-space);
   }
   .thumbnail {
     width: var(--media-row-thumbnail-height);
