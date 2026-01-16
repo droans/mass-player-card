@@ -117,8 +117,6 @@ export default css`
       48px
     );
 
-    --menu-border-radius: var(--mass-player-card-menu-border-radius, 24px);
-
     --media-row-active-background-color: var(
       --mass-player-card-media-row-active-background-color,
       var(--table-row-alternative-background-color)

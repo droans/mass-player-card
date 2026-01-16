@@ -79,8 +79,10 @@ export default css`
     margin-top: 10px;
     color: var(--md-sys-color-primary);
   }
+  .menu-header {
+    --menu-button-border-radius: 50%;
+  }
   .menu-header::part(menu-select-menu) {
-    border-radius: 50%;
     height: 2.5em;
     width: 2.5em;
     --control-select-menu-padding: 7px;
@@ -90,7 +92,6 @@ export default css`
   }
   .menu-header::part(menu-svg):not(.svg-menu-expressive) {
     color: var(--wa-color-brand-on-normal, var(--wa-color-neutral-on-normal));
-    border-radius: 50%;
   }
   .menu-header.expressive::part(menu-select-menu) {
     --control-select-menu-background-color: var(

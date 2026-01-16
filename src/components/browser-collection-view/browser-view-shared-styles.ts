@@ -21,6 +21,9 @@ export default css`
     display: block;
     margin-top: -8px;
   }
+  mass-menu-button {
+    --menu-button-border-radius: 50%;
+  }
   mass-menu-button::part(menu-button) {
     --ha-ripple-color: rgba(0, 0, 0, 0);
   }
@@ -41,7 +44,6 @@ export default css`
       --ha-card-background,
       var(--card-background-color, #fff)
     );
-    border-radius: 50%;
   }
   #animation-image {
     display: block;

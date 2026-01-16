@@ -3,6 +3,9 @@ import { css } from "lit";
 // Styles belonging to the card
 // https://lit.dev/docs/components/styles/
 export default css`
+  mass-menu-button {
+    --menu-button-border-radius: 50%;
+  }
   mass-menu-button::part(menu-button) {
     position: absolute;
     bottom: 1.5em;

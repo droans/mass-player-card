@@ -13,8 +13,10 @@ export default css`
     height: 2em;
     width: 2em;
   }
+  .menu-header {
+    --menu-button-border-radius: 50%;
+  }
   .menu-header::part(menu-select-menu) {
-    border-radius: 50%;
     height: 2.5em;
     width: 2.5em;
     --control-select-menu-padding: 7px;
@@ -26,7 +28,6 @@ export default css`
       --md-sys-color-secondary-container
     ) !important;
     box-shadow: var(--md-sys-elevation-level1);
-    border-radius: var(--button-small-border-radius);
   }
   .menu-header.expressive::part(menu-svg) {
     color: var(--md-sys-color-secondary-on-container) !important;
