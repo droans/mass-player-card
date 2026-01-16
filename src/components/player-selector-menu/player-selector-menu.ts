@@ -97,6 +97,7 @@ export class MassCardPlayerSelector extends LitElement {
         fixedMenuPosition
         naturalMenuWidth
         @menu-item-selected=${this.onSelect}
+        elevation="1"
       ></mass-menu-button>
     `;
   }

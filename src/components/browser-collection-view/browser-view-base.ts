@@ -385,6 +385,7 @@ export class BrowserViewBase extends LitElement {
         .items=${this._enqueue_buttons}
         @menu-item-selected=${this.onEnqueue}
         naturalMenuWidth
+        elevation="1"
       ></mass-menu-button>
     `;
   }

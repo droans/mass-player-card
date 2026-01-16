@@ -34,6 +34,8 @@ export class MassMenuButton extends LitElement {
   @property({ type: Boolean, attribute: "use-md" })
   public useMD = false;
 
+  @property({ type: Number, attribute: "elevation" }) elevation = 0;
+
   @query("#menu-select-menu")
   public menuElement?: ControlSelectMenuElement;
 
@@ -136,12 +138,13 @@ export class MassMenuButton extends LitElement {
             event_.stopPropagation();
           }}
         >
-          <ha-svg-icon
-            slot="icon"
-            class="${this.useExpressive ? `svg-menu-expressive` : `svg-menu`}"
-            part="menu-svg"
-            .path=${this.iconPath}
-          ></ha-svg-icon>
+          <div class="div-icon" slot="icon" part="div-icon">
+            <ha-svg-icon
+              class="svg-menu ${this.useExpressive ? `expressive` : ``}"
+              part="menu-svg"
+              .path=${this.iconPath}
+            ></ha-svg-icon>
+          </div>
           ${this.renderMenuItems()}
           <slot></slot>
         </ha-control-select-menu>

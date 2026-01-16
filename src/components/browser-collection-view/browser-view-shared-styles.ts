@@ -21,6 +21,9 @@ export default css`
     display: block;
     margin-top: -8px;
   }
+  mass-menu-button {
+    --menu-button-border-radius: 50%;
+  }
   mass-menu-button::part(menu-button) {
     --ha-ripple-color: rgba(0, 0, 0, 0);
   }
@@ -30,10 +33,9 @@ export default css`
   }
   mass-menu-button::part(menu-select-menu) {
     --mdc-icon-size: var(--header-expanded-menu-icon-size);
-    --control-select-menu-height: var(--header-expanded-menu-control-size);
+    --control-select-menu-height: unset;
     --control-select-menu-background-color: unset;
     --control-select-menu-padding: unset;
-    /* padding-left: 10px; */
   }
   mass-menu-button::part(menu-svg) {
     color: var(--md-sys-color-primary);
@@ -41,7 +43,6 @@ export default css`
       --ha-card-background,
       var(--card-background-color, #fff)
     );
-    border-radius: 50%;
   }
   #animation-image {
     display: block;

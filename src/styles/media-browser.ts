@@ -8,9 +8,11 @@ export default css`
     --button-button-width: 35px;
     --button-padding: 0px;
   }
+  #filter-menu {
+    --menu-button-border-radius: var(--button-small-border-radius);
+  }
   .filter-menu-expressive::part(menu-select-menu) {
     box-shadow: var(--md-sys-elevation-level1);
-    border-radius: var(--button-small-border-radius) !important;
   }
   .button-expressive .header-icon,
   .filter-menu-expressive::part(menu-svg),
@@ -48,7 +50,6 @@ export default css`
       --md-sys-color-secondary-container
     );
     background-color: var(--md-sys-color-secondary-container);
-    border-radius: 12px;
   }
   #filter-menu.filter-menu-expressive::part(menu-select-menu) {
     --control-select-menu-background-color: unset;
