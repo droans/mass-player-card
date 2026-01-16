@@ -48,6 +48,7 @@ export type ExtendedHassEntities = Record<
 interface ExtendedHassEntityAttributes extends HassEntityAttributeBase {
   app_id?: string;
   active_queue?: string;
+  entity_picture?: string;
   entity_picture_local?: string;
   group_members?: string[];
   is_volume_muted?: boolean;

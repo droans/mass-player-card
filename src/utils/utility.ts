@@ -54,8 +54,11 @@ export function playerHasUpdated(
   const attributes = [
     "active_queue",
     "app_id",
+    "entity_picture",
     "entity_picture_local",
+    "group_members",
     "is_volume_muted",
+    "mass_player_type",
     "media_album_name",
     "media_artist",
     "media_content_id",
