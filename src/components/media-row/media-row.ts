@@ -17,6 +17,7 @@ import {
   IconsContext,
   mediaCardDisplayContext,
   playerQueueConfigContext,
+  playerQueueHiddenElementsConfigContext,
   useExpressiveContext,
 } from "../../const/context";
 import { ExtendedHass, QueueItem } from "../../const/types";
@@ -27,7 +28,6 @@ import styles from "./media-row-styles";
 import { getThumbnail } from "../../utils/thumbnails";
 import { jsonMatch, queueItemhasUpdated } from "../../utils/utility";
 import {
-  DEFAULT_PLAYER_QUEUE_HIDDEN_ELEMENTS_CONFIG,
   PlayerQueueHiddenElementsConfig,
   QueueConfig,
 } from "../../config/player-queue";
@@ -58,8 +58,8 @@ class MediaRow extends LitElement {
   private _entityConfig!: EntityConfig;
   private _hass!: ExtendedHass;
 
-  private hide: PlayerQueueHiddenElementsConfig =
-    DEFAULT_PLAYER_QUEUE_HIDDEN_ELEMENTS_CONFIG;
+  @consume({ context: playerQueueHiddenElementsConfigContext, subscribe: true })
+  private hide!: PlayerQueueHiddenElementsConfig;
 
   @consume({ context: playerQueueConfigContext, subscribe: true })
   public set config(config: QueueConfig | undefined) {
@@ -67,7 +67,6 @@ class MediaRow extends LitElement {
       return;
     }
     this._config = config;
-    this.updateHiddenElements();
   }
   public get config() {
     return this._config;
@@ -79,7 +78,6 @@ class MediaRow extends LitElement {
       return;
     }
     this._entityConfig = config;
-    this.updateHiddenElements();
   }
   public get entityConfig() {
     return this._entityConfig;
@@ -91,24 +89,6 @@ class MediaRow extends LitElement {
   }
   public get hass() {
     return this._hass;
-  }
-
-  private updateHiddenElements() {
-    if (!this.entityConfig || !this.config) {
-      return;
-    }
-    const entity = this._entityConfig.hide.queue;
-    const card = this._config.hide;
-    this.hide = {
-      album_covers: entity.album_covers || card.album_covers,
-      artist_names: entity.artist_names || card.artist_names,
-      action_buttons: entity.action_buttons || card.action_buttons,
-      move_down_button: entity.move_down_button || card.move_down_button,
-      move_next_button: entity.move_next_button || card.move_next_button,
-      move_up_button: entity.move_up_button || card.move_up_button,
-      remove_button: entity.remove_button || card.remove_button,
-      clear_queue_button: entity.clear_queue_button || card.clear_queue_button,
-    };
   }
 
   @property({ attribute: false })
@@ -218,7 +198,7 @@ class MediaRow extends LitElement {
       return;
     }
     let button_ct = 0;
-    const hide = this.config.hide;
+    const hide = this.hide;
     const media_item = this.media_item;
     if (media_item.show_move_up_next && !hide.move_next_button) {
       button_ct += 1;

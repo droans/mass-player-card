@@ -53,10 +53,11 @@ export class MassCardController {
     this._setupBrowserController();
   }
   private _setupActiveController() {
-    if (this.hass && this.config && !this.activePlayerController) {
+    // eslint-disable-next-line @typescript-eslint/no-unnecessary-condition
+    if (this.hass && this.Config && !this.activePlayerController) {
       const active_controller = new ActivePlayerController(
         this.hass,
-        this.config,
+        this.Config,
         this.host,
       );
       this.activePlayerController = new ContextProvider(this.host, {
@@ -167,6 +168,7 @@ export class MassCardController {
       if (this.Actions) {
         this.Actions.setEntityConfig(this.ActivePlayer.activeEntityConfig);
       }
+      this.Config.activeEntityConfig = this.ActivePlayer.activeEntityConfig;
     }
     if (this.Queue) {
       this.Queue.setActiveEntityId(entity);

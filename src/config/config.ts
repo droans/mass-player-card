@@ -61,12 +61,14 @@ export type ConfigSections =
   | "media_browser"
   | "players";
 
-interface HiddenElementsConfig {
+export interface HiddenElementsConfig {
   player: PlayerHiddenElementsConfig;
   queue: PlayerQueueHiddenElementsConfig;
   media_browser: MediaBrowserHiddenElementsConfig;
   players: PlayersHiddenElementsConfig;
 }
+
+export type BaseHiddenElementsConfig = Record<string, boolean>;
 
 export interface EntityConfig {
   entity_id: string;

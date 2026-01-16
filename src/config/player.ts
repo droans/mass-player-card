@@ -1,5 +1,5 @@
 import { hiddenElementsConfigItem } from "../utils/config";
-import { Config } from "./config";
+import { BaseHiddenElementsConfig, Config } from "./config";
 
 export interface PlayerConfig {
   enabled: boolean;
@@ -7,7 +7,7 @@ export interface PlayerConfig {
   layout: PlayerLayoutConfig;
 }
 
-export interface PlayerControlsHiddenElementsConfig {
+export interface PlayerControlsHiddenElementsConfig extends BaseHiddenElementsConfig {
   power: boolean;
   repeat: boolean;
   shuffle: boolean;

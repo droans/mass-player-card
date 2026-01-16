@@ -15,6 +15,7 @@ import {
   hassContext,
   IconsContext,
   playersConfigContext,
+  playersHiddenElementsConfigContext,
   useExpressiveContext,
 } from "../../const/context";
 
@@ -22,7 +23,6 @@ import { isActive, jsonMatch } from "../../utils/utility";
 
 import styles from "./player-row-styles";
 import {
-  DEFAULT_PLAYERS_HIDDEN_ELEMENTS_CONFIG,
   PlayersConfig,
   PlayersHiddenElementsConfig,
 } from "../../config/players";
@@ -53,8 +53,8 @@ class PlayerRow extends LitElement {
   private _entityConfig!: EntityConfig;
   private _hass!: ExtendedHass;
 
-  private hide: PlayersHiddenElementsConfig =
-    DEFAULT_PLAYERS_HIDDEN_ELEMENTS_CONFIG;
+  @consume({ context: playersHiddenElementsConfigContext, subscribe: true })
+  private hide!: PlayersHiddenElementsConfig;
 
   @consume({ context: playersConfigContext, subscribe: true })
   public set config(config: PlayersConfig | undefined) {
@@ -62,7 +62,6 @@ class PlayerRow extends LitElement {
       return;
     }
     this._config = config;
-    this.updateHiddenElements();
   }
   public get config() {
     return this._config;
@@ -73,7 +72,6 @@ class PlayerRow extends LitElement {
       return;
     }
     this._entityConfig = config;
-    this.updateHiddenElements();
   }
   public get entityConfig() {
     return this._entityConfig;
@@ -97,18 +95,6 @@ class PlayerRow extends LitElement {
     return this._player_entity;
   }
 
-  private updateHiddenElements() {
-    if (!this.config || !this.entityConfig) {
-      return;
-    }
-    const entity = this.entityConfig.hide.players;
-    const card = this.config.hide;
-    this.hide = {
-      action_buttons: entity.action_buttons || card.action_buttons,
-      join_button: entity.join_button || card.join_button,
-      transfer_button: entity.transfer_button || card.transfer_button,
-    };
-  }
   private callOnPlayerSelectedService = () => {
     if (!this.player_entity) {
       return;
@@ -174,7 +160,7 @@ class PlayerRow extends LitElement {
     if (!this.config) {
       return;
     }
-    const hide = this.config.hide;
+    const hide = this.hide;
     if (
       !hide.join_button &&
       this.player_entity?.attributes.group_members &&

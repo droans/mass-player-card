@@ -10,7 +10,6 @@ import {
   mediaCardPodcastData,
 } from "../../const/types";
 import {
-  DEFAULT_MEDIA_BROWSER_HIDDEN_ELEMENTS_CONFIG,
   HIDDEN_BUTTON_VALUE,
   MediaBrowserConfig,
   MediaBrowserHiddenElementsConfig,
@@ -25,6 +24,7 @@ import {
   hassContext,
   IconsContext,
   mediaBrowserConfigContext,
+  mediaBrowserHiddenElementsConfigContext,
   useExpressiveContext,
   useVibrantContext,
 } from "../../const/context";
@@ -79,8 +79,11 @@ export class BrowserViewBase extends LitElement {
   @queryAll("mpc-track-row") trackElements!: HTMLElement[];
 
   // Set which enqueue elements are hidden
-  protected hide: MediaBrowserHiddenElementsConfig =
-    DEFAULT_MEDIA_BROWSER_HIDDEN_ELEMENTS_CONFIG;
+  @consume({
+    context: mediaBrowserHiddenElementsConfigContext,
+    subscribe: true,
+  })
+  protected hide!: MediaBrowserHiddenElementsConfig;
   protected _enqueue_buttons!: ListItems;
 
   public onEnqueueAction!: CardEnqueueService;
@@ -211,24 +214,6 @@ export class BrowserViewBase extends LitElement {
     if (!this.activeEntityConf || !this.browserConfig) {
       return;
     }
-    const entity = this.activeEntityConf.hide.media_browser;
-    const card = this.browserConfig.hide;
-    this.hide = {
-      back_button: entity.back_button || card.back_button,
-      search: entity.search || card.search,
-      titles: entity.titles || card.titles,
-      enqueue_menu: entity.enqueue_menu || card.enqueue_menu,
-      add_to_queue_button:
-        entity.add_to_queue_button || card.add_to_queue_button,
-      play_next_button: entity.play_next_button || card.play_next_button,
-      play_now_button: entity.play_now_button || card.play_now_button,
-      play_next_clear_queue_button:
-        entity.play_next_clear_queue_button ||
-        card.play_next_clear_queue_button,
-      play_now_clear_queue_button:
-        entity.play_now_clear_queue_button || card.play_now_clear_queue_button,
-      recents: entity.recents || card.recents,
-    };
     this.updateEnqueueButtons();
   }
   protected async getTracks() {

@@ -7,7 +7,10 @@ import {
   TemplateResult,
 } from "lit";
 import { MediaTypes, EnqueueOptions } from "../const/enums";
-import { MediaBrowserConfig } from "../config/media-browser";
+import {
+  MediaBrowserConfig,
+  MediaBrowserHiddenElementsConfig,
+} from "../config/media-browser";
 import { customElement, property, query, state } from "lit/decorators.js";
 import {
   DEFAULT_ACTIVE_SECTION,
@@ -38,6 +41,7 @@ import {
   IconsContext,
   mediaBrowserCardsContext,
   mediaBrowserConfigContext,
+  mediaBrowserHiddenElementsConfigContext,
   useExpressiveContext,
 } from "../const/context";
 import { Icons } from "../const/icons";
@@ -83,7 +87,13 @@ export class MediaBrowser extends LitElement {
   private useExpressive!: boolean;
   @consume({ context: IconsContext }) private Icons!: Icons;
   @consume({ context: activeEntityConfigContext, subscribe: true })
-  private activeEntityConfig!: EntityConfig;
+  private _activeEntityConfig!: EntityConfig;
+
+  @consume({
+    context: mediaBrowserHiddenElementsConfigContext,
+    subscribe: true,
+  })
+  private hiddenElements!: MediaBrowserHiddenElementsConfig;
 
   public activeSection = DEFAULT_ACTIVE_SECTION;
   public activeSubSection = DEFAULT_ACTIVE_SUBSECTION;
@@ -139,9 +149,18 @@ export class MediaBrowser extends LitElement {
   @consume({ context: mediaBrowserConfigContext, subscribe: true })
   public set config(config: MediaBrowserConfig) {
     this._config = config;
+    // this.setHiddenElements();
   }
   public get config() {
     return this._config;
+  }
+
+  @consume({ context: activeEntityConfigContext, subscribe: true })
+  private set activeEntityConfig(config: EntityConfig) {
+    this._activeEntityConfig = config;
+  }
+  private get activeEntityConfig() {
+    return this._activeEntityConfig;
   }
 
   @consume({ context: mediaBrowserCardsContext, subscribe: true })
@@ -568,9 +587,7 @@ export class MediaBrowser extends LitElement {
     `;
   }
   protected renderSearchButton(): TemplateResult {
-    const hide =
-      this.config.hide.search ||
-      this.activeEntityConfig.hide.media_browser.search;
+    const hide = this.hiddenElements.search;
     if (hide) {
       return html``;
     }
@@ -588,9 +605,7 @@ export class MediaBrowser extends LitElement {
     `;
   }
   protected renderBackButton(): TemplateResult {
-    const hide =
-      this.config.hide.back_button ||
-      this.activeEntityConfig.hide.media_browser.back_button;
+    const hide = this.hiddenElements.back_button;
     if (hide) {
       return html``;
     }

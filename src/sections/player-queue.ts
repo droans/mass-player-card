@@ -13,6 +13,7 @@ import "../components/section-header/section-header";
 
 import {
   DEFAULT_QUEUE_CONFIG,
+  PlayerQueueHiddenElementsConfig,
   QueueConfig,
   QueueConfigErrors,
 } from "../config/player-queue";
@@ -28,6 +29,7 @@ import {
   IconsContext,
   mediaCardDisplayContext,
   playerQueueConfigContext,
+  playerQueueHiddenElementsConfigContext,
   queueContext,
   queueControllerContext,
 } from "../const/context";
@@ -50,6 +52,9 @@ class QueueCard extends LitElement {
 
   @consume({ context: IconsContext, subscribe: true })
   private Icons!: Icons;
+
+  @consume({ context: playerQueueHiddenElementsConfigContext, subscribe: true })
+  private hiddenElements!: PlayerQueueHiddenElementsConfig;
 
   @provide({ context: playerQueueConfigContext })
   public _config!: QueueConfig;
@@ -260,9 +265,7 @@ class QueueCard extends LitElement {
   }
   protected renderClearQueueButton(): TemplateResult {
     const expressive = this.activePlayerController.useExpressive;
-    const hide =
-      this.config.hide.clear_queue_button ||
-      this.entityConf.hide.queue.clear_queue_button;
+    const hide = this.hiddenElements.clear_queue_button;
     if (hide) {
       return html``;
     }

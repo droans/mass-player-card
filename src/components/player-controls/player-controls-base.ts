@@ -3,12 +3,11 @@ import { LitElement, PropertyValues } from "lit";
 import { state } from "lit/decorators.js";
 import {
   actionsControllerContext,
-  activeEntityConfigContext,
   activePlayerDataContext,
   controllerContext,
-  EntityConfig,
   IconsContext,
   musicPlayerConfigContext,
+  musicPlayerHiddenElementsConfigContext,
 } from "../../const/context";
 import { ActionsController } from "../../controller/actions";
 import { PlayerData } from "../../const/types";
@@ -41,66 +40,12 @@ export class MassPlayerControlsBase extends LitElement {
   }
   @consume({ context: actionsControllerContext })
   private actions!: ActionsController;
-  private _entityHiddenElements?: PlayerControlsHiddenElementsConfig;
-  private _configHiddenElements?: PlayerControlsHiddenElementsConfig;
-  @state() private _hiddenElements!: PlayerControlsHiddenElementsConfig;
+
+  @consume({ context: musicPlayerHiddenElementsConfigContext, subscribe: true })
+  protected hiddenElements!: PlayerControlsHiddenElementsConfig;
 
   @consume({ context: controllerContext, subscribe: true })
   public controller!: MassCardController;
-
-  @consume({ context: musicPlayerConfigContext, subscribe: true })
-  private set _base_player_config(config: PlayerConfig) {
-    const c = config.hide;
-    this._configHiddenElements = {
-      power: c.power,
-      repeat: c.repeat,
-      shuffle: c.shuffle,
-      favorite: c.favorite,
-    };
-    this.setHiddenElements();
-  }
-
-  @consume({ context: activeEntityConfigContext, subscribe: true })
-  private set activeEntityConfig(config: EntityConfig) {
-    const c = config.hide.player;
-    this._entityHiddenElements = {
-      power: c.power,
-      repeat: c.repeat,
-      shuffle: c.shuffle,
-      favorite: c.favorite,
-    };
-    this.setHiddenElements();
-  }
-
-  private _processHiddenElement(
-    hiddenElements: PlayerControlsHiddenElementsConfig | undefined,
-  ): PlayerControlsHiddenElementsConfig {
-    return {
-      power: hiddenElements?.power ?? false,
-      repeat: hiddenElements?.repeat ?? false,
-      shuffle: hiddenElements?.shuffle ?? false,
-      favorite: hiddenElements?.favorite ?? false,
-    };
-  }
-
-  private setHiddenElements() {
-    const element = this._processHiddenElement(this._entityHiddenElements);
-    const c = this._processHiddenElement(this._configHiddenElements);
-    const result: PlayerControlsHiddenElementsConfig = {
-      power: element.power || c.power || false,
-      repeat: element.repeat || c.repeat || false,
-      shuffle: element.shuffle || c.shuffle || false,
-      favorite: element.favorite || c.favorite || false,
-    };
-    if (jsonMatch(result, this._hiddenElements)) {
-      return;
-    }
-    this._hiddenElements = result;
-  }
-
-  protected get hiddenElements() {
-    return this._hiddenElements;
-  }
 
   @state()
   protected _playerData!: PlayerData;

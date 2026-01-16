@@ -21,6 +21,7 @@ import {
   hassContext,
   IconsContext,
   mediaBrowserConfigContext,
+  mediaBrowserHiddenElementsConfigContext,
   useExpressiveContext,
 } from "../../const/context";
 import {
@@ -32,7 +33,6 @@ import styles from "./media-card-styles";
 
 import { jsonMatch } from "../../utils/utility";
 import {
-  DEFAULT_MEDIA_BROWSER_HIDDEN_ELEMENTS_CONFIG,
   HIDDEN_BUTTON_VALUE,
   MediaBrowserConfig,
   MediaBrowserHiddenElementsConfig,
@@ -72,8 +72,11 @@ class MediaCard extends LitElement {
 
   private _config!: MediaCardItem;
   private _entityConfig!: EntityConfig;
-  private hide: MediaBrowserHiddenElementsConfig =
-    DEFAULT_MEDIA_BROWSER_HIDDEN_ELEMENTS_CONFIG;
+  @consume({
+    context: mediaBrowserHiddenElementsConfigContext,
+    subscribe: true,
+  })
+  private hide!: MediaBrowserHiddenElementsConfig;
   @consume({ context: activeSectionContext, subscribe: true })
   public set activeSection(section: Sections | undefined) {
     if (!section) {
@@ -152,27 +155,6 @@ class MediaCard extends LitElement {
   }
 
   private updateHiddenElements() {
-    if (!this.config || !this.entityConfig || !this.sectionConfig) {
-      return;
-    }
-    const entity = this.entityConfig.hide.media_browser;
-    const card = this.sectionConfig.hide;
-    this.hide = {
-      back_button: entity.back_button || card.back_button,
-      search: entity.search || card.search,
-      titles: entity.titles || card.titles,
-      enqueue_menu: entity.enqueue_menu || card.enqueue_menu,
-      add_to_queue_button:
-        entity.add_to_queue_button || card.add_to_queue_button,
-      play_next_button: entity.play_next_button || card.play_next_button,
-      play_now_button: entity.play_now_button || card.play_now_button,
-      play_next_clear_queue_button:
-        entity.play_next_clear_queue_button ||
-        card.play_next_clear_queue_button,
-      play_now_clear_queue_button:
-        entity.play_now_clear_queue_button || card.play_now_clear_queue_button,
-      recents: entity.recents || card.recents,
-    };
     this.updateEnqueueButtons();
     this.generateCode();
   }
