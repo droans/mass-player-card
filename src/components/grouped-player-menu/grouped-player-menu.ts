@@ -32,6 +32,7 @@ import {
 import { customElement, state } from "lit/decorators.js";
 import { getThumbnail } from "../../utils/thumbnails";
 import { Thumbnail } from "../../const/enums";
+import "../volume-slider/volume-slider";
 
 @customElement("mpc-grouped-player-menu")
 export class MassCardPlayerSelector extends LitElement {
