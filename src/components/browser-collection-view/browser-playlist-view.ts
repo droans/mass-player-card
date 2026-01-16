@@ -3,7 +3,7 @@ import { customElement, query, state } from "lit/decorators.js";
 import sharedStyles from "./browser-view-shared-styles";
 import styles from "./browser-playlist-view-styles";
 import { TrackRemovedEventData } from "../../const/events";
-import "./browser-track-row";
+import "./browser-collection-track-row";
 import { delay, formatDuration } from "../../utils/utility";
 import { getPlaylistServiceResponse } from "mass-queue-types/packages/mass_queue/actions/get_playlist";
 import { PlaylistTrack } from "mass-queue-types/packages/mass_queue/actions/get_playlist_tracks";

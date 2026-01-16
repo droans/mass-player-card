@@ -2,7 +2,7 @@ import { CSSResultOrNative, html, TemplateResult } from "lit";
 import { customElement, query, state } from "lit/decorators.js";
 import sharedStyles from "./browser-view-shared-styles";
 import styles from "./browser-podcast-view-styles";
-import "./browser-track-row";
+import "./browser-collection-track-row";
 import { delay } from "../../utils/utility";
 import { BrowserViewBase } from "./browser-view-base";
 import { getPodcastServiceResponse } from "mass-queue-types/packages/mass_queue/actions/get_podcast";
