@@ -51,11 +51,13 @@ export default css`
     --hover-button-elevation: var(--md-sys-elevation-level5);
   }
 
-  :host([elevation]:not(hover)) {
+  :host([elevation]:not(hover)),
+  #menu-button:not(hover) {
     animation: elevate-hover-off var(--animation-duration) linear forwards;
   }
 
-  :host([elevation]:hover) {
+  :host([elevation]:hover),
+  #menu-button:hover {
     animation: elevate-hover var(--animation-duration) linear forwards;
   }
 
@@ -82,6 +84,9 @@ export default css`
   }
   mpc-menu-item:last-of-type {
     margin-bottom: 10px;
+  }
+  #menu-button {
+    border-radius: var(--used-border-radius);
   }
   .menu-expressive {
     --mdc-theme-text-primary-on-background: var(
