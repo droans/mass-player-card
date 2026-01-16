@@ -238,6 +238,11 @@ export function createConfigForm() {
         selector: { boolean: {}, default: false },
       },
       {
+        name: "sync_player_across_dashboard",
+        required: false,
+        selector: { boolean: {}, default: false },
+      },
+      {
         name: "player",
         type: "expandable",
         iconPath: mdiMusic,
