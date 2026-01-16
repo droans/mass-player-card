@@ -108,8 +108,8 @@ export default css`
   }
   #menu-select-menu {
     --control-select-menu-padding: unset;
-    --ha-ripple-hover-opacity: 8%;
-    --ha-ripple-pressed-opacity: 8%;
+    --ha-ripple-hover-opacity: 0%;
+    --ha-ripple-pressed-opacity: 0%;
     border-radius: var(--used-border-radius);
   }
   .svg-menu {

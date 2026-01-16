@@ -91,6 +91,7 @@ export default css`
     --md-list-item-label-text-color: var(--text-color-expressive);
     --md-list-item-leading-icon-color: var(--icon-color-expressive);
     --ha-ripple-hover-color: var(--ripple-hover-color-expressive);
+    --ha-ripple-hover-opacity: 0.08;
     --ha-ripple-pressed-color: var(--ripple-pressed-color-expressive);
   }
   .title-md.expressive:not(.vibrant):not(.selected) {
@@ -114,6 +115,7 @@ export default css`
     --md-list-item-label-text-color: var(--text-color-expressive-active);
     --md-list-item-leading-icon-color: var(--icon-color-expressive-active);
     --ha-ripple-hover-color: var(--ripple-hover-color-expressive-active);
+    --ha-ripple-hover-opacity: 0.08;
     --ha-ripple-pressed-color: var(--ripple-pressed-color-expressive-active);
   }
 
@@ -134,6 +136,7 @@ export default css`
     --md-list-item-label-text-color: var(--text-color-expressive-vibrant);
     --md-list-item-leading-icon-color: var(--icon-color-expressive-vibrant);
     --ha-ripple-hover-color: var(--ripple-hover-color-expressive-vibrant);
+    --ha-ripple-hover-opacity: 0.08;
     --ha-ripple-pressed-color: var(--ripple-pressed-color-expressive-vibrant);
   }
 
@@ -168,6 +171,7 @@ export default css`
     --ha-ripple-hover-color: var(
       --ripple-hover-color-expressive-vibrant-active
     );
+    --ha-ripple-hover-opacity: 0.08;
     --ha-ripple-pressed-color: var(
       --ripple-pressed-color-expressive-vibrant-active
     );
