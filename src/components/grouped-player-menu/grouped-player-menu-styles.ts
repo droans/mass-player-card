@@ -97,7 +97,6 @@ export default css`
     --control-select-menu-background-color: var(
       --md-sys-color-secondary-container
     ) !important;
-    border-radius: var(--button-small-border-radius);
   }
   .menu-header.expressive::part(menu-svg) {
     color: var(--md-sys-color-secondary-on-container) !important;
