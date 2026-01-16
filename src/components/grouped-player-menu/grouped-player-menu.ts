@@ -208,6 +208,7 @@ export class MassCardPlayerSelector extends LitElement {
         .iconPath=${this.Icons.SPEAKER_MULTIPLE}
         naturalMenuWidth
         fixedMenuPosition
+        elevation="1"
       >
         ${this.renderGroupedVolume()} ${this.renderGroupedPlayers()}
       </mass-menu-button>

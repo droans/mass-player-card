@@ -92,6 +92,7 @@ class MassPlayerControlsExpressive extends MassPlayerControlsBase {
         size="medium"
         id="button-power"
         class="button-lower ${no_label_class}"
+        elevation="1"
       >
         ${icon} ${label}
       </mass-player-card-button>
@@ -122,7 +123,7 @@ class MassPlayerControlsExpressive extends MassPlayerControlsBase {
         size="medium"
         selectable
         ?selected=${shuffle}
-        elevation=${shuffle ? 1 : 0}
+        elevation=${shuffle ? 2 : 1}
         id="button-shuffle"
         class="button-lower ${active_class} ${no_label_class}"
       >
@@ -157,7 +158,7 @@ class MassPlayerControlsExpressive extends MassPlayerControlsBase {
         size="medium"
         selectable
         ?selected=${repeat_on}
-        elevation=${repeat_on ? 1 : 0}
+        elevation=${repeat_on ? 2 : 1}
         id="button-repeat"
         class="button-lower ${active_class} ${no_label_class}"
       >
@@ -191,7 +192,7 @@ class MassPlayerControlsExpressive extends MassPlayerControlsBase {
         size="medium"
         selectable
         ?selected=${favorite}
-        elevation=${favorite ? 1 : 0}
+        elevation=${favorite ? 2 : 1}
         id="button-favorite"
         class="button-lower ${active_class} ${no_label_class}"
       >

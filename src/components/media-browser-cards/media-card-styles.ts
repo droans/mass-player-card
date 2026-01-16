@@ -18,7 +18,7 @@ export default css`
   }
   mass-menu-button::part(menu-select-menu) {
     --mdc-icon-size: calc(10em / var(--columns, 2));
-    --control-select-menu-height: 6em;
+    --control-select-menu-height: unset;
     --control-select-menu-background-color: unset;
   }
   mass-menu-button::part(menu-svg) {

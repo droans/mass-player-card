@@ -33,10 +33,9 @@ export default css`
   }
   mass-menu-button::part(menu-select-menu) {
     --mdc-icon-size: var(--header-expanded-menu-icon-size);
-    --control-select-menu-height: var(--header-expanded-menu-control-size);
+    --control-select-menu-height: unset;
     --control-select-menu-background-color: unset;
     --control-select-menu-padding: unset;
-    /* padding-left: 10px; */
   }
   mass-menu-button::part(menu-svg) {
     color: var(--md-sys-color-primary);

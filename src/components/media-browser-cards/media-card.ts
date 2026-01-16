@@ -229,6 +229,7 @@ class MediaCard extends LitElement {
         style="--columns: ${cols};"
         @menu-item-selected=${this.onEnqueue}
         fixedMenuPosition
+        elevation="4"
       ></mass-menu-button>
     `;
   }

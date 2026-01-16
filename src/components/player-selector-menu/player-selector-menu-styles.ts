@@ -27,7 +27,6 @@ export default css`
     --control-select-menu-background-color: var(
       --md-sys-color-secondary-container
     ) !important;
-    box-shadow: var(--md-sys-elevation-level1);
   }
   .menu-header.expressive::part(menu-svg) {
     color: var(--md-sys-color-secondary-on-container) !important;
