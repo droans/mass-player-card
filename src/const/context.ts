@@ -10,11 +10,21 @@ import type {
   QueueItems,
 } from "./types";
 
-import { Config, type EntityConfig } from "../config/config";
-import { PlayerConfig } from "../config/player";
-import { QueueConfig } from "../config/player-queue";
-import { MediaBrowserConfig } from "../config/media-browser";
-import { PlayersConfig } from "../config/players";
+import {
+  Config,
+  HiddenElementsConfig,
+  type EntityConfig,
+} from "../config/config";
+import { PlayerConfig, PlayerHiddenElementsConfig } from "../config/player";
+import {
+  PlayerQueueHiddenElementsConfig,
+  QueueConfig,
+} from "../config/player-queue";
+import {
+  MediaBrowserConfig,
+  MediaBrowserHiddenElementsConfig,
+} from "../config/media-browser";
+import { PlayersConfig, PlayersHiddenElementsConfig } from "../config/players";
 import { Sections } from "./enums";
 import { ActivePlayerController } from "../controller/active-player";
 import { ActionsController } from "../controller/actions";
@@ -75,3 +85,15 @@ export const mediaBrowserCardsContext =
   createContext<newMediaBrowserItemsConfig>(uuid4());
 export const activeMediaBrowserCardsContext =
   createContext<MediaCardItem[]>(uuid4());
+
+export const hiddenElementsConfigContext =
+  createContext<HiddenElementsConfig>(uuid4());
+
+export const musicPlayerHiddenElementsConfigContext =
+  createContext<PlayerHiddenElementsConfig>(uuid4());
+export const playerQueueHiddenElementsConfigContext =
+  createContext<PlayerQueueHiddenElementsConfig>(uuid4());
+export const mediaBrowserHiddenElementsConfigContext =
+  createContext<MediaBrowserHiddenElementsConfig>(uuid4());
+export const playersHiddenElementsConfigContext =
+  createContext<PlayersHiddenElementsConfig>(uuid4());

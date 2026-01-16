@@ -35,6 +35,7 @@ import {
   groupedPlayersContext,
   hassContext,
   musicPlayerConfigContext,
+  musicPlayerHiddenElementsConfigContext,
 } from "../const/context";
 import {
   ExtendedHass,
@@ -48,7 +49,11 @@ import { PLAYLIST_DIALOG_MAX_ITEMS } from "../const/music-player";
 import styles from "../styles/music-player";
 
 import { PlayerSelectedService } from "../const/actions";
-import { ArtworkSize, PlayerConfig } from "../config/player";
+import {
+  ArtworkSize,
+  PlayerConfig,
+  PlayerHiddenElementsConfig,
+} from "../config/player";
 import { ActivePlayerController } from "../controller/active-player";
 import { Config } from "../config/config";
 import { isActive, jsonMatch, playerHasUpdated } from "../utils/utility";
@@ -76,6 +81,9 @@ class MusicPlayerCard extends LitElement {
   @consume({ context: activePlayerDataContext, subscribe: true })
   @state()
   public player_data?: PlayerData;
+
+  @consume({ context: musicPlayerHiddenElementsConfigContext, subscribe: true })
+  private hiddenElements!: PlayerHiddenElementsConfig;
 
   private _activeEntityConfig!: EntityConfig;
   private _activeEntity!: ExtendedHassEntity;
@@ -383,9 +391,7 @@ class MusicPlayerCard extends LitElement {
     return this.wrapTitleMarquee();
   }
   protected renderGrouped(): TemplateResult {
-    const hide =
-      this.config.hide.group_volume ||
-      this.activeEntityConfig.hide.player.group_volume;
+    const hide = this.hiddenElements.group_volume;
     if (this.groupedPlayers && this.groupedPlayers.length > 1 && !hide) {
       return html`
         <mpc-grouped-player-menu slot="end"></mpc-grouped-player-menu>

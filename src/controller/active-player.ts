@@ -40,6 +40,7 @@ import {
 } from "mass-queue-types/packages/mass_queue/ws/get_info";
 import WaCarousel from "@droans/webawesome/dist/components/carousel/carousel";
 import { RepeatMode } from "../const/enums";
+import { MassCardConfigController } from "./config";
 
 export class ActivePlayerController {
   private _activeEntityConfig: ContextProvider<
@@ -58,6 +59,7 @@ export class ActivePlayerController {
 
   private _hass!: ExtendedHass;
   private _config!: Config;
+  private configController!: MassCardConfigController;
   private _host: HTMLElement;
   private _updatingScheme = false;
   private _carouselElement?: WaCarousel;
@@ -67,7 +69,11 @@ export class ActivePlayerController {
   private _observerDelay = 300;
   private _canGroupWith: string[] = [];
 
-  constructor(hass: ExtendedHass, config: Config, host: HTMLElement) {
+  constructor(
+    hass: ExtendedHass,
+    configController: MassCardConfigController,
+    host: HTMLElement,
+  ) {
     this._expressiveScheme = new ContextProvider(host, {
       context: expressiveSchemeContext,
     });
@@ -102,7 +108,8 @@ export class ActivePlayerController {
       context: activePlayerDataContext,
     });
     this._hass = hass;
-    this.config = config;
+    this.config = configController.config;
+    this.configController = configController;
     this._host = host;
     this.setDefaultActivePlayer();
   }
@@ -149,6 +156,7 @@ export class ActivePlayerController {
     this.volumeMediaPlayer = states[config.volume_entity_id];
     this.activeMediaPlayer = states[config.entity_id];
     this.activeEntityID = config.entity_id;
+    this.configController.activeEntityConfig = config;
     void this.setCanGroupWith();
   }
   public get activeEntityConfig() {

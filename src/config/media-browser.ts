@@ -1,6 +1,6 @@
 import { mdiCreation, mdiHeart, mdiHistory } from "@mdi/js";
 
-import { Config } from "./config";
+import { BaseHiddenElementsConfig, Config } from "./config";
 import { hiddenElementsConfigItem } from "../utils/config";
 
 export interface MediaBrowserConfig {
@@ -51,7 +51,7 @@ export interface customSection {
   items: customItem[];
 }
 
-export interface MediaBrowserHiddenElementsConfig {
+export interface MediaBrowserHiddenElementsConfig extends BaseHiddenElementsConfig {
   back_button: boolean;
   search: boolean;
   recents: boolean;

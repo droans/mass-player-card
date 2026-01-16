@@ -7,11 +7,7 @@ import {
   TemplateResult,
 } from "lit";
 
-import {
-  DEFAULT_PLAYER_HIDDEN_ELEMENTS_CONFIG,
-  PlayerConfig,
-  PlayerHiddenElementsConfig,
-} from "../../config/player";
+import { PlayerConfig, PlayerHiddenElementsConfig } from "../../config/player";
 
 import {
   actionsControllerContext,
@@ -21,6 +17,7 @@ import {
   EntityConfig,
   IconsContext,
   musicPlayerConfigContext,
+  musicPlayerHiddenElementsConfigContext,
   useExpressiveContext,
 } from "../../const/context";
 import { PlayerData } from "../../const/types";
@@ -44,8 +41,8 @@ class VolumeRow extends LitElement {
 
   private _initialUpdate!: boolean;
 
-  private hide: PlayerHiddenElementsConfig =
-    DEFAULT_PLAYER_HIDDEN_ELEMENTS_CONFIG;
+  @consume({ context: musicPlayerHiddenElementsConfigContext, subscribe: true })
+  private hide!: PlayerHiddenElementsConfig;
   @state() public _player_data!: PlayerData;
 
   @consume({ context: actionsControllerContext, subscribe: true })
@@ -60,9 +57,6 @@ class VolumeRow extends LitElement {
       return;
     }
     this._config = config;
-    if (this._entityConfig) {
-      this.updateHiddenElements();
-    }
   }
   public get config() {
     return this._config;
@@ -75,9 +69,6 @@ class VolumeRow extends LitElement {
     }
     this._entityConfig = config;
     this.maxVolume = config.max_volume;
-    if (this._config) {
-      this.updateHiddenElements();
-    }
   }
   public get entityConfig() {
     return this._entityConfig;
@@ -94,21 +85,6 @@ class VolumeRow extends LitElement {
     return this._player_data;
   }
 
-  private updateHiddenElements() {
-    const entity = this.entityConfig?.hide.player;
-    const card = this.config?.hide;
-    const expressive = this.useExpressive ?? true;
-    this.hide = {
-      favorite: expressive || (entity?.favorite ?? card?.favorite ?? false),
-      mute: entity?.mute ?? card?.mute ?? false,
-      power: expressive || (entity?.power ?? card?.power ?? false),
-      volume: entity?.volume ?? card?.volume ?? false,
-      player_selector: false,
-      repeat: false,
-      shuffle: false,
-      group_volume: false,
-    };
-  }
   private onToggle = async () => {
     await this.actions.actionTogglePower();
   };
@@ -129,7 +105,7 @@ class VolumeRow extends LitElement {
       : this.actions.actionAddFavorite());
   };
   protected renderPower(): TemplateResult {
-    if (this.hide.power) {
+    if (this.hide.power || this.useExpressive) {
       return html``;
     }
     return html`
@@ -170,7 +146,7 @@ class VolumeRow extends LitElement {
     `;
   }
   protected renderFavorite(): TemplateResult {
-    if (this.hide.favorite) {
+    if (this.hide.favorite || this.useExpressive) {
       return html``;
     }
     return html`
