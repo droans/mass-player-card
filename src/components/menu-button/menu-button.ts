@@ -53,6 +53,7 @@ export class MassMenuButton extends LitElement {
 
   // Need to remove gap from the select-anchor div
   private gapReset = false;
+  private interval!: number | undefined;
 
   @property({ attribute: false })
   public set initialSelection(selection: string) {
@@ -80,6 +81,14 @@ export class MassMenuButton extends LitElement {
   }
 
   private attemptGapReset() {
+    if (!this.interval) {
+      return;
+    }
+    if (this.gapReset) {
+      window.clearInterval(this.interval);
+      this.interval = undefined;
+      return;
+    }
     const anchor =
       this.menuElement?.shadowRoot?.querySelector(".select-anchor");
     if (!anchor) {
@@ -152,12 +161,19 @@ export class MassMenuButton extends LitElement {
     `;
   }
   protected shouldUpdate(_changedProperties: PropertyValues): boolean {
-    return _changedProperties.size > 0;
+    return _changedProperties.size > 0 || !this.gapReset;
   }
 
-  protected updated(): void {
+  protected firstUpdated() {
     if (!this.gapReset) {
-      this.attemptGapReset();
+      this.interval = window.setInterval(() => {
+        this.attemptGapReset();
+      }, 20);
+    }
+  }
+  disconnectedCallback(): void {
+    if (this.interval) {
+      window.clearInterval(this.interval);
     }
   }
   static get styles(): CSSResultGroup {

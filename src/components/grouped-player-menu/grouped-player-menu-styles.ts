@@ -90,7 +90,7 @@ export default css`
     --control-select-menu-height: 2.5em;
     background-color: var(--control-select-menu-background-color);
   }
-  .menu-header::part(menu-svg):not(.svg-menu-expressive) {
+  .menu-header::part(menu-svg):not(.expressive) {
     color: var(--wa-color-brand-on-normal, var(--wa-color-neutral-on-normal));
   }
   .menu-header.expressive::part(menu-select-menu) {
@@ -99,6 +99,6 @@ export default css`
     ) !important;
   }
   .menu-header.expressive::part(menu-svg) {
-    color: var(--md-sys-color-secondary-on-container) !important;
+    color: var(--md-sys-color-on-secondary-container);
   }
 `;

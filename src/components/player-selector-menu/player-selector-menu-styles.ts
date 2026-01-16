@@ -6,9 +6,6 @@ export default css`
   #players-select-menu::part(menu-list-item) {
     height: 3.5em;
   }
-  #players-select-menu::part(menu-button) {
-    --ha-ripple-color: rgba(0, 0, 0, 0);
-  }
   #players-select-menu::part(menu-list-item-svg) {
     height: 2em;
     width: 2em;
@@ -29,12 +26,12 @@ export default css`
     ) !important;
   }
   .menu-header.expressive::part(menu-svg) {
-    color: var(--md-sys-color-secondary-on-container) !important;
+    color: var(--md-sys-color-on-secondary-container);
   }
-  .menu-header::part(menu-select-menu) {
+  .menu-header:not(.expressive)::part(menu-select-menu) {
     background-color: var(--control-select-menu-background-color);
   }
-  .menu-header::part(menu-svg):not(.svg-menu-expressive) {
+  .menu-header::part(menu-svg):not(.expressive) {
     color: var(--wa-color-brand-on-normal, var(--wa-color-neutral-on-normal));
     border-radius: 50%;
   }
