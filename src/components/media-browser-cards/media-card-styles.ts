@@ -27,7 +27,6 @@ export default css`
       --ha-card-background,
       var(--card-background-color, #fff)
     );
-    border-radius: 50%;
   }
   .svg-menu-expressive {
     max-width: 5em;
