@@ -6,7 +6,7 @@ import {
   TemplateResult,
 } from "lit";
 import { customElement, property } from "lit/decorators.js";
-import styles from "./browser-collection-row-styles";
+import styles from "./browser-collection-track-row-styles";
 import { consume } from "@lit/context";
 import {
   activeEntityIDContext,
