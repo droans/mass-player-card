@@ -136,12 +136,13 @@ export class MassMenuButton extends LitElement {
             event_.stopPropagation();
           }}
         >
-          <ha-svg-icon
-            slot="icon"
-            class="svg-menu ${this.useExpressive ? `expressive` : ``}"
-            part="menu-svg"
-            .path=${this.iconPath}
-          ></ha-svg-icon>
+          <div class="div-icon" slot="icon" part="div-icon">
+            <ha-svg-icon
+              class="svg-menu ${this.useExpressive ? `expressive` : ``}"
+              part="menu-svg"
+              .path=${this.iconPath}
+            ></ha-svg-icon>
+          </div>
           ${this.renderMenuItems()}
           <slot></slot>
         </ha-control-select-menu>
