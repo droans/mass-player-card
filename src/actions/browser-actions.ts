@@ -90,12 +90,16 @@ export default class BrowserActions {
     content_type: string,
     enqueue: EnqueueOptions,
   ) {
-    const arguments_ = {
+    const baseArguments_ = {
       entity_id,
       media_id: content_id,
       media_type: content_type,
-      enqueue,
+      // enqueue,
     };
+    const arguments_ =
+      enqueue == EnqueueOptions.RADIO
+        ? { ...baseArguments_, radio_mode: true }
+        : { ...baseArguments_, enqueue };
     await this.hass.callService("music_assistant", "play_media", arguments_);
   }
   async actionGetLibraryRecents(

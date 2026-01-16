@@ -571,16 +571,17 @@ Multiple elements on the queue tab can be hidden. By default, all elements are v
 <img src="https://github.com/droans/mass-player-card/blob/main/static/media_browser/desktop.png" alt="Player Card Media Browser Section Example">
 </details>
 
-| Parameter                       | Type                                                                      | Required | Default     | Description                                                        |
-|---------------------------------|---------------------------------------------------------------------------|----------|-------------|--------------------------------------------------------------------|
-| enabled                         | bool                                                                      | No       | true        | Enable/disable media browser tab                                   |
-| columns                         | number                                                                    | No       | 2           | Number of columns for each row.                                    |
-| favorites                       | [FavoritesConfig](#favorites-config)                                      | No       | -           | See below                                                          |
-| recents                         | [FavoritesConfig](#favorites-config)                                      | No       | -           | See below                                                          |
-| recommendations                 | [RecommendationsConfig](#recommendations-config)                          | No       | -           | See below                                                          |
-| sections                        | list of [SectionsConfig](#sections-config)                                | No       | -           | See below                                                          |
-| hide                            | [MediaBrowserHiddenElementsConfig](#media-browser-hidden-elements-config) | No       | See below   | See Below                                                          |
-| playlists_allow_removing_tracks | bool                                                                      | No       | false       | **EXPERIMENTAL - SEE BELOW** Allows removing tracks from playlists |
+| Parameter                       | Type                                                                      | Required | Default     | Description                                                           |
+|---------------------------------|---------------------------------------------------------------------------|----------|-------------|-----------------------------------------------------------------------|
+| enabled                         | bool                                                                      | No       | true        | Enable/disable media browser tab                                      |
+| columns                         | number                                                                    | No       | 2           | Number of columns for each row.                                       |
+| favorites                       | [FavoritesConfig](#favorites-config)                                      | No       | -           | See below                                                             |
+| recents                         | [FavoritesConfig](#favorites-config)                                      | No       | -           | See below                                                             |
+| recommendations                 | [RecommendationsConfig](#recommendations-config)                          | No       | -           | See below                                                             |
+| sections                        | list of [SectionsConfig](#sections-config)                                | No       | -           | See below                                                             |
+| hide                            | [MediaBrowserHiddenElementsConfig](#media-browser-hidden-elements-config) | No       | See below   | See Below                                                             |
+| playlists_allow_removing_tracks | bool                                                                      | No       | false       | **EXPERIMENTAL - SEE BELOW** Allows removing tracks from playlists    |
+| default_enqueue_option          | EnqueueConfigOption                                                       | No       | play_now    | Default enqueue mode when an item is selected, see below for options  |
 
 ### WARNING:
 Music Assistant uses the position in a playlist to determine which tracks to remove. However, it does not provide an updated playlist when tracks are removed, instead waiting for its next refresh. 
@@ -624,10 +625,23 @@ Recommendations can be enabled/disabled. You can also choose which providers can
 | providers            | list of strings | No       | true    | Choose whcih providers to use for recommendations |
 | show_collection_view | bool            | No       | true    | See below                                         |
 
+### default_enqueue_option
+
+The default enqueue mode can be adjusted in your configuration. If not set, any media will play next when they are selected. 
+
+The valid options are:
+
+* play_now
+* play_now_clear_queue
+* play_next
+* play_next_clear_queue
+* add_to_queue
+* radio
 
 ### show_collection_view
 
 When `show_collection_view` is enabled, clicking on an album, artist, playlist, or podcast will open up a collection view displaying information on the collection, enqueue options, and individual tracks/episodes. When disabled, clicking on the items will instead enqueue the item. By default, this is enabled. 
+
 
 ### Favorite Items
 You can select which favorite items you'd like to display in the media browser. Use the example below to help set it up. By default, all favorites are enabled. If no favorites exist for a category, the section will not be displayed. You can also add your own custom items to the favorite section by specifying it under `items`.

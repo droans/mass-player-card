@@ -12,6 +12,7 @@ export interface MediaBrowserConfig {
   hide: MediaBrowserHiddenElementsConfig;
   columns: number;
   playlists_allow_removing_tracks: boolean;
+  default_enqueue_option: EnqueueConfigOptions;
 }
 
 export interface FavoritesConfig {
@@ -63,6 +64,14 @@ export interface MediaBrowserHiddenElementsConfig extends BaseHiddenElementsConf
   play_now_button: boolean;
   play_now_clear_queue_button: boolean;
 }
+
+export type EnqueueConfigOptions =
+  | "play_now"
+  | "play_now_clear_queue"
+  | "play_next"
+  | "play_next_clear_queue"
+  | "add_to_queue"
+  | "radio";
 
 export const DEFAULT_FAVORITE_ITEM_CONFIG: FavoriteItemConfig = {
   enabled: true,
@@ -121,6 +130,7 @@ export const DEFAULT_MEDIA_BROWSER_CONFIG: MediaBrowserConfig = {
   hide: DEFAULT_MEDIA_BROWSER_HIDDEN_ELEMENTS_CONFIG,
   columns: 2,
   playlists_allow_removing_tracks: false,
+  default_enqueue_option: "play_now",
 };
 
 const MEDIA_BROWSER_HIDDEN_ITEMS = [
@@ -178,11 +188,55 @@ function recommendationsConfigForm() {
     ],
   };
 }
+function defaultEnqueueOptionConfigForm() {
+  interface opt {
+    value: EnqueueConfigOptions;
+    label: string;
+  }
+  const options: opt[] = [
+    {
+      value: "play_now",
+      label: "Play Now",
+    },
+    {
+      value: "play_now_clear_queue",
+      label: "Play Now and Clear Queue",
+    },
+    {
+      value: "play_next",
+      label: "Play Next",
+    },
+    {
+      value: "play_next_clear_queue",
+      label: "Play Next and Clear Queue",
+    },
+    {
+      value: "add_to_queue",
+      label: "Add to Queue",
+    },
+    {
+      value: "radio",
+      label: "Play Radio",
+    },
+  ];
+  return {
+    name: "default_enqueue_mode",
+    required: false,
+    selector: {
+      select: {
+        multiple: false,
+        mode: "dropdown",
+        options,
+      },
+    },
+  };
+}
 
 export function mediaBrowserConfigForm() {
   return [
     { name: "enabled", selector: { boolean: {} }, default: true },
     { name: "columns", selector: { number: { min: 1, max: 10, mode: "box" } } },
+    defaultEnqueueOptionConfigForm(),
     {
       name: "favorites",
       type: "expandable",
