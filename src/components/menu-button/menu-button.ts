@@ -34,6 +34,8 @@ export class MassMenuButton extends LitElement {
   @property({ type: Boolean, attribute: "use-md" })
   public useMD = false;
 
+  @property({ type: Number, attribute: "elevation" }) elevation = 0;
+
   @query("#menu-select-menu")
   public menuElement?: ControlSelectMenuElement;
 
