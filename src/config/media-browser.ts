@@ -188,11 +188,55 @@ function recommendationsConfigForm() {
     ],
   };
 }
+function defaultEnqueueOptionConfigForm() {
+  interface opt {
+    value: EnqueueConfigOptions;
+    label: string;
+  }
+  const options: opt[] = [
+    {
+      value: "play_now",
+      label: "Play Now",
+    },
+    {
+      value: "play_now_clear_queue",
+      label: "Play Now and Clear Queue",
+    },
+    {
+      value: "play_next",
+      label: "Play Next",
+    },
+    {
+      value: "play_next_clear_queue",
+      label: "Play Next and Clear Queue",
+    },
+    {
+      value: "add_to_queue",
+      label: "Add to Queue",
+    },
+    {
+      value: "radio",
+      label: "Play Radio",
+    },
+  ];
+  return {
+    name: "default_enqueue_mode",
+    required: false,
+    selector: {
+      select: {
+        multiple: false,
+        mode: "dropdown",
+        options,
+      },
+    },
+  };
+}
 
 export function mediaBrowserConfigForm() {
   return [
     { name: "enabled", selector: { boolean: {} }, default: true },
     { name: "columns", selector: { number: { min: 1, max: 10, mode: "box" } } },
+    defaultEnqueueOptionConfigForm(),
     {
       name: "favorites",
       type: "expandable",
