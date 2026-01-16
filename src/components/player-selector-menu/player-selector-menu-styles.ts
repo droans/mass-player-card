@@ -31,7 +31,7 @@ export default css`
   .menu-header:not(.expressive)::part(menu-select-menu) {
     background-color: var(--control-select-menu-background-color);
   }
-  .menu-header::part(menu-svg):not(.svg-menu-expressive) {
+  .menu-header::part(menu-svg):not(.expressive) {
     color: var(--wa-color-brand-on-normal, var(--wa-color-neutral-on-normal));
     border-radius: 50%;
   }
