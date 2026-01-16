@@ -72,6 +72,8 @@ export default css`
   }
   .svg-menu {
     border-radius: var(--used-border-radius);
+  }
+  .svg-menu:not(.expressive) {
     color: var(--md-sys-color-primary);
   }
   .inactive-item {
@@ -85,7 +87,7 @@ export default css`
   .svg-expressive {
     margin-left: 14px;
   }
-  .svg-menu-expressive {
+  .svg-menu.expressive {
     color: var(--md-sys-color-on-secondary-container);
   }
   .title-md,
