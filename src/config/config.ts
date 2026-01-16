@@ -53,6 +53,7 @@ export interface Config {
   download_local: boolean;
   panel: boolean;
   default_section: ConfigSections | undefined;
+  sync_player_across_dashboard: boolean;
 }
 
 export type ConfigSections =
@@ -101,6 +102,7 @@ export const DEFAULT_CONFIG: Config = {
   download_local: false,
   panel: false,
   default_section: undefined,
+  sync_player_across_dashboard: false,
 };
 
 const ENTITY_DEFAULT_HIDDEN_ITEM_CONFIG: HiddenElementsConfig = {

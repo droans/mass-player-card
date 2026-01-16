@@ -49,6 +49,11 @@ export interface TrackRemovedEventData extends Omit<CustomEvent, "detail"> {
     position: number;
   };
 }
+export interface PlayerSyncEvent extends Omit<CustomEvent, "detail"> {
+  detail: {
+    player: string;
+  };
+}
 
 export type MenuButtonEvent = (event_: MenuButtonEventData) => void;
 
