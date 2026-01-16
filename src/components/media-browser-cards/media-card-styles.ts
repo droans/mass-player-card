@@ -6,12 +6,6 @@ export default css`
   mass-menu-button {
     --menu-button-border-radius: 50%;
   }
-  mass-menu-button::part(menu-button) {
-    position: absolute;
-    bottom: 1.5em;
-    right: -0.75em;
-    --ha-ripple-color: rgba(0, 0, 0, 0);
-  }
   mass-menu-button::part(menu-list-item-svg) {
     height: 2em;
     width: 2em;
@@ -49,6 +43,12 @@ export default css`
     overflow: visible !important;
     margin: 0px 3px 3px 3px;
     aspect-ratio: 1;
+  }
+  #enqueue-button-div {
+    position: absolute;
+    right: 0.2em;
+    bottom: 2.2em;
+    overflow: hidden;
   }
 
   .media-card {
