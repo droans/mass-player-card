@@ -5,6 +5,7 @@ import styles from "./browser-album-view-styles";
 import { delay } from "../../utils/utility";
 import { getAlbumServiceResponse } from "mass-queue-types/packages/mass_queue/actions/get_album";
 import { BrowserViewBase } from "../browser-collection-view/browser-view-base";
+import { getTranslation } from "../../utils/translations";
 
 @customElement("mpc-browser-album-view")
 export class MassBrowserAlbumView extends BrowserViewBase {
@@ -67,16 +68,21 @@ export class MassBrowserAlbumView extends BrowserViewBase {
     `;
   }
   protected renderOverview(): TemplateResult {
+    const trackLabel = getTranslation(
+      "browser.collections.track_count",
+      this.hass,
+    ) as string;
+    const loadingLabel = getTranslation("browser.loading", this.hass) as string;
     const trackString = this.tracks?.length
-      ? `${this.tracks.length.toString()} Tracks`
-      : `Loading...`;
+      ? `${this.tracks.length.toString()} ${trackLabel}`
+      : loadingLabel;
     const metadata = this.albumMetadata?.response;
     const artists = metadata?.artists ?? [];
     const artistLs = artists.map((artist) => {
       return artist.name;
     });
     const artistString =
-      artistLs.length > 0 ? artistLs.join(", ") : `Loading...`;
+      artistLs.length > 0 ? artistLs.join(", ") : loadingLabel;
     return html`
       ${this.renderTitle()}
       <div id="collection-info">
