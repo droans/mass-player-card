@@ -7,6 +7,7 @@ import { delay, formatDuration } from "../../utils/utility";
 import { getPlaylistServiceResponse } from "mass-queue-types/packages/mass_queue/actions/get_playlist";
 import { PlaylistTrack } from "mass-queue-types/packages/mass_queue/actions/get_playlist_tracks";
 import { BrowserViewBase } from "../browser-collection-view/browser-view-base";
+import { getTranslation } from "../../utils/translations";
 
 @customElement("mpc-browser-playlist-view")
 export class MassBrowserPlaylistView extends BrowserViewBase {
@@ -91,10 +92,19 @@ export class MassBrowserPlaylistView extends BrowserViewBase {
     `;
   }
   protected renderOverview(): TemplateResult {
+    const trackLabel = getTranslation(
+      "browser.collections.track_count",
+      this.hass,
+    ) as string;
+    const loadingLabel = getTranslation("browser.loading", this.hass) as string;
+    const unknwonOwnerLabel = getTranslation(
+      "browser.collections.playlist.unknown_owner",
+      this.hass,
+    ) as string;
     const trackString = this.tracks?.length
-      ? `${this.tracks.length.toString()} Tracks`
-      : `Loading...`;
-    const owner = this.playlistMetadata?.response.owner ?? `Unknown`;
+      ? `${this.tracks.length.toString()} ${trackLabel}`
+      : loadingLabel;
+    const owner = this.playlistMetadata?.response.owner ?? unknwonOwnerLabel;
     return html`
       ${this.renderTitle()}
       <div id="collection-info">

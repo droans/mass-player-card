@@ -5,6 +5,7 @@ import styles from "./browser-artist-view-styles";
 import { delay } from "../../utils/utility";
 import { getArtistServiceResponse } from "mass-queue-types/packages/mass_queue/actions/get_artist";
 import { BrowserViewBase } from "./browser-view-base";
+import { getTranslation } from "../../utils/translations";
 
 @customElement("mpc-browser-artist-view")
 export class MassBrowserArtistView extends BrowserViewBase {
@@ -68,9 +69,14 @@ export class MassBrowserArtistView extends BrowserViewBase {
     `;
   }
   protected renderOverview(): TemplateResult {
+    const trackLabel = getTranslation(
+      "browser.collections.track_count",
+      this.hass,
+    ) as string;
+    const loadingLabel = getTranslation("browser.loading", this.hass) as string;
     const trackString = this.tracks?.length
-      ? `${this.tracks.length.toString()} Tracks`
-      : `Loading...`;
+      ? `${this.tracks.length.toString()} ${trackLabel}`
+      : loadingLabel;
     return html`
       ${this.renderTitle()}
       <div id="collection-info">
