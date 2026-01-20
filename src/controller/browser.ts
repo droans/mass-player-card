@@ -6,13 +6,8 @@ import {
   FavoriteItemConfig,
   MediaBrowserConfig,
 } from "../config/media-browser";
-import {
-  MediaTypes,
-  Thumbnail,
-} from "../const/enums";
-import {
-  DEFAULT_SEARCH_LIMIT,
-} from "../const/media-browser";
+import { MediaTypes, Thumbnail } from "../const/enums";
+import { DEFAULT_SEARCH_LIMIT } from "../const/media-browser";
 import {
   generateCustomSectionCards,
   generateFavoriteCard,
@@ -22,9 +17,15 @@ import {
   generateRecommendationSectionCards,
 } from "../utils/media-browser";
 import { mediaBrowserCardsContext } from "../const/context";
-import { jsonMatch } from "../utils/util";
+import { jsonMatch } from "../utils/utility";
 import { CardsUpdatedEventDetail } from "../const/events";
-import { ExtendedHass, MediaCardItem, MediaLibraryItem, newMediaBrowserItemsConfig, RecommendationSection } from "../const/types";
+import {
+  ExtendedHass,
+  MediaCardItem,
+  MediaLibraryItem,
+  newMediaBrowserItemsConfig,
+  RecommendationSection,
+} from "../const/types";
 
 export class MediaBrowserController {
   private hass!: ExtendedHass;
@@ -34,7 +35,7 @@ export class MediaBrowserController {
   private actions!: BrowserActions;
   private _activeEntityId!: string;
   private _items!: ContextProvider<typeof mediaBrowserCardsContext>;
-
+  private _updatingCards = false;
   constructor(
     hass: ExtendedHass,
     config: Config,
@@ -46,15 +47,26 @@ export class MediaBrowserController {
     this._host = host;
     this._items = new ContextProvider(host, {
       context: mediaBrowserCardsContext,
+      initialValue: {
+        favorites: { main: [] },
+        recents: { main: [] },
+        recommendations: { main: [] },
+        search: [],
+      },
     });
     this.actions = new BrowserActions(hass);
     this.browserConfig = config.media_browser;
     this.activeEntityId = activeEntityId;
-    if (!this.items) {
+    // eslint-disable-next-line @typescript-eslint/no-unnecessary-condition
+    if (this.items) {
       this.resetAndGenerateSections();
     }
   }
   private set items(items: newMediaBrowserItemsConfig) {
+    // eslint-disable-next-line @typescript-eslint/no-unnecessary-condition
+    if (!items) {
+      return;
+    }
     if (jsonMatch(this._items.value, items)) {
       return;
     }
@@ -65,6 +77,10 @@ export class MediaBrowserController {
     return this._items.value;
   }
   private resetAndGenerateSections() {
+    if (this._updatingCards) {
+      return;
+    }
+    this._updatingCards = true;
     this.items = {
       favorites: { main: [] },
       recents: { main: [] },
@@ -79,15 +95,23 @@ export class MediaBrowserController {
       this.generateAllRecents(),
       this.generateAllRecommendations(),
     ];
-    void Promise.all(promises).then(() => {
-      this.generateCustomSections();
-      const data: CardsUpdatedEventDetail = {
-        section: "all",
-        cards: this.items,
-      };
-      const ev = new CustomEvent("cards-updated", { detail: data });
-      this._host.dispatchEvent(ev);
-    });
+    void Promise.all(promises)
+      .then(() => {
+        this.generateCustomSections();
+        // eslint-disable-next-line @typescript-eslint/no-unnecessary-condition
+        if (!this.items) {
+          return;
+        }
+        const data: CardsUpdatedEventDetail = {
+          section: "all",
+          cards: this.items,
+        };
+        const event_ = new CustomEvent("cards-updated", { detail: data });
+        this._host.dispatchEvent(event_);
+      })
+      .finally(() => {
+        this._updatingCards = false;
+      });
   }
 
   public set activeEntityId(entityId: string) {
@@ -115,7 +139,11 @@ export class MediaBrowserController {
       library_only,
       limit,
     );
-    return generateFavoritesSectionCards(search_result, media_type);
+    return generateFavoritesSectionCards(
+      search_result,
+      media_type,
+      this.browserConfig.favorites.show_collection_view,
+    );
   }
 
   // Favorites
@@ -133,10 +161,11 @@ export class MediaBrowserController {
     await Promise.all(promises);
     const data: CardsUpdatedEventDetail = {
       section: "favorites",
-      cards: this.items.favorites,
+      // eslint-disable-next-line @typescript-eslint/no-non-null-assertion, @typescript-eslint/no-unnecessary-type-assertion
+      cards: this.items!.favorites!,
     };
-    const ev = new CustomEvent("cards-updated", { detail: data });
-    this._host.dispatchEvent(ev);
+    const event_ = new CustomEvent("cards-updated", { detail: data });
+    this._host.dispatchEvent(event_);
   }
   private async getFavoriteSection(
     config: FavoriteItemConfig,
@@ -152,7 +181,11 @@ export class MediaBrowserController {
       favorites_only ? true : null,
     );
     return [
-      ...generateFavoritesSectionCards(resp, media_type),
+      ...generateFavoritesSectionCards(
+        resp,
+        media_type,
+        this.browserConfig.favorites.show_collection_view,
+      ),
       ...generateCustomSectionCards(custom_items),
     ];
   }
@@ -161,7 +194,11 @@ export class MediaBrowserController {
     media_type: MediaTypes,
     favorites_only = true,
   ) {
-    if (this.items.favorites[media_type] || !config.enabled) {
+    if (
+      // eslint-disable-next-line @typescript-eslint/prefer-optional-chain, @typescript-eslint/no-unnecessary-condition
+      (this.items?.favorites ?? {})[media_type] ||
+      !config.enabled
+    ) {
       return;
     }
     const items = await this.getFavoriteSection(
@@ -169,12 +206,12 @@ export class MediaBrowserController {
       media_type,
       favorites_only,
     );
-    if (!items.length) {
+    if (items.length === 0) {
       return;
     }
     const i = { ...this.items };
     i.favorites[media_type] = items;
-    const card = await generateFavoriteCard(this.hass, media_type, items);
+    const card = generateFavoriteCard(this.hass, media_type, items);
     i.favorites.main.push(card);
     this.items = { ...i };
   }
@@ -196,8 +233,8 @@ export class MediaBrowserController {
       section: "recents",
       cards: this.items.recents,
     };
-    const ev = new CustomEvent("cards-updated", { detail: data });
-    this._host.dispatchEvent(ev);
+    const event_ = new CustomEvent("cards-updated", { detail: data });
+    this._host.dispatchEvent(event_);
   }
   private async getRecentSection(
     config: FavoriteItemConfig,
@@ -209,20 +246,25 @@ export class MediaBrowserController {
       media_type,
       limit,
     );
-    const items = generateFavoritesSectionCards(resp, media_type);
+    const items = generateFavoritesSectionCards(
+      resp,
+      media_type,
+      this.browserConfig.recents.show_collection_view,
+    );
     return [...items];
   }
   private async generateRecentsData(
     config: FavoriteItemConfig,
     media_type: MediaTypes,
   ) {
+    // eslint-disable-next-line @typescript-eslint/no-unnecessary-condition
     if (this.items.recents[media_type] || !config.enabled) {
       return;
     }
 
     const items = await this.getRecentSection(config, media_type);
-    if (items.length) {
-      const card = await generateRecentsCard(this.hass, media_type, items);
+    if (items.length > 0) {
+      const card = generateRecentsCard(this.hass, media_type, items);
       const i = { ...this.items };
       i.recents.main.push(card);
       i.recents[media_type] = items;
@@ -231,13 +273,17 @@ export class MediaBrowserController {
   }
 
   //Recommendations
-  private async generateRecommendationSection(section: RecommendationSection) {
+  private generateRecommendationSection(section: RecommendationSection) {
+    // eslint-disable-next-line @typescript-eslint/no-unnecessary-condition
     if (this.items.recommendations[section.name]) {
       return;
     }
-    const items = generateRecommendationSectionCards(section);
-    if (items.length) {
-      const card = await generateRecommendationsCard(this.hass, section, items);
+    const items = generateRecommendationSectionCards(
+      section,
+      this.browserConfig.recommendations.show_collection_view,
+    );
+    if (items.length > 0) {
+      const card = generateRecommendationsCard(this.hass, section, items);
       const i = { ...this.items };
       i.recommendations.main.push(card);
       i.recommendations[section.name] = items;
@@ -252,14 +298,14 @@ export class MediaBrowserController {
     );
     const resp = data.response.response;
     resp.forEach((item) => {
-      void this.generateRecommendationSection(item);
+      this.generateRecommendationSection(item);
     });
     const detail: CardsUpdatedEventDetail = {
       section: "recommendations",
       cards: this.items.recommendations,
     };
-    const ev = new CustomEvent("cards-updated", { detail: detail });
-    this._host.dispatchEvent(ev);
+    const event_ = new CustomEvent("cards-updated", { detail });
+    this._host.dispatchEvent(event_);
   }
 
   //Custom Sections

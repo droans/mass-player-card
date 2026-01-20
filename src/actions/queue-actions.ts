@@ -14,6 +14,7 @@ export default class QueueActions {
     this.player_entity = player_entity;
   }
   public set hass(hass: ExtendedHass) {
+    // eslint-disable-next-line @typescript-eslint/no-unnecessary-condition
     if (hass) {
       this._hass = hass;
     }
@@ -38,68 +39,68 @@ export default class QueueActions {
       service: "get_queue_items",
       service_data: {
         entity: this.player_entity,
-        limit_before: limit_before,
-        limit_after: limit_after,
+        limit_before,
+        limit_after,
       },
       return_response: true,
     };
-    const ret = await this.hass.callWS<getQueueItemsServiceResponse>(data);
-    const result: QueueItems = ret.response[this.player_entity];
+    const resp = await this.hass.callWS<getQueueItemsServiceResponse>(data);
+    const result: QueueItems = resp.response[this.player_entity];
     return result;
   }
   async playQueueItem(queue_item_id: string) {
     try {
       await this.hass.callService("mass_queue", "play_queue_item", {
         entity: this.player_entity,
-        queue_item_id: queue_item_id,
+        queue_item_id,
       });
-    } catch (e) {
-      console.error("Error selecting queue item", e);
+    } catch (error) {
+      console.error("Error selecting queue item", error);
     }
   }
   async removeQueueItem(queue_item_id: string) {
     try {
       await this.hass.callService("mass_queue", "remove_queue_item", {
         entity: this.player_entity,
-        queue_item_id: queue_item_id,
+        queue_item_id,
       });
-    } catch (e) {
-      console.error("Error removing queue item", e);
+    } catch (error) {
+      console.error("Error removing queue item", error);
     }
   }
   async MoveQueueItemNext(queue_item_id: string) {
     try {
       await this.hass.callService("mass_queue", "move_queue_item_next", {
         entity: this.player_entity,
-        queue_item_id: queue_item_id,
+        queue_item_id,
       });
-    } catch (e) {
-      console.error("Error moving queue item next", e);
+    } catch (error) {
+      console.error("Error moving queue item next", error);
     }
   }
   async MoveQueueItemUp(queue_item_id: string) {
     try {
       await this.hass.callService("mass_queue", "move_queue_item_up", {
         entity: this.player_entity,
-        queue_item_id: queue_item_id,
+        queue_item_id,
       });
-    } catch (e) {
-      console.error("Error moving queue item up", e);
+    } catch (error) {
+      console.error("Error moving queue item up", error);
     }
   }
   async MoveQueueItemDown(queue_item_id: string) {
     try {
       await this.hass.callService("mass_queue", "move_queue_item_down", {
         entity: this.player_entity,
-        queue_item_id: queue_item_id,
+        queue_item_id,
       });
-    } catch (e) {
-      console.error("Error moving queue item down", e);
+    } catch (error) {
+      console.error("Error moving queue item down", error);
     }
   }
   async clearQueue(entity_id: string = this.player_entity) {
     await this.hass.callService("media_player", "clear_playlist", {
-      entity_id: entity_id,
+      entity_id,
     });
   }
   async getLocalImage(url: string) {
@@ -109,11 +110,11 @@ export default class QueueActions {
     try {
       const result = await this.hass.callWS({
         type: "mass_queue/download_and_encode_image",
-        url: url,
+        url,
       });
       return result;
-    } catch (e) {
-      console.error("Error getting image", e);
+    } catch (error) {
+      console.error("Error getting image", error);
       return "";
     }
   }

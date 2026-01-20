@@ -72,7 +72,8 @@ A Home Assistant media player card built for Music Assistant players.
 
 ## Features
 * Responsive Material Expressive UI!
-  * Set styles via HA theme variables
+  * Set styles via HA theme variables - see below
+  * Set custom Expressive scheme in your config
 * Hide elements you don't want, even at the player level or for an entire tab
 * Use a different `media_player` to control the volume of an entity
 * Even artwork for local media will show!
@@ -81,6 +82,7 @@ A Home Assistant media player card built for Music Assistant players.
   * Hold ❤️ to Add to Playlist
   * Customizable layout
   * Adjust volume for current or any grouped players
+  * Switch between any configured player
 * Player Queue Tab
   * Select track to play it now
   * Move up, next, down, or remove items
@@ -91,6 +93,10 @@ A Home Assistant media player card built for Music Assistant players.
   * View your Favorites, Recents, or Provider Recommendations
   * Search your providers for any media type - both local and non-local media
   * Add your own custom media or scripts
+  * Subviews to display the details and tracks/episodes for albums, artists, playlists, and podcasts
+    * Select which track you want to start on!
+    * Remove tracks from a playlist - **See below for important notes!**
+  * Enqueue items to play now/next, clear queue and play now/next, or start radio
 * Players Tab
   * Switch to any configured player
   * Join or transfer your active queues
@@ -140,6 +146,8 @@ entities:
 type: custom:mass-player-card
 expressive: true
 expressive_theme: expressive
+panel: false
+default_section: music_player
 entities:
   - entity_id: <MEDIA_PLAYER_ENTITY>
     volume_entity_id: <MEDIA_PLAYER_ENTITY>
@@ -249,6 +257,7 @@ media_browser:
       enabled: true
       limit: 25
       favorites_only: true
+playlists_allow_removing_tracks: false
 ```
 
 </details>
@@ -264,6 +273,8 @@ expressive: true
 expressive: true
 expressive_theme: fruit_salad
 download_local: false
+panel: false
+default_section: media_browser
 entities:
   - media_player.kitchen_player_music_assistant
   - entity_id: media_player.bedroom_player_music_assistant
@@ -374,22 +385,26 @@ media_browser:
     providers:
       - plex
       - tidal
+playlists_allow_removing_tracks: false
 ```
 
 </details>
 
 ## Base Config
-| Parameter         | Type                                             | Required | Default    | Description                                           |
-|-------------------|--------------------------------------------------|----------|------------|-------------------------------------------------------|
-| type              | str                                              | Yes      | n/a        | Use `custom:mass-player-card`                         |
-| expressive        | boolean                                          | No       | true       | Enables Material Expressive theme                     |
-| expressive_scheme | str                                              | No       | expressive | The expressive scheme to use for the theme, see below |
-| download_local    | boolean                                          | No       | false      | Download and encode images if not remotely accessible |
-| entities          | list of string or [EntityConfig](#entity-config) | Yes      | n/a        | The Music Assistant `media_player` entities to use    |
-| player            | [MusicPlayerConfig](#music-player-config)        | No       | 5          | See Below                                             |
-| queue             | [QueueConfig](#queue-config)                     | No       | 5          | See Below                                             |
-| media_browser     | [MediaBrowserConfig](#media-browser-config)      | No       | 5          | See Below                                             |
-| players           | [PlayersConfig](#players-config)                 | No       | 5          | See Below                                             |
+| Parameter                    | Type                                             | Required | Default      | Description                                                  |
+|------------------------------|--------------------------------------------------|----------|--------------|--------------------------------------------------------------|
+| type                         | str                                              | Yes      | n/a          | Use `custom:mass-player-card`                                |
+| expressive                   | boolean                                          | No       | true         | Enables Material Expressive theme                            |
+| expressive_scheme            | str                                              | No       | expressive   | The expressive scheme to use for the theme, see below        |
+| download_local               | boolean                                          | No       | false        | Download and encode images if not remotely accessible        |
+| entities                     | list of string or [EntityConfig](#entity-config) | Yes      | n/a          | The Music Assistant `media_player` entities to use           |
+| player                       | [MusicPlayerConfig](#music-player-config)        | No       | 5            | See Below                                                    |
+| queue                        | [QueueConfig](#queue-config)                     | No       | 5            | See Below                                                    |
+| media_browser                | [MediaBrowserConfig](#media-browser-config)      | No       | 5            | See Below                                                    |
+| players                      | [PlayersConfig](#players-config)                 | No       | 5            | See Below                                                    |
+| panel                        | boolean                                          | No       | false        | Displays a full-height card when enabled                     |
+| default_section              | str                                              | No       | music_player | Default starting section, see below                          |
+| sync_player_across_dashboard | boolean                                          | No       | false        | Syncs the selected player across all cards on the dashboard. |
 
 ## Entity Config
 For each entity, you can either provide the Entity ID by itself or you can provide the Music Assistant media player Entity ID, the media player Entity ID for volume control, and/or the name of the player. Below is the config if you would like to provide the additional details.
@@ -426,6 +441,15 @@ There are a handful of different options for the scheme:
 * rainbow
 * tonal_spot
 * vibrant
+
+## Default Section
+
+You can choose which section to start on by default. By default, the first enabled section listed below will be chosen. Any of these options are valid for the default section:
+
+* music_player
+* queue
+* media_browser
+* players
 
 ## Music Player Config
 
@@ -548,15 +572,22 @@ Multiple elements on the queue tab can be hidden. By default, all elements are v
 <img src="https://github.com/droans/mass-player-card/blob/main/static/media_browser/desktop.png" alt="Player Card Media Browser Section Example">
 </details>
 
-| Parameter       | Type                                                                      | Required | Default     | Description                      |
-|-----------------|---------------------------------------------------------------------------|----------|-------------|----------------------------------|
-| enabled         | bool                                                                      | No       | true        | Enable/disable media browser tab |
-| columns         | number                                                                    | No       | 2           | Number of columns for each row.  |
-| favorites       | [FavoritesConfig](#favorites-config)                                      | No       | -           | See below                        |
-| recents         | [FavoritesConfig](#favorites-config)                                      | No       | -           | See below                        |
-| recommendations | [RecommendationsConfig](#recommendations-config)                          | No       | -           | See below                        |
-| sections        | list of [SectionsConfig](#sections-config)                                | No       | -           | See below                        |
-| hide            | [MediaBrowserHiddenElementsConfig](#media-browser-hidden-elements-config) | No       | See below   | See Below                        |
+| Parameter                       | Type                                                                      | Required | Default     | Description                                                           |
+|---------------------------------|---------------------------------------------------------------------------|----------|-------------|-----------------------------------------------------------------------|
+| enabled                         | bool                                                                      | No       | true        | Enable/disable media browser tab                                      |
+| columns                         | number                                                                    | No       | 2           | Number of columns for each row.                                       |
+| favorites                       | [FavoritesConfig](#favorites-config)                                      | No       | -           | See below                                                             |
+| recents                         | [FavoritesConfig](#favorites-config)                                      | No       | -           | See below                                                             |
+| recommendations                 | [RecommendationsConfig](#recommendations-config)                          | No       | -           | See below                                                             |
+| sections                        | list of [SectionsConfig](#sections-config)                                | No       | -           | See below                                                             |
+| hide                            | [MediaBrowserHiddenElementsConfig](#media-browser-hidden-elements-config) | No       | See below   | See Below                                                             |
+| playlists_allow_removing_tracks | bool                                                                      | No       | false       | **EXPERIMENTAL - SEE BELOW** Allows removing tracks from playlists    |
+| default_enqueue_option          | EnqueueConfigOption                                                       | No       | play_now    | Default enqueue mode when an item is selected, see below for options  |
+
+### WARNING:
+Music Assistant uses the position in a playlist to determine which tracks to remove. However, it does not provide an updated playlist when tracks are removed, instead waiting for its next refresh. 
+
+To work around this, the card will automatically update the playlists when items are removed. **HOWEVER**, this will only work until you leave the playlist view.
 
 ## Media Browser Hidden Elements Config
 Multiple elements on the media browser tab can be hidden. By default, all elements are visible
@@ -574,24 +605,44 @@ Multiple elements on the media browser tab can be hidden. By default, all elemen
 | play_next_clear_queue_button | bool  | No       | false       | Hides the "Play Next & Clear Queue" button |
 
 ## Favorites Config
-| Parameter  | Type                            | Required | Default | Description                     |
-|------------|---------------------------------|----------|---------|---------------------------------|
-| enabled    | bool                            | No       | true    | Enable/disable music player tab |
-| albums     | [FavoriteItem](#favorite-items) | No       | true    | See below                       |
-| artists    | [FavoriteItem](#favorite-items) | No       | true    | See below                       |
-| audiobooks | [FavoriteItem](#favorite-items) | No       | true    | See below                       |
-| playlists  | [FavoriteItem](#favorite-items) | No       | true    | See below                       |
-| podcasts   | [FavoriteItem](#favorite-items) | No       | true    | See below                       |
-| radios     | [FavoriteItem](#favorite-items) | No       | true    | See below                       |
-| tracks     | [FavoriteItem](#favorite-items) | No       | true    | See below                       |
+| Parameter            | Type                            | Required | Default | Description                     |
+|----------------------|---------------------------------|----------|---------|---------------------------------|
+| enabled              | bool                            | No       | true    | Enable/disable music player tab |
+| albums               | [FavoriteItem](#favorite-items) | No       | -       | See below                       |
+| artists              | [FavoriteItem](#favorite-items) | No       | -       | See below                       |
+| audiobooks           | [FavoriteItem](#favorite-items) | No       | -       | See below                       |
+| playlists            | [FavoriteItem](#favorite-items) | No       | -       | See below                       |
+| podcasts             | [FavoriteItem](#favorite-items) | No       | -       | See below                       |
+| radios               | [FavoriteItem](#favorite-items) | No       | -       | See below                       |
+| tracks               | [FavoriteItem](#favorite-items) | No       | -       | See below                       |
+| show_collection_view | bool                            | No       | true    | See below                       |
 
 ## Recommendations Config
 Recommendations can be enabled/disabled. You can also choose which providers can supply recommendations.
 
-| Parameter | Type            | Required | Default | Description                                       |
-|-----------|-----------------|----------|---------|---------------------------------------------------|
-| enabled   | bool            | No       | true    | Enable/disable music player tab                   |
-| providers | list of strings | No       | true    | Choose whcih providers to use for recommendations |
+| Parameter            | Type            | Required | Default | Description                                       |
+|----------------------|-----------------|----------|---------|---------------------------------------------------|
+| enabled              | bool            | No       | true    | Enable/disable music player tab                   |
+| providers            | list of strings | No       | true    | Choose whcih providers to use for recommendations |
+| show_collection_view | bool            | No       | true    | See below                                         |
+
+### default_enqueue_option
+
+The default enqueue mode can be adjusted in your configuration. If not set, any media will play next when they are selected. 
+
+The valid options are:
+
+* play_now
+* play_now_clear_queue
+* play_next
+* play_next_clear_queue
+* add_to_queue
+* radio
+
+### show_collection_view
+
+When `show_collection_view` is enabled, clicking on an album, artist, playlist, or podcast will open up a collection view displaying information on the collection, enqueue options, and individual tracks/episodes. When disabled, clicking on the items will instead enqueue the item. By default, this is enabled. 
+
 
 ### Favorite Items
 You can select which favorite items you'd like to display in the media browser. Use the example below to help set it up. By default, all favorites are enabled. If no favorites exist for a category, the section will not be displayed. You can also add your own custom items to the favorite section by specifying it under `items`.

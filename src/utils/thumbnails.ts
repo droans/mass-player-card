@@ -1,12 +1,10 @@
-import { MediaTypes } from "mass-queue-types/packages/music_assistant/types.js";
-import {
-  DarkModeThumbnails,
-  LightModeThumbnails,
-} from "../const/common";
+import { MediaTypes } from "mass-queue-types/packages/music_assistant/types";
+import { DarkModeThumbnails, LightModeThumbnails } from "../const/common";
 import { Thumbnail } from "../const/enums";
 import { Icons } from "../const/icons";
 import { getSearchMediaButtons } from "../const/media-browser";
 import { ExtendedHass } from "../const/types";
+import { CheckURLResult, getUrlAccessibility } from "./url";
 
 export interface ImageURLWithFallback {
   image_url: string;
@@ -17,53 +15,24 @@ export async function asyncImageURLWithFallback(
   hass: ExtendedHass,
   image_url: string,
   fallback: string,
-  download_local = true
+  download_local = true,
 ): Promise<ImageURLWithFallback> {
   if (Object.values(Thumbnail).includes(fallback as Thumbnail)) {
-    fallback = getThumbnail(hass, fallback as Thumbnail);
+    fallback = getThumbnail(hass, fallback as Thumbnail) ?? "";
   }
   if (download_local) {
     image_url = await encodeImageIfLocal(hass, image_url);
-  };
-  return {
-    image_url: image_url,
-    fallback_url: fallback
   }
-}
-
-export async function asyncBackgroundImageFallback(
-  hass: ExtendedHass,
-  image_url: string,
-  fallback: Thumbnail,
-  download_local = true
-) {
-  const image = await asyncImageURLWithFallback(
-    hass,
+  return {
     image_url,
-    fallback,
-    download_local
-  )
-  return `background-image: url(${image.image_url}), url(${image.fallback_url})`;
+    fallback_url: fallback,
+  };
 }
 
-export function backgroundImageFallback(
-  hass: ExtendedHass,
-  image_url: string,
-  fallback: Thumbnail,
-) {
-  const _fallback: string = getThumbnail(hass, fallback);
-  return `background-image: url(${image_url}), url(${_fallback})`;
-}
-
-export function getFallbackBackgroundImage(
-  hass: ExtendedHass,
-  fallback: Thumbnail,
-) {
-  const _fallback: string = getThumbnail(hass, fallback);
-  return `background-image: url(${_fallback})`;
-}
-
-export function getThumbnail(hass: ExtendedHass, thumbnail: Thumbnail): string {
+export function getThumbnail(
+  hass: ExtendedHass | undefined,
+  thumbnail: Thumbnail,
+): string | undefined {
   if (!hass) {
     return LightModeThumbnails[thumbnail];
   }
@@ -88,7 +57,11 @@ export async function encodeImageIfLocal(
   hass: ExtendedHass,
   image_url: string,
 ): Promise<string> {
-  if (image_url.startsWith("https") || image_url.startsWith('/api') || image_url.startsWith('data:')) {
+  const accessible = getUrlAccessibility(image_url);
+  if (accessible == CheckURLResult.NOT_URL) {
+    return "";
+  }
+  if (accessible == CheckURLResult.ACCESSIBLE) {
     return image_url;
   }
   return await getLocalImage(hass, image_url);
@@ -101,12 +74,12 @@ async function getLocalImage(hass: ExtendedHass, url: string): Promise<string> {
   try {
     const result: string = await hass.callWS({
       type: "mass_queue/download_and_encode_image",
-      url: url,
+      url,
     });
     return result;
-  } catch (e) {
+  } catch (error) {
     // eslint-disable-next-line no-console
-    console.error(`Error getting image: ${url}`, e);
+    console.error(`Error getting image: ${url}`, error);
     return "";
   }
 }

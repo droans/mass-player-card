@@ -15,7 +15,7 @@ import { Sections } from "../const/enums";
 import { ActionsController } from "./actions";
 import { QueueController } from "./queue";
 import { MediaBrowserController } from "./browser";
-import { jsonMatch } from "../utils/util";
+import { jsonMatch } from "../utils/utility";
 import { getTranslation } from "../utils/translations";
 
 export class MassCardController {
@@ -23,13 +23,13 @@ export class MassCardController {
   private _host!: HTMLElement;
 
   private configController: MassCardConfigController;
-  private activePlayerController!: ContextProvider<
+  private activePlayerController?: ContextProvider<
     typeof activePlayerControllerContext
   >;
-  private actionsController!: ContextProvider<typeof actionsControllerContext>;
-  private queueController!: ContextProvider<typeof queueControllerContext>;
-  private browserController!: ContextProvider<typeof browserControllerContext>;
-  private _activeSection!: ContextProvider<typeof activeSectionContext>;
+  private actionsController?: ContextProvider<typeof actionsControllerContext>;
+  private queueController?: ContextProvider<typeof queueControllerContext>;
+  private browserController?: ContextProvider<typeof browserControllerContext>;
+  private _activeSection: ContextProvider<typeof activeSectionContext>;
   private _connected = true;
   private _reconnected = false;
 
@@ -53,10 +53,11 @@ export class MassCardController {
     this._setupBrowserController();
   }
   private _setupActiveController() {
-    if (this.hass && this.config && !this.activePlayerController) {
+    // eslint-disable-next-line @typescript-eslint/no-unnecessary-condition
+    if (this.hass && this.Config && !this.activePlayerController) {
       const active_controller = new ActivePlayerController(
         this.hass,
-        this.config,
+        this.Config,
         this.host,
       );
       this.activePlayerController = new ContextProvider(this.host, {
@@ -69,7 +70,8 @@ export class MassCardController {
     const is_ready = !!(
       this.activePlayerController &&
       this.config &&
-      this.hass
+      this.hass &&
+      this.ActivePlayer
     );
     if (!this.actionsController && is_ready) {
       this.actionsController = new ContextProvider(this.host, {
@@ -78,7 +80,7 @@ export class MassCardController {
       this.actionsController.setValue(
         new ActionsController(
           this.host,
-          this.hass,
+          this.hass as ExtendedHass,
           this.ActivePlayer.activeEntityConfig,
         ),
       );
@@ -125,12 +127,19 @@ export class MassCardController {
     }
   }
 
-  public set hass(hass: ExtendedHass) {
+  public set hass(hass: ExtendedHass | undefined) {
+    if (!hass) {
+      return;
+    }
     this._hass.value = hass;
     this.setupIfReady();
-    this.ActivePlayer.hass = hass;
-    this.Actions.hass = hass;
-    this.Queue.hass = hass;
+    if (this.ActivePlayer) {
+      this.ActivePlayer.hass = hass;
+    }
+    /* eslint-disable @typescript-eslint/no-non-null-assertion */
+    this.Actions!.hass = hass;
+    this.Queue!.hass = hass;
+    /* eslint-enable @typescript-eslint/no-non-null-assertion */
     if (this._reconnected) {
       this._reconnected = false;
       this.hassReconnected();
@@ -140,8 +149,8 @@ export class MassCardController {
     return this._hass.value;
   }
 
-  public set config(config: Config) {
-    if (jsonMatch(this.configController.config, config)) {
+  public set config(config: Config | undefined) {
+    if (jsonMatch(this.configController.config, config) || !config) {
       return;
     }
     this.configController.config = config;
@@ -154,49 +163,65 @@ export class MassCardController {
     return this.configController;
   }
   public set activeEntityId(entity: string) {
-    this.ActivePlayer.setActivePlayer(entity);
-    this.Actions.setEntityConfig(this.ActivePlayer.activeEntityConfig);
-    this.Queue.setActiveEntityId(entity);
-    this.Browser.activeEntityId = entity;
+    if (this.ActivePlayer) {
+      this.ActivePlayer.setActivePlayer(entity);
+      if (this.Actions) {
+        this.Actions.setEntityConfig(this.ActivePlayer.activeEntityConfig);
+      }
+      this.Config.activeEntityConfig = this.ActivePlayer.activeEntityConfig;
+    }
+    if (this.Queue) {
+      this.Queue.setActiveEntityId(entity);
+    }
+    if (this.Browser) {
+      this.Browser.activeEntityId = entity;
+    }
   }
-  public get activeEntityId() {
-    return this.ActivePlayer.activeEntityID;
+  public get activeEntityId(): string {
+    return this.ActivePlayer?.activeEntityID ?? "";
   }
   public get activeEntity() {
-    return this.ActivePlayer.activeMediaPlayer;
+    return this.ActivePlayer?.activeMediaPlayer;
   }
   public get volumeEntity() {
-    return this.ActivePlayer.volumeMediaPlayer;
+    return this.ActivePlayer?.volumeMediaPlayer;
   }
-  public set activeSection(section: Sections) {
+  public set activeSection(section: Sections | undefined) {
+    if (!section) {
+      return;
+    }
     if (section != this.activeSection) {
       this._activeSection.setValue(section);
-      const ev = new CustomEvent("section-changed", { detail: section });
-      this.host.dispatchEvent(ev);
+      const event_ = new CustomEvent("section-changed", { detail: section });
+      this.host.dispatchEvent(event_);
     }
   }
   public get activeSection() {
     return this._activeSection.value;
   }
   public get ActivePlayer() {
+    if (!this.activePlayerController) {
+      return;
+    }
     return this.activePlayerController.value;
   }
   public get Actions() {
-    return this.actionsController.value;
+    return this.actionsController?.value;
   }
 
   public get Queue() {
-    return this.queueController.value;
+    return this.queueController?.value;
   }
 
   public get Browser() {
-    return this.browserController.value;
+    return this.browserController?.value;
   }
   public disconnected() {
-    this.ActivePlayer.disconnected();
-    this.Actions.disconnected();
-    this.Queue.disconnected();
-    this.Browser.disconnected();
+    /* eslint-disable @typescript-eslint/no-non-null-assertion */
+    this.ActivePlayer!.disconnected();
+    this.Actions!.disconnected();
+    this.Queue!.disconnected();
+    this.Browser!.disconnected();
     this._connected = false;
   }
   public connected() {
@@ -204,10 +229,12 @@ export class MassCardController {
     this._reconnected = true;
   }
   private hassReconnected() {
-    this.ActivePlayer.reconnected(this.hass);
-    this.Actions.reconnected(this.hass);
-    this.Queue.reconnected(this.hass);
-    this.Browser.reconnected(this.hass);
+    const hass = this.hass as ExtendedHass;
+    this.ActivePlayer!.reconnected(hass);
+    this.Actions!.reconnected(hass);
+    this.Queue!.reconnected(hass);
+    this.Browser!.reconnected(hass);
+    /* eslint-emable @typescript-eslint/no-non-null-assertion */
   }
   public translate(key: string) {
     return getTranslation(key, this.hass);

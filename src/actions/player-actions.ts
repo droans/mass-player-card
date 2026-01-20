@@ -1,9 +1,15 @@
 /* eslint-disable no-console */
 import { HassEntity } from "home-assistant-js-websocket";
-import {  RepeatMode } from "../const/enums";
+import { RepeatMode } from "../const/enums";
 import { ExtendedHass, ExtendedHassEntity, QueueItem } from "../const/types";
-import { getQueueItemsServiceResponse, getQueueItemsServiceSchema } from "mass-queue-types/packages/mass_queue/actions/get_queue_items";
-import { getInfoWSResponseSchema, getInfoWSServiceSchema } from "mass-queue-types/packages/mass_queue/ws/get_info"
+import {
+  getQueueItemsServiceResponse,
+  getQueueItemsServiceSchema,
+} from "mass-queue-types/packages/mass_queue/actions/get_queue_items";
+import {
+  getInfoWSResponseSchema,
+  getInfoWSServiceSchema,
+} from "mass-queue-types/packages/mass_queue/ws/get_info";
 
 export default class PlayerActions {
   private _hass!: ExtendedHass;
@@ -11,6 +17,7 @@ export default class PlayerActions {
     this.hass = hass;
   }
   public set hass(hass: ExtendedHass) {
+    // eslint-disable-next-line @typescript-eslint/no-unnecessary-condition
     if (hass) {
       this._hass = hass;
     }
@@ -24,22 +31,22 @@ export default class PlayerActions {
       await this.hass.callService("media_player", "media_play_pause", {
         entity_id: entity.entity_id,
       });
-    } catch (e) {
-      console.error(`Error calling play/pause`, e);
+    } catch (error) {
+      console.error(`Error calling play/pause`, error);
     }
   }
   async actionMuteToggle(entity: HassEntity) {
     // Assume that entity might not be updated
-    const e = this.hass.states[entity.entity_id];
-    const is_muted = e.attributes.is_volume_muted;
+    const ent = this.hass.states[entity.entity_id] as ExtendedHassEntity;
+    const is_muted = ent.attributes.is_volume_muted;
     const mute = !is_muted;
     try {
       await this.hass.callService("media_player", "volume_mute", {
         entity_id: entity.entity_id,
         is_volume_muted: mute,
       });
-    } catch (e) {
-      console.error(`Error calling mute`, e);
+    } catch (error) {
+      console.error(`Error calling mute`, error);
     }
   }
   async actionNext(entity: HassEntity) {
@@ -47,8 +54,8 @@ export default class PlayerActions {
       await this.hass.callService("media_player", "media_next_track", {
         entity_id: entity.entity_id,
       });
-    } catch (e) {
-      console.error(`Error calling play next`, e);
+    } catch (error) {
+      console.error(`Error calling play next`, error);
     }
   }
   async actionPrevious(entity: HassEntity) {
@@ -56,8 +63,8 @@ export default class PlayerActions {
       await this.hass.callService("media_player", "media_previous_track", {
         entity_id: entity.entity_id,
       });
-    } catch (e) {
-      console.error(`Error calling play previous`, e);
+    } catch (error) {
+      console.error(`Error calling play previous`, error);
     }
   }
   async actionShuffleToggle(entity: HassEntity) {
@@ -65,10 +72,10 @@ export default class PlayerActions {
     try {
       await this.hass.callService("media_player", "shuffle_set", {
         entity_id: entity.entity_id,
-        shuffle: shuffle,
+        shuffle,
       });
-    } catch (e) {
-      console.error(`Error calling shuffle`, e);
+    } catch (error) {
+      console.error(`Error calling shuffle`, error);
     }
   }
   async actionRepeatSet(entity: HassEntity, repeatMode: RepeatMode) {
@@ -77,8 +84,8 @@ export default class PlayerActions {
         entity_id: entity.entity_id,
         repeat: repeatMode,
       });
-    } catch (e) {
-      console.error(`Error calling repeat`, e);
+    } catch (error) {
+      console.error(`Error calling repeat`, error);
     }
   }
   async actionSetVolume(entity: HassEntity, volume: number) {
@@ -87,8 +94,8 @@ export default class PlayerActions {
         entity_id: entity.entity_id,
         volume_level: volume,
       });
-    } catch (e) {
-      console.error(`Error setting volume`, e);
+    } catch (error) {
+      console.error(`Error setting volume`, error);
     }
   }
   async actionSeek(entity: HassEntity, position: number) {
@@ -97,8 +104,8 @@ export default class PlayerActions {
         entity_id: entity.entity_id,
         seek_position: position,
       });
-    } catch (e) {
-      console.error(`Error calling repeat`, e);
+    } catch (error) {
+      console.error(`Error calling repeat`, error);
     }
   }
   async actionTogglePlayer(entity: HassEntity) {
@@ -106,13 +113,13 @@ export default class PlayerActions {
       await this.hass.callService("media_player", "toggle", {
         entity_id: entity.entity_id,
       });
-    } catch (e) {
-      console.error(`Error calling repeat`, e);
+    } catch (error) {
+      console.error(`Error calling repeat`, error);
     }
   }
   async actionGetCurrentItem(
     entity: ExtendedHassEntity,
-  ): Promise<QueueItem | null> {
+  ): Promise<QueueItem | undefined> {
     const data: getQueueItemsServiceSchema = {
       type: "call_service",
       domain: "mass_queue",
@@ -124,22 +131,23 @@ export default class PlayerActions {
       },
       return_response: true,
     };
-    const ret = await this.hass.callWS<getQueueItemsServiceResponse>(data);
-    const result: QueueItem | undefined = ret.response[entity.entity_id].find(
-      (item) => {
-        return item.media_content_id == entity.attributes.media_content_id;
-      },
-    );
-    return result ?? null;
+    const returnValue =
+      await this.hass.callWS<getQueueItemsServiceResponse>(data);
+    const result: QueueItem | undefined = returnValue.response[
+      entity.entity_id
+    ].find((item) => {
+      return item.media_content_id == entity.attributes.media_content_id;
+    });
+    return result ?? undefined;
   }
   async actionAddFavorite(entity: HassEntity) {
-    const dev_id = this.hass.entities[entity.entity_id].device_id;
+    const development_id = this.hass.entities[entity.entity_id].device_id;
     try {
       await this.hass.callService("button", "press", {
-        device_id: dev_id,
+        device_id: development_id,
       });
-    } catch (e) {
-      console.error(`Error setting favorite`, e);
+    } catch (error) {
+      console.error(`Error setting favorite`, error);
     }
   }
   async actionRemoveFavorite(entity: HassEntity) {
@@ -147,8 +155,8 @@ export default class PlayerActions {
       await this.hass.callService("mass_queue", "unfavorite_current_item", {
         entity: entity.entity_id,
       });
-    } catch (e) {
-      console.error(`Error unfavoriting item for entity.`, e);
+    } catch (error) {
+      console.error(`Error unfavoriting item for entity.`, error);
     }
   }
   async actionUnjoinPlayers(player_entity: string) {
@@ -156,19 +164,19 @@ export default class PlayerActions {
       await this.hass.callService("media_player", "unjoin", {
         entity_id: player_entity,
       });
-    } catch (e) {
-      console.error(`Error unjoining players`, e);
+    } catch (error) {
+      console.error(`Error unjoining players`, error);
     }
   }
   async actionAddToPlaylist(
     media_uri: string,
     playlist_uri: string,
-    entity: ExtendedHassEntity
+    entity: ExtendedHassEntity,
   ): Promise<void> {
     const player_info = await this.actionGetPlayerInfo(entity);
     const mass_entry = player_info?.entries.mass_queue;
-    const playlist_uri_split = playlist_uri.split('/');
-    const playlist_id = playlist_uri_split[playlist_uri_split.length - 1]
+    const playlist_uri_split = playlist_uri.split("/");
+    const playlist_id = playlist_uri_split[playlist_uri_split.length - 1];
     const data = {
       type: "call_service",
       domain: "mass_queue",
@@ -178,9 +186,9 @@ export default class PlayerActions {
         config_entry_id: mass_entry,
         data: {
           db_playlist_id: playlist_id,
-          uris: [media_uri]
-        }
-      }
+          uris: [media_uri],
+        },
+      },
     };
     await this.hass.callWS(data);
   }
@@ -189,7 +197,7 @@ export default class PlayerActions {
   ): Promise<getInfoWSResponseSchema | null> {
     const data: getInfoWSServiceSchema = {
       type: "mass_queue/get_info",
-      entity_id: entity.entity_id
+      entity_id: entity.entity_id,
     };
     return await this.hass.callWS(data);
   }

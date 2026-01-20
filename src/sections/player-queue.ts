@@ -8,18 +8,19 @@ import {
   TemplateResult,
 } from "lit";
 import { property, query, queryAll, state } from "lit/decorators.js";
-import "../components/media-row";
-import "../components/section-header";
+import "../components/media-row/media-row";
+import "../components/section-header/section-header";
 
 import {
   DEFAULT_QUEUE_CONFIG,
+  PlayerQueueHiddenElementsConfig,
   QueueConfig,
   QueueConfigErrors,
 } from "../config/player-queue";
 
 import { ExtendedHass, QueueItem, QueueItems } from "../const/types";
 import {
-  activeEntityConfContext,
+  activeEntityConfigContext,
   activeEntityIDContext,
   activePlayerControllerContext,
   activeSectionContext,
@@ -28,6 +29,7 @@ import {
   IconsContext,
   mediaCardDisplayContext,
   playerQueueConfigContext,
+  playerQueueHiddenElementsConfigContext,
   queueContext,
   queueControllerContext,
 } from "../const/context";
@@ -36,7 +38,7 @@ import styles from "../styles/player-queue";
 import { Sections } from "../const/enums";
 import { ActivePlayerController } from "../controller/active-player";
 import { QueueController } from "../controller/queue";
-import { jsonMatch } from "../utils/util";
+import { jsonMatch } from "../utils/utility";
 import { getTranslation } from "../utils/translations";
 import { Icons } from "../const/icons";
 import { WaAnimation } from "../const/elements";
@@ -45,18 +47,21 @@ class QueueCard extends LitElement {
   @consume({ context: activePlayerControllerContext })
   private activePlayerController!: ActivePlayerController;
 
-  @consume({ context: activeEntityConfContext, subscribe: true })
+  @consume({ context: activeEntityConfigContext, subscribe: true })
   private entityConf!: EntityConfig;
 
   @consume({ context: IconsContext, subscribe: true })
   private Icons!: Icons;
 
+  @consume({ context: playerQueueHiddenElementsConfigContext, subscribe: true })
+  private hiddenElements!: PlayerQueueHiddenElementsConfig;
+
   @provide({ context: playerQueueConfigContext })
   public _config!: QueueConfig;
   @state() private _queue: QueueItems = [];
-  private _queueController!: QueueController;
+  private _queueController?: QueueController;
 
-  @queryAll("#animation") _animations!: WaAnimation[];
+  @queryAll("#animation") _animations?: WaAnimation[];
   @query(".media-active") _activeElement!: HTMLElement;
   @query(".list") _items!: HTMLElement;
 
@@ -65,7 +70,7 @@ class QueueCard extends LitElement {
   @state() public _tabSwitchFirstUpdate = false;
 
   @consume({ context: queueControllerContext, subscribe: true })
-  public set queueController(controller: QueueController) {
+  public set queueController(controller: QueueController | undefined) {
     this._queueController = controller;
   }
   public get queueController() {
@@ -105,7 +110,7 @@ class QueueCard extends LitElement {
   }
 
   private _active_player_entity!: string;
-  private _hass!: ExtendedHass;
+  private _hass?: ExtendedHass;
   private error?: TemplateResult;
 
   @provide({ context: mediaCardDisplayContext })
@@ -121,7 +126,7 @@ class QueueCard extends LitElement {
     return this._section;
   }
   @consume({ context: hassContext, subscribe: true })
-  public set hass(hass: ExtendedHass) {
+  public set hass(hass: ExtendedHass | undefined) {
     if (!hass) {
       return;
     }
@@ -154,7 +159,7 @@ class QueueCard extends LitElement {
     return this._config;
   }
 
-  private testConfig(config: QueueConfig, test_active = true) {
+  private testConfig(config: QueueConfig | undefined, test_active = true) {
     if (!config) {
       return QueueConfigErrors.CONFIG_MISSING;
     }
@@ -166,10 +171,8 @@ class QueueCard extends LitElement {
         return QueueConfigErrors.ENTITY_TYPE;
       }
     }
-    if (this.hass) {
-      if (!this.hass.states[this.active_player_entity]) {
-        return QueueConfigErrors.MISSING_ENTITY;
-      }
+    if (this.hass && !this.hass.states[this.active_player_entity]) {
+      return QueueConfigErrors.MISSING_ENTITY;
     }
     return QueueConfigErrors.OK;
   }
@@ -183,27 +186,45 @@ class QueueCard extends LitElement {
     this._items.scrollTop = scroll;
   }
   private onQueueItemSelected = async (queue_item_id: string) => {
+    if (!this.queueController) {
+      return;
+    }
     await this.queueController.playQueueItem(queue_item_id);
     void this.queueController.getQueue();
     this.scrollToActive();
   };
   private onQueueItemRemoved = async (queue_item_id: string) => {
+    if (!this.queueController) {
+      return;
+    }
     await this.queueController.removeQueueItem(queue_item_id);
   };
   private onQueueItemMoveNext = async (queue_item_id: string) => {
+    if (!this.queueController) {
+      return;
+    }
     await this.queueController.moveQueueItemNext(queue_item_id);
   };
   private onQueueItemMoveUp = async (queue_item_id: string) => {
+    if (!this.queueController) {
+      return;
+    }
     await this.queueController.moveQueueItemUp(queue_item_id);
   };
   private onQueueItemMoveDown = async (queue_item_id: string) => {
+    if (!this.queueController) {
+      return;
+    }
     await this.queueController.moveQueueItemDown(queue_item_id);
   };
   private onClearQueue = async () => {
+    if (!this.queueController) {
+      return;
+    }
     await this.queueController.clearQueue(this.active_player_entity);
   };
-  private onTabSwitch = (ev: Event) => {
-    if ((ev as CustomEvent).detail == Sections.QUEUE) {
+  private onTabSwitch = (event_: Event) => {
+    if ((event_ as CustomEvent).detail == Sections.QUEUE) {
       this._tabSwitchFirstUpdate = true;
       this.scrollToActive();
     }
@@ -244,16 +265,16 @@ class QueueCard extends LitElement {
   }
   protected renderClearQueueButton(): TemplateResult {
     const expressive = this.activePlayerController.useExpressive;
-    const hide = this.config.hide.clear_queue_button || this.entityConf.hide.queue.clear_queue_button;
+    const hide = this.hiddenElements.clear_queue_button;
     if (hide) {
-      return html``
+      return html``;
     }
     return html`
       <mass-player-card-button
         .onPressService=${this.onClearQueue}
         role="filled"
         size="small"
-        elevation=1
+        elevation="1"
         id="button-back"
         class="button-min ${expressive ? `button-expressive` : ``}"
       >
@@ -262,15 +283,13 @@ class QueueCard extends LitElement {
           class="header-icon"
         ></ha-svg-icon>
       </mass-player-card-button>
-    `
+    `;
   }
   protected renderHeader(): TemplateResult {
     const label = getTranslation("queue.header", this.hass) as string;
     return html`
       <mass-section-header>
-        <span slot="label" id="title">
-          ${label}
-        </span>
+        <span slot="label" id="title"> ${label} </span>
         <span slot="end" id="clear-queue">
           ${this.renderClearQueueButton()}
         </span>
@@ -292,7 +311,7 @@ class QueueCard extends LitElement {
     );
   }
   protected shouldUpdate(_changedProperties: PropertyValues): boolean {
-    if (!_changedProperties.size) {
+    if (_changedProperties.size === 0) {
       return false;
     }
     if (_changedProperties.has("_config") || _changedProperties.has("queue")) {
@@ -303,8 +322,15 @@ class QueueCard extends LitElement {
 
   public disconnectedCallback(): void {
     super.disconnectedCallback();
-    if (this?.queueController?.isSubscribed)
+    if (!this.queueController) {
+      return;
+    }
+    if (this.queueController.isSubscribed)
       this.queueController.unsubscribeUpdates();
+    this.queueController._host.removeEventListener(
+      "section-changed",
+      this.onTabSwitch,
+    );
     super.disconnectedCallback();
   }
   public connectedCallback(): void {
@@ -315,10 +341,17 @@ class QueueCard extends LitElement {
     if (this._animations && this._firstLoaded) {
       this._animations.forEach((animation) => (animation.play = true));
     }
+    this.queueController?._host.addEventListener(
+      "section-changed",
+      this.onTabSwitch,
+    );
     super.connectedCallback();
   }
   protected firstUpdated(): void {
     this._firstLoaded = true;
+    if (!this.queueController) {
+      return;
+    }
     this.queueController._host.addEventListener(
       "section-changed",
       this.onTabSwitch,

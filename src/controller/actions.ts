@@ -34,8 +34,14 @@ export class ActionsController {
     this._entityConf = config;
     const entity_id = config.entity_id;
     const volume_entity_id = config.volume_entity_id;
-    this._activeEntity = this._hass.states[entity_id];
-    this._volumeEntity = this._hass.states[volume_entity_id];
+    const ent = this._hass.states[entity_id];
+    const volEnt = this._hass.states[volume_entity_id];
+    if (ent) {
+      this._activeEntity = ent;
+    }
+    if (volEnt) {
+      this._volumeEntity = volEnt;
+    }
     this._activeEntityId = entity_id;
     this._volumeEntityId = volume_entity_id;
   }
@@ -51,16 +57,20 @@ export class ActionsController {
     this._queueActions = new QueueActions(this._hass, this._activeEntityId);
   }
   private _updateActions() {
-    if (this._hass) {
-      this._browserActions.hass = this._hass;
-      this._playerActions.hass = this._hass;
-      this._playersActions.hass = this._hass;
-      this._queueActions.hass = this._hass;
-      if (this._activeEntityId) {
-        this._activeEntity = this._hass.states[this._activeEntityId];
+    this._browserActions.hass = this._hass;
+    this._playerActions.hass = this._hass;
+    this._playersActions.hass = this._hass;
+    this._queueActions.hass = this._hass;
+    if (this._activeEntityId) {
+      const ent = this._hass.states[this._activeEntityId];
+      if (ent) {
+        this._activeEntity = ent;
       }
-      if (this._volumeEntityId) {
-        this._volumeEntity = this._hass.states[this._volumeEntityId];
+    }
+    if (this._volumeEntityId) {
+      const volEnt = this._hass.states[this._volumeEntityId];
+      if (volEnt) {
+        this._volumeEntity = volEnt;
       }
     }
     this._queueActions.player_entity = this._activeEntityId;

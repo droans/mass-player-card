@@ -10,6 +10,10 @@ on:
 permissions:
   contents: read
 
+concurrency:
+  group: ${{ github.ref }}-draft
+  cancel-in-progress: true
+
 jobs:
   build_artifact:
     name: Build card and store artifact
@@ -42,12 +46,18 @@ jobs:
             ${{ runner.OS }}-
       - name: Install dependencies
         run: yarn install --frozen-lockfile
-      - name: Set version in release, repo based on tag
+      - name: Set git config
         run: |
           git config --local user.email "github-actions[bot]@users.noreply.github.com"
           git config --local user.name "github-actions[bot]"
-          npm version prerelease -m "beep boop version bump"
-          git push 
+      - name: Bump version
+        run: |
+          npm version prerelease --git-tag-version false
+      - name: Push changes
+        run: |
+          git add package.json
+          git commit -m "beep boop version bump"
+          git push
       - name: Build the project
         run: |
           yarn rollup

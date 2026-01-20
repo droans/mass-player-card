@@ -1,24 +1,31 @@
 import { HomeAssistant, Themes } from "custom-card-helpers";
-import { HassEntity, HassEntityAttributeBase } from "home-assistant-js-websocket";
+import {
+  HassEntity,
+  HassEntityAttributeBase,
+} from "home-assistant-js-websocket";
 import { TemplateResult } from "lit";
 import {
   getRecommendationsServiceResponse,
   recommendationItem,
   recommendationItems,
-  recommendationSection
-} from "mass-queue-types/packages/mass_queue/actions/get_recommendations.js";
+  recommendationSection,
+} from "mass-queue-types/packages/mass_queue/actions/get_recommendations";
 import {
+  getQueuePartialServiceResponse,
   getQueueServiceResponse,
-  getQueueServiceSchema
-} from "mass-queue-types/packages/music_assistant/actions/get_queue"
+  getQueueServiceSchema,
+} from "mass-queue-types/packages/music_assistant/actions/get_queue";
 
 import { MediaTypes, RepeatMode, Thumbnail } from "./enums";
-import { MediaItem } from "mass-queue-types/packages/music_assistant/types.js";
+import {
+  MediaItem,
+  QueueItemSchema,
+} from "mass-queue-types/packages/music_assistant/types";
 import { ImageURLWithFallback } from "../utils/thumbnails";
-import { queueItem } from "mass-queue-types/packages/mass_queue/actions/get_queue_items.js";
+import { queueItem } from "mass-queue-types/packages/mass_queue/actions/get_queue_items";
 import { QueueConfig } from "../config/player-queue";
 
-export interface ExtendedHass extends HomeAssistant {
+export interface ExtendedHass extends Omit<HomeAssistant, "states"> {
   entities: ExtendedEntitiesBase;
   states: ExtendedHassEntities;
   themes: ExtendedThemes;
@@ -33,25 +40,29 @@ type ExtendedEntitiesBase = Record<string, ExtendedEntityBase>;
 export interface ExtendedHassEntity extends HassEntity {
   attributes: ExtendedHassEntityAttributes;
 }
-type ExtendedHassEntities = Record<string, ExtendedHassEntity>;
+export type ExtendedHassEntities = Record<
+  string,
+  ExtendedHassEntity | undefined
+>;
 
 interface ExtendedHassEntityAttributes extends HassEntityAttributeBase {
-  app_id: string;
-  active_queue: string;
-  entity_picture_local: string;
-  group_members: string[];
-  is_volume_muted: boolean;
-  mass_player_type: string;
-  media_album_name: string;
-  media_artist: string;
-  media_title: string;
-  media_content_id: string;
-  media_content_type: string;
-  media_duration: number;
-  media_position: number;
-  repeat: RepeatMode;
-  shuffle: boolean;
-  volume_level: number;
+  app_id?: string;
+  active_queue?: string;
+  entity_picture?: string;
+  entity_picture_local?: string;
+  group_members?: string[];
+  is_volume_muted?: boolean;
+  mass_player_type?: string;
+  media_album_name?: string;
+  media_artist?: string;
+  media_title?: string;
+  media_content_id?: string;
+  media_content_type?: string;
+  media_duration?: number;
+  media_position?: number;
+  repeat?: RepeatMode;
+  shuffle?: boolean;
+  volume_level?: number;
 }
 
 export interface ExtendedThemes extends Themes {
@@ -110,27 +121,91 @@ export interface mediaBrowserSectionConfig {
   [str: string]: MediaCardItem[];
 }
 
-export interface MediaCardData {
-  type?: string;
-  subtype?: string;
-  section?: string;
-  media_content_id?: string;
-  media_content_type?: string;
+export type mediaBrowserSectionSubtypes =
+  | "favorites"
+  | "recents"
+  | "recommendations";
+
+export type mediaCardData = mediaCardEnqueueType | mediaCardSectionData;
+
+export type mediaCardEnqueueType =
+  | mediaCardPlaylistData
+  | mediaCardAlbumData
+  | mediaCardArtistData
+  | mediaCardItemData
+  | mediaCardServiceData
+  | mediaCardRecommendationData
+  | mediaCardPodcastData;
+
+export type mediaCardCollectionType =
+  | mediaCardPlaylistData
+  | mediaCardAlbumData
+  | mediaCardArtistData
+  | mediaCardPodcastData;
+
+export interface mediaCardItemData {
+  type: "item";
+  media_content_id: string;
+  media_content_type: string;
+}
+
+export interface mediaCardServiceData {
+  type: "service";
+  media_content_id: string;
+  media_content_type: string;
   service?: string;
 }
+export interface mediaCardRecommendationData {
+  type: "service";
+  media_content_id: string;
+  media_content_type: string;
+}
+
+export interface mediaCardSectionData {
+  type: "section";
+  subtype: mediaBrowserSectionSubtypes;
+  section: string;
+}
+
+interface mediaCardCollectionData {
+  media_content_id: string;
+  media_image: string;
+  media_title: string;
+}
+
+export interface mediaCardPlaylistData extends mediaCardCollectionData {
+  type: "playlist";
+}
+
+export interface mediaCardAlbumData extends mediaCardCollectionData {
+  type: "album";
+}
+
+export interface mediaCardArtistData extends mediaCardCollectionData {
+  type: "artist";
+}
+
+export interface mediaCardPodcastData extends mediaCardCollectionData {
+  type: "podcast";
+}
+export interface mediaPlaylistCard extends Omit<MediaCardItem, "data"> {
+  data: mediaCardPlaylistData;
+}
+
 export interface MediaCardItem {
   title: string;
   thumbnail: string;
   fallback: Thumbnail;
-  data: MediaCardData;
+  data: mediaCardData;
   background?: TemplateResult;
 }
 
 export type MediaLibraryItem = MediaItem;
 
+// eslint-disable-next-line unicorn/prevent-abbreviations
 export type ServiceNoParams = () => void;
 
-export type SubscriptionUnsubscribe = () => Promise<void>
+export type SubscriptionUnsubscribe = () => Promise<void>;
 
 export interface PlayerData {
   playing: boolean;
@@ -152,8 +227,8 @@ export interface PlaylistDialogItem {
   uri: string;
 }
 
-export interface QueueItem extends queueItem {
-  playing: boolean;
+export interface QueueItem extends Omit<queueItem, "playing"> {
+  playing?: boolean;
   show_action_buttons: boolean;
   show_artist_name: boolean;
   show_move_up_next: boolean;
@@ -172,3 +247,11 @@ export type RecommendationItems = recommendationItems;
 export type RecommendationResponse = getRecommendationsServiceResponse;
 
 export type RecommendationSection = recommendationSection;
+
+export interface getQueueResponse extends Omit<
+  Omit<getQueuePartialServiceResponse, "current_item">,
+  "next_item"
+> {
+  current_item: QueueItemSchema | null;
+  next_item: QueueItemSchema | null;
+}

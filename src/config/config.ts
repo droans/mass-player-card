@@ -1,3 +1,4 @@
+/* eslint-disable @typescript-eslint/no-unnecessary-condition */
 import {
   mdiAlbum,
   mdiMusic,
@@ -50,14 +51,25 @@ export interface Config {
   expressive: boolean;
   expressive_scheme: ExpressiveScheme;
   download_local: boolean;
+  panel: boolean;
+  default_section: ConfigSections | undefined;
+  sync_player_across_dashboard: boolean;
 }
 
-interface HiddenElementsConfig {
+export type ConfigSections =
+  | "music_player"
+  | "queue"
+  | "media_browser"
+  | "players";
+
+export interface HiddenElementsConfig {
   player: PlayerHiddenElementsConfig;
   queue: PlayerQueueHiddenElementsConfig;
   media_browser: MediaBrowserHiddenElementsConfig;
   players: PlayersHiddenElementsConfig;
 }
+
+export type BaseHiddenElementsConfig = Record<string, boolean>;
 
 export interface EntityConfig {
   entity_id: string;
@@ -88,6 +100,9 @@ export const DEFAULT_CONFIG: Config = {
   expressive_scheme: "expressive",
   entities: [],
   download_local: false,
+  panel: false,
+  default_section: undefined,
+  sync_player_across_dashboard: false,
 };
 
 const ENTITY_DEFAULT_HIDDEN_ITEM_CONFIG: HiddenElementsConfig = {
@@ -101,11 +116,42 @@ export function createStubConfig(hass: ExtendedHass, entities: string[]) {
   const media_players = entities.filter((ent) => {
     return ent.split(".")[0] == "media_player";
   });
-  const mass_players = media_players.filter((ent) => {
-    return hass.states[ent]?.attributes?.mass_player_type;
+  const mass_player = media_players.find((ent) => {
+    return hass.states[ent]?.attributes.mass_player_type;
   });
   return {
-    entities: [mass_players[0]],
+    entities: [mass_player],
+  };
+}
+
+function createDefaultSectionConfigForm() {
+  return {
+    name: "default_section",
+    required: false,
+    selector: {
+      select: {
+        multiple: false,
+        mode: "dropdown",
+        options: [
+          {
+            value: "music_player",
+            label: "Music Player",
+          },
+          {
+            value: "queue",
+            label: "Player Queue",
+          },
+          {
+            value: "media_browser",
+            label: "Media Browser",
+          },
+          {
+            value: "players",
+            label: "Players",
+          },
+        ],
+      },
+    },
   };
 }
 
@@ -180,8 +226,19 @@ export function createConfigForm() {
         selector: { boolean: {}, default: true },
       },
       createExpressiveSchemeConfigForm(),
+      createDefaultSectionConfigForm(),
       {
         name: "download_local",
+        required: false,
+        selector: { boolean: {}, default: false },
+      },
+      {
+        name: "panel",
+        required: false,
+        selector: { boolean: {}, default: false },
+      },
+      {
+        name: "sync_player_across_dashboard",
         required: false,
         selector: { boolean: {}, default: false },
       },
@@ -231,7 +288,7 @@ function processEntityHiddenItemConfig(
 
 function entityConfigFromEntityID(entity_id: string): EntityConfig {
   return {
-    entity_id: entity_id,
+    entity_id,
     volume_entity_id: entity_id,
     name: "",
     max_volume: DEFAULT_MAX_VOLUME,

@@ -10,23 +10,21 @@ import {
 import { query, state } from "lit/decorators.js";
 import { html } from "lit/static-html.js";
 
-import "../components/media-progress";
-import "../components/menu-button";
-import "../components/player-artwork";
-import "../components/player-controls";
-import "../components/player-controls-expressive";
-import "../components/section-header";
-import "../components/volume-row";
-import "../components/volume-slider";
+import "../components/grouped-player-menu/grouped-player-menu";
+import "../components/media-progress/media-progress";
+import "../components/player-artwork/player-artwork";
+import "../components/player-controls/player-controls";
+import "../components/player-controls/player-controls-expressive";
+import "../components/player-selector-menu/player-selector-menu";
+import "../components/section-header/section-header";
+import "../components/volume-row/volume-row";
+import "../components/marquee-text/marquee-text";
 
 import PlayerActions from "../actions/player-actions";
 
+import { MediaTypes, Thumbnail } from "../const/enums";
 import {
-  MediaTypes,
-  Thumbnail,
-} from "../const/enums";
-import {
-  activeEntityConfContext,
+  activeEntityConfigContext,
   activeMediaPlayerContext,
   activePlayerControllerContext,
   activePlayerDataContext,
@@ -35,49 +33,57 @@ import {
   entitiesConfigContext,
   EntityConfig,
   groupedPlayersContext,
-  groupVolumeContext,
   hassContext,
-  IconsContext,
   musicPlayerConfigContext,
+  musicPlayerHiddenElementsConfigContext,
 } from "../const/context";
-import { ExtendedHass, ExtendedHassEntity, ListItemData, MediaLibraryItem, PlayerData, PlaylistDialogItem } from "../const/types";
+import {
+  ExtendedHass,
+  ExtendedHassEntity,
+  MediaLibraryItem,
+  PlayerData,
+  PlaylistDialogItem,
+} from "../const/types";
 import { PLAYLIST_DIALOG_MAX_ITEMS } from "../const/music-player";
 
 import styles from "../styles/music-player";
 
 import { PlayerSelectedService } from "../const/actions";
-import { ArtworkSize, PlayerConfig } from "../config/player";
+import {
+  ArtworkSize,
+  PlayerConfig,
+  PlayerHiddenElementsConfig,
+} from "../config/player";
 import { ActivePlayerController } from "../controller/active-player";
 import { Config } from "../config/config";
-import { Icons } from "../const/icons";
-import { isActive, jsonMatch, playerHasUpdated } from "../utils/util";
+import { isActive, jsonMatch, playerHasUpdated } from "../utils/utility";
 import { MassCardController } from "../controller/controller";
-import { DetailValEventData, ForceUpdatePlayerDataEvent, JoinUnjoinEventData, MenuButtonEventData } from "../const/events";
+import {
+  ForceUpdatePlayerDataEvent,
+  MenuButtonEventData,
+} from "../const/events";
 import { asyncImageURLWithFallback } from "../utils/thumbnails";
 import { DialogElement } from "../const/elements";
 
 class MusicPlayerCard extends LitElement {
-  @query('#dialog-favorites') favoritesDialog!: DialogElement;
-  @state() protected _playlists!: PlaylistDialogItem[];
-  private _firstLoaded = false;
-
-  @consume({ context: IconsContext }) private Icons!: Icons;
+  @query("#dialog-favorites") favoritesDialog?: DialogElement;
+  @state() protected _playlists?: PlaylistDialogItem[];
 
   @consume({ context: entitiesConfigContext, subscribe: true })
   public playerEntities!: EntityConfig[];
 
   @consume({ context: configContext, subscribe: true })
-  private cardConfig!: Config;
+  private cardConfig?: Config;
 
   @consume({ context: controllerContext, subscribe: true })
   private controller!: MassCardController;
 
   @consume({ context: activePlayerDataContext, subscribe: true })
   @state()
-  public player_data!: PlayerData;
+  public player_data?: PlayerData;
 
-  @state()
-  private _groupVolumeLevel!: number;
+  @consume({ context: musicPlayerHiddenElementsConfigContext, subscribe: true })
+  private hiddenElements!: PlayerHiddenElementsConfig;
 
   private _activeEntityConfig!: EntityConfig;
   private _activeEntity!: ExtendedHassEntity;
@@ -85,7 +91,7 @@ class MusicPlayerCard extends LitElement {
 
   public selectedPlayerService!: PlayerSelectedService;
   private _hass!: ExtendedHass;
-  private _groupedPlayers!: EntityConfig[];
+  private _groupedPlayers?: EntityConfig[];
   private actions!: PlayerActions;
 
   private _artworkHeaderClass!: string;
@@ -94,18 +100,18 @@ class MusicPlayerCard extends LitElement {
   private _artworkMediaControlsClass!: string;
   private _artworkActiveTrackClass!: string;
   @state()
-  private _activePlayerController!: ActivePlayerController;
+  private _activePlayerController?: ActivePlayerController;
 
-  @consume({ context: activeEntityConfContext, subscribe: true })
+  @consume({ context: activeEntityConfigContext, subscribe: true })
   public set activeEntityConfig(entity: EntityConfig) {
     this._activeEntityConfig = entity;
-    void this.updatePlaylists()
+    void this.updatePlaylists();
   }
   public get activeEntityConfig() {
     return this._activeEntityConfig;
   }
   public get activeMediaPlayer() {
-    return this?.activePlayerController?.activeMediaPlayer;
+    return this.activePlayerController?.activeMediaPlayer;
   }
 
   @consume({ context: activeMediaPlayerContext, subscribe: true })
@@ -121,11 +127,11 @@ class MusicPlayerCard extends LitElement {
   }
 
   @consume({ context: hassContext, subscribe: true })
-  public set hass(hass: ExtendedHass) {
+  public set hass(hass: ExtendedHass | undefined) {
     if (hass) {
       this.actions = new PlayerActions(hass);
+      this._hass = hass;
     }
-    this._hass = hass;
   }
   public get hass() {
     return this._hass;
@@ -138,67 +144,54 @@ class MusicPlayerCard extends LitElement {
     }
     this._config = config;
     switch (config.layout.artwork_size) {
-      case ArtworkSize.LARGE:
+      case ArtworkSize.LARGE: {
         this._artworkHeaderClass = "header-art-lg";
         this._artworkProgressClass = "bg-art-lg";
         this._artworkVolumeClass = "vol-art-lg";
         this._artworkMediaControlsClass = "controls-art-lg";
         this._artworkActiveTrackClass = "active-track-lg";
         break;
-      case ArtworkSize.MEDIUM:
+      }
+      case ArtworkSize.MEDIUM: {
         this._artworkHeaderClass = "header-art-med";
         this._artworkProgressClass = "bg-art-med";
         this._artworkVolumeClass = "vol-art-med";
         this._artworkMediaControlsClass = "controls-art-med";
         this._artworkActiveTrackClass = "active-track-med";
         break;
-      case ArtworkSize.SMALL:
+      }
+      case ArtworkSize.SMALL: {
         this._artworkHeaderClass = "header-art-sm";
         this._artworkProgressClass = "bg-art-sm";
         this._artworkVolumeClass = "vol-art-sm";
         this._artworkMediaControlsClass = "controls-art-sm";
         this._artworkActiveTrackClass = "active-track-sm";
+      }
     }
   }
   public get config() {
     return this._config;
   }
 
-  private async _getGroupedVolume() {
-    if (this.activePlayerController) {
-      this.groupVolumeLevel =
-        await this.activePlayerController.getActiveGroupVolume();
-    }
-  }
-
   @consume({ context: activePlayerControllerContext, subscribe: true })
-  private set activePlayerController(controller: ActivePlayerController) {
+  private set activePlayerController(
+    controller: ActivePlayerController | undefined,
+  ) {
     if (!controller) {
       return;
     }
     this._activePlayerController = controller;
     if (!this.player_data) {
-      void this.activePlayerController.updateActivePlayerData();
-    }
-    if (!this.groupVolumeLevel) {
-      void this._getGroupedVolume();
+      // eslint-disable-next-line @typescript-eslint/no-non-null-assertion
+      void this.activePlayerController!.updateActivePlayerData();
     }
   }
   private get activePlayerController() {
     return this._activePlayerController;
   }
-  @consume({ context: groupVolumeContext, subscribe: true })
-  public set groupVolumeLevel(volume_level: number) {
-    if (volume_level != this._groupVolumeLevel) {
-      this._groupVolumeLevel = volume_level;
-    }
-  }
-  public get groupVolumeLevel() {
-    return this._groupVolumeLevel;
-  }
 
   @consume({ context: groupedPlayersContext, subscribe: true })
-  private set groupedPlayersList(players: string[]) {
+  private set groupedPlayersList(players: string[] | undefined) {
     const card_players = this.playerEntities.filter((entity) =>
       players?.includes(entity.entity_id),
     );
@@ -212,18 +205,10 @@ class MusicPlayerCard extends LitElement {
     return this._groupedPlayers;
   }
 
-  private async _updatePlayerData() {
-    if (!this.activeMediaPlayer) {
-      return;
-    }
-    const new_player_data =
-      await this.activePlayerController.getactivePlayerData();
-    if (jsonMatch(this.player_data, new_player_data)) {
-      return;
-    }
-    this.player_data = new_player_data;
-  }
   public forceUpdatePlayerDataValue(key: string, value: string) {
+    if (!this.player_data) {
+      return;
+    }
     const data = this.player_data;
     if (!Object.keys(data).includes(key)) {
       return;
@@ -231,158 +216,159 @@ class MusicPlayerCard extends LitElement {
     data[key] = value;
     this.player_data = { ...data };
   }
-  private async generatePlaylistData(playlist: MediaLibraryItem): Promise<PlaylistDialogItem> {
+  private async generatePlaylistData(
+    playlist: MediaLibraryItem,
+  ): Promise<PlaylistDialogItem> {
     return {
       name: playlist.name,
       image: await asyncImageURLWithFallback(
-        this.controller.hass,
+        // eslint-disable-next-line @typescript-eslint/no-non-null-assertion
+        this.controller.hass!,
         playlist.image ?? ``,
         Thumbnail.PLAYLIST,
-        this.controller.config.download_local
+        // eslint-disable-next-line @typescript-eslint/no-non-null-assertion
+        this.controller.config!.download_local,
       ),
-      uri: playlist.uri
-    }
+      uri: playlist.uri,
+    };
   }
   public async updatePlaylists() {
-    const playlistData = await this.controller.Actions.browserActions.actionGetLibrary(
-      this.activeEntityConfig.entity_id,
-      MediaTypes.PLAYLIST,
-      PLAYLIST_DIALOG_MAX_ITEMS,
-      null
-    );
-    const _promises = playlistData.map(
-      (playlist) => {
-        return this.generatePlaylistData(playlist)
-      }
-    );
+    if (!this.controller.Actions) {
+      return;
+    }
+    const playlistData =
+      await this.controller.Actions.browserActions.actionGetLibrary(
+        this.activeEntityConfig.entity_id,
+        MediaTypes.PLAYLIST,
+        PLAYLIST_DIALOG_MAX_ITEMS,
+        null,
+      );
+    const _promises = playlistData.map((playlist) => {
+      return this.generatePlaylistData(playlist);
+    });
     this._playlists = await Promise.all(_promises);
   }
 
   protected openAddToPlaylistDialog() {
-    if (!this?.favoritesDialog) {
-      throw new Error(`Dialog element doesn't exist!`)
+    if (!this.favoritesDialog) {
+      throw new Error(`Dialog element doesn't exist!`);
     }
     this.favoritesDialog.open = true;
   }
   protected closeAddToPlaylistDialog() {
-    if (!this?.favoritesDialog) {
-      throw new Error(`Dialog element doesn't exist!`)
+    if (!this.favoritesDialog) {
+      throw new Error(`Dialog element doesn't exist!`);
     }
     this.favoritesDialog.open = false;
   }
 
-  private onForceLoadEvent = (ev: Event) => {
-    const e = ev as ForceUpdatePlayerDataEvent;
-    const key = e.detail.key;
+  private onForceLoadEvent = (event_: Event) => {
+    const coaxed_event = event_ as ForceUpdatePlayerDataEvent;
+    const key = coaxed_event.detail.key;
     /* eslint-disable
       @typescript-eslint/no-unsafe-argument,
       @typescript-eslint/no-unsafe-assignment
     */
-    const val = e.detail.value;
-    this.forceUpdatePlayerDataValue(key, val);
+    const value = coaxed_event.detail.value;
+    this.forceUpdatePlayerDataValue(key, value);
     /* eslint-enable
       @typescript-eslint/no-unsafe-argument,
       @typescript-eslint/no-unsafe-assignment
     */
   };
-  private onPlayerSelect = (ev: MenuButtonEventData) => {
-    ev.stopPropagation();
-    const target = ev.detail;
+  private onPlayerSelect = (event_: MenuButtonEventData) => {
+    event_.stopPropagation();
+    const target = event_.detail;
     const player = target.option;
-    if (!player.length) {
+    if (player.length === 0) {
       return;
     }
     this.selectedPlayerService(player);
   };
-  private onUnjoinSelect = (ev: JoinUnjoinEventData) => {
-    const ent = ev.target.entity;
-    void this.actions.actionUnjoinPlayers(ent);
-  };
-  private onGroupVolumeChange = (ev: DetailValEventData) => {
-    const volume_level = ev.detail.value;
-    void this.activePlayerController.setActiveGroupVolume(volume_level);
-  };
 
-  protected onAddToPlaylist = (ev: Event) => {
-    const uri = (ev.target as HTMLElement).dataset.uri as string;
-    const media_id = this.hass.states[this.activeEntity.entity_id].attributes.media_content_id;
+  protected onAddToPlaylist = (event_: Event) => {
+    if (!this.activeMediaPlayer || !this.hass) {
+      return;
+    }
+    const uri = (event_.target as HTMLElement).dataset.uri as string;
+    const ent = this.hass.states[this.activeEntity.entity_id];
+    if (!ent) {
+      return;
+    }
+    const media_id = ent.attributes.media_content_id;
+    if (!media_id) {
+      return;
+    }
     void this.actions.actionAddToPlaylist(
       media_id,
       uri,
-      this.activeMediaPlayer
+      this.activeMediaPlayer,
     );
     this.closeAddToPlaylistDialog();
   };
-  private playlistDialogItemArtworkStyle(playlist: PlaylistDialogItem) {
-    const img = playlist.image
-    return `background-image: url(${img.image_url}), url(${img.fallback_url})`
-  }
-  protected renderPlaylistDialogList() {
+  protected renderPlaylistDialogList(): TemplateResult | TemplateResult[] {
     if (!this._playlists) {
       return html`
-        <div class="dialog-playlists-none-loading">
-          Loading Playlists...
-        </div>
-      `
+        <div class="dialog-playlists-none-loading">Loading Playlists...</div>
+      `;
     }
-    if (!this._playlists.length) {
+    if (this._playlists.length === 0) {
       return html`
-        <div class="dialog-playlists-none-loading">
-          No playlists found!
-        </div>
-      `
+        <div class="dialog-playlists-none-loading">No playlists found!</div>
+      `;
     }
-    return this._playlists.map(
-      (playlist) => {
-        return html`
-          <ha-md-list-item
-            class="dialog-playlist-item"
-            @click=${this.onAddToPlaylist}
-            data-uri="${playlist.uri}"
-            type="button"
-          >
-            <span
-              class="dialog-playlist-thumbnail"
-              style="${this.playlistDialogItemArtworkStyle(playlist)}"
-              slot="start"
-              inert
-            ></span>
-            <span
-              slot="headline"
-              class="dialog-playlist-title"
-              inert
-            >
-              ${playlist.name}
-            </span>
-          </ha-md-list-item>
-          <div class="dialog-playlist-divider"></div>
-        `
-      }
-    )
+    return this._playlists.map((playlist) => {
+      return html`
+        <ha-md-list-item
+          class="dialog-playlist-item"
+          @click=${this.onAddToPlaylist}
+          data-uri="${playlist.uri}"
+          type="button"
+        >
+          <img
+            class="dialog-playlist-thumbnail"
+            slot="start"
+            src="${playlist.image.image_url}"
+            onerror="this.src = '${playlist.image.fallback_url}'"
+          />
+          <span slot="headline" class="dialog-playlist-title" inert>
+            ${playlist.name}
+          </span>
+        </ha-md-list-item>
+        <div class="dialog-playlist-divider"></div>
+      `;
+    });
   }
   protected renderAddToPlaylistDialog(): TemplateResult {
-    const cls = `dialog-favorites${this.cardConfig.expressive ? `-expressive` : ``}`
+    if (!this.cardConfig) {
+      return html``;
+    }
+    const cls = `dialog-favorites${this.cardConfig.expressive ? `-expressive` : ``}`;
     return html`
       <ha-dialog
         id="dialog-favorites"
         class="${cls}"
         heading="${this.controller.translate("player.playlist_dialog.header")}"
       >
-        <div class="dialog-items">
-          ${this.renderPlaylistDialogList()}
-        </div>
+        <div class="dialog-items">${this.renderPlaylistDialogList()}</div>
       </ha-dialog>
-    `
-  }
-  protected wrapTitleMarquee() {
-    const title = `${this.player_data.track_title} - ${this.player_data.track_album}`;
-    return html`
-      <ha-marquee-text class="player-track-title marquee">
-        ${title}
-      </ha-marquee-text>
     `;
   }
-  protected renderPlayerName() {
+  protected wrapTitleMarquee(): TemplateResult {
+    if (!this.player_data) {
+      return html``;
+    }
+    const title = `${this.player_data.track_title} - ${this.player_data.track_album}`;
+    return html`
+      <mpc-marquee-text class="player-track-title marquee">
+        ${title}
+      </mpc-marquee-text>
+    `;
+  }
+  protected renderPlayerName(): TemplateResult {
+    if (!this.activePlayerController || !this.cardConfig) {
+      return html``;
+    }
     return html`
       <div
         class="player-name ${this.cardConfig.expressive
@@ -394,7 +380,7 @@ class MusicPlayerCard extends LitElement {
       </div>
     `;
   }
-  protected renderTitle() {
+  protected renderTitle(): TemplateResult {
     if (!isActive(this.hass, this.activeMediaPlayer, this.activeEntityConfig)) {
       return html`
         <div class="player-track-title">
@@ -404,126 +390,19 @@ class MusicPlayerCard extends LitElement {
     }
     return this.wrapTitleMarquee();
   }
-  protected renderGroupedVolume() {
-    const expressive = this.cardConfig.expressive;
-    const vol_level = this._groupVolumeLevel;
-    return html`
-      <div class="grouped-players-item grouped-volume">
-        <div class="player-name-icon">
-          <ha-md-list-item
-            class="grouped-players-select-item"
-            .graphic=${this.Icons.SPEAKER_MULTIPLE}
-            noninteractive
-            hide-label
-          >
-            <ha-svg-icon
-              class="grouped-players-select-item-icon ${expressive ? `expressive` : ``}"
-              slot="start"
-              .path=${this.Icons.SPEAKER_MULTIPLE}
-            ></ha-svg-icon>
-            <ha-control-slider
-              part="slider"
-              style="--control-slider-color: var(--md-sys-color-primary) !important"
-              id="grouped-volume"
-              .unit="%"
-              .min="0"
-              .max="100"
-              .value=${vol_level}
-              @value-changed=${this.onGroupVolumeChange}
-            ></ha-control-slider>
-          </ha-md-list-item>
-        </div>
-        <div class="divider"></div>
-      </div>
-    `;
-  }
-  protected renderGroupedPlayers() {
-    const players = this.groupedPlayers;
-    const ct = players.length;
-    const expressive = this.cardConfig.expressive;
-    const role = this.controller.config.expressive_scheme == "vibrant" ? `tonal` : `filled-variant`
-    return this.groupedPlayers.map((item, idx) => {
-      const name =
-        item.name.length > 0
-          ? item.name
-          : this.hass.states[item.entity_id].attributes.friendly_name;
-      const state = this.hass.states[item.entity_id];
-      const img = state.attributes.entity_picture ?? state.attributes.entity_picture_local;
-      const fallback = state.attributes.entity_picture_local ?? this.Icons.SPEAKER;
+  protected renderGrouped(): TemplateResult {
+    const hide = this.hiddenElements.group_volume;
+    if (this.groupedPlayers && this.groupedPlayers.length > 1 && !hide) {
       return html`
-        <div class="grouped-players-item">
-          <div class="player-name-icon">
-            <ha-md-list-item
-              class="grouped-players-select-item"
-              .graphic=${this.Icons.SPEAKER}
-              noninteractive
-              hide-label
-            >
-              <img 
-                class="grouped-players-select-item-image ${expressive ? `expressive` : ``}"
-                slot="start"
-                src="${img}"
-                onerror="this.src = '${fallback}';"
-              >
-              <span slot="headline" class="grouped-title"> ${name} </span>
-              <span slot="end">
-
-                <mass-player-card-button
-                  .onPressService=${this.onUnjoinSelect}
-                  role="${role}"
-                  size="small"
-                  elevation=1
-                  class="grouped-button-unjoin ${expressive
-                    ? `grouped-button-unjoin-expressive`
-                    : ``}"
-                >
-                  <ha-svg-icon
-                    .path=${this.Icons.LINK_OFF}
-                    class="grouped-svg-unjoin ${expressive
-                      ? `grouped-svg-unjoin-expressive`
-                      : ``}"
-                    .entity="${item.entity_id}"
-                  ></ha-svg-icon>
-                </mass-player-card-button>
-              </span>
-            </ha-md-list-item>
-          </div>
-          <ha-md-list-item
-            class="grouped-players-volume-item"
-          >
-            <mass-volume-slider
-              class="grouped-players-volume-slider"
-              maxVolume=${item.max_volume}
-              .entityId=${item.volume_entity_id}
-            ></mass-volume-slider>
-          </ha-md-list-item>
-          ${idx < ct - 1 ? html`<div class="divider"></div>` : ``}
-        </div>
-      `;
-    });
-  }
-  protected renderGrouped() {
-    const hide =
-      this.config.hide.group_volume ||
-      this.activeEntityConfig.hide.player.group_volume;
-    if (this?.groupedPlayers?.length > 1 && !hide) {
-      return html`
-        <mass-menu-button
-          slot="end"
-          id="grouped-players-menu"
-          class="menu-header ${this.cardConfig.expressive
-            ? `menu-header-expressive`
-            : ``}"
-          .iconPath=${this.Icons.SPEAKER_MULTIPLE}
-          naturalMenuWidth
-        >
-          ${this.renderGroupedVolume()} ${this.renderGroupedPlayers()}
-        </mass-menu-button>
+        <mpc-grouped-player-menu slot="end"></mpc-grouped-player-menu>
       `;
     }
     return html``;
   }
-  protected renderArtist() {
+  protected renderArtist(): TemplateResult {
+    if (!this.player_data || !this.cardConfig) {
+      return html``;
+    }
     if (!isActive(this.hass, this.activeMediaPlayer, this.activeEntityConfig)) {
       const msgs: string[] = this.controller.translate(
         "player.messages.inactive",
@@ -540,35 +419,24 @@ class MusicPlayerCard extends LitElement {
         ;
       `;
     }
-    return html` <div
-      class="player-track-artist ${this.cardConfig.expressive
-        ? `player-track-artist-expressive`
-        : ``}"
-    >
-      ${this.player_data.track_artist}
-    </div>`;
+    return html`
+      <div
+        class="player-track-artist ${this.cardConfig.expressive
+          ? `player-track-artist-expressive`
+          : ``}"
+      >
+        ${this.player_data.track_artist}
+      </div>
+    `;
   }
-  protected renderPlayerItems() {
-    return this.playerEntities.map((item) => {
-    const ent = this.hass.states[item.entity_id];
-    const name = item.name.length > 0 ? item.name : ent?.attributes?.friendly_name ?? `Missing- ${item.entity_id}`;
-      const r: ListItemData = {
-        option: item.entity_id,
-        icon: this.Icons.SPEAKER,
-        title: name ?? item.name,
-        image: {
-          url: ent?.attributes?.entity_picture_local ?? ``,
-          fallback: ent?.attributes?.entity_picture ?? ``
-        }
-      };
-      return r;
-    });
-  }
-  protected renderSectionTitle() {
+  protected renderSectionTitle(): TemplateResult {
     const label = this.controller.translate("player.header") as string;
     return html` <span slot="label">${label}</span> `;
   }
   protected renderHeader(): TemplateResult {
+    if (!this.cardConfig) {
+      return html``;
+    }
     const expressive = this.cardConfig.expressive;
     return html`
       <div
@@ -588,63 +456,61 @@ class MusicPlayerCard extends LitElement {
     `;
   }
   protected renderPlayerSelector(): TemplateResult {
-    const config_hide = this.config.hide.player_selector;
-    const entity_hide = this.activeEntityConfig.hide.player.player_selector;
-    if (config_hide || entity_hide) {
-      return html``;
-    }
     return html`
       <span slot="start">
-        <mass-menu-button
-          id="players-select-menu"
-          class="menu-header ${this.cardConfig.expressive
-            ? `menu-header-expressive`
-            : ``}"
-          .iconPath=${this.Icons.SPEAKER}
-          .initialSelection=${this.activeEntity.entity_id}
-          .items=${this.renderPlayerItems()}
-          @menu-item-selected=${this.onPlayerSelect}
-          dividers
-          use-md
-        ></mass-menu-button>
+        <mpc-player-selector @menu-item-selected=${this.onPlayerSelect}>
+        </mpc-player-selector>
       </span>
     `;
   }
-  protected renderActiveItemSection() {
+  protected renderActiveItemSection(): TemplateResult {
+    if (!this.cardConfig) {
+      return html``;
+    }
     return html`
       <div id="${this._artworkActiveTrackClass}">
         <div
           id="active-track-text"
           class="${this.cardConfig.expressive
             ? `active-track-text-expressive`
-            : ``} ${this.config.layout.artwork_size != ArtworkSize.LARGE
-            ? `active-track-text-rounded`
-            : ``}"
+            : ``} ${this.config.layout.artwork_size == ArtworkSize.LARGE
+            ? ``
+            : `active-track-text-rounded`}"
         >
           ${this.renderPlayerHeader()} ${this.renderProgress()}
         </div>
       </div>
     `;
   }
-  protected renderPlayerHeader() {
+  protected renderPlayerHeader(): TemplateResult {
     return html`
       <div class="player-header">
         ${this.renderPlayerName()} ${this.renderTitle()} ${this.renderArtist()}
       </div>
     `;
   }
-  protected renderProgress() {
+  protected renderProgress(): TemplateResult {
+    const style = isActive(
+      this.hass,
+      this.activeMediaPlayer,
+      this.activeEntityConfig,
+    )
+      ? ``
+      : `opacity: 0;`;
     return html`
       <mass-progress-bar
         class="${this._artworkProgressClass}"
-        style="${isActive(this.hass,this.activeMediaPlayer,this.activeEntityConfig,) ? `` : `opacity: 0;`}"
+        style="${style}"
       ></mass-progress-bar>
     `;
   }
-  protected renderArtwork() {
+  protected renderArtwork(): TemplateResult {
     return html` <mpc-artwork></mpc-artwork>`;
   }
-  protected renderVolumeRow() {
+  protected renderVolumeRow(): TemplateResult {
+    if (!this.cardConfig) {
+      return html``;
+    }
     return html`
       <div id="volume">
         <mass-volume-row
@@ -655,7 +521,10 @@ class MusicPlayerCard extends LitElement {
       </div>
     `;
   }
-  protected renderControls() {
+  protected renderControls(): TemplateResult {
+    if (!this.cardConfig) {
+      return html``;
+    }
     return html`
       <div
         class="media-controls ${this._artworkMediaControlsClass} ${this
@@ -663,14 +532,17 @@ class MusicPlayerCard extends LitElement {
           ? `media-controls-expressive`
           : ``}"
       >
-        ${this?.cardConfig?.expressive
+        ${this.cardConfig.expressive
           ? html`<mass-player-controls-expressive></mass-player-controls-expressive>`
           : html`<mass-player-controls></mass-player-controls>`}
         ${this.renderVolumeRow()}
       </div>
     `;
   }
-  protected render() {
+  protected render(): TemplateResult {
+    if (!this.cardConfig) {
+      return html``;
+    }
     const expressive = this.cardConfig.expressive;
     return html`
       <div id="container" class="${expressive ? `container-expressive` : ``}">
@@ -687,14 +559,16 @@ class MusicPlayerCard extends LitElement {
   }
   private delayedUpdatePlayerData = () => {
     setTimeout(() => {
+      if (!this.activePlayerController) {
+        return;
+      }
       void this.activePlayerController.updateActivePlayerData();
     }, 2000);
   };
   private openPlaylistDialogOnEvent = () => {
     this.openAddToPlaylistDialog();
-  }
+  };
   protected firstUpdated(): void {
-    this._firstLoaded = true;
     this.controller.host.addEventListener(
       "request-player-data-update",
       this.delayedUpdatePlayerData,
@@ -703,34 +577,86 @@ class MusicPlayerCard extends LitElement {
       "force-update-player",
       this.onForceLoadEvent,
     );
-    this.controller.host.addEventListener("active-player-updated", () => {
-      void this.activePlayerController.updateActivePlayerData();
-    });
+    this.controller.host.addEventListener(
+      "active-player-updated",
+      this.onActivePlayerUpdated,
+    );
     this.controller.host.addEventListener(
       "open-add-to-playlist-dialog",
       this.openPlaylistDialogOnEvent,
     );
   }
+  protected onActivePlayerUpdated = () => {
+    if (!this.activePlayerController) {
+      return;
+    }
+    void this.activePlayerController.updateActivePlayerData();
+  };
   protected updated(): void {
-    const favoritesDialog = this?.favoritesDialog
+    const favoritesDialog = this.favoritesDialog;
     if (!favoritesDialog) {
       return;
     }
-    const actions_div = favoritesDialog.shadowRoot?.querySelector('#actions') as HTMLElement;
-    if (actions_div && actions_div.style.display != 'none'){
-      actions_div.style.display = 'none';
+    const actions_div = favoritesDialog.shadowRoot?.querySelector(
+      "#actions",
+    ) as HTMLElement | undefined;
+    if (actions_div && actions_div.style.display != "none") {
+      actions_div.style.display = "none";
     }
-    const content_div = favoritesDialog.shadowRoot?.querySelector('#content') as HTMLElement;
-    if (content_div && content_div.style.scrollbarWidth != 'none'){
-      content_div.style.scrollbarWidth = 'none';
+    const content_div = favoritesDialog.shadowRoot?.querySelector(
+      "#content",
+    ) as HTMLElement | undefined;
+    if (content_div && content_div.style.scrollbarWidth != "none") {
+      content_div.style.scrollbarWidth = "none";
     }
-    
   }
   protected shouldUpdate(_changedProperties: PropertyValues): boolean {
-    if (!this.player_data || !_changedProperties.size) {
+    if (!this.player_data || _changedProperties.size === 0) {
       return false;
     }
     return super.shouldUpdate(_changedProperties);
+  }
+
+  disconnectedCallback(): void {
+    super.disconnectedCallback();
+    this.controller.host.removeEventListener(
+      "request-player-data-update",
+      this.delayedUpdatePlayerData,
+    );
+    this.controller.host.removeEventListener(
+      "force-update-player",
+      this.onForceLoadEvent,
+    );
+    this.controller.host.removeEventListener(
+      "active-player-updated",
+      this.onActivePlayerUpdated,
+    );
+    this.controller.host.removeEventListener(
+      "open-add-to-playlist-dialog",
+      this.openPlaylistDialogOnEvent,
+    );
+  }
+  connectedCallback(): void {
+    super.connectedCallback();
+    // eslint-disable-next-line @typescript-eslint/no-unnecessary-condition
+    if (this.controller?.host) {
+      this.controller.host.addEventListener(
+        "request-player-data-update",
+        this.delayedUpdatePlayerData,
+      );
+      this.controller.host.addEventListener(
+        "force-update-player",
+        this.onForceLoadEvent,
+      );
+      this.controller.host.addEventListener(
+        "active-player-updated",
+        this.onActivePlayerUpdated,
+      );
+      this.controller.host.addEventListener(
+        "open-add-to-playlist-dialog",
+        this.openPlaylistDialogOnEvent,
+      );
+    }
   }
   static get styles(): CSSResultGroup {
     return styles;

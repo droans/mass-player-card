@@ -1,5 +1,5 @@
 import { hiddenElementsConfigItem } from "../utils/config";
-import { Config } from "./config";
+import { BaseHiddenElementsConfig, Config } from "./config";
 
 export interface QueueConfig {
   enabled: boolean;
@@ -10,7 +10,7 @@ export interface QueueConfig {
   hide: PlayerQueueHiddenElementsConfig;
 }
 
-export interface PlayerQueueHiddenElementsConfig {
+export interface PlayerQueueHiddenElementsConfig extends BaseHiddenElementsConfig {
   action_buttons: boolean;
   move_down_button: boolean;
   move_next_button: boolean;
@@ -18,7 +18,7 @@ export interface PlayerQueueHiddenElementsConfig {
   remove_button: boolean;
   album_covers: boolean;
   artist_names: boolean;
-  clear_queue_button: boolean
+  clear_queue_button: boolean;
 }
 
 export const DEFAULT_PLAYER_QUEUE_HIDDEN_ELEMENTS_CONFIG: PlayerQueueHiddenElementsConfig =

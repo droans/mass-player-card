@@ -8,9 +8,11 @@ export default css`
     --button-button-width: 35px;
     --button-padding: 0px;
   }
+  #filter-menu {
+    --menu-button-border-radius: var(--button-small-border-radius);
+  }
   .filter-menu-expressive::part(menu-select-menu) {
     box-shadow: var(--md-sys-elevation-level1);
-    border-radius: var(--button-small-border-radius) !important;
   }
   .button-expressive .header-icon,
   .filter-menu-expressive::part(menu-svg),
@@ -44,9 +46,10 @@ export default css`
     left: 2.5px;
   }
   #filter-menu:not(.filter-menu-expressive)::part(menu-select-menu) {
-    --control-select-menu-background-color: var(--md-sys-color-secondary-container);
+    --control-select-menu-background-color: var(
+      --md-sys-color-secondary-container
+    );
     background-color: var(--md-sys-color-secondary-container);
-    border-radius: 12px;
   }
   #filter-menu.filter-menu-expressive::part(menu-select-menu) {
     --control-select-menu-background-color: unset;
@@ -72,7 +75,7 @@ export default css`
     border-radius: var(--expressive-border-radius-container);
   }
   sl-input::part(base) {
-    background-color: var(--md-sys-color-surface-container-high)
+    background-color: var(--md-sys-color-surface-container-high);
   }
   sl-input::part(input)::placeholder {
     color: var(--md-sys-color-on-surface);
@@ -108,8 +111,9 @@ export default css`
     top: 2.5px;
     left: 2.5px;
   }
-  .search-media-type-menu-expressive::part(menu-svg), .search-library-button-expressive .svg-menu-expressive {
-    color: var(--md-sys-color-on-surface-variant) !important
+  .search-media-type-menu-expressive::part(menu-svg),
+  .search-library-button-expressive .svg-menu-expressive {
+    color: var(--md-sys-color-on-surface-variant) !important;
   }
   #search-options {
     height: 35px;

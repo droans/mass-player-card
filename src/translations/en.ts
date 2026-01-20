@@ -16,6 +16,7 @@ export default {
   "browser.sections.podcast": "Podcasts",
   "browser.sections.radio": "Radios",
   "browser.sections.track": "Tracks",
+  "browser.playlists.remove_track": "Remove from Playlist",
 
   "player.controls.power": "Power",
   "player.controls.shuffle": "Shuffle",
@@ -42,5 +43,5 @@ export default {
   "players.header": "Players",
 
   "queue.header": "Queue",
-  "player.playlist_dialog.header": "Add to Playlist"
+  "player.playlist_dialog.header": "Add to Playlist",
 };

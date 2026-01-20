@@ -1,7 +1,6 @@
 import {
   argbFromHex,
   argbFromRgb,
-  argbFromRgba,
   DynamicScheme,
   Hct,
   SchemeContent,
@@ -13,11 +12,11 @@ import {
   SchemeRainbow,
   SchemeTonalSpot,
   SchemeVibrant,
-  sourceColorFromImage
-} from "@material/material-color-utilities";
-import { ExpressiveScheme } from "../config/config.js";
-import { ExtendedHass } from "../const/types.js";
-import { tryPrefetchImageWithFallbacks } from "./util.js";
+  sourceColorFromImage,
+} from "@ktibow/material-color-utilities-nightly";
+import { ExpressiveScheme } from "../config/config";
+import { ExtendedHass } from "../const/types";
+import { tryPrefetchImageWithFallbacks } from "./utility";
 
 type dynamicSchemeType = new (
   sourceColorHct: Hct,
@@ -92,11 +91,17 @@ const EXPRESSIVE_KEYS: Record<string, string> = {
   tertiaryFixedDim: "--md-sys-color-tertiary-fixed-dim",
 };
 
-const DEFAULT_PRIMARY_COLOR = '#009ac7'
+const DEFAULT_PRIMARY_COLOR = "#009ac7";
 
 export function generateDefaultExpressiveSchemeColor(): number {
-  const color = window.getComputedStyle(document.body).getPropertyValue('--primary-color').replace('#','') ?? DEFAULT_PRIMARY_COLOR;
-  const argb = color.startsWith('rgb') ?_parseColorRgb(color) : _parseColorHex(color);
+  const color = window
+    .getComputedStyle(document.body)
+    .getPropertyValue("--primary-color")
+    .replace("#", "");
+  const usedColor = color.length > 0 ? color : DEFAULT_PRIMARY_COLOR;
+  const argb = color.startsWith("rgb")
+    ? _parseColorRgb(usedColor)
+    : _parseColorHex(usedColor);
   return argb;
 }
 
@@ -104,12 +109,10 @@ export async function generateImageElement(
   img: string,
   hass: ExtendedHass,
   fallbacks: string[] = [],
-): Promise<HTMLImageElement> {
-  const img_url = await tryPrefetchImageWithFallbacks(img, fallbacks, hass);
-  const elem = document.createElement("img");
-  elem.crossOrigin = "anonymous";
-  elem.src = img_url as string;
-  return elem;
+): Promise<HTMLImageElement | false> {
+  return (await tryPrefetchImageWithFallbacks(img, fallbacks, hass, true)) as
+    | HTMLImageElement
+    | false;
 }
 
 export async function generateExpressiveSourceColorFromImage(
@@ -118,17 +121,21 @@ export async function generateExpressiveSourceColorFromImage(
   fallbacks: string[] = [],
 ): Promise<number> {
   try {
-    const elem = await generateImageElement(img, hass, fallbacks)
-    return await sourceColorFromImage(elem)
+    const element = await generateImageElement(img, hass, fallbacks);
+    if (!element) {
+      return generateDefaultExpressiveSchemeColor();
+    }
+    return await sourceColorFromImage(element);
   } catch {
     return generateDefaultExpressiveSchemeColor();
   }
 }
 
 export async function generateExpressiveSourceColorFromImageElement(
-  elem: HTMLImageElement,
+  element: HTMLImageElement,
 ): Promise<number> {
-  return await sourceColorFromImage(elem)
+  element.crossOrigin = "Anonymous";
+  return await sourceColorFromImage(element);
 }
 
 export function generateExpressiveSchemeFromColor(
@@ -138,17 +145,11 @@ export function generateExpressiveSchemeFromColor(
 ): DynamicScheme {
   const cls = ExpressiveSchemes[scheme];
   const _hct = Hct.fromInt(color);
-  return new cls(
-    _hct,
-    darkMode,
-    0,
-    "2025",
-    "phone"
-  )
+  return new cls(_hct, darkMode, 0, "2025", "phone");
 }
 export function applyExpressiveScheme(
   scheme: DynamicScheme,
-  elem: HTMLElement
+  element: HTMLElement,
 ) {
   const entries = Object.entries(EXPRESSIVE_KEYS);
   entries.forEach((entry) => {
@@ -157,7 +158,7 @@ export function applyExpressiveScheme(
     const colorInt = scheme[schemeKey] as number;
     if (colorInt) {
       const color = `#${colorInt.toString(16).slice(2)}`;
-      elem.style.setProperty(colorKey, color);
+      element.style.setProperty(colorKey, color);
     }
   });
 }
@@ -166,16 +167,12 @@ function _parseColorHex(color: string) {
 }
 
 function _parseColorRgb(color: string) {
-  const ints = color.split('(')[1].split(')')[0].split(',').map( (i) => { return parseInt(i) });
-  
-  if (ints.length == 4) {
-    const _rgba = {
-      r: ints[0],
-      g: ints[1],
-      b: ints[2],
-      a: ints[3],
-    }
-    return argbFromRgba(_rgba)
-  }
-  return argbFromRgb(ints[0], ints[1], ints[2])
+  const ints = color
+    .split("(")[1]
+    .split(")")[0]
+    .split(",")
+    .map((i) => {
+      return Number.parseInt(i);
+    });
+  return argbFromRgb(ints[0], ints[1], ints[2]);
 }

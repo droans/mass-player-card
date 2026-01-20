@@ -1,28 +1,49 @@
 import { createContext } from "@lit/context";
 
-import type { ExtendedHass, ExtendedHassEntity, MediaCardItem, newMediaBrowserItemsConfig, PlayerData, QueueItem, QueueItems } from "./types";
+import type {
+  ExtendedHass,
+  ExtendedHassEntity,
+  MediaCardItem,
+  newMediaBrowserItemsConfig,
+  PlayerData,
+  QueueItem,
+  QueueItems,
+} from "./types";
 
-import { Config, type EntityConfig } from "../config/config";
-import { PlayerConfig } from "../config/player";
-import { QueueConfig } from "../config/player-queue";
-import { MediaBrowserConfig } from "../config/media-browser";
-import { PlayersConfig } from "../config/players";
+import {
+  Config,
+  HiddenElementsConfig,
+  type EntityConfig,
+} from "../config/config";
+import { PlayerConfig, PlayerHiddenElementsConfig } from "../config/player";
+import {
+  PlayerQueueHiddenElementsConfig,
+  QueueConfig,
+} from "../config/player-queue";
+import {
+  MediaBrowserConfig,
+  MediaBrowserHiddenElementsConfig,
+} from "../config/media-browser";
+import { PlayersConfig, PlayersHiddenElementsConfig } from "../config/players";
 import { Sections } from "./enums";
 import { ActivePlayerController } from "../controller/active-player";
 import { ActionsController } from "../controller/actions";
 import { MassCardController } from "../controller/controller";
-import { DynamicScheme } from "@material/material-color-utilities";
+import { DynamicScheme } from "@ktibow/material-color-utilities-nightly";
 import { Icons } from "./icons";
 import { QueueController } from "../controller/queue";
 import { MediaBrowserController } from "../controller/browser";
+import { uuid4 } from "../utils/utility";
 export type { EntityConfig } from "../config/config";
 
 export const hassContext = createContext<ExtendedHass>(uuid4());
-export const activeEntityConfContext = createContext<EntityConfig>(uuid4());
+export const activeEntityConfigContext = createContext<EntityConfig>(uuid4());
 export const activeEntityIDContext = createContext<string>(uuid4());
 export const activePlayerNameContext = createContext<string>(uuid4());
-export const activeMediaPlayerContext = createContext<ExtendedHassEntity>(uuid4());
-export const volumeMediaPlayerContext = createContext<ExtendedHassEntity>(uuid4());
+export const activeMediaPlayerContext =
+  createContext<ExtendedHassEntity>(uuid4());
+export const volumeMediaPlayerContext =
+  createContext<ExtendedHassEntity>(uuid4());
 export const activePlayerDataContext = createContext<PlayerData>(uuid4());
 export const groupedPlayersContext = createContext<string[]>(uuid4());
 export const groupVolumeContext = createContext<number>(uuid4());
@@ -50,6 +71,7 @@ export const expressiveSchemeContext = createContext<DynamicScheme | undefined>(
   uuid4(),
 );
 export const useExpressiveContext = createContext<boolean>(uuid4());
+export const useVibrantContext = createContext<boolean>(uuid4());
 export const IconsContext = createContext<Icons>(uuid4());
 
 export const queueContext = createContext<QueueItems | null>(uuid4());
@@ -64,11 +86,14 @@ export const mediaBrowserCardsContext =
 export const activeMediaBrowserCardsContext =
   createContext<MediaCardItem[]>(uuid4());
 
-function uuid4() {
-  return "10000000-1000-4000-8000-100000000000".replace(/[018]/g, (c) =>
-    (
-      +c ^
-      (crypto.getRandomValues(new Uint8Array(1))[0] & (15 >> (+c / 4)))
-    ).toString(16),
-  );
-}
+export const hiddenElementsConfigContext =
+  createContext<HiddenElementsConfig>(uuid4());
+
+export const musicPlayerHiddenElementsConfigContext =
+  createContext<PlayerHiddenElementsConfig>(uuid4());
+export const playerQueueHiddenElementsConfigContext =
+  createContext<PlayerQueueHiddenElementsConfig>(uuid4());
+export const mediaBrowserHiddenElementsConfigContext =
+  createContext<MediaBrowserHiddenElementsConfig>(uuid4());
+export const playersHiddenElementsConfigContext =
+  createContext<PlayersHiddenElementsConfig>(uuid4());

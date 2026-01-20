@@ -1,6 +1,6 @@
 import { mdiCreation, mdiHeart, mdiHistory } from "@mdi/js";
 
-import { Config } from "./config";
+import { BaseHiddenElementsConfig, Config } from "./config";
 import { hiddenElementsConfigItem } from "../utils/config";
 
 export interface MediaBrowserConfig {
@@ -11,6 +11,8 @@ export interface MediaBrowserConfig {
   sections: customSection[];
   hide: MediaBrowserHiddenElementsConfig;
   columns: number;
+  playlists_allow_removing_tracks: boolean;
+  default_enqueue_option: EnqueueConfigOptions;
 }
 
 export interface FavoritesConfig {
@@ -22,6 +24,7 @@ export interface FavoritesConfig {
   podcasts: FavoriteItemConfig;
   radios: FavoriteItemConfig;
   tracks: FavoriteItemConfig;
+  show_collection_view: boolean;
 }
 export interface FavoriteItemConfig {
   enabled: boolean;
@@ -40,6 +43,7 @@ export interface customItem {
 export interface RecommendationsConfig {
   enabled: boolean;
   providers?: string[];
+  show_collection_view: boolean;
 }
 
 export interface customSection {
@@ -48,7 +52,7 @@ export interface customSection {
   items: customItem[];
 }
 
-export interface MediaBrowserHiddenElementsConfig {
+export interface MediaBrowserHiddenElementsConfig extends BaseHiddenElementsConfig {
   back_button: boolean;
   search: boolean;
   recents: boolean;
@@ -60,6 +64,14 @@ export interface MediaBrowserHiddenElementsConfig {
   play_now_button: boolean;
   play_now_clear_queue_button: boolean;
 }
+
+export type EnqueueConfigOptions =
+  | "play_now"
+  | "play_now_clear_queue"
+  | "play_next"
+  | "play_next_clear_queue"
+  | "add_to_queue"
+  | "radio";
 
 export const DEFAULT_FAVORITE_ITEM_CONFIG: FavoriteItemConfig = {
   enabled: true,
@@ -77,6 +89,7 @@ const DEFAULT_FAVORITES_CONFIG: FavoritesConfig = {
   podcasts: DEFAULT_FAVORITE_ITEM_CONFIG,
   radios: DEFAULT_FAVORITE_ITEM_CONFIG,
   tracks: DEFAULT_FAVORITE_ITEM_CONFIG,
+  show_collection_view: true,
 };
 
 export const DEFAULT_MEDIA_BROWSER_HIDDEN_ELEMENTS_CONFIG: MediaBrowserHiddenElementsConfig =
@@ -105,6 +118,7 @@ const DEFAULT_CUSTOM_SECTION_CONFIG = [];
 
 const DEFAULT_RECOMMENDATIONS_CONFIG: RecommendationsConfig = {
   enabled: true,
+  show_collection_view: true,
 };
 
 export const DEFAULT_MEDIA_BROWSER_CONFIG: MediaBrowserConfig = {
@@ -115,6 +129,8 @@ export const DEFAULT_MEDIA_BROWSER_CONFIG: MediaBrowserConfig = {
   sections: DEFAULT_CUSTOM_SECTION_CONFIG,
   hide: DEFAULT_MEDIA_BROWSER_HIDDEN_ELEMENTS_CONFIG,
   columns: 2,
+  playlists_allow_removing_tracks: false,
+  default_enqueue_option: "play_now",
 };
 
 const MEDIA_BROWSER_HIDDEN_ITEMS = [
@@ -164,7 +180,55 @@ function recommendationsConfigForm() {
         name: "providers",
         selector: { text: { multiple: true } },
       },
+      {
+        name: "show_collection_view",
+        selector: { boolean: {} },
+        default: true,
+      },
     ],
+  };
+}
+function defaultEnqueueOptionConfigForm() {
+  interface opt {
+    value: EnqueueConfigOptions;
+    label: string;
+  }
+  const options: opt[] = [
+    {
+      value: "play_now",
+      label: "Play Now",
+    },
+    {
+      value: "play_now_clear_queue",
+      label: "Play Now and Clear Queue",
+    },
+    {
+      value: "play_next",
+      label: "Play Next",
+    },
+    {
+      value: "play_next_clear_queue",
+      label: "Play Next and Clear Queue",
+    },
+    {
+      value: "add_to_queue",
+      label: "Add to Queue",
+    },
+    {
+      value: "radio",
+      label: "Play Radio",
+    },
+  ];
+  return {
+    name: "default_enqueue_mode",
+    required: false,
+    selector: {
+      select: {
+        multiple: false,
+        mode: "dropdown",
+        options,
+      },
+    },
   };
 }
 
@@ -172,12 +236,18 @@ export function mediaBrowserConfigForm() {
   return [
     { name: "enabled", selector: { boolean: {} }, default: true },
     { name: "columns", selector: { number: { min: 1, max: 10, mode: "box" } } },
+    defaultEnqueueOptionConfigForm(),
     {
       name: "favorites",
       type: "expandable",
       iconPath: mdiHeart,
       schema: [
-        favoritesConfigForm("album"),
+        {
+          name: "show_collection_view",
+          selector: { boolean: {} },
+          default: true,
+        },
+        favoritesConfigForm("albums"),
         favoritesConfigForm("artists"),
         favoritesConfigForm("audiobooks"),
         favoritesConfigForm("playlists"),
@@ -191,6 +261,11 @@ export function mediaBrowserConfigForm() {
       type: "expandable",
       iconPath: mdiHistory,
       schema: [
+        {
+          name: "show_collection_view",
+          selector: { boolean: {} },
+          default: true,
+        },
         favoritesConfigForm("album"),
         favoritesConfigForm("artists"),
         favoritesConfigForm("audiobooks"),
@@ -202,6 +277,11 @@ export function mediaBrowserConfigForm() {
     },
     recommendationsConfigForm(),
     hiddenElementsConfigItem(MEDIA_BROWSER_HIDDEN_ITEMS),
+    {
+      name: "playlists_allow_removing_tracks",
+      selector: { boolean: {} },
+      default: false,
+    },
   ];
 }
 
@@ -239,6 +319,27 @@ function processFavoriteItemConfig(config: FavoriteItemConfig) {
   };
 }
 
+function processRecents(config: MediaBrowserConfig): MediaBrowserConfig {
+  let recents_config = config.recents;
+  recents_config = {
+    ...DEFAULT_FAVORITES_CONFIG,
+    ...recents_config,
+  };
+  recents_config = {
+    ...recents_config,
+    albums: processFavoriteItemConfig(recents_config.albums),
+    artists: processFavoriteItemConfig(recents_config.artists),
+    audiobooks: processFavoriteItemConfig(recents_config.audiobooks),
+    playlists: processFavoriteItemConfig(recents_config.playlists),
+    podcasts: processFavoriteItemConfig(recents_config.podcasts),
+    radios: processFavoriteItemConfig(recents_config.radios),
+    tracks: processFavoriteItemConfig(recents_config.tracks),
+  };
+  return {
+    ...config,
+    recents: recents_config,
+  };
+}
 function processFavorites(config: MediaBrowserConfig): MediaBrowserConfig {
   let favorites_config = config.favorites;
   favorites_config = {
@@ -278,6 +379,7 @@ export function processMediaBrowserConfig(config: Config): Config {
   let browser_config = config.media_browser;
   browser_config = processDefaults(browser_config);
   browser_config = processFavorites(browser_config);
+  browser_config = processRecents(browser_config);
   browser_config = processSections(browser_config);
   browser_config = processRecommendations(browser_config);
   browser_config = processHiddenElementsConfig(browser_config);

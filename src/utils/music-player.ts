@@ -15,17 +15,21 @@ export function generateControlLabelHtml(
   label: string,
   hide_labels: boolean,
 ) {
-  if (icon_style.size == PlayerIconSize.LARGE || !icon_style.label || hide_labels) {
+  if (
+    icon_style.size == PlayerIconSize.LARGE ||
+    !icon_style.label ||
+    hide_labels
+  ) {
     return html``;
   }
   return html`${label}`;
 }
 
-export function getIteratedRepeatMode(cur_repeat: RepeatMode): RepeatMode {
-  if (cur_repeat == RepeatMode.ALL) {
+export function getIteratedRepeatMode(current_repeat: RepeatMode): RepeatMode {
+  if (current_repeat == RepeatMode.ALL) {
     return RepeatMode.ONCE;
   }
-  if (cur_repeat == RepeatMode.ONCE) {
+  if (current_repeat == RepeatMode.ONCE) {
     return RepeatMode.OFF;
   }
   return RepeatMode.ALL;

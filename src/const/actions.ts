@@ -1,15 +1,14 @@
 import { EnqueueOptions } from "./enums";
-import { MediaCardData } from "./types";
-
+import { mediaCardData } from "./types";
 
 export type QueueService = (queue_item_id: string) => void;
 export type QueueItemSelectedService = (queue_item_id: string) => void;
 
 export type PlayerSelectedService = (player_entity: string) => void;
 
-export type PlayerJoinService = (group_member: string) => Promise<void>;
+export type PlayerJoinService = (group_member: string[]) => Promise<void>;
 
-export type PlayerUnjoinService = (player_entity: string) => Promise<void>;
+export type PlayerUnjoinService = (player_entity: string[]) => Promise<void>;
 
 export type PlayerTransferService = (target_player: string) => void;
 
@@ -19,10 +18,11 @@ export type BrowserItemSelectedService = (
 ) => void;
 
 export type CardSelectedService = (
-  data: MediaCardData,
+  data: mediaCardData,
+  target: HTMLElement,
 ) => void;
 
 export type CardEnqueueService = (
-  data: MediaCardData,
+  data: mediaCardData,
   enqueue: EnqueueOptions,
 ) => void;

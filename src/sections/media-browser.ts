@@ -6,15 +6,17 @@ import {
   PropertyValues,
   TemplateResult,
 } from "lit";
+import { MediaTypes, EnqueueOptions } from "../const/enums";
 import {
-  MediaTypes,
-} from "../const/enums";
-import { MediaBrowserConfig } from "../config/media-browser";
+  MediaBrowserConfig,
+  MediaBrowserHiddenElementsConfig,
+} from "../config/media-browser";
 import { customElement, property, query, state } from "lit/decorators.js";
 import {
   DEFAULT_ACTIVE_SECTION,
   DEFAULT_ACTIVE_SUBSECTION,
   DEFAULT_SEARCH_LIMIT,
+  EnqueueConfigMap,
   getFilterButtons,
   getSearchMediaButtons,
   SEARCH_TERM_MIN_LENGTH,
@@ -22,12 +24,17 @@ import {
 } from "../const/media-browser";
 import { consume, provide } from "@lit/context";
 
-import "../components/media-browser-cards";
-import "../components/section-header";
+import { type MediaBrowserCards } from "../components/media-browser-cards/media-browser-cards";
+import "../components/media-browser-cards/media-browser-cards";
+import "../components/section-header/section-header";
+import "../components/browser-collection-view/browser-playlist-view";
+import "../components/browser-collection-view/browser-album-view";
+import "../components/browser-collection-view/browser-artist-view";
+import "../components/browser-collection-view/browser-podcast-view";
 import styles from "../styles/media-browser";
 
 import {
-  activeEntityConfContext,
+  activeEntityConfigContext,
   activeMediaBrowserCardsContext,
   browserControllerContext,
   EntityConfig,
@@ -35,29 +42,43 @@ import {
   IconsContext,
   mediaBrowserCardsContext,
   mediaBrowserConfigContext,
+  mediaBrowserHiddenElementsConfigContext,
   useExpressiveContext,
 } from "../const/context";
 import { Icons } from "../const/icons";
 import { MediaBrowserController } from "../controller/browser";
 import BrowserActions from "../actions/browser-actions";
-import { EnqueueOptions } from "../const/enums";
 import { getMediaTypeSvg } from "../utils/thumbnails";
-import { jsonMatch } from "../utils/util";
+import { jsonMatch } from "../utils/utility";
 import { getTranslation } from "../utils/translations";
-import { CardsUpdatedEvent, MenuButtonEventData, TargetValEventData } from "../const/events";
-import { MediaBrowserCards } from "../components/media-browser-cards";
-import { ExtendedHass, MediaCardData, MediaCardItem, newMediaBrowserItemsConfig } from "../const/types";
+import {
+  CardsUpdatedEvent,
+  MenuButtonEventData,
+  TargetValueEventData,
+} from "../const/events";
+import {
+  ExtendedHass,
+  mediaCardData,
+  MediaCardItem,
+  newMediaBrowserItemsConfig,
+  mediaCardPlaylistData,
+  mediaCardServiceData,
+  mediaCardSectionData,
+  mediaCardItemData,
+  mediaCardEnqueueType,
+  mediaCardCollectionType,
+} from "../const/types";
 
 @customElement(`mass-media-browser`)
 export class MediaBrowser extends LitElement {
   @property({ attribute: false }) private _config!: MediaBrowserConfig;
   @property({ attribute: false }) public onMediaSelectedAction!: () => void;
 
-  @state() public _cards!: newMediaBrowserItemsConfig;
+  @state() public _cards?: newMediaBrowserItemsConfig;
   @state() private searchMediaTypeIcon!: string;
   @state() private searchMediaType: MediaTypes = MediaTypes.TRACK;
   @state() private searchLibrary = false;
-  @query('mass-browser-cards') cardsElement?: MediaBrowserCards;
+  @query("mass-browser-cards") cardsElement?: MediaBrowserCards;
 
   @provide({ context: activeMediaBrowserCardsContext })
   @state()
@@ -66,22 +87,34 @@ export class MediaBrowser extends LitElement {
   @consume({ context: useExpressiveContext, subscribe: true })
   private useExpressive!: boolean;
   @consume({ context: IconsContext }) private Icons!: Icons;
-  @consume({ context: activeEntityConfContext, subscribe: true })
-  private activeEntityConfig!: EntityConfig;
+  @consume({ context: activeEntityConfigContext, subscribe: true })
+  private _activeEntityConfig!: EntityConfig;
+
+  @consume({
+    context: mediaBrowserHiddenElementsConfigContext,
+    subscribe: true,
+  })
+  private hiddenElements!: MediaBrowserHiddenElementsConfig;
 
   public activeSection = DEFAULT_ACTIVE_SECTION;
   public activeSubSection = DEFAULT_ACTIVE_SUBSECTION;
+  @property() private activeCollectionData!: mediaCardCollectionType;
   private previousSections: string[] = [];
   private previousSubSections: string[] = [];
 
-  private _hass!: ExtendedHass;
-  private _browserController!: MediaBrowserController;
-  private actions!: BrowserActions;
+  private _hass?: ExtendedHass;
+  private _browserController?: MediaBrowserController;
+  private actions?: BrowserActions;
   private searchTerm = "";
   private _searchTimeout!: number;
+  private searchActivated = false;
+  @state() private searchLoading = false;
 
   @state()
-  public set activeCards(cards: MediaCardItem[]) {
+  public set activeCards(cards: MediaCardItem[] | undefined) {
+    if (!cards) {
+      return;
+    }
     if (jsonMatch(this._activeCards, cards)) {
       return;
     }
@@ -92,18 +125,22 @@ export class MediaBrowser extends LitElement {
   }
 
   @consume({ context: hassContext, subscribe: true })
-  public set hass(hass: ExtendedHass) {
-    this._hass = hass;
-    if (!this.actions) {
-      this.actions = new BrowserActions(hass);
+  public set hass(hass: ExtendedHass | undefined) {
+    if (!hass) {
+      return;
     }
+    this._hass = hass;
+    this.actions ??= new BrowserActions(hass);
   }
   public get hass() {
     return this._hass;
   }
 
   @consume({ context: browserControllerContext, subscribe: true })
-  public set browserController(controller: MediaBrowserController) {
+  public set browserController(controller: MediaBrowserController | undefined) {
+    if (!controller) {
+      return;
+    }
     this._browserController = controller;
   }
   public get browserController() {
@@ -113,13 +150,22 @@ export class MediaBrowser extends LitElement {
   @consume({ context: mediaBrowserConfigContext, subscribe: true })
   public set config(config: MediaBrowserConfig) {
     this._config = config;
+    // this.setHiddenElements();
   }
   public get config() {
     return this._config;
   }
 
+  @consume({ context: activeEntityConfigContext, subscribe: true })
+  private set activeEntityConfig(config: EntityConfig) {
+    this._activeEntityConfig = config;
+  }
+  private get activeEntityConfig() {
+    return this._activeEntityConfig;
+  }
+
   @consume({ context: mediaBrowserCardsContext, subscribe: true })
-  public set cards(cards: newMediaBrowserItemsConfig) {
+  public set cards(cards: newMediaBrowserItemsConfig | undefined) {
     if (jsonMatch(this._cards, cards)) {
       return;
     }
@@ -128,7 +174,9 @@ export class MediaBrowser extends LitElement {
       this.activeCards = [];
       return;
     }
-    this.setActiveCards();
+    if (!this.activeCards) {
+      this.setActiveCards();
+    }
   }
   public get cards() {
     return this._cards;
@@ -141,25 +189,32 @@ export class MediaBrowser extends LitElement {
     const section = this.activeSection;
     const subsection = this.activeSubSection;
     let new_cards: MediaCardItem[] = [];
+    if (
+      this.activeSubSection == "collection" &&
+      this.activeSection != "search"
+    ) {
+      this.requestUpdate("collection", "selected");
+      return;
+    }
     if (!this.cards) {
       return;
     }
     try {
-    // eslint-disable-next-line @typescript-eslint/no-unsafe-member-access
-      new_cards = [...this.cards[section][subsection] as MediaCardItem[]];
+      // eslint-disable-next-line @typescript-eslint/no-unsafe-member-access
+      new_cards = [...(this.cards[section][subsection] as MediaCardItem[])];
     } catch {
-      throw Error(`Failed to get cards for section ${section}, subsection ${subsection}`)
+      return;
     }
-    const cur_cards = this.activeCards;
-    if (!jsonMatch(new_cards, cur_cards)) {
+    const current_cards = this.activeCards;
+    if (!jsonMatch(new_cards, current_cards)) {
       this.activeCards = new_cards;
     }
     this.scrollCardsToTop();
   }
   public scrollCardsToTop() {
     if (this.offsetHeight) {
-      this?.cardsElement?.resetScroll();
-    } 
+      this.cardsElement?.resetScroll();
+    }
   }
   public resetActiveSections() {
     this.activeSection = DEFAULT_ACTIVE_SECTION;
@@ -168,7 +223,10 @@ export class MediaBrowser extends LitElement {
     this.previousSubSections = [];
     this.setActiveCards();
   }
-  private onServiceSelect = (data: MediaCardData) => {
+  private onServiceSelect = (data: mediaCardServiceData) => {
+    if (!this.actions) {
+      return;
+    }
     if (data.service) {
       void this.actions.actionPlayMediaFromService(
         data.service,
@@ -176,38 +234,66 @@ export class MediaBrowser extends LitElement {
       );
       return;
     }
-    void this.actions.actionPlayMedia(
+    const enqueue = EnqueueConfigMap[this.config.default_enqueue_option];
+    void this.actions.actionEnqueueMedia(
       this.activeEntityConfig.entity_id,
-      data.media_content_id as string,
-      data.media_content_type as string,
+      data.media_content_id,
+      data.media_content_type,
+      enqueue,
     );
     this.onMediaSelectedAction();
   };
-  private onSectionSelect = (data: MediaCardData) => {
+  private onSectionSelect = (data: mediaCardSectionData) => {
     this.setPreviousSection();
-    this.activeSection = data.subtype as string;
-    this.activeSubSection = data.section as string;
+    this.activeSection = data.subtype;
+    this.activeSubSection = data.section;
     this.setActiveCards();
   };
-  private onItemSelect = (data: MediaCardData) => {
+  private onItemSelect = (data: mediaCardItemData) => {
+    if (!this.actions) {
+      return;
+    }
     void this.actions.actionPlayMedia(
       this.activeEntityConfig.entity_id,
-      data.media_content_id as string,
-      data.media_content_type as string,
+      data.media_content_id,
+      data.media_content_type,
     );
   };
-  private onSelect = (data: MediaCardData) => {
+  private onCollectionSelect = (data: mediaCardCollectionType) => {
+    this.setPreviousSection();
+    this.activeCollectionData = data;
+    this.activeSubSection = "collection";
+    this.searchActivated = false;
+    this.requestUpdate("collection", "selected");
+  };
+  private onSelect = (data: mediaCardData) => {
     const funcs = {
       section: this.onSectionSelect,
       item: this.onItemSelect,
       service: this.onServiceSelect,
+      playlist: this.onCollectionSelect,
+      album: this.onCollectionSelect,
+      artist: this.onCollectionSelect,
+      podcast: this.onCollectionSelect,
     };
-    const func = funcs[data.type as string] as (data: MediaCardData) => void;
-    func(data);
+    const function_ = funcs[data.type as string] as (
+      data: mediaCardData,
+    ) => void;
+    if (["playlist", "album", "artist"].includes(data.type)) {
+      this.onCollectionSelect(data as mediaCardCollectionType);
+      return;
+    }
+    // this.collectionViewActive = false;
+    function_(data);
   };
-  private onEnqueue = (data: MediaCardData, enqueue: EnqueueOptions) => {
-    const content_id: string = data.media_content_id as string;
-    const content_type: string = data.media_content_type as string;
+  private onEnqueue = (data: mediaCardEnqueueType, enqueue: EnqueueOptions) => {
+    const content_id =
+      data.type == "playlist" ? data.media_content_id : data.media_content_id;
+    const content_type =
+      data.type == "playlist" ? "music" : data.media_content_id;
+    if (!this.actions) {
+      return;
+    }
     if (enqueue == EnqueueOptions.RADIO) {
       void this.actions.actionPlayRadio(
         this.activeEntityConfig.entity_id,
@@ -223,14 +309,42 @@ export class MediaBrowser extends LitElement {
       enqueue,
     );
   };
+  private onPlaylistEnqueue = (
+    data: mediaCardPlaylistData,
+    enqueue: EnqueueOptions,
+  ) => {
+    if (!this.actions) {
+      return;
+    }
+    const content_id: string = data.media_content_id;
+    const content_type = "playlist";
+    void this.actions.actionEnqueueMedia(
+      this.activeEntityConfig.entity_id,
+      content_id,
+      content_type,
+      enqueue,
+    );
+  };
   private onBack = () => {
+    const update =
+      this.activeSubSection == "collection" && this.activeSection != "search";
+
     this.activeSection = this.previousSections.pop() ?? DEFAULT_ACTIVE_SECTION;
     this.activeSubSection =
       this.previousSubSections.pop() ?? DEFAULT_ACTIVE_SUBSECTION;
     this.setActiveCards();
+    if (update) {
+      this.requestUpdate("collections", "back");
+    }
   };
   private onSearchButtonPress = () => {
+    if (!this.hass) {
+      return;
+    }
     this.setPreviousSection();
+    if (!this.cards) {
+      return;
+    }
     if (!this.searchMediaTypeIcon) {
       this.searchMediaTypeIcon = getMediaTypeSvg(
         MediaTypes.TRACK,
@@ -242,26 +356,27 @@ export class MediaBrowser extends LitElement {
     this.activeSection = "search";
     this.cards.search = [];
     this.activeCards = this.cards.search;
+    this.searchActivated = true;
   };
-  private onSearchMediaTypeSelect = async (ev: MenuButtonEventData) => {
-    const val = ev.detail.option as MediaTypes;
-    if (!val) {
+  private onSearchMediaTypeSelect = async (event_: MenuButtonEventData) => {
+    if (!this.hass) {
       return;
     }
-    this.searchMediaType = val;
-    this.searchMediaTypeIcon = getMediaTypeSvg(val, this.Icons, this.hass);
+    const value = event_.detail.option as MediaTypes;
+    this.searchMediaType = value;
+    this.searchMediaTypeIcon = getMediaTypeSvg(value, this.Icons, this.hass);
     await this.searchMedia();
   };
   private onSearchLibrarySelect = async () => {
     this.searchLibrary = !this.searchLibrary;
     await this.searchMedia();
   };
-  private onSearchInput = (ev: TargetValEventData) => {
-    const val = ev.target.value.trim();
-    if (val.length < SEARCH_TERM_MIN_LENGTH) {
+  private onSearchInput = (event_: TargetValueEventData) => {
+    const value = event_.target.value.trim();
+    if (value.length < SEARCH_TERM_MIN_LENGTH) {
       return;
     }
-    this.searchTerm = val;
+    this.searchTerm = value;
     if (this._searchTimeout) {
       try {
         clearTimeout(this._searchTimeout);
@@ -269,43 +384,55 @@ export class MediaBrowser extends LitElement {
         this._searchTimeout = 0;
       }
     }
-    this._searchTimeout = setTimeout(() => {
+    this._searchTimeout = window.setTimeout(() => {
       this._searchTimeout = 0;
       void this.searchMedia();
     }, SEARCH_UPDATE_DELAY);
   };
-  private onFilterType = (ev: MenuButtonEventData) => {
-    const val = ev.detail.option;
-    if (!val.length) {
+  private onFilterType = (event_: MenuButtonEventData) => {
+    if (!this.cards) {
       return;
     }
-    if (!Object.keys(this.cards).includes(val)) {
+    const value = event_.detail.option;
+    if (value.length === 0) {
       return;
     }
-    this.activeSection = val;
+    if (!Object.keys(this.cards).includes(value)) {
+      return;
+    }
+    this.activeSection = value;
     this.activeSubSection = "main";
     /* eslint-disable-next-line
       @typescript-eslint/no-unsafe-member-access
     */
-    this.activeCards = this.cards[val].main as MediaCardItem[];
+    this.activeCards = this.cards[value].main as MediaCardItem[];
   };
   private async searchMedia() {
     const search_term = this.searchTerm;
+    if (!this.browserController) {
+      return;
+    }
     if (search_term.length < SEARCH_TERM_MIN_LENGTH) {
       return;
     }
-    const cards = await this.browserController.search(
-      this.activeEntityConfig.entity_id,
-      search_term,
-      this.searchMediaType,
-      this.searchLibrary,
-      DEFAULT_SEARCH_LIMIT,
-    );
-    this.activeCards = cards;
+    this.searchLoading = true;
+    try {
+      const cards = await this.browserController.search(
+        this.activeEntityConfig.entity_id,
+        search_term,
+        this.searchMediaType,
+        this.searchLibrary,
+        DEFAULT_SEARCH_LIMIT,
+      );
+      this.searchLoading = false;
+      this.activeCards = cards;
+    } finally {
+      this.searchLoading = false;
+    }
   }
-  private onCardsUpdated = (ev: Event) => {
-    const _ev = ev as CardsUpdatedEvent;
-    const detail = _ev.detail;
+  private onCardsUpdated = (event_: Event) => {
+    const _event = event_ as CardsUpdatedEvent;
+    const detail = _event.detail;
     const section = detail.section;
     if (section == "all") {
       this._cards = detail.cards as newMediaBrowserItemsConfig;
@@ -314,17 +441,57 @@ export class MediaBrowser extends LitElement {
       return;
     }
     if (
-      !this?.activeCards?.length &&
+      !this.activeCards?.length &&
       (section == "all" || section == this.activeSection)
     ) {
       this.setActiveCards();
     }
   };
+  protected renderCollectionView(): TemplateResult {
+    const collType = this.activeCollectionData.type;
+    if (collType == "album") {
+      return html`
+        <mpc-browser-album-view
+          .collectionData=${this.activeCollectionData}
+          .onEnqueueAction=${this.onPlaylistEnqueue}
+        ></mpc-browser-album-view>
+      `;
+    }
+    if (collType == "artist") {
+      return html`
+        <mpc-browser-artist-view
+          .collectionData=${this.activeCollectionData}
+          .onEnqueueAction=${this.onPlaylistEnqueue}
+        ></mpc-browser-artist-view>
+      `;
+    }
+    if (collType == "podcast") {
+      return html`
+        <mpc-browser-podcast-view
+          .collectionData=${this.activeCollectionData}
+          .onEnqueueAction=${this.onPlaylistEnqueue}
+        ></mpc-browser-podcast-view>
+      `;
+    }
+    return html`
+      <mpc-browser-playlist-view
+        .collectionData=${this.activeCollectionData}
+        .onEnqueueAction=${this.onPlaylistEnqueue}
+      ></mpc-browser-playlist-view>
+    `;
+  }
   protected renderBrowserCards(): TemplateResult {
+    if (
+      this.activeSubSection == "collection" &&
+      this.activeSection != "search"
+    ) {
+      return this.renderCollectionView();
+    }
     return html`
       <mass-browser-cards
         .onSelectAction=${this.onSelect}
         .onEnqueueAction=${this.onEnqueue}
+        ?loading=${this.searchLoading}
       ></mass-browser-cards>
     `;
   }
@@ -333,6 +500,9 @@ export class MediaBrowser extends LitElement {
     return html` <span slot="label" id="title"> ${title} </span> `;
   }
   protected renderSearchMediaTypeButton(): TemplateResult {
+    if (!this.hass) {
+      return html``;
+    }
     if (this.activeSection == "search") {
       const icons = getSearchMediaButtons(this.Icons, this.hass);
       return html`
@@ -353,27 +523,32 @@ export class MediaBrowser extends LitElement {
   }
   protected renderSearchLibraryButton(): TemplateResult {
     if (this.activeSection == "search") {
-    return html`
-      <mass-player-card-button
-        .onPressService=${this.onSearchLibrarySelect}
-        role="plain"
-        size="small"
-        elevation=0
-        id="search-favorite-button"
-        class="button-min ${this.useExpressive ? `search-library-button-expressive` : ``}"
-      >
-        <ha-svg-icon
-          .path=${this.searchLibrary
-            ? this.Icons.LIBRARY
-            : this.Icons.LIBRARY_OUTLINED}
-          class="svg-xs ${this.useExpressive ? `svg-menu-expressive` : ``}"
-        ></ha-svg-icon>
-      </mass-player-card-button>
-    `;
+      return html`
+        <mass-player-card-button
+          .onPressService=${this.onSearchLibrarySelect}
+          role="plain"
+          size="small"
+          elevation="0"
+          id="search-favorite-button"
+          class="button-min ${this.useExpressive
+            ? `search-library-button-expressive`
+            : ``}"
+        >
+          <ha-svg-icon
+            .path=${this.searchLibrary
+              ? this.Icons.LIBRARY
+              : this.Icons.LIBRARY_OUTLINED}
+            class="svg-xs ${this.useExpressive ? `svg-menu-expressive` : ``}"
+          ></ha-svg-icon>
+        </mass-player-card-button>
+      `;
     }
     return html``;
   }
   protected renderSearchBar() {
+    if (!this.hass) {
+      return;
+    }
     const styles_base_url =
       "https://cdn.jsdelivr.net/npm/@shoelace-style/shoelace@2.20.1/cdn/themes/";
     const darkMode = this.hass.themes.darkMode;
@@ -415,9 +590,7 @@ export class MediaBrowser extends LitElement {
     `;
   }
   protected renderSearchButton(): TemplateResult {
-    const hide =
-      this.config.hide.search ||
-      this.activeEntityConfig.hide.media_browser.search;
+    const hide = this.hiddenElements.search;
     if (hide) {
       return html``;
     }
@@ -426,21 +599,16 @@ export class MediaBrowser extends LitElement {
         .onPressService=${this.onSearchButtonPress}
         role="filled"
         size="small"
-        elevation=1
+        elevation="1"
         id="button-search"
         class="button-min ${this.useExpressive ? `button-expressive` : ``}"
       >
-        <ha-svg-icon
-          .path=${this.Icons.SEARCH}
-          class="svg-xs"
-        ></ha-svg-icon>
+        <ha-svg-icon .path=${this.Icons.SEARCH} class="svg-xs"></ha-svg-icon>
       </mass-player-card-button>
     `;
   }
   protected renderBackButton(): TemplateResult {
-    const hide =
-      this.config.hide.back_button ||
-      this.activeEntityConfig.hide.media_browser.back_button;
+    const hide = this.hiddenElements.back_button;
     if (hide) {
       return html``;
     }
@@ -450,7 +618,7 @@ export class MediaBrowser extends LitElement {
           .onPressService=${this.onBack}
           role="filled"
           size="small"
-          elevation=1
+          elevation="1"
           id="button-back"
           class="button-min ${this.useExpressive ? `button-expressive` : ``}"
         >
@@ -463,6 +631,9 @@ export class MediaBrowser extends LitElement {
     `;
   }
   protected renderFilterButton(): TemplateResult {
+    if (!this.hass) {
+      return html``;
+    }
     const icons = getFilterButtons(this.Icons, this.hass, this.config);
     const icon = this.Icons.FILTER;
     return html`
@@ -515,7 +686,8 @@ export class MediaBrowser extends LitElement {
     return this.renderSubsectionHeader();
   }
   protected firstUpdated(): void {
-    this.browserController._host.addEventListener(
+    // eslint-disable-next-line @typescript-eslint/no-non-null-assertion
+    this.browserController!._host.addEventListener(
       "cards-updated",
       this.onCardsUpdated,
     );
@@ -535,6 +707,38 @@ export class MediaBrowser extends LitElement {
         </div>
       </div>
     `;
+  }
+
+  disconnectedCallback(): void {
+    super.disconnectedCallback();
+    // eslint-disable-next-line @typescript-eslint/no-non-null-assertion
+    this.browserController!._host.removeEventListener(
+      "cards-updated",
+      this.onCardsUpdated,
+    );
+  }
+  connectedCallback(): void {
+    super.connectedCallback();
+    if (this.browserController?._host) {
+      // eslint-disable-next-line @typescript-eslint/no-non-null-assertion, @typescript-eslint/no-unnecessary-type-assertion
+      this.browserController!._host.addEventListener(
+        "cards-updated",
+        this.onCardsUpdated,
+      );
+    }
+  }
+
+  protected updated(): void {
+    if (this.searchActivated) {
+      setTimeout(() => {
+        this.shadowRoot
+          ?.querySelector("#search")
+          ?.querySelector("sl-input")
+          ?.shadowRoot?.querySelector("input")
+          ?.focus();
+        this.searchActivated = false;
+      }, 50);
+    }
   }
   static get styles(): CSSResultGroup {
     return styles;

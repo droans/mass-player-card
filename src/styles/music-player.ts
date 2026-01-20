@@ -17,7 +17,9 @@ export default css`
     justify-content: center;
   }
 
-  #active-track-lg, #active-track-med, #active-track-sm {
+  #active-track-lg,
+  #active-track-med,
+  #active-track-sm {
     width: 100%;
   }
 
@@ -38,7 +40,7 @@ export default css`
     border-radius: var(--expressive-border-radius-container);
   }
 
-  #dialog-favorites { 
+  #dialog-favorites {
     --dialog-content-padding: 12px;
   }
   .dialog-playlist-item {
@@ -61,7 +63,9 @@ export default css`
     background-position: left;
     border-radius: var(--media-row-border-radius);
     margin-left: 14px;
-
+    -webkit-user-select: none;
+    -moz-user-select: none;
+    user-select: none;
   }
   .dialog-playlist-title {
     font-size: 1.1rem;
@@ -70,11 +74,9 @@ export default css`
     white-space: nowrap;
     min-width: 0;
     color: var(--font-color);
-    
   }
   #dialog-favorites-expressive .dialog-playlist-title {
     color: var(--expressive-row-color-text);
-    
   }
   .dialog-playlist-divider {
     --divider-color: var(--md-sys-color-outline-variant);
@@ -87,22 +89,6 @@ export default css`
     margin-left: 64px;
     margin-right: 24px;
   }
-
-  .divider {
-    margin-top: 2px;
-    margin-bottom: 2px;
-  }
-  .divider::before {
-    content: " ";
-    display: block;
-    height: 1px;
-    background-color: var(--divider-color);
-    margin-left: 24px;
-    margin-right: 24px;
-  }
-  .grouped-players-volume-item {
-    --md-list-item-top-space: 0px;
-  }
   .header-art-lg {
     z-index: 2;
     position: relative;
@@ -113,51 +99,6 @@ export default css`
   .header-art-sm {
     position: relative;
   }
-
-  #grouped-players-menu {
-    --control-select-thickness: 2.5em;
-    max-width: var(--control-select-menu-height);
-  }
-
-  .grouped-players-item {
-    height: calc(var(--control-select-menu-height) * 2);
-    display: contents;
-  }
-
-  .grouped-players-volume-slider {
-    display: contents;
-  }
-  #grouped-volume,
-  .grouped-players-volume-slider::part(slider) {
-    position: relative;
-    width: 96%;
-    left: 2%;
-    height: 2.5em;
-  }
-  .grouped-button-unjoin {
-    --button-button-width: var(--media-row-icon-width);
-    --button-button-height: 30px;
-    --button-border-radius: 25%;
-    --button-padding: 0px;
-    align-content: center;
-  }
-  #grouped-players-menu ha-md-list-item:not(.grouped-players-volume-item) {
-    padding-right: 12px;
-  }
-  #grouped-players-menu ha-md-list-item {
-    padding-left: 12px;
-  }
-  .grouped-svg-unjoin {
-    --button-button-height: var(--row-icon-button-height);
-    width: var(--row-icon-button-height);
-  }
-  .grouped-svg-unjoin-expressive {
-    color: var(--expressive-row-button-color-text);
-  }
-  .grouped-svg-unjoin-expressive:hover {
-    color: var(--expressive-row-button-color-text-hover);
-  }
-
   .media-controls {
     backdrop-filter: blur(8px);
     background: var(--player-blur-color);
@@ -175,30 +116,13 @@ export default css`
   }
   .media-controls-expressive {
     background: linear-gradient(
-      transparent,
-      var(--expressive-player-blur-color) 10%
+      to top,
+      var(--expressive-player-blur-color),
+      rgb(from var(--expressive-player-blur-color) r g b / 0.7) 40%,
+      rgb(from var(--expressive-player-blur-color) r g b / 0.4) 75%,
+      transparent 100%
     ) !important;
   }
-
-  .menu-header::part(menu-select-menu) {
-    border-radius: 50%;
-    height: 2.5em;
-    width: 2.5em;
-    --control-select-menu-padding: 7px;
-    --mdc-icon-size: 1.5em;
-    --control-select-menu-height: 2.5em;
-  }
-  .menu-header-expressive::part(menu-select-menu) {
-    --control-select-menu-background-color: var(
-      --md-sys-color-secondary-container
-    ) !important;
-    box-shadow: var(--md-sys-elevation-level1);
-    border-radius: var(--button-small-border-radius);
-  }
-  .menu-header-expressive::part(menu-svg) {
-    color: var(--md-sys-color-secondary-on-container) !important;
-  }
-
   #player-card {
     z-index: 0;
     height: var(--mass-player-card-height);
@@ -217,7 +141,7 @@ export default css`
     position: absolute;
     top: 0;
     width: 100%;
-    z-index: 1;
+    z-index: 3;
     border-radius: var(--default-border-radius) var(--default-border-radius) 0px
       0px;
   }
@@ -228,7 +152,7 @@ export default css`
     ) !important;
   }
   .player-card-header-expressive::before {
-    content: '';
+    content: "";
     height: 100%;
     width: 100%;
     display: block;
@@ -236,13 +160,15 @@ export default css`
     top: 0;
     mask: linear-gradient(black, black 95%, transparent);
     background: linear-gradient(
-      var(--expressive-player-blur-color) 90%,
-      transparent
+      to bottom,
+      var(--expressive-player-blur-color),
+      rgb(from var(--expressive-player-blur-color) r g b / 0.7) 40%,
+      rgb(from var(--expressive-player-blur-color) r g b / 0.4) 75%,
+      transparent 100%
     ) !important;
-    
   }
   #player-card-header::before {
-    content: '';
+    content: "";
     height: 100%;
     width: 100%;
     display: block;
@@ -250,7 +176,8 @@ export default css`
     top: 0;
     mask: linear-gradient(black, black 95%, transparent);
     backdrop-filter: blur(8px);
-    border-radius: var(--default-border-radius) var(--default-border-radius) 0px 0px;
+    border-radius: var(--default-border-radius) var(--default-border-radius) 0px
+      0px;
     overflow: hidden;
   }
   .player-header {
@@ -268,33 +195,6 @@ export default css`
     color: var(--md-sys-color-on-primary-container) !important;
   }
 
-  .grouped-players-select-item,
-  #players-select-menu::part(menu-list-item) {
-    height: 3.5em;
-  }
-  .grouped-players-select-item {
-    width: 320px;
-    height: 100%;
-  }
-  .grouped-players-select-item-image, .grouped-players-select-item-icon {
-    height: 3em;
-    width: 3em;
-  }
-  .grouped-players-select-item-image.expressive {
-    border-radius: 12px;
-  }
-  .grouped-players-select-item-icon.expressive, .grouped-players-select-item-image.expressive {
-    margin-left: 14px;
-  }
-  .grouped-volume .player-name-icon {
-    margin-top: 10px;
-    color: var(--md-sys-color-primary);
-  }
-  
-  .players-player-select-item {
-    width: 320px;
-  }
-
   .player-track-artist {
     font-size: 1em;
     text-shadow: 0 0 var(--md-sys-color-on-primary-container);
@@ -309,22 +209,6 @@ export default css`
     white-space: nowrap;
     text-overflow: clip;
     text-shadow: 0px 0px var(--md-sys-color-primary);
-  }
-
-  #players-select-menu::part(menu-button),
-  #grouped-players-menu::part(menu-button) {
-    --ha-ripple-color: rgba(0, 0, 0, 0);
-  }
-  #players-select-menu::part(menu-list-item-svg) {
-    height: 2em;
-    width: 2em;
-  }
-  .menu-header::part(menu-select-menu) {
-    background-color: var(--control-select-menu-background-color);
-  }
-  .menu-header::part(menu-svg):not(.svg-menu-expressive) {
-    color: var(--wa-color-brand-on-normal, var(--wa-color-neutral-on-normal));
-    border-radius: 50%;
   }
 
   #volume {

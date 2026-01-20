@@ -1,11 +1,11 @@
 import { hiddenElementsConfigItem } from "../utils/config";
-import { Config } from "./config";
+import { BaseHiddenElementsConfig, Config } from "./config";
 
 export interface PlayersConfig {
   enabled: boolean;
   hide: PlayersHiddenElementsConfig;
 }
-export interface PlayersHiddenElementsConfig {
+export interface PlayersHiddenElementsConfig extends BaseHiddenElementsConfig {
   action_buttons: boolean;
   join_button: boolean;
   transfer_button: boolean;
