@@ -37,12 +37,15 @@ export default css`
 
   #container {
     width: 100%;
-    position: relative;
-    display: flex;
     border-radius: var(--browser-card-border-radius) !important;
     overflow: visible !important;
     margin: 0px 3px 3px 3px;
     aspect-ratio: 1;
+  }
+  #container,
+  #container-outer {
+    position: relative;
+    display: flex;
   }
   #enqueue-button-div {
     position: absolute;
