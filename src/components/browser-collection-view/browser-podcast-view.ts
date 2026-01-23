@@ -5,6 +5,7 @@ import styles from "./browser-podcast-view-styles";
 import { delay } from "../../utils/utility";
 import { BrowserViewBase } from "./browser-view-base";
 import { getPodcastServiceResponse } from "mass-queue-types/packages/mass_queue/actions/get_podcast";
+import { getTranslation } from "../../utils/translations";
 
 @customElement("mpc-browser-podcast-view")
 export class MassBrowserPodcastView extends BrowserViewBase {
@@ -74,9 +75,14 @@ export class MassBrowserPodcastView extends BrowserViewBase {
     `;
   }
   protected renderOverview(): TemplateResult {
+    const episodeLabel = getTranslation(
+      "browser.collections.track_count",
+      this.hass,
+    ) as string;
+    const loadingLabel = getTranslation("browser.loading", this.hass) as string;
     const trackString = this.tracks?.length
-      ? `${this.tracks.length.toString()} Episodes`
-      : `Loading...`;
+      ? `${this.tracks.length.toString()} ${episodeLabel}`
+      : loadingLabel;
     const desc = this.podcastMetadata?.response.metadata.description ?? ``;
     return html`
       ${this.renderTitle()}
