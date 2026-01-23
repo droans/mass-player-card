@@ -387,10 +387,10 @@ __metadata:
   languageName: node
   linkType: hard
 
-"@ktibow/material-color-utilities-nightly@npm:^0.3.11763580498000":
-  version: 0.3.11763580498000
-  resolution: "@ktibow/material-color-utilities-nightly@npm:0.3.11763580498000"
-  checksum: 10c0/f3fe61be545956f24e5049ccaa3c0dd0cf04120b6d0986bdaba23e6227c30f3ad19b5ef79e3010f25cb5eab8d218985ce7c924bf01d6a090ca7514e1c2921140
+"@ktibow/material-color-utilities-nightly@npm:^0.4.1768930731000":
+  version: 0.4.1768930731000
+  resolution: "@ktibow/material-color-utilities-nightly@npm:0.4.1768930731000"
+  checksum: 10c0/319a00702ab03cce2257d1a977ad5e4c19483aff6eb2c86e678e1ed85cfc1ff1ac18379a30ac727e7b240a536bd27a4d6ccbd0d22df439eac35e99f63203b0be
   languageName: node
   linkType: hard
 
@@ -3505,7 +3505,7 @@ __metadata:
     "@droans/ha-components": "npm:^0.1.0"
     "@droans/webawesome": "npm:^3.0.0"
     "@eslint/js": "npm:9.39.2"
-    "@ktibow/material-color-utilities-nightly": "npm:^0.3.11763580498000"
+    "@ktibow/material-color-utilities-nightly": "npm:^0.4.1768930731000"
     "@lit-labs/compiler": "npm:^1.1.2"
     "@lit/context": "npm:1.1.6"
     "@material/web": "npm:2.4.1"
