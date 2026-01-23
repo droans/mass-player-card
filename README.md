@@ -733,7 +733,7 @@ Ensure your music provider actually provides recommendations.
 Have you tried listening to music?
 
 ## I'm not seeing any artwork in the queue or media browser!
-If you are using a local provider, Music Assistant sends back a path which usually can't be accessed. Fortunately, this is something that we can easily work around. Music Assistant Queue Actions has the ability to download images for local providers and send them back to the card. This can cause a slowdown as downloading and encoding each image may take some time. Some of this is avoided - for ecample, images for queue items are usually only downloaded when HA first starts up, the integration is reloaded, or when the queue changes. 
+If you are using a local provider, Music Assistant sends back a path which usually can't be accessed. Fortunately, this is something that we can easily work around. Music Assistant Queue Actions has the ability to download images for local providers and send them back to the card. This can cause a slowdown as downloading and encoding each image may take some time. Some of this is avoided - for example, images for queue items are usually only downloaded when HA first starts up, the integration is reloaded, or when the queue changes. 
 
 To enable this feature:
 1. Navigate to the Devices & Servies section in Home Assistant settings. 
