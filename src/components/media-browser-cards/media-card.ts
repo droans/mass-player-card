@@ -245,27 +245,29 @@ class MediaCard extends LitElement {
       return;
     }
     this.code = html`
-      <wa-animation
-        id="animation"
-        name="pulse"
-        easing="ease"
-        iterations="1"
-        play=${this._play}
-        playback-rate="1"
-      >
-        <div id="container">
-          <wa-card
-            class="media-card ${this.useExpressive
-              ? `media-card-expressive`
-              : ``}"
-            @click=${this.onSelect}
-          >
-            <div slot="media" id="media">${this.renderThumbnail()}</div>
-            ${this.renderTitle()}
-          </wa-card>
-          ${this.renderEnqueueButton()}
-        </div>
-      </wa-animation>
+      <div id="container-outer">
+        <wa-animation
+          id="animation"
+          name="pulse"
+          easing="ease"
+          iterations="1"
+          play=${this._play}
+          playback-rate="1"
+        >
+          <div id="container">
+            <wa-card
+              class="media-card ${this.useExpressive
+                ? `media-card-expressive`
+                : ``}"
+              @click=${this.onSelect}
+            >
+              <div slot="media" id="media">${this.renderThumbnail()}</div>
+              ${this.renderTitle()}
+            </wa-card>
+          </div>
+        </wa-animation>
+        ${this.renderEnqueueButton()}
+      </div>
     `;
   }
   protected render() {
