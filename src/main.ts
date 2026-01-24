@@ -9,6 +9,7 @@ import {
 import { html } from "lit/static-html.js";
 import { customElement, state } from "lit/decorators.js";
 import { cache } from "lit/directives/cache.js";
+// import localForage from 'localforage';
 
 import "./sections/media-browser";
 import "./sections/music-player";
@@ -36,6 +37,7 @@ import { delay, getDefaultSection, jsonMatch } from "./utils/utility";
 import { MassCardController } from "./controller/controller";
 import { ExtendedHass } from "./const/types";
 import { PlayerSyncEvent } from "./const/events";
+import localForage from "localforage";
 
 const DEV = false;
 
@@ -72,6 +74,13 @@ console.info(
   preview: false,
   description: cardDescription,
   documentationURL: cardUrl,
+});
+
+localForage.config({
+  name: "mass-player-card",
+  version: 1,
+  storeName: "expressive-schemes",
+  description: "Cached Expressive schemes for MA media items.",
 });
 
 @customElement(`${cardId}${DEV ? "-dev" : ""}`)
