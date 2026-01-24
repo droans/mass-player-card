@@ -486,24 +486,6 @@ export class ActivePlayerController {
     );
     this.expressiveScheme = scheme.scheme;
     this._activeSchemeColor = scheme.color;
-    // const schemeColor =
-    //   activeArtwork?.tagName.toLowerCase() == "img"
-    //     ? await generateExpressiveSourceColorFromImageElement(
-    //         activeArtwork as HTMLImageElement,
-    //       )
-    //     : generateDefaultExpressiveSchemeColor();
-    // if (schemeColor == this._activeSchemeColor) {
-    //   this._updatingScheme = false;
-    //   return;
-    // }
-    // this._activeSchemeColor = schemeColor;
-    // const schemeName = this.config.expressive_scheme;
-    // const scheme = generateExpressiveSchemeFromColor(
-    //   schemeColor,
-    //   schemeName,
-    //   this.hass.themes.darkMode,
-    // );
-    // this.expressiveScheme = scheme;
     this._updatingScheme = false;
     return this.expressiveScheme;
   }
