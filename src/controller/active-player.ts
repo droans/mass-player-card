@@ -120,6 +120,8 @@ export class ActivePlayerController {
     if (playerHasUpdated(current_entity, new_entity)) {
       this.setActivePlayer(this.activeEntityID);
     }
+    this.volumeMediaPlayer =
+      hass.states[this.activeEntityConfig.volume_entity_id];
     void this.updateActivePlayerData();
   }
   public get hass() {
