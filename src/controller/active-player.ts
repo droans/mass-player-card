@@ -32,7 +32,7 @@ import {
   applyExpressiveScheme,
   generateDefaultExpressiveSchemeColor,
   generateExpressiveSchemeFromColor,
-  generateExpressiveSourceColorFromImageElement,
+  getOrGenerateExpressiveScheme,
 } from "../utils/expressive";
 import {
   getInfoWSResponseSchema,
@@ -462,24 +462,48 @@ export class ActivePlayerController {
     }
     this._updatingScheme = true;
     const activeArtwork = this.getActiveArtwork();
-    const schemeColor =
-      activeArtwork?.tagName.toLowerCase() == "img"
-        ? await generateExpressiveSourceColorFromImageElement(
-            activeArtwork as HTMLImageElement,
-          )
-        : generateDefaultExpressiveSchemeColor();
-    if (schemeColor == this._activeSchemeColor) {
+    const schemeName = this.config.expressive_scheme;
+    const darkMode = this.hass.themes.darkMode;
+    if (
+      !this.activeMediaPlayer?.attributes.media_content_id ||
+      !activeArtwork
+    ) {
+      const color = generateDefaultExpressiveSchemeColor();
+      const scheme = generateExpressiveSchemeFromColor(
+        color,
+        schemeName,
+        darkMode,
+      );
+      this._activeSchemeColor = color;
+      this.expressiveScheme = scheme;
       this._updatingScheme = false;
       return;
     }
-    this._activeSchemeColor = schemeColor;
-    const schemeName = this.config.expressive_scheme;
-    const scheme = generateExpressiveSchemeFromColor(
-      schemeColor,
+    const scheme = await getOrGenerateExpressiveScheme(
+      activeArtwork,
       schemeName,
-      this.hass.themes.darkMode,
+      darkMode,
     );
-    this.expressiveScheme = scheme;
+    this.expressiveScheme = scheme.scheme;
+    this._activeSchemeColor = scheme.color;
+    // const schemeColor =
+    //   activeArtwork?.tagName.toLowerCase() == "img"
+    //     ? await generateExpressiveSourceColorFromImageElement(
+    //         activeArtwork as HTMLImageElement,
+    //       )
+    //     : generateDefaultExpressiveSchemeColor();
+    // if (schemeColor == this._activeSchemeColor) {
+    //   this._updatingScheme = false;
+    //   return;
+    // }
+    // this._activeSchemeColor = schemeColor;
+    // const schemeName = this.config.expressive_scheme;
+    // const scheme = generateExpressiveSchemeFromColor(
+    //   schemeColor,
+    //   schemeName,
+    //   this.hass.themes.darkMode,
+    // );
+    // this.expressiveScheme = scheme;
     this._updatingScheme = false;
     return this.expressiveScheme;
   }
