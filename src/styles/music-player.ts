@@ -21,6 +21,8 @@ export default css`
   #active-track-med,
   #active-track-sm {
     width: 100%;
+    position: relative;
+    z-index: -1;
   }
 
   #active-track-text {
