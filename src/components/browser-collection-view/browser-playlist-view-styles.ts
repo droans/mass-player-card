@@ -6,7 +6,7 @@ export default css`
     font-size: 1em;
     margin-right: 0.5em;
     font-style: italic;
-    font-family: "Google Sans Flex";
+    font-family: "Google Sans Flex", sans-serif;
   }
   #overview {
     position: relative;
