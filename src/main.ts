@@ -361,10 +361,8 @@ export class MusicAssistantPlayerCard extends LitElement {
     return styles;
   }
   protected firstUpdated(): void {
-    if (this.config.expressive) {
-      const stylesheet = head_styles.styleSheet as CSSStyleSheet;
-      document.adoptedStyleSheets.push(stylesheet);
-    }
+    const stylesheet = head_styles.styleSheet as CSSStyleSheet;
+    document.adoptedStyleSheets.push(stylesheet);
     if (this.syncPlayerAcrossDashboard) {
       void this.prepareSyncPlayerAcrossDashboard();
     }
