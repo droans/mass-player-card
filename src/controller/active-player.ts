@@ -479,7 +479,7 @@ export class ActivePlayerController {
       this._activeSchemeColor = color;
       this.expressiveScheme = scheme;
       this._updatingScheme = false;
-      return;
+      return this.expressiveScheme;
     }
     const scheme = await getOrGenerateExpressiveScheme(
       activeArtwork,
