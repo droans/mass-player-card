@@ -15,7 +15,7 @@ export default css`
     width: 100%;
     display: block;
     position: relative;
-    z-index: 1;
+    z-index: 2;
     height: 3.5em;
   }
   .header-expressive {
