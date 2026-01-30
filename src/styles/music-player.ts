@@ -181,6 +181,7 @@ export default css`
     border-radius: var(--default-border-radius) var(--default-border-radius) 0px
       0px;
     overflow: hidden;
+    z-index: -1;
   }
   .player-header {
     margin: 0em 1.75em 0em 1.75em;
