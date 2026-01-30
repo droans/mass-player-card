@@ -77,10 +77,11 @@ export class MassBrowserArtistView extends BrowserViewBase {
     const trackString = this.tracks?.length
       ? `${this.tracks.length.toString()} ${trackLabel}`
       : loadingLabel;
+    const expressiveClass = this.useExpressive ? `expressive` : ``;
     return html`
       ${this.renderTitle()}
       <div id="collection-info">
-        <div id="tracks-length">${trackString}</div>
+        <div id="tracks-length" class="${expressiveClass}">${trackString}</div>
       </div>
     `;
   }

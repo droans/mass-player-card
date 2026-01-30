@@ -126,7 +126,6 @@ export default css`
     font-style: italic;
     will-change: font-size;
     transition: font-size;
-    font-family: "Google Sans Flex", sans-serif;
     font-variation-settings:
       "slnt" 0,
       "GRAD" 0,
@@ -134,6 +133,14 @@ export default css`
     font-weight: 900;
     font-stretch: 25%;
     text-align: end;
+  }
+  #title.expressive,
+  #tracks-length.expressive {
+    font-family: "Google Sans Flex", sans-serif;
+  }
+  #title::not(.expressive),
+  #tracks-length::not(.expressive) {
+    font-family: "Roboto", sans-serif;
   }
   #title-text {
     padding-right: 4px;
@@ -155,7 +162,6 @@ export default css`
   #tracks-length {
     margin-right: 0.5em;
     will-change: font-size;
-    font-family: "Google Sans Flex", sans-serif;
   }
   #tracks-padding {
     height: var(--view-header-height);

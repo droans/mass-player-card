@@ -84,10 +84,11 @@ export class MassBrowserPodcastView extends BrowserViewBase {
       ? `${this.tracks.length.toString()} ${episodeLabel}`
       : loadingLabel;
     const desc = this.podcastMetadata?.response.metadata.description ?? ``;
+    const expressiveClass = this.useExpressive ? `expressive` : ``;
     return html`
       ${this.renderTitle()}
       <div id="collection-info">
-        <div id="tracks-length">${trackString}</div>
+        <div id="tracks-length" class="${expressiveClass}">${trackString}</div>
         <div id="collection-description">${desc}</div>
       </div>
     `;

@@ -105,14 +105,15 @@ export class MassBrowserPlaylistView extends BrowserViewBase {
       ? `${this.tracks.length.toString()} ${trackLabel}`
       : loadingLabel;
     const owner = this.playlistMetadata?.response.owner ?? unknwonOwnerLabel;
+    const expressiveClass = this.useExpressive ? `expressive` : ``;
     return html`
       ${this.renderTitle()}
       <div id="collection-info">
-        <div id="tracks-length">${trackString}</div>
-        <div id="playlist-duration">
+        <div id="tracks-length" class="${expressiveClass}">${trackString}</div>
+        <div id="playlist-duration" class="${expressiveClass}">
           ${formatDuration(this.playlistDuration)}
         </div>
-        <div id="playlist-owner">${owner}</div>
+        <div id="playlist-owner" class="${expressiveClass}">${owner}</div>
       </div>
     `;
   }
