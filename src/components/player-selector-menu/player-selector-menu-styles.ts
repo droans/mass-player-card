@@ -22,11 +22,12 @@ export default css`
   }
   .menu-header.expressive::part(menu-select-menu) {
     --control-select-menu-background-color: var(
-      --md-sys-color-secondary-container
+      --md-sys-color-surface-container-low
     ) !important;
+    background-color: var(--control-select-menu-background-color);
   }
   .menu-header.expressive::part(menu-svg) {
-    color: var(--md-sys-color-on-secondary-container);
+    color: var(--md-sys-color-primary);
   }
   .menu-header:not(.expressive)::part(menu-select-menu) {
     background-color: var(--control-select-menu-background-color);
