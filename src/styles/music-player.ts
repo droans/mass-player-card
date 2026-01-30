@@ -96,7 +96,7 @@ export default css`
     position: relative;
   }
   .header-art-lg::part(header) {
-    z-index: 0;
+    z-index: 2;
   }
   .header-art-sm {
     position: relative;
