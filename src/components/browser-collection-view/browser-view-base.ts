@@ -365,8 +365,9 @@ export class BrowserViewBase extends LitElement {
     `;
   }
   protected renderTitle(): TemplateResult {
+    const expressiveClass = this.useExpressive ? `expressive` : ``;
     return html`
-      <mpc-marquee-text id="title">
+      <mpc-marquee-text id="title" class="${expressiveClass}">
         <div id="title-text">${this.collectionData?.media_title}</div>
       </mpc-marquee-text>
     `;

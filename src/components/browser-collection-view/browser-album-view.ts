@@ -83,12 +83,15 @@ export class MassBrowserAlbumView extends BrowserViewBase {
     });
     const artistString =
       artistLs.length > 0 ? artistLs.join(", ") : loadingLabel;
+    const expressiveClass = this.useExpressive ? `expressive` : ``;
     return html`
       ${this.renderTitle()}
       <div id="collection-info">
-        <div id="collection-artists">${artistString}</div>
-        <div id="tracks-length">${trackString}</div>
-        <div id="collection-year">
+        <div id="collection-artists" class="${expressiveClass}">
+          ${artistString}
+        </div>
+        <div id="tracks-length" class="${expressiveClass}">${trackString}</div>
+        <div id="collection-year" class="${expressiveClass}">
           ${this.albumMetadata?.response.year ?? ``}
         </div>
       </div>
