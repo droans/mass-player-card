@@ -284,9 +284,8 @@ export class BrowserViewBase extends LitElement {
     );
   }
   protected animateHeaderEnqueue() {
-    const iconElement = this.enqueueElement?.shadowRoot?.querySelector(
-      ".svg-menu-expressive",
-    );
+    const iconElement =
+      this.enqueueElement?.shadowRoot?.querySelector(".svg-menu");
     const selectElement = this.enqueueElement?.shadowRoot
       ?.querySelector("#menu-select-menu")
       ?.shadowRoot?.querySelector(".select-anchor");
