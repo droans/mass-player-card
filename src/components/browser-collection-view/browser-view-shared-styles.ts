@@ -126,7 +126,7 @@ export default css`
     font-style: italic;
     will-change: font-size;
     transition: font-size;
-    font-family: "Google Sans Flex";
+    font-family: "Google Sans Flex", sans-serif;
     font-variation-settings:
       "slnt" 0,
       "GRAD" 0,
@@ -155,7 +155,7 @@ export default css`
   #tracks-length {
     margin-right: 0.5em;
     will-change: font-size;
-    font-family: "Google Sans Flex";
+    font-family: "Google Sans Flex", sans-serif;
   }
   #tracks-padding {
     height: var(--view-header-height);

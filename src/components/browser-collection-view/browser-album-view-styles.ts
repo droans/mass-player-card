@@ -5,11 +5,11 @@ export default css`
     font-size: 1.5em;
     margin-right: 0.5em;
     font-style: italic;
-    font-family: "Google Sans Flex";
+    font-family: "Google Sans Flex", sans-serif;
   }
   #collection-year {
     margin-right: 0.5em;
     font-style: italic;
-    font-family: "Google Sans Flex";
+    font-family: "Google Sans Flex", sans-serif;
   }
 `;

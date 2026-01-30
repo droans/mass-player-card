@@ -193,7 +193,8 @@ export default css`
 
   ha-card {
     max-width: var(--mass-player-card-max-width, 100%);
-    font-family: "Roboto Flex", var(--ha-font-family-body), "Roboto" !important;
+    font-family:
+      "Roboto Flex", var(--ha-font-family-body), "Roboto", sans-serif !important;
     border-radius: var(--default-border-radius);
     height: calc(var(--mass-player-card-height) + 4em);
   }
