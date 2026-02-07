@@ -150,6 +150,10 @@ export class MediaBrowser extends LitElement {
   @consume({ context: mediaBrowserConfigContext, subscribe: true })
   public set config(config: MediaBrowserConfig) {
     this._config = config;
+    this.activeSection = config.default_section;
+    if (this.cards) {
+      this.setActiveCards();
+    }
     // this.setHiddenElements();
   }
   public get config() {
