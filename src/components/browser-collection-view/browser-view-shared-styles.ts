@@ -83,6 +83,7 @@ export default css`
     height: var(--view-header-height);
     border-top-left-radius: var(--default-border-radius);
     border-top-right-radius: var(--default-border-radius);
+    z-index: 2;
   }
   /* #header-wrapper {
     height: var(--view-header-wrapper-height);
