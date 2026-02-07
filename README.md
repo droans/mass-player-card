@@ -583,6 +583,7 @@ Multiple elements on the queue tab can be hidden. By default, all elements are v
 | hide                            | [MediaBrowserHiddenElementsConfig](#media-browser-hidden-elements-config) | No       | See below   | See Below                                                             |
 | playlists_allow_removing_tracks | bool                                                                      | No       | false       | **EXPERIMENTAL - SEE BELOW** Allows removing tracks from playlists    |
 | default_enqueue_option          | EnqueueConfigOption                                                       | No       | play_now    | Default enqueue mode when an item is selected, see below for options  |
+| default_section                 | "favorites", "recents", "recommendations"                                 | No       | favorites   | Default section when first opening the Media Browser tab.             |
 
 ### WARNING:
 Music Assistant uses the position in a playlist to determine which tracks to remove. However, it does not provide an updated playlist when tracks are removed, instead waiting for its next refresh. 
