@@ -68,7 +68,7 @@ class VolumeSlider extends LitElement {
         style="--control-slider-color: var(--md-sys-color-primary) !important;"
         .disabled=${this.entity.attributes.is_volume_muted}
         .unit="%"
-        .value=${this.entity.attributes.volume_level ?? 0 * 100}
+        .value=${(this.entity.attributes.volume_level ?? 0) * 100}
         .min="0"
         .max=${this.maxVolume}
         @value-changed=${this.onVolumeChange}
