@@ -59,6 +59,9 @@ export class MassCardPlayerSelector extends LitElement {
           "";
         fallback = ent.attributes.entity_picture ?? "";
       }
+      const disabled = ["unknown", "unavailable"].includes(ent.state)
+        ? { disabled: true }
+        : {};
       const r: ListItemData = {
         option: item.entity_id,
         icon: this.Icons.SPEAKER,
@@ -67,6 +70,7 @@ export class MassCardPlayerSelector extends LitElement {
           url,
           fallback,
         },
+        ...disabled,
       };
       return r;
     });
