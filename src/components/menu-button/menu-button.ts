@@ -126,6 +126,7 @@ export class MassMenuButton extends LitElement {
           ?selected=${this._selectedItem == item.option}
           .menuItem=${item}
           ?use-md=${this.useMD}
+          ?disabled=${item.disabled}
         ></mpc-menu-item>
       `;
     });
