@@ -204,10 +204,15 @@ class PlayersCard extends LitElement {
     `;
   }
   connectedCallback(): void {
+    super.connectedCallback();
     if (this._animation && this._firstLoaded) {
       this._animation.play = true;
     }
-    super.connectedCallback();
+    if (this.controller.ActivePlayer?.canGroupWith.length == 0) {
+      setTimeout(() => {
+        this.requestUpdate("update-groups", true);
+      }, 1000);
+    }
   }
   protected firstUpdated(): void {
     this._firstLoaded = true;
