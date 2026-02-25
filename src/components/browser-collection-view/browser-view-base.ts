@@ -129,7 +129,7 @@ export class BrowserViewBase extends LitElement {
   public set hass(hass: ExtendedHass | undefined) {
     if (!this._hass) {
       this._hass = hass;
-      void this.getTracks();
+      this.getTracks();
       return;
     }
     this._hass = hass;
@@ -142,7 +142,7 @@ export class BrowserViewBase extends LitElement {
   public set activePlayer(player: ExtendedHassEntity | undefined) {
     if (!this.activePlayer) {
       this._activePlayer = player;
-      void this.getTracks();
+      this.getTracks();
       return;
     }
     this._activePlayer = player;
@@ -161,7 +161,7 @@ export class BrowserViewBase extends LitElement {
       | undefined,
   ) {
     this._collectionData = data;
-    void this.getTracks();
+    this.getTracks();
   }
   public get collectionData() {
     return this._collectionData;
@@ -217,7 +217,7 @@ export class BrowserViewBase extends LitElement {
     }
     this.updateEnqueueButtons();
   }
-  protected async getTracks() {
+  protected getTracks() {
     // Implemented by components
   }
 

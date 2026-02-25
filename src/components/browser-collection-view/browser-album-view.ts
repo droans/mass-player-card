@@ -18,17 +18,20 @@ export class MassBrowserAlbumView extends BrowserViewBase {
   @state() private albumMetadata?: getAlbumServiceResponse;
 
   // Ask HA to return the tracks in the album
-  public async getTracks() {
+  public getTracks() {
     if (!this.hass || !this.collectionData || !this.activePlayer) {
       return;
     }
-    const tracks = await this.browserActions.actionGetAlbumTracks(
-      this.collectionData.media_content_id,
-      this.activePlayer.entity_id,
-    );
-    this.tracks = tracks.response.tracks;
+    void this.browserActions
+      .actionGetAlbumTracks(
+        this.collectionData.media_content_id,
+        this.activePlayer.entity_id,
+      )
+      .then((data) => {
+        this.tracks = data.response.tracks;
+      });
     this.setHiddenElements();
-    await this.getMetadata();
+    void this.getMetadata();
   }
   public async getMetadata() {
     if (!this.hass || !this.collectionData || !this.activePlayer) {

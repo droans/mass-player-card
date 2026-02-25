@@ -16,26 +16,29 @@ export class MassBrowserPodcastView extends BrowserViewBase {
   @state() private podcastMetadata?: getPodcastServiceResponse;
 
   // Ask HA to return the episodes in the podcast
-  public async getTracks() {
+  public getTracks() {
     if (!this.hass || !this.collectionData || !this.activePlayer) {
       return;
     }
-    const resp = await this.browserActions.actionGetPodcastEpisodes(
-      this.collectionData.media_content_id,
-      this.activePlayer.entity_id,
-    );
-    if (!this.podcastMetadata) {
-      this.tracks = resp.response.episodes;
-    }
+    void this.browserActions
+      .actionGetPodcastEpisodes(
+        this.collectionData.media_content_id,
+        this.activePlayer.entity_id,
+      )
+      .then((resp) => {
+        if (!this.podcastMetadata) {
+          this.tracks = resp.response.episodes;
+        }
+        const tracks = resp.response.episodes.map((track) => {
+          track.media_image =
+            track.media_image.length > 0 ? track.media_image : img;
+          return track;
+        });
+        this.tracks = tracks;
+      });
     const img = this.collectionData.media_image;
-    const tracks = resp.response.episodes.map((track) => {
-      track.media_image =
-        track.media_image.length > 0 ? track.media_image : img;
-      return track;
-    });
-    this.tracks = tracks;
     this.setHiddenElements();
-    await this.getPodcastMetadata();
+    void this.getPodcastMetadata();
   }
   public async getPodcastMetadata() {
     if (!this.hass || !this.collectionData || !this.activePlayer) {
