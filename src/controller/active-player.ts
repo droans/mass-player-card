@@ -570,14 +570,25 @@ export class ActivePlayerController {
   public async playerCanGroupWith(
     entity_id = this.activeEntityID,
   ): Promise<string[]> {
+    if (
+      !this.activeMediaPlayer ||
+      ["unknown", "unavailable"].includes(this.activeMediaPlayer.state)
+    ) {
+      return [];
+    }
     const provider = await this.getPlayerProvider(entity_id);
     const ents = this.config.entities;
     const result: string[] = [];
     for (const ent of ents) {
       const _id = ent.entity_id;
-      const _prov = await this.getPlayerProvider(_id);
-      if (_prov == provider && _id != entity_id) {
-        result.push(_id);
+      const entity = this.hass.states[_id];
+      const state = entity?.state ?? "unknown";
+      const available = !["unknown", "unavailable"].includes(state);
+      if (entity && available) {
+        const _prov = await this.getPlayerProvider(_id);
+        if (_prov == provider && _id != entity_id) {
+          result.push(_id);
+        }
       }
     }
     return result;
