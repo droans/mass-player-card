@@ -367,12 +367,23 @@ export class ActivePlayerController {
   private setDefaultActivePlayer() {
     const states = this.hass.states;
     const players = this._config.entities;
-    const active_players = players.filter((entity) => {
+    const firstActivePlayer = players.find((entity) => {
       const ent = states[entity.entity_id];
       return isActive(this.hass, ent, entity);
     });
-    this.activeEntityConfig =
-      active_players.length > 0 ? active_players[0] : players[0];
+    const firstAvailablePlayer = players.find((entity) => {
+      const ent = states[entity.entity_id];
+      return !["unknown", "unavailable"].includes(ent?.state ?? "unknown");
+    });
+    if (firstActivePlayer) {
+      this.activeEntityConfig = firstActivePlayer;
+      return;
+    }
+    if (firstAvailablePlayer) {
+      this.activeEntityConfig = firstAvailablePlayer;
+      return;
+    }
+    this.activeEntityConfig = players[0];
   }
   public setActivePlayer(entity_id: string) {
     const entities_config = this.config.entities;
