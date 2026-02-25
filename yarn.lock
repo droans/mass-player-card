@@ -2100,15 +2100,15 @@ __metadata:
   languageName: node
   linkType: hard
 
-"eslint-plugin-lit@npm:^2.1.1":
-  version: 2.1.1
-  resolution: "eslint-plugin-lit@npm:2.1.1"
+"eslint-plugin-lit@npm:^2.2.1":
+  version: 2.2.1
+  resolution: "eslint-plugin-lit@npm:2.2.1"
   dependencies:
     parse5: "npm:^6.0.1"
     parse5-htmlparser2-tree-adapter: "npm:^6.0.1"
   peerDependencies:
     eslint: ">= 8"
-  checksum: 10c0/f1dbd6f5f548bd68ad5b9ef548e2721d266cde89dda00ae3d6a8d9f2151bf04ba823a745b7327cfc18edc7e4f0cbdfffc5febb86c35371197856ad5853d8d814
+  checksum: 10c0/900c3e52af8481bb80497950cff4c9454ee49e15d1065b994e0394d5945eb8f6ba8a4322c39f214cc30e4aa603af8d627b16d46d848f3978562f267b1bdca1a9
   languageName: node
   linkType: hard
 
@@ -3412,7 +3412,7 @@ __metadata:
     eslint-config-prettier: "npm:10.1.8"
     eslint-plugin-github: "npm:^6.0.0"
     eslint-plugin-listeners: "npm:^1.5.1"
-    eslint-plugin-lit: "npm:^2.1.1"
+    eslint-plugin-lit: "npm:^2.2.1"
     eslint-plugin-observers: "npm:^1.0.1"
     eslint-plugin-unicorn: "npm:^62.0.0"
     eslint-plugin-wc: "npm:^3.0.2"
