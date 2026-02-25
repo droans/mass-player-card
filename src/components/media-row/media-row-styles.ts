@@ -103,6 +103,9 @@ export default css`
     margin-left: 64px;
     margin-right: 24px;
   }
+  .hide-covers .title {
+    margin-left: 14px;
+  }
 
   .svg-action-button {
     height: var(--row-icon-button-height);
