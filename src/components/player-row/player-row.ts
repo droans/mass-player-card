@@ -96,7 +96,10 @@ class PlayerRow extends LitElement {
   }
 
   private callOnPlayerSelectedService = () => {
-    if (!this.player_entity) {
+    if (
+      !this.player_entity ||
+      ["unknown", "unavailable"].includes(this.player_entity.state)
+    ) {
       return;
     }
     this.selectedService(this.player_entity.entity_id);
@@ -277,11 +280,17 @@ class PlayerRow extends LitElement {
   render() {
     const active = this.selected ? `-active` : ``;
     const expressive = this.useExpressive ? `button-expressive` : ``;
+    const entityExists = this.player_entity;
+    const entityAvailable = !["unknown", "unavailable"].includes(
+      this.player_entity?.state ?? "unavailable",
+    );
+    const disabled = !entityExists || !entityAvailable;
     return html`
       <ha-md-list-item
         class="button${active} ${expressive}${active}"
         @click=${this.callOnPlayerSelectedService}
         type="button"
+        ?disabled=${disabled}
       >
         ${this.renderThumbnail()} ${this.renderTitle()}
         ${this.renderActionButtons()}

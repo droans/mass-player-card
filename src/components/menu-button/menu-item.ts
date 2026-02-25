@@ -37,6 +37,9 @@ export class MassMenuItem extends LitElement {
   // Sets the list item class to "selected-item"
   @property({ attribute: "selected", type: Boolean }) selected = false;
 
+  // Sets the item as disabled
+  @property({ type: Boolean }) disabled = false;
+
   @property({ attribute: false })
   public set menuItem(item: ListItemData) {
     this._menuItem = item;
@@ -69,6 +72,9 @@ export class MassMenuItem extends LitElement {
   }
 
   protected onSelection = () => {
+    if (this.disabled) {
+      return;
+    }
     const detail = { option: this.menuItem.option };
     const event = new CustomEvent("menu-item-selected", {
       detail,
@@ -129,6 +135,7 @@ export class MassMenuItem extends LitElement {
         class="menu-list-item-md ${expressive_class} ${vibrant_class} ${selected_class}"
         type="button"
         @click=${this.onSelection}
+        ?disabled=${this.disabled}
       >
         ${this.renderImageOrIcon()}
         <span
@@ -152,6 +159,7 @@ export class MassMenuItem extends LitElement {
         .value="${itm.option}"
         graphic="icon"
         @click=${this.onSelection}
+        ?disabled=${this.disabled}
       >
         ${this.renderImageOrIcon()}
         <span
