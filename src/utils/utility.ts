@@ -219,3 +219,21 @@ export function formatDuration(dur: number | undefined) {
   }
   return `${mins.toString()} minutes`;
 }
+
+export function playerIsAvailable(
+  hass: ExtendedHass | undefined,
+  entity_id: string,
+): boolean {
+  if (typeof entity_id != "string" || !entity_id.startsWith("media_player")) {
+    return false;
+  }
+  if (!hass?.states) {
+    return false;
+  }
+  const entity = hass.states[entity_id];
+  if (!entity) {
+    return false;
+  }
+  const state = entity.state;
+  return !["unknown", "unavailable"].includes(state);
+}

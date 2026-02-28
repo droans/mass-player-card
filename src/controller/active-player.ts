@@ -27,7 +27,12 @@ import {
   getGroupVolumeServiceSchema,
 } from "mass-queue-types/packages/mass_queue/actions/get_group_volume";
 import { setGroupVolumeServiceSchema } from "mass-queue-types/packages/mass_queue/actions/set_group_volume";
-import { isActive, jsonMatch, playerHasUpdated } from "../utils/utility";
+import {
+  isActive,
+  jsonMatch,
+  playerHasUpdated,
+  playerIsAvailable,
+} from "../utils/utility";
 import {
   applyExpressiveScheme,
   generateDefaultExpressiveSchemeColor,
@@ -372,8 +377,7 @@ export class ActivePlayerController {
       return isActive(this.hass, ent, entity);
     });
     const firstAvailablePlayer = players.find((entity) => {
-      const ent = states[entity.entity_id];
-      return !["unknown", "unavailable"].includes(ent?.state ?? "unknown");
+      return playerIsAvailable(this.hass, entity.entity_id);
     });
     if (firstActivePlayer) {
       this.activeEntityConfig = firstActivePlayer;
@@ -572,7 +576,7 @@ export class ActivePlayerController {
   ): Promise<string[]> {
     if (
       !this.activeMediaPlayer ||
-      ["unknown", "unavailable"].includes(this.activeMediaPlayer.state)
+      !playerIsAvailable(this.hass, this.activeEntityID)
     ) {
       return [];
     }
@@ -581,10 +585,8 @@ export class ActivePlayerController {
     const result: string[] = [];
     for (const ent of ents) {
       const _id = ent.entity_id;
-      const entity = this.hass.states[_id];
-      const state = entity?.state ?? "unknown";
-      const available = !["unknown", "unavailable"].includes(state);
-      if (entity && available) {
+      const available = playerIsAvailable(this.hass, _id);
+      if (available) {
         const _prov = await this.getPlayerProvider(_id);
         if (_prov == provider && _id != entity_id) {
           result.push(_id);

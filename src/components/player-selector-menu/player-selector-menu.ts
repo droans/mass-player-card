@@ -15,6 +15,7 @@ import { PlayerConfig } from "../../config/player";
 import { Icons } from "../../const/icons";
 import { ExtendedHass, ListItemData } from "../../const/types";
 import { customElement } from "lit/decorators.js";
+import { playerIsAvailable } from "../../utils/utility";
 
 @customElement("mpc-player-selector")
 export class MassCardPlayerSelector extends LitElement {
@@ -59,9 +60,9 @@ export class MassCardPlayerSelector extends LitElement {
           "";
         fallback = ent.attributes.entity_picture ?? "";
       }
-      const disabled = ["unknown", "unavailable"].includes(ent.state)
-        ? { disabled: true }
-        : {};
+      const disabled = playerIsAvailable(this.hass, ent.entity_id)
+        ? {}
+        : { disabled: true };
       const r: ListItemData = {
         option: item.entity_id,
         icon: this.Icons.SPEAKER,
