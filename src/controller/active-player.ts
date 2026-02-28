@@ -331,6 +331,9 @@ export class ActivePlayerController {
     ) {
       return;
     }
+    if (!playerIsAvailable(this.hass, this.activeEntityID)) {
+      return;
+    }
     const data = await this.getactivePlayerData();
     const new_data = JSON.stringify(data);
     const current_data = JSON.stringify(this.activePlayerData);
