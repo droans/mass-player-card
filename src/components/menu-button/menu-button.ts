@@ -20,10 +20,21 @@ import { MassCardController } from "../../controller/controller";
 import "./menu-item";
 import { ControlSelectMenuElement } from "../../const/elements";
 
+export type MenuButtonScheme = "filled" | "tonal" | "standard" | "plain";
+const DEFAULT_SCHEME: MenuButtonScheme = "filled";
+
 export class MassMenuButton extends LitElement {
   @property({ attribute: false }) public iconPath!: string;
 
   @property({ attribute: false }) private _items?: ListItems;
+
+  @property({
+    attribute: "scheme",
+    type: String,
+    default: DEFAULT_SCHEME,
+    reflect: true,
+  })
+  scheme: MenuButtonScheme = DEFAULT_SCHEME;
 
   @property({ type: Boolean, attribute: "fixedMenuPosition" })
   public fixedMenuPosition = false;

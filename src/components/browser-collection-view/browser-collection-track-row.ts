@@ -183,6 +183,7 @@ export class MassPlaylistTrackRow extends LitElement {
           @menu-item-selected=${this.onMenuItemSelected}
           fixedMenuPosition
           naturalMenuWidth
+          scheme="plain"
           .items=${this.enqueueButtons}
         >
         </mass-menu-button>

@@ -22,9 +22,23 @@ export default css`
       --md-sys-color-on-tertiary-container
     );
     --animation-duration: 0.25s;
-  }
-  :host {
     border-radius: var(--used-border-radius);
+  }
+  :host([scheme="filled"]) {
+    --menu-button-background-color: var(--md-sys-color-primary);
+    --button-icon-color: var(--md-sys-color-on-primary);
+  }
+  :host([scheme="tonal"]) {
+    --menu-button-background-color: var(--md-sys-color-secondary-container);
+    --button-icon-color: var(--md-sys-color-on-secondary-container);
+  }
+  :host([scheme="standard"]) {
+    --menu-button-background-color: unset;
+    --button-icon-color: var(--md-sys-color-on-surface-variant);
+  }
+  :host([scheme="plain"]) {
+    --menu-button-background-color: none;
+    --button-icon-color: var(--md-sys-color-on-surface-variant);
   }
   :host([elevation="0"]) {
     --button-elevation: var(--md-sys-elevation-level0);
