@@ -23,6 +23,7 @@ export default css`
   }
   mass-menu-button {
     --menu-button-border-radius: 50%;
+    border-radius: var(--menu-button-border-radius);
   }
   mass-menu-button::part(menu-button) {
     --ha-ripple-color: rgba(0, 0, 0, 0);
@@ -31,6 +32,13 @@ export default css`
     height: 2em;
     width: 2em;
   }
+  mass-menu-button::part(base) {
+    height: 72px;
+  }
+  mass-menu-button::part(menu-button) {
+    --button-button-height: var(--mdc-icon-size);
+    --button-button-width: var(--mdc-icon-size);
+  }
   mass-menu-button::part(menu-select-menu) {
     --mdc-icon-size: var(--header-expanded-menu-icon-size);
     --control-select-menu-height: unset;
@@ -38,6 +46,7 @@ export default css`
     --control-select-menu-padding: unset;
   }
   mass-menu-button::part(menu-svg) {
+    fill: var(--md-sys-color-primary);
     color: var(--md-sys-color-primary);
     background-color: var(
       --ha-card-background,

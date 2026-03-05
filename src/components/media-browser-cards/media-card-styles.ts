@@ -3,6 +3,9 @@ import { css } from "lit";
 // Styles belonging to the card
 // https://lit.dev/docs/components/styles/
 export default css`
+  :host {
+    --mdc-icon-size: calc(10em / var(--columns, 2));
+  }
   mass-menu-button {
     --menu-button-border-radius: 50%;
   }
@@ -10,13 +13,17 @@ export default css`
     height: 2em;
     width: 2em;
   }
+  mass-menu-button::part(menu-button) {
+    --button-button-height: var(--mdc-icon-size);
+    --button-button-width: var(--mdc-icon-size);
+  }
   mass-menu-button::part(menu-select-menu) {
-    --mdc-icon-size: calc(10em / var(--columns, 2));
     --control-select-menu-height: unset;
     --control-select-menu-background-color: unset;
   }
   mass-menu-button::part(menu-svg) {
     color: var(--md-sys-color-primary);
+    fill: var(--md-sys-color-primary);
     background-color: var(
       --ha-card-background,
       var(--card-background-color, #fff)

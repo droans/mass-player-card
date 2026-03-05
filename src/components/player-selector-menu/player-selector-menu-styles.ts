@@ -27,7 +27,7 @@ export default css`
     background-color: var(--control-select-menu-background-color);
   }
   .menu-header.expressive::part(menu-svg) {
-    color: var(--md-sys-color-primary);
+    color: var(--md-sys-color-on-primary);
   }
   .menu-header:not(.expressive)::part(menu-select-menu) {
     background-color: var(--control-select-menu-background-color);
