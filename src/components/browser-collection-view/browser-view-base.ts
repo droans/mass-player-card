@@ -289,26 +289,28 @@ export class BrowserViewBase extends LitElement {
     const selectElement = this.enqueueElement?.shadowRoot
       ?.querySelector("#menu-select-menu")
       ?.shadowRoot?.querySelector(".select-anchor");
-    if (!iconElement || !selectElement) {
-      return;
+    if (iconElement) {
+      this.enqueueIconElement = iconElement as HTMLElement;
+      const iconKeyFrames = {
+        height: "var(--header-collapsed-menu-icon-size)",
+        width: "var(--header-collapsed-menu-icon-size)",
+      };
+      this.enqueueIconAnimation = this.addScrollAnimation(
+        iconKeyFrames,
+        this.enqueueIconElement,
+      );
     }
-    const iconKeyFrames = {
-      height: "var(--header-collapsed-menu-icon-size)",
-      width: "var(--header-collapsed-menu-icon-size)",
-    };
-    const selectKeyFrames = {
-      height: "var(--header-collapsed-menu-control-size)",
-    };
-    this.enqueueIconElement = iconElement as HTMLElement;
-    this.enqueueControlElement = selectElement as HTMLElement;
-    this.enqueueIconAnimation = this.addScrollAnimation(
-      iconKeyFrames,
-      this.enqueueIconElement,
-    );
-    this.enqueueControlAnimation = this.addScrollAnimation(
-      selectKeyFrames,
-      this.enqueueControlElement,
-    );
+    if (selectElement) {
+      this.enqueueControlElement = selectElement as HTMLElement;
+
+      const selectKeyFrames = {
+        height: "var(--header-collapsed-menu-control-size)",
+      };
+      this.enqueueControlAnimation = this.addScrollAnimation(
+        selectKeyFrames,
+        this.enqueueControlElement,
+      );
+    }
   }
   protected animateHeaderImage() {
     const imgDivKf = {
