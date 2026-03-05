@@ -107,7 +107,7 @@ export class MassMenuButton extends LitElement {
     if (!this.menuElement) {
       return;
     }
-    this.menuElement.menuOpen = false;
+    this.menuElement.open = false;
   };
 
   protected renderMenuItems(): TemplateResult | TemplateResult[] {
@@ -137,7 +137,7 @@ export class MassMenuButton extends LitElement {
     const vibrant_class = this.useVibrant ? `vibrant` : ``;
     return html`
       <div id="menu-button" part="menu-button">
-        <ha-control-select-menu
+        <ha-dropdown
           id="menu-select-menu"
           class="${expressive_class} ${vibrant_class}"
           part="menu-select-menu"
@@ -148,16 +148,21 @@ export class MassMenuButton extends LitElement {
             event_.stopPropagation();
           }}
         >
-          <div class="div-icon" slot="icon" part="div-icon">
+          <mass-player-card-button
+            slot="trigger"
+            part="div-icon"
+            role="variant"
+          >
             <ha-svg-icon
               class="svg-menu ${this.useExpressive ? `expressive` : ``}"
               part="menu-svg"
               .path=${this.iconPath}
             ></ha-svg-icon>
-          </div>
+          </mass-player-card-button>
+          <div class="div-icon" slot="trigger" part="div-icon"></div>
           ${this.renderMenuItems()}
           <slot></slot>
-        </ha-control-select-menu>
+        </ha-dropdown>
       </div>
     `;
   }

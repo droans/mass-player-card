@@ -80,51 +80,45 @@ export default css`
     border: none;
   }
   mpc-menu-item:first-of-type {
-    margin-top: 10px;
+    margin-top: 4px;
   }
   mpc-menu-item:last-of-type {
-    margin-bottom: 10px;
+    margin-bottom: 4px;
   }
   #menu-button {
     border-radius: var(--used-border-radius);
   }
+  #menu-select-menu::part(menu) {
+    background-color: var(--menu-background-color);
+    border-radius: 24px;
+  }
   .menu-expressive {
-    --mdc-theme-text-primary-on-background: var(
-      --mass-menu-text-color-expressive
-    );
-    --mdc-theme-text-icon-on-background: var(--mass-menu-icon-color-expressive);
-    --mdc-theme-surface: var(--mass-menu-background-color-expressive);
+    --menu-background-color: var(--mass-menu-background-color-expressive);
     --mdc-shape-medium: var(--default-border-radius);
-    --mdc-list-vertical-padding: 0px;
+  }
+  mass-player-card-button::part(button) {
+    --used-button-background-color: var(--menu-button-background-color);
   }
   .menu-expressive.vibrant {
-    --mdc-theme-text-primary-on-background: var(
-      --mass-menu-text-color-expressive-vibrant
+    --menu-background-color: var(
+      --mass-menu-background-color-expressive-vibrant
     );
-    --mdc-theme-text-icon-on-background: var(
-      --mass-menu-icon-color-expressive-vibrant
-    );
-    --mdc-theme-surface: var(--mass-menu-background-color-expressive-vibrant);
   }
   #menu-select-menu {
-    --control-select-menu-padding: unset;
-    --ha-ripple-hover-opacity: 0%;
-    --ha-ripple-pressed-opacity: 0%;
     border-radius: var(--used-border-radius);
   }
   .svg-menu {
     border-radius: var(--used-border-radius);
+    --icon-primary-color: var(--button-icon-color);
   }
   .svg-menu:not(.expressive) {
     color: var(--md-sys-color-primary);
   }
   .inactive-item {
-    background-color: var(--mdc-theme-surface);
+    background-color: var(--menu-background-color);
   }
   .inactive-item-expressive {
     border-radius: var(--default-border-radius);
-    --md-ripple-hover-color: var(--md-sys-color-on-surface);
-    --md-ripple-pressed-color: var(--md-sys-color-on-surface);
   }
   .svg-expressive {
     margin-left: 14px;

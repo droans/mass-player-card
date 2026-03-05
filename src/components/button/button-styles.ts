@@ -16,6 +16,7 @@ export default css`
     --animation-duration: 0.25s;
     --used-button-height: var(--button-button-height);
     --used-button-width: var(--button-button-width);
+    --ha-space-1: 0px;
   }
   ha-button:not(.expressive)::part(base) {
     --inherited-background-color: var(
@@ -33,7 +34,11 @@ export default css`
     color: var(--used-button-text-color, var(--button-text-color));
     --ha-button-border-radius: 12px !important;
   }
+  ha-button {
+    border-radius: var(--ha-button-border-radius);
+  }
   ha-button::part(base) {
+    height: var(--used-button-height, 100%);
     width: var(--used-button-width, 100%);
     box-shadow: var(--button-elevation);
     padding: unset;
@@ -55,7 +60,8 @@ export default css`
   }
 
   .small::part(base) {
-    height: var(--used-button-height, var(--button-default-height-small));
+    min-height: var(--used-button-height, var(--button-default-height-small));
+    min-width: var(--used-button-width, var(--button-default-height-small));
     --ha-button-border-radius: var(
       --button-border-radius,
       var(--button-default-border-radius-small)
@@ -65,7 +71,8 @@ export default css`
   }
 
   .medium::part(base) {
-    height: var(--used-button-height, var(--button-default-height-medium));
+    min-height: var(--used-button-height, var(--button-default-height-medium));
+    min-width: var(--used-button-height, var(--button-default-height-medium));
     --ha-button-border-radius: var(
       --button-border-radius,
       var(--button-default-border-radius-medium)
@@ -75,7 +82,8 @@ export default css`
   }
 
   .large::part(base) {
-    height: var(--used-button-height, var(--button-default-height-large));
+    min-height: var(--used-button-height, var(--button-default-height-large));
+    min-width: var(--used-button-height, var(--button-default-height-large));
     --ha-button-border-radius: var(
       --button-border-radius,
       var(--button-default-border-radius-large)
