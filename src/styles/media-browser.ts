@@ -42,9 +42,6 @@ export default css`
   #filter-menu::part(menu-svg) {
     height: 30px;
     width: 30px;
-    position: absolute;
-    top: 2.5px;
-    left: 2.5px;
   }
   #filter-menu:not(.filter-menu-expressive)::part(menu-select-menu) {
     --control-select-menu-background-color: var(
