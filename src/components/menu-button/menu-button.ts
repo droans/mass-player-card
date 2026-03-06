@@ -170,7 +170,6 @@ export class MassMenuButton extends LitElement {
               .path=${this.iconPath}
             ></ha-svg-icon>
           </mass-player-card-button>
-          <div class="div-icon" slot="trigger" part="div-icon"></div>
           ${this.renderMenuItems()}
           <slot></slot>
         </ha-dropdown>
