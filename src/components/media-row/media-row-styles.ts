@@ -129,7 +129,6 @@ export default css`
     background-repeat: no-repeat;
     background-position: left;
     border-radius: var(--media-row-border-radius);
-    margin-left: 14px;
   }
   .thumbnail,
   .thumbnail-disabled {

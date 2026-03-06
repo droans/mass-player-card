@@ -23,6 +23,7 @@ export default css`
   }
   mass-menu-button {
     --menu-button-border-radius: 50%;
+    border-radius: var(--menu-button-border-radius);
   }
   mass-menu-button::part(menu-button) {
     --ha-ripple-color: rgba(0, 0, 0, 0);
@@ -31,25 +32,32 @@ export default css`
     height: 2em;
     width: 2em;
   }
+  mass-menu-button::part(base) {
+    height: 72px;
+  }
+  mass-menu-button::part(menu-button) {
+    --button-button-height: var(--mdc-icon-size);
+    --button-button-width: var(--mdc-icon-size);
+  }
   mass-menu-button::part(menu-select-menu) {
-    --mdc-icon-size: var(--header-expanded-menu-icon-size);
     --control-select-menu-height: unset;
     --control-select-menu-background-color: unset;
     --control-select-menu-padding: unset;
   }
   mass-menu-button::part(menu-svg) {
+    fill: var(--md-sys-color-primary);
     color: var(--md-sys-color-primary);
     background-color: var(
       --ha-card-background,
       var(--card-background-color, #fff)
     );
+    --mdc-icon-size: var(--header-expanded-menu-icon-size);
   }
   #animation-image {
     display: block;
   }
   #collection-image {
     display: flex;
-    /* place-content: center; */
     height: 10em;
     aspect-ratio: 1;
     --collection-image-div-collapsed-height: 6em;
@@ -85,17 +93,6 @@ export default css`
     border-top-right-radius: var(--default-border-radius);
     z-index: 2;
   }
-  /* #header-wrapper {
-    height: var(--view-header-wrapper-height);
-    position: absolute;
-    width: 100%;
-  }
-  #header-wrapper::before {
-    content: " ";
-    display: block;
-    height: 1em;
-    width: 100%;
-  } */
   #img-header {
     display: flex;
     border-radius: 15%;

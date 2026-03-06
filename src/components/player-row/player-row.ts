@@ -19,7 +19,7 @@ import {
   useExpressiveContext,
 } from "../../const/context";
 
-import { isActive, jsonMatch } from "../../utils/utility";
+import { isActive, jsonMatch, playerIsAvailable } from "../../utils/utility";
 
 import styles from "./player-row-styles";
 import {
@@ -97,8 +97,8 @@ class PlayerRow extends LitElement {
 
   private callOnPlayerSelectedService = () => {
     if (
-      !this.player_entity ||
-      ["unknown", "unavailable"].includes(this.player_entity.state)
+      !this.player_entity?.entity_id ||
+      !playerIsAvailable(this.hass, this.player_entity.entity_id)
     ) {
       return;
     }
@@ -281,8 +281,9 @@ class PlayerRow extends LitElement {
     const active = this.selected ? `-active` : ``;
     const expressive = this.useExpressive ? `button-expressive` : ``;
     const entityExists = this.player_entity;
-    const entityAvailable = !["unknown", "unavailable"].includes(
-      this.player_entity?.state ?? "unavailable",
+    const entityAvailable = playerIsAvailable(
+      this.hass,
+      this.player_entity?.entity_id ?? "",
     );
     const disabled = !entityExists || !entityAvailable;
     return html`

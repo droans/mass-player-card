@@ -3,7 +3,8 @@ import { css } from "lit";
 // Styles belonging to the card
 // https://lit.dev/docs/components/styles/
 export default css`
-  .button-min::part(button) {
+  .button-min::part(button),
+  #filter-menu {
     --button-button-height: 35px;
     --button-button-width: 35px;
     --button-padding: 0px;
@@ -41,9 +42,6 @@ export default css`
   #filter-menu::part(menu-svg) {
     height: 30px;
     width: 30px;
-    position: absolute;
-    top: 2.5px;
-    left: 2.5px;
   }
   #filter-menu:not(.filter-menu-expressive)::part(menu-select-menu) {
     --control-select-menu-background-color: var(
@@ -107,9 +105,6 @@ export default css`
   #search-media-type-menu::part(menu-svg) {
     height: 30px;
     width: 30px;
-    position: absolute;
-    top: 2.5px;
-    left: 2.5px;
   }
   .search-media-type-menu-expressive::part(menu-svg),
   .search-library-button-expressive .svg-menu-expressive {

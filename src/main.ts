@@ -9,7 +9,6 @@ import {
 import { html } from "lit/static-html.js";
 import { customElement, state } from "lit/decorators.js";
 import { cache } from "lit/directives/cache.js";
-// import localForage from 'localforage';
 
 import "./sections/media-browser";
 import "./sections/music-player";

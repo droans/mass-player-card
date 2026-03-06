@@ -19,17 +19,20 @@ export class MassBrowserArtistView extends BrowserViewBase {
   @state() private artistMetadata?: getArtistServiceResponse;
 
   // Ask HA to return the tracks in the artist
-  public async getTracks() {
+  public getTracks() {
     if (!this.hass || !this.collectionData || !this.activePlayer) {
       return;
     }
-    const tracks = await this.browserActions.actionGetArtistTracks(
-      this.collectionData.media_content_id,
-      this.activePlayer.entity_id,
-    );
-    this.tracks = tracks.response.tracks;
+    void this.browserActions
+      .actionGetArtistTracks(
+        this.collectionData.media_content_id,
+        this.activePlayer.entity_id,
+      )
+      .then((tracks) => {
+        this.tracks = tracks.response.tracks;
+      });
     this.setHiddenElements();
-    await this.getMetadata();
+    void this.getMetadata();
   }
   public async getMetadata() {
     if (!this.hass || !this.collectionData || !this.activePlayer) {

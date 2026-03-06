@@ -183,6 +183,7 @@ export class MassPlaylistTrackRow extends LitElement {
           @menu-item-selected=${this.onMenuItemSelected}
           fixedMenuPosition
           naturalMenuWidth
+          scheme="plain"
           .items=${this.enqueueButtons}
         >
         </mass-menu-button>
@@ -194,7 +195,6 @@ export class MassPlaylistTrackRow extends LitElement {
     event_.target.src = getThumbnail(this.hass, Thumbnail.CLEFT) as string;
   };
   protected renderThumbnail(): TemplateResult {
-    // const fallback = getThumbnail(this.hass, Thumbnail.CLEFT);
     const loc_img = this.track.local_image_encoded?.length
       ? this.track.local_image_encoded
       : undefined;

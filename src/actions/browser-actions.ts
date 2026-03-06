@@ -94,7 +94,6 @@ export default class BrowserActions {
       entity_id,
       media_id: content_id,
       media_type: content_type,
-      // enqueue,
     };
     const arguments_ =
       enqueue == EnqueueOptions.RADIO

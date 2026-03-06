@@ -21,22 +21,25 @@ export class MassBrowserPlaylistView extends BrowserViewBase {
   @state() private playlistMetadata?: getPlaylistServiceResponse;
 
   // Ask HA to return the tracks in the playlist
-  public async getTracks() {
+  public getTracks() {
     if (!this.hass || !this.collectionData || !this.activePlayer) {
       return;
     }
-    const tracks = await this.browserActions.actionGetPlaylistTracks(
-      this.collectionData.media_content_id,
-      this.activePlayer.entity_id,
-    );
-    this.tracks = tracks.response.tracks;
-    let dur = 0;
-    this.tracks.forEach((track) => {
-      dur += track.duration ?? 0;
-    });
-    this.playlistDuration = dur;
+    void this.browserActions
+      .actionGetPlaylistTracks(
+        this.collectionData.media_content_id,
+        this.activePlayer.entity_id,
+      )
+      .then((tracks) => {
+        this.tracks = tracks.response.tracks;
+        let dur = 0;
+        this.tracks.forEach((track) => {
+          dur += track.duration ?? 0;
+        });
+        this.playlistDuration = dur;
+      });
     this.setHiddenElements();
-    await this.getPlaylistMetadata();
+    void this.getPlaylistMetadata();
   }
   public async getPlaylistMetadata() {
     if (!this.hass || !this.collectionData || !this.activePlayer) {

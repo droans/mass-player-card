@@ -13,5 +13,5 @@ export interface DialogElement extends LitElement {
 }
 
 export interface ControlSelectMenuElement extends LitElement {
-  menuOpen: boolean;
+  open: boolean;
 }

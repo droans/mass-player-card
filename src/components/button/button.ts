@@ -19,7 +19,7 @@ const BUTTON_ROLE_MAP: Record<ButtonColorRole, string> = {
 };
 
 class MassButton extends LitElement {
-  @property({ attribute: false }) onPressService!: (event_: Event) => void;
+  @property({ attribute: false }) onPressService?: (event_: Event) => void;
   @property({ attribute: "role", type: String }) colorRole: ButtonColorRole =
     DEFAULT_COLOR_ROLE;
   @property({ attribute: "size", type: String }) size:
@@ -29,7 +29,8 @@ class MassButton extends LitElement {
   @property({ attribute: "disabled", type: Boolean }) disabled = false;
   @property({ attribute: "selected", type: Boolean }) selected = false;
   @property({ attribute: "selectable", type: Boolean }) selectable = false;
-  @property({ attribute: "elevation", type: Number }) elevation = 0;
+  @property({ attribute: "elevation", type: Number, default: 1, reflect: true })
+  elevation = 1;
   @property({ attribute: "outlined", type: Boolean }) outlined = false;
   @property({ attribute: false }) private onHoldService?: (
     event_: Event,
@@ -41,10 +42,13 @@ class MassButton extends LitElement {
 
   private onHold = (event_: Event) => {
     const function_ = this.onHoldService ?? this.onPressService;
+    if (!function_) {
+      return;
+    }
     function_(event_);
   };
   private onPointerUp = (event_: Event) => {
-    if (this.timeout || !this.onHoldService) {
+    if ((this.timeout || !this.onHoldService) && this.onPressService) {
       clearTimeout(this.timeout);
       this.onPressService(event_);
       this.timeout = undefined;
