@@ -29,7 +29,8 @@ class MassButton extends LitElement {
   @property({ attribute: "disabled", type: Boolean }) disabled = false;
   @property({ attribute: "selected", type: Boolean }) selected = false;
   @property({ attribute: "selectable", type: Boolean }) selectable = false;
-  @property({ attribute: "elevation", type: Number }) elevation = 0;
+  @property({ attribute: "elevation", type: Number, default: 1, reflect: true })
+  elevation = 1;
   @property({ attribute: "outlined", type: Boolean }) outlined = false;
   @property({ attribute: false }) private onHoldService?: (
     event_: Event,
