@@ -27,12 +27,17 @@ import {
   getGroupVolumeServiceSchema,
 } from "mass-queue-types/packages/mass_queue/actions/get_group_volume";
 import { setGroupVolumeServiceSchema } from "mass-queue-types/packages/mass_queue/actions/set_group_volume";
-import { isActive, jsonMatch, playerHasUpdated } from "../utils/utility";
+import {
+  isActive,
+  jsonMatch,
+  playerHasUpdated,
+  playerIsAvailable,
+} from "../utils/utility";
 import {
   applyExpressiveScheme,
   generateDefaultExpressiveSchemeColor,
   generateExpressiveSchemeFromColor,
-  generateExpressiveSourceColorFromImageElement,
+  getOrGenerateExpressiveScheme,
 } from "../utils/expressive";
 import {
   getInfoWSResponseSchema,
@@ -120,6 +125,8 @@ export class ActivePlayerController {
     if (playerHasUpdated(current_entity, new_entity)) {
       this.setActivePlayer(this.activeEntityID);
     }
+    this.volumeMediaPlayer =
+      hass.states[this.activeEntityConfig.volume_entity_id];
     void this.updateActivePlayerData();
   }
   public get hass() {
@@ -324,6 +331,9 @@ export class ActivePlayerController {
     ) {
       return;
     }
+    if (!playerIsAvailable(this.hass, this.activeEntityID)) {
+      return;
+    }
     const data = await this.getactivePlayerData();
     const new_data = JSON.stringify(data);
     const current_data = JSON.stringify(this.activePlayerData);
@@ -365,12 +375,22 @@ export class ActivePlayerController {
   private setDefaultActivePlayer() {
     const states = this.hass.states;
     const players = this._config.entities;
-    const active_players = players.filter((entity) => {
+    const firstActivePlayer = players.find((entity) => {
       const ent = states[entity.entity_id];
       return isActive(this.hass, ent, entity);
     });
-    this.activeEntityConfig =
-      active_players.length > 0 ? active_players[0] : players[0];
+    const firstAvailablePlayer = players.find((entity) => {
+      return playerIsAvailable(this.hass, entity.entity_id);
+    });
+    if (firstActivePlayer) {
+      this.activeEntityConfig = firstActivePlayer;
+      return;
+    }
+    if (firstAvailablePlayer) {
+      this.activeEntityConfig = firstAvailablePlayer;
+      return;
+    }
+    this.activeEntityConfig = players[0];
   }
   public setActivePlayer(entity_id: string) {
     const entities_config = this.config.entities;
@@ -462,24 +482,30 @@ export class ActivePlayerController {
     }
     this._updatingScheme = true;
     const activeArtwork = this.getActiveArtwork();
-    const schemeColor =
-      activeArtwork?.tagName.toLowerCase() == "img"
-        ? await generateExpressiveSourceColorFromImageElement(
-            activeArtwork as HTMLImageElement,
-          )
-        : generateDefaultExpressiveSchemeColor();
-    if (schemeColor == this._activeSchemeColor) {
-      this._updatingScheme = false;
-      return;
-    }
-    this._activeSchemeColor = schemeColor;
     const schemeName = this.config.expressive_scheme;
-    const scheme = generateExpressiveSchemeFromColor(
-      schemeColor,
+    const darkMode = this.hass.themes.darkMode;
+    if (
+      !this.activeMediaPlayer?.attributes.media_content_id ||
+      !activeArtwork
+    ) {
+      const color = generateDefaultExpressiveSchemeColor();
+      const scheme = generateExpressiveSchemeFromColor(
+        color,
+        schemeName,
+        darkMode,
+      );
+      this._activeSchemeColor = color;
+      this.expressiveScheme = scheme;
+      this._updatingScheme = false;
+      return this.expressiveScheme;
+    }
+    const scheme = await getOrGenerateExpressiveScheme(
+      activeArtwork,
       schemeName,
-      this.hass.themes.darkMode,
+      darkMode,
     );
-    this.expressiveScheme = scheme;
+    this.expressiveScheme = scheme.scheme;
+    this._activeSchemeColor = scheme.color;
     this._updatingScheme = false;
     return this.expressiveScheme;
   }
@@ -551,14 +577,23 @@ export class ActivePlayerController {
   public async playerCanGroupWith(
     entity_id = this.activeEntityID,
   ): Promise<string[]> {
+    if (
+      !this.activeMediaPlayer ||
+      !playerIsAvailable(this.hass, this.activeEntityID)
+    ) {
+      return [];
+    }
     const provider = await this.getPlayerProvider(entity_id);
     const ents = this.config.entities;
     const result: string[] = [];
     for (const ent of ents) {
       const _id = ent.entity_id;
-      const _prov = await this.getPlayerProvider(_id);
-      if (_prov == provider && _id != entity_id) {
-        result.push(_id);
+      const available = playerIsAvailable(this.hass, _id);
+      if (available) {
+        const _prov = await this.getPlayerProvider(_id);
+        if (_prov == provider && _id != entity_id) {
+          result.push(_id);
+        }
       }
     }
     return result;

@@ -17,6 +17,7 @@ import {
 import { ExpressiveScheme } from "../config/config";
 import { ExtendedHass } from "../const/types";
 import { tryPrefetchImageWithFallbacks } from "./utility";
+import localForage from "localforage";
 
 type dynamicSchemeType = new (
   sourceColorHct: Hct,
@@ -175,4 +176,68 @@ function _parseColorRgb(color: string) {
       return Number.parseInt(i);
     });
   return argbFromRgb(ints[0], ints[1], ints[2]);
+}
+
+export async function getOrGenerateExpressiveScheme(
+  imageElement: HTMLElement,
+  schemeName: ExpressiveScheme,
+  darkMode: boolean,
+): Promise<{ scheme: DynamicScheme; color: number }> {
+  const imgSource = (imageElement as HTMLImageElement | undefined)?.src ?? ``;
+  const isSecure = imgSource.startsWith("https");
+  if (!isSecure) {
+    const color = generateDefaultExpressiveSchemeColor();
+    const scheme = generateExpressiveSchemeFromColor(
+      color,
+      schemeName,
+      darkMode,
+    );
+    return { scheme, color };
+  }
+  const cachedScheme = await getCachedExpressiveScheme(
+    imgSource,
+    schemeName,
+    darkMode,
+  );
+  if (cachedScheme) {
+    return { scheme: cachedScheme, color: cachedScheme.sourceColorArgb };
+  }
+  const color = await generateExpressiveSourceColorFromImageElement(
+    imageElement as HTMLImageElement,
+  );
+  const scheme = generateExpressiveSchemeFromColor(color, schemeName, darkMode);
+  if (imageElement.tagName.toLowerCase() == "img") {
+    await setCachedExpressiveScheme(imgSource, schemeName, darkMode, scheme);
+  }
+  return { scheme, color };
+}
+async function getCachedExpressiveScheme(
+  imageURL: string,
+  schemeName: ExpressiveScheme,
+  darkMode: boolean,
+): Promise<DynamicScheme | undefined> {
+  const key = _createExpressiveKey(imageURL, schemeName, darkMode);
+  const color = await localForage.getItem(key);
+  if (typeof color == "number") {
+    return generateExpressiveSchemeFromColor(color, schemeName, darkMode);
+  }
+  return;
+}
+
+async function setCachedExpressiveScheme(
+  imageURL: string,
+  schemeName: ExpressiveScheme,
+  darkMode: boolean,
+  scheme: DynamicScheme,
+) {
+  const key = _createExpressiveKey(imageURL, schemeName, darkMode);
+  await localForage.setItem(key, scheme.sourceColorArgb);
+}
+
+function _createExpressiveKey(
+  imageURL: string,
+  schemeName: ExpressiveScheme,
+  darkMode: boolean,
+): string {
+  return `${imageURL}-${schemeName}-${darkMode ? `dark` : `light`}`;
 }

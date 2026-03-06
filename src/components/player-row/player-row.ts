@@ -19,7 +19,7 @@ import {
   useExpressiveContext,
 } from "../../const/context";
 
-import { isActive, jsonMatch } from "../../utils/utility";
+import { isActive, jsonMatch, playerIsAvailable } from "../../utils/utility";
 
 import styles from "./player-row-styles";
 import {
@@ -96,7 +96,10 @@ class PlayerRow extends LitElement {
   }
 
   private callOnPlayerSelectedService = () => {
-    if (!this.player_entity) {
+    if (
+      !this.player_entity?.entity_id ||
+      !playerIsAvailable(this.hass, this.player_entity.entity_id)
+    ) {
       return;
     }
     this.selectedService(this.player_entity.entity_id);
@@ -277,11 +280,18 @@ class PlayerRow extends LitElement {
   render() {
     const active = this.selected ? `-active` : ``;
     const expressive = this.useExpressive ? `button-expressive` : ``;
+    const entityExists = this.player_entity;
+    const entityAvailable = playerIsAvailable(
+      this.hass,
+      this.player_entity?.entity_id ?? "",
+    );
+    const disabled = !entityExists || !entityAvailable;
     return html`
       <ha-md-list-item
         class="button${active} ${expressive}${active}"
         @click=${this.callOnPlayerSelectedService}
         type="button"
+        ?disabled=${disabled}
       >
         ${this.renderThumbnail()} ${this.renderTitle()}
         ${this.renderActionButtons()}

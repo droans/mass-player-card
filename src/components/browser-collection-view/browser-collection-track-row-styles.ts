@@ -25,6 +25,7 @@ export default css`
   }
   .menu-button {
     height: 100%;
+    place-content: center;
   }
   .thumbnail {
     width: var(--media-row-thumbnail-height);

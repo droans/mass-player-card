@@ -7,6 +7,7 @@ import { delay, formatDuration } from "../../utils/utility";
 import { getPlaylistServiceResponse } from "mass-queue-types/packages/mass_queue/actions/get_playlist";
 import { PlaylistTrack } from "mass-queue-types/packages/mass_queue/actions/get_playlist_tracks";
 import { BrowserViewBase } from "../browser-collection-view/browser-view-base";
+import { getTranslation } from "../../utils/translations";
 
 @customElement("mpc-browser-playlist-view")
 export class MassBrowserPlaylistView extends BrowserViewBase {
@@ -20,22 +21,25 @@ export class MassBrowserPlaylistView extends BrowserViewBase {
   @state() private playlistMetadata?: getPlaylistServiceResponse;
 
   // Ask HA to return the tracks in the playlist
-  public async getTracks() {
+  public getTracks() {
     if (!this.hass || !this.collectionData || !this.activePlayer) {
       return;
     }
-    const tracks = await this.browserActions.actionGetPlaylistTracks(
-      this.collectionData.media_content_id,
-      this.activePlayer.entity_id,
-    );
-    this.tracks = tracks.response.tracks;
-    let dur = 0;
-    this.tracks.forEach((track) => {
-      dur += track.duration ?? 0;
-    });
-    this.playlistDuration = dur;
+    void this.browserActions
+      .actionGetPlaylistTracks(
+        this.collectionData.media_content_id,
+        this.activePlayer.entity_id,
+      )
+      .then((tracks) => {
+        this.tracks = tracks.response.tracks;
+        let dur = 0;
+        this.tracks.forEach((track) => {
+          dur += track.duration ?? 0;
+        });
+        this.playlistDuration = dur;
+      });
     this.setHiddenElements();
-    await this.getPlaylistMetadata();
+    void this.getPlaylistMetadata();
   }
   public async getPlaylistMetadata() {
     if (!this.hass || !this.collectionData || !this.activePlayer) {
@@ -91,18 +95,28 @@ export class MassBrowserPlaylistView extends BrowserViewBase {
     `;
   }
   protected renderOverview(): TemplateResult {
+    const trackLabel = getTranslation(
+      "browser.collections.track_count",
+      this.hass,
+    ) as string;
+    const loadingLabel = getTranslation("browser.loading", this.hass) as string;
+    const unknwonOwnerLabel = getTranslation(
+      "browser.collections.playlist.unknown_owner",
+      this.hass,
+    ) as string;
     const trackString = this.tracks?.length
-      ? `${this.tracks.length.toString()} Tracks`
-      : `Loading...`;
-    const owner = this.playlistMetadata?.response.owner ?? `Unknown`;
+      ? `${this.tracks.length.toString()} ${trackLabel}`
+      : loadingLabel;
+    const owner = this.playlistMetadata?.response.owner ?? unknwonOwnerLabel;
+    const expressiveClass = this.useExpressive ? `expressive` : ``;
     return html`
       ${this.renderTitle()}
       <div id="collection-info">
-        <div id="tracks-length">${trackString}</div>
-        <div id="playlist-duration">
+        <div id="tracks-length" class="${expressiveClass}">${trackString}</div>
+        <div id="playlist-duration" class="${expressiveClass}">
           ${formatDuration(this.playlistDuration)}
         </div>
-        <div id="playlist-owner">${owner}</div>
+        <div id="playlist-owner" class="${expressiveClass}">${owner}</div>
       </div>
     `;
   }

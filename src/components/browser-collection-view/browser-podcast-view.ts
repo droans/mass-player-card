@@ -5,6 +5,7 @@ import styles from "./browser-podcast-view-styles";
 import { delay } from "../../utils/utility";
 import { BrowserViewBase } from "./browser-view-base";
 import { getPodcastServiceResponse } from "mass-queue-types/packages/mass_queue/actions/get_podcast";
+import { getTranslation } from "../../utils/translations";
 
 @customElement("mpc-browser-podcast-view")
 export class MassBrowserPodcastView extends BrowserViewBase {
@@ -15,26 +16,29 @@ export class MassBrowserPodcastView extends BrowserViewBase {
   @state() private podcastMetadata?: getPodcastServiceResponse;
 
   // Ask HA to return the episodes in the podcast
-  public async getTracks() {
+  public getTracks() {
     if (!this.hass || !this.collectionData || !this.activePlayer) {
       return;
     }
-    const resp = await this.browserActions.actionGetPodcastEpisodes(
-      this.collectionData.media_content_id,
-      this.activePlayer.entity_id,
-    );
-    if (!this.podcastMetadata) {
-      this.tracks = resp.response.episodes;
-    }
+    void this.browserActions
+      .actionGetPodcastEpisodes(
+        this.collectionData.media_content_id,
+        this.activePlayer.entity_id,
+      )
+      .then((resp) => {
+        if (!this.podcastMetadata) {
+          this.tracks = resp.response.episodes;
+        }
+        const tracks = resp.response.episodes.map((track) => {
+          track.media_image =
+            track.media_image.length > 0 ? track.media_image : img;
+          return track;
+        });
+        this.tracks = tracks;
+      });
     const img = this.collectionData.media_image;
-    const tracks = resp.response.episodes.map((track) => {
-      track.media_image =
-        track.media_image.length > 0 ? track.media_image : img;
-      return track;
-    });
-    this.tracks = tracks;
     this.setHiddenElements();
-    await this.getPodcastMetadata();
+    void this.getPodcastMetadata();
   }
   public async getPodcastMetadata() {
     if (!this.hass || !this.collectionData || !this.activePlayer) {
@@ -74,14 +78,20 @@ export class MassBrowserPodcastView extends BrowserViewBase {
     `;
   }
   protected renderOverview(): TemplateResult {
+    const episodeLabel = getTranslation(
+      "browser.collections.track_count",
+      this.hass,
+    ) as string;
+    const loadingLabel = getTranslation("browser.loading", this.hass) as string;
     const trackString = this.tracks?.length
-      ? `${this.tracks.length.toString()} Episodes`
-      : `Loading...`;
+      ? `${this.tracks.length.toString()} ${episodeLabel}`
+      : loadingLabel;
     const desc = this.podcastMetadata?.response.metadata.description ?? ``;
+    const expressiveClass = this.useExpressive ? `expressive` : ``;
     return html`
       ${this.renderTitle()}
       <div id="collection-info">
-        <div id="tracks-length">${trackString}</div>
+        <div id="tracks-length" class="${expressiveClass}">${trackString}</div>
         <div id="collection-description">${desc}</div>
       </div>
     `;

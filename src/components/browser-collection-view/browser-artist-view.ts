@@ -5,6 +5,7 @@ import styles from "./browser-artist-view-styles";
 import { delay } from "../../utils/utility";
 import { getArtistServiceResponse } from "mass-queue-types/packages/mass_queue/actions/get_artist";
 import { BrowserViewBase } from "./browser-view-base";
+import { getTranslation } from "../../utils/translations";
 
 @customElement("mpc-browser-artist-view")
 export class MassBrowserArtistView extends BrowserViewBase {
@@ -18,17 +19,20 @@ export class MassBrowserArtistView extends BrowserViewBase {
   @state() private artistMetadata?: getArtistServiceResponse;
 
   // Ask HA to return the tracks in the artist
-  public async getTracks() {
+  public getTracks() {
     if (!this.hass || !this.collectionData || !this.activePlayer) {
       return;
     }
-    const tracks = await this.browserActions.actionGetArtistTracks(
-      this.collectionData.media_content_id,
-      this.activePlayer.entity_id,
-    );
-    this.tracks = tracks.response.tracks;
+    void this.browserActions
+      .actionGetArtistTracks(
+        this.collectionData.media_content_id,
+        this.activePlayer.entity_id,
+      )
+      .then((tracks) => {
+        this.tracks = tracks.response.tracks;
+      });
     this.setHiddenElements();
-    await this.getMetadata();
+    void this.getMetadata();
   }
   public async getMetadata() {
     if (!this.hass || !this.collectionData || !this.activePlayer) {
@@ -68,13 +72,19 @@ export class MassBrowserArtistView extends BrowserViewBase {
     `;
   }
   protected renderOverview(): TemplateResult {
+    const trackLabel = getTranslation(
+      "browser.collections.track_count",
+      this.hass,
+    ) as string;
+    const loadingLabel = getTranslation("browser.loading", this.hass) as string;
     const trackString = this.tracks?.length
-      ? `${this.tracks.length.toString()} Tracks`
-      : `Loading...`;
+      ? `${this.tracks.length.toString()} ${trackLabel}`
+      : loadingLabel;
+    const expressiveClass = this.useExpressive ? `expressive` : ``;
     return html`
       ${this.renderTitle()}
       <div id="collection-info">
-        <div id="tracks-length">${trackString}</div>
+        <div id="tracks-length" class="${expressiveClass}">${trackString}</div>
       </div>
     `;
   }

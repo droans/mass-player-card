@@ -150,7 +150,10 @@ export class MediaBrowser extends LitElement {
   @consume({ context: mediaBrowserConfigContext, subscribe: true })
   public set config(config: MediaBrowserConfig) {
     this._config = config;
-    // this.setHiddenElements();
+    this.activeSection = config.default_section;
+    if (this.cards) {
+      this.setActiveCards();
+    }
   }
   public get config() {
     return this._config;
@@ -283,7 +286,6 @@ export class MediaBrowser extends LitElement {
       this.onCollectionSelect(data as mediaCardCollectionType);
       return;
     }
-    // this.collectionViewActive = false;
     function_(data);
   };
   private onEnqueue = (data: mediaCardEnqueueType, enqueue: EnqueueOptions) => {
@@ -511,6 +513,7 @@ export class MediaBrowser extends LitElement {
           class="${this.useExpressive
             ? `search-media-type-menu-expressive`
             : ``}"
+          scheme="plain"
           .iconPath=${this.searchMediaTypeIcon}
           .initialSelection=${this.searchMediaType}
           .items=${icons}

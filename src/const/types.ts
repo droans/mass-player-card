@@ -91,6 +91,7 @@ export interface ListItemData {
   icon: string;
   image?: ListImageData;
   title: string;
+  disabled?: boolean;
 }
 export type ListItems = ListItemData[];
 

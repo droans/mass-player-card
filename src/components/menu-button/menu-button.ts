@@ -20,10 +20,21 @@ import { MassCardController } from "../../controller/controller";
 import "./menu-item";
 import { ControlSelectMenuElement } from "../../const/elements";
 
+export type MenuButtonScheme = "filled" | "tonal" | "standard" | "plain";
+const DEFAULT_SCHEME: MenuButtonScheme = "filled";
+
 export class MassMenuButton extends LitElement {
   @property({ attribute: false }) public iconPath!: string;
 
   @property({ attribute: false }) private _items?: ListItems;
+
+  @property({
+    attribute: "scheme",
+    type: String,
+    default: DEFAULT_SCHEME,
+    reflect: true,
+  })
+  scheme: MenuButtonScheme = DEFAULT_SCHEME;
 
   @property({ type: Boolean, attribute: "fixedMenuPosition" })
   public fixedMenuPosition = false;
@@ -34,7 +45,8 @@ export class MassMenuButton extends LitElement {
   @property({ type: Boolean, attribute: "use-md" })
   public useMD = false;
 
-  @property({ type: Number, attribute: "elevation" }) elevation = 0;
+  @property({ type: Number, attribute: "elevation", default: 1, reflect: true })
+  elevation = 1;
 
   @query("#menu-select-menu")
   public menuElement?: ControlSelectMenuElement;
@@ -107,7 +119,7 @@ export class MassMenuButton extends LitElement {
     if (!this.menuElement) {
       return;
     }
-    this.menuElement.menuOpen = false;
+    this.menuElement.open = false;
   };
 
   protected renderMenuItems(): TemplateResult | TemplateResult[] {
@@ -126,6 +138,7 @@ export class MassMenuButton extends LitElement {
           ?selected=${this._selectedItem == item.option}
           .menuItem=${item}
           ?use-md=${this.useMD}
+          ?disabled=${item.disabled}
         ></mpc-menu-item>
       `;
     });
@@ -136,7 +149,7 @@ export class MassMenuButton extends LitElement {
     const vibrant_class = this.useVibrant ? `vibrant` : ``;
     return html`
       <div id="menu-button" part="menu-button">
-        <ha-control-select-menu
+        <ha-dropdown
           id="menu-select-menu"
           class="${expressive_class} ${vibrant_class}"
           part="menu-select-menu"
@@ -147,16 +160,20 @@ export class MassMenuButton extends LitElement {
             event_.stopPropagation();
           }}
         >
-          <div class="div-icon" slot="icon" part="div-icon">
+          <mass-player-card-button
+            slot="trigger"
+            part="div-icon"
+            role="variant"
+          >
             <ha-svg-icon
               class="svg-menu ${this.useExpressive ? `expressive` : ``}"
               part="menu-svg"
               .path=${this.iconPath}
             ></ha-svg-icon>
-          </div>
+          </mass-player-card-button>
           ${this.renderMenuItems()}
           <slot></slot>
-        </ha-control-select-menu>
+        </ha-dropdown>
       </div>
     `;
   }

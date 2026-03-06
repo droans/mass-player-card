@@ -36,6 +36,7 @@ import { delay, getDefaultSection, jsonMatch } from "./utils/utility";
 import { MassCardController } from "./controller/controller";
 import { ExtendedHass } from "./const/types";
 import { PlayerSyncEvent } from "./const/events";
+import localForage from "localforage";
 
 const DEV = false;
 
@@ -72,6 +73,13 @@ console.info(
   preview: false,
   description: cardDescription,
   documentationURL: cardUrl,
+});
+
+localForage.config({
+  name: "mass-player-card",
+  version: 1,
+  storeName: "expressive-schemes",
+  description: "Cached Expressive schemes for MA media items.",
 });
 
 @customElement(`${cardId}${DEV ? "-dev" : ""}`)
@@ -352,10 +360,8 @@ export class MusicAssistantPlayerCard extends LitElement {
     return styles;
   }
   protected firstUpdated(): void {
-    if (this.config.expressive) {
-      const stylesheet = head_styles.styleSheet as CSSStyleSheet;
-      document.adoptedStyleSheets.push(stylesheet);
-    }
+    const stylesheet = head_styles.styleSheet as CSSStyleSheet;
+    document.adoptedStyleSheets.push(stylesheet);
     if (this.syncPlayerAcrossDashboard) {
       void this.prepareSyncPlayerAcrossDashboard();
     }

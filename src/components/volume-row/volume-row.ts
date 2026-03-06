@@ -38,6 +38,7 @@ class VolumeRow extends LitElement {
   @consume({ context: controllerContext })
   private controller!: MassCardController;
   @consume({ context: IconsContext }) private Icons!: Icons;
+  @state() protected favorite = false;
 
   private _initialUpdate!: boolean;
 
@@ -80,6 +81,7 @@ class VolumeRow extends LitElement {
       return;
     }
     this._player_data = player_data;
+    this.favorite = player_data.favorite;
   }
   public get player_data() {
     return this._player_data;
@@ -100,6 +102,7 @@ class VolumeRow extends LitElement {
     await this.actions.actionSetVolume(volume);
   };
   private onFavorite = async () => {
+    this.favorite = !this.favorite;
     await (this.player_data.favorite
       ? this.actions.actionRemoveFavorite()
       : this.actions.actionAddFavorite());
@@ -160,9 +163,7 @@ class VolumeRow extends LitElement {
         @click=${this.onFavorite}
       >
         <ha-svg-icon
-          .path=${this.player_data.favorite
-            ? this.Icons.HEART
-            : this.Icons.HEART_PLUS}
+          .path=${this.favorite ? this.Icons.HEART : this.Icons.HEART_PLUS}
           class="svg-plain"
         ></ha-svg-icon>
       </ha-button>

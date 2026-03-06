@@ -21,6 +21,8 @@ export default css`
   #active-track-med,
   #active-track-sm {
     width: 100%;
+    position: relative;
+    z-index: -1;
   }
 
   #active-track-text {
@@ -94,7 +96,7 @@ export default css`
     position: relative;
   }
   .header-art-lg::part(header) {
-    z-index: 0;
+    z-index: 2;
   }
   .header-art-sm {
     position: relative;
@@ -179,6 +181,7 @@ export default css`
     border-radius: var(--default-border-radius) var(--default-border-radius) 0px
       0px;
     overflow: hidden;
+    z-index: -1;
   }
   .player-header {
     margin: 0em 1.75em 0em 1.75em;

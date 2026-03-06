@@ -5,6 +5,7 @@ import styles from "./browser-album-view-styles";
 import { delay } from "../../utils/utility";
 import { getAlbumServiceResponse } from "mass-queue-types/packages/mass_queue/actions/get_album";
 import { BrowserViewBase } from "../browser-collection-view/browser-view-base";
+import { getTranslation } from "../../utils/translations";
 
 @customElement("mpc-browser-album-view")
 export class MassBrowserAlbumView extends BrowserViewBase {
@@ -17,17 +18,20 @@ export class MassBrowserAlbumView extends BrowserViewBase {
   @state() private albumMetadata?: getAlbumServiceResponse;
 
   // Ask HA to return the tracks in the album
-  public async getTracks() {
+  public getTracks() {
     if (!this.hass || !this.collectionData || !this.activePlayer) {
       return;
     }
-    const tracks = await this.browserActions.actionGetAlbumTracks(
-      this.collectionData.media_content_id,
-      this.activePlayer.entity_id,
-    );
-    this.tracks = tracks.response.tracks;
+    void this.browserActions
+      .actionGetAlbumTracks(
+        this.collectionData.media_content_id,
+        this.activePlayer.entity_id,
+      )
+      .then((data) => {
+        this.tracks = data.response.tracks;
+      });
     this.setHiddenElements();
-    await this.getMetadata();
+    void this.getMetadata();
   }
   public async getMetadata() {
     if (!this.hass || !this.collectionData || !this.activePlayer) {
@@ -67,22 +71,30 @@ export class MassBrowserAlbumView extends BrowserViewBase {
     `;
   }
   protected renderOverview(): TemplateResult {
+    const trackLabel = getTranslation(
+      "browser.collections.track_count",
+      this.hass,
+    ) as string;
+    const loadingLabel = getTranslation("browser.loading", this.hass) as string;
     const trackString = this.tracks?.length
-      ? `${this.tracks.length.toString()} Tracks`
-      : `Loading...`;
+      ? `${this.tracks.length.toString()} ${trackLabel}`
+      : loadingLabel;
     const metadata = this.albumMetadata?.response;
     const artists = metadata?.artists ?? [];
     const artistLs = artists.map((artist) => {
       return artist.name;
     });
     const artistString =
-      artistLs.length > 0 ? artistLs.join(", ") : `Loading...`;
+      artistLs.length > 0 ? artistLs.join(", ") : loadingLabel;
+    const expressiveClass = this.useExpressive ? `expressive` : ``;
     return html`
       ${this.renderTitle()}
       <div id="collection-info">
-        <div id="collection-artists">${artistString}</div>
-        <div id="tracks-length">${trackString}</div>
-        <div id="collection-year">
+        <div id="collection-artists" class="${expressiveClass}">
+          ${artistString}
+        </div>
+        <div id="tracks-length" class="${expressiveClass}">${trackString}</div>
+        <div id="collection-year" class="${expressiveClass}">
           ${this.albumMetadata?.response.year ?? ``}
         </div>
       </div>

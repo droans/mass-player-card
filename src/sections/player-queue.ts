@@ -359,7 +359,6 @@ class QueueCard extends LitElement {
   }
   protected updated(): void {
     this._tabSwitchFirstUpdate = false;
-    // this.scrollToActive();
   }
   static get styles(): CSSResultGroup {
     return styles;
