@@ -6,7 +6,7 @@ import {
   TemplateResult,
 } from "lit";
 import styles from "./menu-item-styles";
-import { customElement, property, state } from "lit/decorators.js";
+import { customElement, property, query, state } from "lit/decorators.js";
 import { ExtendedHass, ListItemData } from "../../const/types";
 import { tryPrefetchImageWithFallbacks } from "../../utils/utility";
 import { consume } from "@lit/context";
@@ -39,6 +39,8 @@ export class MassMenuItem extends LitElement {
 
   // Sets the item as disabled
   @property({ type: Boolean }) disabled = false;
+
+  @query("ha-dropdown-item") dropdownItem?: HTMLElement;
 
   @property({ attribute: false })
   public set menuItem(item: ListItemData) {
@@ -83,6 +85,18 @@ export class MassMenuItem extends LitElement {
     });
     this.dispatchEvent(event);
   };
+
+  private hasExtraStyles(): boolean {
+    const styleElement = this.dropdownItem?.shadowRoot?.querySelector("style");
+    return !!styleElement;
+  }
+
+  private checkAndRemoveExtraStyles() {
+    const styleElement = this.dropdownItem?.shadowRoot?.querySelector("style");
+    if (styleElement) {
+      styleElement.remove();
+    }
+  }
 
   protected renderIcon(): TemplateResult {
     const expressive_class = this.expressive ? `expressive` : ``;
@@ -141,10 +155,16 @@ export class MassMenuItem extends LitElement {
     `;
   }
 
+  protected updated() {
+    if (this.hasExtraStyles()) {
+      this.checkAndRemoveExtraStyles();
+    }
+  }
+
   static get styles(): CSSResultGroup {
     return styles;
   }
   protected shouldUpdate(_changedProperties: PropertyValues): boolean {
-    return _changedProperties.size > 0;
+    return _changedProperties.size > 0 || this.hasExtraStyles();
   }
 }
