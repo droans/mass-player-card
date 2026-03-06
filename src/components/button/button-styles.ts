@@ -207,7 +207,7 @@ export default css`
 
   .elevation-0 {
     --button-elevation: none;
-    --hover-button-elevation: var(--md-sys-elevation-level1);
+    --hover-button-elevation: var(--md-sys-elevation-level0);
   }
 
   .elevation-1 {
