@@ -180,7 +180,6 @@ export class MassCardConfigController {
       players: c?.players.hide ?? ent_?.players,
     };
 
-    // const config = this.config ?? this.activeEntityConfig?.hide;
     const ent = this.activeEntityConfig?.hide ?? config;
     /* eslint-enable @typescript-eslint/no-unnecessary-condition */
 

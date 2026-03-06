@@ -154,7 +154,6 @@ export class MediaBrowser extends LitElement {
     if (this.cards) {
       this.setActiveCards();
     }
-    // this.setHiddenElements();
   }
   public get config() {
     return this._config;
@@ -287,7 +286,6 @@ export class MediaBrowser extends LitElement {
       this.onCollectionSelect(data as mediaCardCollectionType);
       return;
     }
-    // this.collectionViewActive = false;
     function_(data);
   };
   private onEnqueue = (data: mediaCardEnqueueType, enqueue: EnqueueOptions) => {

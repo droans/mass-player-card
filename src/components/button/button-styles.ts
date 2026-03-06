@@ -252,7 +252,6 @@ export default css`
   }
 
   .outlined::part(base) {
-    /* border: var(--md-sys-color-outline-variant) 2px solid; */
     border: var(--button-outline-color) 2px solid;
   }
 

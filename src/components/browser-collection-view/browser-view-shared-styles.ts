@@ -58,7 +58,6 @@ export default css`
   }
   #collection-image {
     display: flex;
-    /* place-content: center; */
     height: 10em;
     aspect-ratio: 1;
     --collection-image-div-collapsed-height: 6em;
@@ -94,17 +93,6 @@ export default css`
     border-top-right-radius: var(--default-border-radius);
     z-index: 2;
   }
-  /* #header-wrapper {
-    height: var(--view-header-wrapper-height);
-    position: absolute;
-    width: 100%;
-  }
-  #header-wrapper::before {
-    content: " ";
-    display: block;
-    height: 1em;
-    width: 100%;
-  } */
   #img-header {
     display: flex;
     border-radius: 15%;
