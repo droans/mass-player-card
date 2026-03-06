@@ -84,7 +84,6 @@ export default css`
     Vibrant: True
     Selected: False
   */
-  }
   .menu-list-item-md.vibrant:not(.selected) {
     --wa-color-text-normal: var(--text-color-expressive-vibrant);
     --wa-color-neutral-fill-normal: rgba(
