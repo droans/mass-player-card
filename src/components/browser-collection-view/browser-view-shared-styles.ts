@@ -40,7 +40,6 @@ export default css`
     --button-button-width: var(--mdc-icon-size);
   }
   mass-menu-button::part(menu-select-menu) {
-    --mdc-icon-size: var(--header-expanded-menu-icon-size);
     --control-select-menu-height: unset;
     --control-select-menu-background-color: unset;
     --control-select-menu-padding: unset;
@@ -52,6 +51,7 @@ export default css`
       --ha-card-background,
       var(--card-background-color, #fff)
     );
+    --mdc-icon-size: var(--header-expanded-menu-icon-size);
   }
   #animation-image {
     display: block;
