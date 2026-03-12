@@ -38,7 +38,7 @@ export class MassCardPlayerSelector extends LitElement {
   private hass!: ExtendedHass;
 
   protected renderPlayerItems() {
-    return this.playerEntities.map((item) => {
+    const ents = this.playerEntities.map((item) => {
       const ent = this.hass.states[item.entity_id];
       if (!ent) {
         return;
@@ -75,6 +75,7 @@ export class MassCardPlayerSelector extends LitElement {
       };
       return r;
     });
+    return ents.filter(Boolean);
   }
   private onSelect = (event_: CustomEvent) => {
     event_.stopPropagation();
