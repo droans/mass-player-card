@@ -14,6 +14,7 @@ export default css`
     width: 2em;
   }
   mass-menu-button::part(menu-button) {
+    --mdc-icon-size: calc(10em / var(--columns, 2));
     --button-button-height: var(--mdc-icon-size);
     --button-button-width: var(--mdc-icon-size);
   }
