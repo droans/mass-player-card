@@ -257,9 +257,9 @@ export class MassPlayerArtwork extends LitElement {
       }
       if (item.playing) {
         const attributes = this.activePlayer.attributes;
-        const ent_img_local = attributes.entity_picture_local ?? "";
+        const ent_img = attributes.entity_picture ?? url;
+        const ent_img_local = attributes.entity_picture_local ?? ent_img;
         const fallbacks: string[] = [];
-        const ent_img = attributes.entity_picture;
         if (ent_img) {
           fallbacks.push(ent_img);
         }
