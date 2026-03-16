@@ -102,7 +102,7 @@ export default css`
   #menu-button {
     border-radius: var(--used-border-radius);
   }
-  #menu-select-menu::part(menu) {
+  #menu-select-menu:is(menu-expressive)::part(menu) {
     background-color: var(--menu-background-color);
     border-radius: 24px;
   }
