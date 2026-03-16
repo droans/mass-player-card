@@ -23,6 +23,7 @@ export default css`
 
   #container {
     box-shadow: unset;
+    overflow: hidden;
     height: var(--mass-player-card-height);
   }
   .container-expressive {
