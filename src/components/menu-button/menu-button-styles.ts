@@ -40,41 +40,6 @@ export default css`
     --menu-button-background-color: none;
     --button-icon-color: var(--md-sys-color-on-surface-variant);
   }
-  :host([elevation="0"]) {
-    --button-elevation: var(--md-sys-elevation-level0);
-    --hover-button-elevation: var(--md-sys-elevation-level1);
-  }
-  :host([elevation="1"]) {
-    --button-elevation: var(--md-sys-elevation-level1);
-    --hover-button-elevation: var(--md-sys-elevation-level2);
-  }
-  :host([elevation="2"]) {
-    --button-elevation: var(--md-sys-elevation-level2);
-    --hover-button-elevation: var(--md-sys-elevation-level3);
-  }
-  :host([elevation="3"]) {
-    --button-elevation: var(--md-sys-elevation-level3);
-    --hover-button-elevation: var(--md-sys-elevation-level4);
-  }
-  :host([elevation="4"]) {
-    --button-elevation: var(--md-sys-elevation-level4);
-    --hover-button-elevation: var(--md-sys-elevation-level5);
-  }
-  :host([elevation="5"]) {
-    --button-elevation: var(--md-sys-elevation-level5);
-    --hover-button-elevation: var(--md-sys-elevation-level5);
-  }
-
-  :host([elevation]:not(hover)),
-  #menu-button:not(hover) {
-    animation: elevate-hover-off var(--animation-duration) linear forwards;
-  }
-
-  :host([elevation]:hover),
-  #menu-button:hover {
-    animation: elevate-hover var(--animation-duration) linear forwards;
-  }
-
   .divider {
     margin-top: 2px;
     margin-bottom: 2px;
@@ -145,22 +110,5 @@ export default css`
   .menu-list-item-image,
   .menu-list-item-svg {
     touch-action: none;
-  }
-
-  @keyframes elevate-hover {
-    from {
-      box-shadow: var(--button-elevation);
-    }
-    to {
-      box-shadow: var(--hover-button-elevation);
-    }
-  }
-  @keyframes elevate-hover-off {
-    from {
-      box-shadow: var(--hover-button-elevation);
-    }
-    to {
-      box-shadow: var(--button-elevation);
-    }
   }
 `;
