@@ -60,7 +60,7 @@ export default css`
 
     --button-small-border-radius: var(
       --mass-player-card-small-button-border-radius,
-      40%
+      50%
     );
 
     --expressive-border-radius-container: var(

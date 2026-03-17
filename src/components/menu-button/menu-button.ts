@@ -164,6 +164,7 @@ export class MassMenuButton extends LitElement {
             slot="trigger"
             part="div-icon"
             role="variant"
+            elevation="${this.elevation}"
           >
             <ha-svg-icon
               class="svg-menu ${this.useExpressive ? `expressive` : ``}"

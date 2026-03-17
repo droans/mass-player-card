@@ -514,6 +514,7 @@ export class MediaBrowser extends LitElement {
             ? `search-media-type-menu-expressive`
             : ``}"
           scheme="plain"
+          elevation="0"
           .iconPath=${this.searchMediaTypeIcon}
           .initialSelection=${this.searchMediaType}
           .items=${icons}

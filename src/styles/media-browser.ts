@@ -23,6 +23,7 @@ export default css`
 
   #container {
     box-shadow: unset;
+    overflow: hidden;
     height: var(--mass-player-card-height);
   }
   .container-expressive {
@@ -91,6 +92,11 @@ export default css`
     width: calc(100% - 5em);
     z-index: 2;
   }
+  #search-media-type-menu {
+    border-radius: var(--button-small-border-radius);
+    height: 30px;
+    width: 30px;
+  }
   #search-media-type-menu::part(menu-list-item-svg) {
     height: 2em;
     width: 2em;
@@ -99,8 +105,8 @@ export default css`
     --mdc-icon-size: 1.5em;
     --control-select-menu-padding: 0px;
     --control-select-menu-background-color: unset;
-    height: 35px;
-    width: 35px;
+    height: 30px;
+    width: 30px;
   }
   #search-media-type-menu::part(menu-svg) {
     height: 30px;
