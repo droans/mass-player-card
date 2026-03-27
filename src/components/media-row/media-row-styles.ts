@@ -136,7 +136,6 @@ export default css`
   }
   .thumbnail-disabled {
     opacity: 0.38;
-    margin-left: 14px;
   }
 
   .title {

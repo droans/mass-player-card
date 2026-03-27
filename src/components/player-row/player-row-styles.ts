@@ -184,7 +184,6 @@ export default css`
   }
   .thumbnail-disabled {
     filter: opacity(0.5);
-    margin-left: 14px;
   }
 
   .title {
