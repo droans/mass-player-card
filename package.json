@@ -29,7 +29,7 @@
     "@material/web": "2.4.1",
     "@mdi/js": "7.4.47",
     "@shoelace-style/shoelace": "^2.20.1",
-    "custom-card-helpers": "1.9.0",
+    "custom-card-helpers": "2.0.0",
     "home-assistant-js-websocket": "9.6.0",
     "lit": "3.3.2",
     "localforage": "^1.10.0"
