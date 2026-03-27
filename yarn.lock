@@ -2149,9 +2149,9 @@ __metadata:
   languageName: node
   linkType: hard
 
-"eslint-plugin-github@file:../../eslint-plugin-github::locator=mass-player-card%40workspace%3A.":
+"eslint-plugin-github@git+https://github.com/droans/eslint-plugin-github#v6.1.0":
   version: 6.1.0
-  resolution: "eslint-plugin-github@file:../../eslint-plugin-github#../../eslint-plugin-github::hash=87b9ec&locator=mass-player-card%40workspace%3A."
+  resolution: "eslint-plugin-github@https://github.com/droans/eslint-plugin-github.git#commit=e7fad706a4c2a98fc706bffdc7a3a08697bee1b2"
   dependencies:
     "@eslint/compat": "npm:^2.0.0"
     "@eslint/eslintrc": "npm:^3.1.0"
@@ -2180,7 +2180,7 @@ __metadata:
     eslint: ^9 || ^10
   bin:
     eslint-ignore-errors: bin/eslint-ignore-errors.js
-  checksum: 10c0/35cda9d21ce15ea526fd81ed361290c326bbaeb98a6a01ae0477af39b9301df5628a4db4254fc9eec823a65d9b2f84da514f472c5b113f23493d2277b823e25e
+  checksum: 10c0/48f5fee4a832414965f12a91aeeb2800c1b90b5428652da203b98d492478e7f28d4a2c7b26f09df89cdf8dbda59aaa995b46438241abdf450c970205f65f7cf0
   languageName: node
   linkType: hard
 
@@ -3573,7 +3573,7 @@ __metadata:
     custom-card-helpers: "npm:1.9.0"
     eslint: "npm:9.39.2"
     eslint-config-prettier: "npm:10.1.8"
-    eslint-plugin-github: ../../eslint-plugin-github
+    eslint-plugin-github: "git+https://github.com/droans/eslint-plugin-github#v6.1.0"
     eslint-plugin-listeners: "npm:^1.5.1"
     eslint-plugin-lit: "npm:^2.2.1"
     eslint-plugin-observers: "npm:^1.0.1"

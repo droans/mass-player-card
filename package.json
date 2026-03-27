@@ -45,7 +45,7 @@
     "@typescript-eslint/parser": "^8.57.1",
     "eslint": "9.39.2",
     "eslint-config-prettier": "10.1.8",
-    "eslint-plugin-github": "../../eslint-plugin-github",
+    "eslint-plugin-github": "git+https://github.com/droans/eslint-plugin-github#v6.1.0",
     "eslint-plugin-listeners": "^1.5.1",
     "eslint-plugin-lit": "^2.2.1",
     "eslint-plugin-observers": "^1.0.1",
