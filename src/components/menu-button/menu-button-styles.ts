@@ -52,6 +52,28 @@ export default css`
     margin-left: 24px;
     margin-right: 24px;
   }
+  mass-player-card-button::part(button) {
+    --used-button-background-color: var(--menu-button-background-color);
+  }
+  #menu-button {
+    border-radius: var(--used-border-radius);
+  }
+  .menu-expressive {
+    --menu-background-color: var(--mass-menu-background-color-expressive);
+    --mdc-shape-medium: var(--default-border-radius);
+  }
+  .menu-expressive::part(menu) {
+    background-color: var(--menu-background-color);
+    border-radius: 24px;
+  }
+  .menu-expressive.vibrant {
+    --menu-background-color: var(
+      --mass-menu-background-color-expressive-vibrant
+    );
+  }
+  #menu-select-menu {
+    border-radius: var(--used-border-radius);
+  }
   mpc-menu-item {
     height: 100%;
     width: 100%;
@@ -63,28 +85,6 @@ export default css`
   }
   mpc-menu-item:last-of-type {
     margin-bottom: 4px;
-  }
-  #menu-button {
-    border-radius: var(--used-border-radius);
-  }
-  #menu-select-menu:is(menu-expressive)::part(menu) {
-    background-color: var(--menu-background-color);
-    border-radius: 24px;
-  }
-  .menu-expressive {
-    --menu-background-color: var(--mass-menu-background-color-expressive);
-    --mdc-shape-medium: var(--default-border-radius);
-  }
-  mass-player-card-button::part(button) {
-    --used-button-background-color: var(--menu-button-background-color);
-  }
-  .menu-expressive.vibrant {
-    --menu-background-color: var(
-      --mass-menu-background-color-expressive-vibrant
-    );
-  }
-  #menu-select-menu {
-    border-radius: var(--used-border-radius);
   }
   .svg-menu {
     border-radius: var(--used-border-radius);
