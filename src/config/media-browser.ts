@@ -250,7 +250,7 @@ function defaultEnqueueOptionConfigForm() {
     },
   ];
   return {
-    name: "default_enqueue_mode",
+    name: "default_enqueue_option",
     required: false,
     selector: {
       select: {
