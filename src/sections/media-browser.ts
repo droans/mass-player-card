@@ -191,7 +191,7 @@ export class MediaBrowser extends LitElement {
   public setActiveCards() {
     const section = this.activeSection;
     const subsection = this.activeSubSection;
-    let new_cards: MediaCardItem[] = [];
+    let new_cards: MediaCardItem[];
     if (
       this.activeSubSection == "collection" &&
       this.activeSection != "search"

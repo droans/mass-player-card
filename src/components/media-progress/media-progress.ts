@@ -116,7 +116,6 @@ class MassPlayerProgressBar extends LitElement {
     }
     void this.activePlayerController.getPlayerProgress().then((progress) => {
       const prog = progress as number | undefined;
-      progress = Math.min(prog ?? 1, this.entity_duration);
       this.entity_position = prog ?? this.entity_position;
       this._newSetPosition = prog ?? this.entity_position;
     });
