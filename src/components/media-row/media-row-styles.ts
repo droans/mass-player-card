@@ -122,27 +122,19 @@ export default css`
     color: var(--expressive-row-button-color-text-hover);
   }
 
-  .thumbnail {
+  .thumbnail,
+  .thumbnail-disabled {
     width: var(--media-row-thumbnail-height);
     height: var(--media-row-thumbnail-height);
     background-size: contain;
     background-repeat: no-repeat;
     background-position: left;
     border-radius: var(--media-row-border-radius);
-  }
-  .thumbnail,
-  .thumbnail-disabled {
     -webkit-user-select: none;
     -moz-user-select: none;
     user-select: none;
   }
   .thumbnail-disabled {
-    width: var(--media-row-thumbnail-height);
-    height: var(--media-row-thumbnail-height);
-    background-size: contain;
-    background-repeat: no-repeat;
-    background-position: left;
-    border-radius: var(--media-row-border-radius);
     opacity: 0.38;
     margin-left: 14px;
   }

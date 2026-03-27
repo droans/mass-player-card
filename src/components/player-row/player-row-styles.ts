@@ -171,12 +171,6 @@ export default css`
 
   .thumbnail,
   .thumbnail-disabled {
-    -webkit-user-select: none;
-    -moz-user-select: none;
-    user-select: none;
-  }
-
-  .thumbnail {
     width: var(--media-row-thumbnail-height);
     height: var(--media-row-thumbnail-height);
     background-size: contain;
@@ -184,14 +178,11 @@ export default css`
     background-position: left;
     border-radius: 0.7rem;
     margin-left: 14px;
+    -webkit-user-select: none;
+    -moz-user-select: none;
+    user-select: none;
   }
   .thumbnail-disabled {
-    width: var(--media-row-thumbnail-height);
-    height: var(--media-row-thumbnail-height);
-    background-size: contain;
-    background-repeat: no-repeat;
-    background-position: left;
-    border-radius: 0.7rem;
     filter: opacity(0.5);
     margin-left: 14px;
   }
