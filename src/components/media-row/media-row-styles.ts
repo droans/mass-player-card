@@ -38,12 +38,12 @@ export default css`
 
   .button {
     margin: 0.15rem;
-    border-radius: var(--media-row-border-radius);
+    border-radius: var(--media-row-thumbnail-border-radius);
     height: var(--media-row-height);
   }
   .button-active {
     margin: 0.15rem;
-    border-radius: var(--media-row-border-radius);
+    border-radius: var(--media-row-thumbnail-border-radius);
     background-color: var(
       --media-row-active-background-color,
       var(--md-sys-color-secondary-container)
@@ -129,7 +129,7 @@ export default css`
     background-size: contain;
     background-repeat: no-repeat;
     background-position: left;
-    border-radius: var(--media-row-border-radius);
+    border-radius: var(--media-row-thumbnail-border-radius);
     -webkit-user-select: none;
     -moz-user-select: none;
     user-select: none;
