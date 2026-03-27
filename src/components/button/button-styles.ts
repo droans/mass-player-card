@@ -90,6 +90,7 @@ export default css`
     );
     padding-left: var(--button-padding-left, var(--button-padding, 24px));
     padding-right: var(--button-padding-right, var(--button-padding, 24px));
+    --wa-form-control-border-radius: var(--button-border-radius);
   }
 
   .filled {
