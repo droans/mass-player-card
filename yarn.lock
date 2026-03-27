@@ -860,7 +860,7 @@ __metadata:
   languageName: node
   linkType: hard
 
-"@typescript-eslint/eslint-plugin@npm:8.57.2":
+"@typescript-eslint/eslint-plugin@npm:8.57.2, @typescript-eslint/eslint-plugin@npm:^8.57.2":
   version: 8.57.2
   resolution: "@typescript-eslint/eslint-plugin@npm:8.57.2"
   dependencies:
@@ -3492,7 +3492,7 @@ __metadata:
     "@rollup/plugin-terser": "npm:^0.4.0"
     "@rollup/plugin-typescript": "npm:^12.3.0"
     "@shoelace-style/shoelace": "npm:^2.20.1"
-    "@typescript-eslint/eslint-plugin": "npm:^8.56.1"
+    "@typescript-eslint/eslint-plugin": "npm:^8.57.2"
     "@typescript-eslint/parser": "npm:^8.57.1"
     custom-card-helpers: "npm:2.0.0"
     eslint: "npm:10.0.3"
