@@ -126,6 +126,6 @@ export default css`
     margin-left: 12px;
   }
   .menu-list-item-image.expressive {
-    border-radius: 12px;
+    border-radius: var(--media-row-thumbnail-border-radius);
   }
 `;

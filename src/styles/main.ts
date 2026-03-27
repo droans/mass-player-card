@@ -49,9 +49,13 @@ export default css`
       --mass-player-card-queue-border-radius,
       var(--default-border-radius)
     );
+    --media-row-thumbnail-border-radius: var(
+      --mass-player-card-media-row-thumbnail-border-radius,
+      50%
+    );
     --media-row-border-radius: var(
       --mass-player-card-media-row-border-radius,
-      50%
+      calc(var(--media-row-height)/2)
     );
     --player-row-border-radius: var(
       --mass-player-card-player-row-border-radius,

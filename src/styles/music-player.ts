@@ -63,8 +63,7 @@ export default css`
     background-size: contain;
     background-repeat: no-repeat;
     background-position: left;
-    border-radius: var(--media-row-border-radius);
-    margin-left: 14px;
+    border-radius: var(--media-row-thumbnail-border-radius);
     -webkit-user-select: none;
     -moz-user-select: none;
     user-select: none;
