@@ -22,7 +22,7 @@ export default css`
       --md-sys-color-on-tertiary-container
     );
     --animation-duration: 0.25s;
-    border-radius: var(--used-border-radius);
+    --button-border-radius: var(--used-border-radius);
   }
   :host([scheme="filled"]) {
     --menu-button-background-color: var(--md-sys-color-primary);

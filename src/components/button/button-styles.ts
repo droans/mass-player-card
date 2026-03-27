@@ -17,6 +17,7 @@ export default css`
     --used-button-height: var(--button-button-height);
     --used-button-width: var(--button-button-width);
     --ha-space-1: 0px;
+    --used-button-border-radius: var(--button-border-radius, 50%);
   }
   ha-button:not(.expressive)::part(base) {
     --inherited-background-color: var(
@@ -32,12 +33,15 @@ export default css`
       var(--button-text-color)
     );
     color: var(--used-button-text-color, var(--button-text-color));
-    --ha-button-border-radius: 12px !important;
+    --ha-button-border-radius: var(--used-button-border-radius);
   }
   ha-button {
+    --ha-button-border-radius: var(--used-button-border-radius);
     border-radius: var(--ha-button-border-radius);
+    transition: border-radius var(--animation-duration);
   }
   ha-button::part(base) {
+    transition: border-radius var(--animation-duration);
     height: var(--used-button-height, 100%);
     width: var(--used-button-width, 100%);
     box-shadow: var(--button-elevation);
@@ -57,13 +61,15 @@ export default css`
     );
     --used-button-height: var(--button-button-height);
     --used-button-width: var(--button-button-width);
+    --wa-form-control-border-radius: var(--used-button-border-radius);
+    --ha-button-border-radius: var(--used-button-border-radius);
   }
 
   .small::part(base) {
     min-height: var(--used-button-height, var(--button-default-height-small));
     min-width: var(--used-button-width, var(--button-default-height-small));
     --ha-button-border-radius: var(
-      --button-border-radius,
+      --used-button-border-radius,
       var(--button-default-border-radius-small)
     );
     padding-left: var(--button-padding-left, var(--button-padding, 0px));
@@ -74,7 +80,7 @@ export default css`
     min-height: var(--used-button-height, var(--button-default-height-medium));
     min-width: var(--used-button-height, var(--button-default-height-medium));
     --ha-button-border-radius: var(
-      --button-border-radius,
+      --used-button-border-radius,
       var(--button-default-border-radius-medium)
     );
     padding-left: var(--button-padding-left, var(--button-padding, 16px));
@@ -85,12 +91,12 @@ export default css`
     min-height: var(--used-button-height, var(--button-default-height-large));
     min-width: var(--used-button-height, var(--button-default-height-large));
     --ha-button-border-radius: var(
-      --button-border-radius,
+      --used-button-border-radius,
       var(--button-default-border-radius-large)
     );
     padding-left: var(--button-padding-left, var(--button-padding, 24px));
     padding-right: var(--button-padding-right, var(--button-padding, 24px));
-    --wa-form-control-border-radius: var(--button-border-radius);
+    --wa-form-control-border-radius: var(--used-button-border-radius);
   }
 
   .filled {
