@@ -45,12 +45,6 @@ export default css`
     --control-select-menu-padding: unset;
   }
   mass-menu-button::part(menu-svg) {
-    fill: var(--md-sys-color-primary);
-    color: var(--md-sys-color-primary);
-    background-color: var(
-      --ha-card-background,
-      var(--card-background-color, #fff)
-    );
     --mdc-icon-size: var(--header-expanded-menu-icon-size);
   }
   #animation-image {
