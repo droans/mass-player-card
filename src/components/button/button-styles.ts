@@ -38,8 +38,10 @@ export default css`
   ha-button {
     --ha-button-border-radius: var(--used-button-border-radius);
     border-radius: var(--ha-button-border-radius);
+    transition: border-radius var(--animation-duration);
   }
   ha-button::part(base) {
+    transition: border-radius var(--animation-duration);
     height: var(--used-button-height, 100%);
     width: var(--used-button-width, 100%);
     box-shadow: var(--button-elevation);
