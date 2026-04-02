@@ -60,7 +60,7 @@ export interface MediaBrowserHiddenElementsConfig extends BaseHiddenElementsConf
   header_title: boolean;
   back_button: boolean;
   filter_button: boolean;
-  search: boolean;
+  search_button: boolean;
   titles: boolean;
   enqueue_menu: boolean;
   add_to_queue_button: boolean;
@@ -101,7 +101,7 @@ export const DEFAULT_MEDIA_BROWSER_HIDDEN_ELEMENTS_CONFIG: MediaBrowserHiddenEle
   {
     back_button: false,
     filter_button: false,
-    search: false,
+    search_button: false,
     titles: false,
     enqueue_menu: false,
     add_to_queue_button: false,

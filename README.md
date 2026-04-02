@@ -688,7 +688,7 @@ Multiple elements on the media browser tab can be hidden. By default, all elemen
 | header_title                 | bool  | No       | false       | Hides the section titles in the header     |
 | back_button                  | bool  | No       | false       | Hides the back button                      |
 | filter_button                | bool  | No       | false       | Hides the filter button                    |
-| search                       | bool  | No       | false       | Hides the search button                    |
+| search_button                | bool  | No       | false       | Hides the search button                    |
 | titles                       | bool  | No       | false       | Hides titles for each section/item         |
 | enqueue_menu                 | bool  | No       | false       | Hides the enqueue menu                     |
 | add_to_queue_button          | bool  | No       | false       | Hides the "Add to Queue" button            |
