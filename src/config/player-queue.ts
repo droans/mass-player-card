@@ -20,6 +20,7 @@ export interface PlayerQueueHiddenElementsConfig extends BaseHiddenElementsConfi
   artist_names: boolean;
   clear_queue_button: boolean;
   header_title: boolean;
+  header: boolean;
 }
 
 export const DEFAULT_PLAYER_QUEUE_HIDDEN_ELEMENTS_CONFIG: PlayerQueueHiddenElementsConfig =
@@ -33,6 +34,7 @@ export const DEFAULT_PLAYER_QUEUE_HIDDEN_ELEMENTS_CONFIG: PlayerQueueHiddenEleme
     artist_names: false,
     clear_queue_button: false,
     header_title: false,
+    header: false,
   };
 export const DEFAULT_QUEUE_CONFIG: QueueConfig = {
   enabled: true,

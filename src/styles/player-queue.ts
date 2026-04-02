@@ -47,11 +47,16 @@ export default css`
   }
 
   .list {
-    height: calc(var(--mass-player-card-height) - 4em);
     overflow-y: scroll;
     -ms-overflow-style: none;
     scrollbar-width: none;
     border-radius: var(--queue-border-radius, 12px);
+  }
+  .list:not(.padded) {
+    height: calc(var(--mass-player-card-height) - 4em);
+  }
+  .list.padded {
+    height: var(--mass-player-card-height);
   }
   .list-expressive {
     background-color: var(--md-sys-color-background);

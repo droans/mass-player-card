@@ -484,6 +484,7 @@ Multiple elements on the Music Player tab can be hidden. By default, all element
 | track_progress_time | bool  | No       | false       | Hides the track progress time                |
 | track_title         | bool  | No       | false       | Hides the track title                        |
 | header_title        | bool  | No       | false       | Hides the "Media Player" title in the header |
+| header              | bool  | No       | false       | Hides the entire header                      |
 
 #### Music Player Layout Config
 The layout of the control buttons can be adjusted to your liking. Use the full default configuration below as an example.
@@ -571,6 +572,7 @@ Multiple elements on the queue tab can be hidden. By default, all elements are v
 | artist_names       | bool  | No       | false       | Hides artist names                    |
 | clear_queue_button | bool  | No       | false       | Hides the Clear Queue button          |
 | header_title       | bool  | No       | false       | Hides the "Queue" title in the header |
+| header             | bool  | No       | false       | Hides the entire header               |
 
 ### Media Browser Config
 
@@ -693,6 +695,7 @@ Multiple elements on the media browser tab can be hidden. By default, all elemen
 | play_next_button             | bool  | No       | false       | Hides the "Play Next" button               |
 | play_next_clear_queue_button | bool  | No       | false       | Hides the "Play Next & Clear Queue" button |
 | header_title                 | bool  | No       | false       | Hides the section titles in the header     |
+| header                       | bool  | No       | false       | Hides the entire header                    |
 
 #### WARNING: 
 
@@ -723,6 +726,7 @@ Multiple elements on the players tab can be hidden. By default, all elements are
 | join_button     | bool  | No       | false       | Hides the join button                   |
 | transfer_button | bool  | No       | false       | Hides the transfer button               |
 | header_title    | bool  | No       | false       | Hides the "Players" title in the header |
+| header          | bool  | No       | false       | Hides the entire header                 |
 
 # FAQs
 

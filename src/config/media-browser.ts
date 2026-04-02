@@ -68,6 +68,7 @@ export interface MediaBrowserHiddenElementsConfig extends BaseHiddenElementsConf
   play_now_button: boolean;
   play_now_clear_queue_button: boolean;
   header_title: boolean;
+  header: boolean;
 }
 
 export type EnqueueConfigOptions =
@@ -111,6 +112,7 @@ export const DEFAULT_MEDIA_BROWSER_HIDDEN_ELEMENTS_CONFIG: MediaBrowserHiddenEle
     play_now_button: false,
     play_now_clear_queue_button: false,
     header_title: false,
+    header: false,
   };
 
 export const HIDDEN_BUTTON_VALUE = {

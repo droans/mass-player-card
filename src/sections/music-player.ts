@@ -306,6 +306,10 @@ class MusicPlayerCard extends LitElement {
     );
     this.closeAddToPlaylistDialog();
   };
+
+  protected hideSectionHeader(): boolean {
+    return this.hiddenElements.header;
+  }
   protected renderPlaylistDialogList(): TemplateResult | TemplateResult[] {
     if (!this._playlists) {
       return html`
@@ -446,6 +450,24 @@ class MusicPlayerCard extends LitElement {
     const label = this.controller.translate("player.header") as string;
     return html` <span slot="label">${label}</span> `;
   }
+  protected renderSectionHeader(): TemplateResult {
+    if (this.hideSectionHeader()) {
+      return html``;
+    }
+    if (!this.cardConfig) {
+      return html``;
+    }
+    return html`
+      <mass-section-header
+        class="${this._artworkHeaderClass} ${this.cardConfig.expressive
+          ? `header-expressive`
+          : ``}"
+      >
+        ${this.renderPlayerSelector()} ${this.renderSectionTitle()}
+        ${this.renderGrouped()}
+      </mass-section-header>
+    `;
+  }
   protected renderHeader(): TemplateResult {
     if (!this.cardConfig) {
       return html``;
@@ -456,15 +478,7 @@ class MusicPlayerCard extends LitElement {
         id="player-card-header"
         class="player-card-header${expressive ? `-expressive` : ``}"
       >
-        <mass-section-header
-          class="${this._artworkHeaderClass} ${this.cardConfig.expressive
-            ? `header-expressive`
-            : ``}"
-        >
-          ${this.renderPlayerSelector()} ${this.renderSectionTitle()}
-          ${this.renderGrouped()}
-        </mass-section-header>
-        ${this.renderActiveItemSection()}
+        ${this.renderSectionHeader()} ${this.renderActiveItemSection()}
       </div>
     `;
   }
