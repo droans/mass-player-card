@@ -22,7 +22,7 @@ import "../components/marquee-text/marquee-text";
 
 import PlayerActions from "../actions/player-actions";
 
-import { MediaTypes, Thumbnail } from "../const/enums";
+import { MediaTypes, PlayerSupportedFeatures, Thumbnail } from "../const/enums";
 import {
   activeEntityConfigContext,
   activeMediaPlayerContext,
@@ -56,7 +56,12 @@ import {
 } from "../config/player";
 import { ActivePlayerController } from "../controller/active-player";
 import { Config } from "../config/config";
-import { isActive, jsonMatch, playerHasUpdated } from "../utils/utility";
+import {
+  isActive,
+  jsonMatch,
+  playerHasUpdated,
+  playerSupportsFeature,
+} from "../utils/utility";
 import { MassCardController } from "../controller/controller";
 import {
   ForceUpdatePlayerDataEvent,
@@ -548,12 +553,17 @@ class MusicPlayerCard extends LitElement {
     if (!this.cardConfig) {
       return html``;
     }
+    const canMute = playerSupportsFeature(
+      this.activeEntity.attributes.supported_features,
+      PlayerSupportedFeatures.VOLUME_MUTE,
+    );
     return html`
       <div id="volume">
         <mass-volume-row
           class="${this._artworkVolumeClass} ${this.cardConfig.expressive
             ? `volume-expressive`
             : ``}"
+          ?can-mute=${canMute}
         ></mass-volume-row>
       </div>
     `;
