@@ -129,7 +129,7 @@ class VolumeRow extends LitElement {
     `;
   }
   protected renderMute(): TemplateResult {
-    if (this.hide.mute_button) {
+    if (this.hide.mute_button || !this.canMute) {
       return html``;
     }
     return html`
