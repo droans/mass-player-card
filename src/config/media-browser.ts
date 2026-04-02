@@ -100,6 +100,7 @@ export const DEFAULT_MEDIA_BROWSER_HIDDEN_ELEMENTS_CONFIG: MediaBrowserHiddenEle
   {
     back_button: false,
     search: false,
+    filter_button: false,
     recents: false,
     titles: false,
     enqueue_menu: false,
