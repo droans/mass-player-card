@@ -36,15 +36,14 @@ export default css`
     --ha-button-border-radius: var(--used-button-border-radius);
   }
   ha-button {
-    --ha-button-border-radius: var(--used-button-border-radius);
-    border-radius: var(--ha-button-border-radius);
+    border-radius: var(--used-button-border-radius) !important;
     transition: border-radius var(--animation-duration);
   }
   ha-button::part(base) {
     transition: border-radius var(--animation-duration);
+    border-radius: var(--used-button-border-radius) !important;
     height: var(--used-button-height, 100%);
     width: var(--used-button-width, 100%);
-    box-shadow: var(--button-elevation);
     padding: unset;
     background-color: var(
       --used-button-background-color,
@@ -63,6 +62,8 @@ export default css`
     --used-button-width: var(--button-button-width);
     --wa-form-control-border-radius: var(--used-button-border-radius);
     --ha-button-border-radius: var(--used-button-border-radius);
+    --md-sys-shape-corner-small: var(--used-button-border-radius);
+    --state-layer-color: rgba(0, 0, 0, 0);
   }
 
   .small::part(base) {

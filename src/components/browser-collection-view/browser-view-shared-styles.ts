@@ -33,6 +33,7 @@ export default css`
     width: 2em;
   }
   mass-menu-button::part(base) {
+    --ha-button-border-radius: unset;
     height: 72px;
   }
   mass-menu-button::part(menu-button) {
@@ -40,12 +41,14 @@ export default css`
     --button-button-width: var(--mdc-icon-size);
   }
   mass-menu-button::part(menu-select-menu) {
+    --menu-button-background-color: var(--md-sys-color-background);
     --control-select-menu-height: unset;
     --control-select-menu-background-color: unset;
     --control-select-menu-padding: unset;
   }
   mass-menu-button::part(menu-svg) {
     --mdc-icon-size: var(--header-expanded-menu-icon-size);
+    --button-icon-color: var(--md-sys-color-primary);
   }
   #animation-image {
     display: block;
