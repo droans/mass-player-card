@@ -48,6 +48,9 @@ export class MassMenuButton extends LitElement {
   @property({ type: Number, attribute: "elevation", default: 1, reflect: true })
   elevation = 1;
 
+  @property({ type: Boolean, default: false, reflect: true })
+  outlined = false;
+
   @query("#menu-select-menu")
   public menuElement?: ControlSelectMenuElement;
 
@@ -165,6 +168,7 @@ export class MassMenuButton extends LitElement {
             part="div-icon"
             role="variant"
             elevation="${this.elevation}"
+            ?outlined=${this.outlined}
           >
             <ha-svg-icon
               class="svg-menu ${this.useExpressive ? `expressive` : ``}"
