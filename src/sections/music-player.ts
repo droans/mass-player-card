@@ -550,11 +550,16 @@ class MusicPlayerCard extends LitElement {
     return html` <mpc-artwork></mpc-artwork>`;
   }
   protected renderVolumeRow(): TemplateResult {
-    if (!this.cardConfig) {
+    const feats = this.activeEntity.attributes.supported_features;
+    const canSetVolume = playerSupportsFeature(
+      feats,
+      PlayerSupportedFeatures.VOLUME_SET,
+    );
+    if (!this.cardConfig || !canSetVolume) {
       return html``;
     }
     const canMute = playerSupportsFeature(
-      this.activeEntity.attributes.supported_features,
+      feats,
       PlayerSupportedFeatures.VOLUME_MUTE,
     );
     return html`
