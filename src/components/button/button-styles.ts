@@ -245,13 +245,14 @@ export default css`
     --hover-button-elevation: var(--md-sys-elevation-level5);
   }
 
-  .elevation-0,
-  .elevation-1,
-  .elevation-2,
-  .elevation-3,
-  .elevation-4,
+  .elevation-0:not(:hover),
+  .elevation-1:not(:hover),
+  .elevation-2:not(:hover),
+  .elevation-3:not(:hover),
+  .elevation-4:not(:hover),
   .elevation-5 {
-    animation: elevate-hover-off var(--animation-duration) linear forwards;
+    transition: box-shadow var(--animation-duration) !important;
+    box-shadow: var(--button-elevation);
   }
   .elevation-0:hover,
   .elevation-1:hover,
@@ -259,7 +260,8 @@ export default css`
   .elevation-3:hover,
   .elevation-4:hover,
   .elevation-5:hover {
-    animation: elevate-hover var(--animation-duration) linear forwards;
+    transition: box-shadow var(--animation-duration) !important;
+    box-shadow: var(--hover-button-elevation);
   }
 
   .outlined::part(base) {
@@ -277,16 +279,5 @@ export default css`
   .unselected {
     --used-button-background-color: var(--button-unselected-background-color);
     --used-button-text-color: var(--button-unselected-text-color);
-  }
-
-  @keyframes elevate-hover {
-    to {
-      box-shadow: var(--hover-button-elevation);
-    }
-  }
-  @keyframes elevate-hover-off {
-    to {
-      box-shadow: var(--button-elevation);
-    }
   }
 `;
