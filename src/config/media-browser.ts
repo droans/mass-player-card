@@ -56,19 +56,18 @@ export interface customSection {
 }
 
 export interface MediaBrowserHiddenElementsConfig extends BaseHiddenElementsConfig {
+  header: boolean;
+  header_title: boolean;
   back_button: boolean;
   filter_button: boolean;
   search: boolean;
-  recents: boolean;
   titles: boolean;
   enqueue_menu: boolean;
   add_to_queue_button: boolean;
-  play_next_button: boolean;
-  play_next_clear_queue_button: boolean;
   play_now_button: boolean;
   play_now_clear_queue_button: boolean;
-  header_title: boolean;
-  header: boolean;
+  play_next_button: boolean;
+  play_next_clear_queue_button: boolean;
 }
 
 export type EnqueueConfigOptions =
@@ -101,9 +100,8 @@ const DEFAULT_FAVORITES_CONFIG: FavoritesConfig = {
 export const DEFAULT_MEDIA_BROWSER_HIDDEN_ELEMENTS_CONFIG: MediaBrowserHiddenElementsConfig =
   {
     back_button: false,
-    search: false,
     filter_button: false,
-    recents: false,
+    search: false,
     titles: false,
     enqueue_menu: false,
     add_to_queue_button: false,
