@@ -57,6 +57,7 @@ export interface customSection {
 
 export interface MediaBrowserHiddenElementsConfig extends BaseHiddenElementsConfig {
   back_button: boolean;
+  filter_button: boolean;
   search: boolean;
   recents: boolean;
   titles: boolean;
