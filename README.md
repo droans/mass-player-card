@@ -148,31 +148,27 @@ expressive: true
 expressive_theme: expressive
 panel: false
 default_section: music_player
+sync_player_across_dashboard: false
+download_local: false
 entities:
   - entity_id: <MEDIA_PLAYER_ENTITY>
     volume_entity_id: <MEDIA_PLAYER_ENTITY>
     max_volume: 100
     name: <MEDIA_PLAYER_ENTITY_NAME>
     inactive_when_idle: true
-    hide:
-      player:
-        favorite: false
-        mute: false
-        player_selector: false
-        power: false
-        repeat: false
-        shuffle: false
-        volume: false
 queue:
   enabled: true
   hide:
+    header: false
+    header_title: false
+    clear_queue_button: false
+    artist_names: false
+    album_covers: false
     action_buttons: false
     move_down_button: false
     move_next_button: false
     move_up_button: false
     remove_button: false
-    album_covers: false
-    artist_names: false
   limit_before: 5
   limit_after: 100
   show_album_covers: true
@@ -180,43 +176,71 @@ queue:
 player:
   enabled: true
   hide:
-    favorite: false
-    mute: false
+    header: false
+    header_title: false
     player_selector: false
+    group_selector: false
+    player_name: false
+    track_title: false
+    track_artist: false
+    track_progress_time: false
+    track_progress_bar: false
     power: false
     repeat: false
     shuffle: false
+    favorite: false
     volume: false
-    group_volume: false
+    mute: false
   layout:
     controls_layout: compact
+    hide_labels: false
+    artwork_size: large
     icons:
       shuffle:
         size: small
         box_shadow: false
+        label: true
       previous:
         size: small
         box_shadow: false
+        label: true
       play_pause:
         size: large
         box_shadow: true
+        label: true
       next:
         size: small
         box_shadow: false
+        label: true
       repeat:
         size: small
         box_shadow: false
+        label: true
+      power:
+        size: small
+        box_shadow: false
+        label: true
+      favorite:
+        size: small
+        box_shadow: false
+        label: true
 players:
   enabled: true
   hide:
+    header: false
+    header_title: false
     action_buttons: false
     join_button: false
     transfer_button: false
 media_browser:
   enabled: true
-  hidden:
+  playlists_allow_removing_tracks: false
+  hide:
+    header: false
+    header_title: false
     back_button: false
-    search: false
+    filter_button: false
+    search_button: false
     titles: false
     enqueue_menu: false
     add_to_queue_button: false
@@ -226,9 +250,7 @@ media_browser:
     play_now_clear_queue_button: false
   recents:
     enabled: true
-  recommendations:
-    enabled: true
-  favorites:
+    show_collection_view: true
     albums:
       enabled: true
       limit: 25
@@ -257,7 +279,40 @@ media_browser:
       enabled: true
       limit: 25
       favorites_only: true
-playlists_allow_removing_tracks: false
+  recommendations:
+    enabled: true
+    show_collection_view: true
+  favorites:
+    enabled: true
+    show_collection_view: true
+    albums:
+      enabled: true
+      limit: 25
+      favorites_only: true
+    artists:
+      enabled: true
+      limit: 25
+      favorites_only: true
+    audiobooks:
+      enabled: true
+      limit: 25
+      favorites_only: true
+    playlists:
+      enabled: true
+      limit: 25
+      favorites_only: true
+    podcasts:
+      enabled: true
+      limit: 25
+      favorites_only: true
+    radios:
+      enabled: true
+      limit: 25
+      favorites_only: true
+    tracks:
+      enabled: true
+      limit: 25
+      favorites_only: true
 ```
 
 </details>
