@@ -180,7 +180,10 @@ export default css`
   }
 
   .variant {
-    --button-outline-color: var(--md-sys-color-outline, var(--outline-color));
+    --button-outline-color: var(
+      --md-sys-color-outline-variant,
+      var(--outline-color)
+    );
     --button-background-color: var(--md-sys-color-secondary-container);
   }
   .variant.expressive {
