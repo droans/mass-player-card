@@ -62,7 +62,8 @@ export default css`
     position: absolute;
     right: 0.2em;
     bottom: 2.2em;
-    overflow: hidden;
+    overflow: visible;
+    border-radius: var(--menu-button-border-radius);
   }
 
   .media-card {
