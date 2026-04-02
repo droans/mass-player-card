@@ -146,6 +146,9 @@ class PlayersCard extends LitElement {
     });
     this.entities = entities;
   }
+  private hideSectionHeader(): boolean {
+    return this.config?.players.hide.header ?? false;
+  }
   protected renderPlayerRows() {
     if (!this._hass || !this.controller.ActivePlayer) {
       return html``;
@@ -181,6 +184,9 @@ class PlayersCard extends LitElement {
     });
   }
   protected renderHeader(): TemplateResult {
+    if (this.config?.players.hide.header_title) {
+      return html``;
+    }
     const label = getTranslation("players.header", this.hass) as string;
     const usedLabel = this.config?.players.hide.header_title ? `` : label;
     return html`
@@ -191,6 +197,7 @@ class PlayersCard extends LitElement {
   }
   protected render(): TemplateResult {
     const expressive = this.config?.expressive ?? false;
+    const paddedCls = this.hideSectionHeader() ? `padded` : ``;
     return html`
       <div id="container" class="${expressive ? `container-expressive` : ``}">
         ${this.renderHeader()}
@@ -202,7 +209,9 @@ class PlayersCard extends LitElement {
           play=${this.checkVisibility()}
           playback-rate="4"
         >
-          <ha-md-list class="list ${expressive ? `list-expressive` : ``}">
+          <ha-md-list
+            class="list ${expressive ? `list-expressive` : ``} ${paddedCls}"
+          >
             ${this.renderPlayerRows()}
           </ha-md-list>
         </wa-animation>

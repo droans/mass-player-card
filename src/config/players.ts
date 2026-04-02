@@ -10,6 +10,7 @@ export interface PlayersHiddenElementsConfig extends BaseHiddenElementsConfig {
   join_button: boolean;
   transfer_button: boolean;
   header_title: boolean;
+  header: boolean;
 }
 
 export const DEFAULT_PLAYERS_HIDDEN_ELEMENTS_CONFIG: PlayersHiddenElementsConfig =
@@ -18,6 +19,7 @@ export const DEFAULT_PLAYERS_HIDDEN_ELEMENTS_CONFIG: PlayersHiddenElementsConfig
     join_button: false,
     transfer_button: false,
     header_title: false,
+    header: false,
   };
 
 export const DEFAULT_PLAYERS_CONFIG: PlayersConfig = {

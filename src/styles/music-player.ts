@@ -124,6 +124,9 @@ export default css`
       transparent 100%
     ) !important;
   }
+  .padded {
+    padding-top: 0.5em;
+  }
   #player-card {
     z-index: 0;
     height: var(--mass-player-card-height);

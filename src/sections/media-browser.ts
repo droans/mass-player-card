@@ -449,6 +449,10 @@ export class MediaBrowser extends LitElement {
       this.setActiveCards();
     }
   };
+
+  protected hideSectionHeader(): boolean {
+    return this.hiddenElements.header;
+  }
   protected renderCollectionView(): TemplateResult {
     const collType = this.activeCollectionData.type;
     if (collType == "album") {
@@ -663,6 +667,9 @@ export class MediaBrowser extends LitElement {
     `;
   }
   protected renderSubsectionHeader(): TemplateResult {
+    if (this.hideSectionHeader()) {
+      return html``;
+    }
     return html`
       <mass-section-header>
         ${this.renderBackButton()} ${this.renderTitle()}
@@ -671,6 +678,9 @@ export class MediaBrowser extends LitElement {
     `;
   }
   protected renderMainHeader(): TemplateResult {
+    if (this.hideSectionHeader()) {
+      return html``;
+    }
     return html`
       <mass-section-header>
         ${this.renderTitle()} ${this.renderEndButtons()}

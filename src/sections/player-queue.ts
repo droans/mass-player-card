@@ -229,6 +229,9 @@ class QueueCard extends LitElement {
       this.scrollToActive();
     }
   };
+  private hideSectionHeader(): boolean {
+    return this.hiddenElements.header;
+  }
   private renderQueueItems() {
     const show_album_covers = this._config.show_album_covers;
     const delay_add = 62.5;
@@ -288,6 +291,9 @@ class QueueCard extends LitElement {
   protected renderHeader(): TemplateResult {
     const label = getTranslation("queue.header", this.hass) as string;
     const usedLabel = this.hiddenElements.header_title ? `` : label;
+    if (this.hideSectionHeader()) {
+      return html``;
+    }
     return html`
       <mass-section-header>
         <span slot="label" id="title"> ${usedLabel} </span>
@@ -299,12 +305,15 @@ class QueueCard extends LitElement {
   }
   protected render() {
     const expressive = this.activePlayerController.useExpressive;
+    const paddedCls = this.hideSectionHeader() ? `padded` : ``;
     return (
       this.error ??
       html`
         <div id="container" class="${expressive ? `container-expressive` : ``}">
           ${this.renderHeader()}
-          <ha-md-list class="list ${expressive ? `list-expressive` : ``}">
+          <ha-md-list
+            class="list ${expressive ? `list-expressive` : ``} ${paddedCls}"
+          >
             ${this.renderQueueItems()}
           </ha-md-list>
         </div>
