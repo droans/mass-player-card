@@ -14,7 +14,11 @@ export interface PlayerControlsHiddenElementsConfig extends BaseHiddenElementsCo
   favorite: boolean;
 }
 
-export interface PlayerHiddenElementsConfig extends PlayerControlsHiddenElementsConfig {
+export interface PlayerHeaderHiddenElementsConfig extends PlayerControlsHiddenElementsConfig {
+  player_name: boolean;
+}
+
+export interface PlayerHiddenElementsConfig extends PlayerHeaderHiddenElementsConfig {
   mute: boolean;
   player_selector: boolean;
   volume: boolean;

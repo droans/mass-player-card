@@ -366,7 +366,11 @@ class MusicPlayerCard extends LitElement {
     `;
   }
   protected renderPlayerName(): TemplateResult {
-    if (!this.activePlayerController || !this.cardConfig) {
+    if (
+      !this.activePlayerController ||
+      !this.cardConfig ||
+      this.hiddenElements.player_name
+    ) {
       return html``;
     }
     return html`
