@@ -635,7 +635,7 @@ export class MediaBrowser extends LitElement {
     `;
   }
   protected renderFilterButton(): TemplateResult {
-    if (!this.hass) {
+    if (!this.hass || this.hiddenElements.filter_button) {
       return html``;
     }
     const icons = getFilterButtons(this.Icons, this.hass, this.config);
