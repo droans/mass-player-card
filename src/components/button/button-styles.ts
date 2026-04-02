@@ -260,7 +260,7 @@ export default css`
   }
 
   .outlined::part(base) {
-    border: var(--button-outline-color) 2px solid;
+    border: var(--button-outline-color) 1px solid;
   }
 
   .disabled {
