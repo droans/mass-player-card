@@ -440,6 +440,9 @@ class MusicPlayerCard extends LitElement {
     `;
   }
   protected renderSectionTitle(): TemplateResult {
+    if (this.hiddenElements.header_title) {
+      return html``;
+    }
     const label = this.controller.translate("player.header") as string;
     return html` <span slot="label">${label}</span> `;
   }

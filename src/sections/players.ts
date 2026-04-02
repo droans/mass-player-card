@@ -180,14 +180,20 @@ class PlayersCard extends LitElement {
       );
     });
   }
-  protected render(): TemplateResult {
+  protected renderHeader(): TemplateResult {
     const label = getTranslation("players.header", this.hass) as string;
+    const usedLabel = this.config?.players.hide.header_title ? `` : label;
+    return html`
+      <mass-section-header>
+        <span slot="label" id="title"> ${usedLabel} </span>
+      </mass-section-header>
+    `;
+  }
+  protected render(): TemplateResult {
     const expressive = this.config?.expressive ?? false;
     return html`
       <div id="container" class="${expressive ? `container-expressive` : ``}">
-        <mass-section-header>
-          <span slot="label" id="title"> ${label} </span>
-        </mass-section-header>
+        ${this.renderHeader()}
         <wa-animation
           id="animation"
           name="fadeIn"

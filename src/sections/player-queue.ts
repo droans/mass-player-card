@@ -287,9 +287,10 @@ class QueueCard extends LitElement {
   }
   protected renderHeader(): TemplateResult {
     const label = getTranslation("queue.header", this.hass) as string;
+    const usedLabel = this.hiddenElements.header_title ? `` : label;
     return html`
       <mass-section-header>
-        <span slot="label" id="title"> ${label} </span>
+        <span slot="label" id="title"> ${usedLabel} </span>
         <span slot="end" id="clear-queue">
           ${this.renderClearQueueButton()}
         </span>
