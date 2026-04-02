@@ -385,6 +385,9 @@ class MusicPlayerCard extends LitElement {
     `;
   }
   protected renderTitle(): TemplateResult {
+    if (this.hiddenElements.track_title) {
+      return html``;
+    }
     if (!isActive(this.hass, this.activeMediaPlayer, this.activeEntityConfig)) {
       return html`
         <div class="player-track-title">

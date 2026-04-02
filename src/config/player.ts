@@ -16,6 +16,7 @@ export interface PlayerControlsHiddenElementsConfig extends BaseHiddenElementsCo
 
 export interface PlayerHeaderHiddenElementsConfig extends PlayerControlsHiddenElementsConfig {
   player_name: boolean;
+  track_title: boolean;
 }
 
 export interface PlayerHiddenElementsConfig extends PlayerHeaderHiddenElementsConfig {
