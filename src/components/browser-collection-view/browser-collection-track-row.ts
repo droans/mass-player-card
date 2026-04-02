@@ -176,17 +176,24 @@ export class MassPlaylistTrackRow extends LitElement {
   }
   protected renderMenuButton(): TemplateResult {
     return html`
-      <span slot="end" class="menu-button">
-        <mass-menu-button
-          id="menu-button"
-          .iconPath=${this.Icons?.OVERFLOW}
-          @menu-item-selected=${this.onMenuItemSelected}
-          fixedMenuPosition
-          naturalMenuWidth
-          scheme="plain"
-          .items=${this.enqueueButtons}
-        >
-        </mass-menu-button>
+      <span
+        slot="end"
+        class="menu-button"
+        @click=${(event: Event) => {
+          event.stopPropagation();
+        }}
+      >
+          <mass-menu-button
+            id="menu-button"
+            .iconPath=${this.Icons?.OVERFLOW}
+            @menu-item-selected=${this.onMenuItemSelected}
+            fixedMenuPosition
+            naturalMenuWidth
+            scheme="plain"
+            .items=${this.enqueueButtons}
+          >
+          </mass-menu-button>
+        </div>
       </span>
     `;
   }
