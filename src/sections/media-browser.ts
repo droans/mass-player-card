@@ -498,6 +498,9 @@ export class MediaBrowser extends LitElement {
     `;
   }
   protected renderTitle(): TemplateResult {
+    if (this.hiddenElements.header_title) {
+      return html``;
+    }
     const title = this.activeSection;
     return html` <span slot="label" id="title"> ${title} </span> `;
   }
