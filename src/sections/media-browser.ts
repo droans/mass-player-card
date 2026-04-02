@@ -667,9 +667,6 @@ export class MediaBrowser extends LitElement {
     `;
   }
   protected renderSubsectionHeader(): TemplateResult {
-    if (this.hideSectionHeader()) {
-      return html``;
-    }
     return html`
       <mass-section-header>
         ${this.renderBackButton()} ${this.renderTitle()}
@@ -678,9 +675,6 @@ export class MediaBrowser extends LitElement {
     `;
   }
   protected renderMainHeader(): TemplateResult {
-    if (this.hideSectionHeader()) {
-      return html``;
-    }
     return html`
       <mass-section-header>
         ${this.renderTitle()} ${this.renderEndButtons()}
@@ -691,6 +685,9 @@ export class MediaBrowser extends LitElement {
     return _changedProperties.size > 0;
   }
   protected renderHeader(): TemplateResult {
+    if (this.hideSectionHeader()) {
+      return html``;
+    }
     if (this.activeSection == "search") {
       return this.renderSearchHeader();
     }
