@@ -186,7 +186,6 @@ export default css`
     margin: 0em 1.75em 0em 1.75em;
     text-align: center;
     overflow: hidden;
-    height: 5em;
   }
 
   .player-name {
