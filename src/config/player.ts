@@ -13,22 +13,22 @@ export interface PlayerControlsHiddenElementsConfig extends BaseHiddenElementsCo
   shuffle: boolean;
   favorite: boolean;
 }
-
-export interface PlayerHeaderHiddenElementsConfig extends PlayerControlsHiddenElementsConfig {
+export interface PlayerHiddenElementsConfig extends BaseHiddenElementsConfig {
+  header: boolean;
+  header_title: boolean;
+  player_selector: boolean;
+  group_volume: boolean;
   player_name: boolean;
   track_title: boolean;
   track_artist: boolean;
   track_progress_time: boolean;
   track_progress_bar: boolean;
-  header_title: boolean;
-  header: boolean;
-}
-
-export interface PlayerHiddenElementsConfig extends PlayerHeaderHiddenElementsConfig {
-  mute: boolean;
-  player_selector: boolean;
+  power: boolean;
+  repeat: boolean;
+  shuffle: boolean;
+  favorite: boolean;
   volume: boolean;
-  group_volume: boolean;
+  mute: boolean;
 }
 
 export interface PlayerLayoutConfig {

@@ -483,6 +483,9 @@ class MusicPlayerCard extends LitElement {
     `;
   }
   protected renderPlayerSelector(): TemplateResult {
+    if (this.hiddenElements.player_selector) {
+      return html``;
+    }
     return html`
       <span slot="start">
         <mpc-player-selector @menu-item-selected=${this.onPlayerSelect}>
@@ -510,8 +513,9 @@ class MusicPlayerCard extends LitElement {
     `;
   }
   protected renderPlayerHeader(): TemplateResult {
+    const padCls = this.hideSectionHeader() ? `padded` : ``;
     return html`
-      <div class="player-header">
+      <div class="player-header ${padCls}">
         ${this.renderPlayerName()} ${this.renderTitle()} ${this.renderArtist()}
       </div>
     `;

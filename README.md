@@ -470,21 +470,21 @@ Multiple elements on the Music Player tab can be hidden. By default, all element
 
 | Parameter           | Type | Required | Default     | Description                                   |
 |---------------------|------|----------|-------------|-----------------------------------------------|
-| favorite            | bool  | No       | false       | Hides the favorite button                    |
-| mute                | bool  | No       | false       | Hides the mute button                        |
+| header              | bool  | No       | false       | Hides the entire header                      |
+| header_title        | bool  | No       | false       | Hides the "Media Player" title in the header |
 | player_selector     | bool  | No       | false       | Hides the player selector button             |
+| group_volume        | bool  | No       | false       | Hides the grouped player volume menu         |
+| player_name         | bool  | No       | false       | Hides the player name                        |
+| track_title         | bool  | No       | false       | Hides the track title                        |
+| track_artist        | bool  | No       | false       | Hides the track artist                       |
+| track_progress_time | bool  | No       | false       | Hides the track progress time                |
+| track_progress_bar  | bool  | No       | false       | Hides the track progress bar                 |
 | power               | bool  | No       | false       | Hides the power button                       |
 | repeat              | bool  | No       | false       | Hides the repeat button                      |
 | shuffle             | bool  | No       | false       | Hides the shuffle button                     |
+| favorite            | bool  | No       | false       | Hides the favorite button                    |
 | volume              | bool  | No       | false       | Hides the volume button                      |
-| group_volume        | bool  | No       | false       | Hides the grouped player volume menu         |
-| player_name         | bool  | No       | false       | Hides the player name                        |
-| track_artist        | bool  | No       | false       | Hides the track artist                       |
-| track_progress_bar  | bool  | No       | false       | Hides the track progress bar                 |
-| track_progress_time | bool  | No       | false       | Hides the track progress time                |
-| track_title         | bool  | No       | false       | Hides the track title                        |
-| header_title        | bool  | No       | false       | Hides the "Media Player" title in the header |
-| header              | bool  | No       | false       | Hides the entire header                      |
+| mute                | bool  | No       | false       | Hides the mute button                        |
 
 #### Music Player Layout Config
 The layout of the control buttons can be adjusted to your liking. Use the full default configuration below as an example.
@@ -563,16 +563,16 @@ Multiple elements on the queue tab can be hidden. By default, all elements are v
 
 | Parameter          | Type  | Required | Default     | Description                           |
 |--------------------|-------|----------|-------------|---------------------------------------|
+| header             | bool  | No       | false       | Hides the entire header               |
+| header_title       | bool  | No       | false       | Hides the "Queue" title in the header |
+| clear_queue_button | bool  | No       | false       | Hides the Clear Queue button          |
+| artist_names       | bool  | No       | false       | Hides artist names                    |
+| album_covers       | bool  | No       | false       | Hides album covers                    |
 | action_buttons     | bool  | No       | false       | Hides the action buttons              |
 | move_down_button   | bool  | No       | false       | Hides the Move Down button            |
-| move_up_button     | bool  | No       | false       | Hides the Move Up button              |
 | move_next_button   | bool  | No       | false       | Hides the Move Next button            |
+| move_up_button     | bool  | No       | false       | Hides the Move Up button              |
 | remove_button      | bool  | No       | false       | Hides the Remove button               |
-| album_covers       | bool  | No       | false       | Hides album covers                    |
-| artist_names       | bool  | No       | false       | Hides artist names                    |
-| clear_queue_button | bool  | No       | false       | Hides the Clear Queue button          |
-| header_title       | bool  | No       | false       | Hides the "Queue" title in the header |
-| header             | bool  | No       | false       | Hides the entire header               |
 
 ### Media Browser Config
 
@@ -684,6 +684,8 @@ Multiple elements on the media browser tab can be hidden. By default, all elemen
 
 | Parameter                    | Type  | Required | Default     | Description                                |
 |------------------------------|-------|----------|-------------|--------------------------------------------|
+| header                       | bool  | No       | false       | Hides the entire header                    |
+| header_title                 | bool  | No       | false       | Hides the section titles in the header     |
 | back_button                  | bool  | No       | false       | Hides the back button                      |
 | filter_button                | bool  | No       | false       | Hides the filter button                    |
 | search                       | bool  | No       | false       | Hides the search button                    |
@@ -694,8 +696,6 @@ Multiple elements on the media browser tab can be hidden. By default, all elemen
 | play_now_clear_queue_button  | bool  | No       | false       | Hides the "Play Now & Clear Queue" button  |
 | play_next_button             | bool  | No       | false       | Hides the "Play Next" button               |
 | play_next_clear_queue_button | bool  | No       | false       | Hides the "Play Next & Clear Queue" button |
-| header_title                 | bool  | No       | false       | Hides the section titles in the header     |
-| header                       | bool  | No       | false       | Hides the entire header                    |
 
 #### WARNING: 
 
@@ -722,11 +722,11 @@ Multiple elements on the players tab can be hidden. By default, all elements are
 
 | Parameter       | Type  | Required | Default     | Description                             |
 |-----------------|-------|----------|-------------|-----------------------------------------|
+| header          | bool  | No       | false       | Hides the entire header                 |
+| header_title    | bool  | No       | false       | Hides the "Players" title in the header |
 | action_buttons  | bool  | No       | false       | Hides the action buttons                |
 | join_button     | bool  | No       | false       | Hides the join button                   |
 | transfer_button | bool  | No       | false       | Hides the transfer button               |
-| header_title    | bool  | No       | false       | Hides the "Players" title in the header |
-| header          | bool  | No       | false       | Hides the entire header                 |
 
 # FAQs
 
