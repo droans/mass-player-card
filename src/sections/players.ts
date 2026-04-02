@@ -184,7 +184,7 @@ class PlayersCard extends LitElement {
     });
   }
   protected renderHeader(): TemplateResult {
-    if (this.config?.players.hide.header_title) {
+    if (this.hideSectionHeader()) {
       return html``;
     }
     const label = getTranslation("players.header", this.hass) as string;
