@@ -17,7 +17,7 @@ export interface PlayerHiddenElementsConfig extends BaseHiddenElementsConfig {
   header: boolean;
   header_title: boolean;
   player_selector: boolean;
-  group_volume: boolean;
+  group_selector: boolean;
   player_name: boolean;
   track_title: boolean;
   track_artist: boolean;
@@ -75,7 +75,7 @@ export const DEFAULT_PLAYER_HIDDEN_ELEMENTS_CONFIG: PlayerHiddenElementsConfig =
     repeat: false,
     shuffle: false,
     volume: false,
-    group_volume: false,
+    group_selector: false,
     player_name: false,
     track_artist: false,
     track_progress_bar: false,
@@ -141,7 +141,7 @@ const PLAYER_HIDDEN_ITEMS = [
   "repeat",
   "shuffle",
   "volume",
-  "group_volume",
+  "group_selector",
 ];
 
 function iconConfigForm(icon_name: string) {

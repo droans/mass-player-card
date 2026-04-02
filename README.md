@@ -473,7 +473,7 @@ Multiple elements on the Music Player tab can be hidden. By default, all element
 | header              | bool  | No       | false       | Hides the entire header                      |
 | header_title        | bool  | No       | false       | Hides the "Media Player" title in the header |
 | player_selector     | bool  | No       | false       | Hides the player selector button             |
-| group_volume        | bool  | No       | false       | Hides the grouped player volume menu         |
+| group_selector      | bool  | No       | false       | Hides the grouped player volume menu         |
 | player_name         | bool  | No       | false       | Hides the player name                        |
 | track_title         | bool  | No       | false       | Hides the track title                        |
 | track_artist        | bool  | No       | false       | Hides the track artist                       |
