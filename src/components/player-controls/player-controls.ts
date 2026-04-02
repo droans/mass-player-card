@@ -11,7 +11,7 @@ import styles from "./player-controls-styles";
 
 class MassPlayerControls extends MassPlayerControlsBase {
   protected renderShuffle(): TemplateResult {
-    if (this.hiddenElements.shuffle) {
+    if (this.hiddenElements.shuffle_button) {
       return html``;
     }
     const icon_style = this.layoutConfig.icons.shuffle;
@@ -172,7 +172,7 @@ class MassPlayerControls extends MassPlayerControlsBase {
     `;
   }
   protected renderRepeat(): TemplateResult {
-    if (this.hiddenElements.repeat) {
+    if (this.hiddenElements.repeat_button) {
       return html``;
     }
     const icon = getRepeatIcon(this._playerData.repeat, this.Icons);

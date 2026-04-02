@@ -108,7 +108,7 @@ class VolumeRow extends LitElement {
       : this.actions.actionAddFavorite());
   };
   protected renderPower(): TemplateResult {
-    if (this.hide.power || this.useExpressive) {
+    if (this.hide.power_button || this.useExpressive) {
       return html``;
     }
     return html`
@@ -126,7 +126,7 @@ class VolumeRow extends LitElement {
     `;
   }
   protected renderMute(): TemplateResult {
-    if (this.hide.mute) {
+    if (this.hide.mute_button) {
       return html``;
     }
     return html`
@@ -149,7 +149,7 @@ class VolumeRow extends LitElement {
     `;
   }
   protected renderFavorite(): TemplateResult {
-    if (this.hide.favorite || this.useExpressive) {
+    if (this.hide.favorite_button || this.useExpressive) {
       return html``;
     }
     return html`

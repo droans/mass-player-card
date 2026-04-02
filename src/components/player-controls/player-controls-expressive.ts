@@ -73,7 +73,7 @@ class MassPlayerControlsExpressive extends MassPlayerControlsBase {
     `;
   }
   protected renderPower(): TemplateResult {
-    if (this.hiddenElements.power) {
+    if (this.hiddenElements.power_button) {
       return html``;
     }
     const label = this.renderLabel(
@@ -99,7 +99,7 @@ class MassPlayerControlsExpressive extends MassPlayerControlsBase {
     `;
   }
   protected renderShuffle(): TemplateResult {
-    if (this.hiddenElements.shuffle) {
+    if (this.hiddenElements.shuffle_button) {
       return html``;
     }
     const shuffle = this.shuffle;
@@ -132,7 +132,7 @@ class MassPlayerControlsExpressive extends MassPlayerControlsBase {
     `;
   }
   protected renderRepeat(): TemplateResult {
-    if (this.hiddenElements.repeat) {
+    if (this.hiddenElements.repeat_button) {
       return html``;
     }
     const repeat = this.repeat;
@@ -167,7 +167,7 @@ class MassPlayerControlsExpressive extends MassPlayerControlsBase {
     `;
   }
   protected renderFavorite(): TemplateResult {
-    if (this.hiddenElements.favorite) {
+    if (this.hiddenElements.favorite_button) {
       return html``;
     }
     const favorite = this.favorite;
@@ -209,7 +209,11 @@ class MassPlayerControlsExpressive extends MassPlayerControlsBase {
   }
   protected renderLowerControls(): TemplateResult {
     const h = this.hiddenElements;
-    const all_hidden = h.power && h.shuffle && h.repeat && h.favorite;
+    const all_hidden =
+      h.power_button &&
+      h.shuffle_button &&
+      h.repeat_button &&
+      h.favorite_button;
     if (all_hidden) {
       return html``;
     }

@@ -185,12 +185,12 @@ player:
     track_artist: false
     track_progress_time: false
     track_progress_bar: false
-    power: false
-    repeat: false
-    shuffle: false
-    favorite: false
+    power_button: false
+    repeat_button: false
+    shuffle_button: false
+    favorite_button: false
     volume: false
-    mute: false
+    mute_button: false
   layout:
     controls_layout: compact
     hide_labels: false
@@ -336,12 +336,12 @@ entities:
     inactive_when_idle: true
     hide:
       player:
-        favorite: true
-        mute: true
+        favorite_button: true
+        mute_button: true
         player_selector: true
-        power: true
-        repeat: true
-        shuffle: true
+        power_button: true
+        repeat_button: true
+        shuffle_button: true
         volume: true
   - entity_id: media_player.living_room_player_music_assistant
     volume_entity_id: media_player.living_room_tv
@@ -350,8 +350,8 @@ entities:
     max_volume: 50
     hide:
       player:
-        mute: true
-        power: true
+        mute_button: true
+        power_button: true
         volume: true
       queue:
         move_up_button: true
@@ -363,8 +363,8 @@ entities:
     name: Basement
     hide:
       player:
-        mute: true
-        power: true
+        mute_button: true
+        power_button: true
 queue:
   enabled: true
   limit_before: 10
@@ -440,7 +440,7 @@ media_browser:
     providers:
       - plex
       - tidal
-playlists_allow_removing_tracks: false
+  playlists_allow_removing_tracks: false
 ```
 
 </details>
@@ -534,12 +534,12 @@ Multiple elements on the Music Player tab can be hidden. By default, all element
 | track_artist        | bool  | No       | false       | Hides the track artist                       |
 | track_progress_time | bool  | No       | false       | Hides the track progress time                |
 | track_progress_bar  | bool  | No       | false       | Hides the track progress bar                 |
-| power               | bool  | No       | false       | Hides the power button                       |
-| repeat              | bool  | No       | false       | Hides the repeat button                      |
-| shuffle             | bool  | No       | false       | Hides the shuffle button                     |
-| favorite            | bool  | No       | false       | Hides the favorite button                    |
+| power_button        | bool  | No       | false       | Hides the power button                       |
+| repeat_button       | bool  | No       | false       | Hides the repeat button                      |
+| shuffle_button      | bool  | No       | false       | Hides the shuffle button                     |
+| favorite_button     | bool  | No       | false       | Hides the favorite button                    |
 | volume              | bool  | No       | false       | Hides the volume button                      |
-| mute                | bool  | No       | false       | Hides the mute button                        |
+| mute_button         | bool  | No       | false       | Hides the mute button                        |
 
 #### Music Player Layout Config
 The layout of the control buttons can be adjusted to your liking. Use the full default configuration below as an example.
