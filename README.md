@@ -468,16 +468,21 @@ Certain elements across the different sections can be hidden or displayed depend
 #### Music Player Hidden Elements Config
 Multiple elements on the Music Player tab can be hidden. By default, all elements are visible
 
-| Parameter       | Type | Required | Default     | Description                           |
-|-----------------|------|----------|-------------|---------------------------------------|
-| favorite        | bool  | No       | false       | Hides the favorite button            |
-| mute            | bool  | No       | false       | Hides the mute button                |
-| player_selector | bool  | No       | false       | Hides the player selector button     |
-| power           | bool  | No       | false       | Hides the power button               |
-| repeat          | bool  | No       | false       | Hides the repeat button              |
-| shuffle         | bool  | No       | false       | Hides the shuffle button             |
-| volume          | bool  | No       | false       | Hides the volume button              |
-| group_volume    | bool  | No       | false       | Hides the grouped player volume menu |
+| Parameter           | Type | Required | Default     | Description                           |
+|---------------------|------|----------|-------------|---------------------------------------|
+| favorite            | bool  | No       | false       | Hides the favorite button            |
+| mute                | bool  | No       | false       | Hides the mute button                |
+| player_selector     | bool  | No       | false       | Hides the player selector button     |
+| power               | bool  | No       | false       | Hides the power button               |
+| repeat              | bool  | No       | false       | Hides the repeat button              |
+| shuffle             | bool  | No       | false       | Hides the shuffle button             |
+| volume              | bool  | No       | false       | Hides the volume button              |
+| group_volume        | bool  | No       | false       | Hides the grouped player volume menu |
+| player_name         | bool  | No       | false       | Hides the player name                |
+| track_artist        | bool  | No       | false       | Hides the track artist               |
+| track_progress_bar  | bool  | No       | false       | Hides the track progress bar         |
+| track_progress_time | bool  | No       | false       | Hides the track progress time        |
+| track_title         | bool  | No       | false       | Hides the track title                |
 
 #### Music Player Layout Config
 The layout of the control buttons can be adjusted to your liking. Use the full default configuration below as an example.

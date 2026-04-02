@@ -366,7 +366,11 @@ class MusicPlayerCard extends LitElement {
     `;
   }
   protected renderPlayerName(): TemplateResult {
-    if (!this.activePlayerController || !this.cardConfig) {
+    if (
+      !this.activePlayerController ||
+      !this.cardConfig ||
+      this.hiddenElements.player_name
+    ) {
       return html``;
     }
     return html`
@@ -381,6 +385,9 @@ class MusicPlayerCard extends LitElement {
     `;
   }
   protected renderTitle(): TemplateResult {
+    if (this.hiddenElements.track_title) {
+      return html``;
+    }
     if (!isActive(this.hass, this.activeMediaPlayer, this.activeEntityConfig)) {
       return html`
         <div class="player-track-title">
@@ -400,7 +407,11 @@ class MusicPlayerCard extends LitElement {
     return html``;
   }
   protected renderArtist(): TemplateResult {
-    if (!this.player_data || !this.cardConfig) {
+    if (
+      !this.player_data ||
+      !this.cardConfig ||
+      this.hiddenElements.track_artist
+    ) {
       return html``;
     }
     if (!isActive(this.hass, this.activeMediaPlayer, this.activeEntityConfig)) {
@@ -416,7 +427,6 @@ class MusicPlayerCard extends LitElement {
         >
           ${msgs[i]}
         </div>
-        ;
       `;
     }
     return html`
@@ -490,6 +500,12 @@ class MusicPlayerCard extends LitElement {
     `;
   }
   protected renderProgress(): TemplateResult {
+    if (
+      this.hiddenElements.track_progress_bar &&
+      this.hiddenElements.track_progress_time
+    ) {
+      return html``;
+    }
     const style = isActive(
       this.hass,
       this.activeMediaPlayer,

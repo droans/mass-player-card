@@ -44,7 +44,6 @@ class MassPlayerProgressBar extends LitElement {
   private actions?: ActionsController;
   @consume({ context: controllerContext, subscribe: true })
   private controller?: MassCardController;
-
   @state() public _player_data?: PlayerData;
 
   private _activePlayer?: ExtendedHassEntity;
@@ -223,10 +222,54 @@ class MassPlayerProgressBar extends LitElement {
       this.requestProgress();
     }, 5000);
   };
-  protected renderTime() {
+  protected renderVolumeBar(): TemplateResult {
+    if (this.controller?.Config.MusicPlayer.hide.track_progress_bar) {
+      return html``;
+    }
+    const cls =
+      this.player_data?.playing && this.controller?.config?.expressive
+        ? `wavy medium`
+        : `medium progress-plain`;
+    return html`
+      <div
+        id="progress-div"
+        @pointerdown=${this.onPointerDown}
+        @click=${this.onSeek}
+      >
+        <link
+          href="https://cdn.jsdelivr.net/npm/beercss@3.12.11/dist/cdn/beer.min.css"
+          rel="stylesheet"
+        />
+        <div
+          class="prog-incomplete"
+          style="--incomplete-progress-start-pct: ${Math.round(
+            this._prog_pct * 100,
+          )}%;"
+        ></div>
+        <progress
+          class="${cls}"
+          id="progress-bar"
+          value="${this._prog_pct}"
+          max="1"
+        ></progress>
+        ${this.renderVolumeBarHandle()}
+      </div>
+    `;
+  }
+  protected renderTime(): TemplateResult {
+    if (this.controller?.Config.MusicPlayer.hide.track_progress_time) {
+      return html``;
+    }
     const pos = secondsToTime(this.media_position ?? 0);
     const dur = secondsToTime(this.media_duration ?? 1);
-    return `${pos} - ${dur}`;
+    return html`
+      <div
+        id="time"
+        class="${this.controller?.config?.expressive ? `time-expressive` : ``}"
+      >
+        ${pos} - ${dur}
+      </div>
+    `;
   }
   protected renderVolumeBarHandle(): TemplateResult {
     return html`
@@ -243,44 +286,8 @@ class MassPlayerProgressBar extends LitElement {
     `;
   }
   protected render(): TemplateResult {
-    const cls =
-      this.player_data?.playing && this.controller?.config?.expressive
-        ? `wavy medium`
-        : `medium progress-plain`;
     return html`
-      <div class="progress">
-        <div
-          id="time"
-          class="${this.controller?.config?.expressive
-            ? `time-expressive`
-            : ``}"
-        >
-          ${this.renderTime()}
-        </div>
-        <div
-          id="progress-div"
-          @pointerdown=${this.onPointerDown}
-          @click=${this.onSeek}
-        >
-          <link
-            href="https://cdn.jsdelivr.net/npm/beercss@3.12.11/dist/cdn/beer.min.css"
-            rel="stylesheet"
-          />
-          <div
-            class="prog-incomplete"
-            style="--incomplete-progress-start-pct: ${Math.round(
-              this._prog_pct * 100,
-            )}%;"
-          ></div>
-          <progress
-            class="${cls}"
-            id="progress-bar"
-            value="${this._prog_pct}"
-            max="1"
-          ></progress>
-          ${this.renderVolumeBarHandle()}
-        </div>
-      </div>
+      <div class="progress">${this.renderTime()} ${this.renderVolumeBar()}</div>
     `;
   }
 
