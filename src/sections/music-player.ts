@@ -407,7 +407,11 @@ class MusicPlayerCard extends LitElement {
     return html``;
   }
   protected renderArtist(): TemplateResult {
-    if (!this.player_data || !this.cardConfig) {
+    if (
+      !this.player_data ||
+      !this.cardConfig ||
+      this.hiddenElements.track_artist
+    ) {
       return html``;
     }
     if (!isActive(this.hass, this.activeMediaPlayer, this.activeEntityConfig)) {
