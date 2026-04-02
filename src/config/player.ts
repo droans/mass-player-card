@@ -18,6 +18,8 @@ export interface PlayerHeaderHiddenElementsConfig extends PlayerControlsHiddenEl
   player_name: boolean;
   track_title: boolean;
   track_artist: boolean;
+  track_progress_time: boolean;
+  track_progress_bar: boolean;
 }
 
 export interface PlayerHiddenElementsConfig extends PlayerHeaderHiddenElementsConfig {
@@ -72,6 +74,11 @@ export const DEFAULT_PLAYER_HIDDEN_ELEMENTS_CONFIG: PlayerHiddenElementsConfig =
     shuffle: false,
     volume: false,
     group_volume: false,
+    player_name: false,
+    track_artist: false,
+    track_progress_bar: false,
+    track_progress_time: false,
+    track_title: false,
   };
 export const DEFAULT_PLAYER_ICON_CONFIG: PlayerIcons = {
   shuffle: {

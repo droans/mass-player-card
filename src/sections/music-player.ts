@@ -427,7 +427,6 @@ class MusicPlayerCard extends LitElement {
         >
           ${msgs[i]}
         </div>
-        ;
       `;
     }
     return html`
@@ -501,6 +500,12 @@ class MusicPlayerCard extends LitElement {
     `;
   }
   protected renderProgress(): TemplateResult {
+    if (
+      this.hiddenElements.track_progress_bar &&
+      this.hiddenElements.track_progress_time
+    ) {
+      return html``;
+    }
     const style = isActive(
       this.hass,
       this.activeMediaPlayer,
