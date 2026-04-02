@@ -190,6 +190,8 @@ export class MassPlaylistTrackRow extends LitElement {
             fixedMenuPosition
             naturalMenuWidth
             scheme="plain"
+            outlined
+            elevation="0"
             .items=${this.enqueueButtons}
           >
           </mass-menu-button>
