@@ -59,3 +59,28 @@ export enum VibrateDuration {
   LONG = 300,
   VERY_LONG = 500,
 }
+
+export enum PlayerSupportedFeatures {
+  PAUSE = -1,
+  SEEK = -2,
+  VOLUME_SET = -3,
+  VOLUME_MUTE = -4,
+  PREVIOUS_TRACK = -5,
+  NEXT_TRACK = -6,
+  TURN_ON = -8,
+  TURN_OFF = -9,
+  PLAY_MEDIA = -10,
+  VOLUME_STEP = -11,
+  SELECT_SOURCE = -12,
+  STOP = -13,
+  CLEAR_PLAYLIST = -14,
+  PLAY = -15,
+  SHUFFLE_SET = -16,
+  SELECT_SOUND_MODE = -17,
+  BROWSE_MEDIA = -18,
+  REPEAT_SET = -19,
+  GROUPING = -20,
+  MEDIA_ANNOUNCE = -21,
+  MEDIA_ENQUEUE = -22,
+  SEARCH_MEDIA = -23,
+}
