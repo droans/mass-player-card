@@ -27,7 +27,7 @@ import { ActionsController } from "../../controller/actions";
 import { MassCardController } from "../../controller/controller";
 import { Icons } from "../../const/icons";
 import { jsonMatch } from "../../utils/utility";
-import { state } from "lit/decorators.js";
+import { property, state } from "lit/decorators.js";
 import { DetailValueEventData } from "../../const/events";
 
 class VolumeRow extends LitElement {
@@ -39,6 +39,9 @@ class VolumeRow extends LitElement {
   private controller!: MassCardController;
   @consume({ context: IconsContext }) private Icons!: Icons;
   @state() protected favorite = false;
+
+  @property({ attribute: "can-mute", type: Boolean, default: false })
+  canMute = false;
 
   private _initialUpdate!: boolean;
 
@@ -126,7 +129,7 @@ class VolumeRow extends LitElement {
     `;
   }
   protected renderMute(): TemplateResult {
-    if (this.hide.mute_button) {
+    if (this.hide.mute_button || !this.canMute) {
       return html``;
     }
     return html`

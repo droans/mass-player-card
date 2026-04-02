@@ -6,7 +6,8 @@ import { getRepeatIcon } from "../../utils/music-player";
 import styles from "./player-controls-expressive-styles";
 import "../button/button";
 import { PlayerIcon } from "../../config/player";
-import { RepeatMode } from "../../const/enums";
+import { PlayerSupportedFeatures, RepeatMode } from "../../const/enums";
+import { playerSupportsFeature } from "../../utils/utility";
 
 class MassPlayerControlsExpressive extends MassPlayerControlsBase {
   protected onFavoriteHold = () => {
@@ -73,7 +74,11 @@ class MassPlayerControlsExpressive extends MassPlayerControlsBase {
     `;
   }
   protected renderPower(): TemplateResult {
-    if (this.hiddenElements.power_button) {
+    const feats = this.activeEntity.attributes.supported_features;
+    const canToggle =
+      playerSupportsFeature(feats, PlayerSupportedFeatures.TURN_ON) &&
+      playerSupportsFeature(feats, PlayerSupportedFeatures.TURN_OFF);
+    if (this.hiddenElements.power_button || !canToggle) {
       return html``;
     }
     const label = this.renderLabel(

@@ -1,7 +1,7 @@
 import { Config, ConfigSections, EntityConfig } from "../config/config";
 import { DEFAULT_SECTION_PRIORITY } from "../const/card";
 import { MAX_ACTIVE_LAST_ACTIVE_DURATION } from "../const/common";
-import { Sections, Thumbnail } from "../const/enums";
+import { PlayerSupportedFeatures, Sections, Thumbnail } from "../const/enums";
 import { MUSIC_ASSISTANT_APP_NAME } from "../const/player-queue";
 import { ExtendedHass, ExtendedHassEntity, QueueItem } from "../const/types";
 import { getThumbnail } from "./thumbnails";
@@ -236,4 +236,12 @@ export function playerIsAvailable(
   }
   const state = entity.state;
   return !["unknown", "unavailable"].includes(state);
+}
+
+export function playerSupportsFeature(
+  playerSupportedFeatures: number,
+  feature: PlayerSupportedFeatures,
+): boolean {
+  const feats = (playerSupportedFeatures >>> 0).toString(2);
+  return feats.at(feature) == "1";
 }
