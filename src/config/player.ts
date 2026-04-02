@@ -8,27 +8,27 @@ export interface PlayerConfig {
 }
 
 export interface PlayerControlsHiddenElementsConfig extends BaseHiddenElementsConfig {
-  power: boolean;
-  repeat: boolean;
-  shuffle: boolean;
-  favorite: boolean;
+  power_button: boolean;
+  repeat_button: boolean;
+  shuffle_button: boolean;
+  favorite_button: boolean;
 }
 export interface PlayerHiddenElementsConfig extends BaseHiddenElementsConfig {
   header: boolean;
   header_title: boolean;
   player_selector: boolean;
-  group_volume: boolean;
+  group_selector: boolean;
   player_name: boolean;
   track_title: boolean;
   track_artist: boolean;
   track_progress_time: boolean;
   track_progress_bar: boolean;
-  power: boolean;
-  repeat: boolean;
-  shuffle: boolean;
-  favorite: boolean;
+  power_button: boolean;
+  repeat_button: boolean;
+  shuffle_button: boolean;
+  favorite_button: boolean;
   volume: boolean;
-  mute: boolean;
+  mute_button: boolean;
 }
 
 export interface PlayerLayoutConfig {
@@ -68,14 +68,14 @@ export enum PlayerIconSize {
 
 export const DEFAULT_PLAYER_HIDDEN_ELEMENTS_CONFIG: PlayerHiddenElementsConfig =
   {
-    favorite: false,
-    mute: false,
+    favorite_button: false,
+    mute_button: false,
     player_selector: false,
-    power: false,
-    repeat: false,
-    shuffle: false,
+    power_button: false,
+    repeat_button: false,
+    shuffle_button: false,
     volume: false,
-    group_volume: false,
+    group_selector: false,
     player_name: false,
     track_artist: false,
     track_progress_bar: false,
@@ -141,7 +141,7 @@ const PLAYER_HIDDEN_ITEMS = [
   "repeat",
   "shuffle",
   "volume",
-  "group_volume",
+  "group_selector",
 ];
 
 function iconConfigForm(icon_name: string) {

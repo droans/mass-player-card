@@ -601,7 +601,7 @@ export class MediaBrowser extends LitElement {
     `;
   }
   protected renderSearchButton(): TemplateResult {
-    const hide = this.hiddenElements.search;
+    const hide = this.hiddenElements.search_button;
     if (hide) {
       return html``;
     }

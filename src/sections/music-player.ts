@@ -402,7 +402,7 @@ class MusicPlayerCard extends LitElement {
     return this.wrapTitleMarquee();
   }
   protected renderGrouped(): TemplateResult {
-    const hide = this.hiddenElements.group_volume;
+    const hide = this.hiddenElements.group_selector;
     if (this.groupedPlayers && this.groupedPlayers.length > 1 && !hide) {
       return html`
         <mpc-grouped-player-menu slot="end"></mpc-grouped-player-menu>
