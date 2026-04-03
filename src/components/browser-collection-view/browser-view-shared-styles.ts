@@ -74,6 +74,7 @@ export default css`
     position: relative;
     right: 37.5%;
     bottom: -12.5%;
+    z-index: 1;
   }
   #header {
     height: var(--view-header-height);
