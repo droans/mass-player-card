@@ -424,6 +424,16 @@ __metadata:
   languageName: node
   linkType: hard
 
+"@lit-labs/virtualizer@npm:^2.1.1":
+  version: 2.1.1
+  resolution: "@lit-labs/virtualizer@npm:2.1.1"
+  dependencies:
+    lit: "npm:^3.2.0"
+    tslib: "npm:^2.0.3"
+  checksum: 10c0/ea3cce76885448f11ab77d06ce3e58bf83fc700edf05ab4310836a83a06c11a4fc7e29f59813a0ade6056b0bd970fb7b980b0fd7df25e7892dddc4ae11fefe20
+  languageName: node
+  linkType: hard
+
 "@lit/context@npm:1.1.6":
   version: 1.1.6
   resolution: "@lit/context@npm:1.1.6"
@@ -3386,7 +3396,7 @@ __metadata:
   languageName: node
   linkType: hard
 
-"lit@npm:3.3.2, lit@npm:^3.3.2":
+"lit@npm:3.3.2, lit@npm:^3.2.0, lit@npm:^3.3.2":
   version: 3.3.2
   resolution: "lit@npm:3.3.2"
   dependencies:
@@ -3505,6 +3515,7 @@ __metadata:
     "@eslint/js": "npm:10.0.1"
     "@ktibow/material-color-utilities-nightly": "npm:^0.4.1768930731000"
     "@lit-labs/compiler": "npm:^1.1.2"
+    "@lit-labs/virtualizer": "npm:^2.1.1"
     "@lit/context": "npm:1.1.6"
     "@material/web": "npm:2.4.1"
     "@mdi/js": "npm:7.4.47"
@@ -4770,7 +4781,7 @@ __metadata:
   languageName: node
   linkType: hard
 
-"tslib@npm:^2.4.0":
+"tslib@npm:^2.0.3, tslib@npm:^2.4.0":
   version: 2.8.1
   resolution: "tslib@npm:2.8.1"
   checksum: 10c0/9c4759110a19c53f992d9aae23aac5ced636e99887b51b9e61def52611732872ff7668757d4e4c61f19691e36f4da981cd9485e869b4a7408d689f6bf1f14e62
