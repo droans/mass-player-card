@@ -3538,7 +3538,7 @@ __metadata:
     home-assistant-js-websocket: "npm:9.6.0"
     lit: "npm:3.3.2"
     localforage: "npm:^1.10.0"
-    mass-queue-types: "npm:^1.1.2"
+    mass-queue-types: "npm:^1.1.3"
     prettier: "npm:^3.8.1"
     rollup: "npm:^4.59.0"
     rollup-plugin-commonjs: "npm:^10.1.0"
@@ -3550,10 +3550,10 @@ __metadata:
   languageName: unknown
   linkType: soft
 
-"mass-queue-types@npm:^1.1.2":
-  version: 1.1.2
-  resolution: "mass-queue-types@npm:1.1.2"
-  checksum: 10c0/dcead2079954cac31ba8f793afbad6cb93e6afbebc44be0dae6dad4af2fc09898ffa3fdb6f121980eba6dd209834074472577cf6e2dcf2ff245f804a818c8184
+"mass-queue-types@npm:^1.1.3":
+  version: 1.1.3
+  resolution: "mass-queue-types@npm:1.1.3"
+  checksum: 10c0/f4a40452b245c1ede0c6e126bc776d6843d8984767a3b9f97fe15993d751136078d618d902952faafb0718c40993f7ece56e538763bf3cf4e4578f7966d5e805
   languageName: node
   linkType: hard
 
