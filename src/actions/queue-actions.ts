@@ -33,6 +33,8 @@ export default class QueueActions {
   async getQueue(options?: {
     limit_before?: number;
     limit_after?: number;
+    limit?: number;
+    offset?: number;
   }): Promise<QueueItems | null> {
     const serviceData: getQueueItemsServiceData = {
       entity: this.player_entity,
@@ -42,6 +44,12 @@ export default class QueueActions {
     }
     if (options?.limit_after) {
       serviceData.limit_after = options.limit_after;
+    }
+    if (options?.limit) {
+      serviceData.limit = options.limit;
+    }
+    if (options?.offset) {
+      serviceData.offset = options.offset;
     }
     const data: getQueueItemsServiceSchema = {
       type: "call_service",
