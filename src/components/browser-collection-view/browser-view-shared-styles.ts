@@ -50,6 +50,9 @@ export default css`
     --mdc-icon-size: var(--header-expanded-menu-icon-size);
     --button-icon-color: var(--md-sys-color-primary);
   }
+  mpc-track-row {
+    width: 100%;
+  }
   #animation-image {
     display: block;
   }
