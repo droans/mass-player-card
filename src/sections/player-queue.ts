@@ -232,37 +232,38 @@ class QueueCard extends LitElement {
   private hideSectionHeader(): boolean {
     return this.hiddenElements.header;
   }
-  private renderQueueItems() {
+  private renderQueueItem(queueItem: QueueItem, idx: number): TemplateResult {
     const show_album_covers = this._config.show_album_covers;
     const delay_add = 62.5;
-    let i = 1;
     const play = this._tabSwitchFirstUpdate;
-    return this.queue?.map((item) => {
-      const result = html`
-        <wa-animation
-          id="animation"
-          name="fadeIn"
-          delay=${delay_add * i}
-          duration=${delay_add * 2}
-          fill="forwards"
-          play=${play}
-          iterations="1"
+    return html`
+      <wa-animation
+        id="animation"
+        name="fadeIn"
+        delay=${delay_add * idx}
+        duration=${delay_add * 2}
+        fill="forwards"
+        play=${play}
+        iterations="1"
+      >
+        <mass-player-media-row
+          style="opacity: 0%;"
+          class="${queueItem.playing ? `media-active` : ``}"
+          .media_item=${queueItem}
+          .showAlbumCovers=${show_album_covers}
+          .selectedService=${this.onQueueItemSelected}
+          .removeService=${this.onQueueItemRemoved}
+          .moveQueueItemNextService=${this.onQueueItemMoveNext}
+          .moveQueueItemUpService=${this.onQueueItemMoveUp}
+          .moveQueueItemDownService=${this.onQueueItemMoveDown}
         >
-          <mass-player-media-row
-            style="opacity: 0%;"
-            class="${item.playing ? `media-active` : ``}"
-            .media_item=${item}
-            .showAlbumCovers=${show_album_covers}
-            .selectedService=${this.onQueueItemSelected}
-            .removeService=${this.onQueueItemRemoved}
-            .moveQueueItemNextService=${this.onQueueItemMoveNext}
-            .moveQueueItemUpService=${this.onQueueItemMoveUp}
-            .moveQueueItemDownService=${this.onQueueItemMoveDown}
-          >
-          </mass-player-media-row>
-        </wa-animation>
-      `;
-      i++;
+        </mass-player-media-row>
+      </wa-animation>
+    `;
+  }
+  private renderQueueItems() {
+    return this.queue?.map((item, idx) => {
+      const result = this.renderQueueItem(item, idx + 1);
       return result;
     });
   }
