@@ -30,15 +30,19 @@ export default class QueueActions {
     return this._player_entity;
   }
 
-  async getQueue(options: {
-    limit_before: number;
-    limit_after: number;
+  async getQueue(options?: {
+    limit_before?: number;
+    limit_after?: number;
   }): Promise<QueueItems | null> {
     const serviceData: getQueueItemsServiceData = {
       entity: this.player_entity,
-      limit_before: options.limit_before,
-      limit_after: options.limit_after,
     };
+    if (options?.limit_before) {
+      serviceData.limit_before = options.limit_before;
+    }
+    if (options?.limit_after) {
+      serviceData.limit_after = options.limit_after;
+    }
     const data: getQueueItemsServiceSchema = {
       type: "call_service",
       domain: "mass_queue",
