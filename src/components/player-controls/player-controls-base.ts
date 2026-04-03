@@ -108,7 +108,6 @@ export class MassPlayerControlsBase extends LitElement {
   protected onPlayPause = async (event_: Event) => {
     event_.stopPropagation();
     this.playing = !this.playing;
-    this.forceUpdatePlayerData("playing", this.playing);
     await this.actions.actionPlayPause();
   };
   protected onShuffle = async (event_: Event) => {
