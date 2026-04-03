@@ -3,8 +3,6 @@ import { BaseHiddenElementsConfig, Config } from "./config";
 
 export interface QueueConfig {
   enabled: boolean;
-  limit_before: number;
-  limit_after: number;
   show_album_covers: boolean;
   show_artist_names: boolean;
   hide: PlayerQueueHiddenElementsConfig;
@@ -38,8 +36,6 @@ export const DEFAULT_PLAYER_QUEUE_HIDDEN_ELEMENTS_CONFIG: PlayerQueueHiddenEleme
   };
 export const DEFAULT_QUEUE_CONFIG: QueueConfig = {
   enabled: true,
-  limit_before: 5,
-  limit_after: 100,
   show_album_covers: true,
   show_artist_names: true,
   hide: DEFAULT_PLAYER_QUEUE_HIDDEN_ELEMENTS_CONFIG,
@@ -62,14 +58,6 @@ export function queueConfigForm() {
       name: "",
       type: "grid",
       schema: [
-        {
-          name: "limit_before",
-          selector: { number: { min: 0, max: 500, mode: "box" } },
-        },
-        {
-          name: "limit_after",
-          selector: { number: { min: 0, max: 500, mode: "box" } },
-        },
         { name: "show_album_covers", selector: { boolean: {} } },
         { name: "show_artist_names", selector: { boolean: {} } },
       ],

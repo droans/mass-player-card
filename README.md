@@ -169,8 +169,6 @@ queue:
     move_next_button: false
     move_up_button: false
     remove_button: false
-  limit_before: 5
-  limit_after: 100
   show_album_covers: true
   show_artist_names: true
 player:
@@ -367,8 +365,6 @@ entities:
         power_button: true
 queue:
   enabled: true
-  limit_before: 10
-  limit_after: 50
   show_album_covers: true
   show_artist_names: true
 player:
@@ -607,8 +603,6 @@ Display and interact with the player's queue.
 | Parameter         | Type                                                       | Required | Default   | Description                                          |
 |-------------------|------------------------------------------------------------|----------|-----------|------------------------------------------------------|
 | enabled           | bool                                                       | No       | true      | Enable/disable queue tab                             |
-| limit_before      | bool                                                       | No       | 5         | Number of item to display before current active item |
-| limit_after       | bool                                                       | No       | 25        | Number of item to display after current active item  |
 | show_album_covers | bool                                                       | No       | true      | Show album cover images for each item                |
 | show_artist_names | bool                                                       | No       | true      | Show artist names for each item                      |
 | hide              | [QueueHiddenElementsConfig](#queue-hidden-elements-config) | No       | See below | See Below                                            |
