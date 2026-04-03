@@ -1,6 +1,7 @@
 /* eslint-disable no-console */
 import { ExtendedHass, QueueItems } from "../const/types";
 import {
+  getQueueItemsServiceData,
   getQueueItemsServiceResponse,
   getQueueItemsServiceSchema,
 } from "mass-queue-types/packages/mass_queue/actions/get_queue_items";
@@ -29,19 +30,20 @@ export default class QueueActions {
     return this._player_entity;
   }
 
-  async getQueue(
-    limit_before: number,
-    limit_after: number,
-  ): Promise<QueueItems | null> {
+  async getQueue(options: {
+    limit_before: number;
+    limit_after: number;
+  }): Promise<QueueItems | null> {
+    const serviceData: getQueueItemsServiceData = {
+      entity: this.player_entity,
+      limit_before: options.limit_before,
+      limit_after: options.limit_after,
+    };
     const data: getQueueItemsServiceSchema = {
       type: "call_service",
       domain: "mass_queue",
       service: "get_queue_items",
-      service_data: {
-        entity: this.player_entity,
-        limit_before,
-        limit_after,
-      },
+      service_data: serviceData,
       return_response: true,
     };
     const resp = await this.hass.callWS<getQueueItemsServiceResponse>(data);
