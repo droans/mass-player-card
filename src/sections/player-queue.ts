@@ -41,7 +41,7 @@ import { QueueController } from "../controller/queue";
 import { jsonMatch } from "../utils/utility";
 import { getTranslation } from "../utils/translations";
 import { Icons } from "../const/icons";
-import { WaAnimation } from "../const/elements";
+import { LitVirtualizer, WaAnimation } from "../const/elements";
 
 class QueueCard extends LitElement {
   @consume({ context: activePlayerControllerContext })
@@ -63,6 +63,7 @@ class QueueCard extends LitElement {
 
   @queryAll("#animation") _animations?: WaAnimation[];
   @query(".media-active") _activeElement!: HTMLElement;
+  @query("lit-virtualizer") virtualizerElement!: LitVirtualizer;
   @query(".list") _items!: HTMLElement;
 
   private _firstLoaded = false;
@@ -176,14 +177,19 @@ class QueueCard extends LitElement {
     }
     return QueueConfigErrors.OK;
   }
-  private scrollToActive() {
+  scrollToActive() {
     if (!this.queue?.length) {
       return;
     }
-    const item_offset = this._activeElement.offsetTop;
-    const padding = this._activeElement.offsetHeight * 2;
-    const scroll = item_offset - padding;
-    this._items.scrollTop = scroll;
+    const activeIdx = this.queue.findIndex((item) => {
+      return item.playing;
+    });
+    if (!activeIdx && activeIdx != 0) {
+      return;
+    }
+    this.virtualizerElement
+      .element(activeIdx)
+      .scrollIntoView({ block: "start", behavior: "auto" });
   }
   private onQueueItemSelected = async (queue_item_id: string) => {
     if (!this.queueController) {
@@ -232,40 +238,31 @@ class QueueCard extends LitElement {
   private hideSectionHeader(): boolean {
     return this.hiddenElements.header;
   }
-  private renderQueueItem(queueItem: QueueItem, idx: number): TemplateResult {
+  private renderQueueItem(queueItem: QueueItem): TemplateResult {
     const show_album_covers = this._config.show_album_covers;
-    const delay_add = 62.5;
-    const play = this._tabSwitchFirstUpdate;
     return html`
-      <wa-animation
-        id="animation"
-        name="fadeIn"
-        delay=${delay_add * idx}
-        duration=${delay_add * 2}
-        fill="forwards"
-        play=${play}
-        iterations="1"
-      >
-        <mass-player-media-row
-          style="opacity: 0%;"
-          class="${queueItem.playing ? `media-active` : ``}"
-          .media_item=${queueItem}
-          .showAlbumCovers=${show_album_covers}
-          .selectedService=${this.onQueueItemSelected}
-          .removeService=${this.onQueueItemRemoved}
-          .moveQueueItemNextService=${this.onQueueItemMoveNext}
-          .moveQueueItemUpService=${this.onQueueItemMoveUp}
-          .moveQueueItemDownService=${this.onQueueItemMoveDown}
-        >
-        </mass-player-media-row>
-      </wa-animation>
+      <mass-player-media-row
+        class="${queueItem.playing ? `media-active` : ``}"
+        .media_item=${queueItem}
+        .showAlbumCovers=${show_album_covers}
+        .selectedService=${this.onQueueItemSelected}
+        .removeService=${this.onQueueItemRemoved}
+        .moveQueueItemNextService=${this.onQueueItemMoveNext}
+        .moveQueueItemUpService=${this.onQueueItemMoveUp}
+        .moveQueueItemDownService=${this.onQueueItemMoveDown}
+      ></mass-player-media-row>
     `;
   }
-  private renderQueueItems() {
-    return this.queue?.map((item, idx) => {
-      const result = this.renderQueueItem(item, idx + 1);
-      return result;
-    });
+  private renderQueueItems(): TemplateResult {
+    return html`
+      <lit-virtualizer
+        scroller
+        .items=${this.queue ?? []}
+        .renderItem=${(item: QueueItem) => {
+          return this.renderQueueItem(item);
+        }}
+      ></lit-virtualizer>
+    `;
   }
   protected renderClearQueueButton(): TemplateResult {
     const expressive = this.activePlayerController.useExpressive;
@@ -312,11 +309,9 @@ class QueueCard extends LitElement {
       html`
         <div id="container" class="${expressive ? `container-expressive` : ``}">
           ${this.renderHeader()}
-          <ha-md-list
-            class="list ${expressive ? `list-expressive` : ``} ${paddedCls}"
-          >
+          <div class="list ${expressive ? `list-expressive` : ``} ${paddedCls}">
             ${this.renderQueueItems()}
-          </ha-md-list>
+          </div>
         </div>
       `
     );
