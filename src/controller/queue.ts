@@ -204,16 +204,23 @@ export class QueueController {
       return;
     }
     this._updatingQueue = true;
-    const limit_before = this.config.queue.limit_before;
-    const limit_after = this.config.queue.limit_after;
     if (this._fails >= MAX_GET_QUEUE_FAILURES) {
       this.raiseQueueFailure();
       this._updatingQueue = false;
       return;
     }
+    const currentIdx =
+      this.queue?.findIndex((item) => {
+        return item.playing;
+      }) ?? 0;
+    const options = {
+      offset: -1,
+    };
+    if (currentIdx > 250) {
+      options.offset = currentIdx - 250;
+    }
     try {
-      let queue =
-        (await this.actions.getQueue(limit_before, limit_after)) ?? null;
+      let queue = (await this.actions.getQueue(options)) ?? null;
       if (
         !queue?.length &&
         ["playing", "paused"].includes(this.activeMediaPlayer.state)
