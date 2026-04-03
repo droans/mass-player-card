@@ -50,7 +50,6 @@ export default css`
     );
     height: var(--media-row-height);
     padding-inline-start: 0px;
-    padding-inline-end: 8px;
     color: var(--accent-color);
   }
   .button-active :host {
