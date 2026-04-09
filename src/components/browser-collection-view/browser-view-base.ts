@@ -410,11 +410,14 @@ export class BrowserViewBase extends LitElement {
           href="https://cdn.jsdelivr.net/npm/beercss@3.12.11/dist/cdn/beer.min.css"
           rel="stylesheet"
         />
-        <div class="shape loading-indicator extra"></div>
+        <div id="browser-view" style="height: 100%;">
+          <div class="shape loading-indicator extra"></div>
+        </div>
       `;
     }
     return html`
       <lit-virtualizer
+        id="browser-view"
         .items=${this.tracks}
         .renderItem=${(item: Track) => {
           return this.renderTrack(item, true);
@@ -444,15 +447,16 @@ export class BrowserViewBase extends LitElement {
   //   });
   // }
   protected render(): TemplateResult {
-    const expressive_class = this.useExpressive ? `expressive` : ``;
-    const vibrant_class = this.useVibrant ? `vibrant` : ``;
+    const expressiveClass = this.useExpressive ? `expressive` : ``;
+    const vibrantClass = this.useVibrant ? `vibrant` : ``;
+    const scrollClass = this.tracks?.length ? `` : `no-scroll`;
     return html`
-      <div id="container" class="${expressive_class} ${vibrant_class}">
+      <div id="container" class="${expressiveClass} ${vibrantClass}">
         <div id="header">
           ${this.renderHeader()}
         </div>
           <div id="tracks-container">
-            <div id="tracks">
+            <div id="tracks" class="${scrollClass}">
               <div id="tracks-padding"></div>
               ${this.renderTracks()}
             </div>

@@ -56,6 +56,10 @@ export default css`
   #animation-image {
     display: block;
   }
+  #browser-view {
+    background-color: var(--md-sys-color-background);
+    border-radius: var(--default-border-radius);
+  }
   #collection-image {
     display: flex;
     height: 10em;
@@ -70,6 +74,10 @@ export default css`
   #container {
     height: calc(100% - 1em);
     overflow: hidden;
+    background-color: var(
+      --md-sys-color-secondary-container,
+      var(--ha-card-background)
+    );
   }
   #enqueue {
     display: flex;
@@ -150,11 +158,12 @@ export default css`
       var(--view-header-height) 0 var(--view-header-min-height)
     );
     position: relative;
-    overflow: scroll;
     scrollbar-width: none;
     padding-left: 4px;
     padding-right: 4px;
   }
+  #tracks:not(.no-scroll) {
+    overflow: scroll;
   }
   #tracks-container {
     border-top-left-radius: var(--default-border-radius);
