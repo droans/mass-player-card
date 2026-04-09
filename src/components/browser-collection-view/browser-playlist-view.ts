@@ -12,7 +12,6 @@ import { getTranslation } from "../../utils/translations";
 @customElement("mpc-collection-playlist-view")
 export class MassBrowserPlaylistView extends BrowserViewBase {
   @query("#collection-info") private infoElement?: HTMLElement;
-  private infoAnimation!: Animation;
 
   // Duration of playlist
   private playlistDuration = 0;
@@ -56,10 +55,7 @@ export class MassBrowserPlaylistView extends BrowserViewBase {
     const kf = {
       fontSize: "0.8em",
     };
-    this.infoAnimation = this.addScrollAnimation(
-      kf,
-      this.infoElement as HTMLElement,
-    );
+    this.addScrollAnimation(kf, this.infoElement as HTMLElement);
   }
   private animateHeader() {
     this.animateHeaderElement();

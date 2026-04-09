@@ -15,7 +15,7 @@ import {
   MediaBrowserHiddenElementsConfig,
 } from "../../config/media-browser";
 import { Icons } from "../../const/icons";
-import { property, query, queryAll, state } from "lit/decorators.js";
+import { property, query, state } from "lit/decorators.js";
 import { EntityConfig } from "../../config/config";
 import { CardEnqueueService } from "../../const/actions";
 import {
@@ -51,30 +51,13 @@ export class BrowserViewBase extends LitElement {
 
   @query("#title") protected titleElement?: HTMLElement;
   @query("#enqueue-button") protected enqueueElement?: HTMLElement;
-  @query("#enqueue") protected enqueueDiv?: HTMLElement;
   @query("#collection-image") protected imageDivElement?: HTMLElement;
   @query("lit-virtualizer") protected virtElement?: HTMLElement;
   @query("#tracks") protected tracksElement?: HTMLElement;
   @query("#header") protected headerElement?: HTMLElement;
   protected enqueueControlElement!: HTMLElement;
   protected enqueueIconElement!: HTMLElement;
-  protected titleAnimation!: Animation;
-  protected enqueueAnimation!: Animation;
-  protected enqueueControlAnimation!: Animation;
-  protected enqueueIconAnimation!: Animation;
-  protected imageDivAnimation!: Animation;
-  protected headerAnimation!: Animation;
   protected animationsAdded = false;
-  // Additional rows to render
-  protected indexIncrease = 40;
-  // Offset before rendering new rows
-  protected listenOffset = -10;
-  // Observer for element
-  protected observer?: IntersectionObserver;
-  // Has observer been added
-  protected observerAdded = false;
-  // Listen on elements
-  @queryAll("mpc-collection-track-row") trackElements!: HTMLElement[];
 
   // Set which enqueue elements are hidden
   @consume({
@@ -220,10 +203,7 @@ export class BrowserViewBase extends LitElement {
     const kf = {
       height: "var(--view-header-min-height)",
     };
-    this.headerAnimation = this.addScrollAnimation(
-      kf,
-      this.headerElement as HTMLElement,
-    );
+    this.addScrollAnimation(kf, this.headerElement as HTMLElement);
   }
   protected animateHeaderTitle() {
     const kf = {
@@ -231,10 +211,7 @@ export class BrowserViewBase extends LitElement {
       fontWeight: "500",
       top: "0em",
     };
-    this.titleAnimation = this.addScrollAnimation(
-      kf,
-      this.titleElement as HTMLElement,
-    );
+    this.addScrollAnimation(kf, this.titleElement as HTMLElement);
   }
   protected animateHeaderEnqueue() {
     const iconElement =
@@ -248,10 +225,7 @@ export class BrowserViewBase extends LitElement {
         height: "var(--header-collapsed-menu-icon-size)",
         width: "var(--header-collapsed-menu-icon-size)",
       };
-      this.enqueueIconAnimation = this.addScrollAnimation(
-        iconKeyFrames,
-        this.enqueueIconElement,
-      );
+      this.addScrollAnimation(iconKeyFrames, this.enqueueIconElement);
     }
     if (selectElement) {
       this.enqueueControlElement = selectElement as HTMLElement;
@@ -259,20 +233,14 @@ export class BrowserViewBase extends LitElement {
       const selectKeyFrames = {
         height: "var(--header-collapsed-menu-control-size)",
       };
-      this.enqueueControlAnimation = this.addScrollAnimation(
-        selectKeyFrames,
-        this.enqueueControlElement,
-      );
+      this.addScrollAnimation(selectKeyFrames, this.enqueueControlElement);
     }
   }
   protected animateHeaderImage() {
     const imgDivKf = {
       height: "var(--collection-image-div-collapsed-height)",
     };
-    this.imageDivAnimation = this.addScrollAnimation(
-      imgDivKf,
-      this.imageDivElement as HTMLElement,
-    );
+    this.addScrollAnimation(imgDivKf, this.imageDivElement as HTMLElement);
   }
 
   protected onEnqueue = (event_: MenuButtonEventData) => {

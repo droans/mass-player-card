@@ -11,8 +11,6 @@ import { getTranslation } from "../../utils/translations";
 export class MassBrowserAlbumView extends BrowserViewBase {
   @query("#collection-info") private infoElement?: HTMLElement;
   @query("#collection-artists") private artistsElement?: HTMLElement;
-  private infoAnimation!: Animation;
-  private artistsAnimation!: Animation;
 
   // Metadata for album
   @state() private albumMetadata?: getAlbumServiceResponse;
@@ -48,10 +46,7 @@ export class MassBrowserAlbumView extends BrowserViewBase {
     const kf = {
       fontSize: "0.7em",
     };
-    this.infoAnimation = this.addScrollAnimation(
-      kf,
-      this.infoElement as HTMLElement,
-    );
+    this.addScrollAnimation(kf, this.infoElement as HTMLElement);
   }
   private animateHeader() {
     this.animateHeaderElement();

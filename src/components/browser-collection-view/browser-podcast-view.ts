@@ -10,7 +10,6 @@ import { getTranslation } from "../../utils/translations";
 @customElement("mpc-collection-podcast-view")
 export class MassBrowserPodcastView extends BrowserViewBase {
   @query("#collection-info") private infoElement?: HTMLElement;
-  private infoAnimation!: Animation;
 
   // Metadata for podcast
   @state() private podcastMetadata?: getPodcastServiceResponse;
@@ -55,10 +54,7 @@ export class MassBrowserPodcastView extends BrowserViewBase {
     const kf = {
       fontSize: "0.8em",
     };
-    this.infoAnimation = this.addScrollAnimation(
-      kf,
-      this.infoElement as HTMLElement,
-    );
+    this.addScrollAnimation(kf, this.infoElement as HTMLElement);
   }
   private animateHeader() {
     this.animateHeaderElement();

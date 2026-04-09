@@ -12,8 +12,6 @@ export class MassBrowserArtistView extends BrowserViewBase {
   // Header is animated on scroll - query elements for animation
   @query("#collection-info") private infoElement?: HTMLElement;
   @query("#collection-artists") private artistsElement!: HTMLElement;
-  private infoAnimation!: Animation;
-  private artistsAnimation!: Animation;
 
   // Metadata for artist
   @state() private artistMetadata?: getArtistServiceResponse;
@@ -49,10 +47,7 @@ export class MassBrowserArtistView extends BrowserViewBase {
     const kf = {
       fontSize: "0.7em",
     };
-    this.infoAnimation = this.addScrollAnimation(
-      kf,
-      this.infoElement as HTMLElement,
-    );
+    this.addScrollAnimation(kf, this.infoElement as HTMLElement);
   }
   private animateHeader() {
     this.animateHeaderElement();
