@@ -42,7 +42,7 @@
     "@rollup/plugin-terser": "^0.4.0",
     "@rollup/plugin-typescript": "^12.3.0",
     "@typescript-eslint/eslint-plugin": "^8.57.2",
-    "@typescript-eslint/parser": "^8.57.1",
+    "@typescript-eslint/parser": "^8.57.2",
     "eslint": "10.0.3",
     "eslint-config-prettier": "10.1.8",
     "eslint-plugin-github": "git+https://github.com/droans/eslint-plugin-github#v6.1.0",
