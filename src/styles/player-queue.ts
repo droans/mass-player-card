@@ -12,6 +12,7 @@ export default css`
   lit-virtualizer {
     height: var(--queue-height);
     scrollbar-width: none;
+    padding-bottom: calc(var(--navbar-height) + 8px);
   }
   mpc-queue-media-row {
     width: 100%;
@@ -28,7 +29,7 @@ export default css`
     width: 100%;
     justify-content: center;
     box-shadow: unset;
-    height: var(--mass-player-card-height);
+    height: 100%;
   }
   .container-expressive {
     border-radius: var(--expressive-border-radius-container);
@@ -61,11 +62,11 @@ export default css`
     padding-right: 4px;
   }
   .list:not(.padded) {
-    --queue-height: calc(var(--mass-player-card-height) - 3.5em);
+    --queue-height: calc(100% - 3.5em);
     height: var(--queue-height);
   }
   .list.padded {
-    --queue-height: var(--mass-player-card-height);
+    --queue-height: 100%;
     height: var(--mass-player-card-height);
   }
   .list-expressive {

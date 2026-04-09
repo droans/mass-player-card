@@ -104,9 +104,10 @@ export default css`
     backdrop-filter: blur(8px);
     background: var(--player-blur-color);
     position: absolute;
-    bottom: 0;
+    bottom: calc(var(--navbar-height) * -1);
     width: 100%;
     mask: linear-gradient(transparent, black 5%, black);
+    padding-bottom: var(--navbar-height);
   }
 
   .media-controls:not(.media-controls-expressive) {
@@ -123,6 +124,8 @@ export default css`
       rgb(from var(--expressive-player-blur-color) r g b / 0.4) 75%,
       transparent 100%
     ) !important;
+    border-bottom-left-radius: var(--default-border-radius);
+    border-bottom-right-radius: var(--default-border-radius);
   }
   .padded {
     padding-top: 0.5em;

@@ -69,7 +69,7 @@ export default css`
 
     --expressive-border-radius-container: var(
       --mass-player-card-expressive-border-radius-container,
-      var(--default-border-radius) var(--default-border-radius) 0px 0px
+      var(--default-border-radius)
     );
 
     --expressive-color-container: var(
@@ -171,6 +171,7 @@ export default css`
       --mass-player-card-menu-item-padding-left,
       20px
     );
+    --navbar-height: 4em;
 
     --md-sys-elevation-level0: none;
     --md-sys-elevation-level1:
@@ -199,7 +200,7 @@ export default css`
     max-width: var(--mass-player-card-max-width, 100%);
     border-radius: var(--default-border-radius);
     font-family: "Roboto" sans-serif !important;
-    height: calc(var(--mass-player-card-height) + 4em);
+    height: calc(var(--mass-player-card-height) + var(--navbar-height));
   }
   ha-card#expressive {
     background-color: var(--md-sys-color-background, var(--ha-card-background));
@@ -207,8 +208,7 @@ export default css`
       "Roboto Flex", var(--ha-font-family-body), "Roboto", sans-serif !important;
   }
 
-  #navbar-expressive {
-    background-color: var(--expressive-player-blur-color);
+  #navbar.expressive {
     border-radius: 0px 0px var(--default-border-radius)
       var(--default-border-radius);
     position: absolute;

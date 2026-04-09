@@ -153,7 +153,7 @@ export default css`
     padding-right: 4px;
   }
   #tracks {
-    height: calc(var(--mass-player-card-height) - 4em);
+    height: calc(var(--mass-player-card-height) - var(--navbar-height));
     padding-top: calc(
       var(--view-header-height) 0 var(--view-header-min-height)
     );

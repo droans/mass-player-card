@@ -29,7 +29,7 @@ export default css`
   }
 
   nav {
-    height: 4em;
+    height: var(--navbar-height);
   }
   nav.tabbed {
     background-color: var(--tabbed-background-color);
@@ -42,7 +42,7 @@ export default css`
   }
   #tab-indicator {
     height: 100%;
-    max-height: 4em;
+    max-height: var(--navbar-height);
     position: absolute;
     box-shadow: var(--md-sys-elevation-level2);
     background-color: var(--md-sys-color-secondary-container);

@@ -24,7 +24,7 @@ export default css`
   #container {
     box-shadow: unset;
     overflow: hidden;
-    height: var(--mass-player-card-height);
+    height: 100%;
   }
   .container-expressive {
     border-radius: var(--expressive-border-radius-container);
@@ -66,7 +66,7 @@ export default css`
   }
 
   #mass-browser {
-    padding-top: 8px;
+    overflow: hidden;
   }
   .mass-browser-expressive {
     background-color: var(--md-sys-color-background, var(--ha-card-background));
