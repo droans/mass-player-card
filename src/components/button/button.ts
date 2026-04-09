@@ -18,7 +18,7 @@ const BUTTON_ROLE_MAP: Record<ButtonColorRole, string> = {
   variant: "accent",
 };
 
-@customElement("mass-player-card-button")
+@customElement("mpc-button")
 export class MassButton extends LitElement {
   @property({ attribute: false }) onPressService?: (event_: Event) => void;
   @property({ attribute: "role", type: String }) colorRole: ButtonColorRole =

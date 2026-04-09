@@ -69,7 +69,7 @@ import {
   mediaCardCollectionType,
 } from "../const/types";
 
-@customElement(`mass-media-browser`)
+@customElement(`mpc-media-browser`)
 export class MediaBrowser extends LitElement {
   @property({ attribute: false }) private _config!: MediaBrowserConfig;
   @property({ attribute: false }) public onMediaSelectedAction!: () => void;
@@ -78,7 +78,7 @@ export class MediaBrowser extends LitElement {
   @state() private searchMediaTypeIcon!: string;
   @state() private searchMediaType: MediaTypes = MediaTypes.TRACK;
   @state() private searchLibrary = false;
-  @query("mass-browser-cards") cardsElement?: MediaBrowserCards;
+  @query("mpc-browser-cards") cardsElement?: MediaBrowserCards;
 
   @provide({ context: activeMediaBrowserCardsContext })
   @state()
@@ -457,33 +457,33 @@ export class MediaBrowser extends LitElement {
     const collType = this.activeCollectionData.type;
     if (collType == "album") {
       return html`
-        <mpc-browser-album-view
+        <mpc-collection-album-view
           .collectionData=${this.activeCollectionData}
           .onEnqueueAction=${this.onPlaylistEnqueue}
-        ></mpc-browser-album-view>
+        ></mpc-collection-album-view>
       `;
     }
     if (collType == "artist") {
       return html`
-        <mpc-browser-artist-view
+        <mpc-collection-artist-view
           .collectionData=${this.activeCollectionData}
           .onEnqueueAction=${this.onPlaylistEnqueue}
-        ></mpc-browser-artist-view>
+        ></mpc-collection-artist-view>
       `;
     }
     if (collType == "podcast") {
       return html`
-        <mpc-browser-podcast-view
+        <mpc-collection-podcast-view
           .collectionData=${this.activeCollectionData}
           .onEnqueueAction=${this.onPlaylistEnqueue}
-        ></mpc-browser-podcast-view>
+        ></mpc-collection-podcast-view>
       `;
     }
     return html`
-      <mpc-browser-playlist-view
+      <mpc-collection-playlist-view
         .collectionData=${this.activeCollectionData}
         .onEnqueueAction=${this.onPlaylistEnqueue}
-      ></mpc-browser-playlist-view>
+      ></mpc-collection-playlist-view>
     `;
   }
   protected renderBrowserCards(): TemplateResult {
@@ -494,11 +494,11 @@ export class MediaBrowser extends LitElement {
       return this.renderCollectionView();
     }
     return html`
-      <mass-browser-cards
+      <mpc-browser-cards
         .onSelectAction=${this.onSelect}
         .onEnqueueAction=${this.onEnqueue}
         ?loading=${this.searchLoading}
-      ></mass-browser-cards>
+      ></mpc-browser-cards>
     `;
   }
   protected renderTitle(): TemplateResult {
@@ -515,7 +515,7 @@ export class MediaBrowser extends LitElement {
     if (this.activeSection == "search") {
       const icons = getSearchMediaButtons(this.Icons, this.hass);
       return html`
-        <mass-menu-button
+        <mpc-menu-button
           id="search-media-type-menu"
           class="${this.useExpressive
             ? `search-media-type-menu-expressive`
@@ -527,7 +527,7 @@ export class MediaBrowser extends LitElement {
           .items=${icons}
           @menu-item-selected=${this.onSearchMediaTypeSelect}
           fixedMenuPosition
-        ></mass-menu-button>
+        ></mpc-menu-button>
       `;
     }
     return html``;
@@ -535,7 +535,7 @@ export class MediaBrowser extends LitElement {
   protected renderSearchLibraryButton(): TemplateResult {
     if (this.activeSection == "search") {
       return html`
-        <mass-player-card-button
+        <mpc-button
           .onPressService=${this.onSearchLibrarySelect}
           role="plain"
           size="small"
@@ -551,7 +551,7 @@ export class MediaBrowser extends LitElement {
               : this.Icons.LIBRARY_OUTLINED}
             class="svg-xs ${this.useExpressive ? `svg-menu-expressive` : ``}"
           ></ha-svg-icon>
-        </mass-player-card-button>
+        </mpc-button>
       `;
     }
     return html``;
@@ -606,7 +606,7 @@ export class MediaBrowser extends LitElement {
       return html``;
     }
     return html`
-      <mass-player-card-button
+      <mpc-button
         .onPressService=${this.onSearchButtonPress}
         role="filled"
         size="small"
@@ -615,7 +615,7 @@ export class MediaBrowser extends LitElement {
         class="button-min ${this.useExpressive ? `button-expressive` : ``}"
       >
         <ha-svg-icon .path=${this.Icons.SEARCH} class="svg-xs"></ha-svg-icon>
-      </mass-player-card-button>
+      </mpc-button>
     `;
   }
   protected renderBackButton(): TemplateResult {
@@ -625,7 +625,7 @@ export class MediaBrowser extends LitElement {
     }
     return html`
       <span slot="start" id="back-button">
-        <mass-player-card-button
+        <mpc-button
           .onPressService=${this.onBack}
           role="filled"
           size="small"
@@ -637,7 +637,7 @@ export class MediaBrowser extends LitElement {
             .path=${this.Icons.ARROW_LEFT}
             class="header-icon"
           ></ha-svg-icon>
-        </mass-player-card-button>
+        </mpc-button>
       </span>
     `;
   }
@@ -648,7 +648,7 @@ export class MediaBrowser extends LitElement {
     const icons = getFilterButtons(this.Icons, this.hass, this.config);
     const icon = this.Icons.FILTER;
     return html`
-      <mass-menu-button
+      <mpc-menu-button
         id="filter-menu"
         class="hdr-menu ${this.useExpressive ? `filter-menu-expressive` : ``}"
         .iconPath=${icon}
@@ -656,29 +656,29 @@ export class MediaBrowser extends LitElement {
         .items=${icons}
         @menu-item-selected=${this.onFilterType}
         fixedMenuPosition
-      ></mass-menu-button>
+      ></mpc-menu-button>
     `;
   }
   protected renderSearchHeader(): TemplateResult {
     return html`
-      <mass-section-header id="search">
+      <mpc-section-header id="search">
         ${this.renderBackButton()} ${this.renderSearchBar()}
-      </mass-section-header>
+      </mpc-section-header>
     `;
   }
   protected renderSubsectionHeader(): TemplateResult {
     return html`
-      <mass-section-header>
+      <mpc-section-header>
         ${this.renderBackButton()} ${this.renderTitle()}
         ${this.renderEndButtons()}
-      </mass-section-header>
+      </mpc-section-header>
     `;
   }
   protected renderMainHeader(): TemplateResult {
     return html`
-      <mass-section-header>
+      <mpc-section-header>
         ${this.renderTitle()} ${this.renderEndButtons()}
-      </mass-section-header>
+      </mpc-section-header>
     `;
   }
   protected shouldUpdate(_changedProperties: PropertyValues): boolean {

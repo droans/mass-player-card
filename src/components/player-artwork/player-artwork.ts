@@ -23,7 +23,7 @@ import "@droans/webawesome/dist/components/carousel-item/carousel-item";
 import { VibrationPattern } from "../../const/common";
 import { Config } from "../../config/config";
 
-@customElement("mpc-artwork")
+@customElement("mpc-player-artwork")
 export class MassPlayerArtwork extends LitElement {
   @consume({ context: musicPlayerConfigContext, subscribe: true })
   @state()

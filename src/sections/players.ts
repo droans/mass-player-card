@@ -33,7 +33,7 @@ import { getTranslation } from "../utils/translations";
 import { WaAnimation } from "../const/elements";
 import { MassCardController } from "../controller/controller";
 
-@customElement("mass-player-players-card")
+@customElement("mpc-players-card")
 export class PlayersCard extends LitElement {
   @property({ attribute: false }) private entities: ExtendedHassEntity[] = [];
 
@@ -167,7 +167,7 @@ export class PlayersCard extends LitElement {
       return keyed(
         item.entity_id,
         html`
-          <mass-player-player-row
+          <mpc-player-row
             .player_entity=${item}
             .playerName=${player.name}
             .selected=${this.activePlayerEntity.entity_id == item.entity_id}
@@ -179,7 +179,7 @@ export class PlayersCard extends LitElement {
             .allowJoin=${allowJoin}
             ?can-group=${canGroupWith.includes(player.entity_id)}
           >
-          </mass-player-player-row>
+          </mpc-player-row>
         `,
       );
     });
@@ -191,9 +191,9 @@ export class PlayersCard extends LitElement {
     const label = getTranslation("players.header", this.hass) as string;
     const usedLabel = this.config?.players.hide.header_title ? `` : label;
     return html`
-      <mass-section-header>
+      <mpc-section-header>
         <span slot="label" id="title"> ${usedLabel} </span>
-      </mass-section-header>
+      </mpc-section-header>
     `;
   }
   protected render(): TemplateResult {

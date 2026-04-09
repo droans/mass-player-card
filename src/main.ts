@@ -260,10 +260,10 @@ export class MusicAssistantPlayerCard extends LitElement {
             ? ""
             : "-hidden"}"
         >
-          <mass-player-players-card
+          <mpc-players-card
             .selectedPlayerService=${this.playerSelected}
             .config=${this.config}
-          ></mass-player-players-card>
+          ></mpc-players-card>
         </wa-tab-panel>
       `);
     }
@@ -278,9 +278,9 @@ export class MusicAssistantPlayerCard extends LitElement {
             ? ""
             : "-hidden"}"
         >
-          <mass-music-player-card
+          <mpc-music-player-card
             .selectedPlayerService=${this.playerSelected}
-          ></mass-music-player-card>
+          ></mpc-music-player-card>
         </wa-tab-panel>
       `);
     }
@@ -295,9 +295,9 @@ export class MusicAssistantPlayerCard extends LitElement {
             ? ""
             : "-hidden"}"
         >
-          <mass-player-queue-card
+          <mpc-queue-card
             .config=${this.config.queue}
-          ></mass-player-queue-card>
+          ></mpc-queue-card>
         </wa-tab-panel>
       `);
     }
@@ -310,7 +310,7 @@ export class MusicAssistantPlayerCard extends LitElement {
           name="${Sections.MEDIA_BROWSER}"
           class="section${this.active_section == Sections.MEDIA_BROWSER ? "" : "-hidden"}"
         >
-          <mass-media-browser
+          <mpc-media-browser
             .config=${this.config.media_browser}
             .onMediaSelectedAction=${this.browserItemSelected}
           >
@@ -328,8 +328,8 @@ export class MusicAssistantPlayerCard extends LitElement {
           : ``}"
       >
         ${this.config.expressive
-          ? html`<mass-nav-bar-expressive></mass-nav-bar-expressive>`
-          : html`<mass-nav-bar></mass-nav-bar>`}
+          ? html`<mpc-navbar-expressive></mpc-navbar-expressive>`
+          : html`<mpc-navbar></mpc-navbar>`}
       </div>
     `;
   }

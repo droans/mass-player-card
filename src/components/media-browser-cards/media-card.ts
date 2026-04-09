@@ -44,7 +44,7 @@ import { WaAnimation } from "../../const/elements";
 import { HTMLImageElementEvent, MenuButtonEventData } from "../../const/events";
 import { getThumbnail } from "../../utils/thumbnails";
 
-@customElement("mass-media-card")
+@customElement("mpc-browser-media-card")
 export class MediaCard extends LitElement {
   @property({ type: Boolean }) queueable = false;
   @state() code!: TemplateResult;
@@ -223,7 +223,7 @@ export class MediaCard extends LitElement {
     }
     const cols = this.cardConfig?.media_browser.columns;
     return html`
-      <mass-menu-button
+      <mpc-menu-button
         id="enqueue-button-div"
         .iconPath=${this.Icons.PLAY_CIRCLE}
         .items=${this._enqueue_buttons}
@@ -231,7 +231,7 @@ export class MediaCard extends LitElement {
         @menu-item-selected=${this.onEnqueue}
         fixedMenuPosition
         elevation="4"
-      ></mass-menu-button>
+      ></mpc-menu-button>
     `;
   }
   private generateCode() {

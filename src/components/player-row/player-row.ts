@@ -32,7 +32,7 @@ import { Thumbnail } from "../../const/enums";
 import { getThumbnail } from "../../utils/thumbnails";
 import { HTMLImageElementEvent } from "../../const/events";
 
-@customElement("mass-player-player-row")
+@customElement("mpc-player-row")
 export class PlayerRow extends LitElement {
   @property({ attribute: false }) joined = false;
   @property({ attribute: false }) selected = false;
@@ -218,7 +218,7 @@ export class PlayerRow extends LitElement {
       return html``;
     }
     return html`
-      <mass-player-card-button
+      <mpc-button
         .onPressService=${this.onTransferPressed}
         role="tonal"
         size="small"
@@ -233,7 +233,7 @@ export class PlayerRow extends LitElement {
             ? `svg-action-button-expressive`
             : ``}"
         ></ha-svg-icon>
-      </mass-player-card-button>
+      </mpc-button>
     `;
   }
   protected renderJoinButon() {
@@ -244,7 +244,7 @@ export class PlayerRow extends LitElement {
       return;
     }
     return html`
-      <mass-player-card-button
+      <mpc-button
         .onPressService=${this.onJoinPressed}
         role="tonal"
         size="small"
@@ -259,7 +259,7 @@ export class PlayerRow extends LitElement {
             ? `svg-action-button-expressive`
             : ``}"
         ></ha-svg-icon>
-      </mass-player-card-button>
+      </mpc-button>
     `;
   }
   protected renderActionButtons() {

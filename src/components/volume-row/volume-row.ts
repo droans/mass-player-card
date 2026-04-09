@@ -30,7 +30,7 @@ import { jsonMatch } from "../../utils/utility";
 import { customElement, property, state } from "lit/decorators.js";
 import { DetailValueEventData } from "../../const/events";
 
-@customElement("mass-volume-row")
+@customElement("mpc-volume-row")
 export class VolumeRow extends LitElement {
   private maxVolume!: number;
 

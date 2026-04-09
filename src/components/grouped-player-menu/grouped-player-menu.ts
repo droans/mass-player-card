@@ -169,7 +169,7 @@ export class MassCardPlayerSelector extends LitElement {
               />
               <span slot="headline" class="grouped-title"> ${name} </span>
               <span slot="end">
-                <mass-player-card-button
+                <mpc-button
                   .onPressService=${this.onUnjoinSelect}
                   role="${role}"
                   size="small"
@@ -183,16 +183,16 @@ export class MassCardPlayerSelector extends LitElement {
                     class="grouped-svg-unjoin ${expressive ? `expressive` : ``}"
                     .entity="${item.entity_id}"
                   ></ha-svg-icon>
-                </mass-player-card-button>
+                </mpc-button>
               </span>
             </ha-md-list-item>
           </div>
           <ha-md-list-item class="grouped-players-volume-item">
-            <mass-volume-slider
+            <mpc-volume-slider
               class="grouped-players-volume-slider"
               maxVolume=${item.max_volume}
               .entityId=${item.volume_entity_id}
-            ></mass-volume-slider>
+            ></mpc-volume-slider>
           </ha-md-list-item>
           ${idx < ct - 1 ? html`<div class="divider"></div>` : ``}
         </div>
@@ -202,7 +202,7 @@ export class MassCardPlayerSelector extends LitElement {
 
   protected render(): TemplateResult {
     return html`
-      <mass-menu-button
+      <mpc-menu-button
         slot="end"
         id="grouped-players-menu"
         class="menu-header ${this.useExpressive ? `expressive` : ``}"
@@ -212,7 +212,7 @@ export class MassCardPlayerSelector extends LitElement {
         elevation="1"
       >
         ${this.renderGroupedVolume()} ${this.renderGroupedPlayers()}
-      </mass-menu-button>
+      </mpc-menu-button>
     `;
   }
 

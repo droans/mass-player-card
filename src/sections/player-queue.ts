@@ -49,7 +49,7 @@ import { getTranslation } from "../utils/translations";
 import { Icons } from "../const/icons";
 import { LitVirtualizer, WaAnimation } from "../const/elements";
 
-@customElement("mass-player-queue-card")
+@customElement("mpc-queue-card")
 export class QueueCard extends LitElement {
   @consume({ context: activePlayerControllerContext })
   private activePlayerController!: ActivePlayerController;
@@ -248,7 +248,7 @@ export class QueueCard extends LitElement {
   private renderQueueItem(queueItem: QueueItem): TemplateResult {
     const show_album_covers = this._config.show_album_covers;
     return html`
-      <mass-player-media-row
+      <mpc-queue-media-row
         class="${queueItem.playing ? `media-active` : ``}"
         .media_item=${queueItem}
         .showAlbumCovers=${show_album_covers}
@@ -257,7 +257,7 @@ export class QueueCard extends LitElement {
         .moveQueueItemNextService=${this.onQueueItemMoveNext}
         .moveQueueItemUpService=${this.onQueueItemMoveUp}
         .moveQueueItemDownService=${this.onQueueItemMoveDown}
-      ></mass-player-media-row>
+      ></mpc-queue-media-row>
     `;
   }
   private renderQueueItems(): TemplateResult {
@@ -278,7 +278,7 @@ export class QueueCard extends LitElement {
       return html``;
     }
     return html`
-      <mass-player-card-button
+      <mpc-button
         .onPressService=${this.onClearQueue}
         role="filled"
         size="small"
@@ -290,7 +290,7 @@ export class QueueCard extends LitElement {
           .path=${this.Icons.CLEAR}
           class="header-icon"
         ></ha-svg-icon>
-      </mass-player-card-button>
+      </mpc-button>
     `;
   }
   protected renderHeader(): TemplateResult {
@@ -300,12 +300,12 @@ export class QueueCard extends LitElement {
       return html``;
     }
     return html`
-      <mass-section-header>
+      <mpc-section-header>
         <span slot="label" id="title"> ${usedLabel} </span>
         <span slot="end" id="clear-queue">
           ${this.renderClearQueueButton()}
         </span>
-      </mass-section-header>
+      </mpc-section-header>
     `;
   }
   protected render() {

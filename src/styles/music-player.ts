@@ -12,7 +12,7 @@ export default css`
     border-radius: 10px;
   }
 
-  mpc-artwork {
+  mpc-player-artwork {
     display: flex;
     justify-content: center;
   }

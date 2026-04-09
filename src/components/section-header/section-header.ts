@@ -5,7 +5,7 @@ import { consume } from "@lit/context";
 import { useExpressiveContext } from "../../const/context";
 import { customElement } from "lit/decorators.js";
 
-@customElement("mass-section-header")
+@customElement("mpc-section-header")
 export class MassSectionHeader extends LitElement {
   @consume({ context: useExpressiveContext, subscribe: true })
   private useExpressive!: boolean;

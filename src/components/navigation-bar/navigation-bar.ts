@@ -19,7 +19,7 @@ import { MassCardController } from "../../controller/controller";
 import { MediaBrowser } from "../../sections/media-browser";
 import { Icons } from "../../const/icons";
 
-@customElement("mass-nav-bar")
+@customElement("mpc-navbar")
 export class MassNavBar extends LitElement {
   private _controller!: MassCardController;
   private _config?: Config;
@@ -73,7 +73,7 @@ export class MassNavBar extends LitElement {
     }
     const host = this.controller.host;
     const element: MediaBrowser | null | undefined =
-      host.shadowRoot?.querySelector("mass-media-browser");
+      host.shadowRoot?.querySelector("mpc-media-browser");
     if (!element) {
       return;
     }
