@@ -3,6 +3,7 @@ import { LitElement, PropertyValues } from "lit";
 import { state } from "lit/decorators.js";
 import {
   actionsControllerContext,
+  activeMediaPlayerContext,
   activePlayerDataContext,
   controllerContext,
   IconsContext,
@@ -10,7 +11,7 @@ import {
   musicPlayerHiddenElementsConfigContext,
 } from "../../const/context";
 import { ActionsController } from "../../controller/actions";
-import { PlayerData } from "../../const/types";
+import { ExtendedHassEntity, PlayerData } from "../../const/types";
 import { Icons } from "../../const/icons";
 import { getIteratedRepeatMode } from "../../utils/music-player";
 import { RepeatMode } from "../../const/enums";
@@ -26,6 +27,10 @@ import { ForceUpdatePlayerDataEventData } from "../../const/events";
 export class MassPlayerControlsBase extends LitElement {
   protected layoutConfig!: PlayerLayoutConfig;
   protected _config!: PlayerConfig;
+
+  @consume({ context: activeMediaPlayerContext, subscribe: true })
+  protected activeEntity!: ExtendedHassEntity;
+
   @consume({ context: musicPlayerConfigContext, subscribe: true })
   @state()
   private set config(config: PlayerConfig) {
@@ -103,7 +108,6 @@ export class MassPlayerControlsBase extends LitElement {
   protected onPlayPause = async (event_: Event) => {
     event_.stopPropagation();
     this.playing = !this.playing;
-    this.forceUpdatePlayerData("playing", this.playing);
     await this.actions.actionPlayPause();
   };
   protected onShuffle = async (event_: Event) => {

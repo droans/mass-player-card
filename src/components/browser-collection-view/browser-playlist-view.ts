@@ -9,7 +9,7 @@ import { PlaylistTrack } from "mass-queue-types/packages/mass_queue/actions/get_
 import { BrowserViewBase } from "../browser-collection-view/browser-view-base";
 import { getTranslation } from "../../utils/translations";
 
-@customElement("mpc-browser-playlist-view")
+@customElement("mpc-collection-playlist-view")
 export class MassBrowserPlaylistView extends BrowserViewBase {
   @query("#collection-info") private infoElement?: HTMLElement;
   private infoAnimation!: Animation;

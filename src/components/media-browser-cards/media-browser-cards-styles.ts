@@ -6,7 +6,7 @@ export default css`
   :host {
     width: 100%;
   }
-  mass-media-card {
+  mpc-browser-media-card {
     max-height: 100%;
     aspect-ratio: 1;
     width: 100%;

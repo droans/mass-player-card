@@ -12,7 +12,7 @@ export default css`
     border-radius: 10px;
   }
 
-  mpc-artwork {
+  mpc-player-artwork {
     display: flex;
     justify-content: center;
   }
@@ -63,8 +63,7 @@ export default css`
     background-size: contain;
     background-repeat: no-repeat;
     background-position: left;
-    border-radius: var(--media-row-border-radius);
-    margin-left: 14px;
+    border-radius: var(--media-row-thumbnail-border-radius);
     -webkit-user-select: none;
     -moz-user-select: none;
     user-select: none;
@@ -124,6 +123,9 @@ export default css`
       rgb(from var(--expressive-player-blur-color) r g b / 0.4) 75%,
       transparent 100%
     ) !important;
+  }
+  .padded {
+    padding-top: 0.5em;
   }
   #player-card {
     z-index: 0;
@@ -187,7 +189,6 @@ export default css`
     margin: 0em 1.75em 0em 1.75em;
     text-align: center;
     overflow: hidden;
-    height: 5em;
   }
 
   .player-name {

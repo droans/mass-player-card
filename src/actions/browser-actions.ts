@@ -205,7 +205,7 @@ export default class BrowserActions {
     playlist_uri: string,
     entity_id_or_config_entry_id: string,
   ): Promise<getPlaylistTracksServiceResponse> {
-    let config_entry = "";
+    let config_entry: string;
     if (entity_id_or_config_entry_id.includes(".")) {
       const info = await this.actionGetPlayerInfo(entity_id_or_config_entry_id);
       if (!info) {
@@ -233,7 +233,7 @@ export default class BrowserActions {
     playlist_uri: string,
     entity_id_or_config_entry_id: string,
   ): Promise<getAlbumTracksServiceResponse> {
-    let config_entry = "";
+    let config_entry: string;
     if (entity_id_or_config_entry_id.includes(".")) {
       const info = await this.actionGetPlayerInfo(entity_id_or_config_entry_id);
       if (!info) {
@@ -261,7 +261,7 @@ export default class BrowserActions {
     playlist_uri: string,
     entity_id_or_config_entry_id: string,
   ): Promise<getArtistTracksServiceResponse> {
-    let config_entry = "";
+    let config_entry: string;
     if (entity_id_or_config_entry_id.includes(".")) {
       const info = await this.actionGetPlayerInfo(entity_id_or_config_entry_id);
       if (!info) {
@@ -289,7 +289,7 @@ export default class BrowserActions {
     podcast_uri: string,
     entity_id_or_config_entry_id: string,
   ): Promise<getPodcastEpisodesServiceRespnse> {
-    let config_entry = "";
+    let config_entry: string;
     if (entity_id_or_config_entry_id.includes(".")) {
       const info = await this.actionGetPlayerInfo(entity_id_or_config_entry_id);
       if (!info) {
@@ -317,7 +317,7 @@ export default class BrowserActions {
     playlist_uri: string,
     entity_id_or_config_entry_id: string,
   ): Promise<getPlaylistServiceResponse> {
-    let config_entry = "";
+    let config_entry: string;
     if (entity_id_or_config_entry_id.includes(".")) {
       const info = await this.actionGetPlayerInfo(entity_id_or_config_entry_id);
       if (!info) {
@@ -345,7 +345,7 @@ export default class BrowserActions {
     album_uri: string,
     entity_id_or_config_entry_id: string,
   ): Promise<getAlbumServiceResponse> {
-    let config_entry = "";
+    let config_entry: string;
     if (entity_id_or_config_entry_id.includes(".")) {
       const info = await this.actionGetPlayerInfo(entity_id_or_config_entry_id);
       if (!info) {
@@ -373,7 +373,7 @@ export default class BrowserActions {
     album_uri: string,
     entity_id_or_config_entry_id: string,
   ): Promise<getArtistServiceResponse> {
-    let config_entry = "";
+    let config_entry: string;
     if (entity_id_or_config_entry_id.includes(".")) {
       const info = await this.actionGetPlayerInfo(entity_id_or_config_entry_id);
       if (!info) {
@@ -401,7 +401,7 @@ export default class BrowserActions {
     podcast_uri: string,
     entity_id_or_config_entry_id: string,
   ): Promise<getPodcastServiceResponse> {
-    let config_entry = "";
+    let config_entry: string;
     if (entity_id_or_config_entry_id.includes(".")) {
       const info = await this.actionGetPlayerInfo(entity_id_or_config_entry_id);
       if (!info) {
@@ -430,7 +430,7 @@ export default class BrowserActions {
     position: number,
     entity_id_or_config_entry_id: string,
   ) {
-    let config_entry = "";
+    let config_entry: string;
     if (entity_id_or_config_entry_id.includes(".")) {
       const info = await this.actionGetPlayerInfo(entity_id_or_config_entry_id);
       if (!info) {

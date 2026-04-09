@@ -5,8 +5,9 @@ export default css`
     --md-list-item-top-space: 6px;
     --md-list-item-bottom-space: 6px;
     --md-list-item-trailing-space: 0px;
+    border-radius: var(--default-border-radius);
   }
-  mass-menu-button::part(menu-select-menu) {
+  mpc-menu-button::part(menu-select-menu) {
     --control-select-menu-background-opacity: 0;
     width: 2.5em;
     margin-top: var(--md-list-item-top-space);
@@ -26,6 +27,7 @@ export default css`
   .menu-button {
     height: 100%;
     place-content: center;
+    padding-right: 16px;
   }
   .thumbnail {
     width: var(--media-row-thumbnail-height);
@@ -33,8 +35,7 @@ export default css`
     background-size: contain;
     background-repeat: no-repeat;
     background-position: left;
-    border-radius: var(--media-row-border-radius);
-    margin-left: 14px;
+    border-radius: var(--media-row-thumbnail-border-radius);
     -webkit-user-select: none;
     -moz-user-select: none;
     user-select: none;

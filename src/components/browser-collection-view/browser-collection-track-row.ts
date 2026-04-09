@@ -28,7 +28,7 @@ import { PlaylistTrack } from "mass-queue-types/packages/mass_queue/actions/get_
 import { EnqueueConfigMap } from "../../const/media-browser";
 import { MediaBrowserConfig } from "../../config/media-browser";
 
-@customElement("mpc-track-row")
+@customElement("mpc-collection-track-row")
 export class MassPlaylistTrackRow extends LitElement {
   @property({ attribute: false }) track!: Track | PlaylistTrack;
   @property({ attribute: "divider", type: Boolean }) divider = false;
@@ -176,17 +176,26 @@ export class MassPlaylistTrackRow extends LitElement {
   }
   protected renderMenuButton(): TemplateResult {
     return html`
-      <span slot="end" class="menu-button">
-        <mass-menu-button
-          id="menu-button"
-          .iconPath=${this.Icons?.OVERFLOW}
-          @menu-item-selected=${this.onMenuItemSelected}
-          fixedMenuPosition
-          naturalMenuWidth
-          scheme="plain"
-          .items=${this.enqueueButtons}
-        >
-        </mass-menu-button>
+      <span
+        slot="end"
+        class="menu-button"
+        @click=${(event: Event) => {
+          event.stopPropagation();
+        }}
+      >
+          <mpc-menu-button
+            id="menu-button"
+            .iconPath=${this.Icons?.OVERFLOW}
+            @menu-item-selected=${this.onMenuItemSelected}
+            fixedMenuPosition
+            naturalMenuWidth
+            scheme="plain"
+            outlined
+            elevation="0"
+            .items=${this.enqueueButtons}
+          >
+          </mpc-menu-button>
+        </div>
       </span>
     `;
   }

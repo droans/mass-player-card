@@ -21,37 +21,37 @@ export default css`
     display: block;
     margin-top: -8px;
   }
-  mass-menu-button {
+  mpc-menu-button {
     --menu-button-border-radius: 50%;
     border-radius: var(--menu-button-border-radius);
   }
-  mass-menu-button::part(menu-button) {
+  mpc-menu-button::part(menu-button) {
     --ha-ripple-color: rgba(0, 0, 0, 0);
   }
-  mass-menu-button::part(menu-list-item-svg) {
+  mpc-menu-button::part(menu-list-item-svg) {
     height: 2em;
     width: 2em;
   }
-  mass-menu-button::part(base) {
+  mpc-menu-button::part(base) {
+    --ha-button-border-radius: unset;
     height: 72px;
   }
-  mass-menu-button::part(menu-button) {
+  mpc-menu-button::part(menu-button) {
     --button-button-height: var(--mdc-icon-size);
     --button-button-width: var(--mdc-icon-size);
   }
-  mass-menu-button::part(menu-select-menu) {
+  mpc-menu-button::part(menu-select-menu) {
+    --menu-button-background-color: var(--md-sys-color-background);
     --control-select-menu-height: unset;
     --control-select-menu-background-color: unset;
     --control-select-menu-padding: unset;
   }
-  mass-menu-button::part(menu-svg) {
-    fill: var(--md-sys-color-primary);
-    color: var(--md-sys-color-primary);
-    background-color: var(
-      --ha-card-background,
-      var(--card-background-color, #fff)
-    );
+  mpc-menu-button::part(menu-svg) {
     --mdc-icon-size: var(--header-expanded-menu-icon-size);
+    --button-icon-color: var(--md-sys-color-primary);
+  }
+  mpc-collection-track-row {
+    width: 100%;
   }
   #animation-image {
     display: block;
@@ -77,6 +77,7 @@ export default css`
     position: relative;
     right: 37.5%;
     bottom: -12.5%;
+    z-index: 1;
   }
   #header {
     height: var(--view-header-height);
@@ -151,6 +152,7 @@ export default css`
     position: relative;
     overflow: scroll;
     scrollbar-width: none;
+    padding-left: 4px;
   }
   #tracks-container {
     border-top-left-radius: var(--default-border-radius);

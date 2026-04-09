@@ -38,19 +38,18 @@ export default css`
 
   .button {
     margin: 0.15rem;
-    border-radius: var(--media-row-border-radius);
+    border-radius: var(--media-row-thumbnail-border-radius);
     height: var(--media-row-height);
   }
   .button-active {
     margin: 0.15rem;
-    border-radius: var(--media-row-border-radius);
+    border-radius: var(--media-row-thumbnail-border-radius);
     background-color: var(
       --media-row-active-background-color,
       var(--md-sys-color-secondary-container)
     );
     height: var(--media-row-height);
     padding-inline-start: 0px;
-    padding-inline-end: 8px;
     color: var(--accent-color);
   }
   .button-active :host {
@@ -122,29 +121,20 @@ export default css`
     color: var(--expressive-row-button-color-text-hover);
   }
 
-  .thumbnail {
+  .thumbnail,
+  .thumbnail-disabled {
     width: var(--media-row-thumbnail-height);
     height: var(--media-row-thumbnail-height);
     background-size: contain;
     background-repeat: no-repeat;
     background-position: left;
-    border-radius: var(--media-row-border-radius);
-  }
-  .thumbnail,
-  .thumbnail-disabled {
+    border-radius: var(--media-row-thumbnail-border-radius);
     -webkit-user-select: none;
     -moz-user-select: none;
     user-select: none;
   }
   .thumbnail-disabled {
-    width: var(--media-row-thumbnail-height);
-    height: var(--media-row-thumbnail-height);
-    background-size: contain;
-    background-repeat: no-repeat;
-    background-position: left;
-    border-radius: var(--media-row-border-radius);
     opacity: 0.38;
-    margin-left: 14px;
   }
 
   .title {

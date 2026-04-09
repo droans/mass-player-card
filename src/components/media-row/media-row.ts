@@ -6,7 +6,7 @@ import {
   PropertyValues,
   TemplateResult,
 } from "lit";
-import { property, state } from "lit/decorators.js";
+import { customElement, property, state } from "lit/decorators.js";
 
 import { QueueItemSelectedService, QueueService } from "../../const/actions";
 import { Thumbnail } from "../../const/enums";
@@ -35,7 +35,8 @@ import { Icons } from "../../const/icons";
 import { queueItem } from "mass-queue-types/packages/mass_queue/actions/get_queue_items";
 import { HTMLImageElementEvent } from "../../const/events";
 
-class MediaRow extends LitElement {
+@customElement("mpc-queue-media-row")
+export class MediaRow extends LitElement {
   @consume({ context: IconsContext }) public Icons!: Icons;
 
   @consume({ context: mediaCardDisplayContext, subscribe: true })
@@ -273,7 +274,7 @@ class MediaRow extends LitElement {
       return html``;
     }
     return html`
-      <mass-player-card-button
+      <mpc-button
         .onPressService=${this.callMoveItemNextService}
         role="tonal"
         size="small"
@@ -288,7 +289,7 @@ class MediaRow extends LitElement {
             ? `svg-action-button-expressive`
             : ``}"
         ></ha-svg-icon>
-      </mass-player-card-button>
+      </mpc-button>
     `;
   }
   private renderMoveUpButton(): TemplateResult {
@@ -296,7 +297,7 @@ class MediaRow extends LitElement {
       return html``;
     }
     return html`
-      <mass-player-card-button
+      <mpc-button
         .onPressService=${this.callMoveItemUpService}
         role="tonal"
         size="small"
@@ -311,7 +312,7 @@ class MediaRow extends LitElement {
             ? `svg-action-button-expressive`
             : ``}"
         ></ha-svg-icon>
-      </mass-player-card-button>
+      </mpc-button>
     `;
   }
   private renderMoveDownButton(): TemplateResult {
@@ -319,7 +320,7 @@ class MediaRow extends LitElement {
       return html``;
     }
     return html`
-      <mass-player-card-button
+      <mpc-button
         .onPressService=${this.callMoveItemDownService}
         role="tonal"
         size="small"
@@ -334,7 +335,7 @@ class MediaRow extends LitElement {
             ? `svg-action-button-expressive`
             : ``}"
         ></ha-svg-icon>
-      </mass-player-card-button>
+      </mpc-button>
     `;
   }
   private renderRemoveButton(): TemplateResult {
@@ -342,7 +343,7 @@ class MediaRow extends LitElement {
       return html``;
     }
     return html`
-      <mass-player-card-button
+      <mpc-button
         .onPressService=${this.callRemoveItemService}
         role="tonal"
         size="small"
@@ -357,7 +358,7 @@ class MediaRow extends LitElement {
             ? `svg-action-button-expressive`
             : ``}"
         ></ha-svg-icon>
-      </mass-player-card-button>
+      </mpc-button>
     `;
   }
 
@@ -382,5 +383,3 @@ class MediaRow extends LitElement {
     return styles;
   }
 }
-
-customElements.define("mass-player-media-row", MediaRow);

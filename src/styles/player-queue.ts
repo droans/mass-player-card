@@ -9,7 +9,13 @@ export default css`
   *[hide] {
     display: none;
   }
-
+  lit-virtualizer {
+    height: var(--queue-height);
+    scrollbar-width: none;
+  }
+  mpc-queue-media-row {
+    width: 100%;
+  }
   .button-min {
     --button-button-height: 35px;
     --button-button-width: 35px;
@@ -47,11 +53,19 @@ export default css`
   }
 
   .list {
-    height: calc(var(--mass-player-card-height) - 4em);
     overflow-y: scroll;
     -ms-overflow-style: none;
     scrollbar-width: none;
     border-radius: var(--queue-border-radius, 12px);
+    padding-left: 4px;
+  }
+  .list:not(.padded) {
+    --queue-height: calc(var(--mass-player-card-height) - 3.5em);
+    height: var(--queue-height);
+  }
+  .list.padded {
+    --queue-height: var(--mass-player-card-height);
+    height: var(--mass-player-card-height);
   }
   .list-expressive {
     background-color: var(--md-sys-color-background);
@@ -84,5 +98,13 @@ export default css`
     align-items: center;
     justify-content: center;
     padding: 0.5rem;
+  }
+  @keyframes fade-in {
+    0% {
+      opacity: 0;
+    }
+    100% {
+      opacity: 1;
+    }
   }
 `;

@@ -7,7 +7,7 @@ import { BrowserViewBase } from "./browser-view-base";
 import { getPodcastServiceResponse } from "mass-queue-types/packages/mass_queue/actions/get_podcast";
 import { getTranslation } from "../../utils/translations";
 
-@customElement("mpc-browser-podcast-view")
+@customElement("mpc-collection-podcast-view")
 export class MassBrowserPodcastView extends BrowserViewBase {
   @query("#collection-info") private infoElement?: HTMLElement;
   private infoAnimation!: Animation;

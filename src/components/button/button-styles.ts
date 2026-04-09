@@ -17,6 +17,7 @@ export default css`
     --used-button-height: var(--button-button-height);
     --used-button-width: var(--button-button-width);
     --ha-space-1: 0px;
+    --used-button-border-radius: var(--button-border-radius, 50%);
   }
   ha-button:not(.expressive)::part(base) {
     --inherited-background-color: var(
@@ -32,15 +33,17 @@ export default css`
       var(--button-text-color)
     );
     color: var(--used-button-text-color, var(--button-text-color));
-    --ha-button-border-radius: 12px !important;
+    --ha-button-border-radius: var(--used-button-border-radius);
   }
   ha-button {
-    border-radius: var(--ha-button-border-radius);
+    border-radius: var(--used-button-border-radius) !important;
+    transition: border-radius var(--animation-duration);
   }
   ha-button::part(base) {
+    transition: border-radius var(--animation-duration);
+    border-radius: var(--used-button-border-radius) !important;
     height: var(--used-button-height, 100%);
     width: var(--used-button-width, 100%);
-    box-shadow: var(--button-elevation);
     padding: unset;
     background-color: var(
       --used-button-background-color,
@@ -57,13 +60,17 @@ export default css`
     );
     --used-button-height: var(--button-button-height);
     --used-button-width: var(--button-button-width);
+    --wa-form-control-border-radius: var(--used-button-border-radius);
+    --ha-button-border-radius: var(--used-button-border-radius);
+    --md-sys-shape-corner-small: var(--used-button-border-radius);
+    --state-layer-color: rgba(0, 0, 0, 0);
   }
 
   .small::part(base) {
     min-height: var(--used-button-height, var(--button-default-height-small));
     min-width: var(--used-button-width, var(--button-default-height-small));
     --ha-button-border-radius: var(
-      --button-border-radius,
+      --used-button-border-radius,
       var(--button-default-border-radius-small)
     );
     padding-left: var(--button-padding-left, var(--button-padding, 0px));
@@ -74,7 +81,7 @@ export default css`
     min-height: var(--used-button-height, var(--button-default-height-medium));
     min-width: var(--used-button-height, var(--button-default-height-medium));
     --ha-button-border-radius: var(
-      --button-border-radius,
+      --used-button-border-radius,
       var(--button-default-border-radius-medium)
     );
     padding-left: var(--button-padding-left, var(--button-padding, 16px));
@@ -85,11 +92,12 @@ export default css`
     min-height: var(--used-button-height, var(--button-default-height-large));
     min-width: var(--used-button-height, var(--button-default-height-large));
     --ha-button-border-radius: var(
-      --button-border-radius,
+      --used-button-border-radius,
       var(--button-default-border-radius-large)
     );
     padding-left: var(--button-padding-left, var(--button-padding, 24px));
     padding-right: var(--button-padding-right, var(--button-padding, 24px));
+    --wa-form-control-border-radius: var(--used-button-border-radius);
   }
 
   .filled {
@@ -172,7 +180,10 @@ export default css`
   }
 
   .variant {
-    --button-outline-color: var(--md-sys-color-outline, var(--outline-color));
+    --button-outline-color: var(
+      --md-sys-color-outline-variant,
+      var(--outline-color)
+    );
     --button-background-color: var(--md-sys-color-secondary-container);
   }
   .variant.expressive {
@@ -234,13 +245,14 @@ export default css`
     --hover-button-elevation: var(--md-sys-elevation-level5);
   }
 
-  .elevation-0,
-  .elevation-1,
-  .elevation-2,
-  .elevation-3,
-  .elevation-4,
+  .elevation-0:not(:hover),
+  .elevation-1:not(:hover),
+  .elevation-2:not(:hover),
+  .elevation-3:not(:hover),
+  .elevation-4:not(:hover),
   .elevation-5 {
-    animation: elevate-hover-off var(--animation-duration) linear forwards;
+    transition: box-shadow var(--animation-duration) !important;
+    box-shadow: var(--button-elevation);
   }
   .elevation-0:hover,
   .elevation-1:hover,
@@ -248,11 +260,12 @@ export default css`
   .elevation-3:hover,
   .elevation-4:hover,
   .elevation-5:hover {
-    animation: elevate-hover var(--animation-duration) linear forwards;
+    transition: box-shadow var(--animation-duration) !important;
+    box-shadow: var(--hover-button-elevation);
   }
 
   .outlined::part(base) {
-    border: var(--button-outline-color) 2px solid;
+    border: var(--button-outline-color) 1px solid;
   }
 
   .disabled {
@@ -266,16 +279,5 @@ export default css`
   .unselected {
     --used-button-background-color: var(--button-unselected-background-color);
     --used-button-text-color: var(--button-unselected-text-color);
-  }
-
-  @keyframes elevate-hover {
-    to {
-      box-shadow: var(--hover-button-elevation);
-    }
-  }
-  @keyframes elevate-hover-off {
-    to {
-      box-shadow: var(--button-elevation);
-    }
   }
 `;

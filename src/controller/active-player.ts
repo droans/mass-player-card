@@ -43,7 +43,7 @@ import {
   getInfoWSResponseSchema,
   getInfoWSServiceSchema,
 } from "mass-queue-types/packages/mass_queue/ws/get_info";
-import WaCarousel from "@droans/webawesome/dist/components/carousel/carousel";
+import WaCarousel from "@droans/webawesome/dist/components/carousel/carousel.js";
 import { RepeatMode } from "../const/enums";
 import { MassCardConfigController } from "./config";
 

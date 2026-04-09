@@ -6,7 +6,7 @@ import {
   TemplateResult,
 } from "lit";
 import { html } from "lit/static-html.js";
-import { property, query, state } from "lit/decorators.js";
+import { customElement, property, query, state } from "lit/decorators.js";
 import "@droans/webawesome/dist/components/card/card.js";
 
 import "../menu-button/menu-button";
@@ -44,7 +44,8 @@ import { WaAnimation } from "../../const/elements";
 import { HTMLImageElementEvent, MenuButtonEventData } from "../../const/events";
 import { getThumbnail } from "../../utils/thumbnails";
 
-class MediaCard extends LitElement {
+@customElement("mpc-browser-media-card")
+export class MediaCard extends LitElement {
   @property({ type: Boolean }) queueable = false;
   @state() code!: TemplateResult;
   private _enqueue_buttons?: ListItems;
@@ -222,7 +223,7 @@ class MediaCard extends LitElement {
     }
     const cols = this.cardConfig?.media_browser.columns;
     return html`
-      <mass-menu-button
+      <mpc-menu-button
         id="enqueue-button-div"
         .iconPath=${this.Icons.PLAY_CIRCLE}
         .items=${this._enqueue_buttons}
@@ -230,7 +231,7 @@ class MediaCard extends LitElement {
         @menu-item-selected=${this.onEnqueue}
         fixedMenuPosition
         elevation="4"
-      ></mass-menu-button>
+      ></mpc-menu-button>
     `;
   }
   private generateCode() {
@@ -289,4 +290,3 @@ class MediaCard extends LitElement {
     return styles;
   }
 }
-customElements.define("mass-media-card", MediaCard);

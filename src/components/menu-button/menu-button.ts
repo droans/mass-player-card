@@ -5,7 +5,7 @@ import {
   PropertyValues,
   TemplateResult,
 } from "lit";
-import { property, query, state } from "lit/decorators.js";
+import { customElement, property, query, state } from "lit/decorators.js";
 
 import { ListItems } from "../../const/types";
 import { consume } from "@lit/context";
@@ -23,6 +23,7 @@ import { ControlSelectMenuElement } from "../../const/elements";
 export type MenuButtonScheme = "filled" | "tonal" | "standard" | "plain";
 const DEFAULT_SCHEME: MenuButtonScheme = "filled";
 
+@customElement("mpc-menu-button")
 export class MassMenuButton extends LitElement {
   @property({ attribute: false }) public iconPath!: string;
 
@@ -47,6 +48,9 @@ export class MassMenuButton extends LitElement {
 
   @property({ type: Number, attribute: "elevation", default: 1, reflect: true })
   elevation = 1;
+
+  @property({ type: Boolean, default: false, reflect: true })
+  outlined = false;
 
   @query("#menu-select-menu")
   public menuElement?: ControlSelectMenuElement;
@@ -160,18 +164,19 @@ export class MassMenuButton extends LitElement {
             event_.stopPropagation();
           }}
         >
-          <mass-player-card-button
+          <mpc-button
             slot="trigger"
             part="div-icon"
             role="variant"
             elevation="${this.elevation}"
+            ?outlined=${this.outlined}
           >
             <ha-svg-icon
               class="svg-menu ${this.useExpressive ? `expressive` : ``}"
               part="menu-svg"
               .path=${this.iconPath}
             ></ha-svg-icon>
-          </mass-player-card-button>
+          </mpc-button>
           ${this.renderMenuItems()}
           <slot></slot>
         </ha-dropdown>
@@ -198,5 +203,3 @@ export class MassMenuButton extends LitElement {
     return styles;
   }
 }
-
-customElements.define("mass-menu-button", MassMenuButton);

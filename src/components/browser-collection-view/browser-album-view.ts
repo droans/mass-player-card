@@ -7,7 +7,7 @@ import { getAlbumServiceResponse } from "mass-queue-types/packages/mass_queue/ac
 import { BrowserViewBase } from "../browser-collection-view/browser-view-base";
 import { getTranslation } from "../../utils/translations";
 
-@customElement("mpc-browser-album-view")
+@customElement("mpc-collection-album-view")
 export class MassBrowserAlbumView extends BrowserViewBase {
   @query("#collection-info") private infoElement?: HTMLElement;
   @query("#collection-artists") private artistsElement?: HTMLElement;

@@ -7,7 +7,7 @@ import {
   PropertyValues,
   TemplateResult,
 } from "lit";
-import { property, query } from "lit/decorators.js";
+import { customElement, property, query } from "lit/decorators.js";
 import { keyed } from "lit/directives/keyed.js";
 
 import "../components/player-row/player-row";
@@ -33,7 +33,8 @@ import { getTranslation } from "../utils/translations";
 import { WaAnimation } from "../const/elements";
 import { MassCardController } from "../controller/controller";
 
-class PlayersCard extends LitElement {
+@customElement("mpc-players-card")
+export class PlayersCard extends LitElement {
   @property({ attribute: false }) private entities: ExtendedHassEntity[] = [];
 
   @consume({ context: activeEntityConfigContext, subscribe: true })
@@ -146,6 +147,9 @@ class PlayersCard extends LitElement {
     });
     this.entities = entities;
   }
+  private hideSectionHeader(): boolean {
+    return this.config?.players.hide.header ?? false;
+  }
   protected renderPlayerRows() {
     if (!this._hass || !this.controller.ActivePlayer) {
       return html``;
@@ -163,7 +167,7 @@ class PlayersCard extends LitElement {
       return keyed(
         item.entity_id,
         html`
-          <mass-player-player-row
+          <mpc-player-row
             .player_entity=${item}
             .playerName=${player.name}
             .selected=${this.activePlayerEntity.entity_id == item.entity_id}
@@ -175,19 +179,29 @@ class PlayersCard extends LitElement {
             .allowJoin=${allowJoin}
             ?can-group=${canGroupWith.includes(player.entity_id)}
           >
-          </mass-player-player-row>
+          </mpc-player-row>
         `,
       );
     });
   }
-  protected render(): TemplateResult {
+  protected renderHeader(): TemplateResult {
+    if (this.hideSectionHeader()) {
+      return html``;
+    }
     const label = getTranslation("players.header", this.hass) as string;
+    const usedLabel = this.config?.players.hide.header_title ? `` : label;
+    return html`
+      <mpc-section-header>
+        <span slot="label" id="title"> ${usedLabel} </span>
+      </mpc-section-header>
+    `;
+  }
+  protected render(): TemplateResult {
     const expressive = this.config?.expressive ?? false;
+    const paddedCls = this.hideSectionHeader() ? `padded` : ``;
     return html`
       <div id="container" class="${expressive ? `container-expressive` : ``}">
-        <mass-section-header>
-          <span slot="label" id="title"> ${label} </span>
-        </mass-section-header>
+        ${this.renderHeader()}
         <wa-animation
           id="animation"
           name="fadeIn"
@@ -196,7 +210,9 @@ class PlayersCard extends LitElement {
           play=${this.checkVisibility()}
           playback-rate="4"
         >
-          <ha-md-list class="list ${expressive ? `list-expressive` : ``}">
+          <ha-md-list
+            class="list ${expressive ? `list-expressive` : ``} ${paddedCls}"
+          >
             ${this.renderPlayerRows()}
           </ha-md-list>
         </wa-animation>
@@ -224,4 +240,3 @@ class PlayersCard extends LitElement {
     return styles;
   }
 }
-customElements.define("mass-player-players-card", PlayersCard);

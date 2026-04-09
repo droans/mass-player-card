@@ -56,16 +56,18 @@ export interface customSection {
 }
 
 export interface MediaBrowserHiddenElementsConfig extends BaseHiddenElementsConfig {
+  header: boolean;
+  header_title: boolean;
   back_button: boolean;
-  search: boolean;
-  recents: boolean;
+  filter_button: boolean;
+  search_button: boolean;
   titles: boolean;
   enqueue_menu: boolean;
   add_to_queue_button: boolean;
-  play_next_button: boolean;
-  play_next_clear_queue_button: boolean;
   play_now_button: boolean;
   play_now_clear_queue_button: boolean;
+  play_next_button: boolean;
+  play_next_clear_queue_button: boolean;
 }
 
 export type EnqueueConfigOptions =
@@ -98,8 +100,8 @@ const DEFAULT_FAVORITES_CONFIG: FavoritesConfig = {
 export const DEFAULT_MEDIA_BROWSER_HIDDEN_ELEMENTS_CONFIG: MediaBrowserHiddenElementsConfig =
   {
     back_button: false,
-    search: false,
-    recents: false,
+    filter_button: false,
+    search_button: false,
     titles: false,
     enqueue_menu: false,
     add_to_queue_button: false,
@@ -107,6 +109,8 @@ export const DEFAULT_MEDIA_BROWSER_HIDDEN_ELEMENTS_CONFIG: MediaBrowserHiddenEle
     play_next_clear_queue_button: false,
     play_now_button: false,
     play_now_clear_queue_button: false,
+    header_title: false,
+    header: false,
   };
 
 export const HIDDEN_BUTTON_VALUE = {
@@ -250,7 +254,7 @@ function defaultEnqueueOptionConfigForm() {
     },
   ];
   return {
-    name: "default_enqueue_mode",
+    name: "default_enqueue_option",
     required: false,
     selector: {
       select: {

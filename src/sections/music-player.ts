@@ -7,7 +7,7 @@ import {
   PropertyValues,
   TemplateResult,
 } from "lit";
-import { query, state } from "lit/decorators.js";
+import { customElement, query, state } from "lit/decorators.js";
 import { html } from "lit/static-html.js";
 
 import "../components/grouped-player-menu/grouped-player-menu";
@@ -22,7 +22,7 @@ import "../components/marquee-text/marquee-text";
 
 import PlayerActions from "../actions/player-actions";
 
-import { MediaTypes, Thumbnail } from "../const/enums";
+import { MediaTypes, PlayerSupportedFeatures, Thumbnail } from "../const/enums";
 import {
   activeEntityConfigContext,
   activeMediaPlayerContext,
@@ -56,7 +56,12 @@ import {
 } from "../config/player";
 import { ActivePlayerController } from "../controller/active-player";
 import { Config } from "../config/config";
-import { isActive, jsonMatch, playerHasUpdated } from "../utils/utility";
+import {
+  isActive,
+  jsonMatch,
+  playerHasUpdated,
+  playerSupportsFeature,
+} from "../utils/utility";
 import { MassCardController } from "../controller/controller";
 import {
   ForceUpdatePlayerDataEvent,
@@ -65,7 +70,8 @@ import {
 import { asyncImageURLWithFallback } from "../utils/thumbnails";
 import { DialogElement } from "../const/elements";
 
-class MusicPlayerCard extends LitElement {
+@customElement("mpc-music-player-card")
+export class MusicPlayerCard extends LitElement {
   @query("#dialog-favorites") favoritesDialog?: DialogElement;
   @state() protected _playlists?: PlaylistDialogItem[];
 
@@ -306,6 +312,10 @@ class MusicPlayerCard extends LitElement {
     );
     this.closeAddToPlaylistDialog();
   };
+
+  protected hideSectionHeader(): boolean {
+    return this.hiddenElements.header;
+  }
   protected renderPlaylistDialogList(): TemplateResult | TemplateResult[] {
     if (!this._playlists) {
       return html`
@@ -366,7 +376,11 @@ class MusicPlayerCard extends LitElement {
     `;
   }
   protected renderPlayerName(): TemplateResult {
-    if (!this.activePlayerController || !this.cardConfig) {
+    if (
+      !this.activePlayerController ||
+      !this.cardConfig ||
+      this.hiddenElements.player_name
+    ) {
       return html``;
     }
     return html`
@@ -381,6 +395,9 @@ class MusicPlayerCard extends LitElement {
     `;
   }
   protected renderTitle(): TemplateResult {
+    if (this.hiddenElements.track_title) {
+      return html``;
+    }
     if (!isActive(this.hass, this.activeMediaPlayer, this.activeEntityConfig)) {
       return html`
         <div class="player-track-title">
@@ -391,7 +408,7 @@ class MusicPlayerCard extends LitElement {
     return this.wrapTitleMarquee();
   }
   protected renderGrouped(): TemplateResult {
-    const hide = this.hiddenElements.group_volume;
+    const hide = this.hiddenElements.group_selector;
     if (this.groupedPlayers && this.groupedPlayers.length > 1 && !hide) {
       return html`
         <mpc-grouped-player-menu slot="end"></mpc-grouped-player-menu>
@@ -400,7 +417,11 @@ class MusicPlayerCard extends LitElement {
     return html``;
   }
   protected renderArtist(): TemplateResult {
-    if (!this.player_data || !this.cardConfig) {
+    if (
+      !this.player_data ||
+      !this.cardConfig ||
+      this.hiddenElements.track_artist
+    ) {
       return html``;
     }
     if (!isActive(this.hass, this.activeMediaPlayer, this.activeEntityConfig)) {
@@ -416,7 +437,6 @@ class MusicPlayerCard extends LitElement {
         >
           ${msgs[i]}
         </div>
-        ;
       `;
     }
     return html`
@@ -430,8 +450,29 @@ class MusicPlayerCard extends LitElement {
     `;
   }
   protected renderSectionTitle(): TemplateResult {
+    if (this.hiddenElements.header_title) {
+      return html``;
+    }
     const label = this.controller.translate("player.header") as string;
     return html` <span slot="label">${label}</span> `;
+  }
+  protected renderSectionHeader(): TemplateResult {
+    if (this.hideSectionHeader()) {
+      return html``;
+    }
+    if (!this.cardConfig) {
+      return html``;
+    }
+    return html`
+      <mpc-section-header
+        class="${this._artworkHeaderClass} ${this.cardConfig.expressive
+          ? `header-expressive`
+          : ``}"
+      >
+        ${this.renderPlayerSelector()} ${this.renderSectionTitle()}
+        ${this.renderGrouped()}
+      </mpc-section-header>
+    `;
   }
   protected renderHeader(): TemplateResult {
     if (!this.cardConfig) {
@@ -443,19 +484,14 @@ class MusicPlayerCard extends LitElement {
         id="player-card-header"
         class="player-card-header${expressive ? `-expressive` : ``}"
       >
-        <mass-section-header
-          class="${this._artworkHeaderClass} ${this.cardConfig.expressive
-            ? `header-expressive`
-            : ``}"
-        >
-          ${this.renderPlayerSelector()} ${this.renderSectionTitle()}
-          ${this.renderGrouped()}
-        </mass-section-header>
-        ${this.renderActiveItemSection()}
+        ${this.renderSectionHeader()} ${this.renderActiveItemSection()}
       </div>
     `;
   }
   protected renderPlayerSelector(): TemplateResult {
+    if (this.hiddenElements.player_selector) {
+      return html``;
+    }
     return html`
       <span slot="start">
         <mpc-player-selector @menu-item-selected=${this.onPlayerSelect}>
@@ -483,13 +519,20 @@ class MusicPlayerCard extends LitElement {
     `;
   }
   protected renderPlayerHeader(): TemplateResult {
+    const padCls = this.hideSectionHeader() ? `padded` : ``;
     return html`
-      <div class="player-header">
+      <div class="player-header ${padCls}">
         ${this.renderPlayerName()} ${this.renderTitle()} ${this.renderArtist()}
       </div>
     `;
   }
   protected renderProgress(): TemplateResult {
+    if (
+      this.hiddenElements.track_progress_bar &&
+      this.hiddenElements.track_progress_time
+    ) {
+      return html``;
+    }
     const style = isActive(
       this.hass,
       this.activeMediaPlayer,
@@ -498,26 +541,36 @@ class MusicPlayerCard extends LitElement {
       ? ``
       : `opacity: 0;`;
     return html`
-      <mass-progress-bar
+      <mpc-progress-bar
         class="${this._artworkProgressClass}"
         style="${style}"
-      ></mass-progress-bar>
+      ></mpc-progress-bar>
     `;
   }
   protected renderArtwork(): TemplateResult {
-    return html` <mpc-artwork></mpc-artwork>`;
+    return html` <mpc-player-artwork></mpc-player-artwork>`;
   }
   protected renderVolumeRow(): TemplateResult {
-    if (!this.cardConfig) {
+    const feats = this.activeEntity.attributes.supported_features;
+    const canSetVolume = playerSupportsFeature(
+      feats,
+      PlayerSupportedFeatures.VOLUME_SET,
+    );
+    if (!this.cardConfig || !canSetVolume) {
       return html``;
     }
+    const canMute = playerSupportsFeature(
+      feats,
+      PlayerSupportedFeatures.VOLUME_MUTE,
+    );
     return html`
       <div id="volume">
-        <mass-volume-row
+        <mpc-volume-row
           class="${this._artworkVolumeClass} ${this.cardConfig.expressive
             ? `volume-expressive`
             : ``}"
-        ></mass-volume-row>
+          ?can-mute=${canMute}
+        ></mpc-volume-row>
       </div>
     `;
   }
@@ -533,8 +586,8 @@ class MusicPlayerCard extends LitElement {
           : ``}"
       >
         ${this.cardConfig.expressive
-          ? html`<mass-player-controls-expressive></mass-player-controls-expressive>`
-          : html`<mass-player-controls></mass-player-controls>`}
+          ? html`<mpc-player-controls-expressive></mpc-player-controls-expressive>`
+          : html`<mpc-player-controls></mpc-player-controls>`}
         ${this.renderVolumeRow()}
       </div>
     `;
@@ -662,5 +715,3 @@ class MusicPlayerCard extends LitElement {
     return styles;
   }
 }
-
-customElements.define("mass-music-player-card", MusicPlayerCard);

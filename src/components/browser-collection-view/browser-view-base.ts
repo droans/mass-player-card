@@ -38,7 +38,7 @@ import { getThumbnail } from "../../utils/thumbnails";
 import { cache } from "lit/directives/cache.js";
 import "../marquee-text/marquee-text";
 import { PodcastEpisode } from "mass-queue-types/packages/mass_queue/types/media-items";
-import { delay } from "../../utils/utility";
+// import { delay } from "../../utils/utility";
 import "./browser-collection-track-row";
 
 export class BrowserViewBase extends LitElement {
@@ -67,7 +67,7 @@ export class BrowserViewBase extends LitElement {
 
   // Limit rendered rows to reduce memory usage
   // Current rendered index
-  @state() protected currentIdx = 40;
+  // @state() protected currentIdx = 40;
   // Additional rows to render
   protected indexIncrease = 40;
   // Offset before rendering new rows
@@ -77,7 +77,7 @@ export class BrowserViewBase extends LitElement {
   // Has observer been added
   protected observerAdded = false;
   // Listen on elements
-  @queryAll("mpc-track-row") trackElements!: HTMLElement[];
+  @queryAll("mpc-collection-track-row") trackElements!: HTMLElement[];
 
   // Set which enqueue elements are hidden
   @consume({
@@ -167,49 +167,49 @@ export class BrowserViewBase extends LitElement {
     return this._collectionData;
   }
 
-  protected _trackObserverCallback = (event_: IntersectionObserverEntry[]) => {
-    const entry = event_[0];
-    if (entry.isIntersecting) {
-      this.observer?.disconnect();
-      this.currentIdx = Math.min(
-        this.currentIdx + this.indexIncrease,
-        this.tracks?.length ?? 0,
-      );
-    }
-  };
+  // protected _trackObserverCallback = (event_: IntersectionObserverEntry[]) => {
+  //   const entry = event_[0];
+  //   if (entry.isIntersecting) {
+  //     this.observer?.disconnect();
+  //     this.currentIdx = Math.min(
+  //       this.currentIdx + this.indexIncrease,
+  //       this.tracks?.length ?? 0,
+  //     );
+  //   }
+  // };
 
-  protected async addObserver(retryDelay = 0) {
-    if (this.observer) {
-      this.observer.disconnect();
-      this.observer = undefined;
-    }
-    if (retryDelay > 6000) {
-      throw new Error(`Exceeded max timeout creating observer`);
-    }
-    await delay(retryDelay);
-    this._addObserver();
-    // eslint-disable-next-line @typescript-eslint/no-unnecessary-condition
-    if (!this.observer) {
-      retryDelay = retryDelay > 0 ? retryDelay * 2 : 50;
-      await this.addObserver(retryDelay);
-    }
-  }
-  protected _addObserver() {
-    if (this.observer) {
-      this.observer.disconnect();
-    }
-    const listenIdx = this.currentIdx + this.listenOffset;
-    const observer = new IntersectionObserver(this._trackObserverCallback);
-    const element = this.trackElements[listenIdx];
-    // eslint-disable-next-line @typescript-eslint/no-unnecessary-condition
-    if (!element) {
-      return;
-    }
-    observer.observe(element);
+  // protected async addObserver(retryDelay = 0) {
+  //   if (this.observer) {
+  //     this.observer.disconnect();
+  //     this.observer = undefined;
+  //   }
+  //   if (retryDelay > 6000) {
+  //     throw new Error(`Exceeded max timeout creating observer`);
+  //   }
+  //   await delay(retryDelay);
+  //   this._addObserver();
+  //   // eslint-disable-next-line @typescript-eslint/no-unnecessary-condition
+  //   if (!this.observer) {
+  //     retryDelay = retryDelay > 0 ? retryDelay * 2 : 50;
+  //     await this.addObserver(retryDelay);
+  //   }
+  // }
+  // protected _addObserver() {
+  //   if (this.observer) {
+  //     this.observer.disconnect();
+  //   }
+  //   const listenIdx = this.currentIdx + this.listenOffset;
+  //   const observer = new IntersectionObserver(this._trackObserverCallback);
+  //   const element = this.trackElements[listenIdx];
+  //   // eslint-disable-next-line @typescript-eslint/no-unnecessary-condition
+  //   if (!element) {
+  //     return;
+  //   }
+  //   observer.observe(element);
 
-    this.observer = observer;
-    this.observerAdded = true;
-  }
+  //   this.observer = observer;
+  //   this.observerAdded = true;
+  // }
 
   protected setHiddenElements() {
     if (!this.activeEntityConf || !this.browserConfig) {
@@ -381,7 +381,7 @@ export class BrowserViewBase extends LitElement {
 
   protected renderEnqueue(): TemplateResult {
     return html`
-      <mass-menu-button
+      <mpc-menu-button
         id="enqueue-button"
         .iconPath=${this.Icons?.PLAY_CIRCLE}
         .items=${this._enqueue_buttons}
@@ -389,21 +389,21 @@ export class BrowserViewBase extends LitElement {
         naturalMenuWidth
         elevation="1"
         scheme="plain"
-      ></mass-menu-button>
+      ></mpc-menu-button>
     `;
   }
   protected renderTrack(track: Track, divider: boolean) {
     return cache(html`
-      <mpc-track-row
+      <mpc-collection-track-row
         .track=${track}
         ?divider=${divider}
         .collectionURI=${this.collectionData?.media_content_id}
         .enqueueButtons=${this._enqueue_buttons}
-      ></mpc-track-row>
+      ></mpc-collection-track-row>
     `);
   }
 
-  protected renderTracks() {
+  protected renderTracks(): TemplateResult {
     if (!this.tracks?.length) {
       return html`
         <link
@@ -413,17 +413,36 @@ export class BrowserViewBase extends LitElement {
         <div class="shape loading-indicator extra"></div>
       `;
     }
-    const trackCt = this.tracks.length;
-    const tracks = this.tracks as Tracks;
-    return tracks.map((track, idx) => {
-      if (idx >= this.currentIdx) {
-        return html``;
-      }
-      const div = idx < trackCt - 1;
-
-      return this.renderTrack(track, div);
-    });
+    return html`
+      <lit-virtualizer
+        .items=${this.tracks}
+        .renderItem=${(item: Track) => {
+          return this.renderTrack(item, true);
+        }}
+      ></lit-virtualizer>
+    `;
   }
+  // protected renderTracks() {
+  //   if (!this.tracks?.length) {
+  //     return html`
+  //       <link
+  //         href="https://cdn.jsdelivr.net/npm/beercss@3.12.11/dist/cdn/beer.min.css"
+  //         rel="stylesheet"
+  //       />
+  //       <div class="shape loading-indicator extra"></div>
+  //     `;
+  //   }
+  //   const trackCt = this.tracks.length;
+  //   const tracks = this.tracks as Tracks;
+  //   return tracks.map((track, idx) => {
+  //     // if (idx >= this.currentIdx) {
+  //     //   return html``;
+  //     // }
+  //     const div = idx < trackCt - 1;
+
+  //     return this.renderTrack(track, div);
+  //   });
+  // }
   protected render(): TemplateResult {
     const expressive_class = this.useExpressive ? `expressive` : ``;
     const vibrant_class = this.useVibrant ? `vibrant` : ``;
@@ -446,16 +465,16 @@ export class BrowserViewBase extends LitElement {
     return _changedProperties.size > 0;
   }
 
-  protected updated(_changedProperties: PropertyValues): void {
+  protected updated(): void {
     if (!this.animationsAdded) {
       void this.testAnimation();
     }
-    if (
-      _changedProperties.has("currentIdx") ||
-      (_changedProperties.has("tracks") && !this.observerAdded)
-    ) {
-      void this.addObserver();
-    }
+    // if (
+    //   _changedProperties.has("currentIdx") ||
+    //   (_changedProperties.has("tracks") && !this.observerAdded)
+    // ) {
+    //   void this.addObserver();
+    // }
   }
   disconnectedCallback(): void {
     if (this.observer) {

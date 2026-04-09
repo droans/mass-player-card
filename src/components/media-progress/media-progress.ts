@@ -6,7 +6,7 @@ import {
   TemplateResult,
 } from "lit";
 import styles from "./media-progress-styles";
-import { query, state } from "lit/decorators.js";
+import { customElement, query, state } from "lit/decorators.js";
 import { consume } from "@lit/context";
 import { ActivePlayerController } from "../../controller/active-player";
 import {
@@ -20,7 +20,9 @@ import { ActionsController } from "../../controller/actions";
 import { playerHasUpdated, secondsToTime } from "../../utils/utility";
 import { ExtendedHassEntity, PlayerData } from "../../const/types";
 import { MassCardController } from "../../controller/controller";
-class MassPlayerProgressBar extends LitElement {
+
+@customElement("mpc-progress-bar")
+export class MassPlayerProgressBar extends LitElement {
   @state() private _media_duration!: number;
   @state() private _media_position!: number;
   @query("#progress-bar") private progressBar?: HTMLElement;
@@ -44,7 +46,6 @@ class MassPlayerProgressBar extends LitElement {
   private actions?: ActionsController;
   @consume({ context: controllerContext, subscribe: true })
   private controller?: MassCardController;
-
   @state() public _player_data?: PlayerData;
 
   private _activePlayer?: ExtendedHassEntity;
@@ -116,7 +117,6 @@ class MassPlayerProgressBar extends LitElement {
     }
     void this.activePlayerController.getPlayerProgress().then((progress) => {
       const prog = progress as number | undefined;
-      progress = Math.min(prog ?? 1, this.entity_duration);
       this.entity_position = prog ?? this.entity_position;
       this._newSetPosition = prog ?? this.entity_position;
     });
@@ -224,10 +224,54 @@ class MassPlayerProgressBar extends LitElement {
       this.requestProgress();
     }, 5000);
   };
-  protected renderTime() {
+  protected renderVolumeBar(): TemplateResult {
+    if (this.controller?.Config.MusicPlayer.hide.track_progress_bar) {
+      return html``;
+    }
+    const cls =
+      this.player_data?.playing && this.controller?.config?.expressive
+        ? `wavy medium`
+        : `medium progress-plain`;
+    return html`
+      <div
+        id="progress-div"
+        @pointerdown=${this.onPointerDown}
+        @click=${this.onSeek}
+      >
+        <link
+          href="https://cdn.jsdelivr.net/npm/beercss@3.12.11/dist/cdn/beer.min.css"
+          rel="stylesheet"
+        />
+        <div
+          class="prog-incomplete"
+          style="--incomplete-progress-start-pct: ${Math.round(
+            this._prog_pct * 100,
+          )}%;"
+        ></div>
+        <progress
+          class="${cls}"
+          id="progress-bar"
+          value="${this._prog_pct}"
+          max="1"
+        ></progress>
+        ${this.renderVolumeBarHandle()}
+      </div>
+    `;
+  }
+  protected renderTime(): TemplateResult {
+    if (this.controller?.Config.MusicPlayer.hide.track_progress_time) {
+      return html``;
+    }
     const pos = secondsToTime(this.media_position ?? 0);
     const dur = secondsToTime(this.media_duration ?? 1);
-    return `${pos} - ${dur}`;
+    return html`
+      <div
+        id="time"
+        class="${this.controller?.config?.expressive ? `time-expressive` : ``}"
+      >
+        ${pos} - ${dur}
+      </div>
+    `;
   }
   protected renderVolumeBarHandle(): TemplateResult {
     return html`
@@ -244,44 +288,8 @@ class MassPlayerProgressBar extends LitElement {
     `;
   }
   protected render(): TemplateResult {
-    const cls =
-      this.player_data?.playing && this.controller?.config?.expressive
-        ? `wavy medium`
-        : `medium progress-plain`;
     return html`
-      <div class="progress">
-        <div
-          id="time"
-          class="${this.controller?.config?.expressive
-            ? `time-expressive`
-            : ``}"
-        >
-          ${this.renderTime()}
-        </div>
-        <div
-          id="progress-div"
-          @pointerdown=${this.onPointerDown}
-          @click=${this.onSeek}
-        >
-          <link
-            href="https://cdn.jsdelivr.net/npm/beercss@3.12.11/dist/cdn/beer.min.css"
-            rel="stylesheet"
-          />
-          <div
-            class="prog-incomplete"
-            style="--incomplete-progress-start-pct: ${Math.round(
-              this._prog_pct * 100,
-            )}%;"
-          ></div>
-          <progress
-            class="${cls}"
-            id="progress-bar"
-            value="${this._prog_pct}"
-            max="1"
-          ></progress>
-          ${this.renderVolumeBarHandle()}
-        </div>
-      </div>
+      <div class="progress">${this.renderTime()} ${this.renderVolumeBar()}</div>
     `;
   }
 
@@ -317,5 +325,3 @@ class MassPlayerProgressBar extends LitElement {
     return styles;
   }
 }
-
-customElements.define("mass-progress-bar", MassPlayerProgressBar);

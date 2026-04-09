@@ -27,10 +27,11 @@ import { ActionsController } from "../../controller/actions";
 import { MassCardController } from "../../controller/controller";
 import { Icons } from "../../const/icons";
 import { jsonMatch } from "../../utils/utility";
-import { state } from "lit/decorators.js";
+import { customElement, property, state } from "lit/decorators.js";
 import { DetailValueEventData } from "../../const/events";
 
-class VolumeRow extends LitElement {
+@customElement("mpc-volume-row")
+export class VolumeRow extends LitElement {
   private maxVolume!: number;
 
   private _config?: PlayerConfig;
@@ -39,6 +40,9 @@ class VolumeRow extends LitElement {
   private controller!: MassCardController;
   @consume({ context: IconsContext }) private Icons!: Icons;
   @state() protected favorite = false;
+
+  @property({ attribute: "can-mute", type: Boolean, default: false })
+  canMute = false;
 
   private _initialUpdate!: boolean;
 
@@ -108,7 +112,7 @@ class VolumeRow extends LitElement {
       : this.actions.actionAddFavorite());
   };
   protected renderPower(): TemplateResult {
-    if (this.hide.power || this.useExpressive) {
+    if (this.hide.power_button || this.useExpressive) {
       return html``;
     }
     return html`
@@ -126,7 +130,7 @@ class VolumeRow extends LitElement {
     `;
   }
   protected renderMute(): TemplateResult {
-    if (this.hide.mute) {
+    if (this.hide.mute_button || !this.canMute) {
       return html``;
     }
     return html`
@@ -149,7 +153,7 @@ class VolumeRow extends LitElement {
     `;
   }
   protected renderFavorite(): TemplateResult {
-    if (this.hide.favorite || this.useExpressive) {
+    if (this.hide.favorite_button || this.useExpressive) {
       return html``;
     }
     return html`
@@ -233,4 +237,3 @@ class VolumeRow extends LitElement {
     return styles;
   }
 }
-customElements.define("mass-volume-row", VolumeRow);

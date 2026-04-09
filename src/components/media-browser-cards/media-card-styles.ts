@@ -6,23 +6,23 @@ export default css`
   :host {
     --mdc-icon-size: calc(10em / var(--columns, 2));
   }
-  mass-menu-button {
+  mpc-menu-button {
     --menu-button-border-radius: 50%;
   }
-  mass-menu-button::part(menu-list-item-svg) {
+  mpc-menu-button::part(menu-list-item-svg) {
     height: 2em;
     width: 2em;
   }
-  mass-menu-button::part(menu-button) {
+  mpc-menu-button::part(menu-button) {
     --mdc-icon-size: calc(10em / var(--columns, 2));
     --button-button-height: var(--mdc-icon-size);
     --button-button-width: var(--mdc-icon-size);
   }
-  mass-menu-button::part(menu-select-menu) {
+  mpc-menu-button::part(menu-select-menu) {
     --control-select-menu-height: unset;
     --control-select-menu-background-color: unset;
   }
-  mass-menu-button::part(menu-svg) {
+  mpc-menu-button::part(menu-svg) {
     color: var(--md-sys-color-primary);
     fill: var(--md-sys-color-primary);
     background-color: var(
@@ -30,6 +30,8 @@ export default css`
       var(--card-background-color, #fff)
     );
     --mdc-icon-size: calc(10em / var(--columns, 2));
+    height: 100%;
+    width: 100%;
   }
   .svg-menu-expressive {
     max-width: 5em;
@@ -60,7 +62,8 @@ export default css`
     position: absolute;
     right: 0.2em;
     bottom: 2.2em;
-    overflow: hidden;
+    overflow: visible;
+    border-radius: var(--menu-button-border-radius);
   }
 
   .media-card {
