@@ -5,6 +5,7 @@ export default css`
     --md-list-item-top-space: 6px;
     --md-list-item-bottom-space: 6px;
     --md-list-item-trailing-space: 0px;
+    border-radius: var(--default-border-radius);
   }
   mass-menu-button::part(menu-select-menu) {
     --control-select-menu-background-opacity: 0;
