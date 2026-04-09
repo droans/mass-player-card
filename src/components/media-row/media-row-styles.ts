@@ -87,7 +87,7 @@ export default css`
     gap: 2px;
     height: 48px;
     right: 0;
-    padding-right: 16px;
+    padding-right: 8px;
     position: absolute;
   }
 

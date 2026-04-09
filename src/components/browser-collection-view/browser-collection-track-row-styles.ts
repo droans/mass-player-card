@@ -1,17 +1,16 @@
 import { css } from "lit";
 
 export default css`
-  ha-md-list-item {
-    --md-list-item-top-space: 6px;
-    --md-list-item-bottom-space: 6px;
-    --md-list-item-trailing-space: 0px;
-    border-radius: var(--default-border-radius);
-  }
   mpc-menu-button::part(menu-select-menu) {
     --control-select-menu-background-opacity: 0;
     width: 2.5em;
     margin-top: var(--md-list-item-top-space);
     margin-bottom: var(--md-list-item-bottom-space);
+  }
+  .button {
+    border-radius: var(--media-row-border-radius);
+    margin: 0.15rem;
+    height: var(--media-row-height);
   }
   .divider {
     --divider-color: var(--md-sys-color-surface-variant);
@@ -27,7 +26,7 @@ export default css`
   .menu-button {
     height: 100%;
     place-content: center;
-    padding-right: 16px;
+    padding-right: 8px;
   }
   .thumbnail {
     width: var(--media-row-thumbnail-height);

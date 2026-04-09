@@ -210,11 +210,9 @@ export class PlayersCard extends LitElement {
           play=${this.checkVisibility()}
           playback-rate="4"
         >
-          <ha-md-list
-            class="list ${expressive ? `list-expressive` : ``} ${paddedCls}"
-          >
+          <div class="list ${expressive ? `list-expressive` : ``} ${paddedCls}">
             ${this.renderPlayerRows()}
-          </ha-md-list>
+          </div>
         </wa-animation>
       </div>
     `;
