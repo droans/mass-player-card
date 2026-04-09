@@ -105,8 +105,8 @@ export class MassBrowserAlbumView extends BrowserViewBase {
     await delay(delayMs);
     if (
       !this.animationsAdded &&
-      (this.tracksElement?.scrollHeight ?? 0) >
-        (this.tracksElement?.offsetHeight ?? 0) &&
+      (this.virtElement?.scrollHeight ?? 0) >
+        (this.tracksElement?.offsetHeight ?? 1) &&
       this.titleElement &&
       this.infoElement &&
       this.enqueueElement &&
