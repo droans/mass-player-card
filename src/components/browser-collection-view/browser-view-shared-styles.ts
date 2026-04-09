@@ -19,7 +19,6 @@ export default css`
   }
   :host {
     display: block;
-    margin-top: -8px;
   }
   mpc-menu-button {
     --menu-button-border-radius: 50%;
@@ -52,6 +51,8 @@ export default css`
   }
   mpc-collection-track-row {
     width: 100%;
+    padding-left: 4px;
+    padding-right: 4px;
   }
   #animation-image {
     display: block;
@@ -59,6 +60,8 @@ export default css`
   #browser-view {
     background-color: var(--md-sys-color-background);
     border-radius: var(--default-border-radius);
+    height: 100%;
+    scrollbar-width: none;
   }
   #collection-image {
     display: flex;
@@ -154,15 +157,15 @@ export default css`
   }
   #tracks {
     height: calc(var(--mass-player-card-height) - var(--navbar-height));
+    padding-bottom: var(--navbar-height);
     padding-top: calc(
       var(--view-header-height) 0 var(--view-header-min-height)
     );
     position: relative;
     scrollbar-width: none;
-    padding-left: 4px;
-    padding-right: 4px;
+    top: var(--view-header-height);
   }
-  #tracks:not(.no-scroll) {
+  #tracks:not(.no-scroll) #virtualizer {
     overflow: scroll;
   }
   #tracks-container {
@@ -175,7 +178,13 @@ export default css`
     will-change: font-size;
   }
   #tracks-padding {
-    height: var(--view-header-height);
+    height: 0em;
+  }
+  #virtualizer {
+    background-color: var(--md-sys-color-background);
+    border-radius: var(--default-border-radius);
+    scrollbar-width: none;
+    height: 100%;
   }
   @keyframes scroll-image {
     to {

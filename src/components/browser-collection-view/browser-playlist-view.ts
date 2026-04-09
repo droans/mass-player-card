@@ -63,6 +63,7 @@ export class MassBrowserPlaylistView extends BrowserViewBase {
     this.animateHeaderTitle();
     this.animateHeaderInfo();
     this.animateHeaderEnqueue();
+    this.animateTracksElement();
   }
 
   private onTrackRemoved = (event_: TrackRemovedEventData) => {

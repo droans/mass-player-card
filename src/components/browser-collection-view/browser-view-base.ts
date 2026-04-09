@@ -53,7 +53,9 @@ export class BrowserViewBase extends LitElement {
   @query("#enqueue-button") protected enqueueElement?: HTMLElement;
   @query("#collection-image") protected imageDivElement?: HTMLElement;
   @query("lit-virtualizer") protected virtElement?: HTMLElement;
+  @query("#virtualizer") protected virtDiv?: HTMLElement;
   @query("#tracks") protected tracksElement?: HTMLElement;
+  @query("#tracks-padding") protected padElement?: HTMLElement;
   @query("#header") protected headerElement?: HTMLElement;
   protected enqueueControlElement!: HTMLElement;
   protected enqueueIconElement!: HTMLElement;
@@ -183,7 +185,7 @@ export class BrowserViewBase extends LitElement {
       @typescript-eslint/no-unsafe-member-access,
     */
     const timeline = new (window as any).ScrollTimeline({
-      source: this.tracksElement,
+      source: this.virtDiv,
     });
     const animation = element.animate(keyframes, {
       timeline,
@@ -204,6 +206,17 @@ export class BrowserViewBase extends LitElement {
       height: "var(--view-header-min-height)",
     };
     this.addScrollAnimation(kf, this.headerElement as HTMLElement);
+  }
+  protected animateTracksElement() {
+    const tracksKf = {
+      top: "8em",
+    };
+    const paddingKf = {
+      height: "4em",
+    };
+    this.addScrollAnimation(tracksKf, this.virtDiv as HTMLElement);
+    this.addScrollAnimation(tracksKf, this.tracksElement as HTMLElement);
+    this.addScrollAnimation(paddingKf, this.padElement as HTMLElement);
   }
   protected animateHeaderTitle() {
     const kf = {
@@ -337,13 +350,16 @@ export class BrowserViewBase extends LitElement {
       `;
     }
     return html`
-      <lit-virtualizer
-        id="browser-view"
-        .items=${this.tracks}
-        .renderItem=${(item: Track) => {
-          return this.renderTrack(item, true);
-        }}
-      ></lit-virtualizer>
+      <div id="virtualizer">
+        <div id="tracks-padding"></div>
+        <lit-virtualizer
+          id="browser-view"
+          .items=${this.tracks}
+          .renderItem=${(item: Track) => {
+            return this.renderTrack(item, true);
+          }}
+        ></lit-virtualizer>
+      </div>
     `;
   }
   protected render(): TemplateResult {
@@ -357,7 +373,6 @@ export class BrowserViewBase extends LitElement {
         </div>
           <div id="tracks-container">
             <div id="tracks" class="${scrollClass}">
-              <div id="tracks-padding"></div>
               ${this.renderTracks()}
             </div>
           </div>
