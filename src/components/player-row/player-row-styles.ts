@@ -90,7 +90,7 @@ export default css`
     gap: 2px;
     height: 48px;
     right: 0;
-    padding-right: 16px;
+    padding-right: 8px;
     position: absolute;
   }
 
@@ -176,7 +176,6 @@ export default css`
     background-repeat: no-repeat;
     background-position: left;
     border-radius: var(--media-row-thumbnail-border-radius);
-    margin-left: 14px;
     -webkit-user-select: none;
     -moz-user-select: none;
     user-select: none;

@@ -153,6 +153,8 @@ export default css`
     overflow: scroll;
     scrollbar-width: none;
     padding-left: 4px;
+    padding-right: 4px;
+  }
   }
   #tracks-container {
     border-top-left-radius: var(--default-border-radius);

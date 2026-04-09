@@ -53,6 +53,7 @@ export default css`
     -ms-overflow-style: none;
     scrollbar-width: none;
     padding-left: 4px;
+    padding-right: 4px;
   }
   .list-expressive {
     background-color: var(--md-sys-color-background);
