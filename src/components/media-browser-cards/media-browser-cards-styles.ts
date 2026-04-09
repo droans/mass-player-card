@@ -18,7 +18,7 @@ export default css`
     flex-wrap: wrap;
     row-gap: 20px;
     overflow-y: scroll;
-    max-height: calc(var(--mass-player-card-height) - 4em);
+    max-height: calc(var(--mass-player-card-height) - var(--navbar-height));
     scrollbar-width: none;
     padding-bottom: 1em;
   }
