@@ -7,7 +7,7 @@ import {
   PropertyValues,
   TemplateResult,
 } from "lit";
-import { property, query } from "lit/decorators.js";
+import { customElement, property, query } from "lit/decorators.js";
 import { keyed } from "lit/directives/keyed.js";
 
 import "../components/player-row/player-row";
@@ -33,7 +33,8 @@ import { getTranslation } from "../utils/translations";
 import { WaAnimation } from "../const/elements";
 import { MassCardController } from "../controller/controller";
 
-class PlayersCard extends LitElement {
+@customElement("mass-player-players-card")
+export class PlayersCard extends LitElement {
   @property({ attribute: false }) private entities: ExtendedHassEntity[] = [];
 
   @consume({ context: activeEntityConfigContext, subscribe: true })
@@ -239,4 +240,3 @@ class PlayersCard extends LitElement {
     return styles;
   }
 }
-customElements.define("mass-player-players-card", PlayersCard);

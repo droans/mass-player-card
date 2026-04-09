@@ -1,6 +1,6 @@
 import { CSSResultGroup, html, LitElement, TemplateResult } from "lit";
 import styles from "./button-styles";
-import { property } from "lit/decorators.js";
+import { customElement, property } from "lit/decorators.js";
 import { ButtonColorRole } from "../../const/enums";
 import { consume } from "@lit/context";
 import { configContext } from "../../const/context";
@@ -18,7 +18,8 @@ const BUTTON_ROLE_MAP: Record<ButtonColorRole, string> = {
   variant: "accent",
 };
 
-class MassButton extends LitElement {
+@customElement("mass-player-card-button")
+export class MassButton extends LitElement {
   @property({ attribute: false }) onPressService?: (event_: Event) => void;
   @property({ attribute: "role", type: String }) colorRole: ButtonColorRole =
     DEFAULT_COLOR_ROLE;
@@ -101,5 +102,3 @@ class MassButton extends LitElement {
     return styles;
   }
 }
-
-customElements.define("mass-player-card-button", MassButton);

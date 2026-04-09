@@ -5,7 +5,7 @@ import {
   PropertyValues,
   TemplateResult,
 } from "lit";
-import { property, query, state } from "lit/decorators.js";
+import { customElement, property, query, state } from "lit/decorators.js";
 
 import { ListItems } from "../../const/types";
 import { consume } from "@lit/context";
@@ -23,6 +23,7 @@ import { ControlSelectMenuElement } from "../../const/elements";
 export type MenuButtonScheme = "filled" | "tonal" | "standard" | "plain";
 const DEFAULT_SCHEME: MenuButtonScheme = "filled";
 
+@customElement("mass-menu-button")
 export class MassMenuButton extends LitElement {
   @property({ attribute: false }) public iconPath!: string;
 
@@ -202,5 +203,3 @@ export class MassMenuButton extends LitElement {
     return styles;
   }
 }
-
-customElements.define("mass-menu-button", MassMenuButton);

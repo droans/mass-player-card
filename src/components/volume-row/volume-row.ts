@@ -27,10 +27,11 @@ import { ActionsController } from "../../controller/actions";
 import { MassCardController } from "../../controller/controller";
 import { Icons } from "../../const/icons";
 import { jsonMatch } from "../../utils/utility";
-import { property, state } from "lit/decorators.js";
+import { customElement, property, state } from "lit/decorators.js";
 import { DetailValueEventData } from "../../const/events";
 
-class VolumeRow extends LitElement {
+@customElement("mass-volume-row")
+export class VolumeRow extends LitElement {
   private maxVolume!: number;
 
   private _config?: PlayerConfig;
@@ -236,4 +237,3 @@ class VolumeRow extends LitElement {
     return styles;
   }
 }
-customElements.define("mass-volume-row", VolumeRow);

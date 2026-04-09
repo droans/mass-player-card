@@ -6,7 +6,7 @@ import {
   TemplateResult,
 } from "lit";
 import { html } from "lit/static-html.js";
-import { property, query, state } from "lit/decorators.js";
+import { customElement, property, query, state } from "lit/decorators.js";
 import "@droans/webawesome/dist/components/card/card.js";
 
 import "../menu-button/menu-button";
@@ -44,7 +44,8 @@ import { WaAnimation } from "../../const/elements";
 import { HTMLImageElementEvent, MenuButtonEventData } from "../../const/events";
 import { getThumbnail } from "../../utils/thumbnails";
 
-class MediaCard extends LitElement {
+@customElement("mass-media-card")
+export class MediaCard extends LitElement {
   @property({ type: Boolean }) queueable = false;
   @state() code!: TemplateResult;
   private _enqueue_buttons?: ListItems;
@@ -289,4 +290,3 @@ class MediaCard extends LitElement {
     return styles;
   }
 }
-customElements.define("mass-media-card", MediaCard);

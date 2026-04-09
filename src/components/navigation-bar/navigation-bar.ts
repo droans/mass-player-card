@@ -12,14 +12,15 @@ import {
   IconsContext,
 } from "../../const/context";
 import { consume } from "@lit/context";
-import { state } from "lit/decorators.js";
+import { customElement, state } from "lit/decorators.js";
 import { Sections } from "../../const/enums";
 import { Config } from "../../config/config";
 import { MassCardController } from "../../controller/controller";
 import { MediaBrowser } from "../../sections/media-browser";
 import { Icons } from "../../const/icons";
 
-class MassNavBar extends LitElement {
+@customElement("mass-nav-bar")
+export class MassNavBar extends LitElement {
   private _controller!: MassCardController;
   private _config?: Config;
   private _activeSection!: Sections;
@@ -151,5 +152,3 @@ class MassNavBar extends LitElement {
     return styles;
   }
 }
-
-customElements.define("mass-nav-bar", MassNavBar);

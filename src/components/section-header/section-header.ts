@@ -3,8 +3,10 @@ import { html, LitElement, PropertyValues } from "lit";
 import styles from "./section-header-styles";
 import { consume } from "@lit/context";
 import { useExpressiveContext } from "../../const/context";
+import { customElement } from "lit/decorators.js";
 
-class MassSectionHeader extends LitElement {
+@customElement("mass-section-header")
+export class MassSectionHeader extends LitElement {
   @consume({ context: useExpressiveContext, subscribe: true })
   private useExpressive!: boolean;
   private _initialUpdate = false;
@@ -32,5 +34,3 @@ class MassSectionHeader extends LitElement {
     return styles;
   }
 }
-
-customElements.define("mass-section-header", MassSectionHeader);

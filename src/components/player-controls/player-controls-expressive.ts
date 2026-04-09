@@ -8,8 +8,10 @@ import "../button/button";
 import { PlayerIcon } from "../../config/player";
 import { PlayerSupportedFeatures, RepeatMode } from "../../const/enums";
 import { playerSupportsFeature } from "../../utils/utility";
+import { customElement } from "lit/decorators.js";
 
-class MassPlayerControlsExpressive extends MassPlayerControlsBase {
+@customElement("mass-player-controls-expressive")
+export class MassPlayerControlsExpressive extends MassPlayerControlsBase {
   protected onFavoriteHold = () => {
     // eslint-disable-next-line @typescript-eslint/no-unnecessary-condition
     if (navigator.vibrate) {
@@ -275,8 +277,3 @@ class MassPlayerControlsExpressive extends MassPlayerControlsBase {
     return this.controller.translate(label_key) as string;
   }
 }
-
-customElements.define(
-  "mass-player-controls-expressive",
-  MassPlayerControlsExpressive,
-);
