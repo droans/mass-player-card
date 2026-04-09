@@ -28,7 +28,7 @@ import {
   playersConfigContext,
 } from "../const/context";
 
-import styles from "../styles/player-queue";
+import styles from "../styles/players";
 import { getTranslation } from "../utils/translations";
 import { WaAnimation } from "../const/elements";
 import { MassCardController } from "../controller/controller";

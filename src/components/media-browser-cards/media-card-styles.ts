@@ -50,7 +50,7 @@ export default css`
     width: 100%;
     border-radius: var(--browser-card-border-radius) !important;
     overflow: visible !important;
-    margin: 0px 3px 3px 3px;
+    margin: 0px 0px 3px;
     aspect-ratio: 1;
   }
   #container,
