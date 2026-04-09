@@ -10,7 +10,7 @@ import { RepeatMode } from "../../const/enums";
 import styles from "./player-controls-styles";
 import { customElement } from "lit/decorators.js";
 
-@customElement("mass-player-controls")
+@customElement("mpc-player-controls")
 export class MassPlayerControls extends MassPlayerControlsBase {
   protected renderShuffle(): TemplateResult {
     if (this.hiddenElements.shuffle_button) {

@@ -77,7 +77,7 @@ export class BrowserViewBase extends LitElement {
   // Has observer been added
   protected observerAdded = false;
   // Listen on elements
-  @queryAll("mpc-track-row") trackElements!: HTMLElement[];
+  @queryAll("mpc-collection-track-row") trackElements!: HTMLElement[];
 
   // Set which enqueue elements are hidden
   @consume({
@@ -381,7 +381,7 @@ export class BrowserViewBase extends LitElement {
 
   protected renderEnqueue(): TemplateResult {
     return html`
-      <mass-menu-button
+      <mpc-menu-button
         id="enqueue-button"
         .iconPath=${this.Icons?.PLAY_CIRCLE}
         .items=${this._enqueue_buttons}
@@ -389,17 +389,17 @@ export class BrowserViewBase extends LitElement {
         naturalMenuWidth
         elevation="1"
         scheme="plain"
-      ></mass-menu-button>
+      ></mpc-menu-button>
     `;
   }
   protected renderTrack(track: Track, divider: boolean) {
     return cache(html`
-      <mpc-track-row
+      <mpc-collection-track-row
         .track=${track}
         ?divider=${divider}
         .collectionURI=${this.collectionData?.media_content_id}
         .enqueueButtons=${this._enqueue_buttons}
-      ></mpc-track-row>
+      ></mpc-collection-track-row>
     `);
   }
 

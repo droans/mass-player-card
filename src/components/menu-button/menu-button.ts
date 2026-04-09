@@ -23,7 +23,7 @@ import { ControlSelectMenuElement } from "../../const/elements";
 export type MenuButtonScheme = "filled" | "tonal" | "standard" | "plain";
 const DEFAULT_SCHEME: MenuButtonScheme = "filled";
 
-@customElement("mass-menu-button")
+@customElement("mpc-menu-button")
 export class MassMenuButton extends LitElement {
   @property({ attribute: false }) public iconPath!: string;
 
@@ -164,7 +164,7 @@ export class MassMenuButton extends LitElement {
             event_.stopPropagation();
           }}
         >
-          <mass-player-card-button
+          <mpc-button
             slot="trigger"
             part="div-icon"
             role="variant"
@@ -176,7 +176,7 @@ export class MassMenuButton extends LitElement {
               part="menu-svg"
               .path=${this.iconPath}
             ></ha-svg-icon>
-          </mass-player-card-button>
+          </mpc-button>
           ${this.renderMenuItems()}
           <slot></slot>
         </ha-dropdown>

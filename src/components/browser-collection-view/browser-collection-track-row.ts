@@ -28,7 +28,7 @@ import { PlaylistTrack } from "mass-queue-types/packages/mass_queue/actions/get_
 import { EnqueueConfigMap } from "../../const/media-browser";
 import { MediaBrowserConfig } from "../../config/media-browser";
 
-@customElement("mpc-track-row")
+@customElement("mpc-collection-track-row")
 export class MassPlaylistTrackRow extends LitElement {
   @property({ attribute: false }) track!: Track | PlaylistTrack;
   @property({ attribute: "divider", type: Boolean }) divider = false;
@@ -183,7 +183,7 @@ export class MassPlaylistTrackRow extends LitElement {
           event.stopPropagation();
         }}
       >
-          <mass-menu-button
+          <mpc-menu-button
             id="menu-button"
             .iconPath=${this.Icons?.OVERFLOW}
             @menu-item-selected=${this.onMenuItemSelected}
@@ -194,7 +194,7 @@ export class MassPlaylistTrackRow extends LitElement {
             elevation="0"
             .items=${this.enqueueButtons}
           >
-          </mass-menu-button>
+          </mpc-menu-button>
         </div>
       </span>
     `;

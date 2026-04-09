@@ -52,7 +52,7 @@ export default css`
     margin-left: 24px;
     margin-right: 24px;
   }
-  mass-player-card-button::part(button) {
+  mpc-button::part(button) {
     --used-button-background-color: var(--menu-button-background-color);
   }
   #menu-button {

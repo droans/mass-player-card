@@ -13,7 +13,7 @@ export default css`
     height: var(--queue-height);
     scrollbar-width: none;
   }
-  mass-player-media-row {
+  mpc-queue-media-row {
     width: 100%;
   }
   .button-min {

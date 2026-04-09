@@ -21,7 +21,7 @@ import { playerHasUpdated, secondsToTime } from "../../utils/utility";
 import { ExtendedHassEntity, PlayerData } from "../../const/types";
 import { MassCardController } from "../../controller/controller";
 
-@customElement("mass-progress-bar")
+@customElement("mpc-progress-bar")
 export class MassPlayerProgressBar extends LitElement {
   @state() private _media_duration!: number;
   @state() private _media_position!: number;

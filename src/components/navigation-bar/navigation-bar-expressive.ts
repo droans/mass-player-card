@@ -20,7 +20,7 @@ import { MediaBrowser } from "../../sections/media-browser";
 import { Icons } from "../../const/icons";
 import { WaAnimation } from "../../const/elements";
 
-@customElement("mass-nav-bar-expressive")
+@customElement("mpc-navbar-expressive")
 export class MassNavBar extends LitElement {
   private _controller?: MassCardController;
   private _config?: Config;
@@ -89,7 +89,7 @@ export class MassNavBar extends LitElement {
   protected returnMediaBrowserToHome = () => {
     const host = this.controller?.host;
     const element: MediaBrowser | null | undefined =
-      host?.shadowRoot?.querySelector("mass-media-browser");
+      host?.shadowRoot?.querySelector("mpc-media-browser");
     if (!element) {
       return;
     }

@@ -14,7 +14,7 @@ import PlayerActions from "../../actions/player-actions";
 import styles from "./volume-slider-styles";
 import { DetailValueEventData } from "../../const/events";
 
-@customElement("mass-volume-slider")
+@customElement("mpc-volume-slider")
 export class VolumeSlider extends LitElement {
   @property({ attribute: false }) public maxVolume = 100;
   @state() private entity?: ExtendedHassEntity;

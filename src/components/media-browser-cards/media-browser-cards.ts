@@ -23,7 +23,7 @@ import { MediaBrowserConfig } from "../../config/media-browser";
 import { jsonMatch } from "../../utils/utility";
 import { EnqueueOptions } from "../../const/enums";
 
-@customElement("mass-browser-cards")
+@customElement("mpc-browser-cards")
 export class MediaBrowserCards extends LitElement {
   @state() public code!: TemplateResult;
 
@@ -111,14 +111,14 @@ export class MediaBrowserCards extends LitElement {
         : literal``;
       const width = (1 / (this.browserConfig?.columns ?? 1)) * 100 - 2;
       return html`
-        <mass-media-card
+        <mpc-browser-media-card
           style="max-width: ${width.toString()}%"
           .config=${item}
           .onSelectAction=${this.onItemSelected}
           .onEnqueueAction=${this.onEnqueue}
           ${queueable}
         >
-        </mass-media-card>
+        </mpc-browser-media-card>
       `;
     });
     this.code = html` <div class="icons wa-grid">${result}</div> `;

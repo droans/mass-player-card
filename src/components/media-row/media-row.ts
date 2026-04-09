@@ -35,7 +35,7 @@ import { Icons } from "../../const/icons";
 import { queueItem } from "mass-queue-types/packages/mass_queue/actions/get_queue_items";
 import { HTMLImageElementEvent } from "../../const/events";
 
-@customElement("mass-player-media-row")
+@customElement("mpc-queue-media-row")
 export class MediaRow extends LitElement {
   @consume({ context: IconsContext }) public Icons!: Icons;
 
@@ -274,7 +274,7 @@ export class MediaRow extends LitElement {
       return html``;
     }
     return html`
-      <mass-player-card-button
+      <mpc-button
         .onPressService=${this.callMoveItemNextService}
         role="tonal"
         size="small"
@@ -289,7 +289,7 @@ export class MediaRow extends LitElement {
             ? `svg-action-button-expressive`
             : ``}"
         ></ha-svg-icon>
-      </mass-player-card-button>
+      </mpc-button>
     `;
   }
   private renderMoveUpButton(): TemplateResult {
@@ -297,7 +297,7 @@ export class MediaRow extends LitElement {
       return html``;
     }
     return html`
-      <mass-player-card-button
+      <mpc-button
         .onPressService=${this.callMoveItemUpService}
         role="tonal"
         size="small"
@@ -312,7 +312,7 @@ export class MediaRow extends LitElement {
             ? `svg-action-button-expressive`
             : ``}"
         ></ha-svg-icon>
-      </mass-player-card-button>
+      </mpc-button>
     `;
   }
   private renderMoveDownButton(): TemplateResult {
@@ -320,7 +320,7 @@ export class MediaRow extends LitElement {
       return html``;
     }
     return html`
-      <mass-player-card-button
+      <mpc-button
         .onPressService=${this.callMoveItemDownService}
         role="tonal"
         size="small"
@@ -335,7 +335,7 @@ export class MediaRow extends LitElement {
             ? `svg-action-button-expressive`
             : ``}"
         ></ha-svg-icon>
-      </mass-player-card-button>
+      </mpc-button>
     `;
   }
   private renderRemoveButton(): TemplateResult {
@@ -343,7 +343,7 @@ export class MediaRow extends LitElement {
       return html``;
     }
     return html`
-      <mass-player-card-button
+      <mpc-button
         .onPressService=${this.callRemoveItemService}
         role="tonal"
         size="small"
@@ -358,7 +358,7 @@ export class MediaRow extends LitElement {
             ? `svg-action-button-expressive`
             : ``}"
         ></ha-svg-icon>
-      </mass-player-card-button>
+      </mpc-button>
     `;
   }
 

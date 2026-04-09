@@ -10,7 +10,7 @@ import { PlayerSupportedFeatures, RepeatMode } from "../../const/enums";
 import { playerSupportsFeature } from "../../utils/utility";
 import { customElement } from "lit/decorators.js";
 
-@customElement("mass-player-controls-expressive")
+@customElement("mpc-player-controls-expressive")
 export class MassPlayerControlsExpressive extends MassPlayerControlsBase {
   protected onFavoriteHold = () => {
     // eslint-disable-next-line @typescript-eslint/no-unnecessary-condition
@@ -22,7 +22,7 @@ export class MassPlayerControlsExpressive extends MassPlayerControlsBase {
   };
   protected renderPrevious(): TemplateResult {
     return html`
-      <mass-player-card-button
+      <mpc-button
         .onPressService=${this.onPrevious}
         role="filled-variant"
         size="large"
@@ -34,13 +34,13 @@ export class MassPlayerControlsExpressive extends MassPlayerControlsBase {
           class="icons-next-previous"
           id="icon-previous"
         ></ha-svg-icon>
-      </mass-player-card-button>
+      </mpc-button>
     `;
   }
   protected renderPlayPause(): TemplateResult {
     const playing = this.playing;
     return html`
-      <mass-player-card-button
+      <mpc-button
         .onPressService=${this.onPlayPause}
         role="filled-variant"
         size="large"
@@ -55,12 +55,12 @@ export class MassPlayerControlsExpressive extends MassPlayerControlsBase {
           id="${playing ? `icon-play` : `icon-pause`}"
           class="icon-play-pause"
         ></ha-svg-icon>
-      </mass-player-card-button>
+      </mpc-button>
     `;
   }
   protected renderNext(): TemplateResult {
     return html`
-      <mass-player-card-button
+      <mpc-button
         .onPressService=${this.onNext}
         role="filled-variant"
         size="large"
@@ -72,7 +72,7 @@ export class MassPlayerControlsExpressive extends MassPlayerControlsBase {
           class="icons-next-previous"
           id="icon-previous"
         ></ha-svg-icon>
-      </mass-player-card-button>
+      </mpc-button>
     `;
   }
   protected renderPower(): TemplateResult {
@@ -93,7 +93,7 @@ export class MassPlayerControlsExpressive extends MassPlayerControlsBase {
     );
     const no_label_class = label?.length ? `` : `no-label`;
     return html`
-      <mass-player-card-button
+      <mpc-button
         .onPressService=${this.onPower}
         role="variant"
         size="medium"
@@ -102,7 +102,7 @@ export class MassPlayerControlsExpressive extends MassPlayerControlsBase {
         elevation="1"
       >
         ${icon} ${label}
-      </mass-player-card-button>
+      </mpc-button>
     `;
   }
   protected renderShuffle(): TemplateResult {
@@ -124,7 +124,7 @@ export class MassPlayerControlsExpressive extends MassPlayerControlsBase {
       label,
     );
     return html`
-      <mass-player-card-button
+      <mpc-button
         .onPressService=${this.onShuffle}
         role="variant"
         size="medium"
@@ -135,7 +135,7 @@ export class MassPlayerControlsExpressive extends MassPlayerControlsBase {
         class="button-lower ${active_class} ${no_label_class}"
       >
         ${icon_html} ${label}
-      </mass-player-card-button>
+      </mpc-button>
     `;
   }
   protected renderRepeat(): TemplateResult {
@@ -159,7 +159,7 @@ export class MassPlayerControlsExpressive extends MassPlayerControlsBase {
       label,
     );
     return html`
-      <mass-player-card-button
+      <mpc-button
         .onPressService=${this.onRepeat}
         role="variant"
         size="medium"
@@ -170,7 +170,7 @@ export class MassPlayerControlsExpressive extends MassPlayerControlsBase {
         class="button-lower ${active_class} ${no_label_class}"
       >
         ${icon_html} ${label}
-      </mass-player-card-button>
+      </mpc-button>
     `;
   }
   protected renderFavorite(): TemplateResult {
@@ -192,7 +192,7 @@ export class MassPlayerControlsExpressive extends MassPlayerControlsBase {
       label,
     );
     return html`
-      <mass-player-card-button
+      <mpc-button
         .onPressService=${this.onFavorite}
         .onHoldService=${this.onFavoriteHold}
         role="variant"
@@ -204,7 +204,7 @@ export class MassPlayerControlsExpressive extends MassPlayerControlsBase {
         class="button-lower ${active_class} ${no_label_class}"
       >
         ${icon_html} ${label}
-      </mass-player-card-button>
+      </mpc-button>
     `;
   }
   protected renderUpperControls(): TemplateResult {

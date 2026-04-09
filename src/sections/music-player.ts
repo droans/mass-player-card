@@ -70,7 +70,7 @@ import {
 import { asyncImageURLWithFallback } from "../utils/thumbnails";
 import { DialogElement } from "../const/elements";
 
-@customElement("mass-music-player-card")
+@customElement("mpc-music-player-card")
 export class MusicPlayerCard extends LitElement {
   @query("#dialog-favorites") favoritesDialog?: DialogElement;
   @state() protected _playlists?: PlaylistDialogItem[];
@@ -464,14 +464,14 @@ export class MusicPlayerCard extends LitElement {
       return html``;
     }
     return html`
-      <mass-section-header
+      <mpc-section-header
         class="${this._artworkHeaderClass} ${this.cardConfig.expressive
           ? `header-expressive`
           : ``}"
       >
         ${this.renderPlayerSelector()} ${this.renderSectionTitle()}
         ${this.renderGrouped()}
-      </mass-section-header>
+      </mpc-section-header>
     `;
   }
   protected renderHeader(): TemplateResult {
@@ -541,14 +541,14 @@ export class MusicPlayerCard extends LitElement {
       ? ``
       : `opacity: 0;`;
     return html`
-      <mass-progress-bar
+      <mpc-progress-bar
         class="${this._artworkProgressClass}"
         style="${style}"
-      ></mass-progress-bar>
+      ></mpc-progress-bar>
     `;
   }
   protected renderArtwork(): TemplateResult {
-    return html` <mpc-artwork></mpc-artwork>`;
+    return html` <mpc-player-artwork></mpc-player-artwork>`;
   }
   protected renderVolumeRow(): TemplateResult {
     const feats = this.activeEntity.attributes.supported_features;
@@ -565,12 +565,12 @@ export class MusicPlayerCard extends LitElement {
     );
     return html`
       <div id="volume">
-        <mass-volume-row
+        <mpc-volume-row
           class="${this._artworkVolumeClass} ${this.cardConfig.expressive
             ? `volume-expressive`
             : ``}"
           ?can-mute=${canMute}
-        ></mass-volume-row>
+        ></mpc-volume-row>
       </div>
     `;
   }
@@ -586,8 +586,8 @@ export class MusicPlayerCard extends LitElement {
           : ``}"
       >
         ${this.cardConfig.expressive
-          ? html`<mass-player-controls-expressive></mass-player-controls-expressive>`
-          : html`<mass-player-controls></mass-player-controls>`}
+          ? html`<mpc-player-controls-expressive></mpc-player-controls-expressive>`
+          : html`<mpc-player-controls></mpc-player-controls>`}
         ${this.renderVolumeRow()}
       </div>
     `;

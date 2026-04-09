@@ -7,7 +7,7 @@ import { getArtistServiceResponse } from "mass-queue-types/packages/mass_queue/a
 import { BrowserViewBase } from "./browser-view-base";
 import { getTranslation } from "../../utils/translations";
 
-@customElement("mpc-browser-artist-view")
+@customElement("mpc-collection-artist-view")
 export class MassBrowserArtistView extends BrowserViewBase {
   // Header is animated on scroll - query elements for animation
   @query("#collection-info") private infoElement?: HTMLElement;
