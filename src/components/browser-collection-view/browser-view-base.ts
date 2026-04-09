@@ -15,7 +15,7 @@ import {
   MediaBrowserHiddenElementsConfig,
 } from "../../config/media-browser";
 import { Icons } from "../../const/icons";
-import { property, query, queryAll, state } from "lit/decorators.js";
+import { property, query, state } from "lit/decorators.js";
 import { EntityConfig } from "../../config/config";
 import { CardEnqueueService } from "../../const/actions";
 import {
@@ -51,34 +51,13 @@ export class BrowserViewBase extends LitElement {
 
   @query("#title") protected titleElement?: HTMLElement;
   @query("#enqueue-button") protected enqueueElement?: HTMLElement;
-  @query("#enqueue") protected enqueueDiv?: HTMLElement;
   @query("#collection-image") protected imageDivElement?: HTMLElement;
   @query("lit-virtualizer") protected virtElement?: HTMLElement;
   @query("#tracks") protected tracksElement?: HTMLElement;
   @query("#header") protected headerElement?: HTMLElement;
   protected enqueueControlElement!: HTMLElement;
   protected enqueueIconElement!: HTMLElement;
-  protected titleAnimation!: Animation;
-  protected enqueueAnimation!: Animation;
-  protected enqueueControlAnimation!: Animation;
-  protected enqueueIconAnimation!: Animation;
-  protected imageDivAnimation!: Animation;
-  protected headerAnimation!: Animation;
   protected animationsAdded = false;
-
-  // Limit rendered rows to reduce memory usage
-  // Current rendered index
-  // @state() protected currentIdx = 40;
-  // Additional rows to render
-  protected indexIncrease = 40;
-  // Offset before rendering new rows
-  protected listenOffset = -10;
-  // Observer for element
-  protected observer?: IntersectionObserver;
-  // Has observer been added
-  protected observerAdded = false;
-  // Listen on elements
-  @queryAll("mpc-collection-track-row") trackElements!: HTMLElement[];
 
   // Set which enqueue elements are hidden
   @consume({
@@ -168,50 +147,6 @@ export class BrowserViewBase extends LitElement {
     return this._collectionData;
   }
 
-  // protected _trackObserverCallback = (event_: IntersectionObserverEntry[]) => {
-  //   const entry = event_[0];
-  //   if (entry.isIntersecting) {
-  //     this.observer?.disconnect();
-  //     this.currentIdx = Math.min(
-  //       this.currentIdx + this.indexIncrease,
-  //       this.tracks?.length ?? 0,
-  //     );
-  //   }
-  // };
-
-  // protected async addObserver(retryDelay = 0) {
-  //   if (this.observer) {
-  //     this.observer.disconnect();
-  //     this.observer = undefined;
-  //   }
-  //   if (retryDelay > 6000) {
-  //     throw new Error(`Exceeded max timeout creating observer`);
-  //   }
-  //   await delay(retryDelay);
-  //   this._addObserver();
-  //   // eslint-disable-next-line @typescript-eslint/no-unnecessary-condition
-  //   if (!this.observer) {
-  //     retryDelay = retryDelay > 0 ? retryDelay * 2 : 50;
-  //     await this.addObserver(retryDelay);
-  //   }
-  // }
-  // protected _addObserver() {
-  //   if (this.observer) {
-  //     this.observer.disconnect();
-  //   }
-  //   const listenIdx = this.currentIdx + this.listenOffset;
-  //   const observer = new IntersectionObserver(this._trackObserverCallback);
-  //   const element = this.trackElements[listenIdx];
-  //   // eslint-disable-next-line @typescript-eslint/no-unnecessary-condition
-  //   if (!element) {
-  //     return;
-  //   }
-  //   observer.observe(element);
-
-  //   this.observer = observer;
-  //   this.observerAdded = true;
-  // }
-
   protected setHiddenElements() {
     if (!this.activeEntityConf || !this.browserConfig) {
       return;
@@ -268,10 +203,7 @@ export class BrowserViewBase extends LitElement {
     const kf = {
       height: "var(--view-header-min-height)",
     };
-    this.headerAnimation = this.addScrollAnimation(
-      kf,
-      this.headerElement as HTMLElement,
-    );
+    this.addScrollAnimation(kf, this.headerElement as HTMLElement);
   }
   protected animateHeaderTitle() {
     const kf = {
@@ -279,10 +211,7 @@ export class BrowserViewBase extends LitElement {
       fontWeight: "500",
       top: "0em",
     };
-    this.titleAnimation = this.addScrollAnimation(
-      kf,
-      this.titleElement as HTMLElement,
-    );
+    this.addScrollAnimation(kf, this.titleElement as HTMLElement);
   }
   protected animateHeaderEnqueue() {
     const iconElement =
@@ -296,10 +225,7 @@ export class BrowserViewBase extends LitElement {
         height: "var(--header-collapsed-menu-icon-size)",
         width: "var(--header-collapsed-menu-icon-size)",
       };
-      this.enqueueIconAnimation = this.addScrollAnimation(
-        iconKeyFrames,
-        this.enqueueIconElement,
-      );
+      this.addScrollAnimation(iconKeyFrames, this.enqueueIconElement);
     }
     if (selectElement) {
       this.enqueueControlElement = selectElement as HTMLElement;
@@ -307,20 +233,14 @@ export class BrowserViewBase extends LitElement {
       const selectKeyFrames = {
         height: "var(--header-collapsed-menu-control-size)",
       };
-      this.enqueueControlAnimation = this.addScrollAnimation(
-        selectKeyFrames,
-        this.enqueueControlElement,
-      );
+      this.addScrollAnimation(selectKeyFrames, this.enqueueControlElement);
     }
   }
   protected animateHeaderImage() {
     const imgDivKf = {
       height: "var(--collection-image-div-collapsed-height)",
     };
-    this.imageDivAnimation = this.addScrollAnimation(
-      imgDivKf,
-      this.imageDivElement as HTMLElement,
-    );
+    this.addScrollAnimation(imgDivKf, this.imageDivElement as HTMLElement);
   }
 
   protected onEnqueue = (event_: MenuButtonEventData) => {
@@ -426,27 +346,6 @@ export class BrowserViewBase extends LitElement {
       ></lit-virtualizer>
     `;
   }
-  // protected renderTracks() {
-  //   if (!this.tracks?.length) {
-  //     return html`
-  //       <link
-  //         href="https://cdn.jsdelivr.net/npm/beercss@3.12.11/dist/cdn/beer.min.css"
-  //         rel="stylesheet"
-  //       />
-  //       <div class="shape loading-indicator extra"></div>
-  //     `;
-  //   }
-  //   const trackCt = this.tracks.length;
-  //   const tracks = this.tracks as Tracks;
-  //   return tracks.map((track, idx) => {
-  //     // if (idx >= this.currentIdx) {
-  //     //   return html``;
-  //     // }
-  //     const div = idx < trackCt - 1;
-
-  //     return this.renderTrack(track, div);
-  //   });
-  // }
   protected render(): TemplateResult {
     const expressiveClass = this.useExpressive ? `expressive` : ``;
     const vibrantClass = this.useVibrant ? `vibrant` : ``;
@@ -474,18 +373,6 @@ export class BrowserViewBase extends LitElement {
     if (!this.animationsAdded) {
       void this.testAnimation();
     }
-    // if (
-    //   _changedProperties.has("currentIdx") ||
-    //   (_changedProperties.has("tracks") && !this.observerAdded)
-    // ) {
-    //   void this.addObserver();
-    // }
-  }
-  disconnectedCallback(): void {
-    if (this.observer) {
-      this.observer.disconnect();
-    }
-    super.disconnectedCallback();
   }
 
   // eslint-disable-next-line @typescript-eslint/no-unused-vars
