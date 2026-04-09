@@ -374,12 +374,6 @@ export class BrowserViewBase extends LitElement {
       void this.testAnimation();
     }
   }
-  disconnectedCallback(): void {
-    if (this.observer) {
-      this.observer.disconnect();
-    }
-    super.disconnectedCallback();
-  }
 
   // eslint-disable-next-line @typescript-eslint/no-unused-vars
   protected async testAnimation(_delayMs = 50) {
