@@ -2,7 +2,7 @@
   "compilerOptions": {
     "target": "ES2021",
     "module": "esnext",
-    "moduleResolution": "node",
+    "moduleResolution": "bundler",
     "lib": ["es2022", "DOM", "DOM.Iterable"],
     "allowSyntheticDefaultImports": true,
     "noEmit": true,

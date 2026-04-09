@@ -295,9 +295,7 @@ export class MusicAssistantPlayerCard extends LitElement {
             ? ""
             : "-hidden"}"
         >
-          <mpc-queue-card
-            .config=${this.config.queue}
-          ></mpc-queue-card>
+          <mpc-queue-card .config=${this.config.queue}></mpc-queue-card>
         </wa-tab-panel>
       `);
     }
