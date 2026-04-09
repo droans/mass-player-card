@@ -53,6 +53,7 @@ export class BrowserViewBase extends LitElement {
   @query("#enqueue-button") protected enqueueElement?: HTMLElement;
   @query("#enqueue") protected enqueueDiv?: HTMLElement;
   @query("#collection-image") protected imageDivElement?: HTMLElement;
+  @query("lit-virtualizer") protected virtElement?: HTMLElement;
   @query("#tracks") protected tracksElement?: HTMLElement;
   @query("#header") protected headerElement?: HTMLElement;
   protected enqueueControlElement!: HTMLElement;
@@ -228,7 +229,7 @@ export class BrowserViewBase extends LitElement {
 
   protected addScrollAnimation(transforms: Keyframe, element: HTMLElement) {
     const shrunkHdrHeight = (this.headerElement?.offsetHeight ?? 0) * (1 / 3);
-    const scrollHeight = this.tracksElement?.scrollHeight ?? 1;
+    const scrollHeight = this.virtElement?.scrollHeight ?? 1;
     const duration = shrunkHdrHeight / scrollHeight;
     const keyframes = [
       {
