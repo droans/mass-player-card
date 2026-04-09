@@ -16,10 +16,10 @@ import { Icons } from "../../const/icons";
 import { delay, jsonMatch, playerHasUpdated } from "../../utils/utility";
 import styles from "./player-artwork-styles";
 import { Thumbnail } from "../../const/enums";
-import type WaCarouselItem from "@droans/webawesome/dist/components/carousel-item/carousel-item";
-import type WaCarousel from "@droans/webawesome/dist/components/carousel/carousel";
-import "@droans/webawesome/dist/components/carousel/carousel";
-import "@droans/webawesome/dist/components/carousel-item/carousel-item";
+import type WaCarouselItem from "@droans/webawesome/dist/components/carousel-item/carousel-item.js";
+import type WaCarousel from "@droans/webawesome/dist/components/carousel/carousel.js";
+import "@droans/webawesome/dist/components/carousel/carousel.js";
+import "@droans/webawesome/dist/components/carousel-item/carousel-item.js";
 import { VibrationPattern } from "../../const/common";
 import { Config } from "../../config/config";
 

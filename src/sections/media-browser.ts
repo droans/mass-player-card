@@ -1,4 +1,4 @@
-import "@shoelace-style/shoelace/dist/components/input/input";
+import "@shoelace-style/shoelace/dist/components/input/input.js";
 import {
   CSSResultGroup,
   html,
