@@ -320,7 +320,8 @@ export class MusicAssistantPlayerCard extends LitElement {
   protected renderTabs() {
     return html`
       <div
-        id="navbar${this.config.expressive &&
+        id="navbar"
+        class="${this.config.expressive &&
         this.active_section == Sections.MUSIC_PLAYER
           ? `-expressive`
           : ``}"

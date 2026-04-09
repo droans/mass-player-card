@@ -207,7 +207,7 @@ export default css`
       "Roboto Flex", var(--ha-font-family-body), "Roboto", sans-serif !important;
   }
 
-  #navbar-expressive {
+  #navbar.expressive {
     background-color: var(--expressive-player-blur-color);
     border-radius: 0px 0px var(--default-border-radius)
       var(--default-border-radius);
