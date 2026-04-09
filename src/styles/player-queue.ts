@@ -57,6 +57,7 @@ export default css`
     -ms-overflow-style: none;
     scrollbar-width: none;
     border-radius: var(--queue-border-radius, 12px);
+    padding-left: 4px;
   }
   .list:not(.padded) {
     --queue-height: calc(var(--mass-player-card-height) - 3.5em);

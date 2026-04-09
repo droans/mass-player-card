@@ -6,7 +6,7 @@ import {
   PropertyValues,
   TemplateResult,
 } from "lit";
-import { property, state } from "lit/decorators.js";
+import { customElement, property, state } from "lit/decorators.js";
 
 import { QueueItemSelectedService, QueueService } from "../../const/actions";
 import { Thumbnail } from "../../const/enums";
@@ -35,7 +35,8 @@ import { Icons } from "../../const/icons";
 import { queueItem } from "mass-queue-types/packages/mass_queue/actions/get_queue_items";
 import { HTMLImageElementEvent } from "../../const/events";
 
-class MediaRow extends LitElement {
+@customElement("mass-player-media-row")
+export class MediaRow extends LitElement {
   @consume({ context: IconsContext }) public Icons!: Icons;
 
   @consume({ context: mediaCardDisplayContext, subscribe: true })
@@ -382,5 +383,3 @@ class MediaRow extends LitElement {
     return styles;
   }
 }
-
-customElements.define("mass-player-media-row", MediaRow);

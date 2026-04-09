@@ -6,14 +6,16 @@ import {
   PropertyValues,
   TemplateResult,
 } from "lit";
-import { property, state } from "lit/decorators.js";
+import { customElement, property, state } from "lit/decorators.js";
 
 import { ExtendedHass, ExtendedHassEntity } from "../../const/types";
 import { hassContext } from "../../const/context";
 import PlayerActions from "../../actions/player-actions";
 import styles from "./volume-slider-styles";
 import { DetailValueEventData } from "../../const/events";
-class VolumeSlider extends LitElement {
+
+@customElement("mass-volume-slider")
+export class VolumeSlider extends LitElement {
   @property({ attribute: false }) public maxVolume = 100;
   @state() private entity?: ExtendedHassEntity;
   private _entityId!: string;
@@ -82,4 +84,3 @@ class VolumeSlider extends LitElement {
     return styles;
   }
 }
-customElements.define("mass-volume-slider", VolumeSlider);

@@ -7,7 +7,13 @@ import {
   PropertyValues,
   TemplateResult,
 } from "lit";
-import { property, query, queryAll, state } from "lit/decorators.js";
+import {
+  customElement,
+  property,
+  query,
+  queryAll,
+  state,
+} from "lit/decorators.js";
 import "../components/media-row/media-row";
 import "../components/section-header/section-header";
 
@@ -43,7 +49,8 @@ import { getTranslation } from "../utils/translations";
 import { Icons } from "../const/icons";
 import { LitVirtualizer, WaAnimation } from "../const/elements";
 
-class QueueCard extends LitElement {
+@customElement("mass-player-queue-card")
+export class QueueCard extends LitElement {
   @consume({ context: activePlayerControllerContext })
   private activePlayerController!: ActivePlayerController;
 
@@ -381,4 +388,3 @@ class QueueCard extends LitElement {
     return error;
   }
 }
-customElements.define("mass-player-queue-card", QueueCard);

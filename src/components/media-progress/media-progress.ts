@@ -6,7 +6,7 @@ import {
   TemplateResult,
 } from "lit";
 import styles from "./media-progress-styles";
-import { query, state } from "lit/decorators.js";
+import { customElement, query, state } from "lit/decorators.js";
 import { consume } from "@lit/context";
 import { ActivePlayerController } from "../../controller/active-player";
 import {
@@ -20,7 +20,9 @@ import { ActionsController } from "../../controller/actions";
 import { playerHasUpdated, secondsToTime } from "../../utils/utility";
 import { ExtendedHassEntity, PlayerData } from "../../const/types";
 import { MassCardController } from "../../controller/controller";
-class MassPlayerProgressBar extends LitElement {
+
+@customElement("mass-progress-bar")
+export class MassPlayerProgressBar extends LitElement {
   @state() private _media_duration!: number;
   @state() private _media_position!: number;
   @query("#progress-bar") private progressBar?: HTMLElement;
@@ -323,5 +325,3 @@ class MassPlayerProgressBar extends LitElement {
     return styles;
   }
 }
-
-customElements.define("mass-progress-bar", MassPlayerProgressBar);

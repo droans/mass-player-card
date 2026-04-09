@@ -7,7 +7,7 @@ import {
   PropertyValues,
   TemplateResult,
 } from "lit";
-import { query, state } from "lit/decorators.js";
+import { customElement, query, state } from "lit/decorators.js";
 import { html } from "lit/static-html.js";
 
 import "../components/grouped-player-menu/grouped-player-menu";
@@ -70,7 +70,8 @@ import {
 import { asyncImageURLWithFallback } from "../utils/thumbnails";
 import { DialogElement } from "../const/elements";
 
-class MusicPlayerCard extends LitElement {
+@customElement("mass-music-player-card")
+export class MusicPlayerCard extends LitElement {
   @query("#dialog-favorites") favoritesDialog?: DialogElement;
   @state() protected _playlists?: PlaylistDialogItem[];
 
@@ -714,5 +715,3 @@ class MusicPlayerCard extends LitElement {
     return styles;
   }
 }
-
-customElements.define("mass-music-player-card", MusicPlayerCard);

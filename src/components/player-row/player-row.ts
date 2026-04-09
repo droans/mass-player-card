@@ -1,6 +1,6 @@
 import { consume } from "@lit/context";
 import { html, type CSSResultGroup, LitElement, PropertyValues } from "lit";
-import { property } from "lit/decorators.js";
+import { customElement, property } from "lit/decorators.js";
 
 import {
   PlayerJoinService,
@@ -32,7 +32,8 @@ import { Thumbnail } from "../../const/enums";
 import { getThumbnail } from "../../utils/thumbnails";
 import { HTMLImageElementEvent } from "../../const/events";
 
-class PlayerRow extends LitElement {
+@customElement("mass-player-player-row")
+export class PlayerRow extends LitElement {
   @property({ attribute: false }) joined = false;
   @property({ attribute: false }) selected = false;
   @consume({ context: IconsContext }) private Icons!: Icons;
@@ -303,5 +304,3 @@ class PlayerRow extends LitElement {
     return styles;
   }
 }
-
-customElements.define("mass-player-player-row", PlayerRow);

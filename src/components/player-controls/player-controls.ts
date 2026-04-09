@@ -8,8 +8,10 @@ import {
 } from "../../utils/music-player";
 import { RepeatMode } from "../../const/enums";
 import styles from "./player-controls-styles";
+import { customElement } from "lit/decorators.js";
 
-class MassPlayerControls extends MassPlayerControlsBase {
+@customElement("mass-player-controls")
+export class MassPlayerControls extends MassPlayerControlsBase {
   protected renderShuffle(): TemplateResult {
     if (this.hiddenElements.shuffle_button) {
       return html``;
@@ -250,5 +252,3 @@ class MassPlayerControls extends MassPlayerControlsBase {
     return styles;
   }
 }
-
-customElements.define("mass-player-controls", MassPlayerControls);

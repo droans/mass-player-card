@@ -5,7 +5,7 @@ import {
   PropertyValues,
   TemplateResult,
 } from "lit";
-import { property, query, state } from "lit/decorators.js";
+import { customElement, property, query, state } from "lit/decorators.js";
 import { html, literal } from "lit/static-html.js";
 
 import "./media-card";
@@ -23,6 +23,7 @@ import { MediaBrowserConfig } from "../../config/media-browser";
 import { jsonMatch } from "../../utils/utility";
 import { EnqueueOptions } from "../../const/enums";
 
+@customElement("mass-browser-cards")
 export class MediaBrowserCards extends LitElement {
   @state() public code!: TemplateResult;
 
@@ -133,4 +134,3 @@ export class MediaBrowserCards extends LitElement {
     return styles;
   }
 }
-customElements.define("mass-browser-cards", MediaBrowserCards);
