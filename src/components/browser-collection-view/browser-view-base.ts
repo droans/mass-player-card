@@ -65,10 +65,6 @@ export class BrowserViewBase extends LitElement {
   protected imageDivAnimation!: Animation;
   protected headerAnimation!: Animation;
   protected animationsAdded = false;
-
-  // Limit rendered rows to reduce memory usage
-  // Current rendered index
-  // @state() protected currentIdx = 40;
   // Additional rows to render
   protected indexIncrease = 40;
   // Offset before rendering new rows
@@ -167,50 +163,6 @@ export class BrowserViewBase extends LitElement {
   public get collectionData() {
     return this._collectionData;
   }
-
-  // protected _trackObserverCallback = (event_: IntersectionObserverEntry[]) => {
-  //   const entry = event_[0];
-  //   if (entry.isIntersecting) {
-  //     this.observer?.disconnect();
-  //     this.currentIdx = Math.min(
-  //       this.currentIdx + this.indexIncrease,
-  //       this.tracks?.length ?? 0,
-  //     );
-  //   }
-  // };
-
-  // protected async addObserver(retryDelay = 0) {
-  //   if (this.observer) {
-  //     this.observer.disconnect();
-  //     this.observer = undefined;
-  //   }
-  //   if (retryDelay > 6000) {
-  //     throw new Error(`Exceeded max timeout creating observer`);
-  //   }
-  //   await delay(retryDelay);
-  //   this._addObserver();
-  //   // eslint-disable-next-line @typescript-eslint/no-unnecessary-condition
-  //   if (!this.observer) {
-  //     retryDelay = retryDelay > 0 ? retryDelay * 2 : 50;
-  //     await this.addObserver(retryDelay);
-  //   }
-  // }
-  // protected _addObserver() {
-  //   if (this.observer) {
-  //     this.observer.disconnect();
-  //   }
-  //   const listenIdx = this.currentIdx + this.listenOffset;
-  //   const observer = new IntersectionObserver(this._trackObserverCallback);
-  //   const element = this.trackElements[listenIdx];
-  //   // eslint-disable-next-line @typescript-eslint/no-unnecessary-condition
-  //   if (!element) {
-  //     return;
-  //   }
-  //   observer.observe(element);
-
-  //   this.observer = observer;
-  //   this.observerAdded = true;
-  // }
 
   protected setHiddenElements() {
     if (!this.activeEntityConf || !this.browserConfig) {
@@ -426,27 +378,6 @@ export class BrowserViewBase extends LitElement {
       ></lit-virtualizer>
     `;
   }
-  // protected renderTracks() {
-  //   if (!this.tracks?.length) {
-  //     return html`
-  //       <link
-  //         href="https://cdn.jsdelivr.net/npm/beercss@3.12.11/dist/cdn/beer.min.css"
-  //         rel="stylesheet"
-  //       />
-  //       <div class="shape loading-indicator extra"></div>
-  //     `;
-  //   }
-  //   const trackCt = this.tracks.length;
-  //   const tracks = this.tracks as Tracks;
-  //   return tracks.map((track, idx) => {
-  //     // if (idx >= this.currentIdx) {
-  //     //   return html``;
-  //     // }
-  //     const div = idx < trackCt - 1;
-
-  //     return this.renderTrack(track, div);
-  //   });
-  // }
   protected render(): TemplateResult {
     const expressiveClass = this.useExpressive ? `expressive` : ``;
     const vibrantClass = this.useVibrant ? `vibrant` : ``;
@@ -474,12 +405,6 @@ export class BrowserViewBase extends LitElement {
     if (!this.animationsAdded) {
       void this.testAnimation();
     }
-    // if (
-    //   _changedProperties.has("currentIdx") ||
-    //   (_changedProperties.has("tracks") && !this.observerAdded)
-    // ) {
-    //   void this.addObserver();
-    // }
   }
   disconnectedCallback(): void {
     if (this.observer) {
