@@ -18,9 +18,12 @@ export default css`
     flex-wrap: wrap;
     row-gap: 20px;
     overflow-y: scroll;
-    max-height: calc(var(--mass-player-card-height) - var(--navbar-height));
+    max-height: calc(
+      var(--mass-player-card-height) - var(--navbar-height) - 8px
+    );
     scrollbar-width: none;
-    padding-bottom: 1em;
+    padding-bottom: 8px;
+    padding-top: 8px;
   }
   .loading-indicator {
     background-color: var(--md-sys-color-primary);
