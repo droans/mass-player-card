@@ -7,10 +7,9 @@ import { BrowserViewBase } from "./browser-view-base";
 import { getPodcastServiceResponse } from "mass-queue-types/packages/mass_queue/actions/get_podcast";
 import { getTranslation } from "../../utils/translations";
 
-@customElement("mpc-browser-podcast-view")
+@customElement("mpc-collection-podcast-view")
 export class MassBrowserPodcastView extends BrowserViewBase {
   @query("#collection-info") private infoElement?: HTMLElement;
-  private infoAnimation!: Animation;
 
   // Metadata for podcast
   @state() private podcastMetadata?: getPodcastServiceResponse;
@@ -55,10 +54,7 @@ export class MassBrowserPodcastView extends BrowserViewBase {
     const kf = {
       fontSize: "0.8em",
     };
-    this.infoAnimation = this.addScrollAnimation(
-      kf,
-      this.infoElement as HTMLElement,
-    );
+    this.addScrollAnimation(kf, this.infoElement as HTMLElement);
   }
   private animateHeader() {
     this.animateHeaderElement();
@@ -101,7 +97,7 @@ export class MassBrowserPodcastView extends BrowserViewBase {
     await delay(delayMs);
     if (
       !this.animationsAdded &&
-      (this.tracksElement?.scrollHeight ?? 0) >
+      (this.virtElement?.scrollHeight ?? 0) >
         (this.tracksElement?.offsetHeight ?? 1) &&
       this.titleElement &&
       this.infoElement &&

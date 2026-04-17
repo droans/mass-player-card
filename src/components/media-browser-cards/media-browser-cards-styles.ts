@@ -6,7 +6,7 @@ export default css`
   :host {
     width: 100%;
   }
-  mass-media-card {
+  mpc-browser-media-card {
     max-height: 100%;
     aspect-ratio: 1;
     width: 100%;
@@ -18,9 +18,12 @@ export default css`
     flex-wrap: wrap;
     row-gap: 20px;
     overflow-y: scroll;
-    max-height: calc(var(--mass-player-card-height) - 4em);
+    max-height: calc(
+      var(--mass-player-card-height) - var(--navbar-height) - 8px
+    );
     scrollbar-width: none;
-    padding-bottom: 1em;
+    padding-bottom: 8px;
+    padding-top: 8px;
   }
   .loading-indicator {
     background-color: var(--md-sys-color-primary);

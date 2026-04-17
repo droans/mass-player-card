@@ -43,7 +43,7 @@ import {
   getInfoWSResponseSchema,
   getInfoWSServiceSchema,
 } from "mass-queue-types/packages/mass_queue/ws/get_info";
-import WaCarousel from "@droans/webawesome/dist/components/carousel/carousel";
+import WaCarousel from "@droans/webawesome/dist/components/carousel/carousel.js";
 import { RepeatMode } from "../const/enums";
 import { MassCardConfigController } from "./config";
 
@@ -577,23 +577,16 @@ export class ActivePlayerController {
   public async playerCanGroupWith(
     entity_id = this.activeEntityID,
   ): Promise<string[]> {
-    if (
-      !this.activeMediaPlayer ||
-      !playerIsAvailable(this.hass, this.activeEntityID)
-    ) {
+    if (!playerIsAvailable(this.hass, entity_id)) {
       return [];
     }
-    const provider = await this.getPlayerProvider(entity_id);
-    const ents = this.config.entities;
+    const info = await this.getEntityInfo(entity_id);
+    const groupableIds = info.can_group_with;
     const result: string[] = [];
-    for (const ent of ents) {
-      const _id = ent.entity_id;
-      const available = playerIsAvailable(this.hass, _id);
-      if (available) {
-        const _prov = await this.getPlayerProvider(_id);
-        if (_prov == provider && _id != entity_id) {
-          result.push(_id);
-        }
+    for (const entity of this.config.entities) {
+      const entInfo = await this.getEntityInfo(entity.entity_id);
+      if (groupableIds.includes(entInfo.player_id)) {
+        result.push(entity.entity_id);
       }
     }
     return result;

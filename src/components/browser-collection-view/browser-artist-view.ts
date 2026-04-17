@@ -7,13 +7,11 @@ import { getArtistServiceResponse } from "mass-queue-types/packages/mass_queue/a
 import { BrowserViewBase } from "./browser-view-base";
 import { getTranslation } from "../../utils/translations";
 
-@customElement("mpc-browser-artist-view")
+@customElement("mpc-collection-artist-view")
 export class MassBrowserArtistView extends BrowserViewBase {
   // Header is animated on scroll - query elements for animation
   @query("#collection-info") private infoElement?: HTMLElement;
   @query("#collection-artists") private artistsElement!: HTMLElement;
-  private infoAnimation!: Animation;
-  private artistsAnimation!: Animation;
 
   // Metadata for artist
   @state() private artistMetadata?: getArtistServiceResponse;
@@ -49,10 +47,7 @@ export class MassBrowserArtistView extends BrowserViewBase {
     const kf = {
       fontSize: "0.7em",
     };
-    this.infoAnimation = this.addScrollAnimation(
-      kf,
-      this.infoElement as HTMLElement,
-    );
+    this.addScrollAnimation(kf, this.infoElement as HTMLElement);
   }
   private animateHeader() {
     this.animateHeaderElement();
@@ -93,7 +88,7 @@ export class MassBrowserArtistView extends BrowserViewBase {
     await delay(delayMs);
     if (
       !this.animationsAdded &&
-      (this.tracksElement?.scrollHeight ?? 0) >
+      (this.virtElement?.scrollHeight ?? 0) >
         (this.tracksElement?.offsetHeight ?? 1) &&
       this.titleElement &&
       this.infoElement &&

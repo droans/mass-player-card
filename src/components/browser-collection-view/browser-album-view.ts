@@ -7,12 +7,10 @@ import { getAlbumServiceResponse } from "mass-queue-types/packages/mass_queue/ac
 import { BrowserViewBase } from "../browser-collection-view/browser-view-base";
 import { getTranslation } from "../../utils/translations";
 
-@customElement("mpc-browser-album-view")
+@customElement("mpc-collection-album-view")
 export class MassBrowserAlbumView extends BrowserViewBase {
   @query("#collection-info") private infoElement?: HTMLElement;
   @query("#collection-artists") private artistsElement?: HTMLElement;
-  private infoAnimation!: Animation;
-  private artistsAnimation!: Animation;
 
   // Metadata for album
   @state() private albumMetadata?: getAlbumServiceResponse;
@@ -48,10 +46,7 @@ export class MassBrowserAlbumView extends BrowserViewBase {
     const kf = {
       fontSize: "0.7em",
     };
-    this.infoAnimation = this.addScrollAnimation(
-      kf,
-      this.infoElement as HTMLElement,
-    );
+    this.addScrollAnimation(kf, this.infoElement as HTMLElement);
   }
   private animateHeader() {
     this.animateHeaderElement();
@@ -105,8 +100,8 @@ export class MassBrowserAlbumView extends BrowserViewBase {
     await delay(delayMs);
     if (
       !this.animationsAdded &&
-      (this.tracksElement?.scrollHeight ?? 0) >
-        (this.tracksElement?.offsetHeight ?? 0) &&
+      (this.virtElement?.scrollHeight ?? 0) >
+        (this.tracksElement?.offsetHeight ?? 1) &&
       this.titleElement &&
       this.infoElement &&
       this.enqueueElement &&

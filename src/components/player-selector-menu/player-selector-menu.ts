@@ -92,7 +92,7 @@ export class MassCardPlayerSelector extends LitElement {
       return html``;
     }
     return html`
-      <mass-menu-button
+      <mpc-menu-button
         id="players-select-menu"
         class="menu-header ${this.useExpressive ? `expressive` : ``}"
         .iconPath=${this.Icons.SPEAKER}
@@ -104,7 +104,7 @@ export class MassCardPlayerSelector extends LitElement {
         naturalMenuWidth
         @menu-item-selected=${this.onSelect}
         elevation="1"
-      ></mass-menu-button>
+      ></mpc-menu-button>
     `;
   }
 

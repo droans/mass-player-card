@@ -9,10 +9,9 @@ import { PlaylistTrack } from "mass-queue-types/packages/mass_queue/actions/get_
 import { BrowserViewBase } from "../browser-collection-view/browser-view-base";
 import { getTranslation } from "../../utils/translations";
 
-@customElement("mpc-browser-playlist-view")
+@customElement("mpc-collection-playlist-view")
 export class MassBrowserPlaylistView extends BrowserViewBase {
   @query("#collection-info") private infoElement?: HTMLElement;
-  private infoAnimation!: Animation;
 
   // Duration of playlist
   private playlistDuration = 0;
@@ -56,10 +55,7 @@ export class MassBrowserPlaylistView extends BrowserViewBase {
     const kf = {
       fontSize: "0.8em",
     };
-    this.infoAnimation = this.addScrollAnimation(
-      kf,
-      this.infoElement as HTMLElement,
-    );
+    this.addScrollAnimation(kf, this.infoElement as HTMLElement);
   }
   private animateHeader() {
     this.animateHeaderElement();
@@ -67,6 +63,7 @@ export class MassBrowserPlaylistView extends BrowserViewBase {
     this.animateHeaderTitle();
     this.animateHeaderInfo();
     this.animateHeaderEnqueue();
+    this.animateTracksElement();
   }
 
   private onTrackRemoved = (event_: TrackRemovedEventData) => {
@@ -125,7 +122,7 @@ export class MassBrowserPlaylistView extends BrowserViewBase {
     await delay(delayMs);
     if (
       !this.animationsAdded &&
-      (this.tracksElement?.scrollHeight ?? 0) >
+      (this.virtElement?.scrollHeight ?? 0) >
         (this.tracksElement?.offsetHeight ?? 1) &&
       this.titleElement &&
       this.infoElement &&

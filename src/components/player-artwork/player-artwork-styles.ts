@@ -42,6 +42,9 @@ export default css`
     left: calc(50% - (var(--artwork-small-height) / 2));
     top: calc(50% - (var(--artwork-small-height) / 2));
   }
+  wa-carousel.large::part(base) {
+    column-gap: 0px;
+  }
   wa-carousel-item img {
     max-height: 100%;
     max-width: 100%;

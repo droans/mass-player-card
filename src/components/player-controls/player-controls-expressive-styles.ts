@@ -21,26 +21,32 @@ export default css`
     --play-pause-border-radius: 18px !important;
   }
 
-  .button-lower::part(button) {
+  .button-lower {
     --button-border-radius: var(--lower-button-border-radius);
+  }
+  .button-lower::part(base) {
+    border-radius: var(--button-border-radius);
+  }
+  .button-lower::part(button) {
     --button-padding-left: 8px;
     --button-padding-right: 12px;
+    border-radius: var(--button-border-radius);
   }
-  .button-lower::part(button):hover {
+  .button-lower:hover {
     --button-border-radius: 40px !important;
   }
 
-  .button-lower:first-of-type::part(button) {
+  .button-lower:first-of-type {
     --button-border-radius: var(--lower-button-start-border-radius);
   }
-  .button-lower:last-of-type::part(button) {
+  .button-lower:last-of-type {
     --button-border-radius: var(--lower-button-end-border-radius);
   }
-  .button-lower:only-of-type::part(button) {
+  .button-lower:only-of-type {
     --button-border-radius: var(--lower-button-only-border-radius) !important;
   }
 
-  .button-lower-active::part(button) {
+  .button-lower-active {
     --button-border-radius: 20px;
   }
 
@@ -51,12 +57,16 @@ export default css`
     --button-padding: 0px;
   }
 
-  #button-next::part(button) {
+  #button-next {
     --button-border-radius: var(--prev-border-radius);
+  }
+  #button-next::part(button) {
     border-radius: var(--button-border-radius);
   }
-  #button-previous::part(button) {
+  #button-previous {
     --button-border-radius: var(--next-border-radius);
+  }
+  #button-previous::part(button) {
     border-radius: var(--button-border-radius);
   }
   .button-play-pause {

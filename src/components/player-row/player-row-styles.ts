@@ -90,7 +90,7 @@ export default css`
     gap: 2px;
     height: 48px;
     right: 0;
-    padding-right: 16px;
+    padding-right: 8px;
     position: absolute;
   }
 
@@ -109,7 +109,6 @@ export default css`
     );
     height: var(--media-row-height);
     padding-inline-start: 0px;
-    padding-inline-end: 8px;
     color: var(--accent-color);
   }
 
@@ -171,29 +170,18 @@ export default css`
 
   .thumbnail,
   .thumbnail-disabled {
+    width: var(--media-row-thumbnail-height);
+    height: var(--media-row-thumbnail-height);
+    background-size: contain;
+    background-repeat: no-repeat;
+    background-position: left;
+    border-radius: var(--media-row-thumbnail-border-radius);
     -webkit-user-select: none;
     -moz-user-select: none;
     user-select: none;
   }
-
-  .thumbnail {
-    width: var(--media-row-thumbnail-height);
-    height: var(--media-row-thumbnail-height);
-    background-size: contain;
-    background-repeat: no-repeat;
-    background-position: left;
-    border-radius: 0.7rem;
-    margin-left: 14px;
-  }
   .thumbnail-disabled {
-    width: var(--media-row-thumbnail-height);
-    height: var(--media-row-thumbnail-height);
-    background-size: contain;
-    background-repeat: no-repeat;
-    background-position: left;
-    border-radius: 0.7rem;
     filter: opacity(0.5);
-    margin-left: 14px;
   }
 
   .title {

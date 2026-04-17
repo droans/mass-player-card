@@ -7,7 +7,13 @@ import {
   PropertyValues,
   TemplateResult,
 } from "lit";
-import { property, query, queryAll, state } from "lit/decorators.js";
+import {
+  customElement,
+  property,
+  query,
+  queryAll,
+  state,
+} from "lit/decorators.js";
 import "../components/media-row/media-row";
 import "../components/section-header/section-header";
 
@@ -41,9 +47,10 @@ import { QueueController } from "../controller/queue";
 import { jsonMatch } from "../utils/utility";
 import { getTranslation } from "../utils/translations";
 import { Icons } from "../const/icons";
-import { WaAnimation } from "../const/elements";
+import { LitVirtualizer, WaAnimation } from "../const/elements";
 
-class QueueCard extends LitElement {
+@customElement("mpc-queue-card")
+export class QueueCard extends LitElement {
   @consume({ context: activePlayerControllerContext })
   private activePlayerController!: ActivePlayerController;
 
@@ -63,6 +70,7 @@ class QueueCard extends LitElement {
 
   @queryAll("#animation") _animations?: WaAnimation[];
   @query(".media-active") _activeElement!: HTMLElement;
+  @query("lit-virtualizer") virtualizerElement!: LitVirtualizer;
   @query(".list") _items!: HTMLElement;
 
   private _firstLoaded = false;
@@ -176,14 +184,19 @@ class QueueCard extends LitElement {
     }
     return QueueConfigErrors.OK;
   }
-  private scrollToActive() {
+  scrollToActive() {
     if (!this.queue?.length) {
       return;
     }
-    const item_offset = this._activeElement.offsetTop;
-    const padding = this._activeElement.offsetHeight * 2;
-    const scroll = item_offset - padding;
-    this._items.scrollTop = scroll;
+    const activeIdx = this.queue.findIndex((item) => {
+      return item.playing;
+    });
+    if (!activeIdx && activeIdx != 0) {
+      return;
+    }
+    this.virtualizerElement
+      .element(activeIdx)
+      .scrollIntoView({ block: "start", behavior: "auto" });
   }
   private onQueueItemSelected = async (queue_item_id: string) => {
     if (!this.queueController) {
@@ -229,39 +242,34 @@ class QueueCard extends LitElement {
       this.scrollToActive();
     }
   };
-  private renderQueueItems() {
+  private hideSectionHeader(): boolean {
+    return this.hiddenElements.header;
+  }
+  private renderQueueItem(queueItem: QueueItem): TemplateResult {
     const show_album_covers = this._config.show_album_covers;
-    const delay_add = 62.5;
-    let i = 1;
-    const play = this._tabSwitchFirstUpdate;
-    return this.queue?.map((item) => {
-      const result = html`
-        <wa-animation
-          id="animation"
-          name="fadeIn"
-          delay=${delay_add * i}
-          duration=${delay_add * 2}
-          fill="forwards"
-          play=${play}
-          iterations="1"
-        >
-          <mass-player-media-row
-            style="opacity: 0%;"
-            class="${item.playing ? `media-active` : ``}"
-            .media_item=${item}
-            .showAlbumCovers=${show_album_covers}
-            .selectedService=${this.onQueueItemSelected}
-            .removeService=${this.onQueueItemRemoved}
-            .moveQueueItemNextService=${this.onQueueItemMoveNext}
-            .moveQueueItemUpService=${this.onQueueItemMoveUp}
-            .moveQueueItemDownService=${this.onQueueItemMoveDown}
-          >
-          </mass-player-media-row>
-        </wa-animation>
-      `;
-      i++;
-      return result;
-    });
+    return html`
+      <mpc-queue-media-row
+        class="${queueItem.playing ? `media-active` : ``}"
+        .media_item=${queueItem}
+        .showAlbumCovers=${show_album_covers}
+        .selectedService=${this.onQueueItemSelected}
+        .removeService=${this.onQueueItemRemoved}
+        .moveQueueItemNextService=${this.onQueueItemMoveNext}
+        .moveQueueItemUpService=${this.onQueueItemMoveUp}
+        .moveQueueItemDownService=${this.onQueueItemMoveDown}
+      ></mpc-queue-media-row>
+    `;
+  }
+  private renderQueueItems(): TemplateResult {
+    return html`
+      <lit-virtualizer
+        scroller
+        .items=${this.queue ?? []}
+        .renderItem=${(item: QueueItem) => {
+          return this.renderQueueItem(item);
+        }}
+      ></lit-virtualizer>
+    `;
   }
   protected renderClearQueueButton(): TemplateResult {
     const expressive = this.activePlayerController.useExpressive;
@@ -270,7 +278,7 @@ class QueueCard extends LitElement {
       return html``;
     }
     return html`
-      <mass-player-card-button
+      <mpc-button
         .onPressService=${this.onClearQueue}
         role="filled"
         size="small"
@@ -282,30 +290,35 @@ class QueueCard extends LitElement {
           .path=${this.Icons.CLEAR}
           class="header-icon"
         ></ha-svg-icon>
-      </mass-player-card-button>
+      </mpc-button>
     `;
   }
   protected renderHeader(): TemplateResult {
     const label = getTranslation("queue.header", this.hass) as string;
+    const usedLabel = this.hiddenElements.header_title ? `` : label;
+    if (this.hideSectionHeader()) {
+      return html``;
+    }
     return html`
-      <mass-section-header>
-        <span slot="label" id="title"> ${label} </span>
+      <mpc-section-header>
+        <span slot="label" id="title"> ${usedLabel} </span>
         <span slot="end" id="clear-queue">
           ${this.renderClearQueueButton()}
         </span>
-      </mass-section-header>
+      </mpc-section-header>
     `;
   }
   protected render() {
     const expressive = this.activePlayerController.useExpressive;
+    const paddedCls = this.hideSectionHeader() ? `padded` : ``;
     return (
       this.error ??
       html`
         <div id="container" class="${expressive ? `container-expressive` : ``}">
           ${this.renderHeader()}
-          <ha-md-list class="list ${expressive ? `list-expressive` : ``}">
+          <div class="list ${expressive ? `list-expressive` : ``} ${paddedCls}">
             ${this.renderQueueItems()}
-          </ha-md-list>
+          </div>
         </div>
       `
     );
@@ -375,4 +388,3 @@ class QueueCard extends LitElement {
     return error;
   }
 }
-customElements.define("mass-player-queue-card", QueueCard);

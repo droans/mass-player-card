@@ -63,6 +63,7 @@ interface ExtendedHassEntityAttributes extends HassEntityAttributeBase {
   repeat?: RepeatMode;
   shuffle?: boolean;
   volume_level?: number;
+  supported_features: number;
 }
 
 export interface ExtendedThemes extends Themes {

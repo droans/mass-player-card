@@ -12,7 +12,7 @@ import {
   IconsContext,
 } from "../../const/context";
 import { consume } from "@lit/context";
-import { query, state } from "lit/decorators.js";
+import { customElement, query, state } from "lit/decorators.js";
 import { Sections } from "../../const/enums";
 import { Config } from "../../config/config";
 import { MassCardController } from "../../controller/controller";
@@ -20,7 +20,8 @@ import { MediaBrowser } from "../../sections/media-browser";
 import { Icons } from "../../const/icons";
 import { WaAnimation } from "../../const/elements";
 
-class MassNavBar extends LitElement {
+@customElement("mpc-navbar-expressive")
+export class MassNavBar extends LitElement {
   private _controller?: MassCardController;
   private _config?: Config;
   private _activeSection?: Sections;
@@ -88,7 +89,7 @@ class MassNavBar extends LitElement {
   protected returnMediaBrowserToHome = () => {
     const host = this.controller?.host;
     const element: MediaBrowser | null | undefined =
-      host?.shadowRoot?.querySelector("mass-media-browser");
+      host?.shadowRoot?.querySelector("mpc-media-browser");
     if (!element) {
       return;
     }
@@ -320,5 +321,3 @@ class MassNavBar extends LitElement {
     return styles;
   }
 }
-
-customElements.define("mass-nav-bar-expressive", MassNavBar);

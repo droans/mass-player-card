@@ -6,9 +6,12 @@ import { getRepeatIcon } from "../../utils/music-player";
 import styles from "./player-controls-expressive-styles";
 import "../button/button";
 import { PlayerIcon } from "../../config/player";
-import { RepeatMode } from "../../const/enums";
+import { PlayerSupportedFeatures, RepeatMode } from "../../const/enums";
+import { playerSupportsFeature } from "../../utils/utility";
+import { customElement } from "lit/decorators.js";
 
-class MassPlayerControlsExpressive extends MassPlayerControlsBase {
+@customElement("mpc-player-controls-expressive")
+export class MassPlayerControlsExpressive extends MassPlayerControlsBase {
   protected onFavoriteHold = () => {
     // eslint-disable-next-line @typescript-eslint/no-unnecessary-condition
     if (navigator.vibrate) {
@@ -19,7 +22,7 @@ class MassPlayerControlsExpressive extends MassPlayerControlsBase {
   };
   protected renderPrevious(): TemplateResult {
     return html`
-      <mass-player-card-button
+      <mpc-button
         .onPressService=${this.onPrevious}
         role="filled-variant"
         size="large"
@@ -31,13 +34,13 @@ class MassPlayerControlsExpressive extends MassPlayerControlsBase {
           class="icons-next-previous"
           id="icon-previous"
         ></ha-svg-icon>
-      </mass-player-card-button>
+      </mpc-button>
     `;
   }
   protected renderPlayPause(): TemplateResult {
     const playing = this.playing;
     return html`
-      <mass-player-card-button
+      <mpc-button
         .onPressService=${this.onPlayPause}
         role="filled-variant"
         size="large"
@@ -52,12 +55,12 @@ class MassPlayerControlsExpressive extends MassPlayerControlsBase {
           id="${playing ? `icon-play` : `icon-pause`}"
           class="icon-play-pause"
         ></ha-svg-icon>
-      </mass-player-card-button>
+      </mpc-button>
     `;
   }
   protected renderNext(): TemplateResult {
     return html`
-      <mass-player-card-button
+      <mpc-button
         .onPressService=${this.onNext}
         role="filled-variant"
         size="large"
@@ -69,11 +72,15 @@ class MassPlayerControlsExpressive extends MassPlayerControlsBase {
           class="icons-next-previous"
           id="icon-previous"
         ></ha-svg-icon>
-      </mass-player-card-button>
+      </mpc-button>
     `;
   }
   protected renderPower(): TemplateResult {
-    if (this.hiddenElements.power) {
+    const feats = this.activeEntity.attributes.supported_features;
+    const canToggle =
+      playerSupportsFeature(feats, PlayerSupportedFeatures.TURN_ON) &&
+      playerSupportsFeature(feats, PlayerSupportedFeatures.TURN_OFF);
+    if (this.hiddenElements.power_button || !canToggle) {
       return html``;
     }
     const label = this.renderLabel(
@@ -86,7 +93,7 @@ class MassPlayerControlsExpressive extends MassPlayerControlsBase {
     );
     const no_label_class = label?.length ? `` : `no-label`;
     return html`
-      <mass-player-card-button
+      <mpc-button
         .onPressService=${this.onPower}
         role="variant"
         size="medium"
@@ -95,11 +102,11 @@ class MassPlayerControlsExpressive extends MassPlayerControlsBase {
         elevation="1"
       >
         ${icon} ${label}
-      </mass-player-card-button>
+      </mpc-button>
     `;
   }
   protected renderShuffle(): TemplateResult {
-    if (this.hiddenElements.shuffle) {
+    if (this.hiddenElements.shuffle_button) {
       return html``;
     }
     const shuffle = this.shuffle;
@@ -117,7 +124,7 @@ class MassPlayerControlsExpressive extends MassPlayerControlsBase {
       label,
     );
     return html`
-      <mass-player-card-button
+      <mpc-button
         .onPressService=${this.onShuffle}
         role="variant"
         size="medium"
@@ -128,11 +135,11 @@ class MassPlayerControlsExpressive extends MassPlayerControlsBase {
         class="button-lower ${active_class} ${no_label_class}"
       >
         ${icon_html} ${label}
-      </mass-player-card-button>
+      </mpc-button>
     `;
   }
   protected renderRepeat(): TemplateResult {
-    if (this.hiddenElements.repeat) {
+    if (this.hiddenElements.repeat_button) {
       return html``;
     }
     const repeat = this.repeat;
@@ -152,7 +159,7 @@ class MassPlayerControlsExpressive extends MassPlayerControlsBase {
       label,
     );
     return html`
-      <mass-player-card-button
+      <mpc-button
         .onPressService=${this.onRepeat}
         role="variant"
         size="medium"
@@ -163,11 +170,11 @@ class MassPlayerControlsExpressive extends MassPlayerControlsBase {
         class="button-lower ${active_class} ${no_label_class}"
       >
         ${icon_html} ${label}
-      </mass-player-card-button>
+      </mpc-button>
     `;
   }
   protected renderFavorite(): TemplateResult {
-    if (this.hiddenElements.favorite) {
+    if (this.hiddenElements.favorite_button) {
       return html``;
     }
     const favorite = this.favorite;
@@ -185,7 +192,7 @@ class MassPlayerControlsExpressive extends MassPlayerControlsBase {
       label,
     );
     return html`
-      <mass-player-card-button
+      <mpc-button
         .onPressService=${this.onFavorite}
         .onHoldService=${this.onFavoriteHold}
         role="variant"
@@ -197,7 +204,7 @@ class MassPlayerControlsExpressive extends MassPlayerControlsBase {
         class="button-lower ${active_class} ${no_label_class}"
       >
         ${icon_html} ${label}
-      </mass-player-card-button>
+      </mpc-button>
     `;
   }
   protected renderUpperControls(): TemplateResult {
@@ -209,7 +216,11 @@ class MassPlayerControlsExpressive extends MassPlayerControlsBase {
   }
   protected renderLowerControls(): TemplateResult {
     const h = this.hiddenElements;
-    const all_hidden = h.power && h.shuffle && h.repeat && h.favorite;
+    const all_hidden =
+      h.power_button &&
+      h.shuffle_button &&
+      h.repeat_button &&
+      h.favorite_button;
     if (all_hidden) {
       return html``;
     }
@@ -266,8 +277,3 @@ class MassPlayerControlsExpressive extends MassPlayerControlsBase {
     return this.controller.translate(label_key) as string;
   }
 }
-
-customElements.define(
-  "mass-player-controls-expressive",
-  MassPlayerControlsExpressive,
-);

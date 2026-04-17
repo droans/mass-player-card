@@ -8,10 +8,12 @@ import {
 } from "../../utils/music-player";
 import { RepeatMode } from "../../const/enums";
 import styles from "./player-controls-styles";
+import { customElement } from "lit/decorators.js";
 
-class MassPlayerControls extends MassPlayerControlsBase {
+@customElement("mpc-player-controls")
+export class MassPlayerControls extends MassPlayerControlsBase {
   protected renderShuffle(): TemplateResult {
-    if (this.hiddenElements.shuffle) {
+    if (this.hiddenElements.shuffle_button) {
       return html``;
     }
     const icon_style = this.layoutConfig.icons.shuffle;
@@ -172,7 +174,7 @@ class MassPlayerControls extends MassPlayerControlsBase {
     `;
   }
   protected renderRepeat(): TemplateResult {
-    if (this.hiddenElements.repeat) {
+    if (this.hiddenElements.repeat_button) {
       return html``;
     }
     const icon = getRepeatIcon(this._playerData.repeat, this.Icons);
@@ -250,5 +252,3 @@ class MassPlayerControls extends MassPlayerControlsBase {
     return styles;
   }
 }
-
-customElements.define("mass-player-controls", MassPlayerControls);
