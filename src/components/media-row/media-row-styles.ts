@@ -38,12 +38,12 @@ export default css`
 
   .button {
     margin: 0.15rem;
-    border-radius: var(--media-row-thumbnail-border-radius);
+    border-radius: var(--default-border-radius);
     height: var(--media-row-height);
   }
   .button-active {
     margin: 0.15rem;
-    border-radius: var(--media-row-thumbnail-border-radius);
+    border-radius: var(--default-border-radius);
     background-color: var(
       --media-row-active-background-color,
       var(--md-sys-color-secondary-container)
