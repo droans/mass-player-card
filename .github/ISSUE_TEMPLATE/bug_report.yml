@@ -53,31 +53,22 @@ body:
       label: Music Assistant Player Card version
       description: >
         Can be found in HACS and in your browser logs.
-  - type: checkboxes
+  - type: dropdown
     attributes:
       label: Browser
       description: 'What browser(s) are you experiencing this issue in?'
+      multiple: true
       options:
         - label: Chrome
-          required: true
         - label: Chrome (Mobile)
-          required: true
         - label: Firefox
-          required: true
         - label: Firefox (Mobile)
-          required: true
         - label: Safari
-          required: true
         - label: Safari (Mobile)
-          required: true
         - label: Home Assistant Android App
-          required: true
         - label: Home Assistant iOS App
-          required: true
         - label: Edge
-          required: true
         - label: Other (Please input below.)
-          required: true
   - type: input
     validations:
       required: true
