@@ -1,4 +1,5 @@
 import { html, LitElement, PropertyValues, TemplateResult } from "lit";
+import "@lit-labs/virtualizer";
 import {
   ExtendedHass,
   ExtendedHassEntity,
@@ -38,7 +39,6 @@ import { getThumbnail } from "../../utils/thumbnails";
 import { cache } from "lit/directives/cache.js";
 import "../marquee-text/marquee-text";
 import { PodcastEpisode } from "mass-queue-types/packages/mass_queue/types/media-items";
-// import { delay } from "../../utils/utility";
 import "./browser-collection-track-row";
 
 export class BrowserViewBase extends LitElement {

@@ -16,6 +16,7 @@ import {
 } from "lit/decorators.js";
 import "../components/media-row/media-row";
 import "../components/section-header/section-header";
+import "@lit-labs/virtualizer";
 
 import {
   DEFAULT_QUEUE_CONFIG,
