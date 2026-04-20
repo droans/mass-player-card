@@ -181,7 +181,10 @@ export default css`
     height: 0em;
   }
   #virtualizer {
-    background-color: var(--md-sys-color-background);
+    background-color: var(
+      --md-sys-color-background,
+      var(--card-background-color)
+    );
     border-radius: var(--default-border-radius);
     scrollbar-width: none;
     height: 100%;
