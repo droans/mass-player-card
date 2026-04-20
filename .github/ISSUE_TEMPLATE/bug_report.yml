@@ -59,16 +59,16 @@ body:
       description: 'What browser(s) are you experiencing this issue in?'
       multiple: true
       options:
-        - label: Chrome
-        - label: Chrome (Mobile)
-        - label: Firefox
-        - label: Firefox (Mobile)
-        - label: Safari
-        - label: Safari (Mobile)
-        - label: Home Assistant Android App
-        - label: Home Assistant iOS App
-        - label: Edge
-        - label: Other (Please input below.)
+        - Chrome
+        - Chrome (Mobile)
+        - Firefox
+        - Firefox (Mobile)
+        - Safari
+        - Safari (Mobile)
+        - Home Assistant Android App
+        - Home Assistant iOS App
+        - Edge
+        - Other (Please input below.)
   - type: input
     validations:
       required: true
