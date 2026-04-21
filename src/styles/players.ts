@@ -53,6 +53,7 @@ export default css`
     scrollbar-width: none;
     padding-left: 4px;
     padding-right: 4px;
+    border-radius: var(--players-border-radius-expressive, 28px);
   }
   .list:not(.padded) {
     --queue-height: calc(100% - 3.5em);
@@ -64,7 +65,6 @@ export default css`
   }
   .list.expressive {
     background-color: var(--md-sys-color-background);
-    border-radius: var(--players-border-radius-expressive, 28px);
   }
   .list:not(.expressive) {
     border-radius: var(--players-border-radius, 12px);

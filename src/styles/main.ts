@@ -220,9 +220,15 @@ export default css`
   #navbar.expressive {
     border-radius: 0px 0px var(--default-border-radius)
       var(--default-border-radius);
+  }
+  #navbar {
     position: absolute;
     bottom: 0;
     width: 100%;
+  }
+  #navbar:not(.expressive) {
+    border-radius: var(--default-border-radius);
+    background-color: var(--card-background-color);
   }
 
   .section.hidden {
