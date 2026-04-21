@@ -15,7 +15,7 @@ export class MassSectionHeader extends LitElement {
     return html`
       <div
         id="header"
-        class="${this.useExpressive ? `header-expressive` : `header`}"
+        class="header ${this.useExpressive ? `expressive` : ``}"
         part="header"
       >
         <slot name="start" part="start" class="start"></slot>

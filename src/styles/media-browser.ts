@@ -3,7 +3,7 @@ import { css } from "lit";
 // Styles belonging to the card
 // https://lit.dev/docs/components/styles/
 export default css`
-  .button-min::part(button),
+  .button.min::part(button),
   #filter-menu {
     --button-button-height: 35px;
     --button-button-width: 35px;
@@ -12,11 +12,11 @@ export default css`
   #filter-menu {
     --menu-button-border-radius: var(--button-small-border-radius);
   }
-  .filter-menu-expressive::part(menu-select-menu) {
+  #filter-menu.expressive::part(menu-select-menu) {
     box-shadow: var(--md-sys-elevation-level1);
   }
-  .button-expressive .header-icon,
-  .filter-menu-expressive::part(menu-svg),
+  .button.expressive .header-icon,
+  #filter-menu.expressive::part(menu-svg),
   .menu-expressive::part(menu-svg) {
     color: var(--md-sys-color-on-primary);
   }
@@ -26,7 +26,7 @@ export default css`
     overflow: hidden;
     height: 100%;
   }
-  .container-expressive {
+  .container.expressive {
     border-radius: var(--expressive-border-radius-container);
     background-color: var(--expressive-color-container);
   }
@@ -44,13 +44,13 @@ export default css`
     height: 30px;
     width: 30px;
   }
-  #filter-menu:not(.filter-menu-expressive)::part(menu-select-menu) {
+  #filter-menu:not(.expressive)::part(menu-select-menu) {
     --control-select-menu-background-color: var(
       --md-sys-color-secondary-container
     );
     background-color: var(--md-sys-color-secondary-container);
   }
-  #filter-menu.filter-menu-expressive::part(menu-select-menu) {
+  #filter-menu.expressive::part(menu-select-menu) {
     --control-select-menu-background-color: unset;
     background-color: var(--md-sys-color-primary);
   }
@@ -68,7 +68,7 @@ export default css`
   #mass-browser {
     overflow: hidden;
   }
-  .mass-browser-expressive {
+  .mass-browser.expressive {
     background-color: var(--md-sys-color-background, var(--ha-card-background));
     height: calc(100% - 3em);
     border-radius: var(--expressive-border-radius-container);
@@ -112,8 +112,8 @@ export default css`
     height: 30px;
     width: 30px;
   }
-  .search-media-type-menu-expressive::part(menu-svg),
-  .search-library-button-expressive .svg-menu-expressive {
+  .search-media-type-menu.expressive::part(menu-svg),
+  .search-library-button.expressive .svg.menu.expressive {
     color: var(--md-sys-color-on-surface-variant) !important;
   }
   #search-options {
@@ -121,10 +121,10 @@ export default css`
     display: flex;
   }
 
-  .svg-menu-expressive {
+  .svg.expressive {
     color: var(--md-sys-color-primary);
   }
-  .svg-xs {
+  .svg.xs {
     height: 30px;
     width: 30px;
   }

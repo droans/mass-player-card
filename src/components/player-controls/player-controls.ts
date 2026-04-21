@@ -28,28 +28,25 @@ export class MassPlayerControls extends MassPlayerControlsBase {
       label,
       this.layoutConfig.hide_labels,
     );
-    const div_layout =
-      this.layoutConfig.controls_layout == PlayerControlsLayout.COMPACT
-        ? "div-compact"
-        : "div-spaced";
+    const div_layout = this.layoutConfig.controls_layout;
     const appearance = this._playerData.shuffle ? "accent" : "plain";
     return html`
-      <div class="shuffle div-${icon_size} ${div_layout}">
+      <div class="shuffle div ${icon_size} ${div_layout}">
         <ha-button
           appearance="${appearance}"
           variant="brand"
           @click=${this.onShuffle}
           size="${icon_size}"
-          class="icon-${icon_size} ${icon_style.box_shadow
+          class="icon ${icon_size} ${icon_style.box_shadow
             ? `has-box-shadow`
-            : ``} icon-${appearance}"
+            : ``}  ${appearance}"
         >
           <ha-svg-icon
             ${slotHtml}
             .path=${this._playerData.shuffle
               ? this.Icons.SHUFFLE
               : this.Icons.SHUFFLE_DISABLED}
-            class="svg-${icon_size}"
+            class="svg ${icon_size}"
           ></ha-svg-icon>
           ${labelHtml}
         </ha-button>
@@ -60,10 +57,7 @@ export class MassPlayerControls extends MassPlayerControlsBase {
     const icon_style = this.layoutConfig.icons.previous;
     const icon_size =
       icon_style.size == PlayerIconSize.LARGE ? "medium" : "small";
-    const div_layout =
-      this.layoutConfig.controls_layout == PlayerControlsLayout.COMPACT
-        ? "div-compact"
-        : "div-spaced";
+    const div_layout = this.layoutConfig.controls_layout;
     const slotHtml = generateControlSlotHtml(icon_style);
     const label = this.controller.translate(
       "player.controls.previous",
@@ -74,20 +68,20 @@ export class MassPlayerControls extends MassPlayerControlsBase {
       this.layoutConfig.hide_labels,
     );
     return html`
-      <div class="track-previous div-${icon_size} ${div_layout}">
+      <div class="track-previous div ${icon_size} ${div_layout}">
         <ha-button
           appearance="outlined"
           variant="brand"
           @click=${this.onPrevious}
           size="${icon_size}"
-          class="icon-${icon_size} ${icon_style.box_shadow
+          class="icon ${icon_size} ${icon_style.box_shadow
             ? `has-box-shadow`
             : ``}"
         >
           <ha-svg-icon
             ${slotHtml}
             .path=${this.Icons.SKIP_PREVIOUS}
-            class="svg-${icon_size} icon-outlined"
+            class="svg ${icon_size} icon-outlined"
           ></ha-svg-icon>
           ${labelHtml}
         </ha-button>
@@ -98,10 +92,7 @@ export class MassPlayerControls extends MassPlayerControlsBase {
     const icon_style = this.layoutConfig.icons.play_pause;
     const icon_size =
       icon_style.size == PlayerIconSize.LARGE ? "medium" : "small";
-    const div_layout =
-      this.layoutConfig.controls_layout == PlayerControlsLayout.COMPACT
-        ? "div-compact"
-        : "div-spaced";
+    const div_layout = this.layoutConfig.controls_layout;
     const slotHtml = generateControlSlotHtml(icon_style);
     const key = this._playerData.playing
       ? "player.controls.play"
@@ -114,14 +105,14 @@ export class MassPlayerControls extends MassPlayerControlsBase {
     );
     const appearance = this._playerData.playing ? "filled" : "outlined";
     return html`
-      <div class="play-pause div-${icon_size} ${div_layout}">
+      <div class="play-pause div ${icon_size} ${div_layout}">
         <ha-button
           appearance="${appearance}"
           variant="brand"
           size="${icon_size}"
-          class="button-play-pause icon-${icon_size} ${icon_style.box_shadow
+          class="mpc-button-play-pause icon ${icon_size} ${icon_style.box_shadow
             ? `has-box-shadow`
-            : ``} icon-${appearance}"
+            : ``} ${appearance}"
           @click=${this.onPlayPause}
         >
           <ha-svg-icon
@@ -129,7 +120,7 @@ export class MassPlayerControls extends MassPlayerControlsBase {
             .path=${this._playerData.playing
               ? this.Icons.PAUSE
               : this.Icons.PLAY}
-            class="svg-${icon_size} icon-outlined"
+            class="svg ${icon_size} icon-outlined"
           ></ha-svg-icon>
           ${labelHtml}
         </ha-button>
@@ -140,10 +131,7 @@ export class MassPlayerControls extends MassPlayerControlsBase {
     const icon_style = this.layoutConfig.icons.next;
     const icon_size =
       icon_style.size == PlayerIconSize.LARGE ? "medium" : "small";
-    const div_layout =
-      this.layoutConfig.controls_layout == PlayerControlsLayout.COMPACT
-        ? "div-compact"
-        : "div-spaced";
+    const div_layout = this.layoutConfig.controls_layout;
     const slotHtml = generateControlSlotHtml(icon_style);
     const label = this.controller.translate("player.controls.next") as string;
     const labelHtml = generateControlLabelHtml(
@@ -152,13 +140,13 @@ export class MassPlayerControls extends MassPlayerControlsBase {
       this.layoutConfig.hide_labels,
     );
     return html`
-      <div class="track-next div-${icon_size} ${div_layout}">
+      <div class="track-next div ${icon_size} ${div_layout}">
         <ha-button
           appearance="outlined"
           variant="brand"
           @click=${this.onNext}
           size="${icon_size}"
-          class="icon-${icon_size} ${icon_style.box_shadow
+          class="icon ${icon_size} ${icon_style.box_shadow
             ? `has-box-shadow`
             : ``}"
           style="display: block;"
@@ -166,7 +154,7 @@ export class MassPlayerControls extends MassPlayerControlsBase {
           <ha-svg-icon
             ${slotHtml}
             .path=${this.Icons.SKIP_NEXT}
-            class="svg-${icon_size}"
+            class="svg ${icon_size}"
           ></ha-svg-icon>
           ${labelHtml}
         </ha-button>
@@ -178,10 +166,7 @@ export class MassPlayerControls extends MassPlayerControlsBase {
       return html``;
     }
     const icon = getRepeatIcon(this._playerData.repeat, this.Icons);
-    const div_layout =
-      this.layoutConfig.controls_layout == PlayerControlsLayout.COMPACT
-        ? "div-compact"
-        : "div-spaced";
+    const div_layout = this.layoutConfig.controls_layout;
     const icon_style = this.layoutConfig.icons.repeat;
     const icon_size =
       icon_style.size == PlayerIconSize.LARGE ? "medium" : "small";
@@ -195,20 +180,20 @@ export class MassPlayerControls extends MassPlayerControlsBase {
     const appearance =
       this._playerData.repeat == RepeatMode.OFF ? "accent" : "plain";
     return html`
-      <div class="repeat div-${icon_size} ${div_layout}">
+      <div class="repeat div ${icon_size} ${div_layout}">
         <ha-button
           appearance="${appearance}"
           variant="brand"
           size="${icon_size}"
-          class="icon-${icon_size} ${icon_style.box_shadow
+          class="icon ${icon_size} ${icon_style.box_shadow
             ? `has-box-shadow`
-            : ``} icon-${appearance}"
+            : ``} ${appearance}"
           @click=${this.onRepeat}
         >
           <ha-svg-icon
             ${slotHtml}
             .path=${icon}
-            class="svg-${icon_size}"
+            class="svg ${icon_size}"
           ></ha-svg-icon>
           ${labelHtml}
         </ha-button>
@@ -221,7 +206,7 @@ export class MassPlayerControls extends MassPlayerControlsBase {
     const previousButton = this.renderPrevious();
     const shuffleButton = this.renderShuffle();
     return html`
-      <div class="controls-left controls-${layout.controls_layout}">
+      <div class="controls left ${layout.controls_layout}">
         ${layout.controls_layout == PlayerControlsLayout.COMPACT
           ? previousButton
           : shuffleButton}
@@ -234,7 +219,7 @@ export class MassPlayerControls extends MassPlayerControlsBase {
   protected renderControlsRight(): TemplateResult {
     const layout = this.layoutConfig;
     return html`
-      <div class="controls-right controls-${layout.controls_layout}">
+      <div class="controls right ${layout.controls_layout}">
         ${this.renderNext()} ${this.renderRepeat()}
       </div>
     `;
@@ -242,7 +227,7 @@ export class MassPlayerControls extends MassPlayerControlsBase {
 
   protected render(): TemplateResult {
     return html`
-      <div class="controls">
+      <div class="controls-div">
         ${this.renderControlsLeft()} ${this.renderPlayPause()}
         ${this.renderControlsRight()}
       </div>

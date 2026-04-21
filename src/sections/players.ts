@@ -197,10 +197,10 @@ export class PlayersCard extends LitElement {
     `;
   }
   protected render(): TemplateResult {
-    const expressive = this.config?.expressive ?? false;
+    const expressiveCls = this.config?.expressive ? `expressive` : ``;
     const paddedCls = this.hideSectionHeader() ? `padded` : ``;
     return html`
-      <div id="container" class="${expressive ? `container-expressive` : ``}">
+      <div id="container" class="${expressiveCls}">
         ${this.renderHeader()}
         <wa-animation
           id="animation"
@@ -210,7 +210,7 @@ export class PlayersCard extends LitElement {
           play=${this.checkVisibility()}
           playback-rate="4"
         >
-          <div class="list ${expressive ? `list-expressive` : ``} ${paddedCls}">
+          <div class="list ${expressiveCls} ${paddedCls}">
             ${this.renderPlayerRows()}
           </div>
         </wa-animation>

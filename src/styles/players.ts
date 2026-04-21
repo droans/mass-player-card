@@ -17,7 +17,7 @@ export default css`
     box-shadow: unset;
     height: 100%;
   }
-  .container-expressive {
+  #container.expressive {
     border-radius: var(--expressive-border-radius-container);
     background-color: var(
       --expressive-color-container,
@@ -63,7 +63,7 @@ export default css`
     --queue-height: 100%;
     height: var(--mass-player-card-height);
   }
-  .list-expressive {
+  .list.expressive {
     background-color: var(--md-sys-color-background);
     border-radius: var(--expressive-border-radius-container);
   }

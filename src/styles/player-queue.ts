@@ -17,7 +17,7 @@ export default css`
   mpc-queue-media-row {
     width: 100%;
   }
-  .button-min {
+  .button.min {
     --button-button-height: 35px;
     --button-button-width: 35px;
     --button-padding: 0px;
@@ -31,7 +31,7 @@ export default css`
     box-shadow: unset;
     height: 100%;
   }
-  .container-expressive {
+  #container.expressive {
     border-radius: var(--expressive-border-radius-container);
     background-color: var(
       --expressive-color-container,
@@ -69,7 +69,7 @@ export default css`
     --queue-height: 100%;
     height: var(--mass-player-card-height);
   }
-  .list-expressive {
+  .list.expressive {
     background-color: var(--md-sys-color-background);
     border-radius: var(--expressive-border-radius-container);
   }

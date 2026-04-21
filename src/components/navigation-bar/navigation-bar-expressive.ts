@@ -246,10 +246,10 @@ export class MassNavBar extends LitElement {
           this.handleTabChanged(section);
         }}
       >
-        <i class="icon-i ${active ? `icon-active` : ``}">
+        <i class="icon-i ${active ? `active` : ``}">
           <ha-svg-icon
             .path=${icon}
-            class="action-button-svg${active ? "" : "-inactive"}"
+            class="action-button-svg ${active ? "" : "inactive"}"
           ></ha-svg-icon>
         </i>
       </a>
@@ -258,7 +258,7 @@ export class MassNavBar extends LitElement {
   protected render(): TemplateResult {
     return html`
       <div>
-        <nav id="navigation" class="tabbed tabbed-expressive">
+        <nav id="navigation" class="tabbed expressive">
           <link
             href="https://cdn.jsdelivr.net/npm/beercss@3.12.11/dist/cdn/beer.min.css"
             rel="stylesheet"
