@@ -93,12 +93,6 @@ export default css`
   .svg-menu:not(.expressive) {
     color: var(--md-sys-color-primary);
   }
-  .inactive-item {
-    background-color: var(--menu-background-color);
-  }
-  .inactive-item-expressive {
-    border-radius: var(--default-border-radius);
-  }
   .svg-expressive {
     margin-left: 14px;
   }

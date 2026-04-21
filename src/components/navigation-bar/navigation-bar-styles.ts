@@ -6,9 +6,6 @@ export default css`
   a.active {
     --primary-container: var(--tab-active-indicator-color);
   }
-  a.active.expressive {
-    box-shadow: var(--md-sys-elevation-level2);
-  }
   :is(nav.tabbed > a, .tabs > a):is(:hover)::after {
     opacity: 0 !important;
   }

@@ -146,13 +146,6 @@ export default css`
     margin-right: 24px;
   }
 
-  .headline-expressive {
-    color: var(--expressive-row-color-text);
-  }
-  .headline-expressive-active {
-    color: var(--expressive-row-color-text-active);
-  }
-
   .svg-action-button {
     height: var(--row-icon-button-height);
     width: var(--row-icon-button-height);
@@ -168,8 +161,7 @@ export default css`
     color: var(--expressive-row-button-color-text-hover);
   }
 
-  .thumbnail,
-  .thumbnail-disabled {
+  .thumbnail {
     width: var(--media-row-thumbnail-height);
     height: var(--media-row-thumbnail-height);
     background-size: contain;
@@ -180,10 +172,6 @@ export default css`
     -moz-user-select: none;
     user-select: none;
   }
-  .thumbnail-disabled {
-    filter: opacity(0.5);
-  }
-
   .title {
     font-size: 1.1rem;
     overflow: hidden;

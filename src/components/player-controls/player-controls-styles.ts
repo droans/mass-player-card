@@ -35,11 +35,6 @@ export default css`
     margin-right: 1em;
   }
 
-  .controls-previous-next::part(base) {
-    height: 30px;
-    width: 60px;
-  }
-
   .div.medium {
     --ha-button-height: var(--player-play-pause-icon-size);
     margin: 0px 6px 0px 6px;
