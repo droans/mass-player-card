@@ -162,14 +162,20 @@ export class MassPlaylistTrackRow extends LitElement {
 
   protected renderTitle(): TemplateResult {
     return html`
-      <span slot="headline" class="track-title">
+      <span
+        slot="headline"
+        class="track-title ${this.useExpressive ? `expressive` : ``}"
+      >
         ${this.track.media_title}
       </span>
     `;
   }
   protected renderArtist(): TemplateResult {
     return html`
-      <span slot="supporting-text" class="track-artist">
+      <span
+        slot="supporting-text"
+        class="track-artist ${this.useExpressive ? `expressive` : ``}"
+      >
         ${this.track.media_artist}
       </span>
     `;

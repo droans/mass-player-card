@@ -114,4 +114,12 @@ export default css`
     border-radius: 0px 0px var(--default-border-radius)
       var(--default-border-radius);
   }
+  #title-div.expressive {
+    font-size: 1.3rem;
+    font-family:
+      "Google Sans Flex", "Roboto Flex", var(--ha-font-family-body), "Roboto",
+      sans-serif !important;
+    font-stretch: 80%;
+    font-weight: 600;
+  }
 `;

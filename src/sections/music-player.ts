@@ -311,7 +311,12 @@ export class MusicPlayerCard extends LitElement {
             src="${playlist.image.image_url}"
             onerror="this.src = '${playlist.image.fallback_url}'"
           />
-          <span slot="headline" class="dialog-playlist-title" inert>
+          <span
+            slot="headline"
+            class="dialog-playlist-title 
+              ${this.cardConfig?.expressive ? `expressive` : ``}"
+            inert
+          >
             ${playlist.name}
           </span>
         </ha-md-list-item>
@@ -340,7 +345,10 @@ export class MusicPlayerCard extends LitElement {
     }
     const title = `${this.player_data.track_title} - ${this.player_data.track_album}`;
     return html`
-      <mpc-marquee-text class="player-track-title marquee">
+      <mpc-marquee-text
+        class="player-track-title marquee 
+        ${this.cardConfig?.expressive ? `expressive` : ``}"
+      >
         ${title}
       </mpc-marquee-text>
     `;
@@ -469,7 +477,7 @@ export class MusicPlayerCard extends LitElement {
       return html``;
     }
     return html`
-      <div id="active-track ${this._config.layout.artwork_size}">
+      <div id="active-track" class="${this._config.layout.artwork_size}">
         <div
           id="active-track-text"
           class="active-track-text 
@@ -487,7 +495,7 @@ export class MusicPlayerCard extends LitElement {
     const padCls = this.hideSectionHeader() ? `padded` : ``;
     return html`
       <div class="player-header ${padCls}">
-        ${this.renderPlayerName()} ${this.renderTitle()} ${this.renderArtist()}
+        ${this.renderPlayerName()} ${this.renderArtist()} ${this.renderTitle()}
       </div>
     `;
   }

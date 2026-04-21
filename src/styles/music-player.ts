@@ -23,6 +23,8 @@ export default css`
     width: 100%;
     position: relative;
     z-index: -1;
+    position: relative;
+    top: -0.5em;
   }
 
   #active-track-text {
@@ -76,6 +78,15 @@ export default css`
     min-width: 0;
     color: var(--font-color);
   }
+  .dialog-playlist-title.expressive {
+    font-family:
+      "Google Sans Flex", "Roboto Flex", var(--ha-font-family-body), "Roboto",
+      sans-serif !important;
+    font-variation-settings: "ROND" 100;
+    font-size: 1.3em;
+    font-stretch: 65%;
+    font-weight: 500;
+  }
   #dialog-favorites.expressive .dialog-playlist-title {
     color: var(--expressive-row-color-text);
   }
@@ -114,9 +125,10 @@ export default css`
       to top,
       var(--expressive-player-blur-color),
       rgb(from var(--expressive-player-blur-color) r g b / 0.7) 40%,
-      rgb(from var(--expressive-player-blur-color) r g b / 0.4) 75%,
+      rgb(from var(--expressive-player-blur-color) r g b / 0.4) 85%,
       transparent 100%
     ) !important;
+    padding-top: 1em;
     border-bottom-left-radius: var(--default-border-radius);
     border-bottom-right-radius: var(--default-border-radius);
     backdrop-filter: blur(8px);
@@ -158,6 +170,7 @@ export default css`
       0px;
     overflow: hidden;
     z-index: -1;
+    padding-bottom: 4px;
   }
   #player-card-header:not(.expressive)::before {
     background: var(--player-blur-color) !important;
@@ -168,7 +181,7 @@ export default css`
       to bottom,
       var(--expressive-player-blur-color),
       rgb(from var(--expressive-player-blur-color) r g b / 0.7) 40%,
-      rgb(from var(--expressive-player-blur-color) r g b / 0.4) 75%,
+      rgb(from var(--expressive-player-blur-color) r g b / 0.4) 85%,
       transparent 100%
     ) !important;
     backdrop-filter: blur(8px);
@@ -180,28 +193,60 @@ export default css`
   }
 
   .player-name {
-    font-size: 0.8rem;
+    position: relative;
   }
   .player-name:not(.expressive) {
     color: var(--player-name-color);
+    font-size: 0.8rem;
   }
   .player-name.expressive {
     color: var(--md-sys-color-on-primary-container) !important;
+    font-family:
+      "Google Sans Flex", "Roboto Flex", var(--ha-font-family-body), "Roboto",
+      sans-serif !important;
+    font-weight: 700;
+    font-size: 0.9rem;
+    top: -0.3em;
   }
 
   .player-track-artist {
+    line-height: 1em;
+  }
+  .player-track-artist:not(.expressive) {
     font-size: 1em;
-    text-shadow: 0 0 var(--md-sys-color-on-primary-container);
   }
   .player-track-artist.expressive {
     color: var(--md-sys-color-on-primary-container) !important;
+    text-shadow: 0 0 var(--md-sys-color-on-primary-container);
+    font-family:
+      "Google Sans Flex", "Roboto Flex", var(--ha-font-family-body), "Roboto",
+      sans-serif !important;
+    font-style: italic;
+    font-size: 1.5em;
+    font-variation-settings: "ROND" 100;
+    font-weight: 300;
+    font-stretch: 50%;
   }
   .player-track-title {
-    font-size: 1.5rem;
-    color: var(--md-sys-color-on-primary-container);
     white-space: nowrap;
     text-overflow: clip;
+  }
+  .player-track-title:not(.expressive) {
+    font-size: 1.5rem;
+  }
+  .player-track-title.expressive {
+    color: var(--md-sys-color-on-primary-container);
     text-shadow: 0px 0px var(--md-sys-color-primary);
+    font-size: 3rem;
+    font-weight: 500;
+    font-stretch: 25%;
+    font-style: italic;
+    font-variation-settings: "ROND" 100;
+    line-height: 1.3em;
+    font-family:
+      "Google Sans Flex", "Roboto Flex", var(--ha-font-family-body), "Roboto",
+      sans-serif !important;
+    margin-top: -0.2em;
   }
 
   #volume {
