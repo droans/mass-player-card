@@ -55,7 +55,7 @@ export default css`
     );
     --media-row-border-radius: var(
       --mass-player-card-media-row-border-radius,
-      calc(var(--media-row-height)/2)
+      0.7em
     );
     --player-row-border-radius: var(
       --mass-player-card-player-row-border-radius,
