@@ -142,12 +142,30 @@ export default css`
   }
 
   .title {
-    font-size: 1.1rem;
     overflow: hidden;
     text-overflow: ellipsis;
     white-space: nowrap;
     min-width: 0;
     color: var(--font-color);
+  }
+  .title.track.expressive {
+    font-family:
+      "Google Sans Flex", "Roboto Flex", var(--ha-font-family-body), "Roboto",
+      sans-serif !important;
+    font-variation-settings: "ROND" 100;
+    font-size: 1.3em;
+    font-stretch: 50%;
+    font-weight: 450;
+  }
+  .title.artist.expressive {
+    font-family:
+      "Google Sans Flex", "Roboto Flex", var(--ha-font-family-body), "Roboto",
+      sans-serif !important;
+    font-variation-settings: "ROND" 100;
+    font-size: 1.2em;
+    font-stretch: 60%;
+    font-weight: 350;
+    font-style: italic;
   }
   .title-disabled {
     opacity: 0.38;

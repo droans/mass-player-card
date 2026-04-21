@@ -34,6 +34,19 @@ export default css`
     z-index: 0;
     color: var(--md-sys-color-on-primary-container);
   }
+  .label.expressive {
+    font-family:
+      "Google Sans Flex", "Roboto Flex", var(--ha-font-family-body), "Roboto",
+      sans-serif !important;
+    font-variation-settings: "ROND" 100;
+    font-stretch: 25%;
+    font-size: 2em;
+    font-style: italic;
+    line-height: 1em;
+  }
+  .expressive::slotted([slot="label"]) {
+    vertical-align: text-bottom;
+  }
 
   .start {
     display: block;

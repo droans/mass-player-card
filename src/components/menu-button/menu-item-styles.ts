@@ -129,6 +129,15 @@ export default css`
     border-radius: var(--media-row-thumbnail-border-radius);
   }
   .menu-list-item-md.selected:not(.expressive) {
-    background-color: var(--background-color-normal-active);
+    background-color: rgba(
+      from var(--background-color-normal-active) r g b / 0.2
+    );
+  }
+  .title.expressive {
+    font-family:
+      "Google Sans Flex", "Roboto Flex", var(--ha-font-family-body), "Roboto",
+      sans-serif !important;
+    font-variation-settings: "ROND" 100;
+    font-size: 1.2em;
   }
 `;

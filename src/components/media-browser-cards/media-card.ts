@@ -215,7 +215,11 @@ export class MediaCard extends LitElement {
     if (this.hide.titles) {
       return html``;
     }
-    return html` <div id="title-div">${this.config?.title}</div> `;
+    return html`
+      <div id="title-div" class="${this.useExpressive ? `expressive` : ``}">
+        ${this.config?.title}
+      </div>
+    `;
   }
   protected renderEnqueueButton() {
     if (this.hide.enqueue_menu || !this.queueable || !this.Icons) {

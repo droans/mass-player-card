@@ -44,4 +44,23 @@ export default css`
     -moz-user-select: none;
     user-select: none;
   }
+  .track-title.expressive {
+    font-family:
+      "Google Sans Flex", "Roboto Flex", var(--ha-font-family-body), "Roboto",
+      sans-serif !important;
+    font-variation-settings: "ROND" 100;
+    font-size: 1.3em;
+    font-stretch: 50%;
+    font-weight: 450;
+  }
+  .track-artist.expressive {
+    font-family:
+      "Google Sans Flex", "Roboto Flex", var(--ha-font-family-body), "Roboto",
+      sans-serif !important;
+    font-variation-settings: "ROND" 100;
+    font-size: 1.2em;
+    font-stretch: 60%;
+    font-weight: 350;
+    font-style: italic;
+  }
 `;

@@ -200,7 +200,9 @@ export class PlayerRow extends LitElement {
           class="title-bars"
           style="max-width: ${this._calculateTitleWidth()}"
         >
-          <div class="title">${title}</div>
+          <div class="title ${this.useExpressive ? `expressive` : ``}">
+            ${title}
+          </div>
           <div class="${active_style} ${active_expressive_style}">
             <div></div>
             <div></div>

@@ -12,14 +12,11 @@ export class MassSectionHeader extends LitElement {
   private _initialUpdate = false;
 
   protected render() {
+    const expressiveCls = this.useExpressive ? `expressive` : ``;
     return html`
-      <div
-        id="header"
-        class="header ${this.useExpressive ? `expressive` : ``}"
-        part="header"
-      >
+      <div id="header" class="header ${expressiveCls}" part="header">
         <slot name="start" part="start" class="start"></slot>
-        <slot name="label" part="label" class="label"></slot>
+        <slot name="label" part="label" class="label ${expressiveCls}"></slot>
         <slot name="end" part="end" class="end"></slot>
       </div>
     `;
