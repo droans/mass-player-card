@@ -169,9 +169,15 @@ export default css`
     overflow: scroll;
   }
   #tracks-container {
+    overflow: hidden;
+  }
+  #tracks-container.expressive {
     border-top-left-radius: var(--default-border-radius);
     border-top-right-radius: var(--default-border-radius);
-    overflow: hidden;
+  }
+  #tracks-container:not(.expressive) {
+    border-top-left-radius: var(--queue-border-radius);
+    border-top-right-radius: var(--queue-border-radius);
   }
   #tracks-length {
     margin-right: 0.5em;

@@ -45,7 +45,16 @@ export default css`
       --mass-player-card-browser-card-border-radius,
       var(--default-border-radius)
     );
-    --queue-border-radius: var(
+    --players-border-radius: var(
+      --mass-player-card-players-border-radius,
+      0.7em
+    );
+    --players-border-radius-expressive: var(
+      --mass-player-card-players-border-radius,
+      var(--default-border-radius)
+    );
+    --queue-border-radius: var(--mass-player-card-queue-border-radius, 0.7em);
+    --queue-border-radius-expressive: var(
       --mass-player-card-queue-border-radius,
       var(--default-border-radius)
     );

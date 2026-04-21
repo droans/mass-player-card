@@ -94,9 +94,14 @@ export default css`
     position: absolute;
   }
 
+  .button.expressive {
+    border-radius: var(--default-border-radius);
+  }
+  .button:not(.expressive) {
+    border-radius: var(--player-row-border-radius);
+  }
   .button {
     margin: 0.15rem;
-    border-radius: var(--player-row-border-radius);
     height: var(--media-row-height);
   }
 

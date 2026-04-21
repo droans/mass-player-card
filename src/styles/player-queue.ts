@@ -52,12 +52,10 @@ export default css`
     height: 30px;
     width: 30px;
   }
-
   .list {
     overflow-y: scroll;
     -ms-overflow-style: none;
     scrollbar-width: none;
-    border-radius: var(--queue-border-radius, 12px);
     padding-left: 4px;
     padding-right: 4px;
   }
@@ -72,6 +70,10 @@ export default css`
   .list.expressive {
     background-color: var(--md-sys-color-background);
     border-radius: var(--expressive-border-radius-container);
+    border-radius: var(--queue-border-radius-expressive, 28px);
+  }
+  .ist:not(.expressive) {
+    border-radius: var(--queue-border-radius, 12px);
   }
 
   .main {
