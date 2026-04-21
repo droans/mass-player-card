@@ -371,7 +371,7 @@ export class BrowserViewBase extends LitElement {
         <div id="header">
           ${this.renderHeader()}
         </div>
-          <div id="tracks-container">
+          <div id="tracks-container ${expressiveClass}">
             <div id="tracks" class="${scrollClass}">
               ${this.renderTracks()}
             </div>

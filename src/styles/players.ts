@@ -51,7 +51,6 @@ export default css`
     overflow-y: scroll;
     -ms-overflow-style: none;
     scrollbar-width: none;
-    border-radius: var(--queue-border-radius, 12px);
     padding-left: 4px;
     padding-right: 4px;
   }
@@ -65,7 +64,10 @@ export default css`
   }
   .list.expressive {
     background-color: var(--md-sys-color-background);
-    border-radius: var(--expressive-border-radius-container);
+    border-radius: var(--players-border-radius-expressive, 28px);
+  }
+  .list:not(.expressive) {
+    border-radius: var(--players-border-radius, 12px);
   }
 
   .name {

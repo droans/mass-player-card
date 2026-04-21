@@ -7,6 +7,9 @@ export default css`
     margin-top: var(--md-list-item-top-space);
     margin-bottom: var(--md-list-item-bottom-space);
   }
+  .button.expressive {
+    border-radius: var(--default-border-radius);
+  }
   .button {
     border-radius: var(--media-row-border-radius);
     margin: 0.15rem;
