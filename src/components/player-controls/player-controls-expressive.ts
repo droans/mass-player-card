@@ -237,7 +237,7 @@ export class MassPlayerControlsExpressive extends MassPlayerControlsBase {
   protected render(): TemplateResult {
     return html`
       <link
-        href="https://cdn.jsdelivr.net/npm/beercss@3.12.11/dist/cdn/beer.min.css"
+        href="https://cdn.jsdelivr.net/npm/beercss@4.0.20/dist/cdn/beer.min.css"
         rel="stylesheet"
       />
       <div id="div-controls">

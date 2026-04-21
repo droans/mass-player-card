@@ -341,7 +341,7 @@ export class BrowserViewBase extends LitElement {
     if (!this.tracks?.length) {
       return html`
         <link
-          href="https://cdn.jsdelivr.net/npm/beercss@3.12.11/dist/cdn/beer.min.css"
+          href="https://cdn.jsdelivr.net/npm/beercss@4.0.20/dist/cdn/beer.min.css"
           rel="stylesheet"
         />
         <div id="browser-view" style="height: 100%;">
