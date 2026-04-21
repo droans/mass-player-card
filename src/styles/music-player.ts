@@ -105,7 +105,6 @@ export default css`
     bottom: calc(var(--navbar-height) * -1);
     width: 100%;
     padding-bottom: var(--navbar-height);
-
   }
   .media-controls:not(.expressive) {
     background: var(--player-blur-color) !important;
