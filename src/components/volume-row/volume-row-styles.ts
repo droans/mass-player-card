@@ -1,12 +1,12 @@
 import { css } from "lit";
 
 export default css`
-  .button-min {
+  .button.min {
     height: 40px;
     width: 40px;
     --wa-color-fill-quiet: rgba(from var(--md-sys-color-primary) r g b / 0.1);
   }
-  .button-min::part(base) {
+  .button.min::part(base) {
     --wa-form-control-padding-inline: 0px;
   }
 
@@ -28,7 +28,7 @@ export default css`
     overflow: hidden;
   }
 
-  .svg-plain {
+  .svg.plain {
     color: var(--md-sys-color-primary);
     height: 3em;
     width: 3em;
@@ -54,10 +54,10 @@ export default css`
     height: max-content;
     border-radius: 50%;
   }
-  .tick-in {
+  .tick.in {
     background-color: var(--md-sys-color-on-primary);
   }
-  .tick-out {
+  .tick.out {
     background-color: var(--md-sys-color-on-primary-container);
   }
 
@@ -76,7 +76,7 @@ export default css`
     --disabled-color: var(--control-slider-color);
     height: var(--player-volume-slider-height);
   }
-  .volume-slider-expressive {
+  .volume-slider.expressive {
     --control-slider-color: var(--md-sys-color-primary);
     --disabled-color: var(--md-sys-color-secondary-container);
     box-shadow: var(--md-sys-elevation-level1);

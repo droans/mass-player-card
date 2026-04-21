@@ -11,28 +11,28 @@ export default css`
     --button-button-height: 38px;
     --button-button-width: 38px;
   }
-  .action-button-expressive::part(button) {
+  .action-button.expressive::part(button) {
     --button-border-radius: 4px !important;
   }
-  .action-button-expressive::part(button):hover {
+  .action-button.expressive::part(button):hover {
     background-color: var(--expressive-row-button-color-hover) !important;
     --button-border-radius: var(--button-small-border-radius) !important;
   }
-  .action-button-expressive:first-of-type::part(button) {
+  .action-button.expressive:first-of-type::part(button) {
     --button-border-radius: var(--button-small-border-radius) 4px 4px
       var(--button-small-border-radius) !important;
   }
-  .action-button-expressive:first-of-type::part(button):hover {
+  .action-button.expressive:first-of-type::part(button):hover {
     --button-border-radius: var(--button-small-border-radius) !important;
   }
-  .action-button-expressive:last-of-type::part(button) {
+  .action-button.expressive:last-of-type::part(button) {
     --button-border-radius: 4px var(--button-small-border-radius)
       var(--button-small-border-radius) 4px !important;
   }
-  .action-button-expressive:last-of-type::part(button):hover {
+  .action-button.expressive:last-of-type::part(button):hover {
     --button-border-radius: var(--button-small-border-radius) !important;
   }
-  .action-button-expressive:only-of-type::part(button) {
+  .action-button.expressive:only-of-type::part(button) {
     --button-border-radius: var(--button-small-border-radius) !important;
   }
 
@@ -41,7 +41,7 @@ export default css`
     border-radius: var(--default-border-radius);
     height: var(--media-row-height);
   }
-  .button-active {
+  .button.active {
     margin: 0.15rem;
     border-radius: var(--default-border-radius);
     background-color: var(
@@ -52,22 +52,22 @@ export default css`
     padding-inline-start: 0px;
     color: var(--accent-color);
   }
-  .button-active :host {
+  .button.active :host {
     --md-sys-color-primary: unset;
   }
 
-  .button-expressive {
+  .button.expressive {
     background-color: var(--expressive-row-color) !important;
     --md-list-item-hover-state-layer-color: var(--md-sys-color-on-surface);
     border-radius: var(--default-border-radius);
     --md-ripple-hover-color: var(--md-sys-color-on-surface);
     --md-ripple-pressed-color: var(--md-sys-color-on-surface);
   }
-  .button-expressive > .title {
+  .button.expressive > .title {
     color: var(--expressive-row-color-text);
   }
 
-  .button-expressive-active {
+  .button.expressive.active {
     --primary-text-color: var(--expressive-row-active-color-text) !important;
     --font-color: var(--expressive-row-active-color-text) !important;
     background-color: var(--expressive-row-active-color) !important;
@@ -75,7 +75,7 @@ export default css`
     --md-ripple-hover-color: var(--md-sys-color-on-surface);
     --md-ripple-pressed-color: var(--md-sys-color-on-surface);
   }
-  .button-expressive-active > .title {
+  .button.expressive.active > .title {
     color: var(--expressive-row-active-color-text);
   }
 
@@ -114,10 +114,10 @@ export default css`
       var(--md-sys-color-on-secondary-container)
     ) !important;
   }
-  .svg-action-button-expressive {
+  .svg-action-button.expressive {
     color: var(--expressive-row-button-color-text);
   }
-  .svg-action-button-expressive:hover {
+  .svg-action-button.expressive:hover {
     color: var(--expressive-row-button-color-text-hover);
   }
 

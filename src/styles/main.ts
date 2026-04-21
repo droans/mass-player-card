@@ -216,7 +216,7 @@ export default css`
     width: 100%;
   }
 
-  .section-hidden {
+  .section.hidden {
     display: none;
   }
 `;

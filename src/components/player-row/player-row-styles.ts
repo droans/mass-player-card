@@ -19,24 +19,24 @@ export default css`
     --button-border-radius: 25%;
   }
 
-  .action-button-expressive::part(button) {
+  .action-button.expressive::part(button) {
     --button-border-radius: var(--button-small-border-radius) !important;
   }
-  .action-button-expressive:first-of-type::part(button) {
+  .action-button.expressive:first-of-type::part(button) {
     --button-border-radius: var(--button-small-border-radius) 4px 4px
       var(--button-small-border-radius) !important;
   }
-  .action-button-expressive:first-of-type::part(button):hover {
+  .action-button.expressive:first-of-type::part(button):hover {
     --button-border-radius: var(--button-small-border-radius) !important;
   }
-  .action-button-expressive:last-of-type::part(button) {
+  .action-button.expressive:last-of-type::part(button) {
     --button-border-radius: 4px var(--button-small-border-radius)
       var(--button-small-border-radius) 4px !important;
   }
-  .action-button-expressive:last-of-type::part(button):hover {
+  .action-button.expressive:last-of-type::part(button):hover {
     --button-border-radius: var(--button-small-border-radius) !important;
   }
-  .action-button-expressive:only-of-type::part(button) {
+  .action-button.expressive:only-of-type::part(button) {
     --button-border-radius: var(--button-small-border-radius) !important;
   }
 
@@ -55,12 +55,12 @@ export default css`
     display: block;
     animation: player-active 0ms -800ms linear infinite alternate;
   }
-  .audio-bars-normal > div {
+  .audio-bars.normal > div {
     --start-color: var(--audio-bars-color);
     --mid-color: var(--audio-bars-color);
     --end-color: var(--audio-bars-color);
   }
-  .audio-bars-expressive > div {
+  .audio-bars.expressive > div {
     --start-color: var(--expressive-audio-bars-initial-color);
     --mid-color: var(--expressive-audio-bars-middle-color);
     --max-color: var(--expressive-audio-bars-max-color);
@@ -100,7 +100,7 @@ export default css`
     height: var(--media-row-height);
   }
 
-  .button-active {
+  .button.active {
     margin: 0.15rem;
     border-radius: var(--player-row-border-radius);
     background-color: var(
@@ -112,17 +112,17 @@ export default css`
     color: var(--accent-color);
   }
 
-  .button-expressive {
+  .button.expressive {
     background-color: var(--expressive-row-color) !important;
     --md-list-item-hover-state-layer-color: var(--md-sys-color-on-surface);
     border-radius: var(--default-border-radius);
     --md-ripple-hover-color: var(--md-sys-color-on-surface);
     --md-ripple-pressed-color: var(--md-sys-color-on-surface);
   }
-  .button-expressive > .title {
+  .button.expressive > .title {
     color: var(--expressive-row-color-text);
   }
-  .button-expressive-active {
+  .button.expressive.active {
     --primary-text-color: var(--expressive-row-active-color-text) !important;
     --font-color: var(--expressive-row-active-color-text) !important;
     background-color: var(--expressive-row-active-color) !important;
@@ -130,7 +130,7 @@ export default css`
     --md-ripple-hover-color: var(--md-sys-color-on-surface);
     --md-ripple-pressed-color: var(--md-sys-color-on-surface);
   }
-  .button-expressive-active > .title {
+  .button.expressive.active > .title {
     color: var(--expressive-row-active-color-text);
   }
 
@@ -146,13 +146,6 @@ export default css`
     margin-right: 24px;
   }
 
-  .headline-expressive {
-    color: var(--expressive-row-color-text);
-  }
-  .headline-expressive-active {
-    color: var(--expressive-row-color-text-active);
-  }
-
   .svg-action-button {
     height: var(--row-icon-button-height);
     width: var(--row-icon-button-height);
@@ -161,15 +154,14 @@ export default css`
       var(--md-sys-color-on-secondary-container)
     ) !important;
   }
-  .svg-action-button-expressive {
+  .svg-action-button.expressive {
     color: var(--expressive-row-button-color-text);
   }
-  .svg-action-button-expressive:hover {
+  .svg-action-button.expressive:hover {
     color: var(--expressive-row-button-color-text-hover);
   }
 
-  .thumbnail,
-  .thumbnail-disabled {
+  .thumbnail {
     width: var(--media-row-thumbnail-height);
     height: var(--media-row-thumbnail-height);
     background-size: contain;
@@ -180,10 +172,6 @@ export default css`
     -moz-user-select: none;
     user-select: none;
   }
-  .thumbnail-disabled {
-    filter: opacity(0.5);
-  }
-
   .title {
     font-size: 1.1rem;
     overflow: hidden;

@@ -124,7 +124,7 @@ export class MassNavBar extends LitElement {
         <i class="icon-i">
           <ha-svg-icon
             .path=${icon}
-            class="action-button-svg${active ? "" : "-inactive"}"
+            class="action-button-svg ${active ? "" : "inactive"}"
           ></ha-svg-icon>
         </i>
         <span></span>

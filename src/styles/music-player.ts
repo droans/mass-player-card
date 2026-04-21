@@ -17,9 +17,9 @@ export default css`
     justify-content: center;
   }
 
-  #active-track-lg,
-  #active-track-med,
-  #active-track-sm {
+  #active-track.large,
+  #active-track.medium,
+  #active-track.small {
     width: 100%;
     position: relative;
     z-index: -1;
@@ -31,14 +31,14 @@ export default css`
     -webkit-transform: translate3d(0, 0, -1px);
     position: relative;
   }
-  .active-track-text-rounded {
+  .active-track-text.rounded {
     border-radius: 8px 8px 0px 0px;
   }
 
   #container {
     height: var(--mass-player-card-height);
   }
-  .container-expressive {
+  #container.expressive {
     border-radius: var(--expressive-border-radius-container);
   }
 
@@ -50,7 +50,7 @@ export default css`
     border-radius: var(--media-row-border-radius);
     height: var(--media-row-height);
   }
-  #dialog-favorites-expressive .dialog-playlist-item {
+  #dialog-favorites.expressive .dialog-playlist-item {
     background-color: var(--expressive-row-color) !important;
     --md-list-item-hover-state-layer-color: var(--md-sys-color-on-surface);
     border-radius: var(--default-border-radius);
@@ -76,7 +76,7 @@ export default css`
     min-width: 0;
     color: var(--font-color);
   }
-  #dialog-favorites-expressive .dialog-playlist-title {
+  #dialog-favorites.expressive .dialog-playlist-title {
     color: var(--expressive-row-color-text);
   }
   .dialog-playlist-divider {
@@ -90,14 +90,14 @@ export default css`
     margin-left: 64px;
     margin-right: 24px;
   }
-  .header-art-lg {
+  .header-art.large {
     z-index: 2;
     position: relative;
   }
-  .header-art-lg::part(header) {
+  .header-art.large::part(header) {
     z-index: 2;
   }
-  .header-art-sm {
+  .header-art.small {
     position: relative;
   }
   .media-controls {
@@ -110,13 +110,13 @@ export default css`
     padding-bottom: var(--navbar-height);
   }
 
-  .media-controls:not(.media-controls-expressive) {
+  .media-controls:not(.expressive) {
     background: linear-gradient(
       transparent,
       var(--player-blur-color) 10%
     ) !important;
   }
-  .media-controls-expressive {
+  .media-controls.expressive {
     background: linear-gradient(
       to top,
       var(--expressive-player-blur-color),
@@ -140,7 +140,7 @@ export default css`
     border-top-left-radius: var(--default-border-radius);
     border-top-right-radius: var(--default-border-radius);
   }
-  .player-card-expressive {
+  .player-card.expressive {
     background-color: var(--md-sys-color-background, var(--ha-card-background));
     border-radius: 8px 8px 0px 0px;
   }
@@ -152,13 +152,13 @@ export default css`
     border-radius: var(--default-border-radius) var(--default-border-radius) 0px
       0px;
   }
-  .player-card-header::before {
+  .player-card-header:not(.expressive)::before {
     background: linear-gradient(
       var(--player-blur-color) 90%,
       transparent
     ) !important;
   }
-  .player-card-header-expressive::before {
+  .player-card-header.expressive::before {
     content: "";
     height: 100%;
     width: 100%;
@@ -174,7 +174,7 @@ export default css`
       transparent 100%
     ) !important;
   }
-  #player-card-header::before {
+  #player-card-header:not(.expressive)::before {
     content: "";
     height: 100%;
     width: 100%;
@@ -196,9 +196,11 @@ export default css`
 
   .player-name {
     font-size: 0.8rem;
+  }
+  .player-name:not(.expressive) {
     color: var(--player-name-color);
   }
-  .player-name-expressive {
+  .player-name.expressive {
     color: var(--md-sys-color-on-primary-container) !important;
   }
 
@@ -206,8 +208,7 @@ export default css`
     font-size: 1em;
     text-shadow: 0 0 var(--md-sys-color-on-primary-container);
   }
-  .player-track-artist-expressive {
-    font-size: 1em;
+  .player-track-artist.expressive {
     color: var(--md-sys-color-on-primary-container) !important;
   }
   .player-track-title {
@@ -222,16 +223,16 @@ export default css`
     width: 100%;
   }
 
-  .volume-expressive::part(volume-div) {
+  .volume.expressive::part(volume-div) {
     padding-bottom: 6px;
     position: relative;
   }
 
-  .vol-art-lg {
+  .vol-art.large {
     z-index: 1;
     position: relative;
   }
-  .vol-art-lg::part(volume-div) {
+  .vol-art.large::part(volume-div) {
     z-index: 0;
   }
 `;

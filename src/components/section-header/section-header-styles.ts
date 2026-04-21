@@ -18,7 +18,7 @@ export default css`
     z-index: 2;
     height: 3.5em;
   }
-  .header-expressive {
+  .header.expressive {
     background-color: var(--md-sys-primary-container);
     border-radius: 20px 20px 0px 0px;
   }
