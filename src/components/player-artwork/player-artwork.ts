@@ -403,7 +403,7 @@ export class MassPlayerArtwork extends LitElement {
     }
     const size = this.playerConfig.layout.artwork_size;
     const attributes = this.activePlayer.attributes;
-    const url = attributes.entity_picture_local;
+    const url = attributes.entity_picture_local ?? attributes.entity_picture;
     return html`
       <wa-carousel-item
         id="active-slide"
