@@ -128,4 +128,7 @@ export default css`
   .menu-list-item-image.expressive {
     border-radius: var(--media-row-thumbnail-border-radius);
   }
+  .menu-list-item-md.selected:not(.expressive) {
+    background-color: var(--background-color-normal-active);
+  }
 `;

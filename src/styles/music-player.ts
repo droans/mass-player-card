@@ -101,20 +101,13 @@ export default css`
     position: relative;
   }
   .media-controls {
-    backdrop-filter: blur(8px);
-    background: var(--player-blur-color);
     position: absolute;
     bottom: calc(var(--navbar-height) * -1);
     width: 100%;
-    mask: linear-gradient(transparent, black 5%, black);
     padding-bottom: var(--navbar-height);
   }
-
   .media-controls:not(.expressive) {
-    background: linear-gradient(
-      transparent,
-      var(--player-blur-color) 10%
-    ) !important;
+    background: var(--player-blur-color) !important;
   }
   .media-controls.expressive {
     background: linear-gradient(
@@ -126,6 +119,8 @@ export default css`
     ) !important;
     border-bottom-left-radius: var(--default-border-radius);
     border-bottom-right-radius: var(--default-border-radius);
+    backdrop-filter: blur(8px);
+    mask: linear-gradient(transparent, black 5%, black);
   }
   .padded {
     padding-top: 0.5em;
@@ -152,19 +147,22 @@ export default css`
     border-radius: var(--default-border-radius) var(--default-border-radius) 0px
       0px;
   }
-  .player-card-header:not(.expressive)::before {
-    background: linear-gradient(
-      var(--player-blur-color) 90%,
-      transparent
-    ) !important;
-  }
-  .player-card-header.expressive::before {
+  #player-card-header::before {
     content: "";
     height: 100%;
     width: 100%;
     display: block;
     position: absolute;
     top: 0;
+    border-radius: var(--default-border-radius) var(--default-border-radius) 0px
+      0px;
+    overflow: hidden;
+    z-index: -1;
+  }
+  #player-card-header:not(.expressive)::before {
+    background: var(--player-blur-color) !important;
+  }
+  #player-card-header.expressive::before {
     mask: linear-gradient(black, black 95%, transparent);
     background: linear-gradient(
       to bottom,
@@ -173,20 +171,7 @@ export default css`
       rgb(from var(--expressive-player-blur-color) r g b / 0.4) 75%,
       transparent 100%
     ) !important;
-  }
-  #player-card-header:not(.expressive)::before {
-    content: "";
-    height: 100%;
-    width: 100%;
-    display: block;
-    position: absolute;
-    top: 0;
-    mask: linear-gradient(black, black 95%, transparent);
     backdrop-filter: blur(8px);
-    border-radius: var(--default-border-radius) var(--default-border-radius) 0px
-      0px;
-    overflow: hidden;
-    z-index: -1;
   }
   .player-header {
     margin: 0em 1.75em 0em 1.75em;
