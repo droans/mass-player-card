@@ -19,24 +19,24 @@ export default css`
     --button-border-radius: 25%;
   }
 
-  .action-button.expressive::part(button) {
+  .action-button.expressive {
     --button-border-radius: var(--button-small-border-radius) !important;
   }
-  .action-button.expressive:first-of-type::part(button) {
+  .action-button.expressive:first-of-type {
     --button-border-radius: var(--button-small-border-radius) 4px 4px
       var(--button-small-border-radius) !important;
   }
-  .action-button.expressive:first-of-type::part(button):hover {
+  .action-button.expressive:first-of-type:hover {
     --button-border-radius: var(--button-small-border-radius) !important;
   }
-  .action-button.expressive:last-of-type::part(button) {
+  .action-button.expressive:last-of-type {
     --button-border-radius: 4px var(--button-small-border-radius)
       var(--button-small-border-radius) 4px !important;
   }
-  .action-button.expressive:last-of-type::part(button):hover {
+  .action-button.expressive:last-of-type:hover {
     --button-border-radius: var(--button-small-border-radius) !important;
   }
-  .action-button.expressive:only-of-type::part(button) {
+  .action-button.expressive:only-of-type {
     --button-border-radius: var(--button-small-border-radius) !important;
   }
 
