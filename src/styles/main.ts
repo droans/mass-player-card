@@ -181,6 +181,14 @@ export default css`
       20px
     );
     --navbar-height: 4em;
+    --search-text-color: var(
+      --mass-player-card-search-text-color,
+      var(--ha-color-text-primary)
+    );
+    --search-placeholder-text-color: var(
+      --mass-player-card-search-placeholder-text-color,
+      var(--ha-color-neutral-50)
+    );
 
     --md-sys-elevation-level0: none;
     --md-sys-elevation-level1:
