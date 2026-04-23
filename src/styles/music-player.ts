@@ -79,9 +79,7 @@ export default css`
     color: var(--font-color);
   }
   .dialog-playlist-title.expressive {
-    font-family:
-      "Google Sans Flex", "Roboto Flex", var(--ha-font-family-body), "Roboto",
-      sans-serif !important;
+    font-family: var(--expressive-font-family);
     font-variation-settings: "ROND" 100;
     font-size: 1.3em;
     font-stretch: 65%;
@@ -201,9 +199,7 @@ export default css`
   }
   .player-name.expressive {
     color: var(--md-sys-color-on-primary-container) !important;
-    font-family:
-      "Google Sans Flex", "Roboto Flex", var(--ha-font-family-body), "Roboto",
-      sans-serif !important;
+    font-family: var(--expressive-font-family);
     font-weight: 700;
     font-size: 0.9rem;
     top: -0.3em;
@@ -218,9 +214,7 @@ export default css`
   .player-track-artist.expressive {
     color: var(--md-sys-color-on-primary-container) !important;
     text-shadow: 0 0 var(--md-sys-color-on-primary-container);
-    font-family:
-      "Google Sans Flex", "Roboto Flex", var(--ha-font-family-body), "Roboto",
-      sans-serif !important;
+    font-family: var(--expressive-font-family);
     font-style: italic;
     font-size: 1.5em;
     font-variation-settings: "ROND" 100;
@@ -243,9 +237,7 @@ export default css`
     font-style: italic;
     font-variation-settings: "ROND" 100;
     line-height: 1.3em;
-    font-family:
-      "Google Sans Flex", "Roboto Flex", var(--ha-font-family-body), "Roboto",
-      sans-serif !important;
+    font-family: var(--expressive-font-family);
     margin-top: -0.2em;
   }
 

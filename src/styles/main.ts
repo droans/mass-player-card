@@ -203,6 +203,9 @@ export default css`
       rgba(from #000000 r g b / 0.2) 0px 7px 8px -4px,
       rgba(from #000000 r g b / 0.14) 0px 12px 17px 2px,
       rgba(from #000000 r g b / 0.12) 0px 5px 22px 4px;
+    --expressive-font-family:
+      "Google Sans Flex", "Roboto Flex", var(--ha-font-family-body), "Roboto",
+      sans-serif !important;
   }
 
   ha-card {

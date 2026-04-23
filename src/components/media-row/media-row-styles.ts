@@ -149,18 +149,14 @@ export default css`
     color: var(--font-color);
   }
   .title.track.expressive {
-    font-family:
-      "Google Sans Flex", "Roboto Flex", var(--ha-font-family-body), "Roboto",
-      sans-serif !important;
+    font-family: var(--expressive-font-family);
     font-variation-settings: "ROND" 100;
     font-size: 1.3em;
     font-stretch: 50%;
     font-weight: 450;
   }
   .title.artist.expressive {
-    font-family:
-      "Google Sans Flex", "Roboto Flex", var(--ha-font-family-body), "Roboto",
-      sans-serif !important;
+    font-family: var(--expressive-font-family);
     font-variation-settings: "ROND" 100;
     font-size: 1.2em;
     font-stretch: 60%;

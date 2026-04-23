@@ -73,8 +73,6 @@ export default css`
     font-size: 1.5em;
     line-height: 1.2em;
     font-stretch: 50%;
-    font-family:
-      "Google Sans Flex", "Roboto Flex", var(--ha-font-family-body), "Roboto",
-      sans-serif !important;
+    font-family: var(--expressive-font-family);
   }
 `;
