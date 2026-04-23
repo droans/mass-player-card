@@ -77,7 +77,10 @@ export default css`
     background-color: var(--md-sys-color-surface-container-high);
   }
   sl-input::part(input)::placeholder {
-    color: var(--md-sys-color-on-surface);
+    color: var(--search-placeholder-text-color);
+  }
+  sl-input::part(input) {
+    color: var(--search-text-color);
   }
   #search::part(end) {
     width: calc(100% - 3em - 40px);

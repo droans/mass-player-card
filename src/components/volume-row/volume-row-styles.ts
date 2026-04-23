@@ -13,11 +13,20 @@ export default css`
   #button-favorite {
     margin-left: 1em;
   }
+  #button-favorite .svg {
+    fill: var(--player-button-favorite-icon-color);
+  }
   #button-mute {
     margin-left: 1em;
   }
+  #button-mute .svg {
+    fill: var(--player-button-favorite-icon-color);
+  }
   #button-power {
     margin-right: 1em;
+  }
+  #button-power .svg {
+    fill: var(--player-button-power-icon-color);
   }
 
   #div-slider {

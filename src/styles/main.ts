@@ -181,6 +181,90 @@ export default css`
       20px
     );
     --navbar-height: 4em;
+    --search-text-color: var(
+      --mass-player-card-search-text-color,
+      var(--ha-color-text-primary)
+    );
+    --search-placeholder-text-color: var(
+      --mass-player-card-search-placeholder-text-color,
+      var(--ha-color-neutral-50)
+    );
+    --player-control-icon-color: var(
+      --mass-player-card-player-control-icon-color,
+      var(--icon-primary-color, currentcolor)
+    );
+    --player-control-text-color: var(
+      --mass-player-card-player-control-text-color,
+      var(--primary-text-color)
+    );
+
+    --player-button-play-pause-icon-color: var(
+      --mass-player-card-player-button-play-pause-icon-color,
+      var(--player-control-icon-color)
+    );
+    --player-button-play-pause-text-color: var(
+      --mass-player-card-player-button-play-pause-text-color,
+      var(--player-control-text-color)
+    );
+
+    --player-button-previous-icon-color: var(
+      --mass-player-card-player-button-previous-icon-color,
+      var(--player-control-icon-color)
+    );
+    --player-button-previous-text-color: var(
+      --mass-player-card-player-button-previous-text-color,
+      var(--player-control-text-color)
+    );
+
+    --player-button-next-icon-color: var(
+      --mass-player-card-player-button-next-icon-color,
+      var(--player-control-icon-color)
+    );
+    --player-button-next-text-color: var(
+      --mass-player-card-player-button-next-text-color,
+      var(--player-control-text-color)
+    );
+
+    --player-button-shuffle-icon-color: var(
+      --mass-player-card-player-button-shuffle-icon-color,
+      var(--player-control-icon-color)
+    );
+    --player-button-shuffle-text-color: var(
+      --mass-player-card-player-button-shuffle-text-color,
+      var(--player-control-text-color)
+    );
+
+    --player-button-repeat-icon-color: var(
+      --mass-player-card-player-button-repeat-icon-color,
+      var(--player-control-icon-color)
+    );
+    --player-button-repeat-text-color: var(
+      --mass-player-card-player-button-repeat-text-color,
+      var(--player-control-text-color)
+    );
+
+    --player-button-power-icon-color: var(
+      --mass-player-card-player-button-power-icon-color,
+      var(--player-control-icon-color)
+    );
+    --player-button-power-text-color: var(
+      --mass-player-card-player-button-power-text-color,
+      var(--player-control-text-color)
+    );
+
+    --player-button-favorite-icon-color: var(
+      --mass-player-card-player-button-favorite-icon-color,
+      var(--player-control-icon-color)
+    );
+    --player-button-favorite-text-color: var(
+      --mass-player-card-player-button-favorite-text-color,
+      var(--player-control-text-color)
+    );
+
+    --player-button-mute-icon-color: var(
+      --mass-player-card-player-button-mute-icon-color,
+      var(--player-control-icon-color)
+    );
 
     --md-sys-elevation-level0: none;
     --md-sys-elevation-level1:
