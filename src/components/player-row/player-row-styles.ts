@@ -22,6 +22,10 @@ export default css`
   .action-button.expressive {
     --button-border-radius: var(--button-small-border-radius) !important;
   }
+  .action-button.expressive:hover {
+    background-color: var(--expressive-row-button-color-hover);
+    --button-border-radius: var(--button-small-border-radius);
+  }
   .action-button.expressive:first-of-type {
     --button-border-radius: var(--button-small-border-radius) 4px 4px
       var(--button-small-border-radius) !important;
