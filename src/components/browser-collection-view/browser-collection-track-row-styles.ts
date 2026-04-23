@@ -44,16 +44,16 @@ export default css`
     -moz-user-select: none;
     user-select: none;
   }
-  .title.track.expressive {
+  .title.expressive {
     font-family: var(--expressive-font-family);
     font-variation-settings: "ROND" 100;
+  }
+  .title.track.expressive {
     font-size: 1.3em;
     font-stretch: 50%;
     font-weight: 450;
   }
   .title.artist.expressive {
-    font-family: var(--expressive-font-family);
-    font-variation-settings: "ROND" 100;
     font-size: 1.2em;
     font-stretch: 60%;
     font-weight: 350;
