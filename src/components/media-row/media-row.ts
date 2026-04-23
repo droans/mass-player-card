@@ -230,7 +230,7 @@ export class MediaRow extends LitElement {
       <span
         slot="headline"
         class="title track 
-        ${played ? "title-disabled" : ""}
+        ${played ? "disabled" : ""}
         ${this.useExpressive ? `expressive` : ``}"
         style="width: ${this._calculateTitleWidth()}"
       >
@@ -248,7 +248,7 @@ export class MediaRow extends LitElement {
       <span
         slot="supporting-text"
         class="title artist 
-        ${played ? "title-disabled" : ""} 
+        ${played ? "disabled" : ""} 
         ${this.useExpressive ? `expressive` : ``}"
         style="width: ${this._calculateTitleWidth()}"
       >

@@ -163,7 +163,7 @@ export default css`
     font-weight: 350;
     font-style: italic;
   }
-  .title-disabled {
+  .title.disabled {
     opacity: 0.38;
   }
 `;
