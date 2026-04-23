@@ -164,7 +164,7 @@ export class MassPlaylistTrackRow extends LitElement {
     return html`
       <span
         slot="headline"
-        class="track-title ${this.useExpressive ? `expressive` : ``}"
+        class="title track ${this.useExpressive ? `expressive` : ``}"
       >
         ${this.track.media_title}
       </span>
@@ -174,7 +174,7 @@ export class MassPlaylistTrackRow extends LitElement {
     return html`
       <span
         slot="supporting-text"
-        class="track-artist ${this.useExpressive ? `expressive` : ``}"
+        class="title artist ${this.useExpressive ? `expressive` : ``}"
       >
         ${this.track.media_artist}
       </span>

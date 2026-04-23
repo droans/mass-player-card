@@ -13,7 +13,7 @@ export default css`
   }
   #playlist-duration.expressive,
   #playlist-owner.expressive {
-    font-family: "Google Sans Flex", sans-serif;
+    font-family: var(--expressive-font-family);
   }
   #overview {
     position: relative;

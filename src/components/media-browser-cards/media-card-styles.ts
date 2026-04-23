@@ -116,10 +116,9 @@ export default css`
   }
   #title-div.expressive {
     font-size: 1.3rem;
-    font-family:
-      "Google Sans Flex", "Roboto Flex", var(--ha-font-family-body), "Roboto",
-      sans-serif !important;
+    font-family: var(--expressive-font-family);
     font-stretch: 80%;
     font-weight: 600;
+    font-variation-settings: "ROND" 100;
   }
 `;

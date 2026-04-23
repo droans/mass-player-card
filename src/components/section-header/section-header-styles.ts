@@ -35,9 +35,7 @@ export default css`
     color: var(--md-sys-color-on-primary-container);
   }
   .label.expressive {
-    font-family:
-      "Google Sans Flex", "Roboto Flex", var(--ha-font-family-body), "Roboto",
-      sans-serif !important;
+    font-family: var(--expressive-font-family);
     font-variation-settings: "ROND" 100;
     font-stretch: 25%;
     font-size: 2em;

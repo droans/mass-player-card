@@ -12,7 +12,7 @@ export default css`
   }
   #collection-artists.expressive,
   #collection-year.expressive {
-    font-family: "Google Sans Flex", sans-serif;
+    font-family: var(--expressive-font-family);
   }
   #collection-artists::not(.expressive),
   #collection-year::not(.expressive) {

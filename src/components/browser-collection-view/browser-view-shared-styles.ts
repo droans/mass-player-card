@@ -146,7 +146,7 @@ export default css`
   }
   #title.expressive,
   #tracks-length.expressive {
-    font-family: "Google Sans Flex", sans-serif;
+    font-family: var(--expressive-font-family);
   }
   #title::not(.expressive),
   #tracks-length::not(.expressive) {
