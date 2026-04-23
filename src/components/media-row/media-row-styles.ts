@@ -17,6 +17,7 @@ export default css`
   .action-button.expressive:hover {
     background-color: var(--expressive-row-button-color-hover) !important;
     --button-border-radius: var(--button-small-border-radius) !important;
+    transition: border-radius background-color var(--animation-duration);
   }
   .action-button.expressive:first-of-type {
     --button-border-radius: var(--button-small-border-radius) 4px 4px
@@ -123,6 +124,7 @@ export default css`
   }
   .svg-action-button.expressive:hover {
     color: var(--expressive-row-button-color-text-hover);
+    transition: color var(--animation-duration);
   }
 
   .thumbnail,
