@@ -151,17 +151,17 @@ export default css`
   .title.expressive {
     font-family: var(--expressive-font-family);
     font-variation-settings: "ROND" 100;
+    text-transform: uppercase;
   }
   .title.track.expressive {
     font-size: 1.3em;
-    font-stretch: 50%;
-    font-weight: 450;
+    font-stretch: 25%;
+    font-weight: 500;
   }
   .title.artist.expressive {
     font-size: 1.2em;
-    font-stretch: 60%;
-    font-weight: 350;
-    font-style: italic;
+    font-stretch: 30%;
+    font-weight: 275;
   }
   .title.disabled {
     opacity: 0.38;

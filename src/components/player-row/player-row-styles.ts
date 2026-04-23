@@ -190,8 +190,9 @@ export default css`
     font-family: var(--expressive-font-family);
     font-variation-settings: "ROND" 100;
     font-size: 1.3em;
-    font-stretch: 50%;
-    font-weight: 450;
+    font-stretch: 25%;
+    font-weight: 500;
+    text-transform: uppercase;
   }
   .title-bars {
     display: flex;
