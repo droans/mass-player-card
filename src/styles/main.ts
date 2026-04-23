@@ -216,8 +216,7 @@ export default css`
   }
   ha-card#expressive {
     background-color: var(--md-sys-color-background, var(--ha-card-background));
-    font-family:
-      "Roboto Flex", var(--ha-font-family-body), "Roboto", sans-serif !important;
+    font-family: var(--expressive-font-family);
   }
 
   #navbar.expressive {
