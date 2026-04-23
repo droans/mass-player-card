@@ -30,9 +30,7 @@ export default css`
   }
   nav.tabbed {
     background-color: var(--tabbed-background-color);
-    box-shadow: var(--tabbed-elevation);
   }
-
   .player-tabs {
     --primary-container: rgba(from var(--primary-color) r g b / 0.25);
     z-index: 2;
@@ -59,5 +57,6 @@ export default css`
   }
   .tabbed.expressive {
     --tabbed-background-color: var(--md-sys-color-surface-container) !important;
+    box-shadow: var(--tabbed-elevation);
   }
 `;
