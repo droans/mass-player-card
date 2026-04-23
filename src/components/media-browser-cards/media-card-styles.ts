@@ -119,5 +119,6 @@ export default css`
     font-family: var(--expressive-font-family);
     font-stretch: 80%;
     font-weight: 600;
+    font-variation-settings: "ROND" 100;
   }
 `;
