@@ -3,6 +3,44 @@ import { css } from "lit";
 // Styles belonging to the card
 // https://lit.dev/docs/components/styles/
 export default css`
+  .button-label {
+    display: contents;
+  }
+  .shuffle .button-label {
+    color: var(--player-button-shuffle-text-color);
+  }
+  .shuffle .svg {
+    fill: var(--player-button-shuffle-icon-color);
+  }
+
+  .track-previous .button-label {
+    color: var(--player-button-shuffle-text-color);
+  }
+  .track-previous .svg {
+    fill: var(--player-button-shuffle-icon-color);
+  }
+
+  .play-pause .button-label {
+    color: var(--player-button-shuffle-text-color);
+  }
+  .play-pause .svg {
+    fill: var(--player-button-shuffle-icon-color);
+  }
+
+  .track-next .button-label {
+    color: var(--player-button-shuffle-text-color);
+  }
+  .track-next .svg {
+    fill: var(--player-button-shuffle-icon-color);
+  }
+
+  .repeat .button-label {
+    color: var(--player-button-shuffle-text-color);
+  }
+  .repeat .svg {
+    fill: var(--player-button-shuffle-icon-color);
+  }
+
   .controls-div {
     grid-area: controls;
     overflow-y: auto;
@@ -34,7 +72,6 @@ export default css`
     margin-left: 1em;
     margin-right: 1em;
   }
-
   .div.medium {
     --ha-button-height: var(--player-play-pause-icon-size);
     margin: 0px 6px 0px 6px;

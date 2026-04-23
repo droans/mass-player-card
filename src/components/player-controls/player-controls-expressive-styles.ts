@@ -58,6 +58,10 @@ export default css`
     --button-padding: 0px;
   }
 
+  .button-label {
+    display: contents;
+  }
+
   #button-next {
     --button-border-radius: var(--prev-border-radius);
   }
@@ -110,6 +114,45 @@ export default css`
   .icons.play-pause {
     height: var(--play-pause-icon-height);
     width: var(--play-pause-icon-height);
+  }
+
+  #button-next .icons {
+    fill: var(--player-button-next-icon-color);
+  }
+  #button-previous .icons {
+    fill: var(--player-button-previous-icon-color);
+  }
+  #button-play .icons,
+  #button-pause .icons {
+    fill: var(--player-button-play-pause-icon-color);
+  }
+
+  #button-shuffle .icons {
+    fill: var(--player-button-shuffle-icon-color);
+  }
+  #button-shuffle .button-label {
+    color: var(--player-button-shuffle-text-color);
+  }
+
+  #button-repeat .icons {
+    fill: var(--player-button-repeat-icon-color);
+  }
+  #button-repeat .button-label {
+    color: var(--player-button-repeat-text-color);
+  }
+
+  #button-favorite .icons {
+    fill: var(--player-button-favorite-icon-color);
+  }
+  #button-favorite .button-label {
+    color: var(--player-button-favorite-text-color);
+  }
+
+  #button-power .icons {
+    fill: var(--player-button-power-icon-color);
+  }
+  #button-power .button-label {
+    color: var(--player-button-power-text-color);
   }
 
   .no-label::part(button) {

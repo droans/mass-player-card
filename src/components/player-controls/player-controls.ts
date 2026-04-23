@@ -48,7 +48,7 @@ export class MassPlayerControls extends MassPlayerControlsBase {
               : this.Icons.SHUFFLE_DISABLED}
             class="svg ${icon_size}"
           ></ha-svg-icon>
-          ${labelHtml}
+          <div class="button-label">${labelHtml}</div>
         </ha-button>
       </div>
     `;
@@ -83,7 +83,7 @@ export class MassPlayerControls extends MassPlayerControlsBase {
             .path=${this.Icons.SKIP_PREVIOUS}
             class="svg ${icon_size} icon-outlined"
           ></ha-svg-icon>
-          ${labelHtml}
+          <div class="button-label">${labelHtml}</div>
         </ha-button>
       </div>
     `;
@@ -122,7 +122,7 @@ export class MassPlayerControls extends MassPlayerControlsBase {
               : this.Icons.PLAY}
             class="svg ${icon_size} icon-outlined"
           ></ha-svg-icon>
-          ${labelHtml}
+          <div class="button-label">${labelHtml}</div>
         </ha-button>
       </div>
     `;
@@ -156,7 +156,7 @@ export class MassPlayerControls extends MassPlayerControlsBase {
             .path=${this.Icons.SKIP_NEXT}
             class="svg ${icon_size}"
           ></ha-svg-icon>
-          ${labelHtml}
+          <div class="button-label">${labelHtml}</div>
         </ha-button>
       </div>
     `;
@@ -195,7 +195,7 @@ export class MassPlayerControls extends MassPlayerControlsBase {
             .path=${icon}
             class="svg ${icon_size}"
           ></ha-svg-icon>
-          ${labelHtml}
+          <div class="button-label">${labelHtml}</div>
         </ha-button>
       </div>
     `;
