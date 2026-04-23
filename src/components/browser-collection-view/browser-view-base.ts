@@ -1,5 +1,5 @@
 import { html, LitElement, PropertyValues, TemplateResult } from "lit";
-import "@lit-labs/virtualizer";
+import "../lit-virtualizer/lit-virtualizer";
 import {
   ExtendedHass,
   ExtendedHassEntity,
