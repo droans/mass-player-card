@@ -207,6 +207,23 @@ export default css`
       var(--player-control-text-color)
     );
 
+    --player-button-play-icon-color: var(
+      --mass-player-card-player-button-play-icon-color,
+      var(--player-button-play-pause-icon-color)
+    );
+    --player-button-play-text-color: var(
+      --mass-player-card-player-button-play-text-color,
+      var(--player-button-play-pause-text-color)
+    );
+    --player-button-pause-icon-color: var(
+      --mass-player-card-player-button-pause-icon-color,
+      var(--player-button-play-pause-icon-color)
+    );
+    --player-button-pause-text-color: var(
+      --mass-player-card-player-button-pause-text-color,
+      var(--player-button-play-pause-text-color)
+    );
+
     --player-button-previous-icon-color: var(
       --mass-player-card-player-button-previous-icon-color,
       var(--player-control-icon-color)

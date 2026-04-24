@@ -105,7 +105,10 @@ export class MassPlayerControls extends MassPlayerControlsBase {
     );
     const appearance = this._playerData.playing ? "filled" : "outlined";
     return html`
-      <div class="play-pause div ${icon_size} ${div_layout}">
+      <div
+        class="play-pause div ${icon_size} ${div_layout}
+        ${this._playerData.playing ? `playing` : `paused`}"
+      >
         <ha-button
           appearance="${appearance}"
           variant="brand"
