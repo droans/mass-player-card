@@ -122,9 +122,11 @@ export default css`
   #button-previous .icons {
     fill: var(--player-button-previous-icon-color);
   }
-  #button-play .icons,
   #button-pause .icons {
-    fill: var(--player-button-play-pause-icon-color);
+    fill: var(--player-button-pause-icon-color);
+  }
+  #button-play .icons {
+    fill: var(--player-button-play-icon-color);
   }
 
   #button-shuffle .icons {

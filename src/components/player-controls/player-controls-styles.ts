@@ -20,11 +20,18 @@ export default css`
     fill: var(--player-button-previous-icon-color);
   }
 
-  .play-pause .button-label {
-    color: var(--player-button-play-pause-text-color);
+  .play .button-label {
+    color: var(--player-button-play-text-color);
   }
-  .play-pause .svg {
-    fill: var(--player-button-play-pause-icon-color);
+  .play .svg {
+    fill: var(--player-button-play-icon-color);
+  }
+
+  .pause .button-label {
+    color: var(--player-button-pause-text-color);
+  }
+  .pause .svg {
+    fill: var(--player-button-pause-icon-color);
   }
 
   .track-next .button-label {
