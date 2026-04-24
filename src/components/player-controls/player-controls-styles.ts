@@ -14,31 +14,31 @@ export default css`
   }
 
   .track-previous .button-label {
-    color: var(--player-button-shuffle-text-color);
+    color: var(--player-button-previous-text-color);
   }
   .track-previous .svg {
-    fill: var(--player-button-shuffle-icon-color);
+    fill: var(--player-button-previous-icon-color);
   }
 
   .play-pause .button-label {
-    color: var(--player-button-shuffle-text-color);
+    color: var(--player-button-play-pause-text-color);
   }
   .play-pause .svg {
-    fill: var(--player-button-shuffle-icon-color);
+    fill: var(--player-button-play-pause-icon-color);
   }
 
   .track-next .button-label {
-    color: var(--player-button-shuffle-text-color);
+    color: var(--player-button-next-text-color);
   }
   .track-next .svg {
-    fill: var(--player-button-shuffle-icon-color);
+    fill: var(--player-button-next-icon-color);
   }
 
   .repeat .button-label {
-    color: var(--player-button-shuffle-text-color);
+    color: var(--player-button-repeat-text-color);
   }
   .repeat .svg {
-    fill: var(--player-button-shuffle-icon-color);
+    fill: var(--player-button-repeat-icon-color);
   }
 
   .controls-div {
