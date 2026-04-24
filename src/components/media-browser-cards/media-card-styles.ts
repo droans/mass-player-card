@@ -8,6 +8,10 @@ export default css`
   }
   mpc-menu-button {
     --menu-button-border-radius: 50%;
+    --menu-button-background-color: var(
+      --browser-button-enqueue-menu-icon-secondary-color
+    );
+    --button-icon-color: var(--browser-button-enqueue-menu-icon-primary-color);
   }
   mpc-menu-button::part(menu-list-item-svg) {
     height: 2em;
@@ -23,12 +27,6 @@ export default css`
     --control-select-menu-background-color: unset;
   }
   mpc-menu-button::part(menu-svg) {
-    color: var(--md-sys-color-primary);
-    fill: var(--md-sys-color-primary);
-    background-color: var(
-      --ha-card-background,
-      var(--card-background-color, #fff)
-    );
     --mdc-icon-size: calc(10em / var(--columns, 2));
     height: 100%;
     width: 100%;
