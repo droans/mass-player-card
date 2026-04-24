@@ -19,6 +19,7 @@ import { MassCardController } from "../../controller/controller";
 import { MediaBrowser } from "../../sections/media-browser";
 import { Icons } from "../../const/icons";
 import { WaAnimation } from "../../const/elements";
+import { QueueCard } from "../../sections/player-queue";
 
 @customElement("mpc-navbar-expressive")
 export class MassNavBar extends LitElement {
@@ -85,6 +86,18 @@ export class MassNavBar extends LitElement {
     if (section == Sections.MEDIA_BROWSER) {
       this.returnMediaBrowserToHome();
     }
+    if (section == Sections.QUEUE) {
+      this.returnQueueToActive();
+    }
+  };
+  protected returnQueueToActive = () => {
+    const host = this.controller?.host;
+    const element: QueueCard | null | undefined =
+      host?.shadowRoot?.querySelector("mpc-queue-card");
+    if (!element) {
+      return;
+    }
+    element.scrollToActive();
   };
   protected returnMediaBrowserToHome = () => {
     const host = this.controller?.host;
