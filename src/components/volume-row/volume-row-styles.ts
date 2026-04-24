@@ -20,7 +20,7 @@ export default css`
     margin-left: 1em;
   }
   #button-mute .svg {
-    fill: var(--player-button-favorite-icon-color);
+    fill: var(--player-button-mute-icon-color);
   }
   #button-power {
     margin-right: 1em;
