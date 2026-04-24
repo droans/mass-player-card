@@ -47,7 +47,7 @@ import { QueueController } from "../controller/queue";
 import { jsonMatch } from "../utils/utility";
 import { getTranslation } from "../utils/translations";
 import { Icons } from "../const/icons";
-import { LitVirtualizer, WaAnimation } from "../const/elements";
+import { WaAnimation } from "../const/elements";
 
 @customElement("mpc-queue-card")
 export class QueueCard extends LitElement {
@@ -70,7 +70,6 @@ export class QueueCard extends LitElement {
 
   @queryAll("#animation") _animations?: WaAnimation[];
   @query(".media-active") _activeElement!: HTMLElement;
-  @query("lit-virtualizer") virtualizerElement!: LitVirtualizer;
   @query(".list") _items!: HTMLElement;
 
   private _firstLoaded = false;
@@ -194,9 +193,7 @@ export class QueueCard extends LitElement {
     if (!activeIdx && activeIdx != 0) {
       return;
     }
-    this.virtualizerElement
-      .element(activeIdx)
-      .scrollIntoView({ block: "start", behavior: "auto" });
+    this._activeElement?.scrollIntoView({ block: "start", behavior: "auto" });
   }
   private onQueueItemSelected = async (queue_item_id: string) => {
     if (!this.queueController) {
@@ -261,15 +258,7 @@ export class QueueCard extends LitElement {
     `;
   }
   private renderQueueItems(): TemplateResult {
-    return html`
-      <lit-virtualizer
-        scroller
-        .items=${this.queue ?? []}
-        .renderItem=${(item: QueueItem) => {
-          return this.renderQueueItem(item);
-        }}
-      ></lit-virtualizer>
-    `;
+    return html`${this.queue?.map((item) => this.renderQueueItem(item))}`;
   }
   protected renderClearQueueButton(): TemplateResult {
     const expressive = this.activePlayerController.useExpressive;
