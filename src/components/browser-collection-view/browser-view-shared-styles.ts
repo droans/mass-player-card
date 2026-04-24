@@ -23,6 +23,10 @@ export default css`
   mpc-menu-button {
     --menu-button-border-radius: 50%;
     border-radius: var(--menu-button-border-radius);
+    --menu-button-background-color: var(
+      --browser-button-enqueue-menu-icon-secondary-color
+    );
+    --button-icon-color: var(--browser-button-enqueue-menu-icon-primary-color);
   }
   mpc-menu-button::part(menu-button) {
     --ha-ripple-color: rgba(0, 0, 0, 0);
@@ -40,14 +44,12 @@ export default css`
     --button-button-width: var(--mdc-icon-size);
   }
   mpc-menu-button::part(menu-select-menu) {
-    --menu-button-background-color: var(--md-sys-color-background);
     --control-select-menu-height: unset;
     --control-select-menu-background-color: unset;
     --control-select-menu-padding: unset;
   }
   mpc-menu-button::part(menu-svg) {
     --mdc-icon-size: var(--header-expanded-menu-icon-size);
-    --button-icon-color: var(--md-sys-color-primary);
   }
   mpc-collection-track-row {
     width: 100%;

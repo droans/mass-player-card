@@ -283,6 +283,15 @@ export default css`
       var(--player-control-icon-color)
     );
 
+    --browser-button-enqueue-menu-icon-primary-color: var(
+      --mass-player-card-browser-enqueue-menu-icon-primary-color,
+      var(--md-sys-color-primary)
+    );
+    --browser-button-enqueue-menu-icon-secondary-color: var(
+      --mass-player-card-browser-enqueue-menu-icon-secondary-color,
+      var(--ha-card-background, var(--card-background-color, #fff))
+    );
+
     --md-sys-elevation-level0: none;
     --md-sys-elevation-level1:
       rgba(from #000000 r g b / 0.2) 0px 2px 1px -1px,
