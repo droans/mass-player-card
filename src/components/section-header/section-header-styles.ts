@@ -39,7 +39,6 @@ export default css`
     font-variation-settings: "ROND" 100;
     font-stretch: 25%;
     font-size: 2em;
-    font-style: italic;
     line-height: 1em;
   }
   .expressive::slotted([slot="label"]) {
