@@ -117,19 +117,6 @@ export default css`
       var(--md-sys-color-on-secondary-container)
     );
 
-    --md-list-container-color: var(
-      --mass-player-card-list-item-container-color,
-      rgba(0, 0, 0, 0) !important
-    );
-    --md-list-item-leading-space: var(
-      --mass-player-card-list-item-leading-space,
-      0px
-    );
-    --md-list-item-two-line-container-height: var(
-      --mass-player-card-list-item-two-line-height,
-      48px
-    );
-
     --media-row-active-background-color: var(
       --mass-player-card-media-row-active-background-color,
       var(--table-row-alternative-background-color)
@@ -175,10 +162,6 @@ export default css`
     --row-icon-button-height: var(
       --mass-player-card-row-icon-button-height,
       1.5rem
-    );
-    --menu-item-padding-left: var(
-      --mass-player-card-menu-item-padding-left,
-      20px
     );
     --navbar-height: 4em;
     --search-text-color: var(
