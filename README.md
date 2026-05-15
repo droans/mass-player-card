@@ -492,7 +492,7 @@ For each entity, you can either provide the Entity ID by itself or you can provi
 | volume_entity_id          | str                                                           | No       | `entity_id` | The media player for volume control                                            |
 | max_volume                | int                                                           | No       | N/A         | Max volume for the volume slider (0-100)                                       |
 | inactive_when_idle        | bool                                                          | No       | false       | Consider the player inactive if idle.                                          |
-| inactive_when_not_updated | bool                                                          | No       | false       | Consider the player inactive if if the entity hasn't been updated recently.    |
+| inactive_when_not_updated | bool                                                          | No       | true        | Consider the player inactive if if the entity hasn't been updated recently.    |
 | hide                      | [EntityHiddenElementsConfig](#entity-hidden-elements-config)  | No       | See below   | See Below                                                                      |
 
 #### Entity Hidden Elements Config
