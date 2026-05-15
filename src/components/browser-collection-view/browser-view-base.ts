@@ -1,4 +1,5 @@
 import { html, LitElement, PropertyValues, TemplateResult } from "lit";
+import "../lit-virtualizer/lit-virtualizer";
 import {
   ExtendedHass,
   ExtendedHassEntity,
@@ -38,7 +39,6 @@ import { getThumbnail } from "../../utils/thumbnails";
 import { cache } from "lit/directives/cache.js";
 import "../marquee-text/marquee-text";
 import { PodcastEpisode } from "mass-queue-types/packages/mass_queue/types/media-items";
-// import { delay } from "../../utils/utility";
 import "./browser-collection-track-row";
 
 export class BrowserViewBase extends LitElement {
@@ -341,7 +341,7 @@ export class BrowserViewBase extends LitElement {
     if (!this.tracks?.length) {
       return html`
         <link
-          href="https://cdn.jsdelivr.net/npm/beercss@3.12.11/dist/cdn/beer.min.css"
+          href="https://cdn.jsdelivr.net/npm/beercss@4.0.20/dist/cdn/beer.min.css"
           rel="stylesheet"
         />
         <div id="browser-view" style="height: 100%;">
@@ -371,7 +371,7 @@ export class BrowserViewBase extends LitElement {
         <div id="header">
           ${this.renderHeader()}
         </div>
-          <div id="tracks-container">
+          <div id="tracks-container ${expressiveClass}">
             <div id="tracks" class="${scrollClass}">
               ${this.renderTracks()}
             </div>

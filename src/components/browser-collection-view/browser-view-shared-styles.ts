@@ -23,6 +23,10 @@ export default css`
   mpc-menu-button {
     --menu-button-border-radius: 50%;
     border-radius: var(--menu-button-border-radius);
+    --menu-button-background-color: var(
+      --browser-button-enqueue-menu-icon-secondary-color
+    );
+    --button-icon-color: var(--browser-button-enqueue-menu-icon-primary-color);
   }
   mpc-menu-button::part(menu-button) {
     --ha-ripple-color: rgba(0, 0, 0, 0);
@@ -40,14 +44,12 @@ export default css`
     --button-button-width: var(--mdc-icon-size);
   }
   mpc-menu-button::part(menu-select-menu) {
-    --menu-button-background-color: var(--md-sys-color-background);
     --control-select-menu-height: unset;
     --control-select-menu-background-color: unset;
     --control-select-menu-padding: unset;
   }
   mpc-menu-button::part(menu-svg) {
     --mdc-icon-size: var(--header-expanded-menu-icon-size);
-    --button-icon-color: var(--md-sys-color-primary);
   }
   mpc-collection-track-row {
     width: 100%;
@@ -146,7 +148,7 @@ export default css`
   }
   #title.expressive,
   #tracks-length.expressive {
-    font-family: "Google Sans Flex", sans-serif;
+    font-family: var(--expressive-font-family);
   }
   #title::not(.expressive),
   #tracks-length::not(.expressive) {
@@ -169,9 +171,15 @@ export default css`
     overflow: scroll;
   }
   #tracks-container {
+    overflow: hidden;
+  }
+  #tracks-container.expressive {
     border-top-left-radius: var(--default-border-radius);
     border-top-right-radius: var(--default-border-radius);
-    overflow: hidden;
+  }
+  #tracks-container:not(.expressive) {
+    border-top-left-radius: var(--queue-border-radius);
+    border-top-right-radius: var(--queue-border-radius);
   }
   #tracks-length {
     margin-right: 0.5em;
@@ -181,7 +189,10 @@ export default css`
     height: 0em;
   }
   #virtualizer {
-    background-color: var(--md-sys-color-background);
+    background-color: var(
+      --md-sys-color-background,
+      var(--card-background-color)
+    );
     border-radius: var(--default-border-radius);
     scrollbar-width: none;
     height: 100%;

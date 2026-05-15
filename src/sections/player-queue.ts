@@ -16,6 +16,7 @@ import {
 } from "lit/decorators.js";
 import "../components/media-row/media-row";
 import "../components/section-header/section-header";
+import "../components/lit-virtualizer/lit-virtualizer";
 
 import {
   DEFAULT_QUEUE_CONFIG,
@@ -249,7 +250,7 @@ export class QueueCard extends LitElement {
     const show_album_covers = this._config.show_album_covers;
     return html`
       <mpc-queue-media-row
-        class="${queueItem.playing ? `media-active` : ``}"
+        class="${queueItem.playing ? `active` : ``}"
         .media_item=${queueItem}
         .showAlbumCovers=${show_album_covers}
         .selectedService=${this.onQueueItemSelected}
@@ -284,7 +285,7 @@ export class QueueCard extends LitElement {
         size="small"
         elevation="1"
         id="button-back"
-        class="button-min ${expressive ? `button-expressive` : ``}"
+        class="button min ${expressive ? `expressive` : ``}"
       >
         <ha-svg-icon
           .path=${this.Icons.CLEAR}
@@ -309,14 +310,16 @@ export class QueueCard extends LitElement {
     `;
   }
   protected render() {
-    const expressive = this.activePlayerController.useExpressive;
+    const expressiveCls = this.activePlayerController.useExpressive
+      ? `expressive`
+      : ``;
     const paddedCls = this.hideSectionHeader() ? `padded` : ``;
     return (
       this.error ??
       html`
-        <div id="container" class="${expressive ? `container-expressive` : ``}">
+        <div id="container" class="${expressiveCls}">
           ${this.renderHeader()}
-          <div class="list ${expressive ? `list-expressive` : ``} ${paddedCls}">
+          <div class="list ${expressiveCls} ${paddedCls}">
             ${this.renderQueueItems()}
           </div>
         </div>

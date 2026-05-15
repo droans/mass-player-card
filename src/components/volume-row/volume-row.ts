@@ -121,11 +121,11 @@ export class VolumeRow extends LitElement {
         variant="brand"
         size="medium"
         id="button-power"
-        class="button-min"
+        class="button min"
         part="button-power"
         @click=${this.onToggle}
       >
-        <ha-svg-icon .path=${this.Icons.POWER} class="svg-plain"></ha-svg-icon>
+        <ha-svg-icon .path=${this.Icons.POWER} class="svg plain"></ha-svg-icon>
       </ha-button>
     `;
   }
@@ -139,7 +139,7 @@ export class VolumeRow extends LitElement {
         variant="brand"
         size="medium"
         id="button-mute"
-        class="button-min"
+        class="button min"
         part="button-mute"
         @click=${this.onVolumeMuteToggle}
       >
@@ -147,7 +147,7 @@ export class VolumeRow extends LitElement {
           .path=${this.player_data.muted
             ? this.Icons.VOLUME_MUTE
             : this.Icons.VOLUME_HIGH}
-          class="svg-plain"
+          class="svg plain"
         ></ha-svg-icon>
       </ha-button>
     `;
@@ -162,13 +162,13 @@ export class VolumeRow extends LitElement {
         variant="brand"
         size="medium"
         id="button-favorite"
-        class="button-min"
+        class="button min"
         part="button-favorite"
         @click=${this.onFavorite}
       >
         <ha-svg-icon
           .path=${this.favorite ? this.Icons.HEART : this.Icons.HEART_PLUS}
-          class="svg-plain"
+          class="svg plain"
         ></ha-svg-icon>
       </ha-button>
     `;
@@ -188,7 +188,7 @@ export class VolumeRow extends LitElement {
           const tick_inside = tick_pct <= vol;
           return html`
             <div
-              class="tick tick-${tick_inside ? `in` : `out`}"
+              class="tick ${tick_inside ? `in` : `out`}"
               value=${tick_pct}
               tick=${i}
             ></div>
@@ -210,8 +210,8 @@ export class VolumeRow extends LitElement {
           .max=${this.maxVolume}
           @value-changed=${this.onVolume}
           id="volume-slider"
-          class="${this.controller.ActivePlayer?.useExpressive
-            ? `volume-slider-expressive`
+          class="volume-slider ${this.controller.ActivePlayer?.useExpressive
+            ? `expressive`
             : ``}"
           part="volume-slider"
         ></ha-control-slider>

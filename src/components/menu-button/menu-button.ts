@@ -149,7 +149,7 @@ export class MassMenuButton extends LitElement {
   }
 
   protected render() {
-    const expressive_class = this.useExpressive ? `menu-expressive` : ``;
+    const expressive_class = this.useExpressive ? `expressive` : ``;
     const vibrant_class = this.useVibrant ? `vibrant` : ``;
     return html`
       <div id="menu-button" part="menu-button">

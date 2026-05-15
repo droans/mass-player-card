@@ -229,7 +229,9 @@ export class MediaRow extends LitElement {
     return html`
       <span
         slot="headline"
-        class="title ${played ? "title-disabled" : ""}"
+        class="title track 
+        ${played ? "disabled" : ""}
+        ${this.useExpressive ? `expressive` : ``}"
         style="width: ${this._calculateTitleWidth()}"
       >
         ${this.media_item?.media_title}
@@ -245,7 +247,9 @@ export class MediaRow extends LitElement {
     return html`
       <span
         slot="supporting-text"
-        class="title ${played ? "title-disabled" : ""}"
+        class="title artist 
+        ${played ? "disabled" : ""} 
+        ${this.useExpressive ? `expressive` : ``}"
         style="width: ${this._calculateTitleWidth()}"
       >
         ${this.media_item?.media_artist}
@@ -279,15 +283,11 @@ export class MediaRow extends LitElement {
         role="tonal"
         size="small"
         elevation="1"
-        class="action-button ${this.useExpressive
-          ? `action-button-expressive`
-          : ``}"
+        class="action-button ${this.useExpressive ? `expressive` : ``}"
       >
         <ha-svg-icon
           .path=${this.Icons.ARROW_PLAY_NEXT}
-          class="svg-action-button ${this.useExpressive
-            ? `svg-action-button-expressive`
-            : ``}"
+          class="svg-action-button ${this.useExpressive ? `expressive` : ``}"
         ></ha-svg-icon>
       </mpc-button>
     `;
@@ -302,15 +302,11 @@ export class MediaRow extends LitElement {
         role="tonal"
         size="small"
         elevation="1"
-        class="action-button ${this.useExpressive
-          ? `action-button-expressive`
-          : ``}"
+        class="action-button ${this.useExpressive ? `expressive` : ``}"
       >
         <ha-svg-icon
           .path=${this.Icons.ARROW_UP}
-          class="svg-action-button ${this.useExpressive
-            ? `svg-action-button-expressive`
-            : ``}"
+          class="svg-action-button ${this.useExpressive ? `expressive` : ``}"
         ></ha-svg-icon>
       </mpc-button>
     `;
@@ -325,15 +321,11 @@ export class MediaRow extends LitElement {
         role="tonal"
         size="small"
         elevation="1"
-        class="action-button ${this.useExpressive
-          ? `action-button-expressive`
-          : ``}"
+        class="action-button ${this.useExpressive ? `expressive` : ``}"
       >
         <ha-svg-icon
           .path=${this.Icons.ARROW_DOWN}
-          class="svg-action-button ${this.useExpressive
-            ? `svg-action-button-expressive`
-            : ``}"
+          class="svg-action-button ${this.useExpressive ? `expressive` : ``}"
         ></ha-svg-icon>
       </mpc-button>
     `;
@@ -348,28 +340,24 @@ export class MediaRow extends LitElement {
         role="tonal"
         size="small"
         elevation="1"
-        class="action-button ${this.useExpressive
-          ? `action-button-expressive`
-          : ``}"
+        class="action-button ${this.useExpressive ? `expressive` : ``}"
       >
         <ha-svg-icon
           .path=${this.Icons.CLOSE}
-          class="svg-action-button ${this.useExpressive
-            ? `svg-action-button-expressive`
-            : ``}"
+          class="svg-action-button ${this.useExpressive ? `expressive` : ``}"
         ></ha-svg-icon>
       </mpc-button>
     `;
   }
 
   render(): TemplateResult {
-    const playing = this.media_item?.playing ? `-active` : ``;
-    const expressive = this.useExpressive ? `button-expressive${playing}` : ``;
+    const playing = this.media_item?.playing ? `active` : ``;
+    const expressive = this.useExpressive ? `expressive` : ``;
     const hideCovers = this.showAlbumCovers ? `` : `hide-covers`;
     return html`
       <ha-md-list-item
         style="${this.display ? "" : "display: none;"}"
-        class="button${playing} ${expressive} ${hideCovers}"
+        class="button ${playing} ${expressive} ${hideCovers}"
         @click=${this.callOnQueueItemSelectedService}
         type="button"
       >

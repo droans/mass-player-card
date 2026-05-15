@@ -58,15 +58,15 @@ export default css`
   #menu-button {
     border-radius: var(--used-border-radius);
   }
-  .menu-expressive {
+  #menu-select-menu.expressive {
     --menu-background-color: var(--mass-menu-background-color-expressive);
     --mdc-shape-medium: var(--default-border-radius);
   }
-  .menu-expressive::part(menu) {
+  #menu-select-menu.expressive::part(menu) {
     background-color: var(--menu-background-color);
     border-radius: 24px;
   }
-  .menu-expressive.vibrant {
+  #menu-select-menu.expressive.vibrant {
     --menu-background-color: var(
       --mass-menu-background-color-expressive-vibrant
     );
@@ -92,12 +92,6 @@ export default css`
   }
   .svg-menu:not(.expressive) {
     color: var(--md-sys-color-primary);
-  }
-  .inactive-item {
-    background-color: var(--menu-background-color);
-  }
-  .inactive-item-expressive {
-    border-radius: var(--default-border-radius);
   }
   .svg-expressive {
     margin-left: 14px;

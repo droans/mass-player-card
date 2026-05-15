@@ -18,7 +18,7 @@ export default css`
     z-index: 2;
     height: 3.5em;
   }
-  .header-expressive {
+  .header.expressive {
     background-color: var(--md-sys-primary-container);
     border-radius: 20px 20px 0px 0px;
   }
@@ -33,6 +33,16 @@ export default css`
     font-weight: 600;
     z-index: 0;
     color: var(--md-sys-color-on-primary-container);
+  }
+  .label.expressive {
+    font-family: var(--expressive-font-family);
+    font-variation-settings: "ROND" 100;
+    font-stretch: 25%;
+    font-size: 2em;
+    line-height: 1em;
+  }
+  .expressive::slotted([slot="label"]) {
+    vertical-align: text-bottom;
   }
 
   .start {

@@ -128,4 +128,14 @@ export default css`
   .menu-list-item-image.expressive {
     border-radius: var(--media-row-thumbnail-border-radius);
   }
+  .menu-list-item-md.selected:not(.expressive) {
+    background-color: rgba(
+      from var(--background-color-normal-active) r g b / 0.2
+    );
+  }
+  .title.expressive {
+    font-family: var(--expressive-font-family);
+    font-variation-settings: "ROND" 100;
+    font-size: 1.2em;
+  }
 `;

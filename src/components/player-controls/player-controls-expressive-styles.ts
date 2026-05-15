@@ -21,40 +21,45 @@ export default css`
     --play-pause-border-radius: 18px !important;
   }
 
-  .button-lower {
+  .mpc-button.lower {
     --button-border-radius: var(--lower-button-border-radius);
   }
-  .button-lower::part(base) {
+  .mpc-button.lower::part(base) {
     border-radius: var(--button-border-radius);
   }
-  .button-lower::part(button) {
+  .mpc-button.lower::part(button) {
     --button-padding-left: 8px;
     --button-padding-right: 12px;
     border-radius: var(--button-border-radius);
   }
-  .button-lower:hover {
+  .mpc-button.lower:hover {
     --button-border-radius: 40px !important;
   }
 
-  .button-lower:first-of-type {
+  .mpc-button.lower:first-of-type {
     --button-border-radius: var(--lower-button-start-border-radius);
   }
-  .button-lower:last-of-type {
+  .mpc-button.lower:last-of-type {
     --button-border-radius: var(--lower-button-end-border-radius);
   }
-  .button-lower:only-of-type {
+  .mpc-button.lower:only-of-type {
     --button-border-radius: var(--lower-button-only-border-radius) !important;
   }
 
-  .button-lower-active {
+  .mpc-button.lower.active {
     --button-border-radius: 20px;
   }
 
-  .button-next-previous::part(button) {
+  .mpc-button.next,
+  .mpc-button.previous::part(button) {
     --button-button-height: var(--next-prev-button-height);
     --button-button-width: var(--next-prev-button-width);
     --button-elevation: var(--md-sys-elevation-level1);
     --button-padding: 0px;
+  }
+
+  .button-label {
+    display: contents;
   }
 
   #button-next {
@@ -69,7 +74,7 @@ export default css`
   #button-previous::part(button) {
     border-radius: var(--button-border-radius);
   }
-  .button-play-pause {
+  .mpc-button.play-pause {
     --button-button-height: var(--play-pause-icon-height);
     --button-border-radius: var(--play-pause-border-radius);
     --button-padding: 0px;
@@ -91,23 +96,65 @@ export default css`
     margin-bottom: 6px;
   }
 
-  .icons-favorite.icons-lower-active {
+  .icons.favorite.lower.active {
     color: var(--md-sys-color-tertiary);
   }
 
-  .icons-lower,
-  .icons-lower-active {
+  .icons.lower,
+  .icons.lower.active {
     height: var(--icon-height);
     width: var(--icon-height);
   }
 
-  .icons-next-previous {
+  .icons.next,
+  .icons.previous {
     height: var(--next-prev-icon-height);
     width: var(--next-prev-icon-height);
   }
-  .icon-play-pause {
+  .icons.play-pause {
     height: var(--play-pause-icon-height);
     width: var(--play-pause-icon-height);
+  }
+
+  #button-next .icons {
+    fill: var(--player-button-next-icon-color);
+  }
+  #button-previous .icons {
+    fill: var(--player-button-previous-icon-color);
+  }
+  #button-pause .icons {
+    fill: var(--player-button-pause-icon-color);
+  }
+  #button-play .icons {
+    fill: var(--player-button-play-icon-color);
+  }
+
+  #button-shuffle .icons {
+    fill: var(--player-button-shuffle-icon-color);
+  }
+  #button-shuffle .button-label {
+    color: var(--player-button-shuffle-text-color);
+  }
+
+  #button-repeat .icons {
+    fill: var(--player-button-repeat-icon-color);
+  }
+  #button-repeat .button-label {
+    color: var(--player-button-repeat-text-color);
+  }
+
+  #button-favorite .icons {
+    fill: var(--player-button-favorite-icon-color);
+  }
+  #button-favorite .button-label {
+    color: var(--player-button-favorite-text-color);
+  }
+
+  #button-power .icons {
+    fill: var(--player-button-power-icon-color);
+  }
+  #button-power .button-label {
+    color: var(--player-button-power-text-color);
   }
 
   .no-label::part(button) {
@@ -136,7 +183,7 @@ export default css`
       --md-sys-typescale-label-large-size: 10px;
       --icon-height: 16px;
     }
-    .button-lower::part(label) {
+    .mpc-button.lower::part(label) {
       --md-sys-typescale-label-large-size: 10px;
       --icon-height: 16px;
     }
@@ -146,7 +193,7 @@ export default css`
       --md-sys-typescale-label-large-size: 14px;
       --icon-height: 24px;
     }
-    .button-lower::part(label) {
+    .mpc-button-lower::part(label) {
       --md-sys-typescale-label-large-size: 14px;
       --icon-height: 24px;
     }

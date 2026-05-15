@@ -45,7 +45,16 @@ export default css`
       --mass-player-card-browser-card-border-radius,
       var(--default-border-radius)
     );
-    --queue-border-radius: var(
+    --players-border-radius: var(
+      --mass-player-card-players-border-radius,
+      0.7em
+    );
+    --players-border-radius-expressive: var(
+      --mass-player-card-players-border-radius,
+      var(--default-border-radius)
+    );
+    --queue-border-radius: var(--mass-player-card-queue-border-radius, 0.7em);
+    --queue-border-radius-expressive: var(
       --mass-player-card-queue-border-radius,
       var(--default-border-radius)
     );
@@ -55,7 +64,7 @@ export default css`
     );
     --media-row-border-radius: var(
       --mass-player-card-media-row-border-radius,
-      calc(var(--media-row-height)/2)
+      0.7em
     );
     --player-row-border-radius: var(
       --mass-player-card-player-row-border-radius,
@@ -108,19 +117,6 @@ export default css`
       var(--md-sys-color-on-secondary-container)
     );
 
-    --md-list-container-color: var(
-      --mass-player-card-list-item-container-color,
-      rgba(0, 0, 0, 0) !important
-    );
-    --md-list-item-leading-space: var(
-      --mass-player-card-list-item-leading-space,
-      0px
-    );
-    --md-list-item-two-line-container-height: var(
-      --mass-player-card-list-item-two-line-height,
-      48px
-    );
-
     --media-row-active-background-color: var(
       --mass-player-card-media-row-active-background-color,
       var(--table-row-alternative-background-color)
@@ -167,11 +163,117 @@ export default css`
       --mass-player-card-row-icon-button-height,
       1.5rem
     );
-    --menu-item-padding-left: var(
-      --mass-player-card-menu-item-padding-left,
-      20px
-    );
     --navbar-height: 4em;
+    --search-text-color: var(
+      --mass-player-card-search-text-color,
+      var(--ha-color-text-primary)
+    );
+    --search-placeholder-text-color: var(
+      --mass-player-card-search-placeholder-text-color,
+      var(--ha-color-neutral-50)
+    );
+    --player-control-icon-color: var(
+      --mass-player-card-player-control-icon-color,
+      var(--icon-primary-color, currentcolor)
+    );
+    --player-control-text-color: var(
+      --mass-player-card-player-control-text-color,
+      var(--primary-text-color)
+    );
+
+    --player-button-play-pause-icon-color: var(
+      --mass-player-card-player-button-play-pause-icon-color,
+      var(--player-control-icon-color)
+    );
+    --player-button-play-pause-text-color: var(
+      --mass-player-card-player-button-play-pause-text-color,
+      var(--player-control-text-color)
+    );
+
+    --player-button-play-icon-color: var(
+      --mass-player-card-player-button-play-icon-color,
+      var(--player-button-play-pause-icon-color)
+    );
+    --player-button-play-text-color: var(
+      --mass-player-card-player-button-play-text-color,
+      var(--player-button-play-pause-text-color)
+    );
+    --player-button-pause-icon-color: var(
+      --mass-player-card-player-button-pause-icon-color,
+      var(--player-button-play-pause-icon-color)
+    );
+    --player-button-pause-text-color: var(
+      --mass-player-card-player-button-pause-text-color,
+      var(--player-button-play-pause-text-color)
+    );
+
+    --player-button-previous-icon-color: var(
+      --mass-player-card-player-button-previous-icon-color,
+      var(--player-control-icon-color)
+    );
+    --player-button-previous-text-color: var(
+      --mass-player-card-player-button-previous-text-color,
+      var(--player-control-text-color)
+    );
+
+    --player-button-next-icon-color: var(
+      --mass-player-card-player-button-next-icon-color,
+      var(--player-control-icon-color)
+    );
+    --player-button-next-text-color: var(
+      --mass-player-card-player-button-next-text-color,
+      var(--player-control-text-color)
+    );
+
+    --player-button-shuffle-icon-color: var(
+      --mass-player-card-player-button-shuffle-icon-color,
+      var(--player-control-icon-color)
+    );
+    --player-button-shuffle-text-color: var(
+      --mass-player-card-player-button-shuffle-text-color,
+      var(--player-control-text-color)
+    );
+
+    --player-button-repeat-icon-color: var(
+      --mass-player-card-player-button-repeat-icon-color,
+      var(--player-control-icon-color)
+    );
+    --player-button-repeat-text-color: var(
+      --mass-player-card-player-button-repeat-text-color,
+      var(--player-control-text-color)
+    );
+
+    --player-button-power-icon-color: var(
+      --mass-player-card-player-button-power-icon-color,
+      var(--player-control-icon-color)
+    );
+    --player-button-power-text-color: var(
+      --mass-player-card-player-button-power-text-color,
+      var(--player-control-text-color)
+    );
+
+    --player-button-favorite-icon-color: var(
+      --mass-player-card-player-button-favorite-icon-color,
+      var(--player-control-icon-color)
+    );
+    --player-button-favorite-text-color: var(
+      --mass-player-card-player-button-favorite-text-color,
+      var(--player-control-text-color)
+    );
+
+    --player-button-mute-icon-color: var(
+      --mass-player-card-player-button-mute-icon-color,
+      var(--player-control-icon-color)
+    );
+
+    --browser-button-enqueue-menu-icon-primary-color: var(
+      --mass-player-card-browser-enqueue-menu-icon-primary-color,
+      var(--md-sys-color-primary)
+    );
+    --browser-button-enqueue-menu-icon-secondary-color: var(
+      --mass-player-card-browser-enqueue-menu-icon-secondary-color,
+      var(--ha-card-background, var(--card-background-color, #fff))
+    );
 
     --md-sys-elevation-level0: none;
     --md-sys-elevation-level1:
@@ -194,6 +296,9 @@ export default css`
       rgba(from #000000 r g b / 0.2) 0px 7px 8px -4px,
       rgba(from #000000 r g b / 0.14) 0px 12px 17px 2px,
       rgba(from #000000 r g b / 0.12) 0px 5px 22px 4px;
+    --expressive-font-family:
+      "Google Sans Flex", "Roboto Flex", var(--ha-font-family-body), "Roboto",
+      sans-serif !important;
   }
 
   ha-card {
@@ -204,19 +309,24 @@ export default css`
   }
   ha-card#expressive {
     background-color: var(--md-sys-color-background, var(--ha-card-background));
-    font-family:
-      "Roboto Flex", var(--ha-font-family-body), "Roboto", sans-serif !important;
+    font-family: var(--expressive-font-family);
   }
 
   #navbar.expressive {
     border-radius: 0px 0px var(--default-border-radius)
       var(--default-border-radius);
+  }
+  #navbar {
     position: absolute;
     bottom: 0;
     width: 100%;
   }
+  #navbar:not(.expressive) {
+    border-radius: var(--default-border-radius);
+    background-color: var(--card-background-color);
+  }
 
-  .section-hidden {
+  .section.hidden {
     display: none;
   }
 `;

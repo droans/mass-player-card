@@ -63,12 +63,16 @@ export default css`
 
   #time {
     justify-self: center;
+  }
+  #time:not(.time-expressive) {
     margin-bottom: 4px;
-    padding-top: 4px;
   }
   .time-expressive {
     color: var(--md-sys-color-on-primary-container) !important;
     font-weight: 400;
-    font-size: 16px;
+    font-size: 1.5em;
+    line-height: 1.2em;
+    font-stretch: 50%;
+    font-family: var(--expressive-font-family);
   }
 `;

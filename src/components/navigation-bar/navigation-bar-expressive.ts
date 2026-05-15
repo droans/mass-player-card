@@ -19,6 +19,7 @@ import { MassCardController } from "../../controller/controller";
 import { MediaBrowser } from "../../sections/media-browser";
 import { Icons } from "../../const/icons";
 import { WaAnimation } from "../../const/elements";
+import { QueueCard } from "../../sections/player-queue";
 
 @customElement("mpc-navbar-expressive")
 export class MassNavBar extends LitElement {
@@ -85,6 +86,18 @@ export class MassNavBar extends LitElement {
     if (section == Sections.MEDIA_BROWSER) {
       this.returnMediaBrowserToHome();
     }
+    if (section == Sections.QUEUE) {
+      this.returnQueueToActive();
+    }
+  };
+  protected returnQueueToActive = () => {
+    const host = this.controller?.host;
+    const element: QueueCard | null | undefined =
+      host?.shadowRoot?.querySelector("mpc-queue-card");
+    if (!element) {
+      return;
+    }
+    element.scrollToActive();
   };
   protected returnMediaBrowserToHome = () => {
     const host = this.controller?.host;
@@ -246,10 +259,10 @@ export class MassNavBar extends LitElement {
           this.handleTabChanged(section);
         }}
       >
-        <i class="icon-i ${active ? `icon-active` : ``}">
+        <i class="icon-i ${active ? `active` : ``}">
           <ha-svg-icon
             .path=${icon}
-            class="action-button-svg${active ? "" : "-inactive"}"
+            class="action-button-svg ${active ? "" : "inactive"}"
           ></ha-svg-icon>
         </i>
       </a>
@@ -258,9 +271,9 @@ export class MassNavBar extends LitElement {
   protected render(): TemplateResult {
     return html`
       <div>
-        <nav id="navigation" class="tabbed tabbed-expressive">
+        <nav id="navigation" class="tabbed expressive">
           <link
-            href="https://cdn.jsdelivr.net/npm/beercss@3.12.11/dist/cdn/beer.min.css"
+            href="https://cdn.jsdelivr.net/npm/beercss@4.0.20/dist/cdn/beer.min.css"
             rel="stylesheet"
           />
           ${this.renderMusicPlayerTab()} ${this.renderQueueTab()}

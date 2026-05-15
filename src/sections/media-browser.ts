@@ -517,8 +517,8 @@ export class MediaBrowser extends LitElement {
       return html`
         <mpc-menu-button
           id="search-media-type-menu"
-          class="${this.useExpressive
-            ? `search-media-type-menu-expressive`
+          class="search-media-type-menu ${this.useExpressive
+            ? `expressive`
             : ``}"
           scheme="plain"
           elevation="0"
@@ -541,15 +541,15 @@ export class MediaBrowser extends LitElement {
           size="small"
           elevation="0"
           id="search-favorite-button"
-          class="button-min ${this.useExpressive
-            ? `search-library-button-expressive`
+          class="search-library-button button min ${this.useExpressive
+            ? `expressive`
             : ``}"
         >
           <ha-svg-icon
             .path=${this.searchLibrary
               ? this.Icons.LIBRARY
               : this.Icons.LIBRARY_OUTLINED}
-            class="svg-xs ${this.useExpressive ? `svg-menu-expressive` : ``}"
+            class="svg xs menu ${this.useExpressive ? `expressive` : ``}"
           ></ha-svg-icon>
         </mpc-button>
       `;
@@ -612,9 +612,9 @@ export class MediaBrowser extends LitElement {
         size="small"
         elevation="1"
         id="button-search"
-        class="button-min ${this.useExpressive ? `button-expressive` : ``}"
+        class="button min ${this.useExpressive ? `expressive` : ``}"
       >
-        <ha-svg-icon .path=${this.Icons.SEARCH} class="svg-xs"></ha-svg-icon>
+        <ha-svg-icon .path=${this.Icons.SEARCH} class="svg xs"></ha-svg-icon>
       </mpc-button>
     `;
   }
@@ -631,7 +631,7 @@ export class MediaBrowser extends LitElement {
           size="small"
           elevation="1"
           id="button-back"
-          class="button-min ${this.useExpressive ? `button-expressive` : ``}"
+          class="button min ${this.useExpressive ? `expressive` : ``}"
         >
           <ha-svg-icon
             .path=${this.Icons.ARROW_LEFT}
@@ -650,7 +650,7 @@ export class MediaBrowser extends LitElement {
     return html`
       <mpc-menu-button
         id="filter-menu"
-        class="hdr-menu ${this.useExpressive ? `filter-menu-expressive` : ``}"
+        class="hdr-menu ${this.useExpressive ? `expressive` : ``}"
         .iconPath=${icon}
         .initialSelection=${this.activeSection}
         .items=${icons}
@@ -710,12 +710,12 @@ export class MediaBrowser extends LitElement {
     return html`
       <div
         id="container"
-        class="${this.useExpressive ? `container-expressive` : ``}"
+        class="container ${this.useExpressive ? `expressive` : ``}"
       >
         ${this.renderHeader()}
         <div
           id="mass-browser"
-          class="${this.useExpressive ? `mass-browser-expressive` : ``}"
+          class="mass-browser ${this.useExpressive ? `expressive` : ``}"
         >
           ${this.renderBrowserCards()}
         </div>

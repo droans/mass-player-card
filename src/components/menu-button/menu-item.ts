@@ -149,7 +149,8 @@ export class MassMenuItem extends LitElement {
         @click=${this.onSelection}
         ?disabled=${this.disabled}
       >
-        ${this.renderImageOrIcon()} ${itm.title}
+        ${this.renderImageOrIcon()}
+        <div class="title ${expressive_class}">${itm.title}</div>
       </ha-dropdown-item>
       ${this.renderDivider()}
     `;

@@ -124,7 +124,7 @@ export class MassNavBar extends LitElement {
         <i class="icon-i">
           <ha-svg-icon
             .path=${icon}
-            class="action-button-svg${active ? "" : "-inactive"}"
+            class="action-button-svg ${active ? "" : "inactive"}"
           ></ha-svg-icon>
         </i>
         <span></span>
@@ -136,7 +136,7 @@ export class MassNavBar extends LitElement {
       <div>
         <nav class="tabbed">
           <link
-            href="https://cdn.jsdelivr.net/npm/beercss@3.12.11/dist/cdn/beer.min.css"
+            href="https://cdn.jsdelivr.net/npm/beercss@4.0.20/dist/cdn/beer.min.css"
             rel="stylesheet"
           />
           ${this.renderMusicPlayerTab()} ${this.renderQueueTab()}

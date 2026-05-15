@@ -192,15 +192,17 @@ export class PlayerRow extends LitElement {
         ? `audio-bars`
         : `audio-bars-inactive`;
     const active_expressive_style = this.useExpressive
-      ? `audio-bars-expressive`
-      : `audio-bars-normal`;
+      ? `expressive`
+      : `normal`;
     return html`
       <span slot="headline">
         <div
           class="title-bars"
           style="max-width: ${this._calculateTitleWidth()}"
         >
-          <div class="title">${title}</div>
+          <div class="title ${this.useExpressive ? `expressive` : ``}">
+            ${title}
+          </div>
           <div class="${active_style} ${active_expressive_style}">
             <div></div>
             <div></div>
@@ -223,15 +225,11 @@ export class PlayerRow extends LitElement {
         role="tonal"
         size="small"
         elevation="1"
-        class="action-button ${this.useExpressive
-          ? `action-button-expressive`
-          : ``}"
+        class="action-button ${this.useExpressive ? `expressive` : ``}"
       >
         <ha-svg-icon
           .path=${this.Icons.SWAP}
-          class="svg-action-button ${this.useExpressive
-            ? `svg-action-button-expressive`
-            : ``}"
+          class="svg-action-button ${this.useExpressive ? `expressive` : ``}"
         ></ha-svg-icon>
       </mpc-button>
     `;
@@ -249,15 +247,11 @@ export class PlayerRow extends LitElement {
         role="tonal"
         size="small"
         elevation="1"
-        class="action-button ${this.useExpressive
-          ? `action-button-expressive`
-          : ``}"
+        class="action-button ${this.useExpressive ? `expressive` : ``}"
       >
         <ha-svg-icon
           .path=${this.joined ? this.Icons.LINK_OFF : this.Icons.LINK}
-          class="svg-action-button ${this.useExpressive
-            ? `svg-action-button-expressive`
-            : ``}"
+          class="svg-action-button ${this.useExpressive ? `expressive` : ``}"
         ></ha-svg-icon>
       </mpc-button>
     `;
@@ -279,8 +273,8 @@ export class PlayerRow extends LitElement {
     return html``;
   }
   render() {
-    const active = this.selected ? `-active` : ``;
-    const expressive = this.useExpressive ? `button-expressive` : ``;
+    const active = this.selected ? `active` : ``;
+    const expressive = this.useExpressive ? `expressive` : ``;
     const entityExists = this.player_entity;
     const entityAvailable = playerIsAvailable(
       this.hass,
@@ -289,7 +283,7 @@ export class PlayerRow extends LitElement {
     const disabled = !entityExists || !entityAvailable;
     return html`
       <ha-md-list-item
-        class="button${active} ${expressive}${active}"
+        class="button ${active} ${expressive}"
         @click=${this.callOnPlayerSelectedService}
         type="button"
         ?disabled=${disabled}

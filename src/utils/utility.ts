@@ -116,7 +116,8 @@ export function isActive(
   const updated_ms = new Date(entity.last_updated).getTime();
   const now_ms = Date.now();
   const updated_recently =
-    now_ms - updated_ms <= MAX_ACTIVE_LAST_ACTIVE_DURATION;
+    now_ms - updated_ms <= MAX_ACTIVE_LAST_ACTIVE_DURATION ||
+    !entity_config.inactive_when_not_updated;
   return (
     not_off && is_mass && has_queue && connected && updated_recently && has_item
   );

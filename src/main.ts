@@ -256,9 +256,9 @@ export class MusicAssistantPlayerCard extends LitElement {
       return cache(html`
         <wa-tab-panel
           name="${Sections.PLAYERS}"
-          class="section${this.active_section == Sections.PLAYERS
+          class="section ${this.active_section == Sections.PLAYERS
             ? ""
-            : "-hidden"}"
+            : "hidden"}"
         >
           <mpc-players-card
             .selectedPlayerService=${this.playerSelected}
@@ -274,9 +274,9 @@ export class MusicAssistantPlayerCard extends LitElement {
       return cache(html`
         <wa-tab-panel
           name="${Sections.MUSIC_PLAYER}"
-          class="section${this.active_section == Sections.MUSIC_PLAYER
+          class="section ${this.active_section == Sections.MUSIC_PLAYER
             ? ""
-            : "-hidden"}"
+            : "hidden"}"
         >
           <mpc-music-player-card
             .selectedPlayerService=${this.playerSelected}
@@ -291,9 +291,9 @@ export class MusicAssistantPlayerCard extends LitElement {
       return cache(html`
         <wa-tab-panel
           name="${Sections.QUEUE}"
-          class="section${this.active_section == Sections.QUEUE
+          class="section ${this.active_section == Sections.QUEUE
             ? ""
-            : "-hidden"}"
+            : "hidden"}"
         >
           <mpc-queue-card .config=${this.config.queue}></mpc-queue-card>
         </wa-tab-panel>
@@ -306,7 +306,7 @@ export class MusicAssistantPlayerCard extends LitElement {
       return cache(html`
         <wa-tab-panel
           name="${Sections.MEDIA_BROWSER}"
-          class="section${this.active_section == Sections.MEDIA_BROWSER ? "" : "-hidden"}"
+          class="section ${this.active_section == Sections.MEDIA_BROWSER ? "" : "hidden"}"
         >
           <mpc-media-browser
             .config=${this.config.media_browser}
