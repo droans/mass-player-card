@@ -155,7 +155,7 @@ entities:
     volume_entity_id: <MEDIA_PLAYER_ENTITY>
     max_volume: 100
     name: <MEDIA_PLAYER_ENTITY_NAME>
-    inactive_when_idle: true
+    inactive_when_idle: false
     inactive_when_not_updated: true
 queue:
   enabled: true
