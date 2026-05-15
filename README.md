@@ -156,6 +156,7 @@ entities:
     max_volume: 100
     name: <MEDIA_PLAYER_ENTITY_NAME>
     inactive_when_idle: true
+    inactive_when_not_updated: true
 queue:
   enabled: true
   hide:
@@ -346,6 +347,7 @@ entities:
   - entity_id: media_player.bathoom_music_assistant
     name: Bathroom Speaker
     max_volume: 50
+    inactive_when_not_updated: true
     hide:
       player:
         mute_button: true
@@ -483,14 +485,15 @@ You can choose which section to start on by default. By default, the first enabl
 ### Entity Config
 For each entity, you can either provide the Entity ID by itself or you can provide the Music Assistant media player Entity ID, the media player Entity ID for volume control, and/or the name of the player. Below is the config if you would like to provide the additional details.
 
-| Parameter          | Type                                                          | Required | Default     | Description                              |
-|--------------------|---------------------------------------------------------------|----------|-------------|------------------------------------------|
-| entity_id          | str                                                           | Yes      | N/A         | The Music Assistant entity               |
-| name               | str                                                           | No       | N/A         | The name of the media player             |
-| volume_entity_id   | str                                                           | No       | `entity_id` | The media player for volume control      |
-| max_volume         | int                                                           | No       | N/A         | Max volume for the volume slider (0-100) |
-| inactive_when_idle | bool                                                          | No       | false       | Consider the player inactive if idle.    |
-| hide               | [EntityHiddenElementsConfig](#entity-hidden-elements-config)  | No       | See below   | See Below                                |
+| Parameter                 | Type                                                          | Required | Default     | Description                                                                    |
+|---------------------------|---------------------------------------------------------------|----------|-------------|--------------------------------------------------------------------------------|
+| entity_id                 | str                                                           | Yes      | N/A         | The Music Assistant entity                                                     |
+| name                      | str                                                           | No       | N/A         | The name of the media player                                                   |
+| volume_entity_id          | str                                                           | No       | `entity_id` | The media player for volume control                                            |
+| max_volume                | int                                                           | No       | N/A         | Max volume for the volume slider (0-100)                                       |
+| inactive_when_idle        | bool                                                          | No       | false       | Consider the player inactive if idle.                                          |
+| inactive_when_not_updated | bool                                                          | No       | false       | Consider the player inactive if if the entity hasn't been updated recently.    |
+| hide                      | [EntityHiddenElementsConfig](#entity-hidden-elements-config)  | No       | See below   | See Below                                                                      |
 
 #### Entity Hidden Elements Config
 Certain elements across the different sections can be hidden or displayed depending on your configuration. By default, every item will be displayed.
