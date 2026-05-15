@@ -57,8 +57,12 @@ A Home Assistant media player card built for Music Assistant players.
 - [FAQs](#faqs)
   - [The card won't display at all or won't display properly!](#the-card-wont-display-at-all-or-wont-display-properly)
   - [The media browser won't display any items for:](#the-media-browser-wont-display-any-items-for)
+  - [Why is the card completely blank?](#why-is-the-card-completely-blank)
+  - [Why is my player queue empty even though it was just playing something?](#why-is-my-player-queue-empty-even-though-it-was-just-playing-something)
+  - [Can this card support individual users?](#can-this-card-support-individual-users)
   - [I'm not seeing any artwork in the queue or media browser!](#im-not-seeing-any-artwork-in-the-queue-or-media-browser)
   - [How do I theme the card?](#how-do-i-theme-the-card)
+  - [Can I group players X and Y?](#can-i-group-players-x-and-y)
   - [Can this card work in my local language?](#can-this-card-work-in-my-local-language)
   - [I am having issues with this card on my iOS/OSX device but it works fine elsewhere.](#i-am-having-issues-with-this-card-on-my-iososx-device-but-it-works-fine-elsewhere)
   - [I would like to sponsor you/the card and/or pay to add a new feature!](#i-would-like-to-sponsor-youthe-card-andor-pay-to-add-a-new-feature)
@@ -798,6 +802,26 @@ Ensure your music provider actually provides recommendations.
 #### Recents
 Have you tried listening to music?
 
+## Why is the card completely blank?
+
+Please ensure you have installed and configured the [Music Assistant Queue Actions](https://github.com/droans/mass_queue) integration. If you are still having issues, ensure that you are using only Music Assistant players.
+
+## Why is my player queue empty even though it was just playing something?
+
+For some players and providers, Music Assistant can consider a player inactive rather quickly after pausing. While not every instance can be handled, you usually can correct for this in most instances. In your card configuration, add the following config for each entity:
+
+```yaml
+- entity_id: ...
+  inactive_when_idle: false
+  inactive_when_not_updated: false
+```
+
+If you are still experiencing issues, please run the action `mass_queue.get_queue_items` for your player. If it returns your queue, please file an issue report and include your Home Assistant logs and browser logs. The browser logs can usually be found by opening up your browser's Developer Tools and navigating to a section labeled "Console". 
+
+## Can this card support individual users?
+
+Currently, no. However, this is something we are trying to work towards.
+
 ## I'm not seeing any artwork in the queue or media browser!
 If you are using a local provider, Music Assistant sends back a path which usually can't be accessed. Fortunately, this is something that we can easily work around. Music Assistant Queue Actions has the ability to download images for local providers and send them back to the card. This can cause a slowdown as downloading and encoding each image may take some time. Some of this is avoided - for example, images for queue items are usually only downloaded when HA first starts up, the integration is reloaded, or when the queue changes. 
 
@@ -825,16 +849,26 @@ If you would like to set the border radius to 12px instead, you would add this l
 mass-player-card-default-border-radius: 12px;
 ```
 
+If there are portions of the card which you would like to theme but don't have any support yet, please submit an issue. I will be able to add support in most cases.
+
+## Can I group players X and Y?
+
+Yes... Most likely... Usually... Maybe... Ehhh...
+
+It depends. If they are the same provider, you almost always can. Some players can also be grouped across different providers. This really comes down to their support in Music Assistant itself. 
+
+For players which don't have any support, you can usually use the universal or sync groups within Music Assistant. However, this card does not support setting up these types of groups. You will need to create them yourself.
+
 ## Can this card work in my local language?
 
 **Current Language Support**
 
-| Language  | Support |
-|-----------|---------|
-| English   | Full    |
-| Dutch     | Most    |
-| French    | Most    |
-| Portugese | Most    |
+| Language   | Support |
+|------------|---------|
+| English    | Full    |
+| Dutch      | Most    |
+| French     | Most    |
+| Portuguese | Most    |
 
 If you would like to add new translations for other languages:
 1. Fork this repository and clone it locally.
@@ -847,6 +881,12 @@ If you would like to add new translations for other languages:
 6. Submit a pull request to this repository. The target branch should be `dev`. 
 
 The instructions are rather similar for improving existing language support. However, you do not need to make a clone of `en.ts` (instead, use the existing translation file) and you do not need to follow Step #4.
+
+If you want to add new translations but don't want to work with the code and/or Git, you can instead contribute by submitting them to us:
+1. Navigate to this repository in Github.
+2. Download the `en.ts` file at `src/translations`.
+3. Edit each translation to match with your language. (see step #3 above).
+4. Open a new issue in this repository and attach a copy of the translation file and the name of the language you have added support for.
 
 ## I am having issues with this card on my iOS/OSX device but it works fine elsewhere.
 
