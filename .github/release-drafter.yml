@@ -28,6 +28,9 @@ categories:
   - title: "⬆️ Dependency updates"
     labels:
       - "dependencies"
+  - title: "🌍 Translations"
+    labels:
+      - "translations"
 
 version-resolver:
   major:
