@@ -1,10 +1,12 @@
 import { ExtendedHass } from "../const/types";
+import de from "../translations/de";
 import en from "../translations/en";
 import nl from "../translations/nl";
 import pt from "../translations/pt";
 import fr from "../translations/fr";
 
 const TRANSLATIONS = {
+  de,
   en,
   nl,
   pt,
