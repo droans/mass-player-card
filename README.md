@@ -867,6 +867,7 @@ For players which don't have any support, you can usually use the universal or s
 |------------|---------|---------|
 | English    | en      | Full    |
 | German     | de      | Full    |
+| Italian    | it      | Full    |
 | Spanish    | es      | Full    |
 | Dutch      | nl      | Most    |
 | French     | fr      | Most    |

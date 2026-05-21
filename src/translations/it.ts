@@ -1,0 +1,53 @@
+export default {
+  "browser.card.favorites": "Preferiti",
+  "browser.card.recents": "Recenti",
+  "browser.card.recommendations": "Consigliati",
+  "browser.collections.track_count": "brani",
+  "browser.collections.playlist.unknown_owner": "Sconosciuto",
+  "browser.collections.podcast.episodes": "episodi",
+  "browser.enqueue.play": "Riproduci adesso",
+  "browser.enqueue.next": "Riproduci successivamente",
+  "browser.enqueue.play_clear":
+    "Riproduci adesso e svuota coda di riproduzione",
+  "browser.enqueue.next_clear":
+    "Riproduci successivamente e svuota coda di riproduzione",
+  "browser.enqueue.queue": "Aggiungi alla coda di riproduzione",
+  "browser.enqueue.radio": "Riproduci radio",
+  "browser.loading": "Caricamento...",
+  "browser.search.placeholder": "Cerca in Music Assistant",
+  "browser.sections.album": "Album",
+  "browser.sections.artist": "Artisti",
+  "browser.sections.audiobook": "Audiolibri",
+  "browser.sections.playlist": "Playlist",
+  "browser.sections.podcast": "Podcast",
+  "browser.sections.radio": "Radio",
+  "browser.sections.track": "Brani",
+  "browser.playlists.remove_track": "Rimuovi dalla playlist",
+
+  "player.controls.power": "Accensione",
+  "player.controls.shuffle": "Riproduzione casuale",
+  "player.controls.repeat": "Ripeti",
+  "player.controls.favorite": "Preferito",
+  "player.controls.previous": "Precedente",
+  "player.controls.play": "Riproduci",
+  "player.controls.pause": "Pausa",
+  "player.controls.play_pause": "Riproduci/Pausa",
+  "player.controls.next": "Successivo",
+
+  "player.header": "Lettore multimediale",
+  "player.messages.inactive": [
+    "Tranne il suono del silenzio.",
+    "C'è un silenzio assordante qui.",
+    "Stai frequentando altri lettori?",
+    "Per favore, non lasciarmi solo con i miei pensieri.",
+    "Spero tu non soffra di acufene.",
+    "Perché non fai qualcosa di produttivo invece?",
+    "Usiamo l'immaginazione, piuttosto.",
+  ],
+  "player.title.inactive": "Non c'è nulla in riproduzione al momento!",
+
+  "players.header": "Lettori",
+
+  "queue.header": "Coda di riproduzione",
+  "player.playlist_dialog.header": "Aggiungi alla playlist",
+};
