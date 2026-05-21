@@ -866,8 +866,8 @@ For players which don't have any support, you can usually use the universal or s
 | Language   | ISO-639 | Support |
 |------------|---------|---------|
 | English    | en      | Full    |
-| German     | de      | All     |
-| Spanish    | es      | All     |
+| German     | de      | Full    |
+| Spanish    | es      | Full    |
 | Dutch      | nl      | Most    |
 | French     | fr      | Most    |
 | Portuguese | pt      | Most    |
