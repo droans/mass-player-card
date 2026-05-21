@@ -1,0 +1,53 @@
+export default {
+  "browser.card.favorites": "Favoritos",
+  "browser.card.recents": "Recientes",
+  "browser.card.recommendations": "Recomendaciones",
+  "browser.collections.track_count": "pistas",
+  "browser.collections.playlist.unknown_owner": "Desconocido",
+  "browser.collections.podcast.episodes": "episodios",
+  "browser.enqueue.play": "Reproducir ahora",
+  "browser.enqueue.next": "Reproducir a continuación",
+  "browser.enqueue.play_clear":
+    "Reproducir ahora y vaciar cola de reproducción",
+  "browser.enqueue.next_clear":
+    "Reproducir a continuación y vaciar cola de reproducción",
+  "browser.enqueue.queue": "Agregar a la cola de reproducción",
+  "browser.enqueue.radio": "Reproducir radio",
+  "browser.loading": "Cargando...",
+  "browser.search.placeholder": "Buscar en Music Assistant",
+  "browser.sections.album": "Álbumes",
+  "browser.sections.artist": "Artistas",
+  "browser.sections.audiobook": "Audiolibros",
+  "browser.sections.playlist": "Listas de reproducción",
+  "browser.sections.podcast": "Podcasts",
+  "browser.sections.radio": "Radios",
+  "browser.sections.track": "Pistas",
+  "browser.playlists.remove_track": "Eliminar de la lista de reproducción",
+
+  "player.controls.power": "Encendido",
+  "player.controls.shuffle": "Aleatorio",
+  "player.controls.repeat": "Repetir",
+  "player.controls.favorite": "Favorito",
+  "player.controls.previous": "Anterior",
+  "player.controls.play": "Reproducir",
+  "player.controls.pause": "Pausar",
+  "player.controls.play_pause": "Reproducir/Pausar",
+  "player.controls.next": "Siguiente",
+
+  "player.header": "Reproductor de medios",
+  "player.messages.inactive": [
+    "Excepto el sonido del silencio.",
+    "Está demasiado silencioso aquí.",
+    "¿Estás viendo a otros reproductores?",
+    "Por favor, no me dejes a solas con mis pensamientos.",
+    "Espero que no tengas tinnitus.",
+    "¿Por qué no haces algo productivo en su lugar?",
+    "Mejor usemos nuestra imaginación.",
+  ],
+  "player.title.inactive": "¡No hay nada activo en este momento!",
+
+  "players.header": "Reproductores",
+
+  "queue.header": "Cola de reproducción",
+  "player.playlist_dialog.header": "Agregar a la lista de reproducción",
+};
