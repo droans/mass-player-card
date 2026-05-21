@@ -1,6 +1,7 @@
 import { ExtendedHass } from "../const/types";
 import de from "../translations/de";
 import en from "../translations/en";
+import es from "../translations/es";
 import fr from "../translations/fr";
 import nl from "../translations/nl";
 import pt from "../translations/pt";
@@ -8,6 +9,7 @@ import pt from "../translations/pt";
 const TRANSLATIONS = {
   de,
   en,
+  es,
   fr,
   nl,
   pt,
