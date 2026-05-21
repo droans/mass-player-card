@@ -863,14 +863,14 @@ For players which don't have any support, you can usually use the universal or s
 
 **Current Language Support**
 
-| Language   | Support |
-|------------|---------|
-| English    | Full    |
-| German     | All     |
-| Spanish    | All     |
-| Dutch      | Most    |
-| French     | Most    |
-| Portuguese | Most    |
+| Language   | ISO-639 | Support |
+|------------|---------|---------|
+| English    | en      | Full    |
+| German     | de      | All     |
+| Spanish    | es      | All     |
+| Dutch      | nl      | Most    |
+| French     | fr      | Most    |
+| Portuguese | pt      | Most    |
 
 If you would like to add new translations for other languages:
 1. Fork this repository and clone it locally.
