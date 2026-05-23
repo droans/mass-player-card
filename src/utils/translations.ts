@@ -3,12 +3,14 @@ import en from "../translations/en";
 import nl from "../translations/nl";
 import pt from "../translations/pt";
 import fr from "../translations/fr";
+import vi from "../translations/vi";
 
 const TRANSLATIONS = {
   en,
   nl,
   pt,
   fr,
+  vi,
 };
 const DEFAULT_LANGUAGE = "en";
 const DEFAULT_TRANSLATIONS = TRANSLATIONS.en;
