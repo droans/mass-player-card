@@ -40,6 +40,7 @@ import { cache } from "lit/directives/cache.js";
 import "../marquee-text/marquee-text";
 import { PodcastEpisode } from "mass-queue-types/packages/mass_queue/types/media-items";
 import "./browser-collection-track-row";
+import { ArtworkSize } from "../../config/player";
 
 export class BrowserViewBase extends LitElement {
   protected _collectionData?: mediaCardCollectionType | undefined;
@@ -362,12 +363,27 @@ export class BrowserViewBase extends LitElement {
       </div>
     `;
   }
+  private _collectionImageStyles(): string {
+    const artworkSize = this.browserConfig?.artwork_size ?? ArtworkSize.MEDIUM;
+    const heights: Record<ArtworkSize, string> = {
+      [ArtworkSize.SMALL]: "6em",
+      [ArtworkSize.MEDIUM]: "10em",
+      [ArtworkSize.LARGE]: "14em",
+    };
+    const collapsedHeights: Record<ArtworkSize, string> = {
+      [ArtworkSize.SMALL]: "3.6em",
+      [ArtworkSize.MEDIUM]: "6em",
+      [ArtworkSize.LARGE]: "8.4em",
+    };
+    return `--browser-collection-image-height: ${heights[artworkSize]}; --browser-collection-image-collapsed-height: ${collapsedHeights[artworkSize]};`;
+  }
+
   protected render(): TemplateResult {
     const expressiveClass = this.useExpressive ? `expressive` : ``;
     const vibrantClass = this.useVibrant ? `vibrant` : ``;
     const scrollClass = this.tracks?.length ? `` : `no-scroll`;
     return html`
-      <div id="container" class="${expressiveClass} ${vibrantClass}">
+      <div id="container" class="${expressiveClass} ${vibrantClass}" style="${this._collectionImageStyles()}">
         <div id="header">
           ${this.renderHeader()}
         </div>

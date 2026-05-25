@@ -2,6 +2,7 @@ import { mdiCreation, mdiHeart, mdiHistory } from "@mdi/js";
 
 import { BaseHiddenElementsConfig, Config } from "./config";
 import { hiddenElementsConfigItem } from "../utils/config";
+import { ArtworkSize } from "./player";
 
 type BrowserSection = "favorites" | "recents" | "recommendations";
 
@@ -13,6 +14,7 @@ export interface MediaBrowserConfig {
   sections: customSection[];
   hide: MediaBrowserHiddenElementsConfig;
   columns: number;
+  artwork_size: ArtworkSize;
   playlists_allow_removing_tracks: boolean;
   default_enqueue_option: EnqueueConfigOptions;
   default_section: BrowserSection;
@@ -136,6 +138,7 @@ export const DEFAULT_MEDIA_BROWSER_CONFIG: MediaBrowserConfig = {
   sections: DEFAULT_CUSTOM_SECTION_CONFIG,
   hide: DEFAULT_MEDIA_BROWSER_HIDDEN_ELEMENTS_CONFIG,
   columns: 2,
+  artwork_size: ArtworkSize.MEDIUM,
   playlists_allow_removing_tracks: false,
   default_enqueue_option: "play_now",
   default_section: "favorites",
@@ -196,6 +199,40 @@ function recommendationsConfigForm() {
     ],
   };
 }
+function artworkSizeConfigForm() {
+  return {
+    name: "artwork_size",
+    selector: {
+      select: {
+        multiple: false,
+        custom_value: true,
+        mode: "dropdown",
+        options: [
+          {
+            label: "Small (6em)",
+            value: "small",
+            description: "6em, compact thumbnails",
+          },
+          {
+            label: "Medium (10em)",
+            value: "medium",
+            description: "10em, balanced",
+          },
+          {
+            label: "Large (14em)",
+            value: "large",
+            description: "14em, prominent",
+          },
+        ],
+      },
+      default: "medium",
+      description: {
+        suffix: "Set the size of artwork in the browser and collection views",
+      },
+    },
+  };
+}
+
 function defaultSectionConfigForm() {
   return {
     name: "default_section",
@@ -270,6 +307,7 @@ export function mediaBrowserConfigForm() {
   return [
     { name: "enabled", selector: { boolean: {} }, default: true },
     { name: "columns", selector: { number: { min: 1, max: 10, mode: "box" } } },
+    artworkSizeConfigForm(),
     defaultSectionConfigForm(),
     defaultEnqueueOptionConfigForm(),
     {

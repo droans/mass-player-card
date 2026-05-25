@@ -20,6 +20,7 @@ import { ExtendedHass, mediaCardData, MediaCardItem } from "../../const/types";
 
 import styles from "./media-browser-cards-styles";
 import { MediaBrowserConfig } from "../../config/media-browser";
+import { ArtworkSize } from "../../config/player";
 import { jsonMatch } from "../../utils/utility";
 import { EnqueueOptions } from "../../const/enums";
 
@@ -99,6 +100,14 @@ export class MediaBrowserCards extends LitElement {
       `;
       return;
     }
+    const artworkSize = this.browserConfig?.artwork_size ?? ArtworkSize.MEDIUM;
+    const artworkSizeMaxWidths: Record<ArtworkSize, string> = {
+      [ArtworkSize.SMALL]: "6em",
+      [ArtworkSize.MEDIUM]: "10em",
+      [ArtworkSize.LARGE]: "14em",
+    };
+    const maxWidthCap = artworkSizeMaxWidths[artworkSize];
+
     const result = this.items?.map((item) => {
       const queueable = [
         "service",
@@ -109,10 +118,11 @@ export class MediaBrowserCards extends LitElement {
       ].includes(item.data.type)
         ? literal`queueable`
         : literal``;
-      const width = (1 / (this.browserConfig?.columns ?? 1)) * 100 - 2;
+      const baseWidth = (1 / (this.browserConfig?.columns ?? 1)) * 100 - 2;
+      const maxWidth = `min(${baseWidth.toString()}%, ${maxWidthCap})`;
       return html`
         <mpc-browser-media-card
-          style="max-width: ${width.toString()}%"
+          style="max-width: ${maxWidth}"
           .config=${item}
           .onSelectAction=${this.onItemSelected}
           .onEnqueueAction=${this.onEnqueue}

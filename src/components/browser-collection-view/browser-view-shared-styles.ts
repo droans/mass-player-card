@@ -67,9 +67,9 @@ export default css`
   }
   #collection-image {
     display: flex;
-    height: 10em;
+    height: var(--browser-collection-image-height, 10em);
     aspect-ratio: 1;
-    --collection-image-div-collapsed-height: 6em;
+    --collection-image-div-collapsed-height: var(--browser-collection-image-collapsed-height, 6em);
     margin-left: 1em;
     margin-top: 1em;
   }
