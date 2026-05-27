@@ -42,7 +42,6 @@ yarn rollup
 
 ### Essential Commands
 
-
 These commands should not be run with any other arguments.
 
 ```bash
