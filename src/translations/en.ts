@@ -26,7 +26,7 @@ export default {
   "player.controls.shuffle": "Shuffle",
   "player.controls.repeat": "Repeat",
   "player.controls.favorite": "Favorite",
-  "player.controls.previous": "Favorite",
+  "player.controls.previous": "Previous",
   "player.controls.play": "Play",
   "player.controls.pause": "Pause",
   "player.controls.play_pause": "Play/Pause",
