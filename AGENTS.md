@@ -1,7 +1,6 @@
 # Agent Contribution to Music Assistant Player Card
 
-## Quick Reference
-#### Developing
+## Developing
 
 ### Code Quality
 * Code must be linted. This is enforced by workflows.
@@ -14,6 +13,7 @@
 
 This card uses `corepack` for development and relies on Node 22.
 
+### Setting up the dev environment
 ##### Clone the repository:
 ```bash
 git clone https://github.com/droans/mass-player-card
