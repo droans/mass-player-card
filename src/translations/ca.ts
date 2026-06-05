@@ -34,8 +34,8 @@ export default {
 
   "player.header": "Reproductor multimèdia",
   "player.messages.inactive": [
-    "Tret del so del silenci.",
-    "Que silenciós que és, això!",
+    "Tot bé, tret del so del silenci.",
+    "Quin silenci que hi ha, aquí!",
     "Estàs sortint amb altres reproductors?",
     "Si us plau, no em deixis sol amb els meus pensaments.",
     "Espero que no tinguis acúfens.",
