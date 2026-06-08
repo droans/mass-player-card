@@ -17,6 +17,7 @@ import {
 import { ExpressiveScheme } from "../config/config";
 import { ExtendedHass } from "../const/types";
 import { tryPrefetchImageWithFallbacks } from "./utility";
+import { CheckURLResult, getUrlAccessibility } from "./url";
 import localForage from "localforage";
 
 type dynamicSchemeType = new (
@@ -184,8 +185,8 @@ export async function getOrGenerateExpressiveScheme(
   darkMode: boolean,
 ): Promise<{ scheme: DynamicScheme; color: number }> {
   const imgSource = (imageElement as HTMLImageElement | undefined)?.src ?? ``;
-  const isSecure = imgSource.startsWith("https");
-  if (!isSecure) {
+  const isAccessible = getUrlAccessibility(imgSource) === CheckURLResult.ACCESSIBLE;
+  if (!isAccessible) {
     const color = generateDefaultExpressiveSchemeColor();
     const scheme = generateExpressiveSchemeFromColor(
       color,
