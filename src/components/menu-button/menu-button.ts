@@ -195,8 +195,11 @@ export class MassMenuButton extends LitElement {
     }
   }
   disconnectedCallback(): void {
+    super.disconnectedCallback();
+
     if (this.interval) {
       window.clearInterval(this.interval);
+      this.interval = undefined;
     }
   }
   static get styles(): CSSResultGroup {
