@@ -347,7 +347,6 @@ export class QueueCard extends LitElement {
       "section-changed",
       this.onTabSwitch,
     );
-    super.disconnectedCallback();
   }
   public connectedCallback(): void {
     if (this.queueController) {
