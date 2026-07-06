@@ -1,14 +1,20 @@
 import { ExtendedHass } from "../const/types";
+import de from "../translations/de";
 import en from "../translations/en";
+import es from "../translations/es";
+import fr from "../translations/fr";
+import it from "../translations/it";
 import nl from "../translations/nl";
 import pt from "../translations/pt";
-import fr from "../translations/fr";
 
 const TRANSLATIONS = {
+  de,
   en,
+  es,
+  fr,
+  it,
   nl,
   pt,
-  fr,
 };
 const DEFAULT_LANGUAGE = "en";
 const DEFAULT_TRANSLATIONS = TRANSLATIONS.en;
