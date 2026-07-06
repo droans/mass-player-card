@@ -324,18 +324,26 @@ export class QueueController {
     if (!this.queue) {
       return;
     }
+
     const new_idx = this.getIndex(queue_item_id);
-    if (!new_idx || !this.queue[new_idx]) return;
-    this.queue[new_idx].playing = true;
-    const current_idx = this.queue.findIndex((i) => i.playing);
-    this.queue[current_idx].playing = false;
-  }
-  private getIndex(queue_item_id: string) {
-    if (!this.queue) {
+    if (new_idx === -1 || !this.queue[new_idx]) {
       return;
     }
-    const r = this.queue.findIndex((i) => i.queue_item_id == queue_item_id);
-    return r;
+
+    const current_idx = this.queue.findIndex((i) => i.playing);
+    if (current_idx !== -1) {
+      this.queue[current_idx].playing = false;
+    }
+
+    this.queue[new_idx].playing = true;
+  }
+
+  private getIndex(queue_item_id: string): number {
+    if (!this.queue) {
+      return -1;
+    }
+
+    return this.queue.findIndex((i) => i.queue_item_id === queue_item_id);
   }
 
   private moveQueueItem(old_index: number, new_index: number) {
@@ -355,15 +363,23 @@ export class QueueController {
 
   public async moveQueueItemUp(queue_item_id: string) {
     const current_idx = this.getIndex(queue_item_id);
-    if (!current_idx) {
+    if (current_idx <= 0) {
       return;
     }
+
     this.moveQueueItem(current_idx, current_idx - 1);
     await this.actions.MoveQueueItemUp(queue_item_id);
   }
   public async moveQueueItemDown(queue_item_id: string) {
+    if (!this.queue) {
+      return;
+    }
+
     const current_idx = this.getIndex(queue_item_id);
-    if (!current_idx) return;
+    if (current_idx === -1 || current_idx >= this.queue.length - 1) {
+      return;
+    }
+
     this.moveQueueItem(current_idx, current_idx + 1);
     await this.actions.MoveQueueItemDown(queue_item_id);
   }
@@ -371,11 +387,18 @@ export class QueueController {
     if (!this.queue) {
       return;
     }
+
     const current_idx = this.getIndex(queue_item_id);
-    if (!current_idx) {
+    if (current_idx === -1) {
       return;
     }
-    const new_idx = this.queue.findIndex((i) => i.playing) + 1;
+
+    const playing_idx = this.queue.findIndex((i) => i.playing);
+    if (playing_idx === -1) {
+      return;
+    }
+
+    const new_idx = playing_idx + 1;
     this.moveQueueItem(current_idx, new_idx);
     await this.actions.MoveQueueItemNext(queue_item_id);
   }
