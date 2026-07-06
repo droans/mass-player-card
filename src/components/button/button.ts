@@ -86,7 +86,6 @@ export class MassButton extends LitElement {
         appearance="${BUTTON_ROLE_MAP[this.colorRole]}"
         @pointerdown=${this.onPointerDown}
         @pointerup=${this.onPointerUp}
-        size="${this.size}"
         class="${this.colorRole} ${this
           .size} ${expressive} ${elevation} ${disabled} ${outlined} ${selected}"
         part="button"
