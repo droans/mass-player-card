@@ -64,8 +64,8 @@ export class MassNavBar extends LitElement {
       return;
     }
     this._controller = controller;
-    this.active_section = controller.activeSection as Sections;
-    this.config = controller.config as Config;
+    this.active_section = controller.activeSection;
+    this.config = controller.config;
   }
   private get controller() {
     return this._controller;

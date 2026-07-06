@@ -275,9 +275,7 @@ export class MassPlayerControlsExpressive extends MassPlayerControlsBase {
       return ``;
     }
     return html`
-      <div class="button-label">
-        ${this.controller.translate(label_key) as string}
-      </div>
+      <div class="button-label">${this.controller.translate(label_key)}</div>
     `;
   }
 }

@@ -27,8 +27,7 @@ export function getTranslation(key: string, hass: ExtendedHass | undefined) {
     @typescript-eslint/no-unsafe-assignment,
   */
   const translations: Record<string, string | string[]> =
-    TRANSLATIONS[lang] ??
-    (DEFAULT_TRANSLATIONS as Record<string, string | string[]>);
+    TRANSLATIONS[lang] ?? DEFAULT_TRANSLATIONS;
   const _default = DEFAULT_TRANSLATIONS[key] ?? key;
   return translations[key] ?? _default;
   /* eslint-enable
