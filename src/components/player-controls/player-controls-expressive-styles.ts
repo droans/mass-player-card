@@ -9,10 +9,23 @@ export default css`
     --lower-button-end-border-radius: 8px 24px 24px 8px;
     --lower-button-only-border-radius: 24px 24px 24px 24px;
 
+    --lower-controls-first-button-start-border-radius: 24px;
+    --lower-controls-first-button-end-border-radius: 8px;
+    --lower-controls-last-button-start-border-radius: 8px;
+    --lower-controls-last-button-end-border-radius: 24px;
+    --lower-controls-only-button-start-border-radius: 24px;
+    --lower-controls-only-button-end-border-radius: 24px;
+    --lower-controls-button-start-border-radius: 8px;
+    --lower-controls-button-end-border-radius: 8px;
+
     --next-prev-button-height: var(--play-pause-icon-height);
     --next-prev-button-width: 48px;
     --next-prev-icon-height: 48px;
     --next-border-radius: 36px 18px 18px 36px !important;
+    --next-start-border-radius: 18px;
+    --next-end-border-radius: 36px;
+    --prev-start-border-radius: 36px;
+    --prev-end-border-radius: 18px;
     --prev-border-radius: 18px 36px 36px 18px !important;
 
     --play-pause-icon-height: 64px;
@@ -22,10 +35,13 @@ export default css`
   }
 
   .mpc-button.lower {
-    --button-border-radius: var(--lower-button-border-radius);
-  }
-  .mpc-button.lower::part(base) {
-    border-radius: var(--button-border-radius);
+    --ha-button-start-border-radius: var(
+      --lower-controls-button-start-border-radius
+    );
+    --ha-button-end-border-radius: var(
+      --lower-controls-button-end-border-radius
+    );
+    --used-button-border-radius: var(--lower-button-border-radius);
   }
   .mpc-button.lower::part(button) {
     --button-padding-left: 8px;
@@ -37,13 +53,33 @@ export default css`
   }
 
   .mpc-button.lower:first-of-type {
-    --button-border-radius: var(--lower-button-start-border-radius);
+    --ha-button-start-border-radius: var(
+      --lower-controls-first-button-start-border-radius
+    );
+    --ha-button-end-border-radius: var(
+      --lower-controls-first-button-end-border-radius
+    );
+    --used-button-border-radius: var(--lower-button-start-border-radius);
   }
   .mpc-button.lower:last-of-type {
-    --button-border-radius: var(--lower-button-end-border-radius);
+    --ha-button-start-border-radius: var(
+      --lower-controls-last-button-start-border-radius
+    );
+    --ha-button-end-border-radius: var(
+      --lower-controls-last-button-end-border-radius
+    );
+    --used-button-border-radius: var(--lower-button-end-border-radius);
   }
   .mpc-button.lower:only-of-type {
-    --button-border-radius: var(--lower-button-only-border-radius) !important;
+    --ha-button-start-border-radius: var(
+      --lower-controls-only-button-start-border-radius
+    );
+    --ha-button-end-border-radius: var(
+      --lower-controls-only-button-end-border-radius
+    );
+    --used-button-border-radius: var(
+      --lower-button-only-border-radius
+    ) !important;
   }
 
   .mpc-button.lower.active {
@@ -63,16 +99,14 @@ export default css`
   }
 
   #button-next {
-    --button-border-radius: var(--prev-border-radius);
-  }
-  #button-next::part(button) {
-    border-radius: var(--button-border-radius);
+    --ha-button-start-border-radius: var(--next-start-border-radius);
+    --ha-button-end-border-radius: var(--next-end-border-radius);
+    --used-button-border-radius: var(--prev-border-radius);
   }
   #button-previous {
-    --button-border-radius: var(--next-border-radius);
-  }
-  #button-previous::part(button) {
-    border-radius: var(--button-border-radius);
+    --ha-button-start-border-radius: var(--prev-start-border-radius);
+    --ha-button-end-border-radius: var(--prev-end-border-radius);
+    --used-button-border-radius: var(--next-border-radius);
   }
   .mpc-button.play-pause {
     --button-button-height: var(--play-pause-icon-height);
