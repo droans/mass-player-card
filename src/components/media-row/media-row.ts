@@ -270,8 +270,7 @@ export class MediaRow extends LitElement {
     const played =
       !this.media_item?.show_action_buttons && !this.media_item?.playing;
     return html`
-      <span
-        slot="headline"
+      <div
         class="title track 
         ${played ? "disabled" : ""}
         ${this.useExpressive ? `expressive` : ``}"
@@ -288,8 +287,7 @@ export class MediaRow extends LitElement {
     const played =
       !this.media_item?.show_action_buttons && !this.media_item?.playing;
     return html`
-      <span
-        slot="supporting-text"
+      <div
         class="title artist 
         ${played ? "disabled" : ""} 
         ${this.useExpressive ? `expressive` : ``}"
@@ -404,7 +402,10 @@ export class MediaRow extends LitElement {
         @click=${this.callOnQueueItemSelectedService}
         type="button"
       >
-        ${this.renderThumbnail()} ${this.renderTitle()} ${this.renderArtist()}
+        ${this.renderThumbnail()}
+        <span slot="headline" id="headline">
+          ${this.renderTitle()} ${this.renderArtist()}
+        </span>
         ${this.renderActionButtons()}
       </ha-md-list-item>
       <div class="divider"></div>

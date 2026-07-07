@@ -205,8 +205,7 @@ export class MassPlaylistTrackRow extends LitElement {
 
   protected renderTitle(): TemplateResult {
     return html`
-      <span
-        slot="headline"
+      <div
         class="title track ${this.useExpressive ? `expressive` : ``}"
       >
         ${this.track.media_title}
@@ -215,8 +214,7 @@ export class MassPlaylistTrackRow extends LitElement {
   }
   protected renderArtist(): TemplateResult {
     return html`
-      <span
-        slot="supporting-text"
+      <div
         class="title artist ${this.useExpressive ? `expressive` : ``}"
       >
         ${this.track.media_artist}
@@ -295,7 +293,10 @@ export class MassPlaylistTrackRow extends LitElement {
         @click=${this.onPlaylistItemSelected}
         type="button"
       >
-        ${this.renderThumbnail()} ${this.renderTitle()} ${this.renderArtist()}
+        ${this.renderThumbnail()}
+        <span slot="headline" id="headline">
+          ${this.renderTitle()} ${this.renderArtist()}
+        </span>
         ${this.renderMenuButton()}
       </ha-md-list-item>
       ${this.divider ? html`<div class="divider"></div>` : ``}
