@@ -132,6 +132,7 @@ export class MediaRow extends LitElement {
       locImg,
       mediaImg,
       this.cardConfig.download_local,
+      this.cardConfig.proxy_all_artwork,
     );
     this.defaultImageURL = imgs.image_url;
     this.fallbackImageURL = imgs.fallback_url;

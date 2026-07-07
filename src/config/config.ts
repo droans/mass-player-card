@@ -51,6 +51,7 @@ export interface Config {
   expressive: boolean;
   expressive_scheme: ExpressiveScheme;
   download_local: boolean;
+  proxy_all_artwork: boolean;
   panel: boolean;
   default_section: ConfigSections | undefined;
   sync_player_across_dashboard: boolean;
@@ -101,6 +102,7 @@ export const DEFAULT_CONFIG: Config = {
   expressive_scheme: "expressive",
   entities: [],
   download_local: false,
+  proxy_all_artwork: false,
   panel: false,
   default_section: undefined,
   sync_player_across_dashboard: false,
@@ -230,6 +232,11 @@ export function createConfigForm() {
       createDefaultSectionConfigForm(),
       {
         name: "download_local",
+        required: false,
+        selector: { boolean: {}, default: false },
+      },
+      {
+        name: "proxy_all_artwork",
         required: false,
         selector: { boolean: {}, default: false },
       },

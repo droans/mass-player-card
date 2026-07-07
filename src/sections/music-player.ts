@@ -204,6 +204,7 @@ export class MusicPlayerCard extends LitElement {
         Thumbnail.PLAYLIST,
         // eslint-disable-next-line @typescript-eslint/no-non-null-assertion
         this.controller.config!.download_local,
+        this.cardConfig?.proxy_all_artwork,
       ),
       uri: playlist.uri,
     };
