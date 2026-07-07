@@ -35,8 +35,14 @@ async function generateSectionBackgroundPart(
   hass: ExtendedHass,
   thumbnail: string,
   fallback: Thumbnail | string = Thumbnail.DISC,
+  download_local: boolean,
 ): Promise<DirectiveResult> {
-  const imgs = await asyncImageURLWithFallback(hass, thumbnail, fallback);
+  const imgs = await asyncImageURLWithFallback(
+    hass,
+    thumbnail,
+    fallback,
+    download_local,
+  );
   return cache(html`
     <img
       class="thumbnail-section"
@@ -49,6 +55,7 @@ async function generateSectionBackground(
   hass: ExtendedHass,
   cards: MediaCardItem[],
   fallback: Thumbnail,
+  download_local: boolean,
 ): Promise<TemplateResult> {
   const rng = [...Array(4).keys()];
   const promiseThumbnails: Promise<DirectiveResult>[] = [];
@@ -60,6 +67,7 @@ async function generateSectionBackground(
         hass,
         cards[idx]?.thumbnail ?? fallback,
         fallback,
+        download_local,
       ),
     );
   });
@@ -81,13 +89,19 @@ export async function generateFavoriteCard(
   hass: ExtendedHass,
   media_type: MediaTypes,
   cards: MediaCardItem[],
+  download_local: boolean,
 ): Promise<MediaCardItem> {
   const thumbnail: Thumbnail = MediaTypeThumbnails[media_type];
   const translate_key = `browser.sections.${media_type}`;
   const title = getTranslation(translate_key, hass);
   return {
     title: title as string,
-    background: await generateSectionBackground(hass, cards, thumbnail),
+    background: await generateSectionBackground(
+      hass,
+      cards,
+      thumbnail,
+      download_local,
+    ),
     thumbnail,
     fallback: thumbnail,
     data: {
@@ -101,13 +115,19 @@ export async function generateRecentsCard(
   hass: ExtendedHass,
   media_type: MediaTypes,
   cards: MediaCardItem[],
+  download_local: boolean,
 ): Promise<MediaCardItem> {
   const thumbnail: Thumbnail = MediaTypeThumbnails[media_type];
   const translate_key = `browser.sections.${media_type}`;
   const title = getTranslation(translate_key, hass);
   return {
     title: title as string,
-    background: await generateSectionBackground(hass, cards, thumbnail),
+    background: await generateSectionBackground(
+      hass,
+      cards,
+      thumbnail,
+      download_local,
+    ),
     thumbnail,
     fallback: thumbnail,
     data: {
@@ -121,11 +141,17 @@ export async function generateRecommendationsCard(
   hass: ExtendedHass,
   section: RecommendationSection,
   cards: MediaCardItem[],
+  download_local: boolean,
 ): Promise<MediaCardItem> {
   const thumbnail: Thumbnail = Thumbnail.CLEFT;
   return {
     title: section.name,
-    background: await generateSectionBackground(hass, cards, thumbnail),
+    background: await generateSectionBackground(
+      hass,
+      cards,
+      thumbnail,
+      download_local,
+    ),
     thumbnail,
     fallback: thumbnail,
     data: {

@@ -300,6 +300,7 @@ export class MassPlayerArtwork extends LitElement {
       this.hass,
       img_url,
       Thumbnail.CLEFT,
+      this.Config.download_local,
     );
     element.src =
       imgs.image_url.length > 0 ? imgs.image_url : imgs.fallback_url;
@@ -314,6 +315,7 @@ export class MassPlayerArtwork extends LitElement {
         this.hass,
         url,
         Thumbnail.CLEFT,
+        this.Config.download_local,
       );
       element.src = imgUrls.image_url;
     };
