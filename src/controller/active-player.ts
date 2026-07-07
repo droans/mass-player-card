@@ -324,9 +324,12 @@ export class ActivePlayerController {
   };
 
   public async updateActivePlayerData() {
+    const badStates = ["unavailable", "unknown"];
     if (
       !this.activeMediaPlayer ||
+      badStates.includes(this.activeMediaPlayer.state) ||
       !this.volumeMediaPlayer ||
+      badStates.includes(this.volumeMediaPlayer.state) ||
       !this.activeEntityID
     ) {
       return;
@@ -442,6 +445,20 @@ export class ActivePlayerController {
   }
   async actionGetCurrentQueue(): Promise<getQueueResponse> {
     const entity_id = this.activeEntityID;
+    if (!playerIsAvailable(this.hass, entity_id)) {
+      return {
+        queue_id: "",
+        active: false,
+        name: this.activePlayerName,
+        items: 0,
+        shuffle_enabled: false,
+        repeat_mode: false,
+        current_index: 0,
+        elapsed_time: 0,
+        current_item: null,
+        next_item: null,
+      };
+    }
     const data: MassGetQueueServiceDataSchema = {
       type: "call_service",
       domain: "music_assistant",
