@@ -2563,12 +2563,12 @@ __metadata:
   languageName: node
   linkType: hard
 
-"eslint-plugin-listeners@npm:^1.5.1":
-  version: 1.5.1
-  resolution: "eslint-plugin-listeners@npm:1.5.1"
+"eslint-plugin-listeners@npm:^1.6.0":
+  version: 1.6.0
+  resolution: "eslint-plugin-listeners@npm:1.6.0"
   peerDependencies:
-    eslint: ">=0.8.0"
-  checksum: 10c0/405b3ff8d5fa4d26d78b28e8e206e6b35cac680061f3ef417465513ad15ed3b78199f580eab57fae69ff903cda9b0655a79323e54d85c758b4a02a03cb9d6986
+    eslint: ">=8.57.0"
+  checksum: 10c0/455be073b8ff9298dabf5bc80d569eb8a140ef473c74fa01bd8dce2f0d64265f6e300154b4129dcf537d990e62f390494d33f1edd9e893a14932ea7878348591
   languageName: node
   linkType: hard
 
@@ -3861,7 +3861,7 @@ __metadata:
     eslint: "npm:10.2.0"
     eslint-config-prettier: "npm:10.1.8"
     eslint-plugin-github: "git+https://github.com/droans/eslint-plugin-github#v6.1.0"
-    eslint-plugin-listeners: "npm:^1.5.1"
+    eslint-plugin-listeners: "npm:^1.6.0"
     eslint-plugin-lit: "npm:^2.2.1"
     eslint-plugin-observers: "npm:^1.0.1"
     eslint-plugin-unicorn: "npm:^64.0.0"

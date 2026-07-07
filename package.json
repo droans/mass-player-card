@@ -47,7 +47,7 @@
     "eslint": "10.2.0",
     "eslint-config-prettier": "10.1.8",
     "eslint-plugin-github": "git+https://github.com/droans/eslint-plugin-github#v6.1.0",
-    "eslint-plugin-listeners": "^1.5.1",
+    "eslint-plugin-listeners": "^1.6.0",
     "eslint-plugin-lit": "^2.2.1",
     "eslint-plugin-observers": "^1.0.1",
     "eslint-plugin-unicorn": "^64.0.0",
