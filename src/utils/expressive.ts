@@ -113,7 +113,8 @@ export async function generateImageElement(
   fallbacks: string[] = [],
 ): Promise<HTMLImageElement | false> {
   return (await tryPrefetchImageWithFallbacks(img, fallbacks, hass, true)) as
-    HTMLImageElement | false;
+    HTMLImageElement 
+    | false;
 }
 
 export async function generateExpressiveSourceColorFromImage(
