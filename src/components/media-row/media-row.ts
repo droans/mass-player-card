@@ -6,7 +6,7 @@ import {
   PropertyValues,
   TemplateResult,
 } from "lit";
-import { customElement, property, state } from "lit/decorators.js";
+import { customElement, property, query, state } from "lit/decorators.js";
 
 import { QueueItemSelectedService, QueueService } from "../../const/actions";
 import { Thumbnail } from "../../const/enums";
