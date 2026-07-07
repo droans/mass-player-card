@@ -211,7 +211,7 @@ export class MediaBrowserController {
     }
     const i = { ...this.items };
     i.favorites[media_type] = items;
-    const card = generateFavoriteCard(this.hass, media_type, items);
+    const card = await generateFavoriteCard(this.hass, media_type, items);
     i.favorites.main.push(card);
     this.items = { ...i };
   }
@@ -264,7 +264,7 @@ export class MediaBrowserController {
 
     const items = await this.getRecentSection(config, media_type);
     if (items.length > 0) {
-      const card = generateRecentsCard(this.hass, media_type, items);
+      const card = await generateRecentsCard(this.hass, media_type, items);
       const i = { ...this.items };
       i.recents.main.push(card);
       i.recents[media_type] = items;
@@ -273,7 +273,7 @@ export class MediaBrowserController {
   }
 
   //Recommendations
-  private generateRecommendationSection(section: RecommendationSection) {
+  private async generateRecommendationSection(section: RecommendationSection) {
     // eslint-disable-next-line @typescript-eslint/no-unnecessary-condition
     if (this.items.recommendations[section.name]) {
       return;
@@ -283,7 +283,7 @@ export class MediaBrowserController {
       this.browserConfig.recommendations.show_collection_view,
     );
     if (items.length > 0) {
-      const card = generateRecommendationsCard(this.hass, section, items);
+      const card = await generateRecommendationsCard(this.hass, section, items);
       const i = { ...this.items };
       i.recommendations.main.push(card);
       i.recommendations[section.name] = items;
@@ -297,9 +297,12 @@ export class MediaBrowserController {
       providers,
     );
     const resp = data.response.response;
+    const allItems: Promise<void>[] = [];
+
     resp.forEach((item) => {
-      this.generateRecommendationSection(item);
+      allItems.push(this.generateRecommendationSection(item));
     });
+    await Promise.all(allItems);
     const detail: CardsUpdatedEventDetail = {
       section: "recommendations",
       cards: this.items.recommendations,

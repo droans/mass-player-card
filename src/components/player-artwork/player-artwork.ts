@@ -4,13 +4,18 @@ import {
   activeMediaPlayerContext,
   configContext,
   controllerContext,
+  hassContext,
   IconsContext,
   musicPlayerConfigContext,
   queueContext,
 } from "../../const/context";
 import { customElement, query, queryAll, state } from "lit/decorators.js";
 import { PlayerConfig } from "../../config/player";
-import { ExtendedHassEntity, QueueItems } from "../../const/types";
+import {
+  ExtendedHass,
+  ExtendedHassEntity,
+  QueueItems,
+} from "../../const/types";
 import { MassCardController } from "../../controller/controller";
 import { Icons } from "../../const/icons";
 import { delay, jsonMatch, playerHasUpdated } from "../../utils/utility";
@@ -22,6 +27,7 @@ import "@droans/webawesome/dist/components/carousel/carousel.js";
 import "@droans/webawesome/dist/components/carousel-item/carousel-item.js";
 import { VibrationPattern } from "../../const/common";
 import { Config } from "../../config/config";
+import { asyncImageURLWithFallback } from "../../utils/thumbnails";
 
 @customElement("mpc-player-artwork")
 export class MassPlayerArtwork extends LitElement {
@@ -45,6 +51,9 @@ export class MassPlayerArtwork extends LitElement {
   private _intervalMs = 250;
 
   @state() private _activePlayer!: ExtendedHassEntity;
+  @consume({ context: hassContext, subscribe: true })
+  @state()
+  private hass!: ExtendedHass;
 
   @state() private _queue: QueueItems | null = null;
 
@@ -264,7 +273,7 @@ export class MassPlayerArtwork extends LitElement {
           fallbacks.push(ent_img);
         }
         fallbacks.push(url);
-        this.updateCarouselImg(
+        void this.updateCarouselImg(
           idx,
           ent_img_local,
           item.queue_item_id,
@@ -272,11 +281,11 @@ export class MassPlayerArtwork extends LitElement {
           true,
         );
       } else {
-        this.updateCarouselImg(idx, url, item.queue_item_id);
+        void this.updateCarouselImg(idx, url, item.queue_item_id);
       }
     });
   }
-  protected updateCarouselImg(
+  protected async updateCarouselImg(
     index: number,
     img_url: string,
     queue_item_id: string,
@@ -287,15 +296,26 @@ export class MassPlayerArtwork extends LitElement {
     if (!element) {
       return;
     }
-    element.src = img_url;
+    const imgs = await asyncImageURLWithFallback(
+      this.hass,
+      img_url,
+      Thumbnail.CLEFT,
+    );
+    element.src =
+      imgs.image_url.length > 0 ? imgs.image_url : imgs.fallback_url;
     // eslint-disable-next-line unicorn/prefer-add-event-listener
-    element.onerror = () => {
+    element.onerror = async () => {
       const urls = [img_url, ...fallbacks, Thumbnail.CLEFT];
       const currentIdx = urls.findIndex((item) => {
         return element.src == item;
       });
       const url = urls[currentIdx + 1] ?? Thumbnail.CLEFT;
-      element.src = url;
+      const imgUrls = await asyncImageURLWithFallback(
+        this.hass,
+        url,
+        Thumbnail.CLEFT,
+      );
+      element.src = imgUrls.image_url;
     };
     element.parentElement?.setAttribute("data-queueitem", queue_item_id);
     if (playing) {

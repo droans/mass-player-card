@@ -1,10 +1,5 @@
 import { consume } from "@lit/context";
-import {
-  CSSResultGroup,
-  LitElement,
-  PropertyValues,
-  TemplateResult,
-} from "lit";
+import { CSSResultGroup, LitElement, PropertyValues } from "lit";
 import { html } from "lit/static-html.js";
 import { customElement, property, query, state } from "lit/decorators.js";
 import "@droans/webawesome/dist/components/card/card.js";
@@ -43,11 +38,13 @@ import { Config } from "../../config/config";
 import { WaAnimation } from "../../const/elements";
 import { HTMLImageElementEvent, MenuButtonEventData } from "../../const/events";
 import { getThumbnail } from "../../utils/thumbnails";
+import { cache } from "lit/directives/cache.js";
+import { DirectiveResult } from "lit/async-directive.js";
 
 @customElement("mpc-browser-media-card")
 export class MediaCard extends LitElement {
   @property({ type: Boolean }) queueable = false;
-  @state() code!: TemplateResult;
+  @state() code!: DirectiveResult;
   private _enqueue_buttons?: ListItems;
   private _search_buttons!: ListItems;
 
@@ -194,7 +191,7 @@ export class MediaCard extends LitElement {
   };
   protected renderThumbnailFromThumbnail() {
     const img = this.config?.thumbnail;
-    return html`
+    return cache(html`
       <img
         id="thumbnail-div"
         slot="media"
@@ -203,7 +200,7 @@ export class MediaCard extends LitElement {
         @error=${this._renderImageFallback}
         loading="lazy"
       />
-    `;
+    `);
   }
   protected renderThumbnail() {
     if (this.config?.background) {
@@ -249,7 +246,7 @@ export class MediaCard extends LitElement {
     ) {
       return;
     }
-    this.code = html`
+    this.code = cache(html`
       <div id="container-outer">
         <wa-animation
           id="animation"
@@ -273,7 +270,7 @@ export class MediaCard extends LitElement {
         </wa-animation>
         ${this.renderEnqueueButton()}
       </div>
-    `;
+    `);
   }
   protected render() {
     return this.code;
