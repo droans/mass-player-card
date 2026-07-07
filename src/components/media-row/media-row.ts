@@ -36,7 +36,7 @@ import {
 } from "../../config/player-queue";
 import { Icons } from "../../const/icons";
 import { queueItem } from "mass-queue-types/packages/mass_queue/actions/get_queue_items";
-import { HTMLImageElementEvent } from "../../const/events";
+import { getTrackFallbackImg } from "../../utils/url";
 
 @customElement("mpc-queue-media-row")
 export class MediaRow extends LitElement {
@@ -51,6 +51,7 @@ export class MediaRow extends LitElement {
   @state() public defaultImageURL?: string;
   @state() public fallbackImageURL?: string;
   @query(".thumbnail") thumbnailElement!: HTMLImageElement;
+  private imagesExhausted = false;
 
   public moveQueueItemDownService!: QueueService;
   public moveQueueItemNextService!: QueueService;
@@ -185,8 +186,24 @@ export class MediaRow extends LitElement {
     return _changedProperties.size > 0;
   }
 
-  private _renderThumbnailFallback = (event_: HTMLImageElementEvent) => {
-    event_.target.src = getThumbnail(this.hass, Thumbnail.DISC) ?? "";
+  private _renderThumbnailFallback = () => {
+    const currentSource = this.thumbnailElement.src;
+    const thumb = getTrackFallbackImg(
+      this.hass,
+      currentSource,
+      this.defaultImageURL ?? ``,
+      this.fallbackImageURL,
+      Thumbnail.CLEFT,
+    );
+    this.thumbnailElement.src = thumb;
+    if (thumb == currentSource) {
+      this.imagesExhausted = true;
+      return;
+    }
+    if (this.imagesExhausted) {
+      // eslint-disable-next-line unicorn/prefer-add-event-listener
+      this.thumbnailElement.onerror = null;
+    }
   };
   private renderThumbnail(): TemplateResult {
     if (!this.media_item) {

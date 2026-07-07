@@ -5,7 +5,7 @@ import {
   PropertyValues,
   TemplateResult,
 } from "lit";
-import { customElement, property } from "lit/decorators.js";
+import { customElement, property, query, state } from "lit/decorators.js";
 import styles from "./browser-collection-track-row-styles";
 import { consume } from "@lit/context";
 import {
@@ -30,14 +30,17 @@ import { getTranslation } from "../../utils/translations";
 import { PlaylistTrack } from "mass-queue-types/packages/mass_queue/actions/get_playlist_tracks";
 import { EnqueueConfigMap } from "../../const/media-browser";
 import { MediaBrowserConfig } from "../../config/media-browser";
+import { getTrackFallbackImg } from "../../utils/url";
 
 @customElement("mpc-collection-track-row")
 export class MassPlaylistTrackRow extends LitElement {
-  @property({ attribute: false }) track!: Track | PlaylistTrack;
+  @property({ attribute: false }) _track!: Track | PlaylistTrack;
   @property({ attribute: "divider", type: Boolean }) divider = false;
   @property({ attribute: "playlist", type: Boolean }) playlist = false;
   @state() private defaultImageURL?: string;
   private fallbackImageURL?: string;
+  @query(".thumbnail") thumbnailElement!: HTMLImageElement;
+  private imagesExhausted = false;
 
   @property({ attribute: false }) collectionURI!: string;
   _enqueueButtons?: ListItems;
@@ -246,8 +249,24 @@ export class MassPlaylistTrackRow extends LitElement {
     `;
   }
 
-  private _renderThumbnailFallback = (event_: HTMLImageElementEvent) => {
-    event_.target.src = getThumbnail(this.hass, Thumbnail.CLEFT) as string;
+  private _renderThumbnailFallback = () => {
+    const currentSource = this.thumbnailElement.src;
+    const thumb = getTrackFallbackImg(
+      this.hass as ExtendedHass,
+      currentSource,
+      this.defaultImageURL ?? ``,
+      this.fallbackImageURL,
+      Thumbnail.CLEFT,
+    );
+    this.thumbnailElement.src = thumb;
+    if (thumb == currentSource) {
+      this.imagesExhausted = true;
+      return;
+    }
+    if (this.imagesExhausted) {
+      // eslint-disable-next-line unicorn/prefer-add-event-listener
+      this.thumbnailElement.onerror = null;
+    }
   };
   protected renderThumbnail(): TemplateResult {
     /* eslint-disable prettier/prettier */
