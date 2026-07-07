@@ -211,7 +211,6 @@ export class PlayerRow extends LitElement {
           </div>
         </div>
       </span>
-      <span slot="supporting-text"> </span>
     `;
   }
 
