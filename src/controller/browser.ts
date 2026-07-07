@@ -149,14 +149,50 @@ export class MediaBrowserController {
   // Favorites
   private async generateAllFavorites() {
     const favorites = this.browserConfig.favorites;
+    const downloadLocal = this.config.download_local;
     const promises = [
-      this.generateFavoriteData(favorites.albums, MediaTypes.ALBUM),
-      this.generateFavoriteData(favorites.artists, MediaTypes.ARTIST),
-      this.generateFavoriteData(favorites.audiobooks, MediaTypes.AUDIOBOOK),
-      this.generateFavoriteData(favorites.playlists, MediaTypes.PLAYLIST),
-      this.generateFavoriteData(favorites.podcasts, MediaTypes.PODCAST),
-      this.generateFavoriteData(favorites.radios, MediaTypes.RADIO),
-      this.generateFavoriteData(favorites.tracks, MediaTypes.TRACK),
+      this.generateFavoriteData(
+        favorites.albums,
+        MediaTypes.ALBUM,
+        favorites.albums.favorites_only,
+        downloadLocal,
+      ),
+      this.generateFavoriteData(
+        favorites.artists,
+        MediaTypes.ARTIST,
+        favorites.artists.favorites_only,
+        downloadLocal,
+      ),
+      this.generateFavoriteData(
+        favorites.audiobooks,
+        MediaTypes.AUDIOBOOK,
+        favorites.audiobooks.favorites_only,
+        downloadLocal,
+      ),
+      this.generateFavoriteData(
+        favorites.playlists,
+        MediaTypes.PLAYLIST,
+        favorites.playlists.favorites_only,
+        downloadLocal,
+      ),
+      this.generateFavoriteData(
+        favorites.podcasts,
+        MediaTypes.PODCAST,
+        favorites.podcasts.favorites_only,
+        downloadLocal,
+      ),
+      this.generateFavoriteData(
+        favorites.radios,
+        MediaTypes.RADIO,
+        favorites.radios.favorites_only,
+        downloadLocal,
+      ),
+      this.generateFavoriteData(
+        favorites.tracks,
+        MediaTypes.TRACK,
+        favorites.tracks.favorites_only,
+        downloadLocal,
+      ),
     ];
     await Promise.all(promises);
     const data: CardsUpdatedEventDetail = {
@@ -193,6 +229,7 @@ export class MediaBrowserController {
     config: FavoriteItemConfig,
     media_type: MediaTypes,
     favorites_only = true,
+    download_local: boolean,
   ) {
     if (
       // eslint-disable-next-line @typescript-eslint/prefer-optional-chain, @typescript-eslint/no-unnecessary-condition
@@ -211,7 +248,12 @@ export class MediaBrowserController {
     }
     const i = { ...this.items };
     i.favorites[media_type] = items;
-    const card = await generateFavoriteCard(this.hass, media_type, items);
+    const card = await generateFavoriteCard(
+      this.hass,
+      media_type,
+      items,
+      download_local,
+    );
     i.favorites.main.push(card);
     this.items = { ...i };
   }
@@ -264,7 +306,12 @@ export class MediaBrowserController {
 
     const items = await this.getRecentSection(config, media_type);
     if (items.length > 0) {
-      const card = await generateRecentsCard(this.hass, media_type, items);
+      const card = await generateRecentsCard(
+        this.hass,
+        media_type,
+        items,
+        this.config.download_local,
+      );
       const i = { ...this.items };
       i.recents.main.push(card);
       i.recents[media_type] = items;
@@ -283,7 +330,12 @@ export class MediaBrowserController {
       this.browserConfig.recommendations.show_collection_view,
     );
     if (items.length > 0) {
-      const card = await generateRecommendationsCard(this.hass, section, items);
+      const card = await generateRecommendationsCard(
+        this.hass,
+        section,
+        items,
+        this.config.download_local,
+      );
       const i = { ...this.items };
       i.recommendations.main.push(card);
       i.recommendations[section.name] = items;

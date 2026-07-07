@@ -12,6 +12,7 @@ import { QueueItemSelectedService, QueueService } from "../../const/actions";
 import { Thumbnail } from "../../const/enums";
 import {
   activeEntityConfigContext,
+  configContext,
   EntityConfig,
   hassContext,
   IconsContext,
@@ -37,6 +38,7 @@ import {
 import { Icons } from "../../const/icons";
 import { queueItem } from "mass-queue-types/packages/mass_queue/actions/get_queue_items";
 import { getTrackFallbackImg } from "../../utils/url";
+import { Config } from "../../config/config";
 
 @customElement("mpc-queue-media-row")
 export class MediaRow extends LitElement {
@@ -68,6 +70,8 @@ export class MediaRow extends LitElement {
 
   @consume({ context: playerQueueHiddenElementsConfigContext, subscribe: true })
   private hide!: PlayerQueueHiddenElementsConfig;
+  @consume({ context: configContext, subscribe: true })
+  protected cardConfig!: Config;
 
   @consume({ context: playerQueueConfigContext, subscribe: true })
   public set config(config: QueueConfig | undefined) {
@@ -123,7 +127,12 @@ export class MediaRow extends LitElement {
     const locImg = track.local_image_encoded?.length
       ? track.local_image_encoded
       : mediaImg;
-    const imgs = await asyncImageURLWithFallback(this.hass, locImg, mediaImg);
+    const imgs = await asyncImageURLWithFallback(
+      this.hass,
+      locImg,
+      mediaImg,
+      this.cardConfig.download_local,
+    );
     this.defaultImageURL = imgs.image_url;
     this.fallbackImageURL = imgs.fallback_url;
   }

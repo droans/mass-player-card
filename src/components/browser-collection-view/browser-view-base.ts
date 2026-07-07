@@ -17,11 +17,12 @@ import {
 } from "../../config/media-browser";
 import { Icons } from "../../const/icons";
 import { property, query, state } from "lit/decorators.js";
-import { EntityConfig } from "../../config/config";
+import { Config, EntityConfig } from "../../config/config";
 import { CardEnqueueService } from "../../const/actions";
 import {
   activeEntityConfigContext,
   activeMediaPlayerContext,
+  configContext,
   hassContext,
   IconsContext,
   mediaBrowserConfigContext,
@@ -72,6 +73,8 @@ export class BrowserViewBase extends LitElement {
   })
   protected hide!: MediaBrowserHiddenElementsConfig;
   protected _enqueue_buttons!: ListItems;
+  @consume({ context: configContext, subscribe: true })
+  protected cardConfig!: Config;
 
   public onEnqueueAction!: CardEnqueueService;
 
@@ -173,6 +176,7 @@ export class BrowserViewBase extends LitElement {
       this.hass,
       this.collectionData.media_image,
       Thumbnail.PLAYLIST,
+      this.cardConfig.download_local,
     );
     this.collectionImageURL =
       imgs.image_url.length > 0 ? imgs.image_url : imgs.fallback_url;

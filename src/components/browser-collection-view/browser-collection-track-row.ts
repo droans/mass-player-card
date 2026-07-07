@@ -10,6 +10,7 @@ import styles from "./browser-collection-track-row-styles";
 import { consume } from "@lit/context";
 import {
   activeEntityIDContext,
+  configContext,
   hassContext,
   IconsContext,
   mediaBrowserConfigContext,
@@ -31,6 +32,7 @@ import { PlaylistTrack } from "mass-queue-types/packages/mass_queue/actions/get_
 import { EnqueueConfigMap } from "../../const/media-browser";
 import { MediaBrowserConfig } from "../../config/media-browser";
 import { getTrackFallbackImg } from "../../utils/url";
+import { Config } from "../../config/config";
 
 @customElement("mpc-collection-track-row")
 export class MassPlaylistTrackRow extends LitElement {
@@ -47,6 +49,8 @@ export class MassPlaylistTrackRow extends LitElement {
 
   @consume({ context: mediaBrowserConfigContext, subscribe: true })
   private browserConfig!: MediaBrowserConfig;
+  @consume({ context: configContext, subscribe: true })
+  private cardConfig!: Config;
 
   @consume({ context: useExpressiveContext, subscribe: true })
   private useExpressive?: boolean;
@@ -140,6 +144,7 @@ export class MassPlaylistTrackRow extends LitElement {
       this.hass,
       locImg ?? ``,
       mediaImg ?? Thumbnail.CLEFT,
+      this.cardConfig.download_local,
     );
     this.defaultImageURL = imgs.image_url;
     this.fallbackImageURL = imgs.fallback_url;
