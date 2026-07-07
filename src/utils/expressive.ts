@@ -113,8 +113,7 @@ export async function generateImageElement(
   fallbacks: string[] = [],
 ): Promise<HTMLImageElement | false> {
   return (await tryPrefetchImageWithFallbacks(img, fallbacks, hass, true)) as
-    | HTMLImageElement
-    | false;
+    HTMLImageElement | false;
 }
 
 export async function generateExpressiveSourceColorFromImage(
@@ -185,7 +184,8 @@ export async function getOrGenerateExpressiveScheme(
   darkMode: boolean,
 ): Promise<{ scheme: DynamicScheme; color: number }> {
   const imgSource = (imageElement as HTMLImageElement | undefined)?.src ?? ``;
-  const isAccessible = getUrlAccessibility(imgSource) === CheckURLResult.ACCESSIBLE;
+  const isAccessible =
+    getUrlAccessibility(imgSource) === CheckURLResult.ACCESSIBLE;
   if (!isAccessible) {
     const color = generateDefaultExpressiveSchemeColor();
     const scheme = generateExpressiveSchemeFromColor(
