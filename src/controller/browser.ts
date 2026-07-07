@@ -150,48 +150,56 @@ export class MediaBrowserController {
   private async generateAllFavorites() {
     const favorites = this.browserConfig.favorites;
     const downloadLocal = this.config.download_local;
+    const proxyAll = this.config.proxy_all_artwork;
     const promises = [
       this.generateFavoriteData(
         favorites.albums,
         MediaTypes.ALBUM,
         favorites.albums.favorites_only,
         downloadLocal,
+        proxyAll,
       ),
       this.generateFavoriteData(
         favorites.artists,
         MediaTypes.ARTIST,
         favorites.artists.favorites_only,
         downloadLocal,
+        proxyAll,
       ),
       this.generateFavoriteData(
         favorites.audiobooks,
         MediaTypes.AUDIOBOOK,
         favorites.audiobooks.favorites_only,
         downloadLocal,
+        proxyAll,
       ),
       this.generateFavoriteData(
         favorites.playlists,
         MediaTypes.PLAYLIST,
         favorites.playlists.favorites_only,
         downloadLocal,
+        proxyAll,
       ),
       this.generateFavoriteData(
         favorites.podcasts,
         MediaTypes.PODCAST,
         favorites.podcasts.favorites_only,
         downloadLocal,
+        proxyAll,
       ),
       this.generateFavoriteData(
         favorites.radios,
         MediaTypes.RADIO,
         favorites.radios.favorites_only,
         downloadLocal,
+        proxyAll,
       ),
       this.generateFavoriteData(
         favorites.tracks,
         MediaTypes.TRACK,
         favorites.tracks.favorites_only,
         downloadLocal,
+        proxyAll,
       ),
     ];
     await Promise.all(promises);
@@ -230,6 +238,7 @@ export class MediaBrowserController {
     media_type: MediaTypes,
     favorites_only = true,
     download_local: boolean,
+    proxy_all: boolean,
   ) {
     if (
       // eslint-disable-next-line @typescript-eslint/prefer-optional-chain, @typescript-eslint/no-unnecessary-condition
@@ -253,6 +262,7 @@ export class MediaBrowserController {
       media_type,
       items,
       download_local,
+      proxy_all,
     );
     i.favorites.main.push(card);
     this.items = { ...i };
@@ -311,6 +321,7 @@ export class MediaBrowserController {
         media_type,
         items,
         this.config.download_local,
+        this.config.proxy_all_artwork,
       );
       const i = { ...this.items };
       i.recents.main.push(card);
@@ -335,6 +346,7 @@ export class MediaBrowserController {
         section,
         items,
         this.config.download_local,
+        this.config.proxy_all_artwork,
       );
       const i = { ...this.items };
       i.recommendations.main.push(card);

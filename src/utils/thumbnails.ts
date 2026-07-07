@@ -13,18 +13,19 @@ export interface ImageURLWithFallback {
 
 export async function asyncImageURLWithFallback(
   hass: ExtendedHass,
-  image_url: string,
+  imageURL: string,
   fallback: string,
-  download_local = true,
+  downloadLocal = true,
+  proxyAll = false,
 ): Promise<ImageURLWithFallback> {
   if (Object.values(Thumbnail).includes(fallback as Thumbnail)) {
     fallback = getThumbnail(hass, fallback as Thumbnail) ?? "";
   }
-  if (download_local) {
-    image_url = await encodeImageIfLocal(hass, image_url);
+  if ((downloadLocal || proxyAll) && !imageURL.startsWith("/api/")) {
+    imageURL = await encodeImageIfLocal(hass, imageURL, proxyAll);
   }
   return {
-    image_url,
+    image_url: imageURL,
     fallback_url: fallback,
   };
 }
@@ -55,16 +56,19 @@ export function getMediaTypeSvg(
 
 export async function encodeImageIfLocal(
   hass: ExtendedHass,
-  image_url: string,
+  imageURL: string,
+  proxyAll: boolean,
 ): Promise<string> {
-  const accessible = getUrlAccessibility(image_url);
-  if (accessible == CheckURLResult.NOT_URL) {
-    return "";
+  if (!proxyAll) {
+    const accessible = getUrlAccessibility(imageURL);
+    if (accessible == CheckURLResult.NOT_URL) {
+      return "";
+    }
+    if (accessible == CheckURLResult.ACCESSIBLE) {
+      return imageURL;
+    }
   }
-  if (accessible == CheckURLResult.ACCESSIBLE) {
-    return image_url;
-  }
-  return await getLocalImage(hass, image_url);
+  return await getLocalImage(hass, imageURL);
 }
 
 async function getLocalImage(hass: ExtendedHass, url: string): Promise<string> {

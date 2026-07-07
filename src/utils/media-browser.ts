@@ -36,12 +36,14 @@ async function generateSectionBackgroundPart(
   thumbnail: string,
   fallback: Thumbnail | string = Thumbnail.DISC,
   download_local: boolean,
+  proxy_all: boolean,
 ): Promise<DirectiveResult> {
   const imgs = await asyncImageURLWithFallback(
     hass,
     thumbnail,
     fallback,
     download_local,
+    proxy_all,
   );
   return cache(html`
     <img
@@ -56,6 +58,7 @@ async function generateSectionBackground(
   cards: MediaCardItem[],
   fallback: Thumbnail,
   download_local: boolean,
+  proxy_all: boolean,
 ): Promise<TemplateResult> {
   const rng = [...Array(4).keys()];
   const promiseThumbnails: Promise<DirectiveResult>[] = [];
@@ -68,6 +71,7 @@ async function generateSectionBackground(
         cards[idx]?.thumbnail ?? fallback,
         fallback,
         download_local,
+        proxy_all,
       ),
     );
   });
@@ -90,6 +94,7 @@ export async function generateFavoriteCard(
   media_type: MediaTypes,
   cards: MediaCardItem[],
   download_local: boolean,
+  proxy_all: boolean,
 ): Promise<MediaCardItem> {
   const thumbnail: Thumbnail = MediaTypeThumbnails[media_type];
   const translate_key = `browser.sections.${media_type}`;
@@ -101,6 +106,7 @@ export async function generateFavoriteCard(
       cards,
       thumbnail,
       download_local,
+      proxy_all,
     ),
     thumbnail,
     fallback: thumbnail,
@@ -116,6 +122,7 @@ export async function generateRecentsCard(
   media_type: MediaTypes,
   cards: MediaCardItem[],
   download_local: boolean,
+  proxy_all: boolean,
 ): Promise<MediaCardItem> {
   const thumbnail: Thumbnail = MediaTypeThumbnails[media_type];
   const translate_key = `browser.sections.${media_type}`;
@@ -127,6 +134,7 @@ export async function generateRecentsCard(
       cards,
       thumbnail,
       download_local,
+      proxy_all,
     ),
     thumbnail,
     fallback: thumbnail,
@@ -142,6 +150,7 @@ export async function generateRecommendationsCard(
   section: RecommendationSection,
   cards: MediaCardItem[],
   download_local: boolean,
+  proxy_all: boolean,
 ): Promise<MediaCardItem> {
   const thumbnail: Thumbnail = Thumbnail.CLEFT;
   return {
@@ -151,6 +160,7 @@ export async function generateRecommendationsCard(
       cards,
       thumbnail,
       download_local,
+      proxy_all,
     ),
     thumbnail,
     fallback: thumbnail,
