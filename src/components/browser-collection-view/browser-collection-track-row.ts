@@ -17,12 +17,15 @@ import {
   useVibrantContext,
 } from "../../const/context";
 import { ExtendedHass, ListItemData, ListItems } from "../../const/types";
-import { getThumbnail } from "../../utils/thumbnails";
+import {
+  asyncImageURLWithFallback,
+  getThumbnail,
+} from "../../utils/thumbnails";
 import { EnqueueOptions, Thumbnail } from "../../const/enums";
 import BrowserActions from "../../actions/browser-actions";
 import { Track } from "mass-queue-types/packages/mass_queue/utils";
 import { Icons } from "../../const/icons";
-import { HTMLImageElementEvent, MenuButtonEventData } from "../../const/events";
+import { MenuButtonEventData } from "../../const/events";
 import { getTranslation } from "../../utils/translations";
 import { PlaylistTrack } from "mass-queue-types/packages/mass_queue/actions/get_playlist_tracks";
 import { EnqueueConfigMap } from "../../const/media-browser";
@@ -33,6 +36,8 @@ export class MassPlaylistTrackRow extends LitElement {
   @property({ attribute: false }) track!: Track | PlaylistTrack;
   @property({ attribute: "divider", type: Boolean }) divider = false;
   @property({ attribute: "playlist", type: Boolean }) playlist = false;
+  @state() private defaultImageURL?: string;
+  private fallbackImageURL?: string;
 
   @property({ attribute: false }) collectionURI!: string;
   _enqueueButtons?: ListItems;
@@ -47,12 +52,29 @@ export class MassPlaylistTrackRow extends LitElement {
   private _Icons?: Icons;
 
   @consume({ context: hassContext, subscribe: true })
-  private hass?: ExtendedHass;
+  private _hass?: ExtendedHass;
 
   @consume({ context: activeEntityIDContext, subscribe: true })
   private activeEntityId?: string;
 
   private _browserActions?: BrowserActions;
+
+  public set hass(hass: ExtendedHass | undefined) {
+    this._hass = hass;
+    void this.getTrackImage();
+  }
+  public get hass() {
+    return this._hass;
+  }
+
+  @property({ attribute: false })
+  public set track(track: Track | PlaylistTrack) {
+    this._track = track;
+    void this.getTrackImage();
+  }
+  public get track() {
+    return this._track;
+  }
 
   private get browserActions() {
     this._browserActions ??= new BrowserActions(this.hass as ExtendedHass);
@@ -100,6 +122,24 @@ export class MassPlaylistTrackRow extends LitElement {
       };
       this._enqueueButtons = [...this._enqueueButtons, removePlaylistButton];
     }
+  }
+
+  private async getTrackImage() {
+    if (!this.hass) {
+      return;
+    }
+    const locImg = this.track.local_image_encoded?.length
+      ? this.track.local_image_encoded
+      : undefined;
+    const mediaImg =
+      this.track.media_image.length > 0 ? this.track.media_image : undefined;
+    const imgs = await asyncImageURLWithFallback(
+      this.hass,
+      locImg ?? ``,
+      mediaImg ?? Thumbnail.CLEFT,
+    );
+    this.defaultImageURL = imgs.image_url;
+    this.fallbackImageURL = imgs.fallback_url;
   }
   private enqueueTrack = (enqueue: EnqueueOptions) => {
     const ent = this.activeEntityId as string;
@@ -210,12 +250,13 @@ export class MassPlaylistTrackRow extends LitElement {
     event_.target.src = getThumbnail(this.hass, Thumbnail.CLEFT) as string;
   };
   protected renderThumbnail(): TemplateResult {
-    const loc_img = this.track.local_image_encoded?.length
-      ? this.track.local_image_encoded
-      : undefined;
-    const media_img =
-      this.track.media_image.length > 0 ? this.track.media_image : undefined;
-    const img = loc_img ?? media_img ?? "";
+    /* eslint-disable prettier/prettier */
+    const img = this.defaultImageURL?.length
+      ? this.defaultImageURL
+      : (this.fallbackImageURL?.length
+        ? this.fallbackImageURL
+        : getThumbnail(this.hass, Thumbnail.CLEFT));
+    /* eslint-enable prettier/prettier */
     return html`
       <img
         class="thumbnail"
