@@ -54,6 +54,28 @@ export function getMediaTypeSvg(
   return result?.icon ?? Thumbnail.CLEFT;
 }
 
+export function getTrackFallbackImg(
+  hass: ExtendedHass,
+  currentURL: string,
+  defaultImgURL: string,
+  fallbackImg?: string,
+  thumbnail: Thumbnail = Thumbnail.CLEFT,
+): string {
+  const thumb = getThumbnail(hass, thumbnail) as string;
+  const fallback = fallbackImg?.length ? fallbackImg : thumb;
+  const defaultImg = defaultImgURL.length > 0 ? defaultImgURL : fallback;
+  if (currentURL == "" || currentURL == document.location.href) {
+    return defaultImg;
+  }
+  if (currentURL == defaultImg) {
+    return fallback;
+  }
+  if (currentURL == fallbackImg) {
+    return thumb;
+  }
+  return defaultImg;
+}
+
 export async function encodeImageIfLocal(
   hass: ExtendedHass,
   imageURL: string,

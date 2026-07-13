@@ -29,6 +29,7 @@ import styles from "./media-row-styles";
 import {
   asyncImageURLWithFallback,
   getThumbnail,
+  getTrackFallbackImg,
 } from "../../utils/thumbnails";
 import { jsonMatch, queueItemhasUpdated } from "../../utils/utility";
 import {
@@ -37,7 +38,6 @@ import {
 } from "../../config/player-queue";
 import { Icons } from "../../const/icons";
 import { queueItem } from "mass-queue-types/packages/mass_queue/actions/get_queue_items";
-import { getTrackFallbackImg } from "../../utils/url";
 import { Config } from "../../config/config";
 
 @customElement("mpc-queue-media-row")
