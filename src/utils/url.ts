@@ -1,7 +1,3 @@
-import { Thumbnail } from "../const/enums";
-import { ExtendedHass } from "../const/types";
-import { getThumbnail } from "./thumbnails";
-
 export enum CheckURLResult {
   ACCESSIBLE = "accessible",
   NOT_ACCESSIBLE = "not_accessible",
@@ -110,26 +106,4 @@ export function getUrlAccessibility(url: any): CheckURLResult {
     return CheckURLResult.ACCESSIBLE;
   }
   return CheckURLResult.NOT_ACCESSIBLE;
-}
-
-export function getTrackFallbackImg(
-  hass: ExtendedHass,
-  currentURL: string,
-  defaultImgURL: string,
-  fallbackImg?: string,
-  thumbnail: Thumbnail = Thumbnail.CLEFT,
-): string {
-  const thumb = getThumbnail(hass, thumbnail) as string;
-  const fallback = fallbackImg?.length ? fallbackImg : thumb;
-  const defaultImg = defaultImgURL.length > 0 ? defaultImgURL : fallback;
-  if (currentURL == "" || currentURL == document.location.href) {
-    return defaultImg;
-  }
-  if (currentURL == defaultImg) {
-    return fallback;
-  }
-  if (currentURL == fallbackImg) {
-    return thumb;
-  }
-  return defaultImg;
 }
