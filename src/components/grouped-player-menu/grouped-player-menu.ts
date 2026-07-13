@@ -163,6 +163,7 @@ export class MassCardPlayerSelector extends LitElement {
                   : ``}"
                 slot="start"
                 src="${img}"
+                loading="lazy"
                 @error=${(event: HTMLImageElementEvent) => {
                   this.onImgErr(event, item);
                 }}

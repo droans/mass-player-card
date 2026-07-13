@@ -49,6 +49,7 @@ async function generateSectionBackgroundPart(
     <img
       class="thumbnail-section"
       src="${imgs.image_url}"
+      loading="lazy"
       onerror="this.src = '${imgs.fallback_url}'"
     />
   `);

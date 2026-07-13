@@ -29,6 +29,7 @@ import styles from "./media-row-styles";
 import {
   asyncImageURLWithFallback,
   getThumbnail,
+  getTrackFallbackImg,
 } from "../../utils/thumbnails";
 import { jsonMatch, queueItemhasUpdated } from "../../utils/utility";
 import {
@@ -37,8 +38,9 @@ import {
 } from "../../config/player-queue";
 import { Icons } from "../../const/icons";
 import { queueItem } from "mass-queue-types/packages/mass_queue/actions/get_queue_items";
-import { getTrackFallbackImg } from "../../utils/url";
 import { Config } from "../../config/config";
+import { cache } from "lit/directives/cache.js";
+import { DirectiveResult } from "lit/async-directive.js";
 
 @customElement("mpc-queue-media-row")
 export class MediaRow extends LitElement {
@@ -403,11 +405,11 @@ export class MediaRow extends LitElement {
     `;
   }
 
-  render(): TemplateResult {
+  render(): DirectiveResult {
     const playing = this.media_item?.playing ? `active` : ``;
     const expressive = this.useExpressive ? `expressive` : ``;
     const hideCovers = this.showAlbumCovers ? `` : `hide-covers`;
-    return html`
+    return cache(html`
       <ha-md-list-item
         style="${this.display ? "" : "display: none;"}"
         class="button ${playing} ${expressive} ${hideCovers}"
@@ -421,7 +423,7 @@ export class MediaRow extends LitElement {
         ${this.renderActionButtons()}
       </ha-md-list-item>
       <div class="divider"></div>
-    `;
+    `);
   }
   static get styles(): CSSResultGroup {
     return styles;

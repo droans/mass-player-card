@@ -310,6 +310,7 @@ export class MusicPlayerCard extends LitElement {
             class="dialog-playlist-thumbnail"
             slot="start"
             src="${playlist.image.image_url}"
+            loading="lazy"
             onerror="this.src = '${playlist.image.fallback_url}'"
           />
           <span

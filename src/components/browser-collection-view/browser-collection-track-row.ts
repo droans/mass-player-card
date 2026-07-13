@@ -21,6 +21,7 @@ import { ExtendedHass, ListItemData, ListItems } from "../../const/types";
 import {
   asyncImageURLWithFallback,
   getThumbnail,
+  getTrackFallbackImg,
 } from "../../utils/thumbnails";
 import { EnqueueOptions, Thumbnail } from "../../const/enums";
 import BrowserActions from "../../actions/browser-actions";
@@ -31,7 +32,6 @@ import { getTranslation } from "../../utils/translations";
 import { PlaylistTrack } from "mass-queue-types/packages/mass_queue/actions/get_playlist_tracks";
 import { EnqueueConfigMap } from "../../const/media-browser";
 import { MediaBrowserConfig } from "../../config/media-browser";
-import { getTrackFallbackImg } from "../../utils/url";
 import { Config } from "../../config/config";
 
 @customElement("mpc-collection-track-row")
