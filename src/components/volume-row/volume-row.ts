@@ -119,7 +119,7 @@ export class VolumeRow extends LitElement {
       <ha-button
         appearance="plain"
         variant="brand"
-        size="medium"
+        size="m"
         id="button-power"
         class="button min"
         part="button-power"
@@ -137,7 +137,7 @@ export class VolumeRow extends LitElement {
       <ha-button
         appearance="plain"
         variant="brand"
-        size="medium"
+        size="m"
         id="button-mute"
         class="button min"
         part="button-mute"
@@ -160,7 +160,7 @@ export class VolumeRow extends LitElement {
       <ha-button
         appearance="plain"
         variant="brand"
-        size="medium"
+        size="m"
         id="button-favorite"
         class="button min"
         part="button-favorite"
