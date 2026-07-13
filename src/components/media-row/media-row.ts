@@ -54,6 +54,7 @@ export class MediaRow extends LitElement {
   @state() public fallbackImageURL?: string;
   @query(".thumbnail") thumbnailElement!: HTMLImageElement;
   private imagesExhausted = false;
+  private errorCount = 0;
 
   public moveQueueItemDownService!: QueueService;
   public moveQueueItemNextService!: QueueService;
@@ -197,6 +198,7 @@ export class MediaRow extends LitElement {
   }
 
   private _renderThumbnailFallback = () => {
+    this.errorCount++;
     const currentSource = this.thumbnailElement.src;
     const thumb = getTrackFallbackImg(
       this.hass,
@@ -206,7 +208,7 @@ export class MediaRow extends LitElement {
       Thumbnail.CLEFT,
     );
     this.thumbnailElement.src = thumb;
-    if (thumb == currentSource) {
+    if (thumb == currentSource || this.errorCount >= 5) {
       this.imagesExhausted = true;
       return;
     }
