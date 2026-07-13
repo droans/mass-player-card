@@ -17,12 +17,13 @@ export async function asyncImageURLWithFallback(
   fallback: string,
   downloadLocal = true,
   proxyAll = false,
+  entityId: string,
 ): Promise<ImageURLWithFallback> {
   if (Object.values(Thumbnail).includes(fallback as Thumbnail)) {
     fallback = getThumbnail(hass, fallback as Thumbnail) ?? "";
   }
   if ((downloadLocal || proxyAll) && !imageURL.startsWith("/api/")) {
-    imageURL = await encodeImageIfLocal(hass, imageURL, proxyAll);
+    imageURL = await encodeImageIfLocal(hass, imageURL, proxyAll, entityId);
   }
   return {
     image_url: imageURL,
@@ -80,6 +81,7 @@ export async function encodeImageIfLocal(
   hass: ExtendedHass,
   imageURL: string,
   proxyAll: boolean,
+  entityId: string,
 ): Promise<string> {
   if (!proxyAll) {
     const accessible = getUrlAccessibility(imageURL);
@@ -90,22 +92,20 @@ export async function encodeImageIfLocal(
       return imageURL;
     }
   }
-  return await getLocalImage(hass, imageURL);
+  return await getLocalImage(hass, imageURL, entityId);
 }
 
-async function getLocalImage(hass: ExtendedHass, url: string): Promise<string> {
+async function getLocalImage(
+  hass: ExtendedHass,
+  url: string,
+  entityId: string,
+): Promise<string> {
   if (typeof url != "string") {
     return "";
   }
-  try {
-    const result: string = await hass.callWS({
-      type: "mass_queue/download_and_encode_image",
-      url,
-    });
-    return result;
-  } catch (error) {
-    // eslint-disable-next-line no-console
-    console.error(`Error getting image: ${url}`, error);
-    return "";
-  }
+  const token: string = await hass.callWS({
+    type: "mass_queue/get_access_token",
+    entity_id: entityId,
+  });
+  return `/api/mass_queue_proxy/${entityId}/${encodeURIComponent(url)}?token=${token}`;
 }

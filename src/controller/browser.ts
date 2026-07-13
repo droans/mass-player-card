@@ -263,6 +263,7 @@ export class MediaBrowserController {
       items,
       download_local,
       proxy_all,
+      this.activeEntityId,
     );
     i.favorites.main.push(card);
     this.items = { ...i };
@@ -322,6 +323,7 @@ export class MediaBrowserController {
         items,
         this.config.download_local,
         this.config.proxy_all_artwork,
+        this.activeEntityId,
       );
       const i = { ...this.items };
       i.recents.main.push(card);
@@ -347,6 +349,7 @@ export class MediaBrowserController {
         items,
         this.config.download_local,
         this.config.proxy_all_artwork,
+        this.activeEntityId,
       );
       const i = { ...this.items };
       i.recommendations.main.push(card);

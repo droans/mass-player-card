@@ -37,6 +37,7 @@ async function generateSectionBackgroundPart(
   fallback: Thumbnail | string = Thumbnail.DISC,
   download_local: boolean,
   proxy_all: boolean,
+  entity_id: string,
 ): Promise<DirectiveResult> {
   const imgs = await asyncImageURLWithFallback(
     hass,
@@ -44,6 +45,7 @@ async function generateSectionBackgroundPart(
     fallback,
     download_local,
     proxy_all,
+    entity_id,
   );
   return cache(html`
     <img
@@ -59,6 +61,7 @@ async function generateSectionBackground(
   fallback: Thumbnail,
   download_local: boolean,
   proxy_all: boolean,
+  entity_id: string,
 ): Promise<TemplateResult> {
   const rng = [...Array(4).keys()];
   const promiseThumbnails: Promise<DirectiveResult>[] = [];
@@ -72,6 +75,7 @@ async function generateSectionBackground(
         fallback,
         download_local,
         proxy_all,
+        entity_id,
       ),
     );
   });
@@ -95,6 +99,7 @@ export async function generateFavoriteCard(
   cards: MediaCardItem[],
   download_local: boolean,
   proxy_all: boolean,
+  entity_id: string,
 ): Promise<MediaCardItem> {
   const thumbnail: Thumbnail = MediaTypeThumbnails[media_type];
   const translate_key = `browser.sections.${media_type}`;
@@ -107,6 +112,7 @@ export async function generateFavoriteCard(
       thumbnail,
       download_local,
       proxy_all,
+      entity_id,
     ),
     thumbnail,
     fallback: thumbnail,
@@ -123,6 +129,7 @@ export async function generateRecentsCard(
   cards: MediaCardItem[],
   download_local: boolean,
   proxy_all: boolean,
+  entity_id: string,
 ): Promise<MediaCardItem> {
   const thumbnail: Thumbnail = MediaTypeThumbnails[media_type];
   const translate_key = `browser.sections.${media_type}`;
@@ -135,6 +142,7 @@ export async function generateRecentsCard(
       thumbnail,
       download_local,
       proxy_all,
+      entity_id,
     ),
     thumbnail,
     fallback: thumbnail,
@@ -151,6 +159,7 @@ export async function generateRecommendationsCard(
   cards: MediaCardItem[],
   download_local: boolean,
   proxy_all: boolean,
+  entity_id: string,
 ): Promise<MediaCardItem> {
   const thumbnail: Thumbnail = Thumbnail.CLEFT;
   return {
@@ -161,6 +170,7 @@ export async function generateRecommendationsCard(
       thumbnail,
       download_local,
       proxy_all,
+      entity_id,
     ),
     thumbnail,
     fallback: thumbnail,

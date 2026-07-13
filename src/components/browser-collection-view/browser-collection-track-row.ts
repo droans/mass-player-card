@@ -146,6 +146,7 @@ export class MassPlaylistTrackRow extends LitElement {
       mediaImg ?? Thumbnail.CLEFT,
       this.cardConfig.download_local,
       this.cardConfig.proxy_all_artwork,
+      this.activeEntityId as string,
     );
     this.defaultImageURL = imgs.image_url;
     this.fallbackImageURL = imgs.fallback_url;

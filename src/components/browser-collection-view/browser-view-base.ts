@@ -178,6 +178,7 @@ export class BrowserViewBase extends LitElement {
       Thumbnail.PLAYLIST,
       this.cardConfig.download_local,
       this.cardConfig.proxy_all_artwork,
+      this.activeEntityConf?.entity_id as string,
     );
     this.collectionImageURL =
       imgs.image_url.length > 0 ? imgs.image_url : imgs.fallback_url;
