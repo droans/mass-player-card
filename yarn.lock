@@ -439,7 +439,7 @@ __metadata:
   languageName: node
   linkType: hard
 
-"@rollup/plugin-json@npm:^6.0.0":
+"@rollup/plugin-json@npm:^6.1.0":
   version: 6.1.0
   resolution: "@rollup/plugin-json@npm:6.1.0"
   dependencies:
@@ -3065,7 +3065,7 @@ __metadata:
     "@lit/context": "npm:1.1.6"
     "@material/web": "npm:2.4.1"
     "@mdi/js": "npm:7.4.47"
-    "@rollup/plugin-json": "npm:^6.0.0"
+    "@rollup/plugin-json": "npm:^6.1.0"
     "@rollup/plugin-node-resolve": "npm:^16.0.3"
     "@rollup/plugin-terser": "npm:^1.0.0"
     "@rollup/plugin-typescript": "npm:^12.3.0"
