@@ -36,15 +36,17 @@ export class MassPlayerControls extends MassPlayerControlsBase {
           variant="brand"
           @click=${this.onShuffle}
           size="${iconSize}"
-          class="icon ${iconSize} ${iconStyle.box_shadow
-            ? `has-box-shadow`
-            : ``}  ${appearance}"
+          class="icon ${iconSize} ${
+            iconStyle.box_shadow ? `has-box-shadow` : ``
+          }  ${appearance}"
         >
           <ha-svg-icon
             ${slotHtml}
-            .path=${this._playerData.shuffle
-              ? this.Icons.SHUFFLE
-              : this.Icons.SHUFFLE_DISABLED}
+            .path=${
+              this._playerData.shuffle
+                ? this.Icons.SHUFFLE
+                : this.Icons.SHUFFLE_DISABLED
+            }
             class="svg ${iconSize}"
           ></ha-svg-icon>
           <div class="button-label">${labelHtml}</div>
@@ -72,9 +74,9 @@ export class MassPlayerControls extends MassPlayerControlsBase {
           variant="brand"
           @click=${this.onPrevious}
           size="${iconSize}"
-          class="icon ${iconSize} ${iconStyle.box_shadow
-            ? `has-box-shadow`
-            : ``}"
+          class="icon ${iconSize} ${
+            iconStyle.box_shadow ? `has-box-shadow` : ``
+          }"
         >
           <ha-svg-icon
             ${slotHtml}
@@ -110,16 +112,16 @@ export class MassPlayerControls extends MassPlayerControlsBase {
           appearance="${appearance}"
           variant="brand"
           size="${iconSize}"
-          class="mpc-button-play-pause icon ${iconSize} ${iconStyle.box_shadow
-            ? `has-box-shadow`
-            : ``} ${appearance}"
+          class="mpc-button-play-pause icon ${iconSize} ${
+            iconStyle.box_shadow ? `has-box-shadow` : ``
+          } ${appearance}"
           @click=${this.onPlayPause}
         >
           <ha-svg-icon
             ${slotHtml}
-            .path=${this._playerData.playing
-              ? this.Icons.PAUSE
-              : this.Icons.PLAY}
+            .path=${
+              this._playerData.playing ? this.Icons.PAUSE : this.Icons.PLAY
+            }
             class="svg ${iconSize} icon-outlined"
           ></ha-svg-icon>
           <div class="button-label">${labelHtml}</div>
@@ -145,9 +147,9 @@ export class MassPlayerControls extends MassPlayerControlsBase {
           variant="brand"
           @click=${this.onNext}
           size="${iconSize}"
-          class="icon ${iconSize} ${iconStyle.box_shadow
-            ? `has-box-shadow`
-            : ``}"
+          class="icon ${iconSize} ${
+            iconStyle.box_shadow ? `has-box-shadow` : ``
+          }"
           style="display: block;"
         >
           <ha-svg-icon
@@ -183,9 +185,9 @@ export class MassPlayerControls extends MassPlayerControlsBase {
           appearance="${appearance}"
           variant="brand"
           size="${iconSize}"
-          class="icon ${iconSize} ${iconStyle.box_shadow
-            ? `has-box-shadow`
-            : ``} ${appearance}"
+          class="icon ${iconSize} ${
+            iconStyle.box_shadow ? `has-box-shadow` : ``
+          } ${appearance}"
           @click=${this.onRepeat}
         >
           <ha-svg-icon
@@ -205,12 +207,16 @@ export class MassPlayerControls extends MassPlayerControlsBase {
     const shuffleButton = this.renderShuffle();
     return html`
       <div class="controls left ${layout.controls_layout}">
-        ${layout.controls_layout == PlayerControlsLayout.COMPACT
-          ? previousButton
-          : shuffleButton}
-        ${layout.controls_layout == PlayerControlsLayout.COMPACT
-          ? shuffleButton
-          : previousButton}
+        ${
+          layout.controls_layout == PlayerControlsLayout.COMPACT
+            ? previousButton
+            : shuffleButton
+        }
+        ${
+          layout.controls_layout == PlayerControlsLayout.COMPACT
+            ? shuffleButton
+            : previousButton
+        }
       </div>
     `;
   }

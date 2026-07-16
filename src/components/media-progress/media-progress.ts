@@ -295,8 +295,8 @@ export class MassPlayerProgressBar extends LitElement {
           width: ${this._handleBarWidth.toString()}px; 
           position: absolute;
           left: calc(${(
-          this._prog_pct * 100
-        ).toString()}% - (${this._handleBarWidth.toString()}px / 2));
+            this._prog_pct * 100
+          ).toString()}% - (${this._handleBarWidth.toString()}px / 2));
         "
       ></div>
     `;

@@ -100,9 +100,9 @@ export class MassCardPlayerSelector extends LitElement {
             hide-label
           >
             <ha-svg-icon
-              class="grouped-players-select-item-icon ${this.useExpressive
-                ? `expressive`
-                : ``}"
+              class="grouped-players-select-item-icon ${
+                this.useExpressive ? `expressive` : ``
+              }"
               slot="start"
               .path=${this.Icons.SPEAKER_MULTIPLE}
             ></ha-svg-icon>
@@ -158,9 +158,9 @@ export class MassCardPlayerSelector extends LitElement {
               hide-label
             >
               <img
-                class="grouped-players-select-item-image ${expressive
-                  ? `expressive`
-                  : ``}"
+                class="grouped-players-select-item-image ${
+                  expressive ? `expressive` : ``
+                }"
                 slot="start"
                 src="${img}"
                 loading="lazy"
@@ -175,9 +175,9 @@ export class MassCardPlayerSelector extends LitElement {
                   role="${role}"
                   size="small"
                   elevation="1"
-                  class="grouped-button-unjoin ${expressive
-                    ? `grouped-button-unjoin-expressive`
-                    : ``}"
+                  class="grouped-button-unjoin ${
+                    expressive ? `grouped-button-unjoin-expressive` : ``
+                  }"
                 >
                   <ha-svg-icon
                     .path=${this.Icons.LINK_OFF}

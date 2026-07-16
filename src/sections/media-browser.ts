@@ -530,9 +530,9 @@ export class MediaBrowser extends LitElement {
       return html`
         <mpc-menu-button
           id="search-media-type-menu"
-          class="search-media-type-menu ${this.useExpressive
-            ? `expressive`
-            : ``}"
+          class="search-media-type-menu ${
+            this.useExpressive ? `expressive` : ``
+          }"
           scheme="plain"
           elevation="0"
           .iconPath=${this.searchMediaTypeIcon}
@@ -554,14 +554,16 @@ export class MediaBrowser extends LitElement {
           size="small"
           elevation="0"
           id="search-favorite-button"
-          class="search-library-button button min ${this.useExpressive
-            ? `expressive`
-            : ``}"
+          class="search-library-button button min ${
+            this.useExpressive ? `expressive` : ``
+          }"
         >
           <ha-svg-icon
-            .path=${this.searchLibrary
-              ? this.Icons.LIBRARY
-              : this.Icons.LIBRARY_OUTLINED}
+            .path=${
+              this.searchLibrary
+                ? this.Icons.LIBRARY
+                : this.Icons.LIBRARY_OUTLINED
+            }
             class="svg xs menu ${this.useExpressive ? `expressive` : ``}"
           ></ha-svg-icon>
         </mpc-button>

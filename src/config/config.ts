@@ -58,10 +58,7 @@ export interface Config {
 }
 
 export type ConfigSections =
-  | "music_player"
-  | "queue"
-  | "media_browser"
-  | "players";
+  "music_player" | "queue" | "media_browser" | "players";
 
 export interface HiddenElementsConfig {
   player: PlayerHiddenElementsConfig;

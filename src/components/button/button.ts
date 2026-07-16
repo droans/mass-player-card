@@ -24,9 +24,7 @@ export class MassButton extends LitElement {
   @property({ attribute: "role", type: String }) colorRole: ButtonColorRole =
     DEFAULT_COLOR_ROLE;
   @property({ attribute: "size", type: String }) size:
-    | "small"
-    | "medium"
-    | "large" = DEFAULT_BUTTON_SIZE;
+    "small" | "medium" | "large" = DEFAULT_BUTTON_SIZE;
   @property({ attribute: "disabled", type: Boolean }) disabled = false;
   @property({ attribute: "selected", type: Boolean }) selected = false;
   @property({ attribute: "selectable", type: Boolean }) selectable = false;
@@ -86,8 +84,9 @@ export class MassButton extends LitElement {
         appearance="${BUTTON_ROLE_MAP[this.colorRole]}"
         @pointerdown=${this.onPointerDown}
         @pointerup=${this.onPointerUp}
-        class="${this.colorRole} ${this
-          .size} ${expressive} ${elevation} ${disabled} ${outlined} ${selected}"
+        class="${this.colorRole} ${
+          this.size
+        } ${expressive} ${elevation} ${disabled} ${outlined} ${selected}"
         part="button"
       >
         <slot name="start" slot="start"></slot>
