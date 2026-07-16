@@ -20,7 +20,7 @@ export async function asyncImageURLWithFallback(
 ): Promise<ImageURLWithFallback> {
   fallback = Object.values(Thumbnail).includes(fallback as Thumbnail)
     ? (getThumbnail(hass, fallback as Thumbnail) ?? "")
-    : await encodeImageIfLocal(hass, imageURL, proxyAll);
+    : await encodeImageIfLocal(hass, fallback, proxyAll);
   if ((downloadLocal || proxyAll) && !imageURL.startsWith("/api/")) {
     imageURL = await encodeImageIfLocal(hass, imageURL, proxyAll);
   }
