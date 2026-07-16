@@ -261,9 +261,9 @@ export class MediaCard extends LitElement {
         >
           <div id="container">
             <wa-card
-              class="media-card ${this.useExpressive
-                ? `media-card-expressive`
-                : ``}"
+              class="media-card ${
+                this.useExpressive ? `media-card-expressive` : ``
+              }"
               @click=${this.onSelect}
             >
               <div slot="media" id="media">${this.renderThumbnail()}</div>
