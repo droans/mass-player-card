@@ -69,7 +69,7 @@
     "full": "echo 'Generating TOC' && yarn docs && echo 'Running Prettier' && yarn prettier && echo 'Linting' && yarn lint",
     "docs": "doctoc ./README.md --maxlevel 3"
   },
-  "packageManager": "yarn@4.9.1",
+  "packageManager": "yarn@4.17.1",
   "prettier": {
     "printWidth": 80,
     "tabWidth": 2,

@@ -10,7 +10,12 @@ import observers from "eslint-plugin-observers";
 import listeners from "eslint-plugin-listeners";
 import eslintPluginUnicorn from "eslint-plugin-unicorn";
 
-const rootConfigFiles = [".prettierrc.js", "eslint.config.mjs"];
+const rootConfigFiles = [
+  ".prettierrc.js",
+  "eslint.config.mjs",
+  "rollup.config.js",
+  "rollup.config.dev.js",
+];
 
 export default tseslint.config(
   { ignores: ["dist", "node_modules/*"] },
