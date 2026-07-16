@@ -124,9 +124,7 @@ export interface mediaBrowserSectionConfig {
 }
 
 export type mediaBrowserSectionSubtypes =
-  | "favorites"
-  | "recents"
-  | "recommendations";
+  "favorites" | "recents" | "recommendations";
 
 export type mediaCardData = mediaCardEnqueueType | mediaCardSectionData;
 

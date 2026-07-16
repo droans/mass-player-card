@@ -10,9 +10,8 @@ export default css`
     display: none;
   }
   lit-virtualizer {
-    height: var(--queue-height);
+    height: calc(var(--queue-height) - 8px);
     scrollbar-width: none;
-    padding-bottom: calc(var(--navbar-height) + 8px);
   }
   mpc-queue-media-row {
     width: 100%;

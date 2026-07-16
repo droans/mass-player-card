@@ -15,10 +15,19 @@ import {
   activePlayerControllerContext,
   activePlayerDataContext,
   controllerContext,
+  hassContext,
 } from "../../const/context";
 import { ActionsController } from "../../controller/actions";
-import { playerHasUpdated, secondsToTime } from "../../utils/utility";
-import { ExtendedHassEntity, PlayerData } from "../../const/types";
+import {
+  playerHasUpdated,
+  playerIsAvailable,
+  secondsToTime,
+} from "../../utils/utility";
+import {
+  ExtendedHass,
+  ExtendedHassEntity,
+  PlayerData,
+} from "../../const/types";
 import { MassCardController } from "../../controller/controller";
 
 @customElement("mpc-progress-bar")
@@ -49,6 +58,8 @@ export class MassPlayerProgressBar extends LitElement {
   @state() public _player_data?: PlayerData;
 
   private _activePlayer?: ExtendedHassEntity;
+  @consume({ context: hassContext, subscribe: true })
+  private hass!: ExtendedHass;
 
   private set media_position(pos: number | undefined) {
     pos ??= 0;
@@ -112,7 +123,10 @@ export class MassPlayerProgressBar extends LitElement {
   }
 
   private requestProgress() {
-    if (!this.activePlayerController) {
+    if (
+      !this.activePlayerController ||
+      !playerIsAvailable(this.hass, this.activePlayerController.activeEntityID)
+    ) {
       return;
     }
     void this.activePlayerController.getPlayerProgress().then((progress) => {
@@ -281,8 +295,8 @@ export class MassPlayerProgressBar extends LitElement {
           width: ${this._handleBarWidth.toString()}px; 
           position: absolute;
           left: calc(${(
-          this._prog_pct * 100
-        ).toString()}% - (${this._handleBarWidth.toString()}px / 2));
+            this._prog_pct * 100
+          ).toString()}% - (${this._handleBarWidth.toString()}px / 2));
         "
       ></div>
     `;

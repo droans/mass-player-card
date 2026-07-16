@@ -17,11 +17,12 @@ import {
 } from "../../config/media-browser";
 import { Icons } from "../../const/icons";
 import { property, query, state } from "lit/decorators.js";
-import { EntityConfig } from "../../config/config";
+import { Config, EntityConfig } from "../../config/config";
 import { CardEnqueueService } from "../../const/actions";
 import {
   activeEntityConfigContext,
   activeMediaPlayerContext,
+  configContext,
   hassContext,
   IconsContext,
   mediaBrowserConfigContext,
@@ -35,7 +36,10 @@ import { Track, Tracks } from "mass-queue-types/packages/mass_queue/utils";
 import { HTMLImageElementEvent, MenuButtonEventData } from "../../const/events";
 import { getEnqueueButtons } from "../../const/media-browser";
 import { EnqueueOptions, Thumbnail } from "../../const/enums";
-import { getThumbnail } from "../../utils/thumbnails";
+import {
+  asyncImageURLWithFallback,
+  getThumbnail,
+} from "../../utils/thumbnails";
 import { cache } from "lit/directives/cache.js";
 import "../marquee-text/marquee-text";
 import { PodcastEpisode } from "mass-queue-types/packages/mass_queue/types/media-items";
@@ -60,6 +64,7 @@ export class BrowserViewBase extends LitElement {
   protected enqueueControlElement!: HTMLElement;
   protected enqueueIconElement!: HTMLElement;
   protected animationsAdded = false;
+  protected collectionImageURL!: string;
 
   // Set which enqueue elements are hidden
   @consume({
@@ -68,6 +73,8 @@ export class BrowserViewBase extends LitElement {
   })
   protected hide!: MediaBrowserHiddenElementsConfig;
   protected _enqueue_buttons!: ListItems;
+  @consume({ context: configContext, subscribe: true })
+  protected cardConfig!: Config;
 
   public onEnqueueAction!: CardEnqueueService;
 
@@ -112,6 +119,7 @@ export class BrowserViewBase extends LitElement {
     if (!this._hass) {
       this._hass = hass;
       this.getTracks();
+      void this.getCollectionImage();
       return;
     }
     this._hass = hass;
@@ -143,7 +151,9 @@ export class BrowserViewBase extends LitElement {
       | undefined,
   ) {
     this._collectionData = data;
+    this.collectionImageURL = data?.media_image ?? ``;
     this.getTracks();
+    void this.getCollectionImage();
   }
   public get collectionData() {
     return this._collectionData;
@@ -157,6 +167,20 @@ export class BrowserViewBase extends LitElement {
   }
   protected getTracks() {
     // Implemented by components
+  }
+  protected async getCollectionImage() {
+    if (!this.hass || !this.collectionData) {
+      return;
+    }
+    const imgs = await asyncImageURLWithFallback(
+      this.hass,
+      this.collectionData.media_image,
+      Thumbnail.PLAYLIST,
+      this.cardConfig.download_local,
+      this.cardConfig.proxy_all_artwork,
+    );
+    this.collectionImageURL =
+      imgs.image_url.length > 0 ? imgs.image_url : imgs.fallback_url;
   }
 
   public get browserActions() {
@@ -288,7 +312,7 @@ export class BrowserViewBase extends LitElement {
     event_.target.src = getThumbnail(this.hass, Thumbnail.PLAYLIST) as string;
   };
   protected renderImage(): TemplateResult {
-    const img = this.collectionData?.media_image;
+    const img = this.collectionImageURL;
     return html`
       <img
         src="${img}"

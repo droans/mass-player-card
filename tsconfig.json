@@ -1,9 +1,9 @@
 {
   "compilerOptions": {
-    "target": "ES2021",
+    "target": "ES2024",
     "module": "esnext",
     "moduleResolution": "bundler",
-    "lib": ["es2022", "DOM", "DOM.Iterable"],
+    "lib": ["es2024", "DOM", "DOM.Iterable"],
     "allowSyntheticDefaultImports": true,
     "noEmit": true,
     "noUnusedParameters": true,
@@ -14,6 +14,7 @@
     "skipLibCheck": true,
     "resolveJsonModule": true,
     "experimentalDecorators": true,
+    "useDefineForClassFields": false,
     "plugins": [
       {
         "name": "typescript-styled-plugin",

@@ -94,3 +94,7 @@
 - name: "bug"
   color: ee0701
   description: "Inconsistencies or issues which will cause a problem for users or implementors."
+
+- name: "translations"
+  color: 9edab3
+  description: Changes to translations, including adding support for new languages or updating existing.

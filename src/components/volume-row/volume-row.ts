@@ -119,7 +119,7 @@ export class VolumeRow extends LitElement {
       <ha-button
         appearance="plain"
         variant="brand"
-        size="medium"
+        size="m"
         id="button-power"
         class="button min"
         part="button-power"
@@ -137,16 +137,18 @@ export class VolumeRow extends LitElement {
       <ha-button
         appearance="plain"
         variant="brand"
-        size="medium"
+        size="m"
         id="button-mute"
         class="button min"
         part="button-mute"
         @click=${this.onVolumeMuteToggle}
       >
         <ha-svg-icon
-          .path=${this.player_data.muted
-            ? this.Icons.VOLUME_MUTE
-            : this.Icons.VOLUME_HIGH}
+          .path=${
+            this.player_data.muted
+              ? this.Icons.VOLUME_MUTE
+              : this.Icons.VOLUME_HIGH
+          }
           class="svg plain"
         ></ha-svg-icon>
       </ha-button>
@@ -160,7 +162,7 @@ export class VolumeRow extends LitElement {
       <ha-button
         appearance="plain"
         variant="brand"
-        size="medium"
+        size="m"
         id="button-favorite"
         class="button min"
         part="button-favorite"
@@ -210,9 +212,9 @@ export class VolumeRow extends LitElement {
           .max=${this.maxVolume}
           @value-changed=${this.onVolume}
           id="volume-slider"
-          class="volume-slider ${this.controller.ActivePlayer?.useExpressive
-            ? `expressive`
-            : ``}"
+          class="volume-slider ${
+            this.controller.ActivePlayer?.useExpressive ? `expressive` : ``
+          }"
           part="volume-slider"
         ></ha-control-slider>
         ${this.renderTicks()}

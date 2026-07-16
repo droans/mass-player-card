@@ -214,8 +214,7 @@ export class MusicAssistantPlayerCard extends LitElement {
     }
     if (_changedProperties.has("hass")) {
       const oldHass = _changedProperties.get("hass") as
-        | ExtendedHass
-        | undefined;
+        ExtendedHass | undefined;
       if (!oldHass) {
         return true;
       }
@@ -251,78 +250,69 @@ export class MusicAssistantPlayerCard extends LitElement {
     this.active_section = (event_ as CustomEvent).detail as Sections;
   };
 
+  /* eslint-disable unicorn/template-indent */
   protected renderPlayers() {
-    if (this.config.players.enabled) {
-      return cache(html`
-        <wa-tab-panel
-          name="${Sections.PLAYERS}"
-          class="section ${this.active_section == Sections.PLAYERS
-            ? ""
-            : "hidden"}"
-        >
-          <mpc-players-card
-            .selectedPlayerService=${this.playerSelected}
-            .config=${this.config}
-          ></mpc-players-card>
-        </wa-tab-panel>
-      `);
-    }
-    return html``;
+    return cache(
+      this.config.players.enabled && this.active_section == Sections.PLAYERS
+        ? html`
+            <wa-tab-panel name="${Sections.PLAYERS}" class="section">
+              <mpc-players-card
+                .selectedPlayerService=${this.playerSelected}
+                .config=${this.config}
+              ></mpc-players-card>
+            </wa-tab-panel>
+          `
+        : html``,
+    );
   }
   protected renderMusicPlayer() {
-    if (this.config.player.enabled) {
-      return cache(html`
-        <wa-tab-panel
-          name="${Sections.MUSIC_PLAYER}"
-          class="section ${this.active_section == Sections.MUSIC_PLAYER
-            ? ""
-            : "hidden"}"
-        >
-          <mpc-music-player-card
-            .selectedPlayerService=${this.playerSelected}
-          ></mpc-music-player-card>
-        </wa-tab-panel>
-      `);
-    }
-    return html``;
+    return cache(
+      this.config.player.enabled && this.active_section == Sections.MUSIC_PLAYER
+        ? html`
+            <wa-tab-panel name="${Sections.MUSIC_PLAYER}" class="section">
+              <mpc-music-player-card
+                .selectedPlayerService=${this.playerSelected}
+              ></mpc-music-player-card>
+            </wa-tab-panel>
+          `
+        : html``,
+    );
   }
   protected renderPlayerQueue() {
-    if (this.config.queue.enabled) {
-      return cache(html`
-        <wa-tab-panel
-          name="${Sections.QUEUE}"
-          class="section ${this.active_section == Sections.QUEUE
-            ? ""
-            : "hidden"}"
-        >
-          <mpc-queue-card .config=${this.config.queue}></mpc-queue-card>
-        </wa-tab-panel>
-      `);
-    }
-    return html``;
+    return cache(
+      this.config.queue.enabled && this.active_section == Sections.QUEUE
+        ? html`
+            <wa-tab-panel name="${Sections.QUEUE}" class="section">
+              <mpc-queue-card .config=${this.config.queue}></mpc-queue-card>
+            </wa-tab-panel>
+          `
+        : html``,
+    );
   }
   protected renderMediaBrowser() {
-    if (this.config.media_browser.enabled) {
-      return cache(html`
-        <wa-tab-panel
-          name="${Sections.MEDIA_BROWSER}"
-          class="section ${this.active_section == Sections.MEDIA_BROWSER ? "" : "hidden"}"
-        >
-          <mpc-media-browser
-            .config=${this.config.media_browser}
-            .onMediaSelectedAction=${this.browserItemSelected}
-          >
-        </wa-tab-panel>
-      `);
-    }
-    return html``;
+    return cache(
+      this.config.media_browser.enabled &&
+        this.active_section == Sections.MEDIA_BROWSER
+        ? html`
+            <wa-tab-panel name="${Sections.MEDIA_BROWSER}" class="section">
+              <mpc-media-browser
+                .config=${this.config.media_browser}
+                .onMediaSelectedAction=${this.browserItemSelected}
+              ></mpc-media-browser>
+            </wa-tab-panel>
+          `
+        : html``,
+    );
   }
+  /* eslint-enable unicorn/template-indent */
   protected renderTabs() {
     return html`
       <div id="navbar" class="${this.config.expressive ? `expressive` : ``}">
-        ${this.config.expressive
-          ? html`<mpc-navbar-expressive></mpc-navbar-expressive>`
-          : html`<mpc-navbar></mpc-navbar>`}
+        ${
+          this.config.expressive
+            ? html`<mpc-navbar-expressive></mpc-navbar-expressive>`
+            : html`<mpc-navbar></mpc-navbar>`
+        }
       </div>
     `;
   }

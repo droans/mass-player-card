@@ -16,37 +16,38 @@ export class MassPlayerControls extends MassPlayerControlsBase {
     if (this.hiddenElements.shuffle_button) {
       return html``;
     }
-    const icon_style = this.layoutConfig.icons.shuffle;
-    const icon_size =
-      icon_style.size == PlayerIconSize.LARGE ? "medium" : "small";
-    const slotHtml = generateControlSlotHtml(icon_style);
+    const iconStyle = this.layoutConfig.icons.shuffle;
+    const iconSize = iconStyle.size == PlayerIconSize.LARGE ? "m" : "s";
+    const slotHtml = generateControlSlotHtml(iconStyle);
     const label = this.controller.translate(
       "player.controls.shuffle",
     ) as string;
     const labelHtml = generateControlLabelHtml(
-      icon_style,
+      iconStyle,
       label,
       this.layoutConfig.hide_labels,
     );
-    const div_layout = this.layoutConfig.controls_layout;
+    const divLayout = this.layoutConfig.controls_layout;
     const appearance = this._playerData.shuffle ? "accent" : "plain";
     return html`
-      <div class="shuffle div ${icon_size} ${div_layout}">
+      <div class="shuffle div ${iconSize} ${divLayout}">
         <ha-button
           appearance="${appearance}"
           variant="brand"
           @click=${this.onShuffle}
-          size="${icon_size}"
-          class="icon ${icon_size} ${icon_style.box_shadow
-            ? `has-box-shadow`
-            : ``}  ${appearance}"
+          size="${iconSize}"
+          class="icon ${iconSize} ${
+            iconStyle.box_shadow ? `has-box-shadow` : ``
+          }  ${appearance}"
         >
           <ha-svg-icon
             ${slotHtml}
-            .path=${this._playerData.shuffle
-              ? this.Icons.SHUFFLE
-              : this.Icons.SHUFFLE_DISABLED}
-            class="svg ${icon_size}"
+            .path=${
+              this._playerData.shuffle
+                ? this.Icons.SHUFFLE
+                : this.Icons.SHUFFLE_DISABLED
+            }
+            class="svg ${iconSize}"
           ></ha-svg-icon>
           <div class="button-label">${labelHtml}</div>
         </ha-button>
@@ -54,34 +55,33 @@ export class MassPlayerControls extends MassPlayerControlsBase {
     `;
   }
   protected renderPrevious(): TemplateResult {
-    const icon_style = this.layoutConfig.icons.previous;
-    const icon_size =
-      icon_style.size == PlayerIconSize.LARGE ? "medium" : "small";
-    const div_layout = this.layoutConfig.controls_layout;
-    const slotHtml = generateControlSlotHtml(icon_style);
+    const iconStyle = this.layoutConfig.icons.previous;
+    const iconSize = iconStyle.size == PlayerIconSize.LARGE ? "m" : "s";
+    const divLayout = this.layoutConfig.controls_layout;
+    const slotHtml = generateControlSlotHtml(iconStyle);
     const label = this.controller.translate(
       "player.controls.previous",
     ) as string;
     const labelHtml = generateControlLabelHtml(
-      icon_style,
+      iconStyle,
       label,
       this.layoutConfig.hide_labels,
     );
     return html`
-      <div class="track-previous div ${icon_size} ${div_layout}">
+      <div class="track-previous div ${iconSize} ${divLayout}">
         <ha-button
           appearance="outlined"
           variant="brand"
           @click=${this.onPrevious}
-          size="${icon_size}"
-          class="icon ${icon_size} ${icon_style.box_shadow
-            ? `has-box-shadow`
-            : ``}"
+          size="${iconSize}"
+          class="icon ${iconSize} ${
+            iconStyle.box_shadow ? `has-box-shadow` : ``
+          }"
         >
           <ha-svg-icon
             ${slotHtml}
             .path=${this.Icons.SKIP_PREVIOUS}
-            class="svg ${icon_size} icon-outlined"
+            class="svg ${iconSize} icon-outlined"
           ></ha-svg-icon>
           <div class="button-label">${labelHtml}</div>
         </ha-button>
@@ -89,41 +89,40 @@ export class MassPlayerControls extends MassPlayerControlsBase {
     `;
   }
   protected renderPlayPause(): TemplateResult {
-    const icon_style = this.layoutConfig.icons.play_pause;
-    const icon_size =
-      icon_style.size == PlayerIconSize.LARGE ? "medium" : "small";
-    const div_layout = this.layoutConfig.controls_layout;
-    const slotHtml = generateControlSlotHtml(icon_style);
+    const iconStyle = this.layoutConfig.icons.play_pause;
+    const iconSize = iconStyle.size == PlayerIconSize.LARGE ? "m" : "s";
+    const divLayout = this.layoutConfig.controls_layout;
+    const slotHtml = generateControlSlotHtml(iconStyle);
     const key = this._playerData.playing
       ? "player.controls.play"
       : "player.controls.pause";
     const label = this.controller.translate(key) as string;
     const labelHtml = generateControlLabelHtml(
-      icon_style,
+      iconStyle,
       label,
       this.layoutConfig.hide_labels,
     );
     const appearance = this._playerData.playing ? "filled" : "outlined";
     return html`
       <div
-        class="play-pause div ${icon_size} ${div_layout}
+        class="play-pause div ${iconSize} ${divLayout}
         ${this._playerData.playing ? `playing` : `paused`}"
       >
         <ha-button
           appearance="${appearance}"
           variant="brand"
-          size="${icon_size}"
-          class="mpc-button-play-pause icon ${icon_size} ${icon_style.box_shadow
-            ? `has-box-shadow`
-            : ``} ${appearance}"
+          size="${iconSize}"
+          class="mpc-button-play-pause icon ${iconSize} ${
+            iconStyle.box_shadow ? `has-box-shadow` : ``
+          } ${appearance}"
           @click=${this.onPlayPause}
         >
           <ha-svg-icon
             ${slotHtml}
-            .path=${this._playerData.playing
-              ? this.Icons.PAUSE
-              : this.Icons.PLAY}
-            class="svg ${icon_size} icon-outlined"
+            .path=${
+              this._playerData.playing ? this.Icons.PAUSE : this.Icons.PLAY
+            }
+            class="svg ${iconSize} icon-outlined"
           ></ha-svg-icon>
           <div class="button-label">${labelHtml}</div>
         </ha-button>
@@ -131,33 +130,32 @@ export class MassPlayerControls extends MassPlayerControlsBase {
     `;
   }
   protected renderNext(): TemplateResult {
-    const icon_style = this.layoutConfig.icons.next;
-    const icon_size =
-      icon_style.size == PlayerIconSize.LARGE ? "medium" : "small";
-    const div_layout = this.layoutConfig.controls_layout;
-    const slotHtml = generateControlSlotHtml(icon_style);
+    const iconStyle = this.layoutConfig.icons.next;
+    const iconSize = iconStyle.size == PlayerIconSize.LARGE ? "m" : "s";
+    const divLayout = this.layoutConfig.controls_layout;
+    const slotHtml = generateControlSlotHtml(iconStyle);
     const label = this.controller.translate("player.controls.next") as string;
     const labelHtml = generateControlLabelHtml(
-      icon_style,
+      iconStyle,
       label,
       this.layoutConfig.hide_labels,
     );
     return html`
-      <div class="track-next div ${icon_size} ${div_layout}">
+      <div class="track-next div ${iconSize} ${divLayout}">
         <ha-button
           appearance="outlined"
           variant="brand"
           @click=${this.onNext}
-          size="${icon_size}"
-          class="icon ${icon_size} ${icon_style.box_shadow
-            ? `has-box-shadow`
-            : ``}"
+          size="${iconSize}"
+          class="icon ${iconSize} ${
+            iconStyle.box_shadow ? `has-box-shadow` : ``
+          }"
           style="display: block;"
         >
           <ha-svg-icon
             ${slotHtml}
             .path=${this.Icons.SKIP_NEXT}
-            class="svg ${icon_size}"
+            class="svg ${iconSize}"
           ></ha-svg-icon>
           <div class="button-label">${labelHtml}</div>
         </ha-button>
@@ -169,34 +167,33 @@ export class MassPlayerControls extends MassPlayerControlsBase {
       return html``;
     }
     const icon = getRepeatIcon(this._playerData.repeat, this.Icons);
-    const div_layout = this.layoutConfig.controls_layout;
-    const icon_style = this.layoutConfig.icons.repeat;
-    const icon_size =
-      icon_style.size == PlayerIconSize.LARGE ? "medium" : "small";
-    const slotHtml = generateControlSlotHtml(icon_style);
+    const divLayout = this.layoutConfig.controls_layout;
+    const iconStyle = this.layoutConfig.icons.repeat;
+    const iconSize = iconStyle.size == PlayerIconSize.LARGE ? "m" : "s";
+    const slotHtml = generateControlSlotHtml(iconStyle);
     const label = this.controller.translate("player.controls.repeat") as string;
     const labelHtml = generateControlLabelHtml(
-      icon_style,
+      iconStyle,
       label,
       this.layoutConfig.hide_labels,
     );
     const appearance =
       this._playerData.repeat == RepeatMode.OFF ? "accent" : "plain";
     return html`
-      <div class="repeat div ${icon_size} ${div_layout}">
+      <div class="repeat div ${iconSize} ${divLayout}">
         <ha-button
           appearance="${appearance}"
           variant="brand"
-          size="${icon_size}"
-          class="icon ${icon_size} ${icon_style.box_shadow
-            ? `has-box-shadow`
-            : ``} ${appearance}"
+          size="${iconSize}"
+          class="icon ${iconSize} ${
+            iconStyle.box_shadow ? `has-box-shadow` : ``
+          } ${appearance}"
           @click=${this.onRepeat}
         >
           <ha-svg-icon
             ${slotHtml}
             .path=${icon}
-            class="svg ${icon_size}"
+            class="svg ${iconSize}"
           ></ha-svg-icon>
           <div class="button-label">${labelHtml}</div>
         </ha-button>
@@ -210,12 +207,16 @@ export class MassPlayerControls extends MassPlayerControlsBase {
     const shuffleButton = this.renderShuffle();
     return html`
       <div class="controls left ${layout.controls_layout}">
-        ${layout.controls_layout == PlayerControlsLayout.COMPACT
-          ? previousButton
-          : shuffleButton}
-        ${layout.controls_layout == PlayerControlsLayout.COMPACT
-          ? shuffleButton
-          : previousButton}
+        ${
+          layout.controls_layout == PlayerControlsLayout.COMPACT
+            ? previousButton
+            : shuffleButton
+        }
+        ${
+          layout.controls_layout == PlayerControlsLayout.COMPACT
+            ? shuffleButton
+            : previousButton
+        }
       </div>
     `;
   }

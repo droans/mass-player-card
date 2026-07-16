@@ -453,6 +453,7 @@ media_browser:
 | type                         | str                                                | Yes      | n/a          | Use `custom:mass-player-card`                                |
 | entities                     | list of strings or [EntityConfig](#entity-config)s | Yes      | n/a          | The Music Assistant `media_player` entities to use           |
 | download_local               | boolean                                            | No       | false        | Download and encode images if not remotely accessible        |
+| proxy_all_artwork            | boolean                                            | No       | false        | Download and encode all images despite accessibility         |
 | panel                        | boolean                                            | No       | false        | Displays a full-height card when enabled                     |
 | sync_player_across_dashboard | boolean                                            | No       | false        | Syncs the selected player across all cards on the dashboard. |
 | expressive                   | boolean                                            | No       | true         | Enables Material Expressive theme                            |
@@ -863,12 +864,16 @@ For players which don't have any support, you can usually use the universal or s
 
 **Current Language Support**
 
-| Language   | Support |
-|------------|---------|
-| English    | Full    |
-| Dutch      | Most    |
-| French     | Most    |
-| Portuguese | Most    |
+| Language   | ISO-639 | Support |
+|------------|---------|---------|
+| English    | en      | Full    |
+| German     | de      | Full    |
+| Italian    | it      | Full    |
+| Spanish    | es      | Full    |
+| Catalan    | ca      | Full    |
+| Dutch      | nl      | Most    |
+| French     | fr      | Most    |
+| Portuguese | pt      | Most    |
 
 If you would like to add new translations for other languages:
 1. Fork this repository and clone it locally.

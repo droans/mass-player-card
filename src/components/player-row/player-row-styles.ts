@@ -13,36 +13,54 @@ export default css`
     transform: scale(1);
     align-content: center;
   }
-  .action-button::part(button) {
+  .action-button:not(.expressive)::part(button) {
     --button-button-height: 38px;
     --button-button-width: 38px;
-    --button-border-radius: 25%;
   }
 
   .action-button.expressive {
     --button-border-radius: var(--button-small-border-radius) !important;
+    --ha-button-start-border-radius: 8px !important;
+    --ha-button-end-border-radius: 8px !important;
+    --button-button-height: 48px;
+    --used-button-height: 48px;
   }
   .action-button.expressive:hover {
     background-color: var(--expressive-row-button-color-hover);
-    --button-border-radius: var(--button-small-border-radius);
+    --button-border-radius: 16px !important;
+    --ha-button-start-border-radius: 16px !important;
+    --ha-button-end-border-radius: 16px !important;
     transition: border-radius background-color var(--animation-duration);
   }
   .action-button.expressive:first-of-type {
-    --button-border-radius: var(--button-small-border-radius) 4px 4px
-      var(--button-small-border-radius) !important;
+    --button-border-radius: 24px 8px 8px 24px !important;
+    --ha-button-start-border-radius: 24px !important;
+    --ha-button-end-border-radius: 8px !important;
   }
   .action-button.expressive:first-of-type:hover {
-    --button-border-radius: var(--button-small-border-radius) !important;
+    --button-border-radius: 24px 16px 16px 24px !important;
+    --ha-button-end-border-radius: 16px !important;
   }
   .action-button.expressive:last-of-type {
-    --button-border-radius: 4px var(--button-small-border-radius)
-      var(--button-small-border-radius) 4px !important;
+    --button-border-radius: 8px 24px 24px 8px !important;
+    --ha-button-start-border-radius: 8px !important;
+    --ha-button-end-border-radius: 24px !important;
   }
   .action-button.expressive:last-of-type:hover {
-    --button-border-radius: var(--button-small-border-radius) !important;
+    --button-border-radius: 16px 24px 24px 16px !important;
+    --ha-button-start-border-radius: 16px !important;
   }
   .action-button.expressive:only-of-type {
-    --button-border-radius: var(--button-small-border-radius) !important;
+    --button-border-radius: 16px !important;
+    --ha-button-start-border-radius: 16px !important;
+    --ha-button-end-border-radius: 16px !important;
+    --button-button-width: 48px;
+    --used-button-width: 48px;
+  }
+  .action-button.expressive:only-of-type:hover {
+    --button-border-radius: 24px !important;
+    --ha-button-start-border-radius: 24px !important;
+    --ha-button-end-border-radius: 24px !important;
   }
 
   .audio-bars {
@@ -94,7 +112,7 @@ export default css`
     justify-content: flex-end;
     gap: 2px;
     height: 48px;
-    right: 0;
+    right: 8px;
     padding-right: 8px;
     position: absolute;
   }

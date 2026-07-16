@@ -1,15 +1,17 @@
-import typescript from '@rollup/plugin-typescript';
-import commonjs from 'rollup-plugin-commonjs';
-import { nodeResolve } from '@rollup/plugin-node-resolve';
-import serve from 'rollup-plugin-serve';
-import terser from '@rollup/plugin-terser';
-import json from '@rollup/plugin-json';
+/* eslint-disable unicorn/prevent-abbreviations */
+/* eslint-disable github/filenames-match-regex */
+import typescript from "@rollup/plugin-typescript";
+import commonjs from "rollup-plugin-commonjs";
+import { nodeResolve } from "@rollup/plugin-node-resolve";
+import serve from "rollup-plugin-serve";
+import terser from "@rollup/plugin-terser";
+import json from "@rollup/plugin-json";
 
 export default {
-  input: ['src/main.ts'],
+  input: ["src/main.ts"],
   output: {
-    file: '../www/mass-player-card.js',
-    format: 'es',
+    file: "../www/mass-player-card.js",
+    format: "es",
   },
   plugins: [
     nodeResolve(),
@@ -18,11 +20,11 @@ export default {
     json(),
     terser(),
     serve({
-      contentBase: '../www',
-      host: '0.0.0.0',
+      contentBase: "../www",
+      host: "0.0.0.0",
       port: 5001,
       headers: {
-        'Access-Control-Allow-Origin': '*',
+        "Access-Control-Allow-Origin": "*",
       },
     }),
   ],

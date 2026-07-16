@@ -204,6 +204,7 @@ export class MusicPlayerCard extends LitElement {
         Thumbnail.PLAYLIST,
         // eslint-disable-next-line @typescript-eslint/no-non-null-assertion
         this.controller.config!.download_local,
+        this.cardConfig?.proxy_all_artwork,
       ),
       uri: playlist.uri,
     };
@@ -309,6 +310,7 @@ export class MusicPlayerCard extends LitElement {
             class="dialog-playlist-thumbnail"
             slot="start"
             src="${playlist.image.image_url}"
+            loading="lazy"
             onerror="this.src = '${playlist.image.fallback_url}'"
           />
           <span
@@ -365,8 +367,10 @@ export class MusicPlayerCard extends LitElement {
       <div
         class="player-name ${this.cardConfig.expressive ? `expressive` : ``}"
       >
-        ${this.player_data?.player_name ??
-        this.activePlayerController.activePlayerName}
+        ${
+          this.player_data?.player_name ??
+          this.activePlayerController.activePlayerName
+        }
       </div>
     `;
   }
@@ -482,9 +486,11 @@ export class MusicPlayerCard extends LitElement {
           id="active-track-text"
           class="active-track-text 
           ${this.cardConfig.expressive ? `expressive` : ``} 
-          ${this.config.layout.artwork_size == ArtworkSize.LARGE
-            ? ``
-            : `rounded`}"
+          ${
+            this.config.layout.artwork_size == ArtworkSize.LARGE
+              ? ``
+              : `rounded`
+          }"
         >
           ${this.renderPlayerHeader()} ${this.renderProgress()}
         </div>
@@ -555,9 +561,11 @@ export class MusicPlayerCard extends LitElement {
         class="media-controls controls-art ${this._config.layout.artwork_size} 
         ${this.cardConfig.expressive ? `expressive` : ``}"
       >
-        ${this.cardConfig.expressive
-          ? html`<mpc-player-controls-expressive></mpc-player-controls-expressive>`
-          : html`<mpc-player-controls></mpc-player-controls>`}
+        ${
+          this.cardConfig.expressive
+            ? html`<mpc-player-controls-expressive></mpc-player-controls-expressive>`
+            : html`<mpc-player-controls></mpc-player-controls>`
+        }
         ${this.renderVolumeRow()}
       </div>
     `;
