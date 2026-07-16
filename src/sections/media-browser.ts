@@ -68,6 +68,8 @@ import {
   mediaCardEnqueueType,
   mediaCardCollectionType,
 } from "../const/types";
+import { cache } from "lit/directives/cache.js";
+import { DirectiveResult } from "lit/async-directive.js";
 
 @customElement(`mpc-media-browser`)
 export class MediaBrowser extends LitElement {
@@ -453,53 +455,64 @@ export class MediaBrowser extends LitElement {
   protected hideSectionHeader(): boolean {
     return this.hiddenElements.header;
   }
-  protected renderCollectionView(): TemplateResult {
-    const collType = this.activeCollectionData.type;
-    if (collType == "album") {
-      return html`
-        <mpc-collection-album-view
-          .collectionData=${this.activeCollectionData}
-          .onEnqueueAction=${this.onPlaylistEnqueue}
-        ></mpc-collection-album-view>
-      `;
-    }
-    if (collType == "artist") {
-      return html`
-        <mpc-collection-artist-view
-          .collectionData=${this.activeCollectionData}
-          .onEnqueueAction=${this.onPlaylistEnqueue}
-        ></mpc-collection-artist-view>
-      `;
-    }
-    if (collType == "podcast") {
-      return html`
-        <mpc-collection-podcast-view
-          .collectionData=${this.activeCollectionData}
-          .onEnqueueAction=${this.onPlaylistEnqueue}
-        ></mpc-collection-podcast-view>
-      `;
-    }
+
+  protected renderAlbumView = (): TemplateResult => {
+    return html`
+      <mpc-collection-album-view
+        .collectionData=${this.activeCollectionData}
+        .onEnqueueAction=${this.onPlaylistEnqueue}
+      ></mpc-collection-album-view>
+    `;
+  };
+  protected renderArtistView = (): TemplateResult => {
+    return html`
+      <mpc-collection-artist-view
+        .collectionData=${this.activeCollectionData}
+        .onEnqueueAction=${this.onPlaylistEnqueue}
+      ></mpc-collection-artist-view>
+    `;
+  };
+  protected renderPodcastView = (): TemplateResult => {
+    return html`
+      <mpc-collection-podcast-view
+        .collectionData=${this.activeCollectionData}
+        .onEnqueueAction=${this.onPlaylistEnqueue}
+      ></mpc-collection-podcast-view>
+    `;
+  };
+  protected renderPlaylistView = (): TemplateResult => {
     return html`
       <mpc-collection-playlist-view
         .collectionData=${this.activeCollectionData}
         .onEnqueueAction=${this.onPlaylistEnqueue}
       ></mpc-collection-playlist-view>
     `;
+  };
+
+  protected renderCollectionView(): DirectiveResult {
+    const collectionType = this.activeCollectionData.type;
+    return cache(
+      {
+        album: this.renderAlbumView,
+        artist: this.renderArtistView,
+        playlist: this.renderPlaylistView,
+        podcast: this.renderPodcastView,
+      }[collectionType](),
+    );
   }
-  protected renderBrowserCards(): TemplateResult {
-    if (
-      this.activeSubSection == "collection" &&
-      this.activeSection != "search"
-    ) {
-      return this.renderCollectionView();
-    }
-    return html`
-      <mpc-browser-cards
-        .onSelectAction=${this.onSelect}
-        .onEnqueueAction=${this.onEnqueue}
-        ?loading=${this.searchLoading}
-      ></mpc-browser-cards>
-    `;
+  protected renderBrowserCards(): DirectiveResult {
+    /* eslint-disable unicorn/template-indent */
+    return cache(
+      this.activeSubSection == "collection" && this.activeSection != "search"
+        ? this.renderCollectionView()
+        : html`
+            <mpc-browser-cards
+              .onSelectAction=${this.onSelect}
+              .onEnqueueAction=${this.onEnqueue}
+              ?loading=${this.searchLoading}
+            ></mpc-browser-cards>
+          `,
+    );
   }
   protected renderTitle(): TemplateResult {
     if (this.hiddenElements.header_title) {
@@ -555,6 +568,7 @@ export class MediaBrowser extends LitElement {
       `;
     }
     return html``;
+    /* eslint-enable unicorn/template-indent */
   }
   protected renderSearchBar() {
     if (!this.hass) {

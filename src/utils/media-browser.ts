@@ -14,8 +14,6 @@ import {
   MediaLibraryItem,
   RecommendationSection,
 } from "../const/types";
-import { DirectiveResult } from "lit/async-directive.js";
-import { cache } from "lit/directives/cache.js";
 
 type viewCardFunction = (
   media_content_id: string,
@@ -37,7 +35,7 @@ async function generateSectionBackgroundPart(
   fallback: Thumbnail | string = Thumbnail.DISC,
   download_local: boolean,
   proxy_all: boolean,
-): Promise<DirectiveResult> {
+): Promise<TemplateResult> {
   const imgs = await asyncImageURLWithFallback(
     hass,
     thumbnail,
@@ -45,14 +43,14 @@ async function generateSectionBackgroundPart(
     download_local,
     proxy_all,
   );
-  return cache(html`
+  return html`
     <img
       class="thumbnail-section"
       src="${imgs.image_url}"
       loading="lazy"
       onerror="this.src = '${imgs.fallback_url}'"
     />
-  `);
+  `;
 }
 async function generateSectionBackground(
   hass: ExtendedHass,
@@ -62,7 +60,7 @@ async function generateSectionBackground(
   proxy_all: boolean,
 ): Promise<TemplateResult> {
   const rng = [...Array(4).keys()];
-  const promiseThumbnails: Promise<DirectiveResult>[] = [];
+  const promiseThumbnails: Promise<TemplateResult>[] = [];
 
   rng.forEach((i) => {
     const idx = i % cards.length;
