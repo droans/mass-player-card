@@ -38,7 +38,7 @@
   "devDependencies": {
     "@eslint/js": "10.0.1",
     "@lit-labs/compiler": "^1.1.2",
-    "@rollup/plugin-json": "^6.0.0",
+    "@rollup/plugin-json": "^6.1.0",
     "@rollup/plugin-node-resolve": "^16.0.3",
     "@rollup/plugin-terser": "^1.0.0",
     "@rollup/plugin-typescript": "^12.3.0",
