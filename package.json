@@ -44,6 +44,7 @@
     "@rollup/plugin-typescript": "^12.3.0",
     "@typescript-eslint/eslint-plugin": "^8.64.0",
     "@typescript-eslint/parser": "^8.64.0",
+    "@typescript/native": "npm:typescript@^7.0.2",
     "eslint": "10.7.0",
     "eslint-config-prettier": "10.1.8",
     "eslint-plugin-github": "git+https://github.com/droans/eslint-plugin-github#v6.1.0",
@@ -57,7 +58,7 @@
     "rollup": "^4.62.2",
     "rollup-plugin-commonjs": "^10.1.0",
     "rollup-plugin-serve": "^3.0.0",
-    "typescript": "6.0.3",
+    "typescript": "npm:@typescript/typescript6@^6.0.2",
     "typescript-eslint": "8.64.0"
   },
   "scripts": {
