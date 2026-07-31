@@ -292,7 +292,7 @@ export class MassPlayerProgressBar extends LitElement {
       <div
         id="progress-handle"
         style="
-          width: ${this._handleBarWidth.toString()}px; 
+          width: ${this._handleBarWidth.toString()}px;
           position: absolute;
           left: calc(${(
             this._prog_pct * 100

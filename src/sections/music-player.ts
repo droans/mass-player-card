@@ -315,7 +315,7 @@ export class MusicPlayerCard extends LitElement {
           />
           <span
             slot="headline"
-            class="dialog-playlist-title 
+            class="dialog-playlist-title
               ${this.cardConfig?.expressive ? `expressive` : ``}"
             inert
           >
@@ -348,7 +348,7 @@ export class MusicPlayerCard extends LitElement {
     const title = `${this.player_data.track_title} - ${this.player_data.track_album}`;
     return html`
       <mpc-marquee-text
-        class="player-track-title marquee 
+        class="player-track-title marquee
         ${this.cardConfig?.expressive ? `expressive` : ``}"
       >
         ${title}
@@ -411,7 +411,7 @@ export class MusicPlayerCard extends LitElement {
       const i = Math.floor(Math.random() * msgs.length);
       return html`
         <div
-          class="player-track-artist 
+          class="player-track-artist
           ${this.cardConfig.expressive ? `expressive` : ``}"
         >
           ${msgs[i]}
@@ -420,7 +420,7 @@ export class MusicPlayerCard extends LitElement {
     }
     return html`
       <div
-        class="player-track-artist 
+        class="player-track-artist
         ${this.cardConfig.expressive ? `expressive` : ``}"
       >
         ${this.player_data.track_artist}
@@ -443,7 +443,7 @@ export class MusicPlayerCard extends LitElement {
     }
     return html`
       <mpc-section-header
-        class="header header-art ${this._config.layout.artwork_size} 
+        class="header header-art ${this._config.layout.artwork_size}
         ${this.cardConfig.expressive ? `expressive` : ``}"
       >
         ${this.renderPlayerSelector()} ${this.renderSectionTitle()}
@@ -484,8 +484,8 @@ export class MusicPlayerCard extends LitElement {
       <div id="active-track" class="${this._config.layout.artwork_size}">
         <div
           id="active-track-text"
-          class="active-track-text 
-          ${this.cardConfig.expressive ? `expressive` : ``} 
+          class="active-track-text
+          ${this.cardConfig.expressive ? `expressive` : ``}
           ${
             this.config.layout.artwork_size == ArtworkSize.LARGE
               ? ``
@@ -545,7 +545,7 @@ export class MusicPlayerCard extends LitElement {
     return html`
       <div id="volume">
         <mpc-volume-row
-          class="volume vol-art ${this._config.layout.artwork_size} 
+          class="volume vol-art ${this._config.layout.artwork_size}
           ${this.cardConfig.expressive ? `expressive` : ``}"
           ?can-mute=${canMute}
         ></mpc-volume-row>
@@ -558,7 +558,7 @@ export class MusicPlayerCard extends LitElement {
     }
     return html`
       <div
-        class="media-controls controls-art ${this._config.layout.artwork_size} 
+        class="media-controls controls-art ${this._config.layout.artwork_size}
         ${this.cardConfig.expressive ? `expressive` : ``}"
       >
         ${
