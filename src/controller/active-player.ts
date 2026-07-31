@@ -61,7 +61,7 @@ export class ActivePlayerController {
   private _groupMembers!: ContextProvider<typeof groupedPlayersContext>;
   private _groupVolume!: ContextProvider<typeof groupVolumeContext>;
   private _activePlayerData!: ContextProvider<typeof activePlayerDataContext>;
-  private _playerData?: MassGetQueueServiceResponseSchema;
+  private _playerData?: getQueueResponse;
   private _maxPlayerDataUpdateTimestampDelta = 5000;
   private _playerDataUpdateInterval?: number;
 
@@ -121,6 +121,9 @@ export class ActivePlayerController {
     this.configController = configController;
     this._host = host;
     this.setDefaultActivePlayer();
+    this._playerDataUpdateInterval = setInterval(() => {
+      void this.actionGetCurrentQueue();
+    }, this._maxPlayerDataUpdateTimestampDelta);
   }
   public set hass(hass: ExtendedHass) {
     this._hass = hass;
@@ -137,7 +140,7 @@ export class ActivePlayerController {
       playerHasUpdated(currentEntity, newEntity) ||
       playerHasUpdated(currentVolEntity, newVolEntity)
     ) {
-      void this.updateActivePlayerData();
+      void this.updateActivePlayerData(true);
     }
   }
   public get hass() {
@@ -335,7 +338,7 @@ export class ActivePlayerController {
     }, this._observerDelay);
   };
 
-  public async updateActivePlayerData() {
+  public async updateActivePlayerData(forceUpdate = false) {
     const badStates = ["unavailable", "unknown"];
     if (
       !this.activeMediaPlayer ||
@@ -349,7 +352,7 @@ export class ActivePlayerController {
     if (!playerIsAvailable(this.hass, this.activeEntityID)) {
       return;
     }
-    const data = await this.getactivePlayerData();
+    const data = await this.getactivePlayerData(forceUpdate);
     const new_data = JSON.stringify(data);
     const current_data = JSON.stringify(this.activePlayerData);
     if (new_data != current_data) {
@@ -417,10 +420,13 @@ export class ActivePlayerController {
     }
   }
 
-  public async getactivePlayerData(): Promise<PlayerData> {
+  public async getactivePlayerData(forceUpdate = false): Promise<PlayerData> {
     const player = this.activeMediaPlayer;
     const vol_player = this.volumeMediaPlayer;
-    const current_queue = await this.actionGetCurrentQueue();
+    const current_queue =
+      forceUpdate || !this._playerData
+        ? await this.actionGetCurrentQueue()
+        : this._playerData;
     const current_item = current_queue.current_item;
 
     return {
@@ -447,7 +453,7 @@ export class ActivePlayerController {
     if (!this._playerData) {
       await this.actionGetCurrentQueue();
     }
-    return this._playerData?.response[this.activeEntityID].elapsed_time ?? 0;
+    return this._playerData?.elapsed_time ?? 0;
   }
   public async getPlayerActiveItemDuration(): Promise<number> {
     if (!isActive(this.hass, this.activeMediaPlayer, this.activeEntityConfig)) {
@@ -456,17 +462,11 @@ export class ActivePlayerController {
     if (!this._playerData) {
       await this.actionGetCurrentQueue();
     }
-    return (
-      this._playerData?.response[this.activeEntityID].current_item.duration ?? 1
-    );
+    return this._playerData?.current_item?.duration ?? 1;
   }
-  async actionGetCurrentQueue(forceUpdate = false): Promise<getQueueResponse> {
+  async actionGetCurrentQueue(): Promise<getQueueResponse> {
     const entity_id = this.activeEntityID;
     const player = this.activeMediaPlayer;
-
-    if (!forceUpdate && this._playerData) {
-      return this._playerData.response[entity_id];
-    }
     if (
       !playerIsAvailable(this.hass, entity_id) ||
       !player?.state ||
@@ -496,8 +496,8 @@ export class ActivePlayerController {
     };
     const returnValue =
       await this.hass.callWS<MassGetQueueServiceResponseSchema>(data);
-    this._playerData = returnValue;
     const result = returnValue.response[entity_id];
+    this._playerData = result;
     return result;
   }
   public createAndApplyExpressiveScheme() {
@@ -652,7 +652,7 @@ export class ActivePlayerController {
     this.setActivePlayer(this.activeEntityID);
     this.createObserver();
     this._playerDataUpdateInterval = setInterval(() => {
-      void this.actionGetCurrentQueue(true);
+      void this.actionGetCurrentQueue();
     }, this._maxPlayerDataUpdateTimestampDelta);
   }
 }
