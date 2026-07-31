@@ -121,6 +121,9 @@ export class ActivePlayerController {
     this.configController = configController;
     this._host = host;
     this.setDefaultActivePlayer();
+    this._playerDataUpdateInterval = setInterval(() => {
+      void this.actionGetCurrentQueue();
+    }, this._maxPlayerDataUpdateTimestampDelta);
   }
   public set hass(hass: ExtendedHass) {
     this._hass = hass;
