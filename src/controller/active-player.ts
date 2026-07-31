@@ -137,7 +137,7 @@ export class ActivePlayerController {
       playerHasUpdated(currentEntity, newEntity) ||
       playerHasUpdated(currentVolEntity, newVolEntity)
     ) {
-      void this.updateActivePlayerData();
+      void this.updateActivePlayerData(true);
     }
   }
   public get hass() {
@@ -335,7 +335,7 @@ export class ActivePlayerController {
     }, this._observerDelay);
   };
 
-  public async updateActivePlayerData() {
+  public async updateActivePlayerData(forceUpdate = false) {
     const badStates = ["unavailable", "unknown"];
     if (
       !this.activeMediaPlayer ||
@@ -349,7 +349,7 @@ export class ActivePlayerController {
     if (!playerIsAvailable(this.hass, this.activeEntityID)) {
       return;
     }
-    const data = await this.getactivePlayerData();
+    const data = await this.getactivePlayerData(forceUpdate);
     const new_data = JSON.stringify(data);
     const current_data = JSON.stringify(this.activePlayerData);
     if (new_data != current_data) {
@@ -417,10 +417,13 @@ export class ActivePlayerController {
     }
   }
 
-  public async getactivePlayerData(): Promise<PlayerData> {
+  public async getactivePlayerData(forceUpdate = false): Promise<PlayerData> {
     const player = this.activeMediaPlayer;
     const vol_player = this.volumeMediaPlayer;
-    const current_queue = await this.actionGetCurrentQueue();
+    const current_queue =
+      forceUpdate || !this._playerData
+        ? await this.actionGetCurrentQueue()
+        : this._playerData;
     const current_item = current_queue.current_item;
 
     return {
@@ -458,13 +461,9 @@ export class ActivePlayerController {
     }
     return this._playerData?.current_item?.duration ?? 1;
   }
-  async actionGetCurrentQueue(forceUpdate = false): Promise<getQueueResponse> {
+  async actionGetCurrentQueue(): Promise<getQueueResponse> {
     const entity_id = this.activeEntityID;
     const player = this.activeMediaPlayer;
-
-    if (!forceUpdate && this._playerData) {
-      return this._playerData;
-    }
     if (
       !playerIsAvailable(this.hass, entity_id) ||
       !player?.state ||
@@ -650,7 +649,7 @@ export class ActivePlayerController {
     this.setActivePlayer(this.activeEntityID);
     this.createObserver();
     this._playerDataUpdateInterval = setInterval(() => {
-      void this.actionGetCurrentQueue(true);
+      void this.actionGetCurrentQueue();
     }, this._maxPlayerDataUpdateTimestampDelta);
   }
 }
