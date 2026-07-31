@@ -39,6 +39,7 @@ import {
 import { Icons } from "../../const/icons";
 import { queueItem } from "mass-queue-types/packages/mass_queue/actions/get_queue_items";
 import { Config } from "../../config/config";
+import { HTMLImageElementEvent } from "../../const/events";
 
 @customElement("mpc-queue-media-row")
 export class MediaRow extends LitElement {
@@ -197,7 +198,7 @@ export class MediaRow extends LitElement {
     return _changedProperties.size > 0;
   }
 
-  private _renderThumbnailFallback = () => {
+  private _renderThumbnailFallback = (event_: Event) => {
     this.errorCount++;
     const currentSource = this.thumbnailElement.src;
     const thumb = getTrackFallbackImg(
@@ -213,8 +214,10 @@ export class MediaRow extends LitElement {
       return;
     }
     if (this.imagesExhausted) {
-      // eslint-disable-next-line unicorn/prefer-add-event-listener
-      this.thumbnailElement.onerror = null;
+      (event_ as HTMLImageElementEvent).target.removeEventListener(
+        "error",
+        this._renderThumbnailFallback,
+      );
     }
   };
   private renderThumbnail(): TemplateResult {
@@ -222,8 +225,8 @@ export class MediaRow extends LitElement {
       return html``;
     }
     /* eslint-disable
-          unicorn/no-nested-ternary,  
-          @typescript-eslint/no-unnecessary-condition 
+          unicorn/no-nested-ternary,
+          @typescript-eslint/no-unnecessary-condition
     */
     const img = this.defaultImageURL?.length
       ? this.defaultImageURL
@@ -234,7 +237,7 @@ export class MediaRow extends LitElement {
       !this.media_item.show_action_buttons && !this.media_item?.playing;
     /* eslint-enable
           unicorn/no-nested-ternary,
-          @typescript-eslint/no-unnecessary-condition 
+          @typescript-eslint/no-unnecessary-condition
     */
     if (this.showAlbumCovers && !this.hide.album_covers) {
       return html`
@@ -283,7 +286,7 @@ export class MediaRow extends LitElement {
       !this.media_item?.show_action_buttons && !this.media_item?.playing;
     return html`
       <div
-        class="title track 
+        class="title track
         ${played ? "disabled" : ""}
         ${this.useExpressive ? `expressive` : ``}"
         style="width: ${this._calculateTitleWidth()}"
@@ -300,8 +303,8 @@ export class MediaRow extends LitElement {
       !this.media_item?.show_action_buttons && !this.media_item?.playing;
     return html`
       <div
-        class="title artist 
-        ${played ? "disabled" : ""} 
+        class="title artist
+        ${played ? "disabled" : ""}
         ${this.useExpressive ? `expressive` : ``}"
         style="width: ${this._calculateTitleWidth()}"
       >

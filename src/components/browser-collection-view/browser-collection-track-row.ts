@@ -27,7 +27,7 @@ import { EnqueueOptions, Thumbnail } from "../../const/enums";
 import BrowserActions from "../../actions/browser-actions";
 import { Track } from "mass-queue-types/packages/mass_queue/utils";
 import { Icons } from "../../const/icons";
-import { MenuButtonEventData } from "../../const/events";
+import { HTMLImageElementEvent, MenuButtonEventData } from "../../const/events";
 import { getTranslation } from "../../utils/translations";
 import { PlaylistTrack } from "mass-queue-types/packages/mass_queue/actions/get_playlist_tracks";
 import { EnqueueConfigMap } from "../../const/media-browser";
@@ -253,7 +253,7 @@ export class MassPlaylistTrackRow extends LitElement {
     `;
   }
 
-  private _renderThumbnailFallback = () => {
+  private _renderThumbnailFallback = (event_: Event) => {
     const currentSource = this.thumbnailElement.src;
     const thumb = getTrackFallbackImg(
       this.hass as ExtendedHass,
@@ -268,8 +268,10 @@ export class MassPlaylistTrackRow extends LitElement {
       return;
     }
     if (this.imagesExhausted) {
-      // eslint-disable-next-line unicorn/prefer-add-event-listener
-      this.thumbnailElement.onerror = null;
+      (event_ as HTMLImageElementEvent).target.removeEventListener(
+        "error",
+        this._renderThumbnailFallback,
+      );
     }
   };
   protected renderThumbnail(): TemplateResult {
