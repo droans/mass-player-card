@@ -185,12 +185,18 @@ export class MediaCard extends LitElement {
   protected renderThumbnailFromBackground() {
     return html` ${this.config?.background} `;
   }
-  private _renderImageFallback = (event_: HTMLImageElementEvent) => {
+  private _renderImageFallback = (event_: Event) => {
     const fallback = getThumbnail(
       this.hass,
       this.config?.fallback ?? Thumbnail.DISC,
     );
-    event_.target.src = fallback as string;
+    // eslint-disable-next-line unicorn/prevent-abbreviations
+    const ev = event_ as HTMLImageElementEvent;
+    if (fallback == ev.target.src) {
+      ev.target.removeEventListener("error", this._renderImageFallback);
+    }
+    ev.target.src = fallback as string;
+    ev.target.removeEventListener("error", this._renderImageFallback);
   };
   protected renderThumbnailFromThumbnail() {
     const img = this.config?.thumbnail;

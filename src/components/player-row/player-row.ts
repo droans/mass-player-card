@@ -133,14 +133,19 @@ export class PlayerRow extends LitElement {
     this.transferService(this.player_entity.entity_id);
   };
 
-  private _renderThumbnailFallback = (event_: HTMLImageElementEvent) => {
+  private _renderThumbnailFallback = (event_: Event) => {
+    // eslint-disable-next-line unicorn/prevent-abbreviations
+    const ev = event_ as HTMLImageElementEvent;
     const attributes = this.player_entity?.attributes;
     const fallback = getThumbnail(this.hass, Thumbnail.HEADPHONES);
     const loc = attributes?.entity_picture_local;
     const pic = attributes?.entity_picture ?? fallback;
-    const source = event_.target.src;
+    const source = ev.target.src;
     const newSource = source == loc ? pic : fallback;
-    event_.target.src = newSource ?? "";
+    if (ev.target.src == newSource) {
+      ev.target.removeEventListener("error", this._renderThumbnailFallback);
+    }
+    ev.target.src = newSource ?? "";
   };
   private renderThumbnail() {
     const attributes = this.player_entity?.attributes;
