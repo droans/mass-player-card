@@ -61,6 +61,9 @@ export class ActivePlayerController {
   private _groupMembers!: ContextProvider<typeof groupedPlayersContext>;
   private _groupVolume!: ContextProvider<typeof groupVolumeContext>;
   private _activePlayerData!: ContextProvider<typeof activePlayerDataContext>;
+  private _playerData?: MassGetQueueServiceResponseSchema;
+  private _maxPlayerDataUpdateTimestampDelta = 5000;
+  private _playerDataUpdateInterval?: number;
 
   private _hass!: ExtendedHass;
   private _config!: Config;
@@ -73,6 +76,7 @@ export class ActivePlayerController {
   private _timeout?: number;
   private _observerDelay = 300;
   private _canGroupWith: string[] = [];
+  private volumeEntityId!: string;
 
   constructor(
     hass: ExtendedHass,
@@ -120,14 +124,21 @@ export class ActivePlayerController {
   }
   public set hass(hass: ExtendedHass) {
     this._hass = hass;
-    const current_entity = this.activeMediaPlayer;
-    const new_entity = hass.states[this.activeEntityID];
-    if (playerHasUpdated(current_entity, new_entity)) {
+    const currentEntity = this.activeMediaPlayer;
+    const newEntity = hass.states[this.activeEntityID];
+    const currentVolEntity = this.volumeMediaPlayer;
+    const newVolEntity = hass.states[this.volumeEntityId];
+    if (playerHasUpdated(currentEntity, newEntity)) {
       this.setActivePlayer(this.activeEntityID);
     }
     this.volumeMediaPlayer =
       hass.states[this.activeEntityConfig.volume_entity_id];
-    void this.updateActivePlayerData();
+    if (
+      playerHasUpdated(currentEntity, newEntity) ||
+      playerHasUpdated(currentVolEntity, newVolEntity)
+    ) {
+      void this.updateActivePlayerData();
+    }
   }
   public get hass() {
     return this._hass;
@@ -163,6 +174,7 @@ export class ActivePlayerController {
     this.volumeMediaPlayer = states[config.volume_entity_id];
     this.activeMediaPlayer = states[config.entity_id];
     this.activeEntityID = config.entity_id;
+    this.volumeEntityId = config.volume_entity_id;
     this.configController.activeEntityConfig = config;
     void this.setCanGroupWith();
   }
@@ -432,20 +444,34 @@ export class ActivePlayerController {
     if (!isActive(this.hass, this.activeMediaPlayer, this.activeEntityConfig)) {
       return 0;
     }
-    const current_queue = await this.actionGetCurrentQueue();
-    const elapsed = current_queue.elapsed_time;
-    return elapsed;
+    if (!this._playerData) {
+      await this.actionGetCurrentQueue();
+    }
+    return this._playerData?.response[this.activeEntityID].elapsed_time ?? 0;
   }
   public async getPlayerActiveItemDuration(): Promise<number> {
     if (!isActive(this.hass, this.activeMediaPlayer, this.activeEntityConfig)) {
       return 1;
     }
-    const current_queue = await this.actionGetCurrentQueue();
-    return current_queue.current_item?.duration ?? 1;
+    if (!this._playerData) {
+      await this.actionGetCurrentQueue();
+    }
+    return (
+      this._playerData?.response[this.activeEntityID].current_item.duration ?? 1
+    );
   }
-  async actionGetCurrentQueue(): Promise<getQueueResponse> {
+  async actionGetCurrentQueue(forceUpdate = false): Promise<getQueueResponse> {
     const entity_id = this.activeEntityID;
-    if (!playerIsAvailable(this.hass, entity_id)) {
+    const player = this.activeMediaPlayer;
+
+    if (!forceUpdate && this._playerData) {
+      return this._playerData.response[entity_id];
+    }
+    if (
+      !playerIsAvailable(this.hass, entity_id) ||
+      !player?.state ||
+      ["unknown", "unavailable"].includes(player.state)
+    ) {
       return {
         queue_id: "",
         active: false,
@@ -470,6 +496,7 @@ export class ActivePlayerController {
     };
     const returnValue =
       await this.hass.callWS<MassGetQueueServiceResponseSchema>(data);
+    this._playerData = returnValue;
     const result = returnValue.response[entity_id];
     return result;
   }
@@ -616,10 +643,16 @@ export class ActivePlayerController {
   public disconnected() {
     this._observer?.disconnect();
     this._observer = undefined;
+    if (this._playerDataUpdateInterval) {
+      clearInterval(this._playerDataUpdateInterval);
+    }
   }
   public reconnected(hass: ExtendedHass) {
     this.hass = hass;
     this.setActivePlayer(this.activeEntityID);
     this.createObserver();
+    this._playerDataUpdateInterval = setInterval(() => {
+      void this.actionGetCurrentQueue(true);
+    }, this._maxPlayerDataUpdateTimestampDelta);
   }
 }
