@@ -61,7 +61,7 @@ export class ActivePlayerController {
   private _groupMembers!: ContextProvider<typeof groupedPlayersContext>;
   private _groupVolume!: ContextProvider<typeof groupVolumeContext>;
   private _activePlayerData!: ContextProvider<typeof activePlayerDataContext>;
-  private _playerData?: MassGetQueueServiceResponseSchema;
+  private _playerData?: getQueueResponse;
   private _maxPlayerDataUpdateTimestampDelta = 5000;
   private _playerDataUpdateInterval?: number;
 
@@ -447,7 +447,7 @@ export class ActivePlayerController {
     if (!this._playerData) {
       await this.actionGetCurrentQueue();
     }
-    return this._playerData?.response[this.activeEntityID].elapsed_time ?? 0;
+    return this._playerData?.elapsed_time ?? 0;
   }
   public async getPlayerActiveItemDuration(): Promise<number> {
     if (!isActive(this.hass, this.activeMediaPlayer, this.activeEntityConfig)) {
@@ -456,16 +456,14 @@ export class ActivePlayerController {
     if (!this._playerData) {
       await this.actionGetCurrentQueue();
     }
-    return (
-      this._playerData?.response[this.activeEntityID].current_item.duration ?? 1
-    );
+    return this._playerData?.current_item?.duration ?? 1;
   }
   async actionGetCurrentQueue(forceUpdate = false): Promise<getQueueResponse> {
     const entity_id = this.activeEntityID;
     const player = this.activeMediaPlayer;
 
     if (!forceUpdate && this._playerData) {
-      return this._playerData.response[entity_id];
+      return this._playerData;
     }
     if (
       !playerIsAvailable(this.hass, entity_id) ||
@@ -496,8 +494,8 @@ export class ActivePlayerController {
     };
     const returnValue =
       await this.hass.callWS<MassGetQueueServiceResponseSchema>(data);
-    this._playerData = returnValue;
     const result = returnValue.response[entity_id];
+    this._playerData = result;
     return result;
   }
   public createAndApplyExpressiveScheme() {
