@@ -6,6 +6,8 @@ export default css`
   :host {
     --me-font-color: var(--md-sys-color-on-primary-container);
     --me-icon-color: var(--md-sys-color-primary-container);
+    --primary-text-color: var(--md-sys-color-on-surface);
+    --ha-ripple-hover-color: var(--md-sys-color-on-surface);
   }
 
   .action-button {
@@ -112,8 +114,7 @@ export default css`
     justify-content: flex-end;
     gap: 2px;
     height: 48px;
-    right: 8px;
-    padding-right: 8px;
+    right: 4px;
     position: absolute;
   }
 
@@ -146,6 +147,7 @@ export default css`
     border-radius: var(--default-border-radius);
     --md-ripple-hover-color: var(--md-sys-color-on-surface);
     --md-ripple-pressed-color: var(--md-sys-color-on-surface);
+    --md-list-item-leading-space: 0px;
   }
   .button.expressive > .title {
     color: var(--expressive-row-color-text);
