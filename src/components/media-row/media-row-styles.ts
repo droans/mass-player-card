@@ -1,6 +1,10 @@
 import { css } from "lit";
 
 export default css`
+  :host {
+    --primary-text-color: var(--md-sys-color-on-surface);
+    --ha-ripple-hover-color: var(--md-sys-color-on-surface);
+  }
   .action-button {
     width: var(--media-row-icon-width);
     align-content: center;

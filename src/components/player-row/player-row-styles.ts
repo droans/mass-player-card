@@ -6,6 +6,8 @@ export default css`
   :host {
     --me-font-color: var(--md-sys-color-on-primary-container);
     --me-icon-color: var(--md-sys-color-primary-container);
+    --primary-text-color: var(--md-sys-color-on-surface);
+    --ha-ripple-hover-color: var(--md-sys-color-on-surface);
   }
 
   .action-button {
