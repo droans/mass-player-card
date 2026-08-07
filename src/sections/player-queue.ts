@@ -227,7 +227,7 @@ export class QueueCard extends LitElement {
     return this.hiddenElements.header;
   }
   private renderQueueItem(queueItem: QueueItem): TemplateResult {
-    const show_album_covers = this._config.show_album_covers;
+    const show_album_covers = this.config.show_album_covers;
     return html`
       <mpc-queue-media-row
         class="${queueItem.playing ? `active` : ``}"
@@ -365,7 +365,7 @@ export class QueueCard extends LitElement {
     errorCard.setConfig({
       type: "error",
       error,
-      origConfig: this._config,
+      origConfig: this.config,
     });
     this.error = html`${errorCard}`;
     return error;
