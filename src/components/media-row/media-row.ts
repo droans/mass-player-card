@@ -16,7 +16,6 @@ import {
   EntityConfig,
   hassContext,
   IconsContext,
-  mediaCardDisplayContext,
   playerQueueConfigContext,
   playerQueueHiddenElementsConfigContext,
   useExpressiveContext,
@@ -44,10 +43,6 @@ import { HTMLImageElementEvent } from "../../const/events";
 @customElement("mpc-queue-media-row")
 export class MediaRow extends LitElement {
   @consume({ context: IconsContext }) public Icons!: Icons;
-
-  @consume({ context: mediaCardDisplayContext, subscribe: true })
-  @state()
-  public display!: boolean;
 
   @consume({ context: useExpressiveContext, subscribe: true })
   public useExpressive!: boolean;
@@ -412,7 +407,6 @@ export class MediaRow extends LitElement {
     const hideCovers = this.showAlbumCovers ? `` : `hide-covers`;
     return html`
       <ha-md-list-item
-        style="${this.display ? "" : "display: none;"}"
         class="button ${playing} ${expressive} ${hideCovers}"
         @click=${this.callOnQueueItemSelectedService}
         type="button"
