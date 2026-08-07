@@ -27,14 +27,10 @@ import {
 
 import { ExtendedHass, QueueItem, QueueItems } from "../const/types";
 import {
-  activeEntityConfigContext,
   activeEntityIDContext,
   activePlayerControllerContext,
-  activeSectionContext,
-  EntityConfig,
   hassContext,
   IconsContext,
-  mediaCardDisplayContext,
   playerQueueConfigContext,
   playerQueueHiddenElementsConfigContext,
   queueContext,
@@ -55,9 +51,6 @@ export class QueueCard extends LitElement {
   @consume({ context: activePlayerControllerContext })
   private activePlayerController!: ActivePlayerController;
 
-  @consume({ context: activeEntityConfigContext, subscribe: true })
-  private entityConf!: EntityConfig;
-
   @consume({ context: IconsContext, subscribe: true })
   private Icons!: Icons;
 
@@ -70,9 +63,7 @@ export class QueueCard extends LitElement {
   private _queueController?: QueueController;
 
   @queryAll("#animation") _animations?: WaAnimation[];
-  @query(".media-active") _activeElement!: HTMLElement;
   @query("lit-virtualizer") virtualizerElement!: LitVirtualizer;
-  @query(".list") _items!: HTMLElement;
 
   private _firstLoaded = false;
 
@@ -122,18 +113,6 @@ export class QueueCard extends LitElement {
   private _hass?: ExtendedHass;
   private error?: TemplateResult;
 
-  @provide({ context: mediaCardDisplayContext })
-  private _mediaCardDisplay = true;
-  private _section!: Sections;
-
-  @consume({ context: activeSectionContext, subscribe: true })
-  public set activeSection(section: Sections) {
-    this._mediaCardDisplay = section == Sections.QUEUE;
-    this._section = section;
-  }
-  public get activeSection() {
-    return this._section;
-  }
   @consume({ context: hassContext, subscribe: true })
   public set hass(hass: ExtendedHass | undefined) {
     if (!hass) {
@@ -185,16 +164,17 @@ export class QueueCard extends LitElement {
     }
     return QueueConfigErrors.OK;
   }
-  scrollToActive() {
+  private getActiveIndex(): number {
     if (!this.queue?.length) {
-      return;
+      return 0;
     }
     const activeIdx = this.queue.findIndex((item) => {
       return item.playing;
     });
-    if (!activeIdx && activeIdx != 0) {
-      return;
-    }
+    return activeIdx == -1 ? 0 : activeIdx;
+  }
+  private scrollToActive() {
+    const activeIdx = this.getActiveIndex();
     this.virtualizerElement
       .element(activeIdx)
       .scrollIntoView({ block: "start", behavior: "auto" });
@@ -247,7 +227,7 @@ export class QueueCard extends LitElement {
     return this.hiddenElements.header;
   }
   private renderQueueItem(queueItem: QueueItem): TemplateResult {
-    const show_album_covers = this._config.show_album_covers;
+    const show_album_covers = this.config.show_album_covers;
     return html`
       <mpc-queue-media-row
         class="${queueItem.playing ? `active` : ``}"
@@ -262,12 +242,22 @@ export class QueueCard extends LitElement {
     `;
   }
   private renderQueueItems(): TemplateResult {
+    const activeIndex = this.getActiveIndex();
     return html`
       <lit-virtualizer
         scroller
         .items=${this.queue ?? []}
         .renderItem=${(item: QueueItem) => {
           return this.renderQueueItem(item);
+        }}
+        .keyFunction=${(item: QueueItem) => {
+          return item.queue_item_id;
+        }}
+        .layout=${{
+          pin: {
+            index: activeIndex,
+            block: "start",
+          },
         }}
       ></lit-virtualizer>
     `;
@@ -384,7 +374,7 @@ export class QueueCard extends LitElement {
     errorCard.setConfig({
       type: "error",
       error,
-      origConfig: this._config,
+      origConfig: this.config,
     });
     this.error = html`${errorCard}`;
     return error;
