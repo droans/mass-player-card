@@ -27,14 +27,10 @@ import {
 
 import { ExtendedHass, QueueItem, QueueItems } from "../const/types";
 import {
-  activeEntityConfigContext,
   activeEntityIDContext,
   activePlayerControllerContext,
-  activeSectionContext,
-  EntityConfig,
   hassContext,
   IconsContext,
-  mediaCardDisplayContext,
   playerQueueConfigContext,
   playerQueueHiddenElementsConfigContext,
   queueContext,
@@ -55,9 +51,6 @@ export class QueueCard extends LitElement {
   @consume({ context: activePlayerControllerContext })
   private activePlayerController!: ActivePlayerController;
 
-  @consume({ context: activeEntityConfigContext, subscribe: true })
-  private entityConf!: EntityConfig;
-
   @consume({ context: IconsContext, subscribe: true })
   private Icons!: Icons;
 
@@ -70,9 +63,7 @@ export class QueueCard extends LitElement {
   private _queueController?: QueueController;
 
   @queryAll("#animation") _animations?: WaAnimation[];
-  @query(".media-active") _activeElement!: HTMLElement;
   @query("lit-virtualizer") virtualizerElement!: LitVirtualizer;
-  @query(".list") _items!: HTMLElement;
 
   private _firstLoaded = false;
 
@@ -122,18 +113,6 @@ export class QueueCard extends LitElement {
   private _hass?: ExtendedHass;
   private error?: TemplateResult;
 
-  @provide({ context: mediaCardDisplayContext })
-  private _mediaCardDisplay = true;
-  private _section!: Sections;
-
-  @consume({ context: activeSectionContext, subscribe: true })
-  public set activeSection(section: Sections) {
-    this._mediaCardDisplay = section == Sections.QUEUE;
-    this._section = section;
-  }
-  public get activeSection() {
-    return this._section;
-  }
   @consume({ context: hassContext, subscribe: true })
   public set hass(hass: ExtendedHass | undefined) {
     if (!hass) {
