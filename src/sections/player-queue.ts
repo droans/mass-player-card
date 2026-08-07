@@ -242,12 +242,19 @@ export class QueueCard extends LitElement {
     `;
   }
   private renderQueueItems(): TemplateResult {
+    const activeIndex = this.getActiveIndex();
     return html`
       <lit-virtualizer
         scroller
         .items=${this.queue ?? []}
         .renderItem=${(item: QueueItem) => {
           return this.renderQueueItem(item);
+        }}
+        .layout=${{
+          pin: {
+            index: activeIndex,
+            block: "start",
+          },
         }}
       ></lit-virtualizer>
     `;
