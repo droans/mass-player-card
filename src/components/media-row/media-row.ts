@@ -50,7 +50,8 @@ export class MediaRow extends LitElement {
   @state() public fallbackImageURL?: string;
   @query(".thumbnail") thumbnailElement!: HTMLImageElement;
   private imagesExhausted = false;
-  private errorCount = 0;
+  private imgElemErrorCount = 0;
+  private maxImgElemErrorCount = 5;
 
   public moveQueueItemDownService!: QueueService;
   public moveQueueItemNextService!: QueueService;
@@ -194,7 +195,7 @@ export class MediaRow extends LitElement {
   }
 
   private _renderThumbnailFallback = (event_: Event) => {
-    this.errorCount++;
+    this.imgElemErrorCount++;
     const currentSource = this.thumbnailElement.src;
     const thumb = getTrackFallbackImg(
       this.hass,
@@ -203,11 +204,16 @@ export class MediaRow extends LitElement {
       this.fallbackImageURL,
       Thumbnail.CLEFT,
     );
-    this.thumbnailElement.src = thumb;
-    if (thumb == currentSource || this.errorCount >= 5) {
+    if (
+      thumb == currentSource ||
+      this.imgElemErrorCount >= this.maxImgElemErrorCount
+    ) {
       this.imagesExhausted = true;
+      this.thumbnailElement.src =
+        getThumbnail(this.hass, Thumbnail.CLEFT) ?? "";
       return;
     }
+    this.thumbnailElement.src = thumb;
     if (this.imagesExhausted) {
       (event_ as HTMLImageElementEvent).target.removeEventListener(
         "error",
@@ -234,6 +240,17 @@ export class MediaRow extends LitElement {
           unicorn/no-nested-ternary,
           @typescript-eslint/no-unnecessary-condition
     */
+    if (this.imagesExhausted) {
+      const fallbackImage = getThumbnail(this.hass, Thumbnail.CLEFT);
+      return html`
+        <img
+          class="thumbnail ${played ? "disabled" : ""}"
+          slot="start"
+          src="${fallbackImage}"
+          loading="lazy"
+        />
+      `;
+    }
     if (this.showAlbumCovers && !this.hide.album_covers) {
       return html`
         <img
