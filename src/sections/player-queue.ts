@@ -164,16 +164,17 @@ export class QueueCard extends LitElement {
     }
     return QueueConfigErrors.OK;
   }
-  scrollToActive() {
+  private getActiveIndex(): number {
     if (!this.queue?.length) {
-      return;
+      return 0;
     }
     const activeIdx = this.queue.findIndex((item) => {
       return item.playing;
     });
-    if (!activeIdx && activeIdx != 0) {
-      return;
-    }
+    return activeIdx == -1 ? 0 : activeIdx;
+  }
+  private scrollToActive() {
+    const activeIdx = this.getActiveIndex();
     this.virtualizerElement
       .element(activeIdx)
       .scrollIntoView({ block: "start", behavior: "auto" });
