@@ -58,6 +58,7 @@ export default css`
   }
   .button.expressive {
     border-radius: var(--default-border-radius);
+    --md-list-item-leading-space: 0px;
   }
   .button:not(.expressive) {
     border-radius: var(--media-row-border-radius);
@@ -106,8 +107,7 @@ export default css`
     justify-content: flex-end;
     gap: 2px;
     height: 48px;
-    right: 8px;
-    padding-right: 8px;
+    right: 4px;
     position: absolute;
   }
 
