@@ -16,7 +16,6 @@ import {
   EntityConfig,
   hassContext,
   IconsContext,
-  mediaCardDisplayContext,
   playerQueueConfigContext,
   playerQueueHiddenElementsConfigContext,
   useExpressiveContext,
