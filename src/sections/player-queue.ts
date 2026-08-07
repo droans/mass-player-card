@@ -173,7 +173,7 @@ export class QueueCard extends LitElement {
     });
     return activeIdx == -1 ? 0 : activeIdx;
   }
-  private scrollToActive() {
+  public scrollToActive() {
     const activeIdx = this.getActiveIndex();
     this.virtualizerElement
       .element(activeIdx)
