@@ -250,6 +250,9 @@ export class QueueCard extends LitElement {
         .renderItem=${(item: QueueItem) => {
           return this.renderQueueItem(item);
         }}
+        .keyFunction=${(item: QueueItem) => {
+          return item.queue_item_id;
+        }}
         .layout=${{
           pin: {
             index: activeIndex,
