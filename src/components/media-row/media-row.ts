@@ -45,10 +45,6 @@ import { HTMLImageElementEvent } from "../../const/events";
 export class MediaRow extends LitElement {
   @consume({ context: IconsContext }) public Icons!: Icons;
 
-  @consume({ context: mediaCardDisplayContext, subscribe: true })
-  @state()
-  public display!: boolean;
-
   @consume({ context: useExpressiveContext, subscribe: true })
   public useExpressive!: boolean;
   @state() public defaultImageURL?: string;
@@ -412,7 +408,6 @@ export class MediaRow extends LitElement {
     const hideCovers = this.showAlbumCovers ? `` : `hide-covers`;
     return html`
       <ha-md-list-item
-        style="${this.display ? "" : "display: none;"}"
         class="button ${playing} ${expressive} ${hideCovers}"
         @click=${this.callOnQueueItemSelectedService}
         type="button"
