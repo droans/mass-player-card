@@ -661,7 +661,12 @@ export class MediaBrowser extends LitElement {
     if (!this.hass || this.hiddenElements.filter_button) {
       return html``;
     }
-    const icons = getFilterButtons(this.Icons, this.hass, this.config);
+    const icons = getFilterButtons(
+      this.Icons,
+      this.hass,
+      this.config,
+      this.cards,
+    );
     const icon = this.Icons.FILTER;
     return html`
       <mpc-menu-button

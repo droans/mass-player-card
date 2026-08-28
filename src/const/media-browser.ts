@@ -5,7 +5,7 @@ import {
   EnqueueConfigOptions,
   MediaBrowserConfig,
 } from "../config/media-browser";
-import { ExtendedHass, ListItems } from "./types";
+import { ExtendedHass, ListItems, newMediaBrowserItemsConfig } from "./types";
 
 export const MediaTypeThumbnails = {
   album: Thumbnail.DISC,
@@ -97,23 +97,27 @@ export function getFilterButtons(
   icons: Icons,
   hass: ExtendedHass,
   config: MediaBrowserConfig,
+  cards?: newMediaBrowserItemsConfig | null,
 ): ListItems {
   const result: ListItems = [];
-  if (config.favorites.enabled) {
+  if (config.favorites.enabled && (cards?.favorites.main.length ?? 0) > 0) {
     result.push({
       option: "favorites",
       icon: icons.HEART,
       title: getTranslation("browser.card.favorites", hass) as string,
     });
   }
-  if (config.recents.enabled) {
+  if (config.recents.enabled && (cards?.recents.main.length ?? 0) > 0) {
     result.push({
       option: "recents",
       icon: icons.RECENTS,
       title: getTranslation("browser.card.recents", hass) as string,
     });
   }
-  if (config.recommendations.enabled) {
+  if (
+    config.recommendations.enabled &&
+    (cards?.recommendations.main.length ?? 0) > 0
+  ) {
     result.push({
       option: "recommendations",
       icon: icons.SUGGESTIONS,
