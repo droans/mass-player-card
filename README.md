@@ -282,6 +282,7 @@ media_browser:
       enabled: true
       limit: 25
       favorites_only: true
+    sort_order: last_played_desc
   recommendations:
     enabled: true
     show_collection_view: true
@@ -419,6 +420,7 @@ media_browser:
         - name: My Playlist
           image: https://resources.tidal.com/images/10c59b67/bb86/4960/8071/a23a03b8cbdd/750x750.jpg
           service: script.play_example_playlist
+    sort_order: timestamp_added
   sections:
     - name: My Tracks
       image: https://resources.tidal.com/images/0b5ff69d/b031/4445/a804/01b18b5a525f/750x750.jpg
@@ -437,6 +439,7 @@ media_browser:
           media_content_type: track
   recents:
     enabled: true
+    sort_order: last_played_desc
   recommendations:
     enabled: true
     providers:
@@ -645,8 +648,8 @@ Multiple elements on the queue tab can be hidden. By default, all elements are v
 | columns                         | number                                                                    | No       | 2           | Number of columns for each row.                                            |
 | playlists_allow_removing_tracks | bool                                                                      | No       | false       | **EXPERIMENTAL - SEE WARNING BELOW** Allows removing tracks from playlists |
 | default_enqueue_option          | [EnqueueConfigOption](#default_enqueue_option)                            | No       | play_now    | Default enqueue mode when an item is selected, see below for options       |
-| favorites                       | [FavoritesConfig](#favorites-config)                                      | No       | -           | See below                                                                  |
-| recents                         | [FavoritesConfig](#favorites-config)                                      | No       | -           | See below                                                                  |
+| favorites                       | [FavoritesRecentsConfig](#favorites--recents-config)                      | No       | -           | See below                                                                  |
+| recents                         | [FavoritesRecentsConfig](#favorites--recents-config)                      | No       | -           | See below                                                                  |
 | recommendations                 | [RecommendationsConfig](#recommendations-config)                          | No       | -           | See below                                                                  |
 | sections                        | list of [SectionsConfig](#sections-config)                                | No       | -           | See below                                                                  |
 | hide                            | [MediaBrowserHiddenElementsConfig](#media-browser-hidden-elements-config) | No       | See below   | See Below                                                                  |
@@ -669,18 +672,20 @@ The valid options are:
 * add_to_queue
 * radio
 
-#### Favorites Config
-| Parameter            | Type                            | Required | Default | Description                     |
-|----------------------|---------------------------------|----------|---------|---------------------------------|
-| enabled              | bool                            | No       | true    | Enable/disable music player tab |
-| show_collection_view | bool                            | No       | true    | See below                       |
-| albums               | [FavoriteItem](#favorite-items) | No       | -       | See below                       |
-| artists              | [FavoriteItem](#favorite-items) | No       | -       | See below                       |
-| audiobooks           | [FavoriteItem](#favorite-items) | No       | -       | See below                       |
-| playlists            | [FavoriteItem](#favorite-items) | No       | -       | See below                       |
-| podcasts             | [FavoriteItem](#favorite-items) | No       | -       | See below                       |
-| radios               | [FavoriteItem](#favorite-items) | No       | -       | See below                       |
-| tracks               | [FavoriteItem](#favorite-items) | No       | -       | See below                       |
+#### Favorites & Recents Config
+| Parameter            | Type                                                    | Required | Default   | Description                     |
+|----------------------|---------------------------------------------------------|----------|-----------|---------------------------------|
+| enabled              | bool                                                    | No       | true      | Enable/disable music player tab |
+| show_collection_view | bool                                                    | No       | true      | See below                       |
+| albums               | [FavoriteItem](#favorite-items)                         | No       | -         | See below                       |
+| artists              | [FavoriteItem](#favorite-items)                         | No       | -         | See below                       |
+| audiobooks           | [FavoriteItem](#favorite-items)                         | No       | -         | See below                       |
+| playlists            | [FavoriteItem](#favorite-items)                         | No       | -         | See below                       |
+| podcasts             | [FavoriteItem](#favorite-items)                         | No       | -         | See below                       |
+| radios               | [FavoriteItem](#favorite-items)                         | No       | -         | See below                       |
+| tracks               | [FavoriteItem](#favorite-items)                         | No       | -         | See below                       |
+| tracks               | [FavoriteItem](#favorite-items)                         | No       | -         | See below                       |
+| sort_order           | [GetLibrarySortOrders](#favorites--recents-sort-orders) | No       | See below | See below                       |
 
 #### Favorite Items
 You can select which favorite items you'd like to display in the media browser. Use the example below to help set it up. By default, all favorites are enabled. If no favorites exist for a category, the section will not be displayed. You can also add your own custom items to the favorite section by specifying it under `items`.
@@ -753,6 +758,34 @@ Multiple elements on the media browser tab can be hidden. By default, all elemen
 | play_now_clear_queue_button  | bool  | No       | false       | Hides the "Play Now & Clear Queue" button  |
 | play_next_button             | bool  | No       | false       | Hides the "Play Next" button               |
 | play_next_clear_queue_button | bool  | No       | false       | Hides the "Play Next & Clear Queue" button |
+
+#### Favorites & Recents Sort Orders
+You can apply a custom sort order to the favorites and recents sections. The Recommedations section, however, cannot be sorted.
+
+The Recents section is sorted by "Last Played (Desc)" by default while the Favorites section has no default sort. These orders are applied to the individual media items within a media section (eg, Albums, Playlists, etc.). They do not apply to the sections themselves.
+
+The following sort orders are supported:
+
+| Option                | Value                |
+|-----------------------|----------------------|
+| Artist Name           | artist_name          |
+| Artist Name (Desc)    | artist_name_desc     |
+| Last Played           | last_played          |
+| Last Played (Desc)    | last_played_desc     |
+| Name                  | name                 |
+| Name (Desc)           | name_desc            |
+| Play Count            | play_count           |
+| Play Count (Desc)     | play_count_desc      |
+| Position              | position             |
+| Position (Desc)       | position_desc        |
+| Random                | random               |
+| Random & Least Played | random_play_count    |
+| Sort Name             | sort_name            |
+| Sort Name (Desc)      | sort_name_desc       |
+| Date Added            | timestamp_added      |
+| Date Added (Desc)     | timestamp_added_desc |
+| Year                  | year                 |
+| Year (Desc)           | year_desc            |
 
 #### WARNING: 
 
