@@ -60,7 +60,7 @@ export class MediaBrowserCards extends LitElement {
 
   @consume({ context: activeMediaBrowserCardsContext, subscribe: true })
   public set items(items: MediaCardItem[] | undefined) {
-    if (!items?.length) {
+    if (!items) {
       return;
     }
     if (!jsonMatch(this._items, items)) {
@@ -93,6 +93,33 @@ export class MediaBrowserCards extends LitElement {
   public resetScroll() {
     this._iconsElement?.scrollTo({ top: 0 });
   }
+  public renderEmptyCards(): TemplateResult {
+    if (
+      ["search", "search-collection"].includes(this.activeMediaBrowserSection)
+    ) {
+      // TODO: Render empty search
+      return html``;
+    }
+    const width = (1 / (this.browserConfig?.columns ?? 1)) * 100 - 2;
+    return html`
+      <mpc-browser-media-card
+        style="max-width: ${width.toString()}%"
+        skeleton
+      ></mpc-browser-media-card>
+      <mpc-browser-media-card
+        style="max-width: ${width.toString()}%"
+        skeleton
+      ></mpc-browser-media-card>
+      <mpc-browser-media-card
+        style="max-width: ${width.toString()}%"
+        skeleton
+      ></mpc-browser-media-card>
+      <mpc-browser-media-card
+        style="max-width: ${width.toString()}%"
+        skeleton
+      ></mpc-browser-media-card>
+    `;
+  }
   private generateCode() {
     if (this.loading) {
       this.code = html`
@@ -104,6 +131,13 @@ export class MediaBrowserCards extends LitElement {
       `;
       return;
     }
+    if (!this.items?.length) {
+      this.code = html`
+        <div class="icons wa-grid">${this.renderEmptyCards()}</div>
+      `;
+      return;
+    }
+    // eslint-disable-next-line @typescript-eslint/no-unnecessary-condition
     const result = this.items?.map((item) => {
       const queueable = [
         "service",

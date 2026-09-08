@@ -139,6 +139,11 @@ export const SEARCH_TERM_MIN_LENGTH = 3;
 export const DEFAULT_ACTIVE_SECTION: MediaBrowserSection = "favorites";
 export const DEFAULT_ACTIVE_SUBSECTION = "main";
 
+export const SEARCH_SECTIONS: MediaBrowserSection[] = [
+  "search",
+  "search-collection",
+];
+
 export const EnqueueConfigMap: Record<EnqueueConfigOptions, EnqueueOptions> = {
   add_to_queue: EnqueueOptions.ADD_TO_QUEUE,
   play_next: EnqueueOptions.PLAY_NEXT,

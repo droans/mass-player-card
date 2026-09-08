@@ -21,6 +21,7 @@ import {
   getSearchMediaButtons,
   MediaBrowserSection,
   MediaBrowserSubsection,
+  SEARCH_SECTIONS,
   SEARCH_TERM_MIN_LENGTH,
   SEARCH_UPDATE_DELAY,
 } from "../const/media-browser";
@@ -113,7 +114,7 @@ export class MediaBrowser extends LitElement {
   private actions?: BrowserActions;
   private searchTerm = "";
   private _searchTimeout!: number;
-  private searchActivated = false;
+  @state() private searchActivated = false;
   @state() private searchLoading = false;
 
   @state()
@@ -179,7 +180,7 @@ export class MediaBrowser extends LitElement {
       return;
     }
     this._cards = cards;
-    if (this.activeSection == "search") {
+    if (SEARCH_SECTIONS.includes(this.activeSection)) {
       this.activeCards = [];
       return;
     }
@@ -272,6 +273,9 @@ export class MediaBrowser extends LitElement {
     this.setPreviousSection();
     this.activeCollectionData = data;
     this.activeSubSection = "collection";
+    if (SEARCH_SECTIONS.includes(this.activeSection)) {
+      this.activeSection = "search-collection";
+    }
     this.searchActivated = false;
     this.requestUpdate("collection", "selected");
   };
@@ -529,7 +533,7 @@ export class MediaBrowser extends LitElement {
     if (!this.hass) {
       return html``;
     }
-    if (this.activeSection == "search") {
+    if (SEARCH_SECTIONS.includes(this.activeSection)) {
       const icons = getSearchMediaButtons(this.Icons, this.hass);
       return html`
         <mpc-menu-button
@@ -550,7 +554,7 @@ export class MediaBrowser extends LitElement {
     return html``;
   }
   protected renderSearchLibraryButton(): TemplateResult {
-    if (this.activeSection == "search") {
+    if (SEARCH_SECTIONS.includes(this.activeSection)) {
       return html`
         <mpc-button
           .onPressService=${this.onSearchLibrarySelect}
@@ -713,7 +717,7 @@ export class MediaBrowser extends LitElement {
     if (this.hideSectionHeader()) {
       return html``;
     }
-    if (this.activeSection == "search") {
+    if (SEARCH_SECTIONS.includes(this.activeSection)) {
       return this.renderSearchHeader();
     }
     if (
