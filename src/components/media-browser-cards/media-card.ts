@@ -256,14 +256,14 @@ export class MediaCard extends LitElement {
       <wa-skeleton
         id="skeleton"
         effect="sheen"
-        class="media-card ${this.useExpressive ? `media-card-expressive` : ``}"
+        class="media-card${this.useExpressive ? ` expressive` : ``}"
       ></wa-skeleton>
     `;
   }
   private generateCard(): TemplateResult {
     return html`
       <wa-card
-        class="media-card ${this.useExpressive ? `media-card-expressive` : ``}"
+        class="media-card${this.useExpressive ? ` expressive` : ``}"
         @click=${this.onSelect}
       >
         <div slot="media" id="media">${this.renderThumbnail()}</div>

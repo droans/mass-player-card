@@ -31,7 +31,7 @@ export default css`
     height: 100%;
     width: 100%;
   }
-  .svg-menu-expressive {
+  .svg-menu.expressive {
     max-width: 5em;
     max-height: 5em;
     min-width: 2em;
@@ -76,7 +76,7 @@ export default css`
     padding: unset;
     text-align: center;
   }
-  .media-card-expressive {
+  .media-card.expressive {
     box-shadow: var(--md-sys-elevation-level2);
   }
 
