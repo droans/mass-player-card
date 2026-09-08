@@ -43,6 +43,10 @@ export default css`
     height: 100%;
     width: 100%;
   }
+  wa-skeleton,
+  wa-skeleton::part(indicator) {
+    border-radius: var(--browser-card-border-radius) !important;
+  }
 
   #container {
     width: 100%;
