@@ -218,11 +218,13 @@ export class MediaBrowserController {
   ) {
     const limit = config.limit;
     const custom_items = config.items;
+    const sortOrder = this.config.media_browser.favorites.sort_order;
     const resp: MediaLibraryItem[] = await this.actions.actionGetLibrary(
       this.activeEntityId,
       media_type,
       limit,
       favorites_only ? true : null,
+      sortOrder,
     );
     return [
       ...generateFavoritesSectionCards(
@@ -293,10 +295,12 @@ export class MediaBrowserController {
     media_type: MediaTypes,
   ) {
     const limit = config.limit;
+    const sortOrder = this.config.media_browser.recents.sort_order;
     const resp: MediaLibraryItem[] = await this.actions.actionGetLibraryRecents(
       this.activeEntityId,
       media_type,
       limit,
+      sortOrder,
     );
     const items = generateFavoritesSectionCards(
       resp,

@@ -51,6 +51,7 @@ import {
   getPodcastServiceSchema,
 } from "mass-queue-types/packages/mass_queue/actions/get_podcast";
 import { removePlaylistTracksServiceSchema } from "mass-queue-types/packages/mass_queue/actions/remove_playlist_tracks";
+import { GetLibrarySortOrders } from "../config/media-browser";
 export default class BrowserActions {
   private _hass!: ExtendedHass;
 
@@ -105,8 +106,10 @@ export default class BrowserActions {
     player_entity_id: string,
     media_type: MediaTypes,
     limit = 25,
+    sortOrder: GetLibrarySortOrders | null = "last_played_desc",
   ): Promise<MediaLibraryItem[]> {
     const config_id = await this.getPlayerConfigEntry(player_entity_id);
+    const sort: GetLibrarySortOrders = sortOrder ?? "last_played_desc";
     const data: getLibraryServiceSchema = {
       type: "call_service",
       domain: "music_assistant",
@@ -115,7 +118,7 @@ export default class BrowserActions {
         limit,
         config_entry_id: config_id,
         media_type,
-        order_by: "last_played_desc",
+        order_by: sort,
       },
       return_response: true,
     };
@@ -123,22 +126,25 @@ export default class BrowserActions {
     return response.response.items;
   }
   async actionGetLibrary(
-    player_entity_id: string,
-    media_type: MediaTypes,
+    playerEntityId: string,
+    mediaType: MediaTypes,
     limit = 25,
     favorite: boolean | null = true,
+    sortOrder: GetLibrarySortOrders | null = null,
   ): Promise<MediaLibraryItem[]> {
-    const config_id = await this.getPlayerConfigEntry(player_entity_id);
-    const favorite_data = typeof favorite == "boolean" ? { favorite } : {};
+    const configId = await this.getPlayerConfigEntry(playerEntityId);
+    const favoriteData = typeof favorite == "boolean" ? { favorite } : {};
+    const sort = sortOrder ? { order_by: sortOrder } : {};
     const data: getLibraryServiceSchema = {
       type: "call_service",
       domain: "music_assistant",
       service: "get_library",
       service_data: {
-        ...favorite_data,
+        ...favoriteData,
         limit,
-        config_entry_id: config_id,
-        media_type,
+        config_entry_id: configId,
+        media_type: mediaType,
+        ...sort,
       },
       return_response: true,
     };
