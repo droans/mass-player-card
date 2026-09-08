@@ -19,6 +19,7 @@ type viewCardFunction = (
   media_content_id: string,
   media_image: string,
   media_title: string,
+  _mediaArtist?: string,
 ) => MediaCardItem;
 
 type viewCardFunctionMap = Record<string, viewCardFunction>;
@@ -223,7 +224,12 @@ export function generateFavoritesSectionCards(
     const function_ = funcs[item.media_type];
     // eslint-disable-next-line @typescript-eslint/no-unnecessary-condition
     if (function_ && show_track_view) {
-      return function_(item.uri, item.image ?? "", item.name);
+      const mediaArtists = item.artists ?? [];
+      const artistNames = mediaArtists.map((artist) => {
+        return artist.name;
+      });
+      const formattedArtists = artistNames.join(", ").slice(0, 40);
+      return function_(item.uri, item.image ?? "", item.name, formattedArtists);
     }
     const r: MediaCardItem = {
       title: item.name,
@@ -242,6 +248,8 @@ function generatePlaylistCard(
   media_content_id: string,
   media_image: string,
   media_title: string,
+  // eslint-disable-next-line @typescript-eslint/no-unused-vars
+  _mediaArtist = "",
 ): MediaCardItem {
   const data: mediaCardPlaylistData = {
     type: "playlist",
@@ -257,19 +265,21 @@ function generatePlaylistCard(
   };
 }
 function generateAlbumCard(
-  media_content_id: string,
-  media_image: string,
-  media_title: string,
+  mediaContentId: string,
+  mediaImage: string,
+  mediaTitle: string,
+  _mediaArtist = "",
 ): MediaCardItem {
   const data: mediaCardAlbumData = {
     type: "album",
-    media_content_id,
-    media_image,
-    media_title,
+    media_content_id: mediaContentId,
+    media_image: mediaImage,
+    media_title: mediaTitle,
+    media_artist: _mediaArtist,
   };
   return {
-    title: media_title,
-    thumbnail: media_image,
+    title: mediaTitle,
+    thumbnail: mediaImage,
     fallback: Thumbnail.PLAYLIST,
     data,
   };
@@ -278,6 +288,8 @@ function generateArtistCard(
   media_content_id: string,
   media_image: string,
   media_title: string,
+  // eslint-disable-next-line @typescript-eslint/no-unused-vars
+  _mediaArtist = "",
 ): MediaCardItem {
   const data: mediaCardArtistData = {
     type: "artist",
@@ -296,6 +308,8 @@ function generatePodcastCard(
   media_content_id: string,
   media_image: string,
   media_title: string,
+  // eslint-disable-next-line @typescript-eslint/no-unused-vars
+  _mediaArtist = "",
 ): MediaCardItem {
   const data: mediaCardPodcastData = {
     type: "podcast",
