@@ -127,7 +127,7 @@ In addition to the Music Assistant integration, this card depends on the custom 
     - Press "Add Resource". For the URL, type in "/local/mass-card.js". Select "JavaScript module" and click "Create".
 
 # Configuration
-This card comes with a visual editor. However, not every option can be set with it (eg, player name and volume player, custom items, etc). Use the below documentation to help. 
+This card comes with a visual editor. However, not every option can be set with it (eg, player name and volume player, custom items, etc). Use the below documentation to help.
 
 ## Example Configs
 
@@ -598,7 +598,7 @@ player:
         box_shadow: true              # Options: True/False (default: false)
         label: false                  # Options: True/False (default: false)
                                       # Note: Label will never show if size is large
-      
+
 ```
 
 </detail>
@@ -655,13 +655,13 @@ Multiple elements on the queue tab can be hidden. By default, all elements are v
 | hide                            | [MediaBrowserHiddenElementsConfig](#media-browser-hidden-elements-config) | No       | See below   | See Below                                                                  |
 
 #### WARNING:
-`playlists_allow_removing_tracks` is experimental and **VERY** risky. Music Assistant uses the position in a playlist to determine which tracks to remove. However, it does not provide an updated playlist when tracks are removed, instead waiting for its next refresh. 
+`playlists_allow_removing_tracks` is experimental and **VERY** risky. Music Assistant uses the position in a playlist to determine which tracks to remove. However, it does not provide an updated playlist when tracks are removed, instead waiting for its next refresh.
 
 To work around this, the card will automatically update the playlists when items are removed. **HOWEVER**, this will only work until you leave the playlist view.
 
 #### default_enqueue_option
 
-The default enqueue mode can be adjusted in your configuration. If not set, any media will play next when they are selected. 
+The default enqueue mode can be adjusted in your configuration. If not set, any media will play next when they are selected.
 
 The valid options are:
 
@@ -721,7 +721,7 @@ Recommendations can be enabled/disabled. You can also choose which providers can
 
 #### show_collection_view
 
-When `show_collection_view` is enabled, clicking on an album, artist, playlist, or podcast will open up a collection view displaying information on the collection, enqueue options, and individual tracks/episodes. When disabled, clicking on the items will instead enqueue the item. By default, this is enabled. 
+When `show_collection_view` is enabled, clicking on an album, artist, playlist, or podcast will open up a collection view displaying information on the collection, enqueue options, and individual tracks/episodes. When disabled, clicking on the items will instead enqueue the item. By default, this is enabled.
 
 #### Sections Config
 Sections lets you add your own sections to the browser with your own items. These can either be media items (by providing `media_content_id` and `media_content_type`) or they can be a script (by providing `service`). If the item is a script, the current media player will be passed to it with the `entity_id` parameter.
@@ -787,13 +787,13 @@ The following sort orders are supported:
 | Year                  | year                 |
 | Year (Desc)           | year_desc            |
 
-#### WARNING: 
+#### WARNING:
 
 Unless you have a small library, `favorites_only` will likely not work as you expect:
-* Music Assistant will always return items in alphabetical order. 
+* Music Assistant will always return items in alphabetical order.
 * It will limit the returned items to 500. This may not cover all your items. Simultaneously, this many items may also cause performance issues.
 
-It is recommended that you add custom items instead. 
+It is recommended that you add custom items instead.
 
 ### Players Config
 
@@ -831,7 +831,7 @@ Multiple elements on the players tab can be hidden. By default, all elements are
 Usually, this issue is because you are looking at the Favorites section but don't have any favorites added in Music Assistant or your providers. If you don't want to favorite anything, consider adding [your own items](#favorite-items) instead.
 
 #### Recommendations
-Ensure your music provider actually provides recommendations. 
+Ensure your music provider actually provides recommendations.
 
 #### Recents
 Have you tried listening to music?
@@ -850,26 +850,26 @@ For some players and providers, Music Assistant can consider a player inactive r
   inactive_when_not_updated: false
 ```
 
-If you are still experiencing issues, please run the action `mass_queue.get_queue_items` for your player. If it returns your queue, please file an issue report and include your Home Assistant logs and browser logs. The browser logs can usually be found by opening up your browser's Developer Tools and navigating to a section labeled "Console". 
+If you are still experiencing issues, please run the action `mass_queue.get_queue_items` for your player. If it returns your queue, please file an issue report and include your Home Assistant logs and browser logs. The browser logs can usually be found by opening up your browser's Developer Tools and navigating to a section labeled "Console".
 
 ## Can this card support individual users?
 
 Currently, no. However, this is something we are trying to work towards.
 
 ## I'm not seeing any artwork in the queue or media browser!
-If you are using a local provider, Music Assistant sends back a path which usually can't be accessed. Fortunately, this is something that we can easily work around. Music Assistant Queue Actions has the ability to download images for local providers and send them back to the card. This can cause a slowdown as downloading and encoding each image may take some time. Some of this is avoided - for example, images for queue items are usually only downloaded when HA first starts up, the integration is reloaded, or when the queue changes. 
+If you are using a local provider, Music Assistant sends back a path which usually can't be accessed. Fortunately, this is something that we can easily work around. Music Assistant Queue Actions has the ability to download images for local providers and send them back to the card. This can cause a slowdown as downloading and encoding each image may take some time. Some of this is avoided - for example, images for queue items are usually only downloaded when HA first starts up, the integration is reloaded, or when the queue changes.
 
 To enable this feature:
-1. Navigate to the Devices & Servies section in Home Assistant settings. 
-2. Locate and select the Music Assistant Queue Actions integration. 
-3. Click on the cog next to the config entry. 
+1. Navigate to the Devices & Servies section in Home Assistant settings.
+2. Locate and select the Music Assistant Queue Actions integration.
+3. Click on the cog next to the config entry.
 4. Check the box titled either "download_local" or "Attempt fallback support for local media images" and click "Submit".
 
-If you are using a non-local provider, [submit a new issue](https://github.com/droans/mass-player-card/issues/new). 
+If you are using a non-local provider, [submit a new issue](https://github.com/droans/mass-player-card/issues/new).
 
 ## How do I theme the card?
 
-This card has initial support for custom themes. All tokens are listed in [src/styles/main.ts](https://github.com/droans/mass-player-card/blob/main/src/styles/main.ts) and are prefixed with `mass-player-card`. 
+This card has initial support for custom themes. All tokens are listed in [src/styles/main.ts](https://github.com/droans/mass-player-card/blob/main/src/styles/main.ts) and are prefixed with `mass-player-card`.
 
 For example, the border radius for the sections and cards are set in the file as:
 
@@ -889,7 +889,7 @@ If there are portions of the card which you would like to theme but don't have a
 
 Yes... Most likely... Usually... Maybe... Ehhh...
 
-It depends. If they are the same provider, you almost always can. Some players can also be grouped across different providers. This really comes down to their support in Music Assistant itself. 
+It depends. If they are the same provider, you almost always can. Some players can also be grouped across different providers. This really comes down to their support in Music Assistant itself.
 
 For players which don't have any support, you can usually use the universal or sync groups within Music Assistant. However, this card does not support setting up these types of groups. You will need to create them yourself.
 
@@ -916,7 +916,7 @@ If you would like to add new translations for other languages:
   * At the top, import your translations file - eg `import en from '../translations/en`
   * Under `const TRANSLATIONS`, add an entry for your translations.
 5. Commit and push the changes to your forked copy of this repo.
-6. Submit a pull request to this repository. The target branch should be `dev`. 
+6. Submit a pull request to this repository. The target branch should be `dev`.
 
 The instructions are rather similar for improving existing language support. However, you do not need to make a clone of `en.ts` (instead, use the existing translation file) and you do not need to follow Step #4.
 
@@ -940,7 +940,7 @@ When someone funds development, there's often an implied belief that the card wi
 
 ## I have other questions or issues not addressed
 
-Check the [repository issues](https://github.com/droans/mass-player-card/issues) to see if your question has already been asked. If not, feel free to [submit a new issue](https://github.com/droans/mass-player-card/issues/new). 
+Check the [repository issues](https://github.com/droans/mass-player-card/issues) to see if your question has already been asked. If not, feel free to [submit a new issue](https://github.com/droans/mass-player-card/issues/new).
 
 # Contributing
 
