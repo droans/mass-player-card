@@ -19,6 +19,8 @@ import {
   EnqueueConfigMap,
   getFilterButtons,
   getSearchMediaButtons,
+  MediaBrowserSection,
+  MediaBrowserSubsection,
   SEARCH_TERM_MIN_LENGTH,
   SEARCH_UPDATE_DELAY,
 } from "../const/media-browser";
@@ -98,11 +100,11 @@ export class MediaBrowser extends LitElement {
   })
   private hiddenElements!: MediaBrowserHiddenElementsConfig;
 
-  public activeSection = DEFAULT_ACTIVE_SECTION;
-  public activeSubSection = DEFAULT_ACTIVE_SUBSECTION;
+  public activeSection: MediaBrowserSection = DEFAULT_ACTIVE_SECTION;
+  public activeSubSection: MediaBrowserSubsection = DEFAULT_ACTIVE_SUBSECTION;
   @property() private activeCollectionData!: mediaCardCollectionType;
-  private previousSections: string[] = [];
-  private previousSubSections: string[] = [];
+  private previousSections: MediaBrowserSection[] = [];
+  private previousSubSections: MediaBrowserSubsection[] = [];
 
   private _hass?: ExtendedHass;
   private _browserController?: MediaBrowserController;
@@ -251,7 +253,7 @@ export class MediaBrowser extends LitElement {
   private onSectionSelect = (data: mediaCardSectionData) => {
     this.setPreviousSection();
     this.activeSection = data.subtype;
-    this.activeSubSection = data.section;
+    this.activeSubSection = data.section as MediaBrowserSubsection;
     this.setActiveCards();
   };
   private onItemSelect = (data: mediaCardItemData) => {
@@ -404,7 +406,7 @@ export class MediaBrowser extends LitElement {
     if (!Object.keys(this.cards).includes(value)) {
       return;
     }
-    this.activeSection = value;
+    this.activeSection = value as MediaBrowserSection;
     this.activeSubSection = "main";
     /* eslint-disable-next-line
       @typescript-eslint/no-unsafe-member-access
