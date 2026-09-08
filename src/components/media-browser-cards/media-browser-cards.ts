@@ -13,6 +13,7 @@ import "./media-card";
 import { CardEnqueueService, CardSelectedService } from "../../const/actions";
 import {
   activeMediaBrowserCardsContext,
+  activeMediaBrowserSectionContext,
   hassContext,
   mediaBrowserConfigContext,
 } from "../../const/context";
@@ -22,6 +23,7 @@ import styles from "./media-browser-cards-styles";
 import { MediaBrowserConfig } from "../../config/media-browser";
 import { jsonMatch } from "../../utils/utility";
 import { EnqueueOptions } from "../../const/enums";
+import { MediaBrowserSection } from "../../const/media-browser";
 
 @customElement("mpc-browser-cards")
 export class MediaBrowserCards extends LitElement {
@@ -39,6 +41,9 @@ export class MediaBrowserCards extends LitElement {
   public onEnqueueAction!: CardEnqueueService;
   public onSelectAction!: CardSelectedService;
   private _items!: MediaCardItem[];
+
+  @consume({ context: activeMediaBrowserSectionContext, subscribe: true })
+  public activeMediaBrowserSection!: MediaBrowserSection;
 
   @consume({ context: mediaBrowserConfigContext, subscribe: true })
   public set browserConfig(config: MediaBrowserConfig | undefined) {

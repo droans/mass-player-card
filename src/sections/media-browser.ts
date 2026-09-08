@@ -38,6 +38,7 @@ import styles from "../styles/media-browser";
 import {
   activeEntityConfigContext,
   activeMediaBrowserCardsContext,
+  activeMediaBrowserSectionContext,
   browserControllerContext,
   EntityConfig,
   hassContext,
@@ -100,6 +101,7 @@ export class MediaBrowser extends LitElement {
   })
   private hiddenElements!: MediaBrowserHiddenElementsConfig;
 
+  @provide({ context: activeMediaBrowserSectionContext })
   public activeSection: MediaBrowserSection = DEFAULT_ACTIVE_SECTION;
   public activeSubSection: MediaBrowserSubsection = DEFAULT_ACTIVE_SUBSECTION;
   @property() private activeCollectionData!: mediaCardCollectionType;
