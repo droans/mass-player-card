@@ -16,6 +16,7 @@ export interface MediaBrowserConfig {
   playlists_allow_removing_tracks: boolean;
   default_enqueue_option: EnqueueConfigOptions;
   default_section: BrowserSection;
+  show_artist_subtitles: boolean;
 }
 
 export interface FavoritesConfig {
@@ -161,6 +162,7 @@ export const DEFAULT_MEDIA_BROWSER_CONFIG: MediaBrowserConfig = {
   playlists_allow_removing_tracks: false,
   default_enqueue_option: "play_now",
   default_section: "favorites",
+  show_artist_subtitles: true,
 };
 
 const MEDIA_BROWSER_HIDDEN_ITEMS = [
@@ -427,6 +429,7 @@ export function mediaBrowserConfigForm() {
       ],
     },
     recommendationsConfigForm(),
+    { name: "show_artist_subtitles", selector: { boolean: {} }, default: true },
     hiddenElementsConfigItem(MEDIA_BROWSER_HIDDEN_ITEMS),
     {
       name: "playlists_allow_removing_tracks",

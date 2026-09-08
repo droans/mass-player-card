@@ -154,6 +154,7 @@ export interface mediaCardServiceData {
   media_content_id: string;
   media_content_type: string;
   service?: string;
+  media_artist?: string;
 }
 export interface mediaCardRecommendationData {
   type: "service";
@@ -167,10 +168,11 @@ export interface mediaCardSectionData {
   section: string;
 }
 
-interface mediaCardCollectionData {
+export interface mediaCardCollectionData {
   media_content_id: string;
   media_image: string;
   media_title: string;
+  media_artist?: string;
 }
 
 export interface mediaCardPlaylistData extends mediaCardCollectionData {
@@ -179,6 +181,7 @@ export interface mediaCardPlaylistData extends mediaCardCollectionData {
 
 export interface mediaCardAlbumData extends mediaCardCollectionData {
   type: "album";
+  media_artist: string;
 }
 
 export interface mediaCardArtistData extends mediaCardCollectionData {
