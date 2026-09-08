@@ -67,6 +67,12 @@ export default css`
     overflow: visible;
     border-radius: var(--menu-button-border-radius);
   }
+  #enqueue-button-div.with-subtitle.expressive {
+    bottom: 3.6em;
+  }
+  #enqueue-button-div.with-subtitle:not(.expressive) {
+    bottom: 3.6em;
+  }
 
   .media-card {
     border-radius: var(--browser-card-border-radius) !important;
@@ -120,7 +126,17 @@ export default css`
     font-size: 1.3rem;
     font-family: var(--expressive-font-family);
     font-stretch: 80%;
-    font-weight: 600;
+    font-weight: 700;
     font-variation-settings: "ROND" 100;
+  }
+  #subtitle-div {
+    font-size: 0.8em;
+    line-height: 1em;
+    padding-bottom: 0.4em;
+    font-weight: 400;
+  }
+  #subtitle-div.expressive {
+    font-style: italic;
+    font-stretch: 60%;
   }
 `;

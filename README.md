@@ -317,6 +317,7 @@ media_browser:
       enabled: true
       limit: 25
       favorites_only: true
+  show_artist_subtitles: true
 ```
 
 </details>
@@ -446,6 +447,7 @@ media_browser:
       - plex
       - tidal
   playlists_allow_removing_tracks: false
+  show_artist_subtitles: false
 ```
 
 </details>
@@ -652,6 +654,7 @@ Multiple elements on the queue tab can be hidden. By default, all elements are v
 | recents                         | [FavoritesRecentsConfig](#favorites--recents-config)                      | No       | -           | See below                                                                  |
 | recommendations                 | [RecommendationsConfig](#recommendations-config)                          | No       | -           | See below                                                                  |
 | sections                        | list of [SectionsConfig](#sections-config)                                | No       | -           | See below                                                                  |
+| show_artist_subtitles           | bool                                                                      | No       | true        | Enable/disable displaying artist names below album/track names on cards.   |
 | hide                            | [MediaBrowserHiddenElementsConfig](#media-browser-hidden-elements-config) | No       | See below   | See Below                                                                  |
 
 #### WARNING:

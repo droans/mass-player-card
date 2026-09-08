@@ -154,6 +154,7 @@ export interface mediaCardServiceData {
   media_content_id: string;
   media_content_type: string;
   service?: string;
+  media_artist?: string;
 }
 export interface mediaCardRecommendationData {
   type: "service";

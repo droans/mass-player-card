@@ -231,6 +231,12 @@ export function generateFavoritesSectionCards(
       const formattedArtists = artistNames.join(", ").slice(0, 40);
       return function_(item.uri, item.image ?? "", item.name, formattedArtists);
     }
+    const artists = (item.artists ?? []).map((artist) => {
+      return artist.name;
+    });
+    const joinedArtists = artists.join(", ").slice(0, 40);
+    const mediaArtist =
+      joinedArtists.length > 0 ? { media_artist: joinedArtists } : {};
     const r: MediaCardItem = {
       title: item.name,
       thumbnail: item.image ?? Thumbnail.CLEFT,
@@ -239,6 +245,7 @@ export function generateFavoritesSectionCards(
         type: "service",
         media_content_id: item.uri,
         media_content_type: item.media_type,
+        ...mediaArtist,
       },
     };
     return r;

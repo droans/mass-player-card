@@ -152,3 +152,5 @@ export const EnqueueConfigMap: Record<EnqueueConfigOptions, EnqueueOptions> = {
   play_now_clear_queue: EnqueueOptions.PLAY_NOW_CLEAR_QUEUE,
   radio: EnqueueOptions.RADIO,
 };
+
+export const SHOW_ARTIST_SUBTITLE_SECTIONS = ["album", "service"];
