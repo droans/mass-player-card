@@ -628,9 +628,12 @@ export class ActivePlayerController {
     const groupableIds = info.can_group_with;
     const result: string[] = [];
     for (const entity of this.config.entities) {
-      const entInfo = await this.getEntityInfo(entity.entity_id);
-      if (groupableIds.includes(entInfo.player_id)) {
-        result.push(entity.entity_id);
+      const entId = entity.entity_id;
+      if (playerIsAvailable(this.hass, entId)) {
+        const entInfo = await this.getEntityInfo(entity.entity_id);
+        if (groupableIds.includes(entInfo.player_id)) {
+          result.push(entity.entity_id);
+        }
       }
     }
     return result;
