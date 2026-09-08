@@ -34,6 +34,7 @@ import { Icons } from "./icons";
 import { QueueController } from "../controller/queue";
 import { MediaBrowserController } from "../controller/browser";
 import { uuid4 } from "../utils/utility";
+import { MediaBrowserSection } from "./media-browser";
 export type { EntityConfig } from "../config/config";
 
 export const hassContext = createContext<ExtendedHass>(uuid4());
@@ -85,6 +86,8 @@ export const mediaBrowserCardsContext =
   createContext<newMediaBrowserItemsConfig>(uuid4());
 export const activeMediaBrowserCardsContext =
   createContext<MediaCardItem[]>(uuid4());
+export const activeMediaBrowserSectionContext =
+  createContext<MediaBrowserSection>(uuid4());
 
 export const hiddenElementsConfigContext =
   createContext<HiddenElementsConfig>(uuid4());

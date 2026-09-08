@@ -47,6 +47,7 @@ import { getThumbnail } from "../../utils/thumbnails";
 @customElement("mpc-browser-media-card")
 export class MediaCard extends LitElement {
   @property({ type: Boolean }) queueable = false;
+  @property({ type: Boolean, attribute: "skeleton" }) skeleton = false;
   @state() code!: TemplateResult;
   private _enqueue_buttons?: ListItems;
   private _search_buttons!: ListItems;
@@ -175,11 +176,17 @@ export class MediaCard extends LitElement {
   }
   private onEnqueue = (event_: MenuButtonEventData) => {
     event_.stopPropagation();
+    if (this.skeleton) {
+      return;
+    }
     const target = event_.detail;
     const value = target.option as EnqueueOptions;
     this.onEnqueueAction(this._config.data, value);
   };
   private onSelect = () => {
+    if (this.skeleton) {
+      return;
+    }
     this.onSelectAction(this._config.data, this);
   };
   protected renderThumbnailFromBackground() {
@@ -244,6 +251,26 @@ export class MediaCard extends LitElement {
       ></mpc-menu-button>
     `;
   }
+  private generateSkeleton(): TemplateResult {
+    return html`
+      <wa-skeleton
+        id="skeleton"
+        effect="sheen"
+        class="media-card${this.useExpressive ? ` expressive` : ``}"
+      ></wa-skeleton>
+    `;
+  }
+  private generateCard(): TemplateResult {
+    return html`
+      <wa-card
+        class="media-card${this.useExpressive ? ` expressive` : ``}"
+        @click=${this.onSelect}
+      >
+        <div slot="media" id="media">${this.renderThumbnail()}</div>
+        ${this.renderTitle()}
+      </wa-card>
+    `;
+  }
   private generateCode() {
     if (
       !this._enqueue_buttons ||
@@ -266,15 +293,7 @@ export class MediaCard extends LitElement {
           playback-rate="1"
         >
           <div id="container">
-            <wa-card
-              class="media-card ${
-                this.useExpressive ? `media-card-expressive` : ``
-              }"
-              @click=${this.onSelect}
-            >
-              <div slot="media" id="media">${this.renderThumbnail()}</div>
-              ${this.renderTitle()}
-            </wa-card>
+            ${this.skeleton ? this.generateSkeleton() : this.generateCard()}
           </div>
         </wa-animation>
         ${this.renderEnqueueButton()}
