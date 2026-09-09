@@ -53,10 +53,27 @@ import {
 import { removePlaylistTracksServiceSchema } from "mass-queue-types/packages/mass_queue/actions/remove_playlist_tracks";
 import { GetLibrarySortOrders } from "../config/media-browser";
 export default class BrowserActions {
-  private _hass!: ExtendedHass;
-
   constructor(hass: ExtendedHass) {
     this.hass = hass;
+  }
+  private _hass!: ExtendedHass;
+
+  private async getPlayerConfigEntry(entity_id: string): Promise<string> {
+    const entry = await this.hass.callWS<{ config_entry_id: string }>({
+      type: "config/entity_registry/get",
+      entity_id,
+    });
+    const result = entry.config_entry_id;
+    return result;
+  }
+  private async actionGetPlayerInfo(
+    entity_id: string,
+  ): Promise<getInfoWSResponseSchema | null> {
+    const data: getInfoWSServiceSchema = {
+      type: "mass_queue/get_info",
+      entity_id,
+    };
+    return await this.hass.callWS(data);
   }
   public set hass(hass: ExtendedHass) {
     // eslint-disable-next-line @typescript-eslint/no-unnecessary-condition
@@ -459,22 +476,5 @@ export default class BrowserActions {
       },
     };
     await this.hass.callWS(data);
-  }
-  private async getPlayerConfigEntry(entity_id: string): Promise<string> {
-    const entry = await this.hass.callWS<{ config_entry_id: string }>({
-      type: "config/entity_registry/get",
-      entity_id,
-    });
-    const result = entry.config_entry_id;
-    return result;
-  }
-  private async actionGetPlayerInfo(
-    entity_id: string,
-  ): Promise<getInfoWSResponseSchema | null> {
-    const data: getInfoWSServiceSchema = {
-      type: "mass_queue/get_info",
-      entity_id,
-    };
-    return await this.hass.callWS(data);
   }
 }

@@ -25,76 +25,9 @@ import { MassCardController } from "../../controller/controller";
 import { ForceUpdatePlayerDataEventData } from "../../const/events";
 
 export class MassPlayerControlsBase extends LitElement {
-  protected layoutConfig!: PlayerLayoutConfig;
-  protected _config!: PlayerConfig;
-
-  @consume({ context: activeMediaPlayerContext, subscribe: true })
-  protected activeEntity!: ExtendedHassEntity;
-
-  @consume({ context: musicPlayerConfigContext, subscribe: true })
-  @state()
-  private set config(config: PlayerConfig) {
-    if (jsonMatch(this._config, config)) {
-      return;
-    }
-    this._config = config;
-    this.layoutConfig = config.layout;
-  }
-  public get config() {
-    return this._config;
-  }
   @consume({ context: actionsControllerContext })
   private actions!: ActionsController;
 
-  @consume({ context: musicPlayerHiddenElementsConfigContext, subscribe: true })
-  protected hiddenElements!: PlayerControlsHiddenElementsConfig;
-
-  @consume({ context: controllerContext, subscribe: true })
-  public controller!: MassCardController;
-
-  @state()
-  protected _playerData!: PlayerData;
-
-  @consume({ context: IconsContext }) protected Icons!: Icons;
-
-  @state() protected playing = false;
-  @state() protected repeat = RepeatMode.OFF;
-  @state() protected shuffle = false;
-  @state() protected favorite = false;
-
-  @consume({ context: activePlayerDataContext, subscribe: true })
-  public set playerData(playerData: PlayerData) {
-    this._playerData = playerData;
-    this.playing = playerData.playing;
-    this.repeat = playerData.repeat;
-    this.shuffle = playerData.shuffle;
-    this.favorite = playerData.favorite;
-  }
-  public get playerData() {
-    return this._playerData;
-  }
-  /* 
-    eslint-disable 
-      @typescript-eslint/no-explicit-any,
-      @typescript-eslint/no-unsafe-assignment
-  */
-  private forceUpdatePlayerData(key: string, value: any) {
-    const data: ForceUpdatePlayerDataEventData = {
-      key,
-      value,
-    };
-    const event_ = new CustomEvent("force-update-player", { detail: data });
-    this.controller.host.dispatchEvent(event_);
-  }
-  /* 
-    eslint-enable 
-      @typescript-eslint/no-explicit-any,
-      @typescript-eslint/no-unsafe-assignment
-  */
-  private requestPlayerDataUpdate() {
-    const event_ = new Event("request-player-data-update");
-    this.controller.host.dispatchEvent(event_);
-  }
   protected onPrevious = async (event_: Event) => {
     event_.stopPropagation();
     await this.actions.actionPlayPrevious();
@@ -132,13 +65,76 @@ export class MassPlayerControlsBase extends LitElement {
     event_.stopPropagation();
     this.favorite = !this.favorite;
     this.requestUpdate("favorite", this.favorite);
-    // eslint-disable-next-line unicorn/prefer-ternary
     if (this.playerData.favorite) {
       await this.actions.actionRemoveFavorite();
     } else {
       await this.actions.actionAddFavorite();
     }
   };
+  @state()
+  protected _playerData!: PlayerData;
+  @state() protected playing = false;
+  @state() protected repeat = RepeatMode.OFF;
+  @state() protected shuffle = false;
+  @state() protected favorite = false;
+
+  @consume({ context: activeMediaPlayerContext, subscribe: true })
+  protected activeEntity!: ExtendedHassEntity;
+  @consume({ context: musicPlayerHiddenElementsConfigContext, subscribe: true })
+  protected hiddenElements!: PlayerControlsHiddenElementsConfig;
+  @consume({ context: controllerContext, subscribe: true })
+  public controller!: MassCardController;
+  @consume({ context: IconsContext }) protected Icons!: Icons;
+
+  protected layoutConfig!: PlayerLayoutConfig;
+  protected _config!: PlayerConfig;
+
+  /*
+    eslint-disable
+      @typescript-eslint/no-explicit-any,
+      @typescript-eslint/no-unsafe-assignment
+  */
+  private forceUpdatePlayerData(key: string, value: any) {
+    const data: ForceUpdatePlayerDataEventData = {
+      key,
+      value,
+    };
+    const event_ = new CustomEvent("force-update-player", { detail: data });
+    this.controller.host.dispatchEvent(event_);
+  }
+  /*
+    eslint-enable
+      @typescript-eslint/no-explicit-any,
+      @typescript-eslint/no-unsafe-assignment
+  */
+  private requestPlayerDataUpdate() {
+    const event_ = new Event("request-player-data-update");
+    this.controller.host.dispatchEvent(event_);
+  }
+  @consume({ context: musicPlayerConfigContext, subscribe: true })
+  @state()
+  private set config(config: PlayerConfig) {
+    if (jsonMatch(this._config, config)) {
+      return;
+    }
+    this._config = config;
+    this.layoutConfig = config.layout;
+  }
+  public get config() {
+    return this._config;
+  }
+
+  @consume({ context: activePlayerDataContext, subscribe: true })
+  public set playerData(playerData: PlayerData) {
+    this._playerData = playerData;
+    this.playing = playerData.playing;
+    this.repeat = playerData.repeat;
+    this.shuffle = playerData.shuffle;
+    this.favorite = playerData.favorite;
+  }
+  public get playerData() {
+    return this._playerData;
+  }
   protected shouldUpdate(_changedProperties: PropertyValues): boolean {
     return _changedProperties.size > 0;
   }

@@ -46,12 +46,19 @@ import { PodcastEpisode } from "mass-queue-types/packages/mass_queue/types/media
 import "./browser-collection-track-row";
 
 export class BrowserViewBase extends LitElement {
-  protected _collectionData?: mediaCardCollectionType | undefined;
-  protected _hass?: ExtendedHass;
-  protected _activePlayer?: ExtendedHassEntity;
-  protected _browserConfig?: MediaBrowserConfig;
-  protected _activeEntityConf?: EntityConfig;
-  protected _Icons?: Icons;
+  @state() public tracks?: Tracks | PodcastEpisode[];
+
+  @consume({
+    context: mediaBrowserHiddenElementsConfigContext,
+    subscribe: true,
+  })
+  protected hide!: MediaBrowserHiddenElementsConfig;
+  @consume({ context: configContext, subscribe: true })
+  protected cardConfig!: Config;
+  @consume({ context: useExpressiveContext })
+  protected useExpressive!: boolean;
+  @consume({ context: useVibrantContext })
+  protected useVibrant!: boolean;
 
   @query("#title") protected titleElement?: HTMLElement;
   @query("#enqueue-button") protected enqueueElement?: HTMLElement;
@@ -61,22 +68,59 @@ export class BrowserViewBase extends LitElement {
   @query("#tracks") protected tracksElement?: HTMLElement;
   @query("#tracks-padding") protected padElement?: HTMLElement;
   @query("#header") protected headerElement?: HTMLElement;
+
+  protected _collectionData?: mediaCardCollectionType | undefined;
+  protected _hass?: ExtendedHass;
+  protected _activePlayer?: ExtendedHassEntity;
+  protected _browserConfig?: MediaBrowserConfig;
+  protected _activeEntityConf?: EntityConfig;
+  protected _Icons?: Icons;
+
   protected enqueueControlElement!: HTMLElement;
   protected enqueueIconElement!: HTMLElement;
   protected animationsAdded = false;
   protected collectionImageURL!: string;
 
-  // Set which enqueue elements are hidden
-  @consume({
-    context: mediaBrowserHiddenElementsConfigContext,
-    subscribe: true,
-  })
-  protected hide!: MediaBrowserHiddenElementsConfig;
   protected _enqueue_buttons!: ListItems;
-  @consume({ context: configContext, subscribe: true })
-  protected cardConfig!: Config;
 
   public onEnqueueAction!: CardEnqueueService;
+
+  protected _browserActions?: BrowserActions;
+
+  protected onEnqueue = (event_: MenuButtonEventData) => {
+    if (!this.collectionData) {
+      return;
+    }
+    event_.stopPropagation();
+    const target = event_.detail;
+    const value = target.option as EnqueueOptions;
+    this.onEnqueueAction(this.collectionData, value);
+  };
+
+  protected _renderImageFallback = (event_: Event) => {
+    // eslint-disable-next-line unicorn/name-replacements
+    const ev_ = event_ as HTMLImageElementEvent;
+    ev_.target.src = getThumbnail(this.hass, Thumbnail.PLAYLIST) as string;
+    ev_.target.removeEventListener("error", this._renderImageFallback);
+  };
+
+  @property({ attribute: false })
+  public set collectionData(
+    data:
+      | mediaCardPlaylistData
+      | mediaCardAlbumData
+      | mediaCardArtistData
+      | mediaCardPodcastData
+      | undefined,
+  ) {
+    this._collectionData = data;
+    this.collectionImageURL = data?.media_image ?? ``;
+    this.getTracks();
+    void this.getCollectionImage();
+  }
+  public get collectionData() {
+    return this._collectionData;
+  }
 
   // Used to get hidden elements, etc.
   @consume({ context: mediaBrowserConfigContext, subscribe: true })
@@ -86,6 +130,7 @@ export class BrowserViewBase extends LitElement {
   protected get browserConfig() {
     return this._browserConfig;
   }
+
   @consume({ context: activeEntityConfigContext, subscribe: true })
   protected set activeEntityConf(config: EntityConfig | undefined) {
     this._activeEntityConf = config;
@@ -102,17 +147,6 @@ export class BrowserViewBase extends LitElement {
   protected get Icons() {
     return this._Icons;
   }
-
-  @state() public tracks?: Tracks | PodcastEpisode[];
-
-  // Ensure style adjustments are handled
-  @consume({ context: useExpressiveContext })
-  protected useExpressive!: boolean;
-
-  @consume({ context: useVibrantContext })
-  protected useVibrant!: boolean;
-
-  protected _browserActions?: BrowserActions;
 
   @consume({ context: hassContext, subscribe: true })
   public set hass(hass: ExtendedHass | undefined) {
@@ -139,24 +173,6 @@ export class BrowserViewBase extends LitElement {
   }
   public get activePlayer() {
     return this._activePlayer;
-  }
-
-  @property({ attribute: false })
-  public set collectionData(
-    data:
-      | mediaCardPlaylistData
-      | mediaCardAlbumData
-      | mediaCardArtistData
-      | mediaCardPodcastData
-      | undefined,
-  ) {
-    this._collectionData = data;
-    this.collectionImageURL = data?.media_image ?? ``;
-    this.getTracks();
-    void this.getCollectionImage();
-  }
-  public get collectionData() {
-    return this._collectionData;
   }
 
   protected setHiddenElements() {
@@ -280,16 +296,6 @@ export class BrowserViewBase extends LitElement {
     this.addScrollAnimation(imgDivKf, this.imageDivElement as HTMLElement);
   }
 
-  protected onEnqueue = (event_: MenuButtonEventData) => {
-    if (!this.collectionData) {
-      return;
-    }
-    event_.stopPropagation();
-    const target = event_.detail;
-    const value = target.option as EnqueueOptions;
-    this.onEnqueueAction(this.collectionData, value);
-  };
-
   protected updateEnqueueButtons() {
     if (!this.Icons) {
       return;
@@ -308,12 +314,6 @@ export class BrowserViewBase extends LitElement {
     this._enqueue_buttons = options;
   }
 
-  protected _renderImageFallback = (event_: Event) => {
-    // eslint-disable-next-line unicorn/prevent-abbreviations
-    const ev_ = event_ as HTMLImageElementEvent;
-    ev_.target.src = getThumbnail(this.hass, Thumbnail.PLAYLIST) as string;
-    ev_.target.removeEventListener("error", this._renderImageFallback);
-  };
   protected renderImage(): TemplateResult {
     const img = this.collectionImageURL;
     return html`

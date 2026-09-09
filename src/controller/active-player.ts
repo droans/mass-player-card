@@ -48,36 +48,6 @@ import { RepeatMode } from "../const/enums";
 import { MassCardConfigController } from "./config";
 
 export class ActivePlayerController {
-  private _activeEntityConfig: ContextProvider<
-    typeof activeEntityConfigContext
-  >;
-  private _activeEntityID: ContextProvider<typeof activeEntityIDContext>;
-  private _activeMediaPlayer: ContextProvider<typeof activeMediaPlayerContext>;
-  private _activePlayerName: ContextProvider<typeof activePlayerNameContext>;
-  private _volumeMediaPlayer: ContextProvider<typeof volumeMediaPlayerContext>;
-  private _expressiveScheme!: ContextProvider<typeof expressiveSchemeContext>;
-  private _useExpressive!: ContextProvider<typeof useExpressiveContext>;
-  private _useVibrant!: ContextProvider<typeof useVibrantContext>;
-  private _groupMembers!: ContextProvider<typeof groupedPlayersContext>;
-  private _groupVolume!: ContextProvider<typeof groupVolumeContext>;
-  private _activePlayerData!: ContextProvider<typeof activePlayerDataContext>;
-  private _playerData?: getQueueResponse;
-  private _maxPlayerDataUpdateTimestampDelta = 5000;
-  private _playerDataUpdateInterval?: number;
-
-  private _hass!: ExtendedHass;
-  private _config!: Config;
-  private configController!: MassCardConfigController;
-  private _host: HTMLElement;
-  private _updatingScheme = false;
-  private _carouselElement?: WaCarousel;
-  private _observer?: MutationObserver;
-  private _activeSchemeColor!: number;
-  private _timeout?: number;
-  private _observerDelay = 300;
-  private _canGroupWith: string[] = [];
-  private volumeEntityId!: string;
-
   constructor(
     hass: ExtendedHass,
     configController: MassCardConfigController,
@@ -125,6 +95,125 @@ export class ActivePlayerController {
       void this.actionGetCurrentQueue();
     }, this._maxPlayerDataUpdateTimestampDelta);
   }
+  private _activeEntityConfig: ContextProvider<
+    typeof activeEntityConfigContext
+  >;
+  private _activeEntityID: ContextProvider<typeof activeEntityIDContext>;
+  private _activeMediaPlayer: ContextProvider<typeof activeMediaPlayerContext>;
+  private _activePlayerName: ContextProvider<typeof activePlayerNameContext>;
+  private _volumeMediaPlayer: ContextProvider<typeof volumeMediaPlayerContext>;
+  private _expressiveScheme!: ContextProvider<typeof expressiveSchemeContext>;
+  private _useExpressive!: ContextProvider<typeof useExpressiveContext>;
+  private _useVibrant!: ContextProvider<typeof useVibrantContext>;
+  private _groupMembers!: ContextProvider<typeof groupedPlayersContext>;
+  private _groupVolume!: ContextProvider<typeof groupVolumeContext>;
+  private _activePlayerData!: ContextProvider<typeof activePlayerDataContext>;
+  private _playerData?: getQueueResponse;
+  private _maxPlayerDataUpdateTimestampDelta = 5000;
+  private _playerDataUpdateInterval?: number;
+
+  private _hass!: ExtendedHass;
+  private _config!: Config;
+  private configController!: MassCardConfigController;
+  private _host: HTMLElement;
+  private _updatingScheme = false;
+  private _carouselElement?: WaCarousel;
+  private _observer?: MutationObserver;
+  private _activeSchemeColor!: number;
+  private _timeout?: number;
+  private _observerDelay = 300;
+  private _canGroupWith: string[] = [];
+  private volumeEntityId!: string;
+
+  private observerCallback = () => {
+    if (this._timeout) {
+      try {
+        clearTimeout(this._timeout);
+      } catch {
+        // assume already canceled
+      }
+    }
+    this._timeout = window.setTimeout(() => {
+      this._timeout = undefined;
+      this.createAndApplyExpressiveScheme();
+    }, this._observerDelay);
+  };
+  private createObserver() {
+    if (!this.config.expressive) {
+      return;
+    }
+    if (this._observer) {
+      try {
+        this._observer.disconnect();
+      } catch {
+        // pass
+      }
+    }
+    if (!this.carouselElement) {
+      return;
+    }
+    const config = {
+      subtree: true,
+      childList: true,
+      attributes: true,
+      attributeFilter: ["src", "data-playing"],
+    };
+    const observer = new MutationObserver(this.observerCallback);
+    observer.observe(this.carouselElement, config);
+    if (!this.expressiveScheme) {
+      this.createAndApplyExpressiveScheme();
+    }
+    this._observer = observer;
+  }
+  private dispatchUpdatedActivePlayer() {
+    const event_ = new CustomEvent("active-player-updated", {
+      detail: this.activeMediaPlayer,
+    });
+    this._host.dispatchEvent(event_);
+  }
+  private setGroupAttributes() {
+    this.groupMembers = this.getGroupedPlayers().map((item) => {
+      return item.entity_id;
+    });
+    void this._getAndSetGroupedVolume();
+  }
+  private setDefaultActivePlayer() {
+    const states = this.hass.states;
+    const players = this._config.entities;
+    const firstActivePlayer = players.find((entity) => {
+      const ent = states[entity.entity_id];
+      return isActive(this.hass, ent, entity);
+    });
+    if (firstActivePlayer) {
+      this.activeEntityConfig = firstActivePlayer;
+      return;
+    }
+    const firstAvailablePlayer = players.find((entity) => {
+      return playerIsAvailable(this.hass, entity.entity_id);
+    });
+    if (firstAvailablePlayer) {
+      this.activeEntityConfig = firstAvailablePlayer;
+      return;
+    }
+    this.activeEntityConfig = players[0];
+  }
+  private async _getAndSetGroupedVolume() {
+    if (!this.activeMediaPlayer) {
+      return;
+    }
+    const entity = this.activeMediaPlayer.entity_id;
+    const vol = await this.getGroupedVolume(entity);
+    this.groupVolume = vol;
+  }
+  private async getPlayerProvider(entity_id: string) {
+    const resp = await this.getEntityInfo(entity_id);
+    return resp.provider;
+  }
+  private async setCanGroupWith() {
+    if (this.activeEntityID) {
+      this.canGroupWith = await this.playerCanGroupWith();
+    }
+  }
   public set hass(hass: ExtendedHass) {
     this._hass = hass;
     const currentEntity = this.activeMediaPlayer;
@@ -170,6 +259,9 @@ export class ActivePlayerController {
     return this._useVibrant.value;
   }
 
+  /* eslint-disable
+    unicorn/consistent-class-member-order,
+  */
   private set activeEntityConfig(config: EntityConfig) {
     this._activeEntityConfig.setValue(config);
     const states = this.hass.states;
@@ -223,7 +315,7 @@ export class ActivePlayerController {
     return this._activePlayerName.value;
   }
   private set groupMembers(members: string[] | undefined) {
-    if (jsonMatch(this._groupMembers.value, members) || !members) {
+    if (!members || jsonMatch(this._groupMembers.value, members)) {
       return;
     }
     this._groupMembers.setValue(members);
@@ -248,9 +340,9 @@ export class ActivePlayerController {
     const old_attributes = this.volumeMediaPlayer?.attributes;
     const new_attributes = player.attributes;
     if (
-      old_attributes?.volume_level != new_attributes.volume_level ||
-      old_attributes?.is_volume_muted != new_attributes.is_volume_muted ||
-      !old_attributes
+      !old_attributes ||
+      old_attributes.volume_level != new_attributes.volume_level ||
+      old_attributes.is_volume_muted != new_attributes.is_volume_muted
     ) {
       this._volumeMediaPlayer.setValue(player);
     }
@@ -275,10 +367,11 @@ export class ActivePlayerController {
     return this._activePlayerData.value;
   }
   public set carouselElement(element: WaCarousel | undefined) {
-    if (element) {
-      this._carouselElement = element;
-      this.createObserver();
+    if (!element) {
+      return;
     }
+    this._carouselElement = element;
+    this.createObserver();
   }
   public get carouselElement() {
     return this._carouselElement;
@@ -290,53 +383,16 @@ export class ActivePlayerController {
   public get canGroupWith() {
     return this._canGroupWith;
   }
+  /* eslint-enable
+    unicorn/consistent-class-member-order,
+  */
 
-  private createObserver() {
-    if (!this.config.expressive) {
-      return;
-    }
-    if (this._observer) {
-      try {
-        this._observer.disconnect();
-      } catch {
-        // pass
-      }
-    }
-    if (!this.carouselElement) {
-      return;
-    }
-    const config = {
-      subtree: true,
-      childList: true,
-      attributes: true,
-      attributeFilter: ["src", "data-playing"],
-    };
-    const observer = new MutationObserver(this.observerCallback);
-    observer.observe(this.carouselElement, config);
-    if (!this.expressiveScheme) {
-      this.createAndApplyExpressiveScheme();
-    }
-    this._observer = observer;
-  }
   public getActiveArtwork(): HTMLElement | undefined {
     if (!this.carouselElement) {
       return;
     }
     return this.carouselElement.querySelector("#img-playing") as HTMLElement;
   }
-  private observerCallback = () => {
-    if (this._timeout) {
-      try {
-        clearTimeout(this._timeout);
-      } catch {
-        // assume already canceled
-      }
-    }
-    this._timeout = window.setTimeout(() => {
-      this._timeout = undefined;
-      this.createAndApplyExpressiveScheme();
-    }, this._observerDelay);
-  };
 
   public async updateActivePlayerData(forceUpdate = false) {
     const badStates = ["unavailable", "unknown"];
@@ -360,18 +416,6 @@ export class ActivePlayerController {
     }
   }
 
-  private dispatchUpdatedActivePlayer() {
-    const event_ = new CustomEvent("active-player-updated", {
-      detail: this.activeMediaPlayer,
-    });
-    this._host.dispatchEvent(event_);
-  }
-  private setGroupAttributes() {
-    this.groupMembers = this.getGroupedPlayers().map((item) => {
-      return item.entity_id;
-    });
-    void this._getAndSetGroupedVolume();
-  }
   public getGroupedPlayers() {
     if (!this.activeMediaPlayer) {
       return [];
@@ -389,26 +433,6 @@ export class ActivePlayerController {
       }
       return false;
     });
-  }
-  private setDefaultActivePlayer() {
-    const states = this.hass.states;
-    const players = this._config.entities;
-    const firstActivePlayer = players.find((entity) => {
-      const ent = states[entity.entity_id];
-      return isActive(this.hass, ent, entity);
-    });
-    const firstAvailablePlayer = players.find((entity) => {
-      return playerIsAvailable(this.hass, entity.entity_id);
-    });
-    if (firstActivePlayer) {
-      this.activeEntityConfig = firstActivePlayer;
-      return;
-    }
-    if (firstAvailablePlayer) {
-      this.activeEntityConfig = firstAvailablePlayer;
-      return;
-    }
-    this.activeEntityConfig = players[0];
   }
   public setActivePlayer(entity_id: string) {
     const entities_config = this.config.entities;
@@ -529,8 +553,8 @@ export class ActivePlayerController {
     const schemeName = this.config.expressive_scheme;
     const darkMode = this.hass.themes.darkMode;
     if (
-      !this.activeMediaPlayer?.attributes.media_content_id ||
-      !activeArtwork
+      !activeArtwork ||
+      !this.activeMediaPlayer?.attributes.media_content_id
     ) {
       const color = generateDefaultExpressiveSchemeColor();
       const scheme = generateExpressiveSchemeFromColor(
@@ -552,14 +576,6 @@ export class ActivePlayerController {
     this._activeSchemeColor = scheme.color;
     this._updatingScheme = false;
     return this.expressiveScheme;
-  }
-  private async _getAndSetGroupedVolume() {
-    if (!this.activeMediaPlayer) {
-      return;
-    }
-    const entity = this.activeMediaPlayer.entity_id;
-    const vol = await this.getGroupedVolume(entity);
-    this.groupVolume = vol;
   }
   public async setGroupedVolume(
     entity_id: string,
@@ -614,10 +630,6 @@ export class ActivePlayerController {
     const resp = await this.hass.callWS<getInfoWSResponseSchema>(data);
     return resp;
   }
-  private async getPlayerProvider(entity_id: string) {
-    const resp = await this.getEntityInfo(entity_id);
-    return resp.provider;
-  }
   public async playerCanGroupWith(
     entity_id = this.activeEntityID,
   ): Promise<string[]> {
@@ -637,11 +649,6 @@ export class ActivePlayerController {
       }
     }
     return result;
-  }
-  private async setCanGroupWith() {
-    if (this.activeEntityID) {
-      this.canGroupWith = await this.playerCanGroupWith();
-    }
   }
   public disconnected() {
     this._observer?.disconnect();

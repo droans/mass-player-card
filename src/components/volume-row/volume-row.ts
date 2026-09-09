@@ -32,33 +32,52 @@ import { DetailValueEventData } from "../../const/events";
 
 @customElement("mpc-volume-row")
 export class VolumeRow extends LitElement {
-  private maxVolume!: number;
-
-  private _config?: PlayerConfig;
-  private _entityConfig?: EntityConfig;
   @consume({ context: controllerContext })
   private controller!: MassCardController;
   @consume({ context: IconsContext }) private Icons!: Icons;
+  @consume({ context: musicPlayerHiddenElementsConfigContext, subscribe: true })
+  private hide!: PlayerHiddenElementsConfig;
+  @consume({ context: actionsControllerContext, subscribe: true })
+  private actions!: ActionsController;
+  @consume({ context: useExpressiveContext, subscribe: true })
+  private useExpressive?: boolean;
+
+  private maxVolume!: number;
+  private _config?: PlayerConfig;
+  private _entityConfig?: EntityConfig;
+  private _initialUpdate!: boolean;
+
+  private onToggle = async () => {
+    await this.actions.actionTogglePower();
+  };
+
+  private onVolumeMuteToggle = async () => {
+    await this.actions.actionToggleMute();
+  };
+  private onVolume = async (event_: DetailValueEventData) => {
+    let volume: number = event_.detail.value;
+    if (Number.isNaN(volume)) return;
+    this.player_data.volume = volume;
+    volume /= 100;
+    this.requestUpdate("volume", this.player_data.volume);
+    await this.actions.actionSetVolume(volume);
+  };
+  private onFavorite = async () => {
+    this.favorite = !this.favorite;
+    await (this.player_data.favorite
+      ? this.actions.actionRemoveFavorite()
+      : this.actions.actionAddFavorite());
+  };
+
   @state() protected favorite = false;
+  @state() public _player_data!: PlayerData;
 
   @property({ attribute: "can-mute", type: Boolean, default: false })
   canMute = false;
 
-  private _initialUpdate!: boolean;
-
-  @consume({ context: musicPlayerHiddenElementsConfigContext, subscribe: true })
-  private hide!: PlayerHiddenElementsConfig;
-  @state() public _player_data!: PlayerData;
-
-  @consume({ context: actionsControllerContext, subscribe: true })
-  private actions!: ActionsController;
-
-  @consume({ context: useExpressiveContext, subscribe: true })
-  private useExpressive?: boolean;
-
   @consume({ context: musicPlayerConfigContext, subscribe: true })
   public set config(config: PlayerConfig | undefined) {
-    if (jsonMatch(this._config, config) || !config) {
+    if (!config || jsonMatch(this._config, config)) {
       return;
     }
     this._config = config;
@@ -69,7 +88,7 @@ export class VolumeRow extends LitElement {
 
   @consume({ context: activeEntityConfigContext, subscribe: true })
   public set entityConfig(config: EntityConfig | undefined) {
-    if (jsonMatch(this._entityConfig, config) || !config) {
+    if (!config || jsonMatch(this._entityConfig, config)) {
       return;
     }
     this._entityConfig = config;
@@ -91,26 +110,6 @@ export class VolumeRow extends LitElement {
     return this._player_data;
   }
 
-  private onToggle = async () => {
-    await this.actions.actionTogglePower();
-  };
-  private onVolumeMuteToggle = async () => {
-    await this.actions.actionToggleMute();
-  };
-  private onVolume = async (event_: DetailValueEventData) => {
-    let volume: number = event_.detail.value;
-    if (Number.isNaN(volume)) return;
-    this.player_data.volume = volume;
-    volume = volume / 100;
-    this.requestUpdate("volume", this.player_data.volume);
-    await this.actions.actionSetVolume(volume);
-  };
-  private onFavorite = async () => {
-    this.favorite = !this.favorite;
-    await (this.player_data.favorite
-      ? this.actions.actionRemoveFavorite()
-      : this.actions.actionAddFavorite());
-  };
   protected renderPower(): TemplateResult {
     if (this.hide.power_button || this.useExpressive) {
       return html``;

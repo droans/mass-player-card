@@ -25,10 +25,35 @@ const DEFAULT_SCHEME: MenuButtonScheme = "filled";
 
 @customElement("mpc-menu-button")
 export class MassMenuButton extends LitElement {
-  @property({ attribute: false }) public iconPath!: string;
+  @state() private _selectedItem!: string;
+  private _initialSelection?: string;
 
   @property({ attribute: false }) private _items?: ListItems;
 
+  @consume({ context: useExpressiveContext, subscribe: true })
+  private useExpressive!: boolean;
+  @consume({ context: useVibrantContext, subscribe: true })
+  private useVibrant!: boolean;
+  @consume({ context: controllerContext, subscribe: true })
+  private controller!: MassCardController;
+
+  // Need to remove gap from the select-anchor div
+  private gapReset = false;
+  private interval!: number | undefined;
+
+  private onSelect = (event_: CustomEvent) => {
+    event_.stopPropagation();
+    // eslint-disable-next-line @typescript-eslint/no-unsafe-assignment
+    const data = { detail: event_.detail };
+    const _event = new CustomEvent("menu-item-selected", data);
+    this.dispatchEvent(_event);
+    if (!this.menuElement) {
+      return;
+    }
+    this.menuElement.open = false;
+  };
+
+  @property({ attribute: false }) public iconPath!: string;
   @property({
     attribute: "scheme",
     type: String,
@@ -36,40 +61,37 @@ export class MassMenuButton extends LitElement {
     reflect: true,
   })
   scheme: MenuButtonScheme = DEFAULT_SCHEME;
-
   @property({ type: Boolean, attribute: "fixedMenuPosition" })
   public fixedMenuPosition = false;
-
   @property({ type: Boolean, attribute: "dividers" })
   public dividers = false;
-
   @property({ type: Boolean, attribute: "use-md" })
   public useMD = false;
-
   @property({ type: Number, attribute: "elevation", default: 1, reflect: true })
   elevation = 1;
-
   @property({ type: Boolean, default: false, reflect: true })
   outlined = false;
 
   @query("#menu-select-menu")
   public menuElement?: ControlSelectMenuElement;
 
-  @consume({ context: useExpressiveContext, subscribe: true })
-  private useExpressive!: boolean;
-
-  @consume({ context: useVibrantContext, subscribe: true })
-  private useVibrant!: boolean;
-
-  @consume({ context: controllerContext, subscribe: true })
-  private controller!: MassCardController;
-
-  @state() private _selectedItem!: string;
-  private _initialSelection?: string;
-
-  // Need to remove gap from the select-anchor div
-  private gapReset = false;
-  private interval!: number | undefined;
+  private attemptGapReset() {
+    if (!this.interval) {
+      return;
+    }
+    if (this.gapReset) {
+      window.clearInterval(this.interval);
+      this.interval = undefined;
+      return;
+    }
+    const anchor =
+      this.menuElement?.shadowRoot?.querySelector(".select-anchor");
+    if (!anchor) {
+      return;
+    }
+    (anchor as HTMLElement).style.gap = "unset";
+    this.gapReset = true;
+  }
 
   @property({ attribute: false })
   public set initialSelection(selection: string) {
@@ -95,36 +117,6 @@ export class MassMenuButton extends LitElement {
   public get items() {
     return this._items ?? [];
   }
-
-  private attemptGapReset() {
-    if (!this.interval) {
-      return;
-    }
-    if (this.gapReset) {
-      window.clearInterval(this.interval);
-      this.interval = undefined;
-      return;
-    }
-    const anchor =
-      this.menuElement?.shadowRoot?.querySelector(".select-anchor");
-    if (!anchor) {
-      return;
-    }
-    (anchor as HTMLElement).style.gap = "unset";
-    this.gapReset = true;
-  }
-
-  private onSelect = (event_: CustomEvent) => {
-    event_.stopPropagation();
-    // eslint-disable-next-line @typescript-eslint/no-unsafe-assignment
-    const data = { detail: event_.detail };
-    const _event = new CustomEvent("menu-item-selected", data);
-    this.dispatchEvent(_event);
-    if (!this.menuElement) {
-      return;
-    }
-    this.menuElement.open = false;
-  };
 
   protected renderMenuItems(): TemplateResult | TemplateResult[] {
     if (!this.items?.length) {

@@ -16,11 +16,23 @@ import { DetailValueEventData } from "../../const/events";
 
 @customElement("mpc-volume-slider")
 export class VolumeSlider extends LitElement {
-  @property({ attribute: false }) public maxVolume = 100;
   @state() private entity?: ExtendedHassEntity;
+
   private _entityId!: string;
   private _actions!: PlayerActions;
   private _hass!: ExtendedHass;
+
+  private onVolumeChange = async (event_: DetailValueEventData) => {
+    if (!this.entity) {
+      return;
+    }
+    let volume: number = event_.detail.value;
+    volume /= 100;
+    this.requestUpdate("volume", volume);
+    await this._actions.actionSetVolume(this.entity, volume);
+  };
+
+  @property({ attribute: false }) public maxVolume = 100;
 
   @property({ attribute: false })
   public set entityId(entity_id: string) {
@@ -51,15 +63,6 @@ export class VolumeSlider extends LitElement {
   public get hass() {
     return this._hass;
   }
-  private onVolumeChange = async (event_: DetailValueEventData) => {
-    if (!this.entity) {
-      return;
-    }
-    let volume: number = event_.detail.value;
-    volume = volume / 100;
-    this.requestUpdate("volume", volume);
-    await this._actions.actionSetVolume(this.entity, volume);
-  };
   protected render(): TemplateResult {
     if (!this.entity) {
       return html``;

@@ -21,21 +21,24 @@ import { playerIsAvailable } from "../../utils/utility";
 export class MassCardPlayerSelector extends LitElement {
   @consume({ context: musicPlayerConfigContext, subscribe: true })
   private config!: PlayerConfig;
-
   @consume({ context: activeEntityConfigContext, subscribe: true })
   private activeEntityConfig!: EntityConfig;
-
   @consume({ context: useExpressiveContext, subscribe: true })
   private useExpressive!: boolean;
-
   @consume({ context: IconsContext, subscribe: true })
   private Icons!: Icons;
-
   @consume({ context: entitiesConfigContext, subscribe: true })
   private playerEntities!: EntityConfig[];
-
   @consume({ context: hassContext, subscribe: true })
   private hass!: ExtendedHass;
+
+  private onSelect = (event_: CustomEvent) => {
+    event_.stopPropagation();
+    // eslint-disable-next-line @typescript-eslint/no-unsafe-assignment
+    const data = { detail: event_.detail };
+    const _event = new CustomEvent("menu-item-selected", data);
+    this.dispatchEvent(_event);
+  };
 
   protected renderPlayerItems() {
     const ents = this.playerEntities.map((item) => {
@@ -77,14 +80,6 @@ export class MassCardPlayerSelector extends LitElement {
     });
     return ents.filter(Boolean);
   }
-  private onSelect = (event_: CustomEvent) => {
-    event_.stopPropagation();
-    // eslint-disable-next-line @typescript-eslint/no-unsafe-assignment
-    const data = { detail: event_.detail };
-    const _event = new CustomEvent("menu-item-selected", data);
-    this.dispatchEvent(_event);
-  };
-
   protected render(): TemplateResult {
     const config_hide = this.config.hide.player_selector;
     const entity_hide = this.activeEntityConfig.hide.player.player_selector;

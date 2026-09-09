@@ -34,67 +34,15 @@ import { HTMLImageElementEvent } from "../../const/events";
 
 @customElement("mpc-player-row")
 export class PlayerRow extends LitElement {
-  @property({ attribute: false }) joined = false;
-  @property({ attribute: false }) selected = false;
+  @consume({ context: playersHiddenElementsConfigContext, subscribe: true })
+  private hide!: PlayersHiddenElementsConfig;
   @consume({ context: IconsContext }) private Icons!: Icons;
-  @consume({ context: useExpressiveContext, subscribe: true })
+
   private useExpressive!: boolean;
-  @property({ attribute: "can-group", type: Boolean }) canGroup = false;
-
-  public allowJoin = true;
-  public playerName!: string;
-  public joinService!: PlayerJoinService;
-  public selectedService!: PlayerSelectedService;
-  public transferService!: PlayerTransferService;
-  public unjoinService!: PlayerUnjoinService;
-
   private _player_entity!: ExtendedHassEntity;
-
   private _config!: PlayersConfig;
   private _entityConfig!: EntityConfig;
   private _hass!: ExtendedHass;
-
-  @consume({ context: playersHiddenElementsConfigContext, subscribe: true })
-  private hide!: PlayersHiddenElementsConfig;
-
-  @consume({ context: playersConfigContext, subscribe: true })
-  public set config(config: PlayersConfig | undefined) {
-    if (jsonMatch(this._config, config) || !config) {
-      return;
-    }
-    this._config = config;
-  }
-  public get config() {
-    return this._config;
-  }
-  @consume({ context: activeEntityConfigContext, subscribe: true })
-  public set entityConfig(config: EntityConfig | undefined) {
-    if (jsonMatch(this._entityConfig, config) || !config) {
-      return;
-    }
-    this._entityConfig = config;
-  }
-  public get entityConfig() {
-    return this._entityConfig;
-  }
-
-  @consume({ context: hassContext, subscribe: true })
-  public set hass(hass: ExtendedHass) {
-    this._hass = hass;
-  }
-  public get hass() {
-    return this._hass;
-  }
-
-  @property({ attribute: false })
-  public set player_entity(entity: ExtendedHassEntity | undefined) {
-    if (entity) {
-      this._player_entity = entity;
-    }
-  }
-  public get player_entity() {
-    return this._player_entity;
-  }
 
   private callOnPlayerSelectedService = () => {
     if (
@@ -105,19 +53,17 @@ export class PlayerRow extends LitElement {
     }
     this.selectedService(this.player_entity.entity_id);
   };
-  protected shouldUpdate(_changedProperties: PropertyValues<this>): boolean {
-    return _changedProperties.size > 0;
-  }
+
   private onJoinPressed = async (event_: Event) => {
     // eslint-disable-next-line @typescript-eslint/no-unnecessary-condition
     if (navigator.vibrate) {
       navigator.vibrate(VibrationPattern.Players.ACTION_JOIN);
     }
     event_.stopPropagation();
-    const service = this.joined ? this.unjoinService : this.joinService;
     if (!this.player_entity) {
       return;
     }
+    const service = this.joined ? this.unjoinService : this.joinService;
     await service([this.player_entity.entity_id]);
     this.joined = !this.joined;
   };
@@ -134,7 +80,7 @@ export class PlayerRow extends LitElement {
   };
 
   private _renderThumbnailFallback = (event_: Event) => {
-    // eslint-disable-next-line unicorn/prevent-abbreviations
+    // eslint-disable-next-line unicorn/name-replacements
     const ev = event_ as HTMLImageElementEvent;
     const attributes = this.player_entity?.attributes;
     const fallback = getThumbnail(this.hass, Thumbnail.HEADPHONES);
@@ -147,6 +93,20 @@ export class PlayerRow extends LitElement {
     }
     ev.target.src = newSource ?? "";
   };
+
+  @property({ attribute: false }) joined = false;
+  @property({ attribute: false }) selected = false;
+  @consume({ context: useExpressiveContext, subscribe: true })
+  @property({ attribute: "can-group", type: Boolean })
+  canGroup = false;
+
+  public allowJoin = true;
+  public playerName!: string;
+  public joinService!: PlayerJoinService;
+  public selectedService!: PlayerSelectedService;
+  public transferService!: PlayerTransferService;
+  public unjoinService!: PlayerUnjoinService;
+
   private renderThumbnail() {
     const attributes = this.player_entity?.attributes;
     const fallback = getThumbnail(this.hass, Thumbnail.HEADPHONES);
@@ -165,10 +125,10 @@ export class PlayerRow extends LitElement {
     `;
   }
   private _calculateTitleWidth() {
-    let button_ct = 0;
     if (!this.config) {
       return;
     }
+    let button_ct = 0;
     const hide = this.hide;
     if (
       !hide.join_button &&
@@ -217,6 +177,48 @@ export class PlayerRow extends LitElement {
         </div>
       </span>
     `;
+  }
+  @consume({ context: playersConfigContext, subscribe: true })
+  public set config(config: PlayersConfig | undefined) {
+    if (!config || jsonMatch(this._config, config)) {
+      return;
+    }
+    this._config = config;
+  }
+  public get config() {
+    return this._config;
+  }
+  @consume({ context: activeEntityConfigContext, subscribe: true })
+  public set entityConfig(config: EntityConfig | undefined) {
+    if (!config || jsonMatch(this._entityConfig, config)) {
+      return;
+    }
+    this._entityConfig = config;
+  }
+  public get entityConfig() {
+    return this._entityConfig;
+  }
+
+  @consume({ context: hassContext, subscribe: true })
+  public set hass(hass: ExtendedHass) {
+    this._hass = hass;
+  }
+  public get hass() {
+    return this._hass;
+  }
+
+  @property({ attribute: false })
+  public set player_entity(entity: ExtendedHassEntity | undefined) {
+    if (entity) {
+      this._player_entity = entity;
+    }
+  }
+  public get player_entity() {
+    return this._player_entity;
+  }
+
+  protected shouldUpdate(_changedProperties: PropertyValues<this>): boolean {
+    return _changedProperties.size > 0;
   }
 
   protected renderTransferButton() {

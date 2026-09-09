@@ -169,8 +169,8 @@ function _parseColorHex(color: string) {
 
 function _parseColorRgb(color: string) {
   const ints = color
-    .split("(")[1]
-    .split(")")[0]
+    .split("(", 2)[1]
+    .split(")", 1)[0]
     .split(",")
     .map((i) => {
       return Number.parseInt(i);

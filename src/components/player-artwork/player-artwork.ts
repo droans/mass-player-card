@@ -31,89 +31,39 @@ import { asyncImageURLWithFallback } from "../../utils/thumbnails";
 
 @customElement("mpc-player-artwork")
 export class MassPlayerArtwork extends LitElement {
-  @consume({ context: musicPlayerConfigContext, subscribe: true })
-  @state()
-  private playerConfig!: PlayerConfig;
+  @state() private _activePlayer!: ExtendedHassEntity;
+  @state() private _queue: QueueItems | null = null;
 
-  private _observer?: MutationObserver;
+  @state()
+  @consume({ context: musicPlayerConfigContext, subscribe: true })
+  private playerConfig!: PlayerConfig;
+  @state()
+  @consume({ context: hassContext, subscribe: true })
+  private hass!: ExtendedHass;
 
   @consume({ context: controllerContext, subscribe: true })
   private controller!: MassCardController;
-
   @consume({ context: IconsContext, subscribe: true })
   private Icons!: Icons;
-
   @consume({ context: configContext, subscribe: true })
   private Config!: Config;
-
-  private _interval!: number | undefined;
-  private _intervalSet = false;
-  private _intervalMs = 250;
-
-  @state() private _activePlayer!: ExtendedHassEntity;
-  @consume({ context: hassContext, subscribe: true })
-  @state()
-  private hass!: ExtendedHass;
-
-  @state() private _queue: QueueItems | null = null;
 
   @query("#carousel") private carouselElement?: WaCarousel;
   @query("#active-slide") private activeSlide?: WaCarouselItem;
   @queryAll("wa-carousel-item") private carouselItems?: WaCarouselItem[];
 
+  private _observer?: MutationObserver;
+  private _interval!: number | undefined;
+  private _intervalSet = false;
+  private _intervalMs = 250;
+
   private _slidesInserted = false;
   private _pushingArtwork = false;
   private _touchActive = false;
 
-  @consume({ context: activeMediaPlayerContext, subscribe: true })
-  public set activePlayer(player: ExtendedHassEntity) {
-    if (!playerHasUpdated(this._activePlayer, player)) {
-      return;
-    }
-    this._activePlayer = player;
-  }
-  public get activePlayer() {
-    return this._activePlayer;
-  }
-
-  @consume({ context: queueContext, subscribe: true })
-  public set queue(queue: QueueItems | null) {
-    if (queue) {
-      queue = this._filterQueue(queue);
-    }
-    if (jsonMatch(this._queue, queue)) {
-      return;
-    }
-    this._queue = queue;
-    void this.pushQueueArtwork();
-  }
-  public get queue() {
-    return this._queue;
-  }
-
-  private getActiveIndex() {
-    return (
-      this.queue?.findIndex((item) => {
-        return item.playing;
-      }) ?? 0
-    );
-  }
-
-  private _filterQueue(queue: QueueItems) {
-    if (queue.length <= 10) {
-      return queue;
-    }
-    const playIdx = queue.findIndex((item) => {
-      return item.playing;
-    });
-    if (!(playIdx == 0) && !playIdx) {
-      return queue.slice(0, 10);
-    }
-    const startIdx = Math.max(0, playIdx - 5);
-    const endIdx = Math.min(queue.length, playIdx + 6);
-    return queue.slice(startIdx, endIdx);
-  }
-
+  private _intervalGoToSlide = () => {
+    this.delayedGoToSlide(this.getActiveIndex());
+  };
   private _observerCB = () => {
     if (this._touchActive) {
       return;
@@ -180,23 +130,27 @@ export class MassPlayerArtwork extends LitElement {
       this.onSwipe(activeSlide);
     }
   };
-
-  protected renderEmptyQueue(): TemplateResult {
-    const expressive = this.controller.config?.expressive ? "expressive" : ``;
-    return html`
-      <wa-carousel-item>
-        <ha-svg-icon
-          .path=${this.Icons.ASLEEP}  
-          id="asleep"
-          class="${expressive}"
-        >
-      </wa-carousel-item>
-    `;
+  private getActiveIndex() {
+    return (
+      this.queue?.findIndex((item) => {
+        return item.playing;
+      }) ?? 0
+    );
   }
-
-  private _intervalGoToSlide = () => {
-    this.delayedGoToSlide(this.getActiveIndex());
-  };
+  private _filterQueue(queue: QueueItems) {
+    if (queue.length <= 10) {
+      return queue;
+    }
+    const playIdx = queue.findIndex((item) => {
+      return item.playing;
+    });
+    if (!playIdx && playIdx != 0) {
+      return queue.slice(0, 10);
+    }
+    const startIdx = Math.max(0, playIdx - 5);
+    const endIdx = Math.min(queue.length, playIdx + 6);
+    return queue.slice(startIdx, endIdx);
+  }
   private delayedGoToSlide(idx: number) {
     if (!this.carouselItems) {
       return;
@@ -239,6 +193,129 @@ export class MassPlayerArtwork extends LitElement {
       return result[0];
     }
     return firstSlide;
+  }
+  private createAndDestroyCarouselItemsAsNeeded() {
+    const slides = this.carouselItems;
+    if (!slides || !this.queue) {
+      return;
+    }
+    const artworkIdx = [...slides].findIndex((item) => {
+      return item.id == "active-slide";
+    });
+    const slidesLength = slides.length;
+    const actSlidesBefore = artworkIdx;
+    const actSlidesAfter = slidesLength - artworkIdx - 1;
+
+    const queueIdx = this.queue.findIndex((item) => {
+      return item.playing;
+    });
+    const queueLength = this.queue.length;
+    const requestSlidesBefore = queueIdx;
+    const requestSlidesAfter = queueLength - queueIdx - 1;
+
+    if (
+      actSlidesBefore == requestSlidesBefore &&
+      actSlidesAfter == requestSlidesAfter
+    ) {
+      return;
+    }
+
+    if (actSlidesBefore < requestSlidesBefore) {
+      const insertBeforeCt = requestSlidesBefore - actSlidesBefore;
+      this.insertSlides(insertBeforeCt, "start");
+    } else if (actSlidesBefore > requestSlidesBefore) {
+      // eslint-disable-next-line unicorn/no-non-function-verb-prefix
+      const removeBeforeCt = actSlidesBefore - requestSlidesBefore;
+      this.removeSlides(removeBeforeCt, "start");
+    }
+
+    if (actSlidesAfter < requestSlidesAfter) {
+      const insertAfterCt = requestSlidesAfter - actSlidesAfter;
+      this.insertSlides(insertAfterCt, "end");
+    } else if (actSlidesAfter > requestSlidesAfter) {
+      // eslint-disable-next-line unicorn/no-non-function-verb-prefix
+      const removeAfterct = actSlidesAfter - requestSlidesAfter;
+      this.removeSlides(removeAfterct, "end");
+    }
+  }
+
+  private removeSlides(ct: number, direction: "start" | "end") {
+    if (!this.carouselItems) {
+      return;
+    }
+    const elements = [...this.carouselItems];
+    const remove =
+      direction == "start"
+        ? elements.slice(0, ct)
+        : elements.slice(elements.length - ct);
+    remove.forEach((item) => {
+      item.remove();
+    });
+  }
+
+  private insertSlides(ct: number, direction: "start" | "end") {
+    if (!this.carouselItems || !this.carouselElement) {
+      return;
+    }
+    const rng = [...Array(ct).keys()];
+
+    const insertBefore = this.carouselItems[0];
+    rng.forEach(() => {
+      const element = document.createElement("wa-carousel-item");
+      const div = document.createElement("div");
+      div.className = "slot";
+      const img = document.createElement("img");
+      img.loading = "lazy";
+      div.append(img);
+      element.append(div);
+      if (direction == "start") {
+        (this.carouselElement as WaCarousel).insertBefore(
+          element,
+          insertBefore,
+        );
+      } else {
+        (this.carouselElement as WaCarousel).append(element);
+      }
+    });
+  }
+
+  @consume({ context: activeMediaPlayerContext, subscribe: true })
+  public set activePlayer(player: ExtendedHassEntity) {
+    if (!playerHasUpdated(this._activePlayer, player)) {
+      return;
+    }
+    this._activePlayer = player;
+  }
+  public get activePlayer() {
+    return this._activePlayer;
+  }
+
+  @consume({ context: queueContext, subscribe: true })
+  public set queue(queue: QueueItems | null) {
+    if (queue) {
+      queue = this._filterQueue(queue);
+    }
+    if (jsonMatch(this._queue, queue)) {
+      return;
+    }
+    this._queue = queue;
+    void this.pushQueueArtwork();
+  }
+  public get queue() {
+    return this._queue;
+  }
+
+  protected renderEmptyQueue(): TemplateResult {
+    const expressive = this.controller.config?.expressive ? "expressive" : ``;
+    return html`
+      <wa-carousel-item>
+        <ha-svg-icon
+          .path=${this.Icons.ASLEEP}
+          id="asleep"
+          class="${expressive}"
+        >
+      </wa-carousel-item>
+    `;
   }
 
   protected async pushQueueArtwork() {
@@ -330,89 +407,6 @@ export class MassPlayerArtwork extends LitElement {
       element.removeAttribute("id");
       element.parentElement?.removeAttribute("id");
     }
-  }
-
-  private createAndDestroyCarouselItemsAsNeeded() {
-    const slides = this.carouselItems;
-    if (!slides || !this.queue) {
-      return;
-    }
-    const artworkIdx = [...slides].findIndex((item) => {
-      return item.id == "active-slide";
-    });
-    const slidesLength = slides.length;
-    const actSlidesBefore = artworkIdx;
-    const actSlidesAfter = slidesLength - artworkIdx - 1;
-
-    const queueIdx = this.queue.findIndex((item) => {
-      return item.playing;
-    });
-    const queueLength = this.queue.length;
-    const requestSlidesBefore = queueIdx;
-    const requestSlidesAfter = queueLength - queueIdx - 1;
-
-    if (
-      actSlidesBefore == requestSlidesBefore &&
-      actSlidesAfter == requestSlidesAfter
-    ) {
-      return;
-    }
-
-    if (actSlidesBefore < requestSlidesBefore) {
-      const insertBeforeCt = requestSlidesBefore - actSlidesBefore;
-      this.insertSlides(insertBeforeCt, "start");
-    } else if (actSlidesBefore > requestSlidesBefore) {
-      const removeBeforeCt = actSlidesBefore - requestSlidesBefore;
-      this.removeSlides(removeBeforeCt, "start");
-    }
-
-    if (actSlidesAfter < requestSlidesAfter) {
-      const insertAfterCt = requestSlidesAfter - actSlidesAfter;
-      this.insertSlides(insertAfterCt, "end");
-    } else if (actSlidesAfter > requestSlidesAfter) {
-      const removeAfterct = actSlidesAfter - requestSlidesAfter;
-      this.removeSlides(removeAfterct, "end");
-    }
-  }
-
-  private removeSlides(ct: number, direction: "start" | "end") {
-    if (!this.carouselItems) {
-      return;
-    }
-    const elements = [...this.carouselItems];
-    const remove =
-      direction == "start"
-        ? elements.slice(0, ct)
-        : elements.slice(elements.length - ct);
-    remove.forEach((item) => {
-      item.remove();
-    });
-  }
-
-  private insertSlides(ct: number, direction: "start" | "end") {
-    if (!this.carouselItems || !this.carouselElement) {
-      return;
-    }
-    const rng = [...Array(ct).keys()];
-
-    const insertBefore = this.carouselItems[0];
-    rng.forEach(() => {
-      const element = document.createElement("wa-carousel-item");
-      const div = document.createElement("div");
-      div.className = "slot";
-      const img = document.createElement("img");
-      img.loading = "lazy";
-      div.append(img);
-      element.append(div);
-      if (direction == "start") {
-        (this.carouselElement as WaCarousel).insertBefore(
-          element,
-          insertBefore,
-        );
-      } else {
-        (this.carouselElement as WaCarousel).append(element);
-      }
-    });
   }
 
   protected renderActiveItem(): TemplateResult {

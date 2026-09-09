@@ -43,12 +43,32 @@ export default tseslint.config(
       "observers/no-missing-unobserve-or-disconnect": "error",
       "observers/matching-unobserve-target": "error",
       "unicorn/new-for-builtins": "off",
+      "unicorn/consistent-class-member-order": [
+        "warn",
+        {
+          order: [
+            "constructor",
+            "static-field",
+            "private-field",
+            "public-field",
+            "private-method",
+            "public-method",
+            "static-block",
+            "static-method",
+          ],
+        },
+      ],
+      "unicorn/consistent-boolean-name": "off",
+      "unicorn/no-for-each": "off",
+      "unicorn/no-computed-property-existence-check": "off",
       "unicorn/no-null": "off",
+      "unicorn/prefer-array-from-range": "off",
       "unicorn/prefer-array-some": "off",
       "unicorn/prefer-at": "off",
+      "unicorn/prefer-iterator-to-array": "off",
       "unicorn/prefer-global-this": "off",
       "unicorn/prefer-set-has": "off",
-      "unicorn/prevent-abbreviations": [
+      "unicorn/name-replacements": [
         "error",
         {
           replacements: {

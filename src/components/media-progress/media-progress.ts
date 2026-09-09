@@ -34,7 +34,18 @@ import { MassCardController } from "../../controller/controller";
 export class MassPlayerProgressBar extends LitElement {
   @state() private _media_duration!: number;
   @state() private _media_position!: number;
+
+  @consume({ context: activePlayerControllerContext, subscribe: true })
+  private activePlayerController?: ActivePlayerController;
+  @consume({ context: actionsControllerContext, subscribe: true })
+  private actions?: ActionsController;
+  @consume({ context: controllerContext, subscribe: true })
+  private controller?: MassCardController;
+  @consume({ context: hassContext, subscribe: true })
+  private hass!: ExtendedHass;
+
   @query("#progress-bar") private progressBar?: HTMLElement;
+
   private entity_duration = 1;
   private entity_position = 0;
   private _prog_pct = 0;
@@ -48,20 +59,128 @@ export class MassPlayerProgressBar extends LitElement {
   private _updateTimeout!: number | undefined;
   private _currentSetPosition = 0;
   private _newSetPosition = 0;
+  private _activePlayer?: ExtendedHassEntity;
 
-  @consume({ context: activePlayerControllerContext, subscribe: true })
-  private activePlayerController?: ActivePlayerController;
-  @consume({ context: actionsControllerContext, subscribe: true })
-  private actions?: ActionsController;
-  @consume({ context: controllerContext, subscribe: true })
-  private controller?: MassCardController;
+  private tickProgress = () => {
+    const playing = this.player_data?.playing;
+    if (!playing || this._dragging) {
+      return;
+    }
+    const t = Date.now();
+    if (
+      this._requestProgress &&
+      (!this.media_duration ||
+        t - this._lastUpdate >= this._refreshMilliseconds)
+    ) {
+      this._lastUpdate = t;
+      this.requestProgress();
+      return;
+    }
+    let pos = (this.media_position ?? 0) + this._tick_duration_ms / 1000;
+    if (this._currentSetPosition != this._newSetPosition) {
+      this._currentSetPosition = this._newSetPosition;
+      pos = this._currentSetPosition;
+    }
+    this.media_position = Math.min(pos, this.media_duration ?? 1);
+  };
+  private onSeek = async (event_: MouseEvent) => {
+    if (!this.actions) {
+      return;
+    }
+    const prog_width = this.progressBar?.offsetWidth ?? 1;
+    const seek = event_.offsetX / prog_width;
+    const pos = Math.floor(seek * (this.media_duration ?? 1));
+    await this.actions.actionSeek(pos);
+    this._dragging = false;
+    this._requestProgress = true;
+    window.removeEventListener("pointerup", this.onPointerUp);
+    this.removeEventListener("pointermove", this.pointerMoveListener);
+  };
+
   @state() public _player_data?: PlayerData;
 
-  private _activePlayer?: ExtendedHassEntity;
-  @consume({ context: hassContext, subscribe: true })
-  private hass!: ExtendedHass;
-
+  protected pointerMoveListener = (event_: PointerEvent | MouseEvent) => {
+    const bar = this.progressBar;
+    const offset = bar?.offsetLeft ?? 36;
+    const prog_width = bar?.offsetWidth ?? 1;
+    const seek = (event_.offsetX - offset) / prog_width;
+    let pos = Math.floor(seek * (this.media_duration ?? 1));
+    pos = Math.min(this.media_duration ?? 1, pos);
+    pos = Math.max(0, pos);
+    this.media_position = pos;
+    this._newSetPosition = pos;
+    this.entity_position = pos;
+  };
+  protected onPointerDown = () => {
+    this._dragging = true;
+    this._requestProgress = false;
+    window.addEventListener("pointerup", this.onPointerUp);
+    // eslint-disable-next-line listeners/no-missing-remove-event-listener
+    this.addEventListener("pointermove", this.pointerMoveListener);
+  };
+  protected onPointerUp = () => {
+    if (!this.actions) {
+      return;
+    }
+    try {
+      void this.actions.actionSeek(this._newSetPosition);
+    } finally {
+      window.removeEventListener("pointerup", this.onPointerUp);
+      this.removeEventListener("pointermove", this.pointerMoveListener);
+    }
+    this._newSetPosition = this.media_position ?? 0;
+    if (this._updateTimeout) {
+      clearTimeout(this._updateTimeout);
+    }
+    this._dragging = false;
+    this._updateTimeout = window.setTimeout(() => {
+      this._requestProgress = true;
+      this.requestProgress();
+    }, 5000);
+  };
+  private requestProgress() {
+    if (
+      !this.activePlayerController ||
+      !playerIsAvailable(this.hass, this.activePlayerController.activeEntityID)
+    ) {
+      return;
+    }
+    void this.activePlayerController.getPlayerProgress().then((progress) => {
+      const prog = progress as number | undefined;
+      this.entity_position = prog ?? this.entity_position;
+      this._newSetPosition = prog ?? this.entity_position;
+    });
+    void this.activePlayerController
+      .getPlayerActiveItemDuration()
+      .then((duration) => {
+        this.media_duration = duration;
+        this.entity_duration = duration;
+      });
+    if (this.activePlayer?.state == "playing") {
+      this.startProgressTick();
+    } else {
+      this.stopProgressTick();
+    }
+  }
+  private startProgressTick() {
+    this.stopProgressTick();
+    this._tickListener = window.setInterval(
+      this.tickProgress,
+      this._tick_duration_ms,
+    );
+  }
+  private stopProgressTick() {
+    if (this._tickListener) {
+      try {
+        clearInterval(this._tickListener);
+      } catch {
+        // Assume interval already cleared
+      }
+    }
+    this._tickListener = undefined;
+  }
   private set media_position(pos: number | undefined) {
+    // eslint-disable-next-line unicorn/prefer-default-parameters
     pos ??= 0;
     this._media_position = pos;
     const prog = Math.min(1, pos / this._media_duration);
@@ -75,6 +194,7 @@ export class MassPlayerProgressBar extends LitElement {
   }
 
   private set media_duration(dur: number | undefined) {
+    // eslint-disable-next-line unicorn/prefer-default-parameters
     dur ??= 1;
     this._media_duration = dur;
     if (!this._media_duration) {
@@ -122,122 +242,6 @@ export class MassPlayerProgressBar extends LitElement {
     return this._player_data;
   }
 
-  private requestProgress() {
-    if (
-      !this.activePlayerController ||
-      !playerIsAvailable(this.hass, this.activePlayerController.activeEntityID)
-    ) {
-      return;
-    }
-    void this.activePlayerController.getPlayerProgress().then((progress) => {
-      const prog = progress as number | undefined;
-      this.entity_position = prog ?? this.entity_position;
-      this._newSetPosition = prog ?? this.entity_position;
-    });
-    void this.activePlayerController
-      .getPlayerActiveItemDuration()
-      .then((duration) => {
-        this.media_duration = duration;
-        this.entity_duration = duration;
-      });
-    if (this.activePlayer?.state == "playing") {
-      this.startProgressTick();
-    } else {
-      this.stopProgressTick();
-    }
-  }
-  private tickProgress = () => {
-    const playing = this.player_data?.playing;
-    if (!playing || this._dragging) {
-      return;
-    }
-    const t = Date.now();
-    if (
-      this._requestProgress &&
-      (!this.media_duration ||
-        t - this._lastUpdate >= this._refreshMilliseconds)
-    ) {
-      this._lastUpdate = t;
-      this.requestProgress();
-      return;
-    }
-    let pos = (this.media_position ?? 0) + this._tick_duration_ms / 1000;
-    if (this._currentSetPosition != this._newSetPosition) {
-      this._currentSetPosition = this._newSetPosition;
-      pos = this._currentSetPosition;
-    }
-    this.media_position = Math.min(pos, this.media_duration ?? 1);
-  };
-
-  private startProgressTick() {
-    this.stopProgressTick();
-    this._tickListener = window.setInterval(
-      this.tickProgress,
-      this._tick_duration_ms,
-    );
-  }
-  private stopProgressTick() {
-    if (this._tickListener) {
-      try {
-        clearInterval(this._tickListener);
-      } catch {
-        // Assume interval already cleared
-      }
-    }
-    this._tickListener = undefined;
-  }
-  private onSeek = async (event_: MouseEvent) => {
-    if (!this.actions) {
-      return;
-    }
-    const prog_width = this.progressBar?.offsetWidth ?? 1;
-    const seek = event_.offsetX / prog_width;
-    const pos = Math.floor(seek * (this.media_duration ?? 1));
-    await this.actions.actionSeek(pos);
-    this._dragging = false;
-    this._requestProgress = true;
-    window.removeEventListener("pointerup", this.onPointerUp);
-    this.removeEventListener("pointermove", this.pointerMoveListener);
-  };
-  protected pointerMoveListener = (event_: PointerEvent | MouseEvent) => {
-    const bar = this.progressBar;
-    const offset = bar?.offsetLeft ?? 36;
-    const prog_width = bar?.offsetWidth ?? 1;
-    const seek = (event_.offsetX - offset) / prog_width;
-    let pos = Math.floor(seek * (this.media_duration ?? 1));
-    pos = Math.min(this.media_duration ?? 1, pos);
-    pos = Math.max(0, pos);
-    this.media_position = pos;
-    this._newSetPosition = pos;
-    this.entity_position = pos;
-  };
-  protected onPointerDown = () => {
-    this._dragging = true;
-    this._requestProgress = false;
-    window.addEventListener("pointerup", this.onPointerUp);
-    // eslint-disable-next-line listeners/no-missing-remove-event-listener
-    this.addEventListener("pointermove", this.pointerMoveListener);
-  };
-  protected onPointerUp = () => {
-    if (!this.actions) {
-      return;
-    }
-    try {
-      void this.actions.actionSeek(this._newSetPosition);
-    } finally {
-      window.removeEventListener("pointerup", this.onPointerUp);
-      this.removeEventListener("pointermove", this.pointerMoveListener);
-    }
-    this._newSetPosition = this.media_position ?? 0;
-    if (this._updateTimeout) {
-      clearTimeout(this._updateTimeout);
-    }
-    this._dragging = false;
-    this._updateTimeout = window.setTimeout(() => {
-      this._requestProgress = true;
-      this.requestProgress();
-    }, 5000);
-  };
   protected renderVolumeBar(): TemplateResult {
     if (this.controller?.Config.MusicPlayer.hide.track_progress_bar) {
       return html``;

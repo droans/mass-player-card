@@ -26,56 +26,10 @@ export class MassNavBar extends LitElement {
   private _controller?: MassCardController;
   private _config?: Config;
   private _activeSection?: Sections;
-  @consume({ context: IconsContext }) private Icons!: Icons;
-  @query("#tab-music-player") playerTab?: HTMLAnchorElement;
-  @query("#tab-queue") queueTab?: HTMLAnchorElement;
-  @query("#tab-media-browser") browserTab?: HTMLAnchorElement;
-  @query("#tab-players") playersTab?: HTMLAnchorElement;
-  @query("#tab-indicator") tabIndicator?: HTMLDivElement;
-  @query("#animation") animationElement?: WaAnimation;
-  @query("#navigation") navbar?: HTMLDivElement;
-  @query(".icon-active") activeIconElem?: HTMLElement;
   private animationLength = 350;
   private animating = false;
   private tabIndicatorLeftPx = 0;
   private tabIndicatorWidthPx = 0;
-
-  @consume({ context: activeSectionContext, subscribe: true })
-  @state()
-  public set active_section(section: Sections | undefined) {
-    if (!this.controller) {
-      return;
-    }
-    if (section != this.active_section && section) {
-      this.handleTabChanged(section);
-    }
-    this._activeSection = section;
-  }
-  public get active_section() {
-    return this._activeSection;
-  }
-  private setActiveSection(section: Sections) {
-    if (this.controller) this.controller.activeSection = section;
-  }
-
-  @consume({ context: controllerContext, subscribe: true })
-  private set controller(controller: MassCardController | undefined) {
-    if (!controller) {
-      return;
-    }
-    this._controller = controller;
-    this.active_section = controller.activeSection;
-    this.config = controller.config;
-  }
-  private get controller() {
-    return this._controller;
-  }
-  private set config(config: Config | undefined) {
-    this._config = config;
-  }
-  private get config() {
-    return this._config;
-  }
 
   private handleTabChanged = (section: Sections) => {
     const current_section = this.active_section;
@@ -90,24 +44,26 @@ export class MassNavBar extends LitElement {
       this.returnQueueToActive();
     }
   };
-  protected returnQueueToActive = () => {
-    const host = this.controller?.host;
-    const element: QueueCard | null | undefined =
-      host?.shadowRoot?.querySelector("mpc-queue-card");
-    if (!element) {
+  private onAnimationFinish = () => {
+    this.animating = false;
+    if (!this.tabIndicator) {
       return;
     }
-    element.scrollToActive();
+    this.tabIndicator.style.left = `${this.tabIndicatorLeftPx.toString()}px`;
+    this.tabIndicator.style.width = `${this.tabIndicatorWidthPx.toString()}px`;
   };
-  protected returnMediaBrowserToHome = () => {
-    const host = this.controller?.host;
-    const element: MediaBrowser | null | undefined =
-      host?.shadowRoot?.querySelector("mpc-media-browser");
-    if (!element) {
-      return;
-    }
-    element.resetActiveSections();
-  };
+
+  @consume({ context: IconsContext }) private Icons!: Icons;
+
+  @query("#tab-music-player") playerTab?: HTMLAnchorElement;
+  @query("#tab-queue") queueTab?: HTMLAnchorElement;
+  @query("#tab-media-browser") browserTab?: HTMLAnchorElement;
+  @query("#tab-players") playersTab?: HTMLAnchorElement;
+  @query("#tab-indicator") tabIndicator?: HTMLDivElement;
+  @query("#animation") animationElement?: WaAnimation;
+  @query("#navigation") navbar?: HTMLDivElement;
+  @query(".icon-active") activeIconElem?: HTMLElement;
+
   private getSectionElement(section: Sections): HTMLAnchorElement | undefined {
     const elements = {
       "media-browser": this.browserTab,
@@ -180,7 +136,7 @@ export class MassNavBar extends LitElement {
     const to_width = to_element.offsetWidth;
     const to_left = to_element.offsetLeft;
     const bounce =
-      from_left - to_left > 0
+      from_left > to_left
         ? this.animateBounceLeft(from_element, to_element)
         : this.animateBounceRight(from_element, to_element);
 
@@ -198,7 +154,7 @@ export class MassNavBar extends LitElement {
       },
     ];
     const indicator = this.tabIndicator;
-    if (!this.animationElement || !indicator) {
+    if (!indicator || !this.animationElement) {
       return;
     }
     this.animationElement.keyframes = _keyframes;
@@ -208,13 +164,86 @@ export class MassNavBar extends LitElement {
     this.animationElement.play = true;
   }
 
-  private onAnimationFinish = () => {
-    this.animating = false;
-    if (!this.tabIndicator) {
+  private renderTab(section: Sections, icon: string): TemplateResult {
+    const active = this.active_section == section;
+    return html`
+      <a
+        id="tab-${section}"
+        class="player-tabs"
+        @click=${() => {
+          this.handleTabChanged(section);
+        }}
+      >
+        <i class="icon-i ${active ? `active` : ``}">
+          <ha-svg-icon
+            .path=${icon}
+            class="action-button-svg ${active ? "" : "inactive"}"
+          ></ha-svg-icon>
+        </i>
+      </a>
+    `;
+  }
+  private setActiveSection(section: Sections) {
+    if (this.controller) this.controller.activeSection = section;
+  }
+
+  @consume({ context: activeSectionContext, subscribe: true })
+  @state()
+  public set active_section(section: Sections | undefined) {
+    if (!this.controller) {
       return;
     }
-    this.tabIndicator.style.left = `${this.tabIndicatorLeftPx.toString()}px`;
-    this.tabIndicator.style.width = `${this.tabIndicatorWidthPx.toString()}px`;
+    if (section && section != this.active_section) {
+      this.handleTabChanged(section);
+    }
+    this._activeSection = section;
+  }
+  public get active_section() {
+    return this._activeSection;
+  }
+
+  /* eslint-disable
+    unicorn/consistent-class-member-order,
+  */
+  @consume({ context: controllerContext, subscribe: true })
+  private set controller(controller: MassCardController | undefined) {
+    if (!controller) {
+      return;
+    }
+    this._controller = controller;
+    this.active_section = controller.activeSection;
+    this.config = controller.config;
+  }
+  private get controller() {
+    return this._controller;
+  }
+  private set config(config: Config | undefined) {
+    this._config = config;
+  }
+  private get config() {
+    return this._config;
+  }
+  /* eslint-enable
+    unicorn/consistent-class-member-order,
+  */
+
+  protected returnQueueToActive = () => {
+    const host = this.controller?.host;
+    const element: QueueCard | null | undefined =
+      host?.shadowRoot?.querySelector("mpc-queue-card");
+    if (!element) {
+      return;
+    }
+    element.scrollToActive();
+  };
+  protected returnMediaBrowserToHome = () => {
+    const host = this.controller?.host;
+    const element: MediaBrowser | null | undefined =
+      host?.shadowRoot?.querySelector("mpc-media-browser");
+    if (!element) {
+      return;
+    }
+    element.resetActiveSections();
   };
 
   protected renderMusicPlayerTab(): TemplateResult {
@@ -249,25 +278,6 @@ export class MassNavBar extends LitElement {
     }
     return html``;
   }
-  private renderTab(section: Sections, icon: string): TemplateResult {
-    const active = this.active_section == section;
-    return html`
-      <a
-        id="tab-${section}"
-        class="player-tabs"
-        @click=${() => {
-          this.handleTabChanged(section);
-        }}
-      >
-        <i class="icon-i ${active ? `active` : ``}">
-          <ha-svg-icon
-            .path=${icon}
-            class="action-button-svg ${active ? "" : "inactive"}"
-          ></ha-svg-icon>
-        </i>
-      </a>
-    `;
-  }
   protected render(): TemplateResult {
     return html`
       <div>
@@ -289,36 +299,37 @@ export class MassNavBar extends LitElement {
     return _changedProperties.size > 0;
   }
   protected firstUpdated(): void {
-    if (!this.tabIndicator && this.active_section) {
-      const tabs = this.navbar?.querySelectorAll("a").length ?? 0;
-      const width = Math.round((1 / Math.max(1, tabs)) * 100);
-      const indicator = document.createElement("div");
-      indicator.id = "tab-indicator";
-      const config = this.config;
-      if (!config) {
-        return;
-      }
-      const sections: Sections[] = [];
-      if (config.player.enabled) sections.push(Sections.MUSIC_PLAYER);
-      if (config.queue.enabled) sections.push(Sections.QUEUE);
-      if (config.media_browser.enabled) sections.push(Sections.MEDIA_BROWSER);
-      if (config.players.enabled) sections.push(Sections.PLAYERS);
-      const activeSection = this.active_section;
-      const idx = sections.findIndex((item) => {
-        return item == activeSection;
-      });
-      if (!idx && idx != 0) {
-        return;
-      }
-      const leftPct = (idx / sections.length) * 100;
-      indicator.style = `left: ${leftPct.toString()}%; width: ${width.toString()}%;`;
-      const animation = document.createElement("wa-animation") as WaAnimation;
-      animation.id = "animation";
-      animation.duration = this.animationLength;
-      animation.iterations = 1;
-      animation.append(indicator);
-      this.navbar?.append(animation);
+    if (this.tabIndicator || !this.active_section) {
+      return;
     }
+    const tabs = this.navbar?.querySelectorAll("a").length ?? 0;
+    const width = Math.round((1 / Math.max(1, tabs)) * 100);
+    const indicator = document.createElement("div");
+    indicator.id = "tab-indicator";
+    const config = this.config;
+    if (!config) {
+      return;
+    }
+    const sections: Sections[] = [];
+    if (config.player.enabled) sections.push(Sections.MUSIC_PLAYER);
+    if (config.queue.enabled) sections.push(Sections.QUEUE);
+    if (config.media_browser.enabled) sections.push(Sections.MEDIA_BROWSER);
+    if (config.players.enabled) sections.push(Sections.PLAYERS);
+    const activeSection = this.active_section;
+    const idx = sections.findIndex((item) => {
+      return item == activeSection;
+    });
+    if (!idx && idx != 0) {
+      return;
+    }
+    const leftPct = (idx / sections.length) * 100;
+    indicator.style = `left: ${leftPct.toString()}%; width: ${width.toString()}%;`;
+    const animation = document.createElement("wa-animation") as WaAnimation;
+    animation.id = "animation";
+    animation.duration = this.animationLength;
+    animation.iterations = 1;
+    animation.append(indicator);
+    this.navbar?.append(animation);
   }
   disconnectedCallback(): void {
     super.disconnectedCallback();

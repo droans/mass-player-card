@@ -27,61 +27,11 @@ import { MediaBrowserSection } from "../../const/media-browser";
 
 @customElement("mpc-browser-cards")
 export class MediaBrowserCards extends LitElement {
-  @state() public code!: TemplateResult;
-
-  @consume({ context: hassContext, subscribe: true })
-  public hass!: ExtendedHass;
-
-  private _loading = false;
-
   @query(".icons") private _iconsElement?: HTMLDivElement;
 
+  private _loading = false;
   private _browserConfig!: MediaBrowserConfig;
-
-  public onEnqueueAction!: CardEnqueueService;
-  public onSelectAction!: CardSelectedService;
   private _items!: MediaCardItem[];
-
-  @consume({ context: activeMediaBrowserSectionContext, subscribe: true })
-  public activeMediaBrowserSection!: MediaBrowserSection;
-
-  @consume({ context: mediaBrowserConfigContext, subscribe: true })
-  public set browserConfig(config: MediaBrowserConfig | undefined) {
-    if (!jsonMatch(this._browserConfig, config) && config) {
-      this._browserConfig = config;
-      if (this.items) {
-        this.generateCode();
-      }
-    }
-  }
-  public get browserConfig() {
-    return this._browserConfig;
-  }
-
-  @consume({ context: activeMediaBrowserCardsContext, subscribe: true })
-  public set items(items: MediaCardItem[] | undefined) {
-    if (!items) {
-      return;
-    }
-    if (!jsonMatch(this._items, items)) {
-      this._items = items;
-      if (this.browserConfig) {
-        this.generateCode();
-      }
-    }
-  }
-  public get items() {
-    return this._items;
-  }
-
-  @property({ attribute: "loading", type: Boolean })
-  public set loading(loading: boolean) {
-    this._loading = loading;
-    this.generateCode();
-  }
-  public get loading() {
-    return this._loading;
-  }
 
   private onItemSelected = (data: mediaCardData, target: HTMLElement) => {
     this.resetScroll();
@@ -90,36 +40,17 @@ export class MediaBrowserCards extends LitElement {
   private onEnqueue = (data: mediaCardData, enqueue: EnqueueOptions) => {
     this.onEnqueueAction(data, enqueue);
   };
-  public resetScroll() {
-    this._iconsElement?.scrollTo({ top: 0 });
-  }
-  public renderEmptyCards(): TemplateResult {
-    if (
-      ["search", "search-collection"].includes(this.activeMediaBrowserSection)
-    ) {
-      // TODO: Render empty search
-      return html``;
-    }
-    const width = (1 / (this.browserConfig?.columns ?? 1)) * 100 - 2;
-    return html`
-      <mpc-browser-media-card
-        style="max-width: ${width.toString()}%"
-        skeleton
-      ></mpc-browser-media-card>
-      <mpc-browser-media-card
-        style="max-width: ${width.toString()}%"
-        skeleton
-      ></mpc-browser-media-card>
-      <mpc-browser-media-card
-        style="max-width: ${width.toString()}%"
-        skeleton
-      ></mpc-browser-media-card>
-      <mpc-browser-media-card
-        style="max-width: ${width.toString()}%"
-        skeleton
-      ></mpc-browser-media-card>
-    `;
-  }
+
+  @state() public code!: TemplateResult;
+
+  @consume({ context: hassContext, subscribe: true })
+  public hass!: ExtendedHass;
+  @consume({ context: activeMediaBrowserSectionContext, subscribe: true })
+  public activeMediaBrowserSection!: MediaBrowserSection;
+
+  public onEnqueueAction!: CardEnqueueService;
+  public onSelectAction!: CardSelectedService;
+
   private generateCode() {
     if (this.loading) {
       this.code = html`
@@ -163,6 +94,75 @@ export class MediaBrowserCards extends LitElement {
     this.code = html` <div class="icons wa-grid">${result}</div> `;
   }
 
+  @consume({ context: mediaBrowserConfigContext, subscribe: true })
+  public set browserConfig(config: MediaBrowserConfig | undefined) {
+    if (!config || jsonMatch(this._browserConfig, config)) {
+      return;
+    }
+    this._browserConfig = config;
+    if (this.items) {
+      this.generateCode();
+    }
+  }
+  public get browserConfig() {
+    return this._browserConfig;
+  }
+
+  @consume({ context: activeMediaBrowserCardsContext, subscribe: true })
+  public set items(items: MediaCardItem[] | undefined) {
+    if (!items) {
+      return;
+    }
+    if (!jsonMatch(this._items, items)) {
+      this._items = items;
+      if (this.browserConfig) {
+        this.generateCode();
+      }
+    }
+  }
+  public get items() {
+    return this._items;
+  }
+
+  @property({ attribute: "loading", type: Boolean })
+  public set loading(loading: boolean) {
+    this._loading = loading;
+    this.generateCode();
+  }
+  public get loading() {
+    return this._loading;
+  }
+
+  public resetScroll() {
+    this._iconsElement?.scrollTo({ top: 0 });
+  }
+  public renderEmptyCards(): TemplateResult {
+    if (
+      ["search", "search-collection"].includes(this.activeMediaBrowserSection)
+    ) {
+      // TODO: Render empty search
+      return html``;
+    }
+    const width = (1 / (this.browserConfig?.columns ?? 1)) * 100 - 2;
+    return html`
+      <mpc-browser-media-card
+        style="max-width: ${width.toString()}%"
+        skeleton
+      ></mpc-browser-media-card>
+      <mpc-browser-media-card
+        style="max-width: ${width.toString()}%"
+        skeleton
+      ></mpc-browser-media-card>
+      <mpc-browser-media-card
+        style="max-width: ${width.toString()}%"
+        skeleton
+      ></mpc-browser-media-card>
+      <mpc-browser-media-card
+        style="max-width: ${width.toString()}%"
+        skeleton
+      ></mpc-browser-media-card>
+    `;
+  }
   protected render() {
     return this.code;
   }

@@ -14,10 +14,10 @@ const ConfigSectionMap: Record<ConfigSections, Sections> = {
 };
 
 export function getDefaultSection(config: Config) {
-  const defaults = DEFAULT_SECTION_PRIORITY;
   if (config.default_section) {
     return ConfigSectionMap[config.default_section];
   }
+  const defaults = DEFAULT_SECTION_PRIORITY;
   const sections_config: Record<string, boolean> = {
     [Sections.MUSIC_PLAYER]: config.player.enabled,
     [Sections.QUEUE]: config.queue.enabled,
@@ -172,6 +172,7 @@ function findFirstAccessibleImage(
         if (returnElement) {
           resolve(img);
         }
+        // eslint-disable-next-line unicorn/no-multiple-promise-resolver-calls
         resolve(url);
         return;
       };
@@ -208,9 +209,9 @@ export function formatDuration(dur: number | undefined) {
   const hr_s = 3600;
   const min_s = 60;
   const days = Math.floor(_dur / days_s);
-  _dur = _dur % days_s;
+  _dur %= days_s;
   const hrs = Math.floor(_dur / hr_s);
-  _dur = _dur % hr_s;
+  _dur %= hr_s;
   const mins = Math.floor(_dur / min_s);
   if (days) {
     return `${days.toString()} days, ${hrs.toString()} hours, ${mins.toString()} minutes`;

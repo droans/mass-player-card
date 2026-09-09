@@ -1,4 +1,4 @@
-/* eslint-disable unicorn/prevent-abbreviations */
+/* eslint-disable unicorn/name-replacements */
 /* eslint-disable github/filenames-match-regex */
 import typescript from "@rollup/plugin-typescript";
 import commonjs from "rollup-plugin-commonjs";

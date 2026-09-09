@@ -12,10 +12,10 @@ import {
 } from "mass-queue-types/packages/mass_queue/ws/get_info";
 
 export default class PlayerActions {
-  private _hass!: ExtendedHass;
   constructor(hass: ExtendedHass) {
     this.hass = hass;
   }
+  private _hass!: ExtendedHass;
   public set hass(hass: ExtendedHass) {
     // eslint-disable-next-line @typescript-eslint/no-unnecessary-condition
     if (hass) {

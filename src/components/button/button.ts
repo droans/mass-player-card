@@ -20,24 +20,10 @@ const BUTTON_ROLE_MAP: Record<ButtonColorRole, string> = {
 
 @customElement("mpc-button")
 export class MassButton extends LitElement {
-  @property({ attribute: false }) onPressService?: (event_: Event) => void;
-  @property({ attribute: "role", type: String }) colorRole: ButtonColorRole =
-    DEFAULT_COLOR_ROLE;
-  @property({ attribute: "size", type: String }) size:
-    "small" | "medium" | "large" = DEFAULT_BUTTON_SIZE;
-  @property({ attribute: "disabled", type: Boolean }) disabled = false;
-  @property({ attribute: "selected", type: Boolean }) selected = false;
-  @property({ attribute: "selectable", type: Boolean }) selectable = false;
-  @property({ attribute: "elevation", type: Number, default: 1, reflect: true })
-  elevation = 1;
-  @property({ attribute: "outlined", type: Boolean }) outlined = false;
   @property({ attribute: false }) private onHoldService?: (
     event_: Event,
   ) => void;
-  @property({ attribute: "hold-delay", type: Number }) holdDelayMs = 1000;
   private timeout!: number | undefined;
-
-  @consume({ context: configContext, subscribe: true }) config!: Config;
 
   private onHold = (event_: Event) => {
     const function_ = this.onHoldService ?? this.onPressService;
@@ -47,11 +33,13 @@ export class MassButton extends LitElement {
     function_(event_);
   };
   private onPointerUp = (event_: Event) => {
-    if ((this.timeout || !this.onHoldService) && this.onPressService) {
-      clearTimeout(this.timeout);
-      this.onPressService(event_);
-      this.timeout = undefined;
+    if (!((this.timeout || !this.onHoldService) && this.onPressService)) {
+      return;
     }
+
+    clearTimeout(this.timeout);
+    this.onPressService(event_);
+    this.timeout = undefined;
   };
   private onPointerDown = (event_: Event) => {
     if (!this.onHoldService) {
@@ -65,6 +53,21 @@ export class MassButton extends LitElement {
       this.onHold(event_);
     }, this.holdDelayMs);
   };
+
+  @property({ attribute: false }) onPressService?: (event_: Event) => void;
+  @property({ attribute: "role", type: String }) colorRole: ButtonColorRole =
+    DEFAULT_COLOR_ROLE;
+  @property({ attribute: "size", type: String }) size:
+    "small" | "medium" | "large" = DEFAULT_BUTTON_SIZE;
+  @property({ attribute: "disabled", type: Boolean }) disabled = false;
+  @property({ attribute: "selected", type: Boolean }) selected = false;
+  @property({ attribute: "selectable", type: Boolean }) selectable = false;
+  @property({ attribute: "elevation", type: Number, default: 1, reflect: true })
+  elevation = 1;
+  @property({ attribute: "outlined", type: Boolean }) outlined = false;
+  @property({ attribute: "hold-delay", type: Number }) holdDelayMs = 1000;
+
+  @consume({ context: configContext, subscribe: true }) config!: Config;
 
   protected render(): TemplateResult {
     const expressive = this.config.expressive ? `expressive` : ``;

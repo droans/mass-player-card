@@ -39,34 +39,6 @@ import {
 import { getHiddenElements } from "../utils/config";
 
 export class MassCardConfigController {
-  private _config?: Config;
-  private _activeEntityConfig?: EntityConfig;
-  private _entitiesConfig: ContextProvider<typeof entitiesConfigContext>;
-  private _mediaBrowserConfig: ContextProvider<
-    typeof mediaBrowserConfigContext
-  >;
-  private _playerQueueConfig: ContextProvider<typeof playerQueueConfigContext>;
-  private _musicPlayerConfig: ContextProvider<typeof musicPlayerConfigContext>;
-  private _playersConfig: ContextProvider<typeof playersConfigContext>;
-  private _icons: ContextProvider<typeof IconsContext>;
-
-  private _musicPlayerHiddenElementsConfig: ContextProvider<
-    typeof musicPlayerHiddenElementsConfigContext
-  >;
-  private _playerQueueHiddenElementsConfig: ContextProvider<
-    typeof playerQueueHiddenElementsConfigContext
-  >;
-  private _mediaBrowserHiddenElementsConfig: ContextProvider<
-    typeof mediaBrowserHiddenElementsConfigContext
-  >;
-  private _playersHiddenElementsConfig: ContextProvider<
-    typeof playersHiddenElementsConfigContext
-  >;
-  private _hiddenElementsConfig: ContextProvider<
-    typeof hiddenElementsConfigContext
-  >;
-  private _host: HTMLElement;
-
   constructor(host: HTMLElement) {
     this._host = host;
     this._entitiesConfig = new ContextProvider(host, {
@@ -102,33 +74,37 @@ export class MassCardConfigController {
       context: hiddenElementsConfigContext,
     });
   }
+
+  private _config?: Config;
+  private _activeEntityConfig?: EntityConfig;
+  private _entitiesConfig: ContextProvider<typeof entitiesConfigContext>;
+  private _mediaBrowserConfig: ContextProvider<
+    typeof mediaBrowserConfigContext
+  >;
+  private _playerQueueConfig: ContextProvider<typeof playerQueueConfigContext>;
+  private _musicPlayerConfig: ContextProvider<typeof musicPlayerConfigContext>;
+  private _playersConfig: ContextProvider<typeof playersConfigContext>;
+  private _icons: ContextProvider<typeof IconsContext>;
+
+  private _musicPlayerHiddenElementsConfig: ContextProvider<
+    typeof musicPlayerHiddenElementsConfigContext
+  >;
+  private _playerQueueHiddenElementsConfig: ContextProvider<
+    typeof playerQueueHiddenElementsConfigContext
+  >;
+  private _mediaBrowserHiddenElementsConfig: ContextProvider<
+    typeof mediaBrowserHiddenElementsConfigContext
+  >;
+  private _playersHiddenElementsConfig: ContextProvider<
+    typeof playersHiddenElementsConfigContext
+  >;
+  private _hiddenElementsConfig: ContextProvider<
+    typeof hiddenElementsConfigContext
+  >;
+  private _host: HTMLElement;
+
   private _getHiddenElements = getHiddenElements;
   private _defaultPlayerHide = DEFAULT_PLAYER_HIDDEN_ELEMENTS_CONFIG;
-  public set config(config: Config) {
-    if (jsonMatch(this._config, config)) {
-      return;
-    }
-    const config_ = processConfig(config);
-    this._config = config_;
-    this._entitiesConfig.value = config_.entities;
-    this._playerQueueConfig.value = config_.queue;
-    this._musicPlayerConfig.value = config_.player;
-    this._playersConfig.value = config_.players;
-    this._mediaBrowserConfig.value = config_.media_browser;
-    this.Icons = getIcons(config_.expressive);
-    this.updateHiddenElements();
-  }
-  public get config() {
-    return this._config as Config;
-  }
-
-  public set activeEntityConfig(config: EntityConfig) {
-    this._activeEntityConfig = config;
-    this.updateHiddenElements();
-  }
-  public get activeEntityConfig() {
-    return this._activeEntityConfig as EntityConfig;
-  }
 
   private set MusicPlayerHiddenElements(elements: PlayerHiddenElementsConfig) {
     this._musicPlayerHiddenElementsConfig.setValue(elements);
@@ -136,7 +112,9 @@ export class MassCardConfigController {
   public get MusicPlayerHiddenElements() {
     return this._musicPlayerHiddenElementsConfig.value;
   }
-
+  /* eslint-disable
+    unicorn/consistent-class-member-order
+  */
   private set PlayerQueueHiddenElements(
     elements: PlayerQueueHiddenElementsConfig,
   ) {
@@ -165,6 +143,34 @@ export class MassCardConfigController {
   public get HiddenElements() {
     return this._hiddenElementsConfig.value;
   }
+
+  public set config(config: Config) {
+    if (jsonMatch(this._config, config)) {
+      return;
+    }
+    const config_ = processConfig(config);
+    this._config = config_;
+    this._entitiesConfig.value = config_.entities;
+    this._playerQueueConfig.value = config_.queue;
+    this._musicPlayerConfig.value = config_.player;
+    this._playersConfig.value = config_.players;
+    this._mediaBrowserConfig.value = config_.media_browser;
+    this.Icons = getIcons(config_.expressive);
+    this.updateHiddenElements();
+  }
+  public get config() {
+    return this._config as Config;
+  }
+  public set activeEntityConfig(config: EntityConfig) {
+    this._activeEntityConfig = config;
+    this.updateHiddenElements();
+  }
+  public get activeEntityConfig() {
+    return this._activeEntityConfig as EntityConfig;
+  }
+  /* eslint-enable
+    unicorn/consistent-class-member-order
+  */
 
   private updateHiddenElements() {
     /* eslint-disable @typescript-eslint/no-unnecessary-condition */

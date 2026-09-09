@@ -114,7 +114,7 @@ const ENTITY_DEFAULT_HIDDEN_ITEM_CONFIG: HiddenElementsConfig = {
 
 export function createStubConfig(hass: ExtendedHass, entities: string[]) {
   const media_players = entities.filter((ent) => {
-    return ent.split(".")[0] == "media_player";
+    return ent.split(".", 1)[0] == "media_player";
   });
   const mass_player = media_players.find((ent) => {
     return hass.states[ent]?.attributes.mass_player_type;

@@ -37,24 +37,72 @@ import { MassCardController } from "../controller/controller";
 export class PlayersCard extends LitElement {
   @property({ attribute: false }) private entities: ExtendedHassEntity[] = [];
 
-  @consume({ context: activeEntityConfigContext, subscribe: true })
-  @property({ attribute: false })
-  public activePlayerEntity!: EntityConfig;
+  @provide({ context: playersConfigContext })
+  private _sectionConfig!: PlayersConfig;
 
   @consume({ context: controllerContext, subscribe: true })
   private controller!: MassCardController;
 
-  @query("#animation") _animation?: WaAnimation;
   private _firstLoaded = false;
-
   private _config?: Config;
-
-  @provide({ context: playersConfigContext })
-  private _sectionConfig!: PlayersConfig;
-  public selectedPlayerService!: PlayerSelectedService;
-
   private _hass?: ExtendedHass;
   private actions?: PlayersActions;
+
+  private joinPlayers = async (group_member: string[]) => {
+    if (!this.actions) {
+      return;
+    }
+    await this.actions.actionJoinPlayers(
+      this.activePlayerEntity.entity_id,
+      group_member,
+    );
+  };
+  private unjoinPlayers = async (player_entity: string[]) => {
+    if (!this.actions) {
+      return;
+    }
+    await this.actions.actionUnjoinPlayers(player_entity);
+  };
+  private transferQueue = async (target_player: string) => {
+    if (!this.actions) {
+      return;
+    }
+    await this.actions.actionTransferQueue(
+      this.activePlayerEntity.entity_id,
+      target_player,
+    );
+    // eslint-disable-next-line @typescript-eslint/no-non-null-assertion
+    const player = this.config!.entities.find(
+      (entity) => entity.entity_id == target_player,
+    )!;
+    this.activePlayerEntity = player;
+    this.selectedPlayerService(target_player);
+  };
+
+  @consume({ context: activeEntityConfigContext, subscribe: true })
+  @property({ attribute: false })
+  public activePlayerEntity!: EntityConfig;
+
+  @query("#animation") _animation?: WaAnimation;
+
+  public selectedPlayerService!: PlayerSelectedService;
+
+  private setEntities(hass: ExtendedHass) {
+    if (!this._config) {
+      return;
+    }
+    const entities: ExtendedHassEntity[] = [];
+    this._config.entities.forEach((item) => {
+      const state = hass.states[item.entity_id];
+      if (state) {
+        entities.push(state);
+      }
+    });
+    this.entities = entities;
+  }
+  private hideSectionHeader(): boolean {
+    return this.config?.players.hide.header ?? false;
+  }
 
   @property({ attribute: false })
   public set config(config: Config | undefined) {
@@ -103,52 +151,6 @@ export class PlayersCard extends LitElement {
   }
   public get hass() {
     return this._hass;
-  }
-  private joinPlayers = async (group_member: string[]) => {
-    if (!this.actions) {
-      return;
-    }
-    await this.actions.actionJoinPlayers(
-      this.activePlayerEntity.entity_id,
-      group_member,
-    );
-  };
-  private unjoinPlayers = async (player_entity: string[]) => {
-    if (!this.actions) {
-      return;
-    }
-    await this.actions.actionUnjoinPlayers(player_entity);
-  };
-  private transferQueue = async (target_player: string) => {
-    if (!this.actions) {
-      return;
-    }
-    await this.actions.actionTransferQueue(
-      this.activePlayerEntity.entity_id,
-      target_player,
-    );
-    // eslint-disable-next-line @typescript-eslint/no-non-null-assertion
-    const player = this.config!.entities.find(
-      (entity) => entity.entity_id == target_player,
-    )!;
-    this.activePlayerEntity = player;
-    this.selectedPlayerService(target_player);
-  };
-  private setEntities(hass: ExtendedHass) {
-    if (!this._config) {
-      return;
-    }
-    const entities: ExtendedHassEntity[] = [];
-    this._config.entities.forEach((item) => {
-      const state = hass.states[item.entity_id];
-      if (state) {
-        entities.push(state);
-      }
-    });
-    this.entities = entities;
-  }
-  private hideSectionHeader(): boolean {
-    return this.config?.players.hide.header ?? false;
   }
   protected renderPlayerRows() {
     if (!this._hass || !this.controller.ActivePlayer) {

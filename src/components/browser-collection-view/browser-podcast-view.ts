@@ -9,11 +9,24 @@ import { getTranslation } from "../../utils/translations";
 
 @customElement("mpc-collection-podcast-view")
 export class MassBrowserPodcastView extends BrowserViewBase {
-  @query("#collection-info") private infoElement?: HTMLElement;
-
   // Metadata for podcast
   @state() private podcastMetadata?: getPodcastServiceResponse;
 
+  @query("#collection-info") private infoElement?: HTMLElement;
+
+  private animateHeaderInfo() {
+    const kf = {
+      fontSize: "0.8em",
+    };
+    this.addScrollAnimation(kf, this.infoElement as HTMLElement);
+  }
+  private animateHeader() {
+    this.animateHeaderElement();
+    this.animateHeaderImage();
+    this.animateHeaderTitle();
+    this.animateHeaderInfo();
+    this.animateHeaderEnqueue();
+  }
   // Ask HA to return the episodes in the podcast
   public getTracks() {
     if (!this.hass || !this.collectionData || !this.activePlayer) {
@@ -48,20 +61,6 @@ export class MassBrowserPodcastView extends BrowserViewBase {
       this.activePlayer.entity_id,
     );
     this.podcastMetadata = metadata;
-  }
-
-  private animateHeaderInfo() {
-    const kf = {
-      fontSize: "0.8em",
-    };
-    this.addScrollAnimation(kf, this.infoElement as HTMLElement);
-  }
-  private animateHeader() {
-    this.animateHeaderElement();
-    this.animateHeaderImage();
-    this.animateHeaderTitle();
-    this.animateHeaderInfo();
-    this.animateHeaderEnqueue();
   }
 
   protected renderHeader(): TemplateResult {

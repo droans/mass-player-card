@@ -22,24 +22,6 @@ import {
 import { MassQueueEvent } from "../const/events";
 
 export class QueueController {
-  public _host!: HTMLElement;
-  private _queue!: ContextProvider<typeof queueContext>;
-  private _currentQueueItem!: ContextProvider<typeof currentQueueItemContext>;
-  private _nextQueueItem!: ContextProvider<typeof nextQueueItemContext>;
-  private _previousQueueItem!: ContextProvider<typeof previousQueueItemContext>;
-  private _hass!: ExtendedHass;
-  private _activeMediaPlayer?: ExtendedHassEntity;
-  private _config!: Config;
-  private _actions!: QueueActions;
-  private _fails = 0;
-  private _activeQueueID!: string;
-
-  private _unsubscribe?: SubscriptionUnsubscribe;
-  private _listening = false;
-  private _interval!: number | undefined;
-  private _timedListening = false;
-  private _updatingQueue = false;
-
   constructor(
     hass: ExtendedHass,
     active_player: ExtendedHassEntity,
@@ -65,6 +47,26 @@ export class QueueController {
     void this.subscribeUpdates();
   }
 
+  private _queue!: ContextProvider<typeof queueContext>;
+  private _currentQueueItem!: ContextProvider<typeof currentQueueItemContext>;
+  private _nextQueueItem!: ContextProvider<typeof nextQueueItemContext>;
+  private _previousQueueItem!: ContextProvider<typeof previousQueueItemContext>;
+  private _hass!: ExtendedHass;
+  private _activeMediaPlayer?: ExtendedHassEntity;
+  private _config!: Config;
+  private _actions!: QueueActions;
+  private _fails = 0;
+  private _activeQueueID!: string;
+  private _unsubscribe?: SubscriptionUnsubscribe;
+  private _listening = false;
+  private _interval!: number | undefined;
+  private _timedListening = false;
+  private _updatingQueue = false;
+  public _host!: HTMLElement;
+
+  /* eslint-disable
+    unicorn/consistent-class-member-order
+  */
   private set queue(queue_items: QueueItems | null) {
     if (jsonMatch(this._queue.value, queue_items)) {
       return;
@@ -81,16 +83,6 @@ export class QueueController {
   }
   public get queue() {
     return this._queue.value;
-  }
-
-  public set hass(hass: ExtendedHass) {
-    this._hass = hass;
-    if (this.activeMediaPlayer) {
-      this.activeMediaPlayer = hass.states[this.activeMediaPlayer.entity_id];
-    }
-  }
-  public get hass() {
-    return this._hass;
   }
 
   private set activeMediaPlayer(player: ExtendedHassEntity | undefined) {
@@ -154,6 +146,19 @@ export class QueueController {
   public get previousQueueItem() {
     return this._previousQueueItem.value;
   }
+
+  public set hass(hass: ExtendedHass) {
+    this._hass = hass;
+    if (this.activeMediaPlayer) {
+      this.activeMediaPlayer = hass.states[this.activeMediaPlayer.entity_id];
+    }
+  }
+  public get hass() {
+    return this._hass;
+  }
+  /* eslint-enable
+    unicorn/consistent-class-member-order
+  */
 
   public setActiveEntityId(entity_id: string) {
     this.activeMediaPlayer = this.hass.states[entity_id];
@@ -326,6 +331,7 @@ export class QueueController {
     }
 
     const new_idx = this.getIndex(queue_item_id);
+
     if (new_idx === -1 || !this.queue[new_idx]) {
       return;
     }

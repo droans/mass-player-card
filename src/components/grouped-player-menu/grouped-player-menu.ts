@@ -42,41 +42,22 @@ export class MassCardPlayerSelector extends LitElement {
   @state()
   @consume({ context: useExpressiveContext, subscribe: true })
   private useExpressive!: boolean;
-
   @state()
   @consume({ context: useVibrantContext, subscribe: true })
   private useVibrant!: boolean;
-
-  @consume({ context: IconsContext, subscribe: true })
-  private Icons!: Icons;
-
-  @consume({ context: hassContext, subscribe: true })
-  private hass!: ExtendedHass;
-
   @state()
   @consume({ context: groupVolumeContext, subscribe: true })
   private groupVolumeLevel!: number;
-
   @state()
   @consume({ context: entitiesConfigContext, subscribe: true })
   private playerEntities?: EntityConfig[];
 
+  @consume({ context: IconsContext, subscribe: true })
+  private Icons!: Icons;
+  @consume({ context: hassContext, subscribe: true })
+  private hass!: ExtendedHass;
   @consume({ context: controllerContext, subscribe: true })
   private controller!: MassCardController;
-
-  @consume({ context: groupedPlayersContext, subscribe: true })
-  private set groupedPlayersList(players: string[]) {
-    const card_players = this.playerEntities?.filter((entity) => {
-      return players.includes(entity.entity_id);
-    });
-    if (jsonMatch(this._groupedPlayers, card_players) || !card_players) {
-      return;
-    }
-    this._groupedPlayers = card_players;
-  }
-  private get groupedPlayers() {
-    return this._groupedPlayers;
-  }
 
   private onUnjoinSelect = (event_: JoinUnjoinEventData) => {
     const actions = new PlayerActions(this.hass);
@@ -87,6 +68,32 @@ export class MassCardPlayerSelector extends LitElement {
     const vol = event_.detail.value;
     void this.controller.ActivePlayer?.setActiveGroupVolume(vol);
   };
+  private onImgErr = (
+    event_: HTMLImageElementEvent,
+    entityConfig: EntityConfig,
+  ) => {
+    const attributes = this.hass.states[entityConfig.entity_id]?.attributes;
+    const locImg = attributes?.entity_picture_local;
+    const nonLocImg = attributes?.entity_picture;
+    const fallback = getThumbnail(this.hass, Thumbnail.HEADPHONES) as string;
+    const currentSource = event_.target.src;
+    event_.target.src =
+      currentSource == locImg ? (nonLocImg ?? fallback) : fallback;
+  };
+
+  @consume({ context: groupedPlayersContext, subscribe: true })
+  private set groupedPlayersList(players: string[]) {
+    const card_players = this.playerEntities?.filter((entity) => {
+      return players.includes(entity.entity_id);
+    });
+    if (!card_players || jsonMatch(this._groupedPlayers, card_players)) {
+      return;
+    }
+    this._groupedPlayers = card_players;
+  }
+  private get groupedPlayers() {
+    return this._groupedPlayers;
+  }
 
   protected renderGroupedVolume(): TemplateResult {
     const vol_level = this.groupVolumeLevel;
@@ -122,19 +129,6 @@ export class MassCardPlayerSelector extends LitElement {
       </div>
     `;
   }
-  private onImgErr = (
-    event_: HTMLImageElementEvent,
-    entityConfig: EntityConfig,
-  ) => {
-    const attributes = this.hass.states[entityConfig.entity_id]?.attributes;
-    const locImg = attributes?.entity_picture_local;
-    const nonLocImg = attributes?.entity_picture;
-    const fallback = getThumbnail(this.hass, Thumbnail.HEADPHONES) as string;
-    const currentSource = event_.target.src;
-    event_.target.src =
-      currentSource == locImg ? (nonLocImg ?? fallback) : fallback;
-  };
-
   protected renderGroupedPlayers(): TemplateResult[] {
     const players = this.groupedPlayers;
     const ct = players.length;

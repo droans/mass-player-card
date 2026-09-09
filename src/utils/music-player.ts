@@ -16,9 +16,9 @@ export function generateControlLabelHtml(
   hide_labels: boolean,
 ) {
   if (
+    hide_labels ||
     icon_style.size == PlayerIconSize.LARGE ||
-    !icon_style.label ||
-    hide_labels
+    !icon_style.label
   ) {
     return html``;
   }

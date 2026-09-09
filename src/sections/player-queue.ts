@@ -48,137 +48,21 @@ import { LitVirtualizer, WaAnimation } from "../const/elements";
 
 @customElement("mpc-queue-card")
 export class QueueCard extends LitElement {
+  @state() private _queue: QueueItems = [];
+
   @consume({ context: activePlayerControllerContext })
   private activePlayerController!: ActivePlayerController;
-
   @consume({ context: IconsContext, subscribe: true })
   private Icons!: Icons;
-
   @consume({ context: playerQueueHiddenElementsConfigContext, subscribe: true })
   private hiddenElements!: PlayerQueueHiddenElementsConfig;
 
-  @provide({ context: playerQueueConfigContext })
-  public _config!: QueueConfig;
-  @state() private _queue: QueueItems = [];
   private _queueController?: QueueController;
-
-  @queryAll("#animation") _animations?: WaAnimation[];
-  @query("lit-virtualizer") virtualizerElement!: LitVirtualizer;
-
   private _firstLoaded = false;
-
-  @state() public _tabSwitchFirstUpdate = false;
-
-  @consume({ context: queueControllerContext, subscribe: true })
-  public set queueController(controller: QueueController | undefined) {
-    this._queueController = controller;
-  }
-  public get queueController() {
-    return this._queueController;
-  }
-
-  @consume({ context: queueContext, subscribe: true })
-  public set queue(queue: QueueItems | null) {
-    if (queue) {
-      if (!this.queue?.length) {
-        this._queue = this.processQueue(queue);
-        return;
-      }
-      if (!jsonMatch(this.queue, queue)) {
-        this._queue = this.processQueue(queue);
-      }
-      return;
-    }
-  }
-  public get queue() {
-    return this._queue;
-  }
-
-  private processQueue(queue: QueueItems) {
-    const active_idx = queue.findIndex((i) => i.playing);
-
-    return queue.map((item, idx) => {
-      {
-        const r: QueueItem = {
-          ...item,
-          show_action_buttons: idx > active_idx,
-          show_move_up_next: idx > active_idx + 1,
-        };
-        return r;
-      }
-    });
-  }
-
   private _active_player_entity!: string;
   private _hass?: ExtendedHass;
   private error?: TemplateResult;
 
-  @consume({ context: hassContext, subscribe: true })
-  public set hass(hass: ExtendedHass | undefined) {
-    if (!hass) {
-      return;
-    }
-    this._hass = hass;
-  }
-  public get hass() {
-    return this._hass;
-  }
-
-  @consume({ context: activeEntityIDContext, subscribe: true })
-  @property({ attribute: false })
-  public set active_player_entity(active_player_entity: string) {
-    this._active_player_entity = active_player_entity;
-  }
-  public get active_player_entity() {
-    return this._active_player_entity;
-  }
-
-  public set config(config: QueueConfig) {
-    const status = this.testConfig(config, false);
-    if (status !== QueueConfigErrors.OK) {
-      throw this.createError(status);
-    }
-    this._config = {
-      ...DEFAULT_QUEUE_CONFIG,
-      ...config,
-    };
-  }
-  public get config() {
-    return this._config;
-  }
-
-  private testConfig(config: QueueConfig | undefined, test_active = true) {
-    if (!config) {
-      return QueueConfigErrors.CONFIG_MISSING;
-    }
-    if (test_active) {
-      if (!this.active_player_entity) {
-        return QueueConfigErrors.NO_ENTITY;
-      }
-      if (typeof this.active_player_entity !== "string") {
-        return QueueConfigErrors.ENTITY_TYPE;
-      }
-    }
-    if (this.hass && !this.hass.states[this.active_player_entity]) {
-      return QueueConfigErrors.MISSING_ENTITY;
-    }
-    return QueueConfigErrors.OK;
-  }
-  private getActiveIndex(): number {
-    if (!this.queue?.length) {
-      return 0;
-    }
-    const activeIdx = this.queue.findIndex((item) => {
-      return item.playing;
-    });
-    return activeIdx == -1 ? 0 : activeIdx;
-  }
-  public scrollToActive() {
-    const activeIdx = this.getActiveIndex();
-    this.virtualizerElement
-      .element(activeIdx)
-      .scrollIntoView({ block: "start", behavior: "auto" });
-  }
   private onQueueItemSelected = async (queue_item_id: string) => {
     if (!this.queueController) {
       return;
@@ -218,11 +102,62 @@ export class QueueCard extends LitElement {
     await this.queueController.clearQueue(this.active_player_entity);
   };
   private onTabSwitch = (event_: Event) => {
-    if ((event_ as CustomEvent).detail == Sections.QUEUE) {
-      this._tabSwitchFirstUpdate = true;
-      this.scrollToActive();
+    if ((event_ as CustomEvent).detail != Sections.QUEUE) {
+      return;
     }
+    this._tabSwitchFirstUpdate = true;
+    this.scrollToActive();
   };
+
+  @state() public _tabSwitchFirstUpdate = false;
+
+  @provide({ context: playerQueueConfigContext })
+  public _config!: QueueConfig;
+
+  @query("lit-virtualizer") virtualizerElement!: LitVirtualizer;
+  @queryAll("#animation") _animations?: WaAnimation[];
+
+  private processQueue(queue: QueueItems) {
+    const active_idx = queue.findIndex((i) => i.playing);
+
+    return queue.map((item, idx) => {
+      {
+        const r: QueueItem = {
+          ...item,
+          show_action_buttons: idx > active_idx,
+          show_move_up_next: idx > active_idx + 1,
+        };
+        return r;
+      }
+    });
+  }
+
+  private testConfig(config: QueueConfig | undefined, test_active = true) {
+    if (!config) {
+      return QueueConfigErrors.CONFIG_MISSING;
+    }
+    if (test_active) {
+      if (!this.active_player_entity) {
+        return QueueConfigErrors.NO_ENTITY;
+      }
+      if (typeof this.active_player_entity !== "string") {
+        return QueueConfigErrors.ENTITY_TYPE;
+      }
+    }
+    if (this.hass && !this.hass.states[this.active_player_entity]) {
+      return QueueConfigErrors.MISSING_ENTITY;
+    }
+    return QueueConfigErrors.OK;
+  }
+  private getActiveIndex(): number {
+    if (!this.queue?.length) {
+      return 0;
+    }
+    const activeIdx = this.queue.findIndex((item) => {
+      return item.playing;
+    });
+    return activeIdx == -1 ? 0 : activeIdx;
+  }
   private hideSectionHeader(): boolean {
     return this.hiddenElements.header;
   }
@@ -262,6 +197,84 @@ export class QueueCard extends LitElement {
       ></lit-virtualizer>
     `;
   }
+  private createError(errorString: string): Error {
+    const error = new Error(errorString);
+    const errorCard = document.createElement("hui-error-card") as LovelaceCard;
+    errorCard.setConfig({
+      type: "error",
+      error,
+      origConfig: this.config,
+    });
+    this.error = html`${errorCard}`;
+    return error;
+  }
+  public scrollToActive() {
+    const activeIdx = this.getActiveIndex();
+    this.virtualizerElement
+      .element(activeIdx)
+      .scrollIntoView({ block: "start", behavior: "auto" });
+  }
+
+  @consume({ context: queueControllerContext, subscribe: true })
+  public set queueController(controller: QueueController | undefined) {
+    this._queueController = controller;
+  }
+  public get queueController() {
+    return this._queueController;
+  }
+
+  @consume({ context: queueContext, subscribe: true })
+  public set queue(queue: QueueItems | null) {
+    if (!queue) {
+      return;
+    }
+    if (!this.queue?.length) {
+      this._queue = this.processQueue(queue);
+      return;
+    }
+    if (!jsonMatch(this.queue, queue)) {
+      this._queue = this.processQueue(queue);
+    }
+    return;
+  }
+  public get queue() {
+    return this._queue;
+  }
+
+  @consume({ context: hassContext, subscribe: true })
+  public set hass(hass: ExtendedHass | undefined) {
+    if (!hass) {
+      return;
+    }
+    this._hass = hass;
+  }
+  public get hass() {
+    return this._hass;
+  }
+
+  @consume({ context: activeEntityIDContext, subscribe: true })
+  @property({ attribute: false })
+  public set active_player_entity(active_player_entity: string) {
+    this._active_player_entity = active_player_entity;
+  }
+  public get active_player_entity() {
+    return this._active_player_entity;
+  }
+
+  public set config(config: QueueConfig) {
+    const status = this.testConfig(config, false);
+    if (status !== QueueConfigErrors.OK) {
+      throw this.createError(status);
+    }
+    this._config = {
+      ...DEFAULT_QUEUE_CONFIG,
+      ...config,
+    };
+  }
+  public get config() {
+    return this._config;
+  }
+
   protected renderClearQueueButton(): TemplateResult {
     const expressive = this.activePlayerController.useExpressive;
     const hide = this.hiddenElements.clear_queue_button;
@@ -285,11 +298,11 @@ export class QueueCard extends LitElement {
     `;
   }
   protected renderHeader(): TemplateResult {
-    const label = getTranslation("queue.header", this.hass) as string;
-    const usedLabel = this.hiddenElements.header_title ? `` : label;
     if (this.hideSectionHeader()) {
       return html``;
     }
+    const label = getTranslation("queue.header", this.hass) as string;
+    const usedLabel = this.hiddenElements.header_title ? `` : label;
     return html`
       <mpc-section-header>
         <span slot="label" id="title"> ${usedLabel} </span>
@@ -367,16 +380,5 @@ export class QueueCard extends LitElement {
   }
   static get styles(): CSSResultGroup {
     return styles;
-  }
-  private createError(errorString: string): Error {
-    const error = new Error(errorString);
-    const errorCard = document.createElement("hui-error-card") as LovelaceCard;
-    errorCard.setConfig({
-      type: "error",
-      error,
-      origConfig: this.config,
-    });
-    this.error = html`${errorCard}`;
-    return error;
   }
 }

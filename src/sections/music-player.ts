@@ -72,81 +72,113 @@ import { DialogElement } from "../const/elements";
 
 @customElement("mpc-music-player-card")
 export class MusicPlayerCard extends LitElement {
-  @query("#dialog-favorites") favoritesDialog?: DialogElement;
-  @state() protected _playlists?: PlaylistDialogItem[];
-
-  @consume({ context: entitiesConfigContext, subscribe: true })
-  public playerEntities!: EntityConfig[];
+  @state()
+  private _activePlayerController?: ActivePlayerController;
 
   @consume({ context: configContext, subscribe: true })
   private cardConfig?: Config;
-
   @consume({ context: controllerContext, subscribe: true })
   private controller!: MassCardController;
-
-  @consume({ context: activePlayerDataContext, subscribe: true })
-  @state()
-  public player_data?: PlayerData;
-
   @consume({ context: musicPlayerHiddenElementsConfigContext, subscribe: true })
   private hiddenElements!: PlayerHiddenElementsConfig;
 
   private _activeEntityConfig!: EntityConfig;
   private _activeEntity!: ExtendedHassEntity;
   private _config!: PlayerConfig;
-
-  public selectedPlayerService!: PlayerSelectedService;
   private _hass!: ExtendedHass;
   private _groupedPlayers?: EntityConfig[];
   private actions!: PlayerActions;
 
-  @state()
-  private _activePlayerController?: ActivePlayerController;
-
-  @consume({ context: activeEntityConfigContext, subscribe: true })
-  public set activeEntityConfig(entity: EntityConfig) {
-    this._activeEntityConfig = entity;
-    void this.updatePlaylists();
-  }
-  public get activeEntityConfig() {
-    return this._activeEntityConfig;
-  }
-  public get activeMediaPlayer() {
-    return this.activePlayerController?.activeMediaPlayer;
-  }
-
-  @consume({ context: activeMediaPlayerContext, subscribe: true })
-  @state()
-  private set activeEntity(entity: ExtendedHassEntity) {
-    if (!playerHasUpdated(this._activeEntity, entity)) {
+  private onForceLoadEvent = (event_: Event) => {
+    const coaxed_event = event_ as ForceUpdatePlayerDataEvent;
+    const key = coaxed_event.detail.key;
+    /* eslint-disable
+      @typescript-eslint/no-unsafe-argument,
+      @typescript-eslint/no-unsafe-assignment
+    */
+    const value = coaxed_event.detail.value;
+    this.forceUpdatePlayerDataValue(key, value);
+    /* eslint-enable
+      @typescript-eslint/no-unsafe-argument,
+      @typescript-eslint/no-unsafe-assignment
+    */
+  };
+  private onPlayerSelect = (event_: MenuButtonEventData) => {
+    event_.stopPropagation();
+    const target = event_.detail;
+    const player = target.option;
+    if (player.length === 0) {
       return;
     }
-    this._activeEntity = entity;
-  }
-  public get activeEntity() {
-    return this._activeEntity;
-  }
+    this.selectedPlayerService(player);
+  };
+  private delayedUpdatePlayerData = () => {
+    setTimeout(() => {
+      if (!this.activePlayerController) {
+        return;
+      }
+      void this.activePlayerController.updateActivePlayerData();
+    }, 2000);
+  };
+  private openPlaylistDialogOnEvent = () => {
+    this.openAddToPlaylistDialog();
+  };
 
-  @consume({ context: hassContext, subscribe: true })
-  public set hass(hass: ExtendedHass | undefined) {
-    if (hass) {
-      this.actions = new PlayerActions(hass);
-      this._hass = hass;
-    }
-  }
-  public get hass() {
-    return this._hass;
-  }
-
-  @consume({ context: musicPlayerConfigContext, subscribe: true })
-  public set config(config: PlayerConfig) {
-    if (jsonMatch(this._config, config)) {
+  protected onAddToPlaylist = (event_: Event) => {
+    if (!this.activeMediaPlayer || !this.hass) {
       return;
     }
-    this._config = config;
-  }
-  public get config() {
-    return this._config;
+    const uri = (event_.target as HTMLElement).dataset.uri as string;
+    const ent = this.hass.states[this.activeEntity.entity_id];
+    if (!ent) {
+      return;
+    }
+    const media_id = ent.attributes.media_content_id;
+    if (!media_id) {
+      return;
+    }
+    void this.actions.actionAddToPlaylist(
+      media_id,
+      uri,
+      this.activeMediaPlayer,
+    );
+    this.closeAddToPlaylistDialog();
+  };
+
+  @state() protected _playlists?: PlaylistDialogItem[];
+
+  @state()
+  @consume({ context: activePlayerDataContext, subscribe: true })
+  public player_data?: PlayerData;
+
+  @consume({ context: entitiesConfigContext, subscribe: true })
+  public playerEntities!: EntityConfig[];
+
+  @query("#dialog-favorites") favoritesDialog?: DialogElement;
+
+  public selectedPlayerService!: PlayerSelectedService;
+  protected onActivePlayerUpdated = () => {
+    if (!this.activePlayerController) {
+      return;
+    }
+    void this.activePlayerController.updateActivePlayerData();
+  };
+  private async generatePlaylistData(
+    playlist: MediaLibraryItem,
+  ): Promise<PlaylistDialogItem> {
+    return {
+      name: playlist.name,
+      image: await asyncImageURLWithFallback(
+        // eslint-disable-next-line @typescript-eslint/no-non-null-assertion
+        this.controller.hass!,
+        playlist.image ?? ``,
+        Thumbnail.PLAYLIST,
+        // eslint-disable-next-line @typescript-eslint/no-non-null-assertion
+        this.controller.config!.download_local,
+        this.cardConfig?.proxy_all_artwork,
+      ),
+      uri: playlist.uri,
+    };
   }
 
   @consume({ context: activePlayerControllerContext, subscribe: true })
@@ -181,6 +213,53 @@ export class MusicPlayerCard extends LitElement {
     return this._groupedPlayers;
   }
 
+  @consume({ context: activeMediaPlayerContext, subscribe: true })
+  @state()
+  private set activeEntity(entity: ExtendedHassEntity) {
+    if (!playerHasUpdated(this._activeEntity, entity)) {
+      return;
+    }
+    this._activeEntity = entity;
+  }
+  public get activeEntity() {
+    return this._activeEntity;
+  }
+
+  @consume({ context: activeEntityConfigContext, subscribe: true })
+  public set activeEntityConfig(entity: EntityConfig) {
+    this._activeEntityConfig = entity;
+    void this.updatePlaylists();
+  }
+  public get activeEntityConfig() {
+    return this._activeEntityConfig;
+  }
+  public get activeMediaPlayer() {
+    return this.activePlayerController?.activeMediaPlayer;
+  }
+
+  @consume({ context: hassContext, subscribe: true })
+  public set hass(hass: ExtendedHass | undefined) {
+    if (!hass) {
+      return;
+    }
+    this.actions = new PlayerActions(hass);
+    this._hass = hass;
+  }
+  public get hass() {
+    return this._hass;
+  }
+
+  @consume({ context: musicPlayerConfigContext, subscribe: true })
+  public set config(config: PlayerConfig) {
+    if (jsonMatch(this._config, config)) {
+      return;
+    }
+    this._config = config;
+  }
+  public get config() {
+    return this._config;
+  }
+
   public forceUpdatePlayerDataValue(key: string, value: string) {
     if (!this.player_data) {
       return;
@@ -191,23 +270,6 @@ export class MusicPlayerCard extends LitElement {
     }
     data[key] = value;
     this.player_data = { ...data };
-  }
-  private async generatePlaylistData(
-    playlist: MediaLibraryItem,
-  ): Promise<PlaylistDialogItem> {
-    return {
-      name: playlist.name,
-      image: await asyncImageURLWithFallback(
-        // eslint-disable-next-line @typescript-eslint/no-non-null-assertion
-        this.controller.hass!,
-        playlist.image ?? ``,
-        Thumbnail.PLAYLIST,
-        // eslint-disable-next-line @typescript-eslint/no-non-null-assertion
-        this.controller.config!.download_local,
-        this.cardConfig?.proxy_all_artwork,
-      ),
-      uri: playlist.uri,
-    };
   }
   public async updatePlaylists() {
     if (!this.controller.Actions) {
@@ -238,51 +300,6 @@ export class MusicPlayerCard extends LitElement {
     }
     this.favoritesDialog.open = false;
   }
-
-  private onForceLoadEvent = (event_: Event) => {
-    const coaxed_event = event_ as ForceUpdatePlayerDataEvent;
-    const key = coaxed_event.detail.key;
-    /* eslint-disable
-      @typescript-eslint/no-unsafe-argument,
-      @typescript-eslint/no-unsafe-assignment
-    */
-    const value = coaxed_event.detail.value;
-    this.forceUpdatePlayerDataValue(key, value);
-    /* eslint-enable
-      @typescript-eslint/no-unsafe-argument,
-      @typescript-eslint/no-unsafe-assignment
-    */
-  };
-  private onPlayerSelect = (event_: MenuButtonEventData) => {
-    event_.stopPropagation();
-    const target = event_.detail;
-    const player = target.option;
-    if (player.length === 0) {
-      return;
-    }
-    this.selectedPlayerService(player);
-  };
-
-  protected onAddToPlaylist = (event_: Event) => {
-    if (!this.activeMediaPlayer || !this.hass) {
-      return;
-    }
-    const uri = (event_.target as HTMLElement).dataset.uri as string;
-    const ent = this.hass.states[this.activeEntity.entity_id];
-    if (!ent) {
-      return;
-    }
-    const media_id = ent.attributes.media_content_id;
-    if (!media_id) {
-      return;
-    }
-    void this.actions.actionAddToPlaylist(
-      media_id,
-      uri,
-      this.activeMediaPlayer,
-    );
-    this.closeAddToPlaylistDialog();
-  };
 
   protected hideSectionHeader(): boolean {
     return this.hiddenElements.header;
@@ -389,7 +406,7 @@ export class MusicPlayerCard extends LitElement {
   }
   protected renderGrouped(): TemplateResult {
     const hide = this.hiddenElements.group_selector;
-    if (this.groupedPlayers && this.groupedPlayers.length > 1 && !hide) {
+    if (!hide && this.groupedPlayers && this.groupedPlayers.length > 1) {
       return html`
         <mpc-grouped-player-menu slot="end"></mpc-grouped-player-menu>
       `;
@@ -535,7 +552,7 @@ export class MusicPlayerCard extends LitElement {
       feats,
       PlayerSupportedFeatures.VOLUME_SET,
     );
-    if (!this.cardConfig || !canSetVolume) {
+    if (!canSetVolume || !this.cardConfig) {
       return html``;
     }
     const canMute = playerSupportsFeature(
@@ -588,17 +605,7 @@ export class MusicPlayerCard extends LitElement {
       </div>
     `;
   }
-  private delayedUpdatePlayerData = () => {
-    setTimeout(() => {
-      if (!this.activePlayerController) {
-        return;
-      }
-      void this.activePlayerController.updateActivePlayerData();
-    }, 2000);
-  };
-  private openPlaylistDialogOnEvent = () => {
-    this.openAddToPlaylistDialog();
-  };
+
   protected firstUpdated(): void {
     this.controller.host.addEventListener(
       "request-player-data-update",
@@ -617,12 +624,7 @@ export class MusicPlayerCard extends LitElement {
       this.openPlaylistDialogOnEvent,
     );
   }
-  protected onActivePlayerUpdated = () => {
-    if (!this.activePlayerController) {
-      return;
-    }
-    void this.activePlayerController.updateActivePlayerData();
-  };
+
   protected updated(): void {
     const favoritesDialog = this.favoritesDialog;
     if (!favoritesDialog) {

@@ -14,49 +14,49 @@ import { hassContext } from "../../const/context";
 
 @customElement("mpc-menu-item")
 export class MassMenuItem extends LitElement {
-  private _menuItem!: ListItemData;
-
   @consume({ context: hassContext, subscribe: true })
   private hass!: ExtendedHass;
+
+  private _menuItem!: ListItemData;
+
+  private getImageCallback = (source: string | false) => {
+    this.imgPath = typeof source == "string" ? source : undefined;
+  };
+
   // Valid Image Path
   @state() imgPath?: string;
-
   // Add a divider
   @property({ attribute: "divider", type: Boolean }) public divider = false;
-
   // Use Expressive Design tokens
   @property({ attribute: "expressive", type: Boolean }) public expressive =
     false;
-
   // Use Vibrant Expressive scheme
   @property({ attribute: "vibrant", type: Boolean }) public vibrant = false;
-
   // Use ha-md-list-item instead of ha-list-item
   @property({ attribute: "use-md", type: Boolean }) public useMD = false;
-
   // Sets the list item class to "selected-item"
   @property({ attribute: "selected", type: Boolean }) selected = false;
-
   // Sets the item as disabled
   @property({ type: Boolean }) disabled = false;
 
   @query("ha-dropdown-item") dropdownItem?: HTMLElement;
 
-  @property({ attribute: false })
-  public set menuItem(item: ListItemData) {
-    this._menuItem = item;
-    this.setImageOrIconElement();
-  }
-  public get menuItem() {
-    return this._menuItem;
-  }
+  protected onSelection = () => {
+    if (this.disabled) {
+      return;
+    }
+    const detail = { option: this.menuItem.option };
+    const event = new CustomEvent("menu-item-selected", {
+      detail,
+      bubbles: true,
+      composed: true,
+    });
+    this.dispatchEvent(event);
+  };
+
   private setImageOrIconElement() {
     this.getImagePath();
   }
-
-  private getImageCallback = (source: string | false) => {
-    this.imgPath = typeof source == "string" ? source : undefined;
-  };
 
   private getImagePath() {
     const img_data = this.menuItem.image;
@@ -73,19 +73,6 @@ export class MassMenuItem extends LitElement {
     }
   }
 
-  protected onSelection = () => {
-    if (this.disabled) {
-      return;
-    }
-    const detail = { option: this.menuItem.option };
-    const event = new CustomEvent("menu-item-selected", {
-      detail,
-      bubbles: true,
-      composed: true,
-    });
-    this.dispatchEvent(event);
-  };
-
   private hasExtraStyles(): boolean {
     const styleElement = this.dropdownItem?.shadowRoot?.querySelector("style");
     return !!styleElement;
@@ -96,6 +83,15 @@ export class MassMenuItem extends LitElement {
     if (styleElement) {
       styleElement.remove();
     }
+  }
+
+  @property({ attribute: false })
+  public set menuItem(item: ListItemData) {
+    this._menuItem = item;
+    this.setImageOrIconElement();
+  }
+  public get menuItem() {
+    return this._menuItem;
   }
 
   protected renderIcon(): TemplateResult {
@@ -162,10 +158,11 @@ export class MassMenuItem extends LitElement {
     }
   }
 
-  static get styles(): CSSResultGroup {
-    return styles;
-  }
   protected shouldUpdate(_changedProperties: PropertyValues): boolean {
     return _changedProperties.size > 0 || this.hasExtraStyles();
+  }
+
+  static get styles(): CSSResultGroup {
+    return styles;
   }
 }

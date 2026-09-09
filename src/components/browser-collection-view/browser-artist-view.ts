@@ -9,12 +9,25 @@ import { getTranslation } from "../../utils/translations";
 
 @customElement("mpc-collection-artist-view")
 export class MassBrowserArtistView extends BrowserViewBase {
-  // Header is animated on scroll - query elements for animation
+  // Metadata for artist
+  @state() private artistMetadata?: getArtistServiceResponse;
+
   @query("#collection-info") private infoElement?: HTMLElement;
   @query("#collection-artists") private artistsElement!: HTMLElement;
 
-  // Metadata for artist
-  @state() private artistMetadata?: getArtistServiceResponse;
+  private animateHeaderInfo() {
+    const kf = {
+      fontSize: "0.7em",
+    };
+    this.addScrollAnimation(kf, this.infoElement as HTMLElement);
+  }
+  private animateHeader() {
+    this.animateHeaderElement();
+    this.animateHeaderImage();
+    this.animateHeaderTitle();
+    this.animateHeaderInfo();
+    this.animateHeaderEnqueue();
+  }
 
   // Ask HA to return the tracks in the artist
   public getTracks() {
@@ -41,20 +54,6 @@ export class MassBrowserArtistView extends BrowserViewBase {
       this.activePlayer.entity_id,
     );
     this.artistMetadata = metadata;
-  }
-
-  private animateHeaderInfo() {
-    const kf = {
-      fontSize: "0.7em",
-    };
-    this.addScrollAnimation(kf, this.infoElement as HTMLElement);
-  }
-  private animateHeader() {
-    this.animateHeaderElement();
-    this.animateHeaderImage();
-    this.animateHeaderTitle();
-    this.animateHeaderInfo();
-    this.animateHeaderEnqueue();
   }
 
   protected renderHeader(): TemplateResult {

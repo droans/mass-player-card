@@ -7,13 +7,13 @@ import {
 } from "mass-queue-types/packages/mass_queue/actions/get_queue_items";
 
 export default class QueueActions {
-  private _hass!: ExtendedHass;
-  public _player_entity!: string;
-
   constructor(hass: ExtendedHass, player_entity: string) {
     this.hass = hass;
     this.player_entity = player_entity;
   }
+  private _hass!: ExtendedHass;
+  public _player_entity!: string;
+
   public set hass(hass: ExtendedHass) {
     // eslint-disable-next-line @typescript-eslint/no-unnecessary-condition
     if (hass) {

@@ -7,6 +7,17 @@ import { RepeatMode } from "../const/enums";
 import { ExtendedHass, ExtendedHassEntity } from "../const/types";
 
 export class ActionsController {
+  constructor(
+    host: HTMLElement,
+    hass: ExtendedHass,
+    entityConfig: EntityConfig,
+  ) {
+    this._host = host;
+    this._hass = hass;
+    this.setEntityConfig(entityConfig);
+    this._setupActions();
+  }
+
   private _host: HTMLElement;
   private _hass: ExtendedHass;
   private _entityConf!: EntityConfig;
@@ -19,36 +30,6 @@ export class ActionsController {
   private _playerActions!: PlayerActions;
   private _playersActions!: PlayersActions;
   private _queueActions!: QueueActions;
-
-  constructor(
-    host: HTMLElement,
-    hass: ExtendedHass,
-    entityConfig: EntityConfig,
-  ) {
-    this._host = host;
-    this._hass = hass;
-    this.setEntityConfig(entityConfig);
-    this._setupActions();
-  }
-  public setEntityConfig(config: EntityConfig) {
-    this._entityConf = config;
-    const entity_id = config.entity_id;
-    const volume_entity_id = config.volume_entity_id;
-    const ent = this._hass.states[entity_id];
-    const volEnt = this._hass.states[volume_entity_id];
-    if (ent) {
-      this._activeEntity = ent;
-    }
-    if (volEnt) {
-      this._volumeEntity = volEnt;
-    }
-    this._activeEntityId = entity_id;
-    this._volumeEntityId = volume_entity_id;
-  }
-  public set hass(hass: ExtendedHass) {
-    this._hass = hass;
-    this._updateActions();
-  }
 
   private _setupActions() {
     this._browserActions = new BrowserActions(this._hass);
@@ -75,6 +56,27 @@ export class ActionsController {
     }
     this._queueActions.player_entity = this._activeEntityId;
   }
+
+  public setEntityConfig(config: EntityConfig) {
+    this._entityConf = config;
+    const entity_id = config.entity_id;
+    const volume_entity_id = config.volume_entity_id;
+    const ent = this._hass.states[entity_id];
+    const volEnt = this._hass.states[volume_entity_id];
+    if (ent) {
+      this._activeEntity = ent;
+    }
+    if (volEnt) {
+      this._volumeEntity = volEnt;
+    }
+    this._activeEntityId = entity_id;
+    this._volumeEntityId = volume_entity_id;
+  }
+  public set hass(hass: ExtendedHass) {
+    this._hass = hass;
+    this._updateActions();
+  }
+
   /*
       Actions
   */

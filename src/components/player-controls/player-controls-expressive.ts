@@ -80,7 +80,7 @@ export class MassPlayerControlsExpressive extends MassPlayerControlsBase {
     const canToggle =
       playerSupportsFeature(feats, PlayerSupportedFeatures.TURN_ON) &&
       playerSupportsFeature(feats, PlayerSupportedFeatures.TURN_OFF);
-    if (this.hiddenElements.power_button || !canToggle) {
+    if (!canToggle || this.hiddenElements.power_button) {
       return html``;
     }
     const label = this.renderLabel(
@@ -248,10 +248,7 @@ export class MassPlayerControlsExpressive extends MassPlayerControlsBase {
   protected shouldUpdate(_changedProperties: PropertyValues): boolean {
     return super.shouldUpdate(_changedProperties);
   }
-  static get styles(): CSSResultGroup {
-    return styles;
-  }
-  private renderLowerIcon(
+  protected renderLowerIcon(
     path: string,
     _class: string,
     _label: string | null = null,
@@ -265,7 +262,7 @@ export class MassPlayerControlsExpressive extends MassPlayerControlsBase {
       ></ha-svg-icon>
     `;
   }
-  private renderLabel(
+  protected renderLabel(
     label_key: string,
     icon_config: PlayerIcon,
   ): string | TemplateResult {
@@ -277,5 +274,8 @@ export class MassPlayerControlsExpressive extends MassPlayerControlsBase {
     return html`
       <div class="button-label">${this.controller.translate(label_key)}</div>
     `;
+  }
+  static get styles(): CSSResultGroup {
+    return styles;
   }
 }

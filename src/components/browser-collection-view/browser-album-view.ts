@@ -9,11 +9,25 @@ import { getTranslation } from "../../utils/translations";
 
 @customElement("mpc-collection-album-view")
 export class MassBrowserAlbumView extends BrowserViewBase {
+  // Metadata for album
+  @state() private albumMetadata?: getAlbumServiceResponse;
+
   @query("#collection-info") private infoElement?: HTMLElement;
   @query("#collection-artists") private artistsElement?: HTMLElement;
 
-  // Metadata for album
-  @state() private albumMetadata?: getAlbumServiceResponse;
+  private animateHeaderInfo() {
+    const kf = {
+      fontSize: "0.7em",
+    };
+    this.addScrollAnimation(kf, this.infoElement as HTMLElement);
+  }
+  private animateHeader() {
+    this.animateHeaderElement();
+    this.animateHeaderImage();
+    this.animateHeaderTitle();
+    this.animateHeaderInfo();
+    this.animateHeaderEnqueue();
+  }
 
   // Ask HA to return the tracks in the album
   public getTracks() {
@@ -40,20 +54,6 @@ export class MassBrowserAlbumView extends BrowserViewBase {
       this.activePlayer.entity_id,
     );
     this.albumMetadata = metadata;
-  }
-
-  private animateHeaderInfo() {
-    const kf = {
-      fontSize: "0.7em",
-    };
-    this.addScrollAnimation(kf, this.infoElement as HTMLElement);
-  }
-  private animateHeader() {
-    this.animateHeaderElement();
-    this.animateHeaderImage();
-    this.animateHeaderTitle();
-    this.animateHeaderInfo();
-    this.animateHeaderEnqueue();
   }
 
   protected renderHeader(): TemplateResult {

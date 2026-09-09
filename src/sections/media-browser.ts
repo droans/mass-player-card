@@ -77,162 +77,34 @@ import { DirectiveResult } from "lit/async-directive.js";
 
 @customElement(`mpc-media-browser`)
 export class MediaBrowser extends LitElement {
-  @property({ attribute: false }) private _config!: MediaBrowserConfig;
-  @property({ attribute: false }) public onMediaSelectedAction!: () => void;
-
-  @state() public _cards?: newMediaBrowserItemsConfig;
   @state() private searchMediaTypeIcon!: string;
   @state() private searchMediaType: MediaTypes = MediaTypes.TRACK;
   @state() private searchLibrary = false;
-  @query("mpc-browser-cards") cardsElement?: MediaBrowserCards;
+  @state() private searchActivated = false;
+  @state() private searchLoading = false;
 
-  @provide({ context: activeMediaBrowserCardsContext })
-  @state()
-  public _activeCards!: MediaCardItem[];
+  @property({ attribute: false }) private _config!: MediaBrowserConfig;
+  @property() private activeCollectionData!: mediaCardCollectionType;
 
   @consume({ context: useExpressiveContext, subscribe: true })
   private useExpressive!: boolean;
   @consume({ context: IconsContext }) private Icons!: Icons;
   @consume({ context: activeEntityConfigContext, subscribe: true })
   private _activeEntityConfig!: EntityConfig;
-
   @consume({
     context: mediaBrowserHiddenElementsConfigContext,
     subscribe: true,
   })
   private hiddenElements!: MediaBrowserHiddenElementsConfig;
 
-  @provide({ context: activeMediaBrowserSectionContext })
-  public activeSection: MediaBrowserSection = DEFAULT_ACTIVE_SECTION;
-  public activeSubSection: MediaBrowserSubsection = DEFAULT_ACTIVE_SUBSECTION;
-  @property() private activeCollectionData!: mediaCardCollectionType;
   private previousSections: MediaBrowserSection[] = [];
   private previousSubSections: MediaBrowserSubsection[] = [];
-
   private _hass?: ExtendedHass;
   private _browserController?: MediaBrowserController;
   private actions?: BrowserActions;
   private searchTerm = "";
   private _searchTimeout!: number;
-  @state() private searchActivated = false;
-  @state() private searchLoading = false;
 
-  @state()
-  public set activeCards(cards: MediaCardItem[] | undefined) {
-    if (!cards) {
-      return;
-    }
-    if (jsonMatch(this._activeCards, cards)) {
-      return;
-    }
-    this._activeCards = cards;
-  }
-  public get activeCards() {
-    return this._activeCards;
-  }
-
-  @consume({ context: hassContext, subscribe: true })
-  public set hass(hass: ExtendedHass | undefined) {
-    if (!hass) {
-      return;
-    }
-    this._hass = hass;
-    this.actions ??= new BrowserActions(hass);
-  }
-  public get hass() {
-    return this._hass;
-  }
-
-  @consume({ context: browserControllerContext, subscribe: true })
-  public set browserController(controller: MediaBrowserController | undefined) {
-    if (!controller) {
-      return;
-    }
-    this._browserController = controller;
-  }
-  public get browserController() {
-    return this._browserController;
-  }
-
-  @consume({ context: mediaBrowserConfigContext, subscribe: true })
-  public set config(config: MediaBrowserConfig) {
-    this._config = config;
-    this.activeSection = config.default_section;
-    if (this.cards) {
-      this.setActiveCards();
-    }
-  }
-  public get config() {
-    return this._config;
-  }
-
-  @consume({ context: activeEntityConfigContext, subscribe: true })
-  private set activeEntityConfig(config: EntityConfig) {
-    this._activeEntityConfig = config;
-  }
-  private get activeEntityConfig() {
-    return this._activeEntityConfig;
-  }
-
-  @consume({ context: mediaBrowserCardsContext, subscribe: true })
-  public set cards(cards: newMediaBrowserItemsConfig | undefined) {
-    if (jsonMatch(this._cards, cards)) {
-      return;
-    }
-    this._cards = cards;
-    if (SEARCH_SECTIONS.includes(this.activeSection)) {
-      this.activeCards = [];
-      return;
-    }
-    if (!this.activeCards) {
-      this.setActiveCards();
-    }
-  }
-  public get cards() {
-    return this._cards;
-  }
-  private setPreviousSection() {
-    this.previousSections.push(this.activeSection);
-    this.previousSubSections.push(this.activeSubSection);
-  }
-  public setActiveCards() {
-    const section = this.activeSection;
-    const subsection = this.activeSubSection;
-    let new_cards: MediaCardItem[];
-    if (
-      this.activeSubSection == "collection" &&
-      this.activeSection != "search"
-    ) {
-      this.requestUpdate("collection", "selected");
-      return;
-    }
-    if (!this.cards) {
-      return;
-    }
-    try {
-      // eslint-disable-next-line @typescript-eslint/no-unsafe-member-access
-      new_cards = [...(this.cards[section][subsection] as MediaCardItem[])];
-    } catch {
-      return;
-    }
-    const current_cards = this.activeCards;
-    if (!jsonMatch(new_cards, current_cards)) {
-      this.activeCards = new_cards;
-    }
-    this.scrollCardsToTop();
-  }
-  public scrollCardsToTop() {
-    if (this.offsetHeight) {
-      this.cardsElement?.resetScroll();
-    }
-  }
-  public resetActiveSections() {
-    this.activeSection = DEFAULT_ACTIVE_SECTION;
-    this.activeSubSection = DEFAULT_ACTIVE_SUBSECTION;
-    this.previousSections = [];
-    this.previousSubSections = [];
-    this.setActiveCards();
-  }
   private onServiceSelect = (data: mediaCardServiceData) => {
     if (!this.actions) {
       return;
@@ -299,13 +171,13 @@ export class MediaBrowser extends LitElement {
     function_(data);
   };
   private onEnqueue = (data: mediaCardEnqueueType, enqueue: EnqueueOptions) => {
+    if (!this.actions) {
+      return;
+    }
     const content_id =
       data.type == "playlist" ? data.media_content_id : data.media_content_id;
     const content_type =
       data.type == "playlist" ? "music" : data.media_content_id;
-    if (!this.actions) {
-      return;
-    }
     if (enqueue == EnqueueOptions.RADIO) {
       void this.actions.actionPlayRadio(
         this.activeEntityConfig.entity_id,
@@ -419,29 +291,6 @@ export class MediaBrowser extends LitElement {
     */
     this.activeCards = this.cards[value].main as MediaCardItem[];
   };
-  private async searchMedia() {
-    const search_term = this.searchTerm;
-    if (!this.browserController) {
-      return;
-    }
-    if (search_term.length < SEARCH_TERM_MIN_LENGTH) {
-      return;
-    }
-    this.searchLoading = true;
-    try {
-      const cards = await this.browserController.search(
-        this.activeEntityConfig.entity_id,
-        search_term,
-        this.searchMediaType,
-        this.searchLibrary,
-        DEFAULT_SEARCH_LIMIT,
-      );
-      this.searchLoading = false;
-      this.activeCards = cards;
-    } finally {
-      this.searchLoading = false;
-    }
-  }
   private onCardsUpdated = (event_: Event) => {
     const _event = event_ as CardsUpdatedEvent;
     const detail = _event.detail;
@@ -460,9 +309,20 @@ export class MediaBrowser extends LitElement {
     }
   };
 
-  protected hideSectionHeader(): boolean {
-    return this.hiddenElements.header;
-  }
+  @state() public _cards?: newMediaBrowserItemsConfig;
+
+  @state()
+  @provide({ context: activeMediaBrowserCardsContext })
+  public _activeCards!: MediaCardItem[];
+
+  @provide({ context: activeMediaBrowserSectionContext })
+  public activeSection: MediaBrowserSection = DEFAULT_ACTIVE_SECTION;
+
+  @property({ attribute: false }) public onMediaSelectedAction!: () => void;
+
+  @query("mpc-browser-cards") cardsElement?: MediaBrowserCards;
+
+  public activeSubSection: MediaBrowserSubsection = DEFAULT_ACTIVE_SUBSECTION;
 
   protected renderAlbumView = (): TemplateResult => {
     return html`
@@ -496,6 +356,153 @@ export class MediaBrowser extends LitElement {
       ></mpc-collection-playlist-view>
     `;
   };
+
+  private setPreviousSection() {
+    this.previousSections.push(this.activeSection);
+    this.previousSubSections.push(this.activeSubSection);
+  }
+
+  @consume({ context: activeEntityConfigContext, subscribe: true })
+  private set activeEntityConfig(config: EntityConfig) {
+    this._activeEntityConfig = config;
+  }
+  private get activeEntityConfig() {
+    return this._activeEntityConfig;
+  }
+
+  private async searchMedia() {
+    if (!this.browserController) {
+      return;
+    }
+    const search_term = this.searchTerm;
+    if (search_term.length < SEARCH_TERM_MIN_LENGTH) {
+      return;
+    }
+    this.searchLoading = true;
+    try {
+      const cards = await this.browserController.search(
+        this.activeEntityConfig.entity_id,
+        search_term,
+        this.searchMediaType,
+        this.searchLibrary,
+        DEFAULT_SEARCH_LIMIT,
+      );
+      this.searchLoading = false;
+      this.activeCards = cards;
+    } finally {
+      this.searchLoading = false;
+    }
+  }
+
+  @state()
+  public set activeCards(cards: MediaCardItem[] | undefined) {
+    if (!cards) {
+      return;
+    }
+    if (jsonMatch(this._activeCards, cards)) {
+      return;
+    }
+    this._activeCards = cards;
+  }
+  public get activeCards() {
+    return this._activeCards;
+  }
+
+  @consume({ context: hassContext, subscribe: true })
+  public set hass(hass: ExtendedHass | undefined) {
+    if (!hass) {
+      return;
+    }
+    this._hass = hass;
+    this.actions ??= new BrowserActions(hass);
+  }
+  public get hass() {
+    return this._hass;
+  }
+
+  @consume({ context: browserControllerContext, subscribe: true })
+  public set browserController(controller: MediaBrowserController | undefined) {
+    if (!controller) {
+      return;
+    }
+    this._browserController = controller;
+  }
+  public get browserController() {
+    return this._browserController;
+  }
+
+  @consume({ context: mediaBrowserConfigContext, subscribe: true })
+  public set config(config: MediaBrowserConfig) {
+    this._config = config;
+    this.activeSection = config.default_section;
+    if (this.cards) {
+      this.setActiveCards();
+    }
+  }
+  public get config() {
+    return this._config;
+  }
+
+  @consume({ context: mediaBrowserCardsContext, subscribe: true })
+  public set cards(cards: newMediaBrowserItemsConfig | undefined) {
+    if (jsonMatch(this._cards, cards)) {
+      return;
+    }
+    this._cards = cards;
+    if (SEARCH_SECTIONS.includes(this.activeSection)) {
+      this.activeCards = [];
+      return;
+    }
+    if (!this.activeCards) {
+      this.setActiveCards();
+    }
+  }
+  public get cards() {
+    return this._cards;
+  }
+
+  public setActiveCards() {
+    if (
+      this.activeSubSection == "collection" &&
+      this.activeSection != "search"
+    ) {
+      this.requestUpdate("collection", "selected");
+      return;
+    }
+    if (!this.cards) {
+      return;
+    }
+    const section = this.activeSection;
+    const subsection = this.activeSubSection;
+    let new_cards: MediaCardItem[];
+    try {
+      // eslint-disable-next-line @typescript-eslint/no-unsafe-member-access
+      new_cards = [...(this.cards[section][subsection] as MediaCardItem[])];
+    } catch {
+      return;
+    }
+    const current_cards = this.activeCards;
+    if (!jsonMatch(new_cards, current_cards)) {
+      this.activeCards = new_cards;
+    }
+    this.scrollCardsToTop();
+  }
+  public scrollCardsToTop() {
+    if (this.offsetHeight) {
+      this.cardsElement?.resetScroll();
+    }
+  }
+  public resetActiveSections() {
+    this.activeSection = DEFAULT_ACTIVE_SECTION;
+    this.activeSubSection = DEFAULT_ACTIVE_SUBSECTION;
+    this.previousSections = [];
+    this.previousSubSections = [];
+    this.setActiveCards();
+  }
+
+  protected hideSectionHeader(): boolean {
+    return this.hiddenElements.header;
+  }
 
   protected renderCollectionView(): DirectiveResult {
     const collectionType = this.activeCollectionData.type;

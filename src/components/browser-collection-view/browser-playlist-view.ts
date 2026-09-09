@@ -11,13 +11,44 @@ import { getTranslation } from "../../utils/translations";
 
 @customElement("mpc-collection-playlist-view")
 export class MassBrowserPlaylistView extends BrowserViewBase {
+  // Metadata for playlist
+  @state() private playlistMetadata?: getPlaylistServiceResponse;
+
   @query("#collection-info") private infoElement?: HTMLElement;
 
   // Duration of playlist
   private playlistDuration = 0;
 
-  // Metadata for playlist
-  @state() private playlistMetadata?: getPlaylistServiceResponse;
+  private onTrackRemoved = (event_: TrackRemovedEventData) => {
+    const data = event_.detail;
+    const pos = data.position;
+    const tracks = (this.tracks as PlaylistTrack[])
+      .filter((track) => {
+        return track.position != pos;
+      })
+      .map((track) => {
+        if (track.position > pos) {
+          track.position -= 1;
+        }
+        return track;
+      });
+    this.tracks = tracks;
+  };
+
+  private animateHeaderInfo() {
+    const kf = {
+      fontSize: "0.8em",
+    };
+    this.addScrollAnimation(kf, this.infoElement as HTMLElement);
+  }
+  private animateHeader() {
+    this.animateHeaderElement();
+    this.animateHeaderImage();
+    this.animateHeaderTitle();
+    this.animateHeaderInfo();
+    this.animateHeaderEnqueue();
+    this.animateTracksElement();
+  }
 
   // Ask HA to return the tracks in the playlist
   public getTracks() {
@@ -50,37 +81,6 @@ export class MassBrowserPlaylistView extends BrowserViewBase {
     );
     this.playlistMetadata = metadata;
   }
-
-  private animateHeaderInfo() {
-    const kf = {
-      fontSize: "0.8em",
-    };
-    this.addScrollAnimation(kf, this.infoElement as HTMLElement);
-  }
-  private animateHeader() {
-    this.animateHeaderElement();
-    this.animateHeaderImage();
-    this.animateHeaderTitle();
-    this.animateHeaderInfo();
-    this.animateHeaderEnqueue();
-    this.animateTracksElement();
-  }
-
-  private onTrackRemoved = (event_: TrackRemovedEventData) => {
-    const data = event_.detail;
-    const pos = data.position;
-    const tracks = (this.tracks as PlaylistTrack[])
-      .filter((track) => {
-        return track.position != pos;
-      })
-      .map((track) => {
-        if (track.position > pos) {
-          track.position -= 1;
-        }
-        return track;
-      });
-    this.tracks = tracks;
-  };
 
   protected renderHeader(): TemplateResult {
     return html`

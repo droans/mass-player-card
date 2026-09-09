@@ -28,14 +28,6 @@ import {
 } from "../const/types";
 
 export class MediaBrowserController {
-  private hass!: ExtendedHass;
-  private config!: Config;
-  public _host!: HTMLElement;
-  private browserConfig!: MediaBrowserConfig;
-  private actions!: BrowserActions;
-  private _activeEntityId!: string;
-  private _items!: ContextProvider<typeof mediaBrowserCardsContext>;
-  private _updatingCards = false;
   constructor(
     hass: ExtendedHass,
     config: Config,
@@ -62,20 +54,15 @@ export class MediaBrowserController {
       this.resetAndGenerateSections();
     }
   }
-  private set items(items: newMediaBrowserItemsConfig) {
-    // eslint-disable-next-line @typescript-eslint/no-unnecessary-condition
-    if (!items) {
-      return;
-    }
-    if (jsonMatch(this._items.value, items)) {
-      return;
-    }
-    const x = { ...items };
-    this._items.setValue(x);
-  }
-  public get items() {
-    return this._items.value;
-  }
+  private hass!: ExtendedHass;
+  private config!: Config;
+  private browserConfig!: MediaBrowserConfig;
+  private actions!: BrowserActions;
+  private _activeEntityId!: string;
+  private _items!: ContextProvider<typeof mediaBrowserCardsContext>;
+  private _updatingCards = false;
+  public _host!: HTMLElement;
+
   private resetAndGenerateSections() {
     if (this._updatingCards) {
       return;
@@ -88,62 +75,6 @@ export class MediaBrowserController {
       search: [],
     };
     this.generateAllSections();
-  }
-  public generateAllSections() {
-    const promises = [
-      this.generateAllFavorites(),
-      this.generateAllRecents(),
-      this.generateAllRecommendations(),
-    ];
-    void Promise.all(promises)
-      .then(() => {
-        this.generateCustomSections();
-        // eslint-disable-next-line @typescript-eslint/no-unnecessary-condition
-        if (!this.items) {
-          return;
-        }
-        const data: CardsUpdatedEventDetail = {
-          section: "all",
-          cards: this.items,
-        };
-        const event_ = new CustomEvent("cards-updated", { detail: data });
-        this._host.dispatchEvent(event_);
-      })
-      .finally(() => {
-        this._updatingCards = false;
-      });
-  }
-
-  public set activeEntityId(entityId: string) {
-    if (entityId == this._activeEntityId) {
-      return;
-    }
-    this._activeEntityId = entityId;
-    this.resetAndGenerateSections();
-  }
-  public get activeEntityId() {
-    return this._activeEntityId;
-  }
-
-  public async search(
-    player_entity_id: string,
-    search_term: string,
-    media_type: MediaTypes,
-    library_only = false as boolean,
-    limit: number = DEFAULT_SEARCH_LIMIT,
-  ) {
-    const search_result = await this.actions.actionSearchMedia(
-      player_entity_id,
-      search_term,
-      media_type,
-      library_only,
-      limit,
-    );
-    return generateFavoritesSectionCards(
-      search_result,
-      media_type,
-      this.browserConfig.favorites.show_collection_view,
-    );
   }
 
   // Favorites
@@ -402,6 +333,77 @@ export class MediaBrowserController {
     i.favorites.main.push(section_card);
     this.items = { ...i };
   }
+  private set items(items: newMediaBrowserItemsConfig) {
+    // eslint-disable-next-line @typescript-eslint/no-unnecessary-condition
+    if (!items) {
+      return;
+    }
+    if (jsonMatch(this._items.value, items)) {
+      return;
+    }
+    const x = { ...items };
+    this._items.setValue(x);
+  }
+  public get items() {
+    return this._items.value;
+  }
+  public generateAllSections() {
+    const promises = [
+      this.generateAllFavorites(),
+      this.generateAllRecents(),
+      this.generateAllRecommendations(),
+    ];
+    void Promise.all(promises)
+      .then(() => {
+        this.generateCustomSections();
+        // eslint-disable-next-line @typescript-eslint/no-unnecessary-condition
+        if (!this.items) {
+          return;
+        }
+        const data: CardsUpdatedEventDetail = {
+          section: "all",
+          cards: this.items,
+        };
+        const event_ = new CustomEvent("cards-updated", { detail: data });
+        this._host.dispatchEvent(event_);
+      })
+      .finally(() => {
+        this._updatingCards = false;
+      });
+  }
+
+  public set activeEntityId(entityId: string) {
+    if (entityId == this._activeEntityId) {
+      return;
+    }
+    this._activeEntityId = entityId;
+    this.resetAndGenerateSections();
+  }
+  public get activeEntityId() {
+    return this._activeEntityId;
+  }
+
+  public async search(
+    player_entity_id: string,
+    search_term: string,
+    media_type: MediaTypes,
+    library_only = false as boolean,
+    limit: number = DEFAULT_SEARCH_LIMIT,
+  ) {
+    const search_result = await this.actions.actionSearchMedia(
+      player_entity_id,
+      search_term,
+      media_type,
+      library_only,
+      limit,
+    );
+    return generateFavoritesSectionCards(
+      search_result,
+      media_type,
+      this.browserConfig.favorites.show_collection_view,
+    );
+  }
+
   public disconnected() {
     return;
   }

@@ -2,10 +2,10 @@
 import { ExtendedHass, ExtendedHassEntity } from "../const/types";
 
 export default class PlayersActions {
-  private _hass!: ExtendedHass;
   constructor(hass: ExtendedHass) {
     this.hass = hass;
   }
+  private _hass!: ExtendedHass;
   public set hass(hass: ExtendedHass) {
     // eslint-disable-next-line @typescript-eslint/no-unnecessary-condition
     if (hass) {

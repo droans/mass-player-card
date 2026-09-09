@@ -52,115 +52,66 @@ import { getThumbnail } from "../../utils/thumbnails";
 
 @customElement("mpc-browser-media-card")
 export class MediaCard extends LitElement {
-  @property({ type: Boolean }) queueable = false;
-  @property({ type: Boolean, attribute: "skeleton" }) skeleton = false;
-  @state() code!: TemplateResult;
-  private _enqueue_buttons?: ListItems;
-  private _search_buttons!: ListItems;
-
-  @query("#animation") _animation!: WaAnimation;
-  private _firstLoaded = false;
-
-  private _icons!: Icons;
-
-  @consume({ context: hassContext })
-  public hass?: ExtendedHass;
-
   @consume({ context: useExpressiveContext })
   private useExpressive!: boolean;
-
-  private _cardConfig!: Config;
-
-  public onSelectAction!: CardSelectedService;
-  public onEnqueueAction!: CardEnqueueService;
-
-  private _sectionConfig!: MediaBrowserConfig;
-  private _activeSection!: Sections;
-  private _play = false;
-
-  private _config!: MediaCardItem;
-  private _entityConfig!: EntityConfig;
   @consume({
     context: mediaBrowserHiddenElementsConfigContext,
     subscribe: true,
   })
   private hide!: MediaBrowserHiddenElementsConfig;
-  @consume({ context: activeSectionContext, subscribe: true })
-  public set activeSection(section: Sections | undefined) {
-    if (!section) {
-      return;
-    }
-    this._play = section == Sections.MEDIA_BROWSER;
-    this._activeSection = section;
-    this.generateCode();
-  }
-  public get activeSection() {
-    return this._activeSection;
-  }
-  public set config(config: MediaCardItem | undefined) {
-    if (!config) {
-      return;
-    }
-    if (jsonMatch(this._config, config)) {
-      return;
-    }
-    this._config = config;
-    this.updateHiddenElements();
-    this.generateCode();
-  }
-  public get config() {
-    return this._config;
-  }
-  @consume({ context: configContext, subscribe: true })
-  public set cardConfig(config: Config | undefined) {
-    if (!config) {
-      return;
-    }
-    if (jsonMatch(this._cardConfig, config)) {
-      return;
-    }
-    this._cardConfig = config;
-  }
-  public get cardConfig() {
-    return this._cardConfig;
-  }
 
-  @consume({ context: mediaBrowserConfigContext, subscribe: true })
-  public set sectionConfig(config: MediaBrowserConfig | undefined) {
-    if (jsonMatch(this._sectionConfig, config) || !config) {
-      return;
-    }
-    this._sectionConfig = config;
-    this.updateHiddenElements();
-  }
-  public get sectionConfig() {
-    return this._sectionConfig;
-  }
-  @consume({ context: IconsContext, subscribe: true })
-  public set Icons(icons: Icons | undefined) {
-    if (jsonMatch(this._icons, icons) || !icons) {
-      return;
-    }
-    this._icons = icons;
-  }
-  public get Icons() {
-    return this._icons;
-  }
+  private _enqueue_buttons?: ListItems;
+  private _search_buttons!: ListItems;
+  private _firstLoaded = false;
+  private _icons!: Icons;
+  private _cardConfig!: Config;
+  private _sectionConfig!: MediaBrowserConfig;
+  private _activeSection!: Sections;
+  private _play = false;
+  private _config!: MediaCardItem;
+  private _entityConfig!: EntityConfig;
 
-  @consume({ context: activeEntityConfigContext, subscribe: true })
-  public set entityConfig(config: EntityConfig | undefined) {
-    if (jsonMatch(this._entityConfig, config) || !config) {
+  private onEnqueue = (event_: MenuButtonEventData) => {
+    event_.stopPropagation();
+    if (this.skeleton) {
       return;
     }
-    this._entityConfig = config;
-    this.updateHiddenElements();
-    if (this.hass && this.Icons) {
-      this._search_buttons = getSearchMediaButtons(this.Icons, this.hass);
+    const target = event_.detail;
+    const value = target.option as EnqueueOptions;
+    this.onEnqueueAction(this._config.data, value);
+  };
+  private onSelect = () => {
+    if (this.skeleton) {
+      return;
     }
-  }
-  public get entityConfig() {
-    return this._entityConfig;
-  }
+    this.onSelectAction(this._config.data, this);
+  };
+  private _renderImageFallback = (event_: Event) => {
+    const fallback = getThumbnail(
+      this.hass,
+      this.config?.fallback ?? Thumbnail.DISC,
+    );
+    // eslint-disable-next-line unicorn/name-replacements
+    const ev = event_ as HTMLImageElementEvent;
+    if (fallback == ev.target.src) {
+      ev.target.removeEventListener("error", this._renderImageFallback);
+    }
+    ev.target.src = fallback as string;
+    ev.target.removeEventListener("error", this._renderImageFallback);
+  };
+
+  @state() code!: TemplateResult;
+
+  @property({ type: Boolean }) queueable = false;
+  @property({ type: Boolean, attribute: "skeleton" }) skeleton = false;
+
+  @consume({ context: hassContext })
+  public hass?: ExtendedHass;
+
+  @query("#animation") _animation!: WaAnimation;
+
+  public onSelectAction!: CardSelectedService;
+  public onEnqueueAction!: CardEnqueueService;
 
   private subtitlesEnabled(): boolean {
     const sectionAllowsSubtitles = SHOW_ARTIST_SUBTITLE_SECTIONS.includes(
@@ -193,66 +144,6 @@ export class MediaCard extends LitElement {
     });
     this._enqueue_buttons = options;
   }
-  private onEnqueue = (event_: MenuButtonEventData) => {
-    event_.stopPropagation();
-    if (this.skeleton) {
-      return;
-    }
-    const target = event_.detail;
-    const value = target.option as EnqueueOptions;
-    this.onEnqueueAction(this._config.data, value);
-  };
-  private onSelect = () => {
-    if (this.skeleton) {
-      return;
-    }
-    this.onSelectAction(this._config.data, this);
-  };
-  protected renderThumbnailFromBackground() {
-    return html` ${this.config?.background} `;
-  }
-  private _renderImageFallback = (event_: Event) => {
-    const fallback = getThumbnail(
-      this.hass,
-      this.config?.fallback ?? Thumbnail.DISC,
-    );
-    // eslint-disable-next-line unicorn/prevent-abbreviations
-    const ev = event_ as HTMLImageElementEvent;
-    if (fallback == ev.target.src) {
-      ev.target.removeEventListener("error", this._renderImageFallback);
-    }
-    ev.target.src = fallback as string;
-    ev.target.removeEventListener("error", this._renderImageFallback);
-  };
-  protected renderThumbnailFromThumbnail() {
-    const img = this.config?.thumbnail;
-    return html`
-      <img
-        id="thumbnail-div"
-        slot="media"
-        class="wa-grid"
-        src="${img}"
-        @error=${this._renderImageFallback}
-        loading="lazy"
-      />
-    `;
-  }
-  protected renderThumbnail() {
-    if (this.config?.background) {
-      return this.renderThumbnailFromBackground();
-    }
-    return this.renderThumbnailFromThumbnail();
-  }
-  protected renderTitle() {
-    if (this.hide.titles) {
-      return html``;
-    }
-    return html`
-      <div id="title-div" class="${this.useExpressive ? `expressive` : ``}">
-        ${this.config?.title} ${this.generateSubtitle()}
-      </div>
-    `;
-  }
   private generateSubtitle(): TemplateResult {
     if (!this.subtitlesEnabled()) {
       return html``;
@@ -262,26 +153,6 @@ export class MediaCard extends LitElement {
       <div id="subtitle-div" class="${this.useExpressive ? `expressive` : ``}">
         ${_config.media_artist}
       </div>
-    `;
-  }
-  protected renderEnqueueButton() {
-    if (this.hide.enqueue_menu || !this.queueable || !this.Icons) {
-      return html``;
-    }
-    const cols = this.cardConfig?.media_browser.columns;
-    const expressive = this.cardConfig?.expressive ? `expressive` : ``;
-    const withSubtitle = this.subtitlesEnabled() ? `with-subtitle` : ``;
-    return html`
-      <mpc-menu-button
-        id="enqueue-button-div"
-        class="${expressive} ${withSubtitle}"
-        .iconPath=${this.Icons.PLAY_CIRCLE}
-        .items=${this._enqueue_buttons}
-        style="--columns: ${cols};"
-        @menu-item-selected=${this.onEnqueue}
-        fixedMenuPosition
-        elevation="4"
-      ></mpc-menu-button>
     `;
   }
   private generateSkeleton(): TemplateResult {
@@ -331,6 +202,138 @@ export class MediaCard extends LitElement {
         </wa-animation>
         ${this.renderEnqueueButton()}
       </div>
+    `;
+  }
+
+  @consume({ context: activeSectionContext, subscribe: true })
+  public set activeSection(section: Sections | undefined) {
+    if (!section) {
+      return;
+    }
+    this._play = section == Sections.MEDIA_BROWSER;
+    this._activeSection = section;
+    this.generateCode();
+  }
+  public get activeSection() {
+    return this._activeSection;
+  }
+
+  @consume({ context: configContext, subscribe: true })
+  public set cardConfig(config: Config | undefined) {
+    if (!config) {
+      return;
+    }
+    if (jsonMatch(this._cardConfig, config)) {
+      return;
+    }
+    this._cardConfig = config;
+  }
+  public get cardConfig() {
+    return this._cardConfig;
+  }
+
+  @consume({ context: mediaBrowserConfigContext, subscribe: true })
+  public set sectionConfig(config: MediaBrowserConfig | undefined) {
+    if (!config || jsonMatch(this._sectionConfig, config)) {
+      return;
+    }
+    this._sectionConfig = config;
+    this.updateHiddenElements();
+  }
+  public get sectionConfig() {
+    return this._sectionConfig;
+  }
+  @consume({ context: IconsContext, subscribe: true })
+  public set Icons(icons: Icons | undefined) {
+    if (!icons || jsonMatch(this._icons, icons)) {
+      return;
+    }
+    this._icons = icons;
+  }
+  public get Icons() {
+    return this._icons;
+  }
+
+  @consume({ context: activeEntityConfigContext, subscribe: true })
+  public set entityConfig(config: EntityConfig | undefined) {
+    if (!config || jsonMatch(this._entityConfig, config)) {
+      return;
+    }
+    this._entityConfig = config;
+    this.updateHiddenElements();
+    if (this.hass && this.Icons) {
+      this._search_buttons = getSearchMediaButtons(this.Icons, this.hass);
+    }
+  }
+  public get entityConfig() {
+    return this._entityConfig;
+  }
+
+  public set config(config: MediaCardItem | undefined) {
+    if (!config) {
+      return;
+    }
+    if (jsonMatch(this._config, config)) {
+      return;
+    }
+    this._config = config;
+    this.updateHiddenElements();
+    this.generateCode();
+  }
+  public get config() {
+    return this._config;
+  }
+
+  protected renderThumbnailFromBackground() {
+    return html` ${this.config?.background} `;
+  }
+  protected renderThumbnailFromThumbnail() {
+    const img = this.config?.thumbnail;
+    return html`
+      <img
+        id="thumbnail-div"
+        slot="media"
+        class="wa-grid"
+        src="${img}"
+        @error=${this._renderImageFallback}
+        loading="lazy"
+      />
+    `;
+  }
+  protected renderThumbnail() {
+    if (this.config?.background) {
+      return this.renderThumbnailFromBackground();
+    }
+    return this.renderThumbnailFromThumbnail();
+  }
+  protected renderTitle() {
+    if (this.hide.titles) {
+      return html``;
+    }
+    return html`
+      <div id="title-div" class="${this.useExpressive ? `expressive` : ``}">
+        ${this.config?.title} ${this.generateSubtitle()}
+      </div>
+    `;
+  }
+  protected renderEnqueueButton() {
+    if (this.hide.enqueue_menu || !this.queueable || !this.Icons) {
+      return html``;
+    }
+    const cols = this.cardConfig?.media_browser.columns;
+    const expressive = this.cardConfig?.expressive ? `expressive` : ``;
+    const withSubtitle = this.subtitlesEnabled() ? `with-subtitle` : ``;
+    return html`
+      <mpc-menu-button
+        id="enqueue-button-div"
+        class="${expressive} ${withSubtitle}"
+        .iconPath=${this.Icons.PLAY_CIRCLE}
+        .items=${this._enqueue_buttons}
+        style="--columns: ${cols};"
+        @menu-item-selected=${this.onEnqueue}
+        fixedMenuPosition
+        elevation="4"
+      ></mpc-menu-button>
     `;
   }
   protected render() {

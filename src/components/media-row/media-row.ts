@@ -42,99 +42,15 @@ import { HTMLImageElementEvent } from "../../const/events";
 
 @customElement("mpc-queue-media-row")
 export class MediaRow extends LitElement {
-  @consume({ context: IconsContext }) public Icons!: Icons;
-
-  @consume({ context: useExpressiveContext, subscribe: true })
-  public useExpressive!: boolean;
-  @state() public defaultImageURL?: string;
-  @state() public fallbackImageURL?: string;
-  @query(".thumbnail") thumbnailElement!: HTMLImageElement;
+  @consume({ context: playerQueueHiddenElementsConfigContext, subscribe: true })
+  private hide!: PlayerQueueHiddenElementsConfig;
   private imagesExhausted = false;
   private imgElemErrorCount = 0;
   private maxImgElemErrorCount = 5;
-
-  public moveQueueItemDownService!: QueueService;
-  public moveQueueItemNextService!: QueueService;
-  public moveQueueItemUpService!: QueueService;
-  public removeService!: QueueService;
-  public selectedService!: QueueItemSelectedService;
-
-  public showAlbumCovers = true;
   private _media_item!: QueueItem;
-
   private _config!: QueueConfig;
   private _entityConfig!: EntityConfig;
   private _hass!: ExtendedHass;
-
-  @consume({ context: playerQueueHiddenElementsConfigContext, subscribe: true })
-  private hide!: PlayerQueueHiddenElementsConfig;
-  @consume({ context: configContext, subscribe: true })
-  protected cardConfig!: Config;
-
-  @consume({ context: playerQueueConfigContext, subscribe: true })
-  public set config(config: QueueConfig | undefined) {
-    if (jsonMatch(this._config, config) || !config) {
-      return;
-    }
-    this._config = config;
-  }
-  public get config() {
-    return this._config;
-  }
-
-  @consume({ context: activeEntityConfigContext, subscribe: true })
-  public set entityConfig(config: EntityConfig | undefined) {
-    if (jsonMatch(this._entityConfig, config) || !config) {
-      return;
-    }
-    this._entityConfig = config;
-  }
-  public get entityConfig() {
-    return this._entityConfig;
-  }
-
-  @consume({ context: hassContext, subscribe: true })
-  public set hass(hass: ExtendedHass) {
-    this._hass = hass;
-    void this.getTrackImage();
-  }
-  public get hass() {
-    return this._hass;
-  }
-
-  @property({ attribute: false })
-  public set media_item(media_item: QueueItem | undefined) {
-    if (!media_item) {
-      return;
-    }
-    this._media_item = media_item;
-    void this.getTrackImage();
-  }
-  public get media_item() {
-    return this._media_item;
-  }
-
-  protected async getTrackImage() {
-    // eslint-disable-next-line @typescript-eslint/no-unnecessary-condition
-    if (!this.hass || !this.media_item) {
-      return;
-    }
-    const track = this.media_item;
-    const mediaImg =
-      track.media_image.length > 0 ? track.media_image : Thumbnail.CLEFT;
-    const locImg = track.local_image_encoded?.length
-      ? track.local_image_encoded
-      : mediaImg;
-    const imgs = await asyncImageURLWithFallback(
-      this.hass,
-      locImg,
-      mediaImg,
-      this.cardConfig.download_local,
-      this.cardConfig.proxy_all_artwork,
-    );
-    this.defaultImageURL = imgs.image_url;
-    this.fallbackImageURL = imgs.fallback_url;
-  }
 
   private callMoveItemUpService = (event_: Event) => {
     if (!this.media_item) {
@@ -186,15 +102,26 @@ export class MediaRow extends LitElement {
     }
     this.selectedService(this.media_item.queue_item_id);
   };
-  protected shouldUpdate(_changedProperties: PropertyValues<this>): boolean {
-    if (_changedProperties.has("media_item")) {
-      const oldItem = _changedProperties.get("media_item") as queueItem;
-      return queueItemhasUpdated(oldItem, this.media_item);
-    }
-    return _changedProperties.size > 0;
-  }
 
-  private _renderThumbnailFallback = (event_: Event) => {
+  @state() public defaultImageURL?: string;
+  @state() public fallbackImageURL?: string;
+
+  @query(".thumbnail") thumbnailElement!: HTMLImageElement;
+
+  @consume({ context: IconsContext }) public Icons!: Icons;
+  @consume({ context: useExpressiveContext, subscribe: true })
+  @consume({ context: configContext, subscribe: true })
+  protected cardConfig!: Config;
+
+  public useExpressive!: boolean;
+  public moveQueueItemDownService!: QueueService;
+  public moveQueueItemNextService!: QueueService;
+  public moveQueueItemUpService!: QueueService;
+  public removeService!: QueueService;
+  public selectedService!: QueueItemSelectedService;
+  public showAlbumCovers = true;
+
+  protected _renderThumbnailFallback = (event_: Event) => {
     this.imgElemErrorCount++;
     const currentSource = this.thumbnailElement.src;
     const thumb = getTrackFallbackImg(
@@ -221,7 +148,111 @@ export class MediaRow extends LitElement {
       );
     }
   };
-  private renderThumbnail(): TemplateResult {
+
+  private _calculateTitleWidth() {
+    if (!this.config || !this.media_item) {
+      return;
+    }
+    let button_ct = 0;
+    const hide = this.hide;
+    const media_item = this.media_item;
+    if (media_item.show_move_up_next && !hide.move_next_button) {
+      button_ct += 1;
+    }
+    if (media_item.show_move_up_next && !hide.move_up_button) {
+      button_ct += 1;
+    }
+    if (!hide.move_down_button) {
+      button_ct += 1;
+    }
+    if (!hide.remove_button) {
+      button_ct += 1;
+    }
+    if (
+      button_ct == 0 ||
+      !media_item.show_action_buttons ||
+      hide.action_buttons
+    ) {
+      return `100%`;
+    }
+    const gap_ct = button_ct - 1;
+    return `calc(100% - ((32px * ${button_ct.toString()}) + (8px * ${gap_ct.toString()}) + 16px));`;
+  }
+
+  @consume({ context: playerQueueConfigContext, subscribe: true })
+  public set config(config: QueueConfig | undefined) {
+    if (!config || jsonMatch(this._config, config)) {
+      return;
+    }
+    this._config = config;
+  }
+  public get config() {
+    return this._config;
+  }
+
+  @consume({ context: activeEntityConfigContext, subscribe: true })
+  public set entityConfig(config: EntityConfig | undefined) {
+    if (!config || jsonMatch(this._entityConfig, config)) {
+      return;
+    }
+    this._entityConfig = config;
+  }
+  public get entityConfig() {
+    return this._entityConfig;
+  }
+
+  @consume({ context: hassContext, subscribe: true })
+  public set hass(hass: ExtendedHass) {
+    this._hass = hass;
+    void this.getTrackImage();
+  }
+  public get hass() {
+    return this._hass;
+  }
+
+  @property({ attribute: false })
+  public set media_item(media_item: QueueItem | undefined) {
+    if (!media_item) {
+      return;
+    }
+    this._media_item = media_item;
+    void this.getTrackImage();
+  }
+  public get media_item() {
+    return this._media_item;
+  }
+
+  protected async getTrackImage() {
+    // eslint-disable-next-line @typescript-eslint/no-unnecessary-condition
+    if (!this.hass || !this.media_item) {
+      return;
+    }
+    const track = this.media_item;
+    const mediaImg =
+      track.media_image.length > 0 ? track.media_image : Thumbnail.CLEFT;
+    const locImg = track.local_image_encoded?.length
+      ? track.local_image_encoded
+      : mediaImg;
+    const imgs = await asyncImageURLWithFallback(
+      this.hass,
+      locImg,
+      mediaImg,
+      this.cardConfig.download_local,
+      this.cardConfig.proxy_all_artwork,
+    );
+    this.defaultImageURL = imgs.image_url;
+    this.fallbackImageURL = imgs.fallback_url;
+  }
+
+  protected shouldUpdate(_changedProperties: PropertyValues<this>): boolean {
+    if (_changedProperties.has("media_item")) {
+      const oldItem = _changedProperties.get("media_item") as queueItem;
+      return queueItemhasUpdated(oldItem, this.media_item);
+    }
+    return _changedProperties.size > 0;
+  }
+
+  protected renderThumbnail(): TemplateResult {
     if (!this.media_item) {
       return html``;
     }
@@ -264,36 +295,7 @@ export class MediaRow extends LitElement {
     }
     return html``;
   }
-  private _calculateTitleWidth() {
-    if (!this.config || !this.media_item) {
-      return;
-    }
-    let button_ct = 0;
-    const hide = this.hide;
-    const media_item = this.media_item;
-    if (media_item.show_move_up_next && !hide.move_next_button) {
-      button_ct += 1;
-    }
-    if (media_item.show_move_up_next && !hide.move_up_button) {
-      button_ct += 1;
-    }
-    if (!hide.move_down_button) {
-      button_ct += 1;
-    }
-    if (!hide.remove_button) {
-      button_ct += 1;
-    }
-    if (
-      button_ct == 0 ||
-      !media_item.show_action_buttons ||
-      hide.action_buttons
-    ) {
-      return `100%`;
-    }
-    const gap_ct = button_ct - 1;
-    return `calc(100% - ((32px * ${button_ct.toString()}) + (8px * ${gap_ct.toString()}) + 16px));`;
-  }
-  private renderTitle(): TemplateResult {
+  protected renderTitle(): TemplateResult {
     const played =
       !this.media_item?.show_action_buttons && !this.media_item?.playing;
     return html`
@@ -307,7 +309,7 @@ export class MediaRow extends LitElement {
       </span>
     `;
   }
-  private renderArtist(): TemplateResult {
+  protected renderArtist(): TemplateResult {
     if (this.hide.artist_names) {
       return html``;
     }
@@ -324,7 +326,7 @@ export class MediaRow extends LitElement {
       </span>
     `;
   }
-  private renderActionButtons(): TemplateResult {
+  protected renderActionButtons(): TemplateResult {
     if (this.hide.action_buttons || !this.media_item?.show_action_buttons) {
       return html``;
     }
@@ -341,7 +343,7 @@ export class MediaRow extends LitElement {
       </span>
     `;
   }
-  private renderMoveNextButton(): TemplateResult {
+  protected renderMoveNextButton(): TemplateResult {
     if (this.hide.move_next_button || !this.media_item?.show_move_up_next) {
       return html``;
     }
@@ -360,7 +362,7 @@ export class MediaRow extends LitElement {
       </mpc-button>
     `;
   }
-  private renderMoveUpButton(): TemplateResult {
+  protected renderMoveUpButton(): TemplateResult {
     if (this.hide.move_up_button || !this.media_item?.show_move_up_next) {
       return html``;
     }
@@ -379,7 +381,7 @@ export class MediaRow extends LitElement {
       </mpc-button>
     `;
   }
-  private renderMoveDownButton(): TemplateResult {
+  protected renderMoveDownButton(): TemplateResult {
     if (this.hide.move_down_button) {
       return html``;
     }
@@ -398,7 +400,7 @@ export class MediaRow extends LitElement {
       </mpc-button>
     `;
   }
-  private renderRemoveButton(): TemplateResult {
+  protected renderRemoveButton(): TemplateResult {
     if (this.hide.remove_button) {
       return html``;
     }
