@@ -36,6 +36,8 @@ export class MediaBrowserController {
   private _activeEntityId!: string;
   private _items!: ContextProvider<typeof mediaBrowserCardsContext>;
   private _updatingCards = false;
+  private _massUser?: string | null;
+  private _massUserInfo?: getUserInfoWSResponseSchema;
   constructor(
     hass: ExtendedHass,
     config: Config,
@@ -76,6 +78,23 @@ export class MediaBrowserController {
   public get items() {
     return this._items.value;
   }
+
+  public set massUser(user: string | null | undefined) {
+    this._massUser = user;
+  }
+  public get massUser() {
+    return this._massUser;
+  }
+  public set massUserInfo(userInfo: getUserInfoWSResponseSchema | undefined) {
+    this._massUserInfo = userInfo;
+    if (this.items.recommendations.main.length > 0) {
+      this.resetAndGenerateSections();
+    }
+  }
+  public get massUserInfo() {
+    return this._massUserInfo;
+  }
+
   private resetAndGenerateSections() {
     if (this._updatingCards) {
       return;
