@@ -316,6 +316,7 @@ export class MediaBrowser extends LitElement {
         this.activeEntityConfig.entity_id,
         content_id,
         content_type,
+        user,
       );
       return;
     }

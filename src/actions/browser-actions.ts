@@ -215,12 +215,15 @@ export default class BrowserActions {
     entity_id: string,
     content_id: string,
     content_type: string,
+    userId: string | null = null,
   ) {
+    const userParameter = userId ? { username: userId } : {};
     await this.hass.callService("music_assistant", "play_media", {
       entity_id,
       media_id: content_id,
       media_type: content_type,
       radio_mode: true,
+      ...userParameter,
     });
   }
   async actionGetPlaylistTracks(
