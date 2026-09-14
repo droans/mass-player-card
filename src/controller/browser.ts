@@ -384,8 +384,33 @@ export class MediaBrowserController {
       this.items = { ...i };
     }
   }
+  private _createRecommendationProviderFilter(
+    configProviders: string[] | null,
+    userProviders: string[] | null,
+  ) {
+    if (!configProviders?.length) {
+      return userProviders;
+    }
+    if (!userProviders?.length) {
+      return configProviders;
+    }
+
+    const result = userProviders.filter((userProvider) => {
+      return configProviders.find((configProvider) => {
+        return userProvider.startsWith(configProvider);
+      });
+    });
+    return result;
+  }
   private async generateAllRecommendations() {
-    const providers = this.browserConfig.recommendations.providers ?? null;
+    const configProviders =
+      this.browserConfig.recommendations.providers ?? null;
+    const userProviders = this.massUserInfo?.provider_filter ?? [];
+    const providers = this._createRecommendationProviderFilter(
+      configProviders,
+      userProviders,
+    );
+
     const data = await this.actions.actionGetRecommendations(
       this.activeEntityId,
       providers,
