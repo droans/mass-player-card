@@ -89,15 +89,18 @@ export default class BrowserActions {
     });
   }
   async actionEnqueueMedia(
-    entity_id: string,
-    content_id: string,
-    content_type: string,
+    entityId: string,
+    contentId: string,
+    contentType: string,
     enqueue: EnqueueOptions,
+    userId: string | null = null,
   ) {
+    const userParameter = userId ? { username: userId } : {};
     const baseArguments_ = {
-      entity_id,
-      media_id: content_id,
-      media_type: content_type,
+      entity_id: entityId,
+      media_id: contentId,
+      media_type: contentType,
+      ...userParameter,
     };
     const arguments_ =
       enqueue == EnqueueOptions.RADIO
