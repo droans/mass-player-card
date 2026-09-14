@@ -213,12 +213,15 @@ export class MusicPlayerCard extends LitElement {
     if (!this.controller.Actions) {
       return;
     }
+    const user = this.controller.massUser;
     const playlistData =
       await this.controller.Actions.browserActions.actionGetLibrary(
         this.activeEntityConfig.entity_id,
         MediaTypes.PLAYLIST,
         PLAYLIST_DIALOG_MAX_ITEMS,
         null,
+        null,
+        user,
       );
     const _promises = playlistData.map((playlist) => {
       return this.generatePlaylistData(playlist);

@@ -140,10 +140,12 @@ export default class BrowserActions {
     limit = 25,
     favorite: boolean | null = true,
     sortOrder: GetLibrarySortOrders | null = null,
+    userId: string | null = null,
   ): Promise<MediaLibraryItem[]> {
     const configId = await this.getPlayerConfigEntry(playerEntityId);
     const favoriteData = typeof favorite == "boolean" ? { favorite } : {};
     const sort = sortOrder ? { order_by: sortOrder } : {};
+    const userParameter = userId ? { username: userId } : {};
     const data: getLibraryServiceSchema = {
       type: "call_service",
       domain: "music_assistant",
@@ -154,6 +156,7 @@ export default class BrowserActions {
         config_entry_id: configId,
         media_type: mediaType,
         ...sort,
+        ...userParameter,
       },
       return_response: true,
     };
