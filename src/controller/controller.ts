@@ -17,6 +17,10 @@ import { QueueController } from "./queue";
 import { MediaBrowserController } from "./browser";
 import { jsonMatch } from "../utils/utility";
 import { getTranslation } from "../utils/translations";
+import {
+  getUserInfoWSResponseSchema,
+  getUserInfoWSServiceSchema,
+} from "mass-queue-types/packages/mass_queue/ws/get_user_info";
 
 export class MassCardController {
   private _hass = new ContextProvider(document.body, { context: hassContext });
@@ -32,6 +36,8 @@ export class MassCardController {
   private _activeSection: ContextProvider<typeof activeSectionContext>;
   private _connected = true;
   private _reconnected = false;
+  private _massUser?: string | null;
+  private _massUserInfo?: getUserInfoWSResponseSchema;
 
   constructor(host: HTMLElement) {
     this.host = host;
@@ -47,6 +53,7 @@ export class MassCardController {
     return this._host;
   }
   private setupIfReady() {
+    void this.setMassUser();
     this._setupActiveController();
     this._setupActionsController();
     this._setupQueueController();
@@ -176,6 +183,9 @@ export class MassCardController {
     if (this.Browser) {
       this.Browser.activeEntityId = entity;
     }
+    this._massUser = null;
+    this._massUserInfo = undefined;
+    void this.setMassUser();
   }
   public get activeEntityId(): string {
     return this.ActivePlayer?.activeEntityID ?? "";
@@ -216,6 +226,24 @@ export class MassCardController {
   public get Browser() {
     return this.browserController?.value;
   }
+  public set massUser(user: string | null | undefined) {
+    this._massUser = user;
+    if (this.Browser) {
+      this.Browser.massUser = user;
+    }
+  }
+  public get massUser() {
+    return this._massUser;
+  }
+  public set massUserInfo(userInfo: getUserInfoWSResponseSchema | undefined) {
+    this._massUserInfo = userInfo;
+    if (this.Browser) {
+      this.Browser.massUserInfo = userInfo;
+    }
+  }
+  public get massUserInfo() {
+    return this._massUserInfo;
+  }
   public disconnected() {
     /* eslint-disable @typescript-eslint/no-non-null-assertion */
     this.ActivePlayer!.disconnected();
@@ -238,5 +266,67 @@ export class MassCardController {
   }
   public translate(key: string) {
     return getTranslation(key, this.hass);
+  }
+  private async setMassUser() {
+    if (this.massUser || this.massUser === null) {
+      return;
+    }
+    if (!this.config || !this.hass || !this.activeEntityId) {
+      return;
+    }
+    const massUser = this.getMassUser(this.hass);
+    if (massUser == undefined) {
+      this._throwMAUserError();
+      return;
+    }
+    this.massUser = massUser;
+    try {
+      const userInfo = await this.getMassUserInfo(this.hass, massUser);
+      this.massUserInfo = userInfo;
+    } catch {
+      this._throwMAUserError();
+    }
+  }
+  private _throwMAUserError() {
+    const hassUser = this.hass!.user.id;
+    const userConfig = typeof this.config!.user;
+    const formattedConfig =
+      typeof userConfig === "string" ? userConfig : JSON.stringify(userConfig);
+    const eventDetail = {
+      detail: {
+        hass_user: hassUser,
+        user_config: formattedConfig,
+      },
+    };
+    const event = new CustomEvent("user-not-found", eventDetail);
+    this.host.dispatchEvent(event);
+  }
+
+  public getMassUser(hass: ExtendedHass): string | null | undefined {
+    const user = this.config?.user;
+    if (!user) {
+      return null;
+    }
+    if (typeof user === "string") {
+      return user;
+    }
+    const currentUser = hass.user.id;
+    const result = user.find((user_) => {
+      return user_.hass_user_id == currentUser;
+    });
+    return result?.mass_username;
+  }
+
+  public async getMassUserInfo(
+    hass: ExtendedHass,
+    massUser: string,
+  ): Promise<getUserInfoWSResponseSchema> {
+    const data: getUserInfoWSServiceSchema = {
+      type: "mass_queue/get_user_info",
+      entity_id: this.activeEntityId,
+      username: massUser,
+    };
+    const result = hass.callWS<getUserInfoWSResponseSchema>(data);
+    return result;
   }
 }

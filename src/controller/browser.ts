@@ -26,6 +26,7 @@ import {
   newMediaBrowserItemsConfig,
   RecommendationSection,
 } from "../const/types";
+import { getUserInfoWSResponseSchema } from "mass-queue-types/packages/mass_queue/ws/get_user_info";
 
 export class MediaBrowserController {
   private hass!: ExtendedHass;
@@ -36,6 +37,8 @@ export class MediaBrowserController {
   private _activeEntityId!: string;
   private _items!: ContextProvider<typeof mediaBrowserCardsContext>;
   private _updatingCards = false;
+  private _massUser?: string | null;
+  private _massUserInfo?: getUserInfoWSResponseSchema;
   constructor(
     hass: ExtendedHass,
     config: Config,
@@ -76,6 +79,23 @@ export class MediaBrowserController {
   public get items() {
     return this._items.value;
   }
+
+  public set massUser(user: string | null | undefined) {
+    this._massUser = user;
+  }
+  public get massUser() {
+    return this._massUser;
+  }
+  public set massUserInfo(userInfo: getUserInfoWSResponseSchema | undefined) {
+    this._massUserInfo = userInfo;
+    if (this.items.recommendations.main.length > 0) {
+      this.resetAndGenerateSections();
+    }
+  }
+  public get massUserInfo() {
+    return this._massUserInfo;
+  }
+
   private resetAndGenerateSections() {
     if (this._updatingCards) {
       return;
@@ -132,12 +152,14 @@ export class MediaBrowserController {
     library_only = false as boolean,
     limit: number = DEFAULT_SEARCH_LIMIT,
   ) {
+    const user = this.massUser;
     const search_result = await this.actions.actionSearchMedia(
       player_entity_id,
       search_term,
       media_type,
       library_only,
       limit,
+      user,
     );
     return generateFavoritesSectionCards(
       search_result,
@@ -219,12 +241,14 @@ export class MediaBrowserController {
     const limit = config.limit;
     const custom_items = config.items;
     const sortOrder = this.config.media_browser.favorites.sort_order;
+    const user = this.massUser;
     const resp: MediaLibraryItem[] = await this.actions.actionGetLibrary(
       this.activeEntityId,
       media_type,
       limit,
       favorites_only ? true : null,
       sortOrder,
+      user,
     );
     return [
       ...generateFavoritesSectionCards(
@@ -296,11 +320,13 @@ export class MediaBrowserController {
   ) {
     const limit = config.limit;
     const sortOrder = this.config.media_browser.recents.sort_order;
+    const user = this.massUser;
     const resp: MediaLibraryItem[] = await this.actions.actionGetLibraryRecents(
       this.activeEntityId,
       media_type,
       limit,
       sortOrder,
+      user,
     );
     const items = generateFavoritesSectionCards(
       resp,
@@ -358,8 +384,33 @@ export class MediaBrowserController {
       this.items = { ...i };
     }
   }
+  private _createRecommendationProviderFilter(
+    configProviders: string[] | null,
+    userProviders: string[] | null,
+  ) {
+    if (!configProviders?.length) {
+      return userProviders;
+    }
+    if (!userProviders?.length) {
+      return configProviders;
+    }
+
+    const result = userProviders.filter((userProvider) => {
+      return configProviders.find((configProvider) => {
+        return userProvider.startsWith(configProvider);
+      });
+    });
+    return result;
+  }
   private async generateAllRecommendations() {
-    const providers = this.browserConfig.recommendations.providers ?? null;
+    const configProviders =
+      this.browserConfig.recommendations.providers ?? null;
+    const userProviders = this.massUserInfo?.provider_filter ?? [];
+    const providers = this._createRecommendationProviderFilter(
+      configProviders,
+      userProviders,
+    );
+
     const data = await this.actions.actionGetRecommendations(
       this.activeEntityId,
       providers,

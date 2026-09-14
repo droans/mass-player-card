@@ -468,6 +468,8 @@ media_browser:
 | queue                        | [QueueConfig](#queue-config)                       | No       | 5            | See Below                                                    |
 | media_browser                | [MediaBrowserConfig](#media-browser-config)        | No       | 5            | See Below                                                    |
 | players                      | [PlayersConfig](#players-config)                   | No       | 5            | See Below                                                    |
+| user                         | str or list                                        | No       | n/a          | [See Below](#music-assistant-user-support)                   |
+
 
 ### Expressive Scheme
 This defines the expressive scheme which will be used for color generation. @Nerwyn has a [great description](https://github.com/Nerwyn/material-you-utilities) in the readme for his Material You Utilities which may be useful.
@@ -491,6 +493,33 @@ You can choose which section to start on by default. By default, the first enabl
 * queue
 * media_browser
 * players
+
+### Music Assistant User Support
+
+Optional support has been added for Music Assistant users. Users can be defined in one of two ways:
+
+```yaml
+# Use a single user for all devices
+user: my_mass_username
+
+# Adjust the user based on the current Home Assistant user
+user:
+  - hass_user_id: deadbeefdeadbeefdeadbeefdeadbeef
+    mass_username: my_mass_username
+  ...
+```
+
+If no user can be found, the card will raise an error. If no user is provided, the card will act as normal.
+
+**KNOWN LIMITATIONS**:
+  * Provider filters cannot yet be applied
+
+Currently, user support is enabled for the following services used by the card:
+  * music_assistant.play_media
+  * music_assistant.get_library
+  * music_assistant.search
+  * mass_queue.get_recommendations
+
 
 ### Entity Config
 For each entity, you can either provide the Entity ID by itself or you can provide the Music Assistant media player Entity ID, the media player Entity ID for volume control, and/or the name of the player. Below is the config if you would like to provide the additional details.

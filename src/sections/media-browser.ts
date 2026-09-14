@@ -245,11 +245,13 @@ export class MediaBrowser extends LitElement {
       return;
     }
     const enqueue = EnqueueConfigMap[this.config.default_enqueue_option];
+    const user = this.browserController?.massUser;
     void this.actions.actionEnqueueMedia(
       this.activeEntityConfig.entity_id,
       data.media_content_id,
       data.media_content_type,
       enqueue,
+      user,
     );
     this.onMediaSelectedAction();
   };
@@ -263,10 +265,12 @@ export class MediaBrowser extends LitElement {
     if (!this.actions) {
       return;
     }
+    const user = this._browserController?.massUser;
     void this.actions.actionPlayMedia(
       this.activeEntityConfig.entity_id,
       data.media_content_id,
       data.media_content_type,
+      user,
     );
   };
   private onCollectionSelect = (data: mediaCardCollectionType) => {
@@ -306,11 +310,13 @@ export class MediaBrowser extends LitElement {
     if (!this.actions) {
       return;
     }
+    const user = this.browserController?.massUser;
     if (enqueue == EnqueueOptions.RADIO) {
       void this.actions.actionPlayRadio(
         this.activeEntityConfig.entity_id,
         content_id,
         content_type,
+        user,
       );
       return;
     }
@@ -319,6 +325,7 @@ export class MediaBrowser extends LitElement {
       content_id,
       content_type,
       enqueue,
+      user,
     );
   };
   private onPlaylistEnqueue = (
@@ -330,11 +337,13 @@ export class MediaBrowser extends LitElement {
     }
     const content_id: string = data.media_content_id;
     const content_type = "playlist";
+    const user = this.browserController?.massUser;
     void this.actions.actionEnqueueMedia(
       this.activeEntityConfig.entity_id,
       content_id,
       content_type,
       enqueue,
+      user,
     );
   };
   private onBack = () => {

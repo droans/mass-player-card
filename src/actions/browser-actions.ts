@@ -6,6 +6,7 @@ import {
   getLibraryServiceSchema,
 } from "mass-queue-types/packages/music_assistant/actions/get_library";
 import {
+  searchServiceData,
   searchServiceResponse,
   searchServiceSchema,
 } from "mass-queue-types/packages/music_assistant/actions/search";
@@ -69,14 +70,17 @@ export default class BrowserActions {
   }
 
   async actionPlayMedia(
-    entity_id: string,
-    content_id: string,
-    content_type: string,
+    entityId: string,
+    contentId: string,
+    contentType: string,
+    userId: string | null = null,
   ) {
-    await this.hass.callService("media_player", "play_media", {
-      entity_id,
-      media_content_id: content_id,
-      media_content_type: content_type,
+    const userParameter = userId ? { username: userId } : {};
+    await this.hass.callService("music_assistant", "play_media", {
+      entity_id: entityId,
+      content_id: contentId,
+      content_type: contentType,
+      ...userParameter,
     });
   }
   async actionPlayMediaFromService(service: string, player_entity_id: string) {
@@ -86,15 +90,18 @@ export default class BrowserActions {
     });
   }
   async actionEnqueueMedia(
-    entity_id: string,
-    content_id: string,
-    content_type: string,
+    entityId: string,
+    contentId: string,
+    contentType: string,
     enqueue: EnqueueOptions,
+    userId: string | null = null,
   ) {
+    const userParameter = userId ? { username: userId } : {};
     const baseArguments_ = {
-      entity_id,
-      media_id: content_id,
-      media_type: content_type,
+      entity_id: entityId,
+      media_id: contentId,
+      media_type: contentType,
+      ...userParameter,
     };
     const arguments_ =
       enqueue == EnqueueOptions.RADIO
@@ -107,9 +114,11 @@ export default class BrowserActions {
     media_type: MediaTypes,
     limit = 25,
     sortOrder: GetLibrarySortOrders | null = "last_played_desc",
+    userId: string | null = null,
   ): Promise<MediaLibraryItem[]> {
     const config_id = await this.getPlayerConfigEntry(player_entity_id);
     const sort: GetLibrarySortOrders = sortOrder ?? "last_played_desc";
+    const userParameter = userId ? { username: userId } : {};
     const data: getLibraryServiceSchema = {
       type: "call_service",
       domain: "music_assistant",
@@ -119,6 +128,7 @@ export default class BrowserActions {
         config_entry_id: config_id,
         media_type,
         order_by: sort,
+        ...userParameter,
       },
       return_response: true,
     };
@@ -131,10 +141,12 @@ export default class BrowserActions {
     limit = 25,
     favorite: boolean | null = true,
     sortOrder: GetLibrarySortOrders | null = null,
+    userId: string | null = null,
   ): Promise<MediaLibraryItem[]> {
     const configId = await this.getPlayerConfigEntry(playerEntityId);
     const favoriteData = typeof favorite == "boolean" ? { favorite } : {};
     const sort = sortOrder ? { order_by: sortOrder } : {};
+    const userParameter = userId ? { username: userId } : {};
     const data: getLibraryServiceSchema = {
       type: "call_service",
       domain: "music_assistant",
@@ -145,6 +157,7 @@ export default class BrowserActions {
         config_entry_id: configId,
         media_type: mediaType,
         ...sort,
+        ...userParameter,
       },
       return_response: true,
     };
@@ -157,14 +170,17 @@ export default class BrowserActions {
     media_type: MediaTypes,
     library_only = false,
     limit: number = DEFAULT_SEARCH_LIMIT,
+    userId: string | null = null,
   ): Promise<MediaLibraryItem[]> {
     const config_id = await this.getPlayerConfigEntry(player_entity_id);
-    const arguments_ = {
+    const userParameter = userId ? { username: userId } : {};
+    const arguments_: searchServiceData = {
       limit,
       library_only,
       config_entry_id: config_id,
       name: search_term,
       media_type: [media_type],
+      ...userParameter,
     };
     const data: searchServiceSchema = {
       type: "call_service",
@@ -199,12 +215,15 @@ export default class BrowserActions {
     entity_id: string,
     content_id: string,
     content_type: string,
+    userId: string | null = null,
   ) {
+    const userParameter = userId ? { username: userId } : {};
     await this.hass.callService("music_assistant", "play_media", {
       entity_id,
       media_id: content_id,
       media_type: content_type,
       radio_mode: true,
+      ...userParameter,
     });
   }
   async actionGetPlaylistTracks(
