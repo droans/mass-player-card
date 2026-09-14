@@ -6,6 +6,7 @@ import {
   getLibraryServiceSchema,
 } from "mass-queue-types/packages/music_assistant/actions/get_library";
 import {
+  searchServiceData,
   searchServiceResponse,
   searchServiceSchema,
 } from "mass-queue-types/packages/music_assistant/actions/search";
@@ -169,14 +170,17 @@ export default class BrowserActions {
     media_type: MediaTypes,
     library_only = false,
     limit: number = DEFAULT_SEARCH_LIMIT,
+    userId: string | null = null,
   ): Promise<MediaLibraryItem[]> {
     const config_id = await this.getPlayerConfigEntry(player_entity_id);
-    const arguments_ = {
+    const userParameter = userId ? { username: userId } : {};
+    const arguments_: searchServiceData = {
       limit,
       library_only,
       config_entry_id: config_id,
       name: search_term,
       media_type: [media_type],
+      ...userParameter,
     };
     const data: searchServiceSchema = {
       type: "call_service",

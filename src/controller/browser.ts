@@ -152,12 +152,14 @@ export class MediaBrowserController {
     library_only = false as boolean,
     limit: number = DEFAULT_SEARCH_LIMIT,
   ) {
+    const user = this.massUser;
     const search_result = await this.actions.actionSearchMedia(
       player_entity_id,
       search_term,
       media_type,
       library_only,
       limit,
+      user,
     );
     return generateFavoritesSectionCards(
       search_result,
