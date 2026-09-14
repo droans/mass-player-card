@@ -55,6 +55,12 @@ export interface Config {
   panel: boolean;
   default_section: ConfigSections | undefined;
   sync_player_across_dashboard: boolean;
+  user: string | MappedUser[] | null;
+}
+
+export interface MappedUser {
+  hass_user_id: string;
+  mass_username: string;
 }
 
 export type ConfigSections =
@@ -103,6 +109,7 @@ export const DEFAULT_CONFIG: Config = {
   panel: false,
   default_section: undefined,
   sync_player_across_dashboard: false,
+  user: null,
 };
 
 const ENTITY_DEFAULT_HIDDEN_ITEM_CONFIG: HiddenElementsConfig = {
