@@ -35,7 +35,7 @@ import head_styles from "./styles/head";
 import { delay, getDefaultSection, jsonMatch } from "./utils/utility";
 import { MassCardController } from "./controller/controller";
 import { ExtendedHass } from "./const/types";
-import { PlayerSyncEvent } from "./const/events";
+import { PlayerSyncEvent, UserNotFoundEvent } from "./const/events";
 import localForage from "localforage";
 
 const DEV = false;
@@ -250,6 +250,21 @@ export class MusicAssistantPlayerCard extends LitElement {
     this.active_section = (event_ as CustomEvent).detail as Sections;
   };
 
+  private userNotFoundEvent = (event_: Event) => {
+    // eslint-disable-next-line unicorn/prevent-abbreviations
+    const ev_ = event_ as UserNotFoundEvent;
+    const hassUser = ev_.detail.hass_user;
+    const userConfig = ev_.detail.user_config;
+    const message = `Could not find a matching user.
+    \n Details:
+    \n Home Assistant User ID: ${hassUser}
+    \n
+    \n Config:
+    \n ${userConfig}
+    `;
+    this.createError(message);
+  };
+
   /* eslint-disable unicorn/template-indent */
   protected renderPlayers() {
     return cache(
@@ -358,12 +373,19 @@ export class MusicAssistantPlayerCard extends LitElement {
         this._controller.connected();
       }
     }
-    // eslint-disable-next-line listeners/no-missing-remove-event-listener
+    /* eslint-disable
+      listeners/no-missing-remove-event-listener
+    */
     this.addEventListener("section-changed", this.onSectionChangedEvent);
+    this.addEventListener("user-not-found", this.userNotFoundEvent);
+    /* eslint-enable
+      listeners/no-missing-remove-event-listener
+    */
   }
   disconnectedCallback(): void {
     super.disconnectedCallback();
     this.removeEventListener("section-changed", this.onSectionChangedEvent);
+    this.removeEventListener("user-not-found", this.userNotFoundEvent);
     this._controller.disconnected();
     if (this.syncPlayerAcrossDashboard) {
       window.removeEventListener("mpc-player-sync", this.onPlayerSync);

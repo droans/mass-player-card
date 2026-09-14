@@ -275,9 +275,31 @@ export class MassCardController {
       return;
     }
     const massUser = this.getMassUser(this.hass);
+    if (massUser == undefined) {
+      this._throwMAUserError();
+      return;
+    }
     this.massUser = massUser;
-    const userInfo = await this.getMassUserInfo(this.hass, massUser);
-    this.massUserInfo = userInfo;
+    try {
+      const userInfo = await this.getMassUserInfo(this.hass, massUser);
+      this.massUserInfo = userInfo;
+    } catch {
+      this._throwMAUserError();
+    }
+  }
+  private _throwMAUserError() {
+    const hassUser = this.hass!.user.id;
+    const userConfig = typeof this.config!.user;
+    const formattedConfig =
+      typeof userConfig === "string" ? userConfig : JSON.stringify(userConfig);
+    const eventDetail = {
+      detail: {
+        hass_user: hassUser,
+        user_config: formattedConfig,
+      },
+    };
+    const event = new CustomEvent("user-not-found", eventDetail);
+    this.host.dispatchEvent(event);
   }
 
   public getMassUser(hass: ExtendedHass): string | null | undefined {
