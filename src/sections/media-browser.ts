@@ -263,10 +263,12 @@ export class MediaBrowser extends LitElement {
     if (!this.actions) {
       return;
     }
+    const user = this._browserController?.massUser;
     void this.actions.actionPlayMedia(
       this.activeEntityConfig.entity_id,
       data.media_content_id,
       data.media_content_type,
+      user,
     );
   };
   private onCollectionSelect = (data: mediaCardCollectionType) => {

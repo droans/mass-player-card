@@ -69,14 +69,17 @@ export default class BrowserActions {
   }
 
   async actionPlayMedia(
-    entity_id: string,
-    content_id: string,
-    content_type: string,
+    entityId: string,
+    contentId: string,
+    contentType: string,
+    userId: string | null = null,
   ) {
-    await this.hass.callService("media_player", "play_media", {
-      entity_id,
-      media_content_id: content_id,
-      media_content_type: content_type,
+    const userParameter = userId ? { username: userId } : {};
+    await this.hass.callService("music_assistant", "play_media", {
+      entity_id: entityId,
+      content_id: contentId,
+      content_type: contentType,
+      ...userParameter,
     });
   }
   async actionPlayMediaFromService(service: string, player_entity_id: string) {
