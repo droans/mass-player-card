@@ -26,6 +26,7 @@ import {
   newMediaBrowserItemsConfig,
   RecommendationSection,
 } from "../const/types";
+import { getUserInfoWSResponseSchema } from "mass-queue-types/packages/mass_queue/ws/get_user_info";
 
 export class MediaBrowserController {
   private hass!: ExtendedHass;
@@ -315,11 +316,13 @@ export class MediaBrowserController {
   ) {
     const limit = config.limit;
     const sortOrder = this.config.media_browser.recents.sort_order;
+    const user = this.massUser;
     const resp: MediaLibraryItem[] = await this.actions.actionGetLibraryRecents(
       this.activeEntityId,
       media_type,
       limit,
       sortOrder,
+      user,
     );
     const items = generateFavoritesSectionCards(
       resp,

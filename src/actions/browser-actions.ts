@@ -113,9 +113,11 @@ export default class BrowserActions {
     media_type: MediaTypes,
     limit = 25,
     sortOrder: GetLibrarySortOrders | null = "last_played_desc",
+    userId: string | null = null,
   ): Promise<MediaLibraryItem[]> {
     const config_id = await this.getPlayerConfigEntry(player_entity_id);
     const sort: GetLibrarySortOrders = sortOrder ?? "last_played_desc";
+    const userParameter = userId ? { username: userId } : {};
     const data: getLibraryServiceSchema = {
       type: "call_service",
       domain: "music_assistant",
@@ -125,6 +127,7 @@ export default class BrowserActions {
         config_entry_id: config_id,
         media_type,
         order_by: sort,
+        ...userParameter,
       },
       return_response: true,
     };
