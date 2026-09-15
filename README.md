@@ -493,12 +493,29 @@ For each entity, you can either provide the Entity ID by itself or you can provi
 | Parameter                 | Type                                                          | Required | Default     | Description                                                                    |
 |---------------------------|---------------------------------------------------------------|----------|-------------|--------------------------------------------------------------------------------|
 | entity_id                 | str                                                           | Yes      | N/A         | The Music Assistant entity                                                     |
-| name                      | str                                                           | No       | N/A         | The name of the media player                                                   |
+| name                      | str \| [EntityName](#entity-name)                              | No       | N/A         | The name of the media player                                                   |
 | volume_entity_id          | str                                                           | No       | `entity_id` | The media player for volume control                                            |
 | max_volume                | int                                                           | No       | N/A         | Max volume for the volume slider (0-100)                                       |
 | inactive_when_idle        | bool                                                          | No       | false       | Consider the player inactive if idle.                                          |
 | inactive_when_not_updated | bool                                                          | No       | true        | Consider the player inactive if if the entity hasn't been updated recently.    |
 | hide                      | [EntityHiddenElementsConfig](#entity-hidden-elements-config)  | No       | See below   | See Below                                                                      |
+
+#### Entity Name
+When `name` is omitted, the player is labelled with the name Home Assistant shows for the entity everywhere else.
+
+On Home Assistant 2026.4 and later, `name` can also be a list of parts, which are resolved against the entity. This lets you compose the label from the device, area or floor name, so it follows along when you rename one of those:
+
+```yaml
+entities:
+  - entity_id: media_player.kitchen
+    name:
+      - type: area
+      - type: text
+        text: "-"
+      - type: entity
+```
+
+Each part is one of `entity`, `device`, `parent_device`, `area`, `floor`, or `text` with a literal `text` value. Earlier Home Assistant versions cannot resolve a list and fall back to the entity's friendly name, so a plain string still works everywhere.
 
 #### Entity Hidden Elements Config
 Certain elements across the different sections can be hidden or displayed depending on your configuration. By default, every item will be displayed.

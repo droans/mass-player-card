@@ -7,7 +7,7 @@ import {
 } from "@mdi/js";
 
 import { DEFAULT_MAX_VOLUME } from "../const/music-player";
-import { ExtendedHass } from "../const/types";
+import { EntityName, ExtendedHass } from "../const/types";
 
 import {
   DEFAULT_MEDIA_BROWSER_CONFIG,
@@ -73,7 +73,7 @@ export interface EntityConfig {
   entity_id: string;
   volume_entity_id: string;
   max_volume: number;
-  name: string;
+  name: EntityName;
   hide: HiddenElementsConfig;
   inactive_when_idle: boolean;
   inactive_when_not_updated: boolean;
