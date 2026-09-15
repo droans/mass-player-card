@@ -21,6 +21,7 @@ import {
 } from "../../const/context";
 import { Icons } from "../../const/icons";
 import { ExtendedHass } from "../../const/types";
+import { computeEntityName } from "../../utils/entity-name";
 import { jsonMatch } from "../../utils/utility";
 import { MassCardController } from "../../controller/controller";
 import PlayerActions from "../../actions/player-actions";
@@ -141,11 +142,8 @@ export class MassCardPlayerSelector extends LitElement {
     const expressive = this.useExpressive;
     const role = this.useVibrant ? `tonal` : `filled-variant`;
     return this.groupedPlayers.map((item, idx) => {
-      const name =
-        item.name.length > 0
-          ? item.name
-          : (this.hass.states[item.entity_id]?.attributes.friendly_name ?? "");
       const ent = this.hass.states[item.entity_id];
+      const name = computeEntityName(this.hass, ent, item.name);
       const img =
         ent?.attributes.entity_picture_local ?? ent?.attributes.entity_picture;
       return html`

@@ -14,6 +14,7 @@ import {
 } from "../const/context";
 import { Config, EntityConfig } from "../config/config";
 import {
+  EntityName,
   ExtendedHass,
   ExtendedHassEntity,
   getQueueResponse,
@@ -46,6 +47,7 @@ import {
 import WaCarousel from "@droans/webawesome/dist/components/carousel/carousel.js";
 import { RepeatMode } from "../const/enums";
 import { MassCardConfigController } from "./config";
+import { computeEntityName } from "../utils/entity-name";
 
 export class ActivePlayerController {
   private _activeEntityConfig: ContextProvider<
@@ -194,17 +196,17 @@ export class ActivePlayerController {
     return this._activeMediaPlayer.value;
   }
 
-  private set activePlayerName(name: string) {
-    if (name.length > 0) {
+  private set activePlayerName(name: EntityName) {
+    if (typeof name === "string" && name.length > 0) {
       this._activePlayerName.setValue(name);
       return;
     }
     const ent = this.hass.states[this.activeEntityConfig.entity_id];
     if (ent) {
-      this._activePlayerName.setValue(ent.attributes.friendly_name ?? "");
+      this._activePlayerName.setValue(computeEntityName(this.hass, ent, name));
     }
   }
-  public get activePlayerName() {
+  public get activePlayerName(): string {
     return this._activePlayerName.value;
   }
   private set groupMembers(members: string[] | undefined) {
