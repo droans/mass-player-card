@@ -515,7 +515,7 @@ entities:
       - type: entity
 ```
 
-Each part is one of `entity`, `device`, `parent_device`, `area`, `floor`, or `text` with a literal `text` value. Earlier Home Assistant versions cannot resolve a list and fall back to the entity's friendly name, so a plain string still works everywhere.
+Each part is one of `entity`, `device`, `area`, `floor`, or `text` with a literal `text` value. Earlier Home Assistant versions cannot resolve a list and fall back to the entity's friendly name, so a plain string still works everywhere.
 
 #### Entity Hidden Elements Config
 Certain elements across the different sections can be hidden or displayed depending on your configuration. By default, every item will be displayed.

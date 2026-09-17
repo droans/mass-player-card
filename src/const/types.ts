@@ -42,7 +42,7 @@ export interface ExtendedHass extends Omit<HomeAssistant, "states"> {
  * so it can be composed from the device, area or floor name.
  */
 export type EntityNameItem =
-  | { type: "entity" | "device" | "parent_device" | "area" | "floor" }
+  | { type: "entity" | "device" | "area" | "floor" }
   | { type: "text"; text: string };
 
 export type EntityName = string | EntityNameItem | EntityNameItem[];
