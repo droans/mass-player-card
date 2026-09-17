@@ -29,7 +29,23 @@ export interface ExtendedHass extends Omit<HomeAssistant, "states"> {
   entities: ExtendedEntitiesBase;
   states: ExtendedHassEntities;
   themes: ExtendedThemes;
+  /** Added in Home Assistant 2026.4 with this signature. */
+  formatEntityName?: (
+    stateObject: HassEntity,
+    name?: EntityName,
+  ) => string | undefined;
 }
+
+/**
+ * One part of a structured name, mirroring `EntityNameItem` in the Home
+ * Assistant frontend. A name is resolved against the entity's registry context,
+ * so it can be composed from the device, area or floor name.
+ */
+export type EntityNameItem =
+  | { type: "entity" | "device" | "area" | "floor" }
+  | { type: "text"; text: string };
+
+export type EntityName = string | EntityNameItem | EntityNameItem[];
 
 interface ExtendedEntityBase {
   entity_id: string;

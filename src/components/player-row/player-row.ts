@@ -27,7 +27,12 @@ import {
   PlayersHiddenElementsConfig,
 } from "../../config/players";
 import { Icons } from "../../const/icons";
-import { ExtendedHass, ExtendedHassEntity } from "../../const/types";
+import {
+  EntityName,
+  ExtendedHass,
+  ExtendedHassEntity,
+} from "../../const/types";
+import { computeEntityName } from "../../utils/entity-name";
 import { Thumbnail } from "../../const/enums";
 import { getThumbnail } from "../../utils/thumbnails";
 import { HTMLImageElementEvent } from "../../const/events";
@@ -42,7 +47,7 @@ export class PlayerRow extends LitElement {
   @property({ attribute: "can-group", type: Boolean }) canGroup = false;
 
   public allowJoin = true;
-  public playerName!: string;
+  public playerName!: EntityName;
   public joinService!: PlayerJoinService;
   public selectedService!: PlayerSelectedService;
   public transferService!: PlayerTransferService;
@@ -182,10 +187,9 @@ export class PlayerRow extends LitElement {
     return `calc(100% - ( (32px * ${button_ct.toString()}) + (8px * ${gap_ct.toString()}) + 16px));`;
   }
   private renderTitle() {
-    let title = this.playerName;
-    if (title.length === 0) {
-      title = this.player_entity?.attributes.friendly_name ?? "Media Player";
-    }
+    const title =
+      computeEntityName(this.hass, this.player_entity, this.playerName) ||
+      "Media Player";
     const active_style =
       isActive(this.hass, this.player_entity, this._entityConfig) &&
       this.player_entity?.state == "playing"
