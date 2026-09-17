@@ -33,6 +33,11 @@ export function computeEntityName(
   stateObject: HassEntity | undefined,
   name?: EntityName,
 ): string {
+  // A configured empty name has always meant "use Home Assistant's name", but
+  // formatEntityName returns any string verbatim - including the empty one, which
+  // would blank the label. Normalise it to undefined so the formatter composes.
+  if (name === "") name = undefined;
+
   if (typeof name === "string" && name.length > 0) {
     return name;
   }
