@@ -166,15 +166,18 @@ export const DEFAULT_MEDIA_BROWSER_CONFIG: MediaBrowserConfig = {
 };
 
 const MEDIA_BROWSER_HIDDEN_ITEMS = [
-  "back_button",
-  "search",
-  "titles",
   "enqueue_menu",
   "add_to_queue_button",
   "play_now_button",
   "play_now_clear_queue_button",
   "play_next_button",
   "play_next_clear_queue_button",
+  "back_button",
+  "search_button",
+  "filter_button",
+  "titles",
+  "header",
+  "header_title",
 ];
 
 function favoritesConfigForm(section: string) {

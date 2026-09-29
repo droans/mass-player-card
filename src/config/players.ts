@@ -31,6 +31,8 @@ const PLAYERS_HIDDEN_ITEMS = [
   "action_buttons",
   "join_button",
   "transfer_button",
+  "header",
+  "header_title",
 ];
 
 export function playersConfigForm() {

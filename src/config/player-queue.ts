@@ -50,6 +50,8 @@ const PLAYER_QUEUE_HIDDEN_ITEMS = [
   "album_covers",
   "artist_names",
   "clear_queue_button",
+  "header",
+  "header_title",
 ];
 export function queueConfigForm() {
   return [
