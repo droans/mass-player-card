@@ -20,6 +20,7 @@ export interface PlayerHiddenElementsConfig extends BaseHiddenElementsConfig {
   group_selector: boolean;
   player_name: boolean;
   track_title: boolean;
+  track_album: boolean;
   track_artist: boolean;
   track_progress_time: boolean;
   track_progress_bar: boolean;
@@ -77,6 +78,7 @@ export const DEFAULT_PLAYER_HIDDEN_ELEMENTS_CONFIG: PlayerHiddenElementsConfig =
     volume: false,
     group_selector: false,
     player_name: false,
+    track_album: false,
     track_artist: false,
     track_progress_bar: false,
     track_progress_time: false,

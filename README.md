@@ -586,6 +586,7 @@ Multiple elements on the Music Player tab can be hidden. By default, all element
 | group_selector      | bool  | No       | false       | Hides the grouped player volume menu         |
 | player_name         | bool  | No       | false       | Hides the player name                        |
 | track_title         | bool  | No       | false       | Hides the track title                        |
+| track_album         | bool  | No       | false       | Hides the track artist                       |
 | track_artist        | bool  | No       | false       | Hides the track artist                       |
 | track_progress_time | bool  | No       | false       | Hides the track progress time                |
 | track_progress_bar  | bool  | No       | false       | Hides the track progress bar                 |

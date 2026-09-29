@@ -348,13 +348,12 @@ export class MusicPlayerCard extends LitElement {
     if (!this.player_data) {
       return html``;
     }
-    const title = `${this.player_data.track_title} - ${this.player_data.track_album}`;
     return html`
       <mpc-marquee-text
         class="player-track-title marquee
         ${this.cardConfig?.expressive ? `expressive` : ``}"
       >
-        ${title}
+        ${this.player_data.track_title}${this.hiddenElements.track_album ? `` : ` - ${this.player_data.track_album}`}
       </mpc-marquee-text>
     `;
   }
