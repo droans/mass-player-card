@@ -3579,7 +3579,7 @@ __metadata:
     lit: "npm:3.3.3"
     localforage: "npm:^1.10.0"
     mass-queue-types: "npm:^1.1.5"
-    prettier: "npm:^3.9.5"
+    prettier: "npm:^3.9.6"
     rollup: "npm:^4.62.2"
     rollup-plugin-commonjs: "npm:^10.1.0"
     rollup-plugin-serve: "npm:^3.0.0"
@@ -4185,12 +4185,21 @@ __metadata:
   languageName: node
   linkType: hard
 
-"prettier@npm:^3.0.0, prettier@npm:^3.9.5":
+"prettier@npm:^3.0.0":
   version: 3.9.5
   resolution: "prettier@npm:3.9.5"
   bin:
     prettier: bin/prettier.cjs
   checksum: 10c0/0349dd9e6d8010965de6f69e6b6ee2484b8caf78c66675afced6c75ad60ff24c3a2a4f41153fb8adeaee4d8f539641b48cebc71d283cec4d146e9962126c5ceb
+  languageName: node
+  linkType: hard
+
+"prettier@npm:^3.9.6":
+  version: 3.9.6
+  resolution: "prettier@npm:3.9.6"
+  bin:
+    prettier: bin/prettier.cjs
+  checksum: 10c0/9f7ddae234035868f3daab3dc34e6de7e54622185afb017378029f0c09a9c023248ccf6f34def0b17a0538e18c47aa1b3188bab72965d1bf735919baa0747e99
   languageName: node
   linkType: hard
 
