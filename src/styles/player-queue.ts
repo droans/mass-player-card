@@ -9,7 +9,7 @@ export default css`
   *[hide] {
     display: none;
   }
-  lit-virtualizer {
+  mass-player-virtualizer {
     height: calc(var(--queue-height) - 8px);
     scrollbar-width: none;
   }

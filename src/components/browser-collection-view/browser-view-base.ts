@@ -56,7 +56,7 @@ export class BrowserViewBase extends LitElement {
   @query("#title") protected titleElement?: HTMLElement;
   @query("#enqueue-button") protected enqueueElement?: HTMLElement;
   @query("#collection-image") protected imageDivElement?: HTMLElement;
-  @query("lit-virtualizer") protected virtElement?: HTMLElement;
+  @query("mass-player-virtualizer") protected virtElement?: HTMLElement;
   @query("#virtualizer") protected virtDiv?: HTMLElement;
   @query("#tracks") protected tracksElement?: HTMLElement;
   @query("#tracks-padding") protected padElement?: HTMLElement;
@@ -376,13 +376,13 @@ export class BrowserViewBase extends LitElement {
     return html`
       <div id="virtualizer">
         <div id="tracks-padding"></div>
-        <lit-virtualizer
+        <mass-player-virtualizer
           id="browser-view"
           .items=${this.tracks}
           .renderItem=${(item: Track) => {
             return this.renderTrack(item, true);
           }}
-        ></lit-virtualizer>
+        ></mass-player-virtualizer>
       </div>
     `;
   }
