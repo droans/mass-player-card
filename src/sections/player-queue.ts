@@ -71,7 +71,7 @@ export class QueueCard extends LitElement {
 
   @queryAll("#animation") _animations?: WaAnimation[];
   @query(".media-active") _activeElement!: HTMLElement;
-  @query("lit-virtualizer") virtualizerElement!: LitVirtualizer;
+  @query("mass-player-virtualizer") virtualizerElement!: LitVirtualizer;
   @query(".list") _items!: HTMLElement;
 
   private _firstLoaded = false;
@@ -263,13 +263,13 @@ export class QueueCard extends LitElement {
   }
   private renderQueueItems(): TemplateResult {
     return html`
-      <lit-virtualizer
+      <mass-player-virtualizer
         scroller
         .items=${this.queue ?? []}
         .renderItem=${(item: QueueItem) => {
           return this.renderQueueItem(item);
         }}
-      ></lit-virtualizer>
+      ></mass-player-virtualizer>
     `;
   }
   protected renderClearQueueButton(): TemplateResult {
