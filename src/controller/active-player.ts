@@ -202,7 +202,7 @@ export class ActivePlayerController {
       this._activeMediaPlayer.setValue(player);
       this.dispatchUpdatedActivePlayer();
       void this.updateActivePlayerData();
-      if (player.attributes.group_members) {
+      if ((player.attributes.group_members?.length ?? 0) > 0) {
         this.setGroupAttributes();
       }
     }
