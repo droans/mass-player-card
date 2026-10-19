@@ -68,18 +68,12 @@ export class MassPlayerProgressBar extends LitElement {
     this._prog_pct = prog;
   }
   private get media_position() {
-    if (!this._media_position) {
-      this.requestProgress();
-    }
     return this._media_position;
   }
 
   private set media_duration(dur: number | undefined) {
     dur ??= 1;
     this._media_duration = dur;
-    if (!this._media_duration) {
-      this.requestProgress();
-    }
     const prog = Math.min(1, this._media_position / dur);
     this._prog_pct = prog;
   }
