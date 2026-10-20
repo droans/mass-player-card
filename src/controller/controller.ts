@@ -271,7 +271,7 @@ export class MassCardController {
     if (this.massUser || this.massUser === null) {
       return;
     }
-    if (!this.config || !this.hass || !this.activeEntityId) {
+    if (!this.config?.user || !this.hass || !this.activeEntityId) {
       return;
     }
     const massUser = this.getMassUser(this.hass);

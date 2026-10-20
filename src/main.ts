@@ -260,7 +260,7 @@ export class MusicAssistantPlayerCard extends LitElement {
     \n Home Assistant User ID: ${hassUser}
     \n
     \n Config:
-    \n ${userConfig}
+    \n ${JSON.stringify(userConfig)}
     `;
     this.createError(message);
   };
