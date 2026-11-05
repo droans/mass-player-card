@@ -551,7 +551,7 @@ export class MediaBrowser extends LitElement {
             this.useExpressive ? `expressive` : ``
           }"
           scheme="plain"
-          elevation="0"
+          elevation="-1"
           .iconPath=${this.searchMediaTypeIcon}
           .initialSelection=${this.searchMediaType}
           .items=${icons}
@@ -569,7 +569,7 @@ export class MediaBrowser extends LitElement {
           .onPressService=${this.onSearchLibrarySelect}
           role="plain"
           size="small"
-          elevation="0"
+          elevation="-1"
           id="search-favorite-button"
           class="search-library-button button min ${
             this.useExpressive ? `expressive` : ``
