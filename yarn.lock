@@ -3009,7 +3009,14 @@ __metadata:
   languageName: node
   linkType: hard
 
-"home-assistant-js-websocket@npm:9.6.0, home-assistant-js-websocket@npm:^9.6.0":
+"home-assistant-js-websocket@npm:9.8.1":
+  version: 9.8.1
+  resolution: "home-assistant-js-websocket@npm:9.8.1"
+  checksum: 10c0/e3e24c39f9e32f17e8ea6a4c870bfa2251c490ca836edd5eff8087985d67a4005972f5a0b617beeb4d8809601d5056d2c8a680ebf6bad978b1d252d75d77e39f
+  languageName: node
+  linkType: hard
+
+"home-assistant-js-websocket@npm:^9.6.0":
   version: 9.6.0
   resolution: "home-assistant-js-websocket@npm:9.6.0"
   checksum: 10c0/92973a99c21efbd15e093f12ebc7797d1d86a305246e2a6cbe5cd7d980fa916c216ffb3459a9aa17c23adf7339773a176c99783386b6fb5688972bad3107ab7b
@@ -3705,7 +3712,7 @@ __metadata:
     eslint-plugin-observers: "npm:^1.0.1"
     eslint-plugin-unicorn: "npm:^64.0.0"
     eslint-plugin-wc: "npm:^3.1.0"
-    home-assistant-js-websocket: "npm:9.6.0"
+    home-assistant-js-websocket: "npm:9.8.1"
     lit: "npm:3.3.3"
     localforage: "npm:^1.10.0"
     mass-queue-types: "npm:^1.1.5"
