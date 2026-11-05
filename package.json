@@ -71,6 +71,9 @@
     "full": "echo 'Generating TOC' && yarn docs && echo 'Running Prettier' && yarn prettier && echo 'Linting' && yarn lint",
     "docs": "doctoc ./README.md --maxlevel 3"
   },
+  "resolutions": {
+    "eslint-plugin-escompat": "^4.1.0"
+  },
   "packageManager": "yarn@4.17.1",
   "prettier": {
     "printWidth": 80,
