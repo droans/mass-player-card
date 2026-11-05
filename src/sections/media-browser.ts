@@ -19,6 +19,9 @@ import {
   EnqueueConfigMap,
   getFilterButtons,
   getSearchMediaButtons,
+  MediaBrowserSection,
+  MediaBrowserSubsection,
+  SEARCH_SECTIONS,
   SEARCH_TERM_MIN_LENGTH,
   SEARCH_UPDATE_DELAY,
 } from "../const/media-browser";
@@ -36,6 +39,7 @@ import styles from "../styles/media-browser";
 import {
   activeEntityConfigContext,
   activeMediaBrowserCardsContext,
+  activeMediaBrowserSectionContext,
   browserControllerContext,
   EntityConfig,
   hassContext,
@@ -98,18 +102,19 @@ export class MediaBrowser extends LitElement {
   })
   private hiddenElements!: MediaBrowserHiddenElementsConfig;
 
-  public activeSection = DEFAULT_ACTIVE_SECTION;
-  public activeSubSection = DEFAULT_ACTIVE_SUBSECTION;
+  @provide({ context: activeMediaBrowserSectionContext })
+  public activeSection: MediaBrowserSection = DEFAULT_ACTIVE_SECTION;
+  public activeSubSection: MediaBrowserSubsection = DEFAULT_ACTIVE_SUBSECTION;
   @property() private activeCollectionData!: mediaCardCollectionType;
-  private previousSections: string[] = [];
-  private previousSubSections: string[] = [];
+  private previousSections: MediaBrowserSection[] = [];
+  private previousSubSections: MediaBrowserSubsection[] = [];
 
   private _hass?: ExtendedHass;
   private _browserController?: MediaBrowserController;
   private actions?: BrowserActions;
   private searchTerm = "";
   private _searchTimeout!: number;
-  private searchActivated = false;
+  @state() private searchActivated = false;
   @state() private searchLoading = false;
 
   @state()
@@ -175,7 +180,7 @@ export class MediaBrowser extends LitElement {
       return;
     }
     this._cards = cards;
-    if (this.activeSection == "search") {
+    if (SEARCH_SECTIONS.includes(this.activeSection)) {
       this.activeCards = [];
       return;
     }
@@ -240,34 +245,41 @@ export class MediaBrowser extends LitElement {
       return;
     }
     const enqueue = EnqueueConfigMap[this.config.default_enqueue_option];
+    const user = this.browserController?.massUser;
     void this.actions.actionEnqueueMedia(
       this.activeEntityConfig.entity_id,
       data.media_content_id,
       data.media_content_type,
       enqueue,
+      user,
     );
     this.onMediaSelectedAction();
   };
   private onSectionSelect = (data: mediaCardSectionData) => {
     this.setPreviousSection();
     this.activeSection = data.subtype;
-    this.activeSubSection = data.section;
+    this.activeSubSection = data.section as MediaBrowserSubsection;
     this.setActiveCards();
   };
   private onItemSelect = (data: mediaCardItemData) => {
     if (!this.actions) {
       return;
     }
+    const user = this._browserController?.massUser;
     void this.actions.actionPlayMedia(
       this.activeEntityConfig.entity_id,
       data.media_content_id,
       data.media_content_type,
+      user,
     );
   };
   private onCollectionSelect = (data: mediaCardCollectionType) => {
     this.setPreviousSection();
     this.activeCollectionData = data;
     this.activeSubSection = "collection";
+    if (SEARCH_SECTIONS.includes(this.activeSection)) {
+      this.activeSection = "search-collection";
+    }
     this.searchActivated = false;
     this.requestUpdate("collection", "selected");
   };
@@ -298,11 +310,13 @@ export class MediaBrowser extends LitElement {
     if (!this.actions) {
       return;
     }
+    const user = this.browserController?.massUser;
     if (enqueue == EnqueueOptions.RADIO) {
       void this.actions.actionPlayRadio(
         this.activeEntityConfig.entity_id,
         content_id,
         content_type,
+        user,
       );
       return;
     }
@@ -311,6 +325,7 @@ export class MediaBrowser extends LitElement {
       content_id,
       content_type,
       enqueue,
+      user,
     );
   };
   private onPlaylistEnqueue = (
@@ -322,11 +337,13 @@ export class MediaBrowser extends LitElement {
     }
     const content_id: string = data.media_content_id;
     const content_type = "playlist";
+    const user = this.browserController?.massUser;
     void this.actions.actionEnqueueMedia(
       this.activeEntityConfig.entity_id,
       content_id,
       content_type,
       enqueue,
+      user,
     );
   };
   private onBack = () => {
@@ -404,7 +421,7 @@ export class MediaBrowser extends LitElement {
     if (!Object.keys(this.cards).includes(value)) {
       return;
     }
-    this.activeSection = value;
+    this.activeSection = value as MediaBrowserSection;
     this.activeSubSection = "main";
     /* eslint-disable-next-line
       @typescript-eslint/no-unsafe-member-access
@@ -525,7 +542,7 @@ export class MediaBrowser extends LitElement {
     if (!this.hass) {
       return html``;
     }
-    if (this.activeSection == "search") {
+    if (SEARCH_SECTIONS.includes(this.activeSection)) {
       const icons = getSearchMediaButtons(this.Icons, this.hass);
       return html`
         <mpc-menu-button
@@ -534,7 +551,7 @@ export class MediaBrowser extends LitElement {
             this.useExpressive ? `expressive` : ``
           }"
           scheme="plain"
-          elevation="0"
+          elevation="-1"
           .iconPath=${this.searchMediaTypeIcon}
           .initialSelection=${this.searchMediaType}
           .items=${icons}
@@ -546,13 +563,13 @@ export class MediaBrowser extends LitElement {
     return html``;
   }
   protected renderSearchLibraryButton(): TemplateResult {
-    if (this.activeSection == "search") {
+    if (SEARCH_SECTIONS.includes(this.activeSection)) {
       return html`
         <mpc-button
           .onPressService=${this.onSearchLibrarySelect}
           role="plain"
           size="small"
-          elevation="0"
+          elevation="-1"
           id="search-favorite-button"
           class="search-library-button button min ${
             this.useExpressive ? `expressive` : ``
@@ -661,7 +678,12 @@ export class MediaBrowser extends LitElement {
     if (!this.hass || this.hiddenElements.filter_button) {
       return html``;
     }
-    const icons = getFilterButtons(this.Icons, this.hass, this.config);
+    const icons = getFilterButtons(
+      this.Icons,
+      this.hass,
+      this.config,
+      this.cards,
+    );
     const icon = this.Icons.FILTER;
     return html`
       <mpc-menu-button
@@ -704,7 +726,7 @@ export class MediaBrowser extends LitElement {
     if (this.hideSectionHeader()) {
       return html``;
     }
-    if (this.activeSection == "search") {
+    if (SEARCH_SECTIONS.includes(this.activeSection)) {
       return this.renderSearchHeader();
     }
     if (

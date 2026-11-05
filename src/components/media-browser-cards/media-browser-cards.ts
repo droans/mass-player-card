@@ -13,6 +13,7 @@ import "./media-card";
 import { CardEnqueueService, CardSelectedService } from "../../const/actions";
 import {
   activeMediaBrowserCardsContext,
+  activeMediaBrowserSectionContext,
   hassContext,
   mediaBrowserConfigContext,
 } from "../../const/context";
@@ -22,6 +23,7 @@ import styles from "./media-browser-cards-styles";
 import { MediaBrowserConfig } from "../../config/media-browser";
 import { jsonMatch } from "../../utils/utility";
 import { EnqueueOptions } from "../../const/enums";
+import { MediaBrowserSection } from "../../const/media-browser";
 
 @customElement("mpc-browser-cards")
 export class MediaBrowserCards extends LitElement {
@@ -40,6 +42,9 @@ export class MediaBrowserCards extends LitElement {
   public onSelectAction!: CardSelectedService;
   private _items!: MediaCardItem[];
 
+  @consume({ context: activeMediaBrowserSectionContext, subscribe: true })
+  public activeMediaBrowserSection!: MediaBrowserSection;
+
   @consume({ context: mediaBrowserConfigContext, subscribe: true })
   public set browserConfig(config: MediaBrowserConfig | undefined) {
     if (!jsonMatch(this._browserConfig, config) && config) {
@@ -55,7 +60,7 @@ export class MediaBrowserCards extends LitElement {
 
   @consume({ context: activeMediaBrowserCardsContext, subscribe: true })
   public set items(items: MediaCardItem[] | undefined) {
-    if (!items?.length) {
+    if (!items) {
       return;
     }
     if (!jsonMatch(this._items, items)) {
@@ -88,6 +93,33 @@ export class MediaBrowserCards extends LitElement {
   public resetScroll() {
     this._iconsElement?.scrollTo({ top: 0 });
   }
+  public renderEmptyCards(): TemplateResult {
+    if (
+      ["search", "search-collection"].includes(this.activeMediaBrowserSection)
+    ) {
+      // TODO: Render empty search
+      return html``;
+    }
+    const width = (1 / (this.browserConfig?.columns ?? 1)) * 100 - 2;
+    return html`
+      <mpc-browser-media-card
+        style="max-width: ${width.toString()}%"
+        skeleton
+      ></mpc-browser-media-card>
+      <mpc-browser-media-card
+        style="max-width: ${width.toString()}%"
+        skeleton
+      ></mpc-browser-media-card>
+      <mpc-browser-media-card
+        style="max-width: ${width.toString()}%"
+        skeleton
+      ></mpc-browser-media-card>
+      <mpc-browser-media-card
+        style="max-width: ${width.toString()}%"
+        skeleton
+      ></mpc-browser-media-card>
+    `;
+  }
   private generateCode() {
     if (this.loading) {
       this.code = html`
@@ -99,6 +131,13 @@ export class MediaBrowserCards extends LitElement {
       `;
       return;
     }
+    if (!this.items?.length) {
+      this.code = html`
+        <div class="icons wa-grid">${this.renderEmptyCards()}</div>
+      `;
+      return;
+    }
+    // eslint-disable-next-line @typescript-eslint/no-unnecessary-condition
     const result = this.items?.map((item) => {
       const queueable = [
         "service",

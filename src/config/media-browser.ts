@@ -16,6 +16,7 @@ export interface MediaBrowserConfig {
   playlists_allow_removing_tracks: boolean;
   default_enqueue_option: EnqueueConfigOptions;
   default_section: BrowserSection;
+  show_artist_subtitles: boolean;
 }
 
 export interface FavoritesConfig {
@@ -28,6 +29,7 @@ export interface FavoritesConfig {
   radios: FavoriteItemConfig;
   tracks: FavoriteItemConfig;
   show_collection_view: boolean;
+  sort_order: GetLibrarySortOrders | null;
 }
 export interface FavoriteItemConfig {
   enabled: boolean;
@@ -70,6 +72,26 @@ export interface MediaBrowserHiddenElementsConfig extends BaseHiddenElementsConf
   play_next_clear_queue_button: boolean;
 }
 
+export type GetLibrarySortOrders =
+  | "artist_name"
+  | "artist_name_desc"
+  | "last_played"
+  | "last_played_desc"
+  | "name"
+  | "name_desc"
+  | "play_count"
+  | "play_count_desc"
+  | "position"
+  | "position_desc"
+  | "random"
+  | "random_play_count"
+  | "sort_name"
+  | "sort_name_desc"
+  | "timestamp_added"
+  | "timestamp_added_desc"
+  | "year"
+  | "year_desc";
+
 export type EnqueueConfigOptions =
   | "play_now"
   | "play_now_clear_queue"
@@ -95,6 +117,7 @@ const DEFAULT_FAVORITES_CONFIG: FavoritesConfig = {
   radios: DEFAULT_FAVORITE_ITEM_CONFIG,
   tracks: DEFAULT_FAVORITE_ITEM_CONFIG,
   show_collection_view: true,
+  sort_order: null,
 };
 
 export const DEFAULT_MEDIA_BROWSER_HIDDEN_ELEMENTS_CONFIG: MediaBrowserHiddenElementsConfig =
@@ -139,18 +162,22 @@ export const DEFAULT_MEDIA_BROWSER_CONFIG: MediaBrowserConfig = {
   playlists_allow_removing_tracks: false,
   default_enqueue_option: "play_now",
   default_section: "favorites",
+  show_artist_subtitles: true,
 };
 
 const MEDIA_BROWSER_HIDDEN_ITEMS = [
-  "back_button",
-  "search",
-  "titles",
   "enqueue_menu",
   "add_to_queue_button",
   "play_now_button",
   "play_now_clear_queue_button",
   "play_next_button",
   "play_next_clear_queue_button",
+  "back_button",
+  "search_button",
+  "filter_button",
+  "titles",
+  "header",
+  "header_title",
 ];
 
 function favoritesConfigForm(section: string) {
@@ -222,6 +249,98 @@ function defaultSectionConfigForm() {
     },
   };
 }
+
+function sortOrderConfigForm() {
+  interface opt {
+    value: GetLibrarySortOrders;
+    label: string;
+  }
+  const options: opt[] = [
+    {
+      value: "artist_name",
+      label: "Artist Name (Asc)",
+    },
+    {
+      value: "artist_name_desc",
+      label: "Artist Name (Desc)",
+    },
+    {
+      value: "last_played",
+      label: "Last Played (Asc)",
+    },
+    {
+      value: "last_played_desc",
+      label: "Last Played (Desc)",
+    },
+    {
+      value: "name",
+      label: "Name (Asc)",
+    },
+    {
+      value: "name_desc",
+      label: "Name (Desc)",
+    },
+    {
+      value: "play_count",
+      label: "Play Count (Asc)",
+    },
+    {
+      value: "play_count_desc",
+      label: "Play Count (Desc)",
+    },
+    {
+      value: "position",
+      label: "Position (Asc)",
+    },
+    {
+      value: "position_desc",
+      label: "Position (Desc)",
+    },
+    {
+      value: "random",
+      label: "Random",
+    },
+    {
+      value: "random_play_count",
+      label: "Random + Least Played",
+    },
+    {
+      value: "sort_name",
+      label: "Sort Name (Asc)",
+    },
+    {
+      value: "sort_name_desc",
+      label: "Sort Name (Desc)",
+    },
+    {
+      value: "timestamp_added",
+      label: "Added (Asc)",
+    },
+    {
+      value: "timestamp_added_desc",
+      label: "Added (Desc)",
+    },
+    {
+      value: "year",
+      label: "Year (Asc)",
+    },
+    {
+      value: "year_desc",
+      label: "Year (Desc)",
+    },
+  ];
+  return {
+    name: "sort_order",
+    required: false,
+    selector: {
+      select: {
+        multiple: false,
+        mode: "dropdown",
+        options,
+      },
+    },
+  };
+}
 function defaultEnqueueOptionConfigForm() {
   interface opt {
     value: EnqueueConfigOptions;
@@ -289,6 +408,7 @@ export function mediaBrowserConfigForm() {
         favoritesConfigForm("podcasts"),
         favoritesConfigForm("radios"),
         favoritesConfigForm("tracks"),
+        sortOrderConfigForm(),
       ],
     },
     {
@@ -308,9 +428,11 @@ export function mediaBrowserConfigForm() {
         favoritesConfigForm("podcasts"),
         favoritesConfigForm("radios"),
         favoritesConfigForm("tracks"),
+        sortOrderConfigForm(),
       ],
     },
     recommendationsConfigForm(),
+    { name: "show_artist_subtitles", selector: { boolean: {} }, default: true },
     hiddenElementsConfigItem(MEDIA_BROWSER_HIDDEN_ITEMS),
     {
       name: "playlists_allow_removing_tracks",

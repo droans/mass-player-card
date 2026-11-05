@@ -14,6 +14,7 @@ import {
 import { PlayerConfig } from "../../config/player";
 import { Icons } from "../../const/icons";
 import { ExtendedHass, ListItemData } from "../../const/types";
+import { computeEntityName } from "../../utils/entity-name";
 import { customElement } from "lit/decorators.js";
 import { playerIsAvailable } from "../../utils/utility";
 
@@ -44,9 +45,8 @@ export class MassCardPlayerSelector extends LitElement {
         return;
       }
       const name =
-        item.name.length > 0
-          ? item.name
-          : (ent.attributes.friendly_name ?? `Missing- ${item.entity_id}`);
+        computeEntityName(this.hass, ent, item.name) ||
+        `Missing- ${item.entity_id}`;
       let url: string;
       let fallback: string;
       // eslint-disable-next-line unicorn/no-negated-condition

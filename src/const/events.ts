@@ -69,6 +69,13 @@ export interface ForceUpdatePlayerDataEventData {
   value: any;
 }
 
+export interface UserNotFoundEvent extends CustomEventNoDetail {
+  detail: {
+    hass_user: string;
+    user_config: string;
+  };
+}
+
 export interface MassQueueEvent {
   data: {
     type: string;

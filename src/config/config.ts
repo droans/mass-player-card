@@ -7,7 +7,7 @@ import {
 } from "@mdi/js";
 
 import { DEFAULT_MAX_VOLUME } from "../const/music-player";
-import { ExtendedHass } from "../const/types";
+import { EntityName, ExtendedHass } from "../const/types";
 
 import {
   DEFAULT_MEDIA_BROWSER_CONFIG,
@@ -55,6 +55,12 @@ export interface Config {
   panel: boolean;
   default_section: ConfigSections | undefined;
   sync_player_across_dashboard: boolean;
+  user: string | MappedUser[] | null;
+}
+
+export interface MappedUser {
+  hass_user_id: string;
+  mass_username: string;
 }
 
 export type ConfigSections =
@@ -73,7 +79,7 @@ export interface EntityConfig {
   entity_id: string;
   volume_entity_id: string;
   max_volume: number;
-  name: string;
+  name: EntityName;
   hide: HiddenElementsConfig;
   inactive_when_idle: boolean;
   inactive_when_not_updated: boolean;
@@ -103,6 +109,7 @@ export const DEFAULT_CONFIG: Config = {
   panel: false,
   default_section: undefined,
   sync_player_across_dashboard: false,
+  user: null,
 };
 
 const ENTITY_DEFAULT_HIDDEN_ITEM_CONFIG: HiddenElementsConfig = {

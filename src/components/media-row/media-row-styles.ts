@@ -1,6 +1,10 @@
 import { css } from "lit";
 
 export default css`
+  :host {
+    --primary-text-color: var(--md-sys-color-on-surface);
+    --ha-ripple-hover-color: var(--md-sys-color-on-surface);
+  }
   .action-button {
     width: var(--media-row-icon-width);
     align-content: center;
@@ -54,12 +58,18 @@ export default css`
 
   .button {
     margin: 0.15rem;
+  }
+  .button::part(base) {
     height: var(--media-row-height);
+    padding-inline: 6px;
   }
   .button.expressive {
+    --md-list-item-leading-space: 0px;
+  }
+  .button.expressive::part(base) {
     border-radius: var(--default-border-radius);
   }
-  .button:not(.expressive) {
+  .button:not(.expressive)::part(base) {
     border-radius: var(--media-row-border-radius);
   }
   .button.active {
@@ -106,8 +116,7 @@ export default css`
     justify-content: flex-end;
     gap: 2px;
     height: 48px;
-    right: 8px;
-    padding-right: 8px;
+    right: 4px;
     position: absolute;
   }
 

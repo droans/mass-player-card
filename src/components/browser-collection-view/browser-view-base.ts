@@ -308,8 +308,11 @@ export class BrowserViewBase extends LitElement {
     this._enqueue_buttons = options;
   }
 
-  protected _renderImageFallback = (event_: HTMLImageElementEvent) => {
-    event_.target.src = getThumbnail(this.hass, Thumbnail.PLAYLIST) as string;
+  protected _renderImageFallback = (event_: Event) => {
+    // eslint-disable-next-line unicorn/prevent-abbreviations
+    const ev_ = event_ as HTMLImageElementEvent;
+    ev_.target.src = getThumbnail(this.hass, Thumbnail.PLAYLIST) as string;
+    ev_.target.removeEventListener("error", this._renderImageFallback);
   };
   protected renderImage(): TemplateResult {
     const img = this.collectionImageURL;

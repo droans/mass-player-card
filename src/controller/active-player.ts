@@ -14,6 +14,7 @@ import {
 } from "../const/context";
 import { Config, EntityConfig } from "../config/config";
 import {
+  EntityName,
   ExtendedHass,
   ExtendedHassEntity,
   getQueueResponse,
@@ -46,6 +47,7 @@ import {
 import WaCarousel from "@droans/webawesome/dist/components/carousel/carousel.js";
 import { RepeatMode } from "../const/enums";
 import { MassCardConfigController } from "./config";
+import { computeEntityName } from "../utils/entity-name";
 
 export class ActivePlayerController {
   private _activeEntityConfig: ContextProvider<
@@ -61,6 +63,9 @@ export class ActivePlayerController {
   private _groupMembers!: ContextProvider<typeof groupedPlayersContext>;
   private _groupVolume!: ContextProvider<typeof groupVolumeContext>;
   private _activePlayerData!: ContextProvider<typeof activePlayerDataContext>;
+  private _playerData?: getQueueResponse;
+  private _maxPlayerDataUpdateTimestampDelta = 5000;
+  private _playerDataUpdateInterval?: number;
 
   private _hass!: ExtendedHass;
   private _config!: Config;
@@ -73,6 +78,7 @@ export class ActivePlayerController {
   private _timeout?: number;
   private _observerDelay = 300;
   private _canGroupWith: string[] = [];
+  private volumeEntityId!: string;
 
   constructor(
     hass: ExtendedHass,
@@ -117,17 +123,27 @@ export class ActivePlayerController {
     this.configController = configController;
     this._host = host;
     this.setDefaultActivePlayer();
+    this._playerDataUpdateInterval = setInterval(() => {
+      void this.actionGetCurrentQueue();
+    }, this._maxPlayerDataUpdateTimestampDelta);
   }
   public set hass(hass: ExtendedHass) {
     this._hass = hass;
-    const current_entity = this.activeMediaPlayer;
-    const new_entity = hass.states[this.activeEntityID];
-    if (playerHasUpdated(current_entity, new_entity)) {
+    const currentEntity = this.activeMediaPlayer;
+    const newEntity = hass.states[this.activeEntityID];
+    const currentVolEntity = this.volumeMediaPlayer;
+    const newVolEntity = hass.states[this.volumeEntityId];
+    if (playerHasUpdated(currentEntity, newEntity)) {
       this.setActivePlayer(this.activeEntityID);
     }
     this.volumeMediaPlayer =
       hass.states[this.activeEntityConfig.volume_entity_id];
-    void this.updateActivePlayerData();
+    if (
+      playerHasUpdated(currentEntity, newEntity) ||
+      playerHasUpdated(currentVolEntity, newVolEntity)
+    ) {
+      void this.updateActivePlayerData(true);
+    }
   }
   public get hass() {
     return this._hass;
@@ -163,6 +179,7 @@ export class ActivePlayerController {
     this.volumeMediaPlayer = states[config.volume_entity_id];
     this.activeMediaPlayer = states[config.entity_id];
     this.activeEntityID = config.entity_id;
+    this.volumeEntityId = config.volume_entity_id;
     this.configController.activeEntityConfig = config;
     void this.setCanGroupWith();
   }
@@ -185,7 +202,7 @@ export class ActivePlayerController {
       this._activeMediaPlayer.setValue(player);
       this.dispatchUpdatedActivePlayer();
       void this.updateActivePlayerData();
-      if (player.attributes.group_members) {
+      if ((player.attributes.group_members?.length ?? 0) > 0) {
         this.setGroupAttributes();
       }
     }
@@ -194,17 +211,17 @@ export class ActivePlayerController {
     return this._activeMediaPlayer.value;
   }
 
-  private set activePlayerName(name: string) {
-    if (name.length > 0) {
+  private set activePlayerName(name: EntityName) {
+    if (typeof name === "string" && name.length > 0) {
       this._activePlayerName.setValue(name);
       return;
     }
     const ent = this.hass.states[this.activeEntityConfig.entity_id];
     if (ent) {
-      this._activePlayerName.setValue(ent.attributes.friendly_name ?? "");
+      this._activePlayerName.setValue(computeEntityName(this.hass, ent, name));
     }
   }
-  public get activePlayerName() {
+  public get activePlayerName(): string {
     return this._activePlayerName.value;
   }
   private set groupMembers(members: string[] | undefined) {
@@ -323,7 +340,7 @@ export class ActivePlayerController {
     }, this._observerDelay);
   };
 
-  public async updateActivePlayerData() {
+  public async updateActivePlayerData(forceUpdate = false) {
     const badStates = ["unavailable", "unknown"];
     if (
       !this.activeMediaPlayer ||
@@ -337,7 +354,7 @@ export class ActivePlayerController {
     if (!playerIsAvailable(this.hass, this.activeEntityID)) {
       return;
     }
-    const data = await this.getactivePlayerData();
+    const data = await this.getactivePlayerData(forceUpdate);
     const new_data = JSON.stringify(data);
     const current_data = JSON.stringify(this.activePlayerData);
     if (new_data != current_data) {
@@ -405,10 +422,13 @@ export class ActivePlayerController {
     }
   }
 
-  public async getactivePlayerData(): Promise<PlayerData> {
+  public async getactivePlayerData(forceUpdate = false): Promise<PlayerData> {
     const player = this.activeMediaPlayer;
     const vol_player = this.volumeMediaPlayer;
-    const current_queue = await this.actionGetCurrentQueue();
+    const current_queue =
+      forceUpdate || !this._playerData
+        ? await this.actionGetCurrentQueue()
+        : this._playerData;
     const current_item = current_queue.current_item;
 
     return {
@@ -432,32 +452,41 @@ export class ActivePlayerController {
     if (!isActive(this.hass, this.activeMediaPlayer, this.activeEntityConfig)) {
       return 0;
     }
-    const current_queue = await this.actionGetCurrentQueue();
-    const elapsed = current_queue.elapsed_time;
-    return elapsed;
+    if (!this._playerData) {
+      await this.actionGetCurrentQueue();
+    }
+    return this._playerData?.elapsed_time ?? 0;
   }
   public async getPlayerActiveItemDuration(): Promise<number> {
     if (!isActive(this.hass, this.activeMediaPlayer, this.activeEntityConfig)) {
       return 1;
     }
-    const current_queue = await this.actionGetCurrentQueue();
-    return current_queue.current_item?.duration ?? 1;
+    if (!this._playerData) {
+      await this.actionGetCurrentQueue();
+    }
+    return this._playerData?.current_item?.duration ?? 1;
   }
   async actionGetCurrentQueue(): Promise<getQueueResponse> {
     const entity_id = this.activeEntityID;
-    if (!playerIsAvailable(this.hass, entity_id)) {
-      return {
-        queue_id: "",
-        active: false,
-        name: this.activePlayerName,
-        items: 0,
-        shuffle_enabled: false,
-        repeat_mode: false,
-        current_index: 0,
-        elapsed_time: 0,
-        current_item: null,
-        next_item: null,
-      };
+    const player = this.activeMediaPlayer;
+    const defaultResponse = {
+      queue_id: "",
+      active: false,
+      name: this.activePlayerName,
+      items: 0,
+      shuffle_enabled: false,
+      repeat_mode: false,
+      current_index: 0,
+      elapsed_time: 0,
+      current_item: null,
+      next_item: null,
+    };
+    if (
+      !playerIsAvailable(this.hass, entity_id) ||
+      !player?.state ||
+      ["unknown", "unavailable"].includes(player.state)
+    ) {
+      return defaultResponse;
     }
     const data: MassGetQueueServiceDataSchema = {
       type: "call_service",
@@ -468,10 +497,15 @@ export class ActivePlayerController {
       },
       return_response: true,
     };
-    const returnValue =
-      await this.hass.callWS<MassGetQueueServiceResponseSchema>(data);
-    const result = returnValue.response[entity_id];
-    return result;
+    try {
+      const returnValue =
+        await this.hass.callWS<MassGetQueueServiceResponseSchema>(data);
+      const result = returnValue.response[entity_id];
+      this._playerData = result;
+      return result;
+    } catch {
+      return defaultResponse;
+    }
   }
   public createAndApplyExpressiveScheme() {
     if (!this.config.expressive) {
@@ -601,9 +635,12 @@ export class ActivePlayerController {
     const groupableIds = info.can_group_with;
     const result: string[] = [];
     for (const entity of this.config.entities) {
-      const entInfo = await this.getEntityInfo(entity.entity_id);
-      if (groupableIds.includes(entInfo.player_id)) {
-        result.push(entity.entity_id);
+      const entId = entity.entity_id;
+      if (playerIsAvailable(this.hass, entId)) {
+        const entInfo = await this.getEntityInfo(entity.entity_id);
+        if (groupableIds.includes(entInfo.player_id)) {
+          result.push(entity.entity_id);
+        }
       }
     }
     return result;
@@ -616,10 +653,16 @@ export class ActivePlayerController {
   public disconnected() {
     this._observer?.disconnect();
     this._observer = undefined;
+    if (this._playerDataUpdateInterval) {
+      clearInterval(this._playerDataUpdateInterval);
+    }
   }
   public reconnected(hass: ExtendedHass) {
     this.hass = hass;
     this.setActivePlayer(this.activeEntityID);
     this.createObserver();
+    this._playerDataUpdateInterval = setInterval(() => {
+      void this.actionGetCurrentQueue();
+    }, this._maxPlayerDataUpdateTimestampDelta);
   }
 }

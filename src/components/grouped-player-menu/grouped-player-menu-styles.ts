@@ -30,10 +30,10 @@ export default css`
     --control-select-thickness: 2.5em;
     max-width: var(--control-select-menu-height);
   }
-  #grouped-players-menu ha-md-list-item {
+  #grouped-players-menu ha-list-item-base {
     padding-left: 12px;
   }
-  #grouped-players-menu ha-md-list-item:not(.grouped-players-volume-item) {
+  #grouped-players-menu ha-list-item-base:not(.grouped-players-volume-item) {
     padding-right: 12px;
   }
   #grouped-players-menu::part(menu-button) {
@@ -41,7 +41,12 @@ export default css`
   }
   .grouped-players-select-item {
     width: 320px;
+  }
+  :is(.grouped-players-volume-item, .grouped-players-select-item)::part(base) {
+    width: 320px;
     height: 100%;
+    padding-inline: unset;
+    padding-block: unset;
   }
   .grouped-players-select-item-image,
   .grouped-players-select-item-icon {
@@ -54,9 +59,6 @@ export default css`
   }
   .grouped-players-select-item-image.expressive {
     border-radius: 12px;
-  }
-  .grouped-players-volume-item {
-    --md-list-item-top-space: 0px;
   }
   .grouped-svg-unjoin {
     --button-button-height: var(--row-icon-button-height);

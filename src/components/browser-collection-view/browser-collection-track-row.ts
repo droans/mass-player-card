@@ -10,6 +10,7 @@ import styles from "./browser-collection-track-row-styles";
 import { consume } from "@lit/context";
 import {
   activeEntityIDContext,
+  browserControllerContext,
   configContext,
   hassContext,
   IconsContext,
@@ -27,12 +28,13 @@ import { EnqueueOptions, Thumbnail } from "../../const/enums";
 import BrowserActions from "../../actions/browser-actions";
 import { Track } from "mass-queue-types/packages/mass_queue/utils";
 import { Icons } from "../../const/icons";
-import { MenuButtonEventData } from "../../const/events";
+import { HTMLImageElementEvent, MenuButtonEventData } from "../../const/events";
 import { getTranslation } from "../../utils/translations";
 import { PlaylistTrack } from "mass-queue-types/packages/mass_queue/actions/get_playlist_tracks";
 import { EnqueueConfigMap } from "../../const/media-browser";
 import { MediaBrowserConfig } from "../../config/media-browser";
 import { Config } from "../../config/config";
+import { MediaBrowserController } from "../../controller/browser";
 
 @customElement("mpc-collection-track-row")
 export class MassPlaylistTrackRow extends LitElement {
@@ -51,6 +53,9 @@ export class MassPlaylistTrackRow extends LitElement {
   private browserConfig!: MediaBrowserConfig;
   @consume({ context: configContext, subscribe: true })
   private cardConfig!: Config;
+
+  @consume({ context: browserControllerContext, subscribe: true })
+  private browserController!: MediaBrowserController;
 
   @consume({ context: useExpressiveContext, subscribe: true })
   private useExpressive?: boolean;
@@ -152,11 +157,13 @@ export class MassPlaylistTrackRow extends LitElement {
   }
   private enqueueTrack = (enqueue: EnqueueOptions) => {
     const ent = this.activeEntityId as string;
+    const user = this.browserController.massUser;
     void this.browserActions.actionEnqueueMedia(
       ent,
       this.track.media_content_id,
       "music",
       enqueue,
+      user,
     );
   };
 
@@ -169,17 +176,20 @@ export class MassPlaylistTrackRow extends LitElement {
     const actions = this.browserActions;
     const uri = this.track.media_content_id;
     const enqueue = EnqueueConfigMap[this.browserConfig.default_enqueue_option];
+    const user = this.browserController.massUser;
     await actions.actionEnqueueMedia(
       ent,
       uri,
       "music",
       enqueue == EnqueueOptions.RADIO ? EnqueueOptions.PLAY_NOW : enqueue,
+      user,
     );
     await actions.actionEnqueueMedia(
       ent,
       this.collectionURI,
       "playlist",
       EnqueueOptions.PLAY_NEXT,
+      user,
     );
   }
   private removeTrackFromPlaylist() {
@@ -253,7 +263,7 @@ export class MassPlaylistTrackRow extends LitElement {
     `;
   }
 
-  private _renderThumbnailFallback = () => {
+  private _renderThumbnailFallback = (event_: Event) => {
     const currentSource = this.thumbnailElement.src;
     const thumb = getTrackFallbackImg(
       this.hass as ExtendedHass,
@@ -268,8 +278,10 @@ export class MassPlaylistTrackRow extends LitElement {
       return;
     }
     if (this.imagesExhausted) {
-      // eslint-disable-next-line unicorn/prefer-add-event-listener
-      this.thumbnailElement.onerror = null;
+      (event_ as HTMLImageElementEvent).target.removeEventListener(
+        "error",
+        this._renderThumbnailFallback,
+      );
     }
   };
   protected renderThumbnail(): TemplateResult {
@@ -294,7 +306,7 @@ export class MassPlaylistTrackRow extends LitElement {
     const expressiveClass = this.useExpressive ? `expressive` : ``;
     const vibrantClass = this.useVibrant ? `vibrant` : ``;
     return html`
-      <ha-md-list-item
+      <ha-list-item-button
         class="button ${expressiveClass} ${vibrantClass}"
         @click=${this.onPlaylistItemSelected}
         type="button"
@@ -304,7 +316,7 @@ export class MassPlaylistTrackRow extends LitElement {
           ${this.renderTitle()} ${this.renderArtist()}
         </span>
         ${this.renderMenuButton()}
-      </ha-md-list-item>
+      </ha-list-item-button>
       ${this.divider ? html`<div class="divider"></div>` : ``}
     `;
   }

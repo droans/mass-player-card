@@ -29,7 +29,23 @@ export interface ExtendedHass extends Omit<HomeAssistant, "states"> {
   entities: ExtendedEntitiesBase;
   states: ExtendedHassEntities;
   themes: ExtendedThemes;
+  /** Added in Home Assistant 2026.4 with this signature. */
+  formatEntityName?: (
+    stateObject: HassEntity,
+    name?: EntityName,
+  ) => string | undefined;
 }
+
+/**
+ * One part of a structured name, mirroring `EntityNameItem` in the Home
+ * Assistant frontend. A name is resolved against the entity's registry context,
+ * so it can be composed from the device, area or floor name.
+ */
+export type EntityNameItem =
+  | { type: "entity" | "device" | "area" | "floor" }
+  | { type: "text"; text: string };
+
+export type EntityName = string | EntityNameItem | EntityNameItem[];
 
 interface ExtendedEntityBase {
   entity_id: string;
@@ -154,6 +170,7 @@ export interface mediaCardServiceData {
   media_content_id: string;
   media_content_type: string;
   service?: string;
+  media_artist?: string;
 }
 export interface mediaCardRecommendationData {
   type: "service";
@@ -167,10 +184,11 @@ export interface mediaCardSectionData {
   section: string;
 }
 
-interface mediaCardCollectionData {
+export interface mediaCardCollectionData {
   media_content_id: string;
   media_image: string;
   media_title: string;
+  media_artist?: string;
 }
 
 export interface mediaCardPlaylistData extends mediaCardCollectionData {
@@ -179,6 +197,7 @@ export interface mediaCardPlaylistData extends mediaCardCollectionData {
 
 export interface mediaCardAlbumData extends mediaCardCollectionData {
   type: "album";
+  media_artist: string;
 }
 
 export interface mediaCardArtistData extends mediaCardCollectionData {

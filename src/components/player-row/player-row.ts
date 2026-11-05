@@ -27,7 +27,12 @@ import {
   PlayersHiddenElementsConfig,
 } from "../../config/players";
 import { Icons } from "../../const/icons";
-import { ExtendedHass, ExtendedHassEntity } from "../../const/types";
+import {
+  EntityName,
+  ExtendedHass,
+  ExtendedHassEntity,
+} from "../../const/types";
+import { computeEntityName } from "../../utils/entity-name";
 import { Thumbnail } from "../../const/enums";
 import { getThumbnail } from "../../utils/thumbnails";
 import { HTMLImageElementEvent } from "../../const/events";
@@ -42,7 +47,7 @@ export class PlayerRow extends LitElement {
   @property({ attribute: "can-group", type: Boolean }) canGroup = false;
 
   public allowJoin = true;
-  public playerName!: string;
+  public playerName!: EntityName;
   public joinService!: PlayerJoinService;
   public selectedService!: PlayerSelectedService;
   public transferService!: PlayerTransferService;
@@ -133,14 +138,19 @@ export class PlayerRow extends LitElement {
     this.transferService(this.player_entity.entity_id);
   };
 
-  private _renderThumbnailFallback = (event_: HTMLImageElementEvent) => {
+  private _renderThumbnailFallback = (event_: Event) => {
+    // eslint-disable-next-line unicorn/prevent-abbreviations
+    const ev = event_ as HTMLImageElementEvent;
     const attributes = this.player_entity?.attributes;
     const fallback = getThumbnail(this.hass, Thumbnail.HEADPHONES);
     const loc = attributes?.entity_picture_local;
     const pic = attributes?.entity_picture ?? fallback;
-    const source = event_.target.src;
+    const source = ev.target.src;
     const newSource = source == loc ? pic : fallback;
-    event_.target.src = newSource ?? "";
+    if (ev.target.src == newSource) {
+      ev.target.removeEventListener("error", this._renderThumbnailFallback);
+    }
+    ev.target.src = newSource ?? "";
   };
   private renderThumbnail() {
     const attributes = this.player_entity?.attributes;
@@ -182,10 +192,9 @@ export class PlayerRow extends LitElement {
     return `calc(100% - ( (32px * ${button_ct.toString()}) + (8px * ${gap_ct.toString()}) + 16px));`;
   }
   private renderTitle() {
-    let title = this.playerName;
-    if (title.length === 0) {
-      title = this.player_entity?.attributes.friendly_name ?? "Media Player";
-    }
+    const title =
+      computeEntityName(this.hass, this.player_entity, this.playerName) ||
+      "Media Player";
     const active_style =
       isActive(this.hass, this.player_entity, this._entityConfig) &&
       this.player_entity?.state == "playing"
@@ -281,7 +290,7 @@ export class PlayerRow extends LitElement {
     );
     const disabled = !entityExists || !entityAvailable;
     return html`
-      <ha-md-list-item
+      <ha-list-item-button
         class="button ${active} ${expressive}"
         @click=${this.callOnPlayerSelectedService}
         type="button"
@@ -289,7 +298,7 @@ export class PlayerRow extends LitElement {
       >
         ${this.renderThumbnail()} ${this.renderTitle()}
         ${this.renderActionButtons()}
-      </ha-md-list-item>
+      </ha-list-item-button>
       <div class="divider"></div>
     `;
   }

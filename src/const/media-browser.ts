@@ -5,7 +5,12 @@ import {
   EnqueueConfigOptions,
   MediaBrowserConfig,
 } from "../config/media-browser";
-import { ExtendedHass, ListItems } from "./types";
+import { ExtendedHass, ListItems, newMediaBrowserItemsConfig } from "./types";
+
+export type MediaBrowserSection =
+  "favorites" | "recents" | "recommendations" | "search" | "search-collection";
+
+export type MediaBrowserSubsection = "main" | "collection";
 
 export const MediaTypeThumbnails = {
   album: Thumbnail.DISC,
@@ -97,23 +102,27 @@ export function getFilterButtons(
   icons: Icons,
   hass: ExtendedHass,
   config: MediaBrowserConfig,
+  cards?: newMediaBrowserItemsConfig | null,
 ): ListItems {
   const result: ListItems = [];
-  if (config.favorites.enabled) {
+  if (config.favorites.enabled && (cards?.favorites.main.length ?? 0) > 0) {
     result.push({
       option: "favorites",
       icon: icons.HEART,
       title: getTranslation("browser.card.favorites", hass) as string,
     });
   }
-  if (config.recents.enabled) {
+  if (config.recents.enabled && (cards?.recents.main.length ?? 0) > 0) {
     result.push({
       option: "recents",
       icon: icons.RECENTS,
       title: getTranslation("browser.card.recents", hass) as string,
     });
   }
-  if (config.recommendations.enabled) {
+  if (
+    config.recommendations.enabled &&
+    (cards?.recommendations.main.length ?? 0) > 0
+  ) {
     result.push({
       option: "recommendations",
       icon: icons.SUGGESTIONS,
@@ -127,8 +136,13 @@ export const SEARCH_UPDATE_DELAY = 1000;
 export const DEFAULT_SEARCH_LIMIT = 20;
 export const SEARCH_TERM_MIN_LENGTH = 3;
 
-export const DEFAULT_ACTIVE_SECTION = "favorites";
+export const DEFAULT_ACTIVE_SECTION: MediaBrowserSection = "favorites";
 export const DEFAULT_ACTIVE_SUBSECTION = "main";
+
+export const SEARCH_SECTIONS: MediaBrowserSection[] = [
+  "search",
+  "search-collection",
+];
 
 export const EnqueueConfigMap: Record<EnqueueConfigOptions, EnqueueOptions> = {
   add_to_queue: EnqueueOptions.ADD_TO_QUEUE,
@@ -138,3 +152,5 @@ export const EnqueueConfigMap: Record<EnqueueConfigOptions, EnqueueOptions> = {
   play_now_clear_queue: EnqueueOptions.PLAY_NOW_CLEAR_QUEUE,
   radio: EnqueueOptions.RADIO,
 };
+
+export const SHOW_ARTIST_SUBTITLE_SECTIONS = ["album", "service"];

@@ -21,6 +21,7 @@ import {
 } from "../../const/context";
 import { Icons } from "../../const/icons";
 import { ExtendedHass } from "../../const/types";
+import { computeEntityName } from "../../utils/entity-name";
 import { jsonMatch } from "../../utils/utility";
 import { MassCardController } from "../../controller/controller";
 import PlayerActions from "../../actions/player-actions";
@@ -93,7 +94,7 @@ export class MassCardPlayerSelector extends LitElement {
     return html`
       <div class="grouped-players-item grouped-volume">
         <div class="player-name-icon">
-          <ha-md-list-item
+          <ha-list-item-base
             class="grouped-players-select-item"
             .graphic=${this.Icons.SPEAKER_MULTIPLE}
             noninteractive
@@ -113,10 +114,11 @@ export class MassCardPlayerSelector extends LitElement {
               .unit="%"
               .min="0"
               .max="100"
+              slot="content"
               .value=${vol_level}
               @value-changed=${this.onGroupVolumeChange}
             ></ha-control-slider>
-          </ha-md-list-item>
+          </ha-list-item-base>
         </div>
         <div class="divider"></div>
       </div>
@@ -141,17 +143,14 @@ export class MassCardPlayerSelector extends LitElement {
     const expressive = this.useExpressive;
     const role = this.useVibrant ? `tonal` : `filled-variant`;
     return this.groupedPlayers.map((item, idx) => {
-      const name =
-        item.name.length > 0
-          ? item.name
-          : (this.hass.states[item.entity_id]?.attributes.friendly_name ?? "");
       const ent = this.hass.states[item.entity_id];
+      const name = computeEntityName(this.hass, ent, item.name);
       const img =
         ent?.attributes.entity_picture_local ?? ent?.attributes.entity_picture;
       return html`
         <div class="grouped-players-item">
           <div class="player-name-icon">
-            <ha-md-list-item
+            <ha-list-item-base
               class="grouped-players-select-item"
               .graphic=${this.Icons.SPEAKER}
               noninteractive
@@ -186,15 +185,16 @@ export class MassCardPlayerSelector extends LitElement {
                   ></ha-svg-icon>
                 </mpc-button>
               </span>
-            </ha-md-list-item>
+            </ha-list-item-base>
           </div>
-          <ha-md-list-item class="grouped-players-volume-item">
+          <ha-list-item-base class="grouped-players-volume-item">
             <mpc-volume-slider
               class="grouped-players-volume-slider"
               maxVolume=${item.max_volume}
               .entityId=${item.volume_entity_id}
+              slot="content"
             ></mpc-volume-slider>
-          </ha-md-list-item>
+          </ha-list-item-base>
           ${idx < ct - 1 ? html`<div class="divider"></div>` : ``}
         </div>
       `;

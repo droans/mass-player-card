@@ -12,7 +12,12 @@ import "@droans/webawesome/dist/components/card/card.js";
 import "../menu-button/menu-button";
 
 import { CardEnqueueService, CardSelectedService } from "../../const/actions";
-import { ExtendedHass, ListItems, MediaCardItem } from "../../const/types";
+import {
+  ExtendedHass,
+  ListItems,
+  mediaCardCollectionData,
+  MediaCardItem,
+} from "../../const/types";
 import {
   activeEntityConfigContext,
   activeSectionContext,
@@ -27,6 +32,7 @@ import {
 import {
   getEnqueueButtons,
   getSearchMediaButtons,
+  SHOW_ARTIST_SUBTITLE_SECTIONS,
 } from "../../const/media-browser";
 
 import styles from "./media-card-styles";
@@ -47,6 +53,7 @@ import { getThumbnail } from "../../utils/thumbnails";
 @customElement("mpc-browser-media-card")
 export class MediaCard extends LitElement {
   @property({ type: Boolean }) queueable = false;
+  @property({ type: Boolean, attribute: "skeleton" }) skeleton = false;
   @state() code!: TemplateResult;
   private _enqueue_buttons?: ListItems;
   private _search_buttons!: ListItems;
@@ -155,6 +162,19 @@ export class MediaCard extends LitElement {
     return this._entityConfig;
   }
 
+  private subtitlesEnabled(): boolean {
+    const sectionAllowsSubtitles = SHOW_ARTIST_SUBTITLE_SECTIONS.includes(
+      this.config?.data.type ?? ``,
+    );
+    const subtitlesEnabled =
+      this.cardConfig?.media_browser.show_artist_subtitles;
+    if (sectionAllowsSubtitles && subtitlesEnabled) {
+      const _data = this.config?.data as mediaCardCollectionData | undefined;
+      return (_data?.media_artist ?? "").length > 0;
+    }
+    return false;
+  }
+
   private updateHiddenElements() {
     this.updateEnqueueButtons();
     this.generateCode();
@@ -175,22 +195,34 @@ export class MediaCard extends LitElement {
   }
   private onEnqueue = (event_: MenuButtonEventData) => {
     event_.stopPropagation();
+    if (this.skeleton) {
+      return;
+    }
     const target = event_.detail;
     const value = target.option as EnqueueOptions;
     this.onEnqueueAction(this._config.data, value);
   };
   private onSelect = () => {
+    if (this.skeleton) {
+      return;
+    }
     this.onSelectAction(this._config.data, this);
   };
   protected renderThumbnailFromBackground() {
     return html` ${this.config?.background} `;
   }
-  private _renderImageFallback = (event_: HTMLImageElementEvent) => {
+  private _renderImageFallback = (event_: Event) => {
     const fallback = getThumbnail(
       this.hass,
       this.config?.fallback ?? Thumbnail.DISC,
     );
-    event_.target.src = fallback as string;
+    // eslint-disable-next-line unicorn/prevent-abbreviations
+    const ev = event_ as HTMLImageElementEvent;
+    if (fallback == ev.target.src) {
+      ev.target.removeEventListener("error", this._renderImageFallback);
+    }
+    ev.target.src = fallback as string;
+    ev.target.removeEventListener("error", this._renderImageFallback);
   };
   protected renderThumbnailFromThumbnail() {
     const img = this.config?.thumbnail;
@@ -217,7 +249,18 @@ export class MediaCard extends LitElement {
     }
     return html`
       <div id="title-div" class="${this.useExpressive ? `expressive` : ``}">
-        ${this.config?.title}
+        ${this.config?.title} ${this.generateSubtitle()}
+      </div>
+    `;
+  }
+  private generateSubtitle(): TemplateResult {
+    if (!this.subtitlesEnabled()) {
+      return html``;
+    }
+    const _config = this.config?.data as mediaCardCollectionData;
+    return html`
+      <div id="subtitle-div" class="${this.useExpressive ? `expressive` : ``}">
+        ${_config.media_artist}
       </div>
     `;
   }
@@ -226,9 +269,12 @@ export class MediaCard extends LitElement {
       return html``;
     }
     const cols = this.cardConfig?.media_browser.columns;
+    const expressive = this.cardConfig?.expressive ? `expressive` : ``;
+    const withSubtitle = this.subtitlesEnabled() ? `with-subtitle` : ``;
     return html`
       <mpc-menu-button
         id="enqueue-button-div"
+        class="${expressive} ${withSubtitle}"
         .iconPath=${this.Icons.PLAY_CIRCLE}
         .items=${this._enqueue_buttons}
         style="--columns: ${cols};"
@@ -236,6 +282,26 @@ export class MediaCard extends LitElement {
         fixedMenuPosition
         elevation="4"
       ></mpc-menu-button>
+    `;
+  }
+  private generateSkeleton(): TemplateResult {
+    return html`
+      <wa-skeleton
+        id="skeleton"
+        effect="sheen"
+        class="media-card${this.useExpressive ? ` expressive` : ``}"
+      ></wa-skeleton>
+    `;
+  }
+  private generateCard(): TemplateResult {
+    return html`
+      <wa-card
+        class="media-card${this.useExpressive ? ` expressive` : ``}"
+        @click=${this.onSelect}
+      >
+        <div slot="media" id="media">${this.renderThumbnail()}</div>
+        ${this.renderTitle()}
+      </wa-card>
     `;
   }
   private generateCode() {
@@ -260,15 +326,7 @@ export class MediaCard extends LitElement {
           playback-rate="1"
         >
           <div id="container">
-            <wa-card
-              class="media-card ${
-                this.useExpressive ? `media-card-expressive` : ``
-              }"
-              @click=${this.onSelect}
-            >
-              <div slot="media" id="media">${this.renderThumbnail()}</div>
-              ${this.renderTitle()}
-            </wa-card>
+            ${this.skeleton ? this.generateSkeleton() : this.generateCard()}
           </div>
         </wa-animation>
         ${this.renderEnqueueButton()}
