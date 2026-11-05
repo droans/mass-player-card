@@ -68,17 +68,25 @@ export class MassButton extends LitElement {
 
   protected render(): TemplateResult {
     const expressive = this.config.expressive ? `expressive` : ``;
-    const elevation = `elevation-${this.elevation.toString()}`;
+    const elevationValue =
+      this.elevation >= 0 && this.elevation <= 5
+        ? this.elevation.toString()
+        : `none`;
+    const elevation = `elevation-${elevationValue}`;
     const disabled = this.disabled ? `disabled` : ``;
     const outlined = this.outlined ? `outlined` : ``;
-    /* eslint-disable prettier/prettier */
+    /* eslint-disable
+      unicorn/no-nested-ternary
+    */
     const selected =
       !this.selected && this.selectable
         ? `unselected`
-        : (this.selected
+        : this.selected
           ? `selected`
-          : ``);
-    /* eslint-enable prettier/prettier */
+          : ``;
+    /* eslint-enable
+      unicorn/no-nested-ternary
+    */
     return html`
       <ha-button
         appearance="${BUTTON_ROLE_MAP[this.colorRole]}"

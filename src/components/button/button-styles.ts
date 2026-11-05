@@ -216,9 +216,13 @@ export default css`
     --button-disabled-text-color: var(--md-sys-color-on-surface-variant);
   }
 
+  .elevation-none {
+    --button-elevation: none;
+    --hover-button-elevation: none;
+  }
   .elevation-0 {
     --button-elevation: none;
-    --hover-button-elevation: var(--md-sys-elevation-level0);
+    --hover-button-elevation: var(--md-sys-elevation-level1);
   }
 
   .elevation-1 {
