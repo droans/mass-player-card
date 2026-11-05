@@ -48,7 +48,7 @@
     "doctoc": "^2.5.0",
     "eslint": "10.10.0",
     "eslint-config-prettier": "10.1.8",
-    "eslint-plugin-github": "git+https://github.com/droans/eslint-plugin-github#v6.1.0",
+    "eslint-plugin-github": "^6.1.2",
     "eslint-plugin-listeners": "^1.5.1",
     "eslint-plugin-lit": "^2.2.1",
     "eslint-plugin-observers": "^1.0.1",
