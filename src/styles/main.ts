@@ -124,7 +124,7 @@ export default css`
     --media-row-height: var(--mass-player-card-media-row-height, 56px);
     --media-row-thumbnail-height: var(
       --mass-player-card-media-row-thumbnail-height,
-      var(--media-row-height)
+      50px
     );
 
     --player-blur-color: rgba(
