@@ -236,7 +236,9 @@ export function playerIsAvailable(
     return false;
   }
   const state = entity.state;
-  return !["unknown", "unavailable"].includes(state);
+  // eslint-disable-next-line @typescript-eslint/no-unnecessary-condition
+  const hasQueue = (entity?.attributes?.active_queue ?? null) != "";
+  return !["unknown", "unavailable"].includes(state) && hasQueue;
 }
 
 export function playerSupportsFeature(

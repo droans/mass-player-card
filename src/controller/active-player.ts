@@ -469,23 +469,24 @@ export class ActivePlayerController {
   async actionGetCurrentQueue(): Promise<getQueueResponse> {
     const entity_id = this.activeEntityID;
     const player = this.activeMediaPlayer;
+    const defaultResponse = {
+      queue_id: "",
+      active: false,
+      name: this.activePlayerName,
+      items: 0,
+      shuffle_enabled: false,
+      repeat_mode: false,
+      current_index: 0,
+      elapsed_time: 0,
+      current_item: null,
+      next_item: null,
+    };
     if (
       !playerIsAvailable(this.hass, entity_id) ||
       !player?.state ||
       ["unknown", "unavailable"].includes(player.state)
     ) {
-      return {
-        queue_id: "",
-        active: false,
-        name: this.activePlayerName,
-        items: 0,
-        shuffle_enabled: false,
-        repeat_mode: false,
-        current_index: 0,
-        elapsed_time: 0,
-        current_item: null,
-        next_item: null,
-      };
+      return defaultResponse;
     }
     const data: MassGetQueueServiceDataSchema = {
       type: "call_service",
@@ -496,11 +497,15 @@ export class ActivePlayerController {
       },
       return_response: true,
     };
-    const returnValue =
-      await this.hass.callWS<MassGetQueueServiceResponseSchema>(data);
-    const result = returnValue.response[entity_id];
-    this._playerData = result;
-    return result;
+    try {
+      const returnValue =
+        await this.hass.callWS<MassGetQueueServiceResponseSchema>(data);
+      const result = returnValue.response[entity_id];
+      this._playerData = result;
+      return result;
+    } catch {
+      return defaultResponse;
+    }
   }
   public createAndApplyExpressiveScheme() {
     if (!this.config.expressive) {
