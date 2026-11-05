@@ -31,9 +31,6 @@ export class MassMenuItem extends LitElement {
   // Use Vibrant Expressive scheme
   @property({ attribute: "vibrant", type: Boolean }) public vibrant = false;
 
-  // Use ha-md-list-item instead of ha-list-item
-  @property({ attribute: "use-md", type: Boolean }) public useMD = false;
-
   // Sets the list item class to "selected-item"
   @property({ attribute: "selected", type: Boolean }) selected = false;
 

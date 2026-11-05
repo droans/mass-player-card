@@ -58,13 +58,18 @@ export default css`
 
   .button {
     margin: 0.15rem;
+  }
+  .button::part(base) {
     height: var(--media-row-height);
+    padding-inline: 6px;
   }
   .button.expressive {
-    border-radius: var(--default-border-radius);
     --md-list-item-leading-space: 0px;
   }
-  .button:not(.expressive) {
+  .button.expressive::part(base) {
+    border-radius: var(--default-border-radius);
+  }
+  .button:not(.expressive)::part(base) {
     border-radius: var(--media-row-border-radius);
   }
   .button.active {
