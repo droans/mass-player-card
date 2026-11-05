@@ -303,7 +303,7 @@ export class MusicPlayerCard extends LitElement {
     }
     return this._playlists.map((playlist) => {
       return html`
-        <ha-md-list-item
+        <ha-list-item-button
           class="dialog-playlist-item"
           @click=${this.onAddToPlaylist}
           data-uri="${playlist.uri}"
@@ -324,8 +324,7 @@ export class MusicPlayerCard extends LitElement {
           >
             ${playlist.name}
           </span>
-        </ha-md-list-item>
-        <div class="dialog-playlist-divider"></div>
+        </ha-list-item-button>
       `;
     });
   }
@@ -338,7 +337,7 @@ export class MusicPlayerCard extends LitElement {
       <ha-dialog
         id="dialog-favorites"
         class="${cls}"
-        heading="${this.controller.translate("player.playlist_dialog.header")}"
+        header-title="${this.controller.translate("player.playlist_dialog.header")}"
       >
         <div class="dialog-items">${this.renderPlaylistDialogList()}</div>
       </ha-dialog>

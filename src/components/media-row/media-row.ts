@@ -423,7 +423,7 @@ export class MediaRow extends LitElement {
     const expressive = this.useExpressive ? `expressive` : ``;
     const hideCovers = this.showAlbumCovers ? `` : `hide-covers`;
     return html`
-      <ha-md-list-item
+      <ha-list-item-button
         class="button ${playing} ${expressive} ${hideCovers}"
         @click=${this.callOnQueueItemSelectedService}
         type="button"
@@ -433,7 +433,7 @@ export class MediaRow extends LitElement {
           ${this.renderTitle()} ${this.renderArtist()}
         </span>
         ${this.renderActionButtons()}
-      </ha-md-list-item>
+      </ha-list-item-button>
       <div class="divider"></div>
     `;
   }

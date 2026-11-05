@@ -13,7 +13,13 @@ export default css`
   .button {
     border-radius: var(--media-row-border-radius);
     margin: 0.15rem;
+  }
+  .button::part(base) {
     height: var(--media-row-height);
+    padding-inline: 6px;
+  }
+  .button.expressive::part(base) {
+    border-radius: var(--default-border-radius);
   }
   .divider {
     --divider-color: var(--md-sys-color-surface-variant);

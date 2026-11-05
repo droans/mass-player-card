@@ -49,8 +49,10 @@ export default css`
   }
   .dialog-playlist-item {
     margin: 0.15rem;
-    border-radius: var(--media-row-border-radius);
+  }
+  .dialog-playlist-item::part(base) {
     height: var(--media-row-height);
+    border-radius: var(--default-border-radius);
   }
   #dialog-favorites.expressive .dialog-playlist-item {
     background-color: var(--expressive-row-color) !important;

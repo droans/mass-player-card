@@ -290,7 +290,7 @@ export class PlayerRow extends LitElement {
     );
     const disabled = !entityExists || !entityAvailable;
     return html`
-      <ha-md-list-item
+      <ha-list-item-button
         class="button ${active} ${expressive}"
         @click=${this.callOnPlayerSelectedService}
         type="button"
@@ -298,7 +298,7 @@ export class PlayerRow extends LitElement {
       >
         ${this.renderThumbnail()} ${this.renderTitle()}
         ${this.renderActionButtons()}
-      </ha-md-list-item>
+      </ha-list-item-button>
       <div class="divider"></div>
     `;
   }

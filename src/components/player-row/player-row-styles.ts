@@ -118,15 +118,19 @@ export default css`
     position: absolute;
   }
 
-  .button.expressive {
+  .button.expressive::part(base) {
     border-radius: var(--default-border-radius);
   }
-  .button:not(.expressive) {
+  .button:not(.expressive)::part(base) {
     border-radius: var(--player-row-border-radius);
   }
   .button {
     margin: 0.15rem;
     height: var(--media-row-height);
+  }
+  .button::part(base) {
+    height: var(--media-row-height);
+    padding-inline: 6px;
   }
 
   .button.active {

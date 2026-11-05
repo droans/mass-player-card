@@ -94,7 +94,7 @@ export class MassCardPlayerSelector extends LitElement {
     return html`
       <div class="grouped-players-item grouped-volume">
         <div class="player-name-icon">
-          <ha-md-list-item
+          <ha-list-item-base
             class="grouped-players-select-item"
             .graphic=${this.Icons.SPEAKER_MULTIPLE}
             noninteractive
@@ -114,10 +114,11 @@ export class MassCardPlayerSelector extends LitElement {
               .unit="%"
               .min="0"
               .max="100"
+              slot="content"
               .value=${vol_level}
               @value-changed=${this.onGroupVolumeChange}
             ></ha-control-slider>
-          </ha-md-list-item>
+          </ha-list-item-base>
         </div>
         <div class="divider"></div>
       </div>
@@ -149,7 +150,7 @@ export class MassCardPlayerSelector extends LitElement {
       return html`
         <div class="grouped-players-item">
           <div class="player-name-icon">
-            <ha-md-list-item
+            <ha-list-item-base
               class="grouped-players-select-item"
               .graphic=${this.Icons.SPEAKER}
               noninteractive
@@ -184,15 +185,16 @@ export class MassCardPlayerSelector extends LitElement {
                   ></ha-svg-icon>
                 </mpc-button>
               </span>
-            </ha-md-list-item>
+            </ha-list-item-base>
           </div>
-          <ha-md-list-item class="grouped-players-volume-item">
+          <ha-list-item-base class="grouped-players-volume-item">
             <mpc-volume-slider
               class="grouped-players-volume-slider"
               maxVolume=${item.max_volume}
               .entityId=${item.volume_entity_id}
+              slot="content"
             ></mpc-volume-slider>
-          </ha-md-list-item>
+          </ha-list-item-base>
           ${idx < ct - 1 ? html`<div class="divider"></div>` : ``}
         </div>
       `;

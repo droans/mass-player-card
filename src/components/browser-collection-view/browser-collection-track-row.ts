@@ -306,7 +306,7 @@ export class MassPlaylistTrackRow extends LitElement {
     const expressiveClass = this.useExpressive ? `expressive` : ``;
     const vibrantClass = this.useVibrant ? `vibrant` : ``;
     return html`
-      <ha-md-list-item
+      <ha-list-item-button
         class="button ${expressiveClass} ${vibrantClass}"
         @click=${this.onPlaylistItemSelected}
         type="button"
@@ -316,7 +316,7 @@ export class MassPlaylistTrackRow extends LitElement {
           ${this.renderTitle()} ${this.renderArtist()}
         </span>
         ${this.renderMenuButton()}
-      </ha-md-list-item>
+      </ha-list-item-button>
       ${this.divider ? html`<div class="divider"></div>` : ``}
     `;
   }
