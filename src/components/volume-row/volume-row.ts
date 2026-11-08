@@ -26,6 +26,7 @@ import styles from "./volume-row-styles";
 import { ActionsController } from "../../controller/actions";
 import { MassCardController } from "../../controller/controller";
 import { Icons } from "../../const/icons";
+import { VOLUME_STEP } from "../../const/music-player";
 import { jsonMatch } from "../../utils/utility";
 import { customElement, property, state } from "lit/decorators.js";
 import { DetailValueEventData } from "../../const/events";
@@ -104,6 +105,21 @@ export class VolumeRow extends LitElement {
     volume = volume / 100;
     this.requestUpdate("volume", this.player_data.volume);
     await this.actions.actionSetVolume(volume);
+  };
+  private onVolumeStep = async (direction: 1 | -1) => {
+    const current = this.player_data?.volume ?? 0;
+    const next = Math.min(
+      this.maxVolume,
+      Math.max(0, current + direction * VOLUME_STEP)
+    );
+    this.player_data.volume = next;
+    this.requestUpdate("volume", this.player_data.volume);
+    await this.actions.actionSetVolume(next / 100);
+  };
+  private onVolumePreset = async (preset: number) => {
+    this.player_data.volume = preset;
+    this.requestUpdate("volume", this.player_data.volume);
+    await this.actions.actionSetVolume(preset / 100);
   };
   private onFavorite = async () => {
     this.favorite = !this.favorite;
@@ -221,11 +237,58 @@ export class VolumeRow extends LitElement {
       </div>
     `;
   }
+  protected renderVolumeButtons(): TemplateResult {
+    const vc = this._config?.volume_controls;
+    if (this.hide.volume || !vc?.enabled) {
+      return html``;
+    }
+    return html`
+      <div id="volume-buttons" part="volume-buttons">
+        <ha-button
+          appearance="plain"
+          variant="brand"
+          size="m"
+          id="button-volume-minus"
+          class="button min"
+          @click=${() => this.onVolumeStep(-1)}
+        >
+          <ha-svg-icon
+            .path=${this.Icons.MINUS}
+            class="svg plain"
+          ></ha-svg-icon>
+        </ha-button>
+        ${vc.presets.map(
+          (preset: number) => html`
+            <ha-button
+              appearance="plain"
+              variant="brand"
+              size="m"
+              id="button-volume-preset-${preset}"
+              class="button min volume-preset"
+              @click=${() => this.onVolumePreset(preset)}
+            >
+              <span class="preset-label">${preset}%</span>
+            </ha-button>
+          `
+        )}
+        <ha-button
+          appearance="plain"
+          variant="brand"
+          size="m"
+          id="button-volume-plus"
+          class="button min"
+          @click=${() => this.onVolumeStep(1)}
+        >
+          <ha-svg-icon .path=${this.Icons.PLUS} class="svg plain"></ha-svg-icon>
+        </ha-button>
+      </div>
+    `;
+  }
   protected render(): TemplateResult {
     return html`
       <div id="volume" part="volume-div">
         ${this.renderPower()} ${this.renderVolumeBar()} ${this.renderMute()}
-        ${this.renderFavorite()}
+        ${this.renderFavorite()} ${this.renderVolumeButtons()}
       </div>
     `;
   }

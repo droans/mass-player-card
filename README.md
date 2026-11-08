@@ -464,6 +464,7 @@ media_browser:
 | expressive                   | boolean                                            | No       | true         | Enables Material Expressive theme                            |
 | expressive_scheme            | [ExpressiveScheme](#expressive-scheme)             | No       | expressive   | The expressive scheme to use for the theme, see below        |
 | default_section              | [Section](#default-section)                        | No       | music_player | Default starting section, see below                          |
+| media_browser_when_off       | boolean                                            | No       | false        | When the player is off, the default section is Media Browser |
 | player                       | [MusicPlayerConfig](#music-player-config)          | No       | 5            | See Below                                                    |
 | queue                        | [QueueConfig](#queue-config)                       | No       | 5            | See Below                                                    |
 | media_browser                | [MediaBrowserConfig](#media-browser-config)        | No       | 5            | See Below                                                    |
@@ -573,6 +574,7 @@ Certain elements across the different sections can be hidden or displayed depend
 | enabled   | bool                                                                    | No       | true    | Enable/disable music player tab |
 | hide      | [MusicPlayerHiddenElementsConfig](#music-player-hidden-elements-config) | No       | N/A     | See below                       |
 | layout    | [MusicPlayerLayoutConfig](#music-player-layout-config)                  | No       | N/A     | See below                       |
+| volume_controls | [VolumeControlsConfig](#volume-controls-config)                       | No       | See below | Volume shortcut buttons and presets under the volume slider |
 
 
 #### Music Player Hidden Elements Config
@@ -651,6 +653,21 @@ player:
 ```
 
 </detail>
+
+#### Volume Controls Config
+Adds a row of volume shortcut buttons under the volume slider. The −/+ buttons step the volume up or down, and `presets` are quick-set buttons for fixed volume levels (0-100).
+
+| Parameter | Type     | Required | Default   | Description                                        |
+|-----------|----------|----------|-----------|----------------------------------------------------|
+| enabled   | bool     | No       | true      | Show the volume shortcut buttons                   |
+| presets   | int list | No       | 15, 30, 50 | Volume presets rendered as quick-set buttons       |
+
+```yaml
+player:
+  volume_controls:
+    enabled: true
+    presets: [15, 30, 50]
+```
 
 ### Queue Config
 Display and interact with the player's queue.

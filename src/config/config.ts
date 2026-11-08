@@ -55,6 +55,7 @@ export interface Config {
   panel: boolean;
   default_section: ConfigSections | undefined;
   sync_player_across_dashboard: boolean;
+  media_browser_when_off: boolean;
   user: string | MappedUser[] | null;
 }
 
@@ -109,6 +110,7 @@ export const DEFAULT_CONFIG: Config = {
   panel: false,
   default_section: undefined,
   sync_player_across_dashboard: false,
+  media_browser_when_off: false,
   user: null,
 };
 
@@ -251,6 +253,11 @@ export function createConfigForm() {
       },
       {
         name: "sync_player_across_dashboard",
+        required: false,
+        selector: { boolean: {}, default: false },
+      },
+      {
+        name: "media_browser_when_off",
         required: false,
         selector: { boolean: {}, default: false },
       },
