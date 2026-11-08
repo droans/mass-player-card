@@ -23,7 +23,7 @@ export default {
   "browser.playlists.remove_track": "Usuń z listy odtwarzania",
 
   "player.controls.power": "Zasilanie",
-  "player.controls.shuffle": "Odtwarzanie losowe",
+  "player.controls.shuffle": "Losowo",
   "player.controls.repeat": "Powtarzaj",
   "player.controls.favorite": "Ulubione",
   "player.controls.previous": "Poprzedni",
