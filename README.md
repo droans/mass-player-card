@@ -957,6 +957,7 @@ For players which don't have any support, you can usually use the universal or s
 | Dutch      | nl      | Most    |
 | French     | fr      | Most    |
 | Portuguese | pt      | Most    |
+| Polish     | pl      | Full    |
 
 If you would like to add new translations for other languages:
 1. Fork this repository and clone it locally.

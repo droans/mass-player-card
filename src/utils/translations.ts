@@ -6,6 +6,7 @@ import es from "../translations/es";
 import fr from "../translations/fr";
 import it from "../translations/it";
 import nl from "../translations/nl";
+import pl from "../translations/pl";
 import pt from "../translations/pt";
 import sr from "../translations/sr";
 import srLatn from "../translations/sr-latn";
@@ -18,6 +19,7 @@ const TRANSLATIONS = {
   fr,
   it,
   nl,
+  pl,
   pt,
   sr,
   "sr-Latn": srLatn,
