@@ -178,6 +178,9 @@ export class MusicAssistantPlayerCard extends LitElement {
     if (!config.entities) {
       throw this.createError("You need to define entities.");
     }
+    if (jsonMatch(this.config, config)) {
+      return;
+    }
     this._controller.config = config;
     this.config = this._controller.config;
     if (!this.active_section) {
