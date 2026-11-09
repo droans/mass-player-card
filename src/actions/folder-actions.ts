@@ -8,12 +8,30 @@ export interface FolderItem {
   media_type: string;
   path?: string;
   available?: boolean;
+  provider_mappings?: {
+    item_id: string;
+    provider_domain: string;
+    provider_instance: string;
+  }[];
 }
 
 export function folderItemName(item: FolderItem): string {
-  const path = item.path ?? item.uri.split("/").slice(3).join("/");
-  const filename = path.split("/").findLast(Boolean);
-  if (item.media_type == "folder" || !filename) {
+  if (item.media_type == "folder") {
+    return item.name;
+  }
+  const path =
+    item.path ??
+    item.provider_mappings?.find((mapping) =>
+      mapping.provider_domain.startsWith("filesystem"),
+    )?.item_id;
+  if (path) {
+    return path.split(/[\\/]/).findLast(Boolean) ?? item.name;
+  }
+  if (item.uri.startsWith("library://")) {
+    return item.name;
+  }
+  const filename = item.uri.split("/").slice(3).findLast(Boolean);
+  if (!filename) {
     return item.name;
   }
   try {
@@ -25,6 +43,11 @@ export function folderItemName(item: FolderItem): string {
 
 export function sortFolderItems(items: FolderItem[]): FolderItem[] {
   return items.toSorted((first, second) => {
+    const firstIsFolder = first.media_type == "folder";
+    const secondIsFolder = second.media_type == "folder";
+    if (firstIsFolder !== secondIsFolder) {
+      return firstIsFolder ? -1 : 1;
+    }
     const firstName = folderItemName(first);
     const secondName = folderItemName(second);
     if (firstName === secondName) {
@@ -76,7 +99,6 @@ export class FolderActions {
     await this.hass.callService("music_assistant", "play_media", {
       entity_id: entityId,
       media_id: items.map((track) => track.uri),
-      ...(item.media_type == "folder" ? { shuffle: false } : {}),
       ...(enqueue == EnqueueOptions.RADIO ? { radio_mode: true } : { enqueue }),
       ...(user ? { username: user } : {}),
     });
@@ -108,6 +130,6 @@ export class FolderActions {
         tracks.push(item);
       }
     }
-    return tracks;
+    return sortFolderItems(tracks);
   }
 }

@@ -227,6 +227,12 @@ export class BrowserFolderView extends LitElement {
     .list {
       overflow: auto;
       min-height: 0;
+      flex: 1;
+    }
+    .list::after {
+      content: "";
+      display: block;
+      height: calc(64px + env(safe-area-inset-bottom, 0px));
     }
     .row {
       display: flex;

@@ -24,6 +24,23 @@ const folder = (name, path) => ({
   path,
   media_type: "folder",
 });
+const libraryTrack = (filename, id, name) => ({
+  name,
+  uri: `library://track/${id}`,
+  media_type: "track",
+  provider_mappings: [
+    {
+      item_id: "98765",
+      provider_domain: "spotify",
+      provider_instance: "spotify-instance",
+    },
+    {
+      item_id: `Music/${filename}`,
+      provider_domain: "filesystem_local",
+      provider_instance: "filesystem-instance",
+    },
+  ],
+});
 
 function connection(listings) {
   const requests = [];
@@ -78,6 +95,24 @@ test("sorts filenames lexically, not by title metadata or natural-number order",
   );
 });
 
+test("sorts folders before files, with lexical ordering within each group", () => {
+  const items = [
+    track("01.flac"),
+    folder("Z folder", "z://"),
+    track("2.flac"),
+    folder("A folder", "a://"),
+    track("10.flac"),
+  ];
+  assert.deepEqual(sortFolderItems(items).map(folderItemName), [
+    "A folder",
+    "Z folder",
+    "01.flac",
+    "10.flac",
+    "2.flac",
+  ]);
+  assert.equal(items[0].media_type, "track");
+});
+
 test("starts at the native MA root and removes synthetic parent links", async () => {
   const mock = connection({
     root: [folder("Z", "z://"), folder("A", "a://"), folder("..", "root")],
@@ -88,6 +123,47 @@ test("starts at the native MA root and removes synthetic parent links", async ()
     ["A", "Z"],
   );
   assert.equal(mock.requests[1].service_data.data.path, "root");
+});
+
+test("library tracks display and sort by filesystem names while retaining playback URIs", async () => {
+  const first = libraryTrack("01 - Opening.flac", "54321", "Z title");
+  const second = libraryTrack("10 - Interlude.flac", "12345", "A title");
+  const mock = connection({ "filesystem://Music": [second, first] });
+  const actions = new FolderActions(mock.hass);
+  const items = await actions.browse("media_player.test", "filesystem://Music");
+  assert.deepEqual(items.map(folderItemName), [
+    "01 - Opening.flac",
+    "10 - Interlude.flac",
+  ]);
+  await actions.enqueue(
+    "media_player.test",
+    folder("Music", "filesystem://Music"),
+    "replace",
+  );
+  assert.deepEqual(mock.services[0][2], {
+    entity_id: "media_player.test",
+    media_id: [first.uri, second.uri],
+    enqueue: "replace",
+  });
+});
+
+test("raw filesystem names are not URI-decoded and missing mappings never expose library IDs", () => {
+  assert.equal(
+    folderItemName(libraryTrack("01 - 100%20real.flac", "12345", "Title")),
+    "01 - 100%20real.flac",
+  );
+  assert.equal(
+    folderItemName({ ...track("x"), path: "Music\\Actual filename.flac" }),
+    "Actual filename.flac",
+  );
+  assert.equal(
+    folderItemName({
+      name: "Title",
+      uri: "library://track/12345",
+      media_type: "track",
+    }),
+    "Title",
+  );
 });
 
 for (const option of [
@@ -133,7 +209,7 @@ for (const option of [
     );
     assert.equal(data.entity_id, "media_player.test");
     assert.equal(data.username, "listener");
-    assert.equal(data.shuffle, false);
+    assert.equal(Object.hasOwn(data, "shuffle"), false);
     if (option === "radio") {
       assert.equal(data.radio_mode, true);
       assert.equal(data.enqueue, undefined);
