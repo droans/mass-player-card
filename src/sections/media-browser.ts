@@ -34,6 +34,8 @@ import "../components/browser-collection-view/browser-playlist-view";
 import "../components/browser-collection-view/browser-album-view";
 import "../components/browser-collection-view/browser-artist-view";
 import "../components/browser-collection-view/browser-podcast-view";
+import "../components/browser-folder-view/browser-folder-view";
+import type { FolderLocation } from "../components/browser-folder-view/browser-folder-view";
 import styles from "../styles/media-browser";
 
 import {
@@ -103,11 +105,17 @@ export class MediaBrowser extends LitElement {
   private hiddenElements!: MediaBrowserHiddenElementsConfig;
 
   @provide({ context: activeMediaBrowserSectionContext })
+  @state()
   public activeSection: MediaBrowserSection = DEFAULT_ACTIVE_SECTION;
   public activeSubSection: MediaBrowserSubsection = DEFAULT_ACTIVE_SUBSECTION;
   @property() private activeCollectionData!: mediaCardCollectionType;
   private previousSections: MediaBrowserSection[] = [];
   private previousSubSections: MediaBrowserSubsection[] = [];
+  @state() private folderLocation: FolderLocation = {
+    path: "root",
+    name: "Folders",
+  };
+  private folderHistory: FolderLocation[] = [];
 
   private _hass?: ExtendedHass;
   private _browserController?: MediaBrowserController;
@@ -156,6 +164,9 @@ export class MediaBrowser extends LitElement {
 
   @consume({ context: mediaBrowserConfigContext, subscribe: true })
   public set config(config: MediaBrowserConfig) {
+    if (this._config === config) {
+      return;
+    }
     this._config = config;
     this.activeSection = config.default_section;
     if (this.cards) {
@@ -197,6 +208,10 @@ export class MediaBrowser extends LitElement {
   }
   public setActiveCards() {
     const section = this.activeSection;
+    if (section == "folders") {
+      this.activeCards = [];
+      return;
+    }
     const subsection = this.activeSubSection;
     let new_cards: MediaCardItem[];
     if (
@@ -346,7 +361,18 @@ export class MediaBrowser extends LitElement {
       user,
     );
   };
+  private onFolderNavigate = (location: FolderLocation) => {
+    this.folderHistory.push(this.folderLocation);
+    this.folderLocation = location;
+  };
   private onBack = () => {
+    if (this.activeSection == "folders" && this.folderHistory.length > 0) {
+      this.folderLocation = this.folderHistory.pop() ?? {
+        path: "root",
+        name: "Folders",
+      };
+      return;
+    }
     const update =
       this.activeSubSection == "collection" && this.activeSection != "search";
 
@@ -416,6 +442,14 @@ export class MediaBrowser extends LitElement {
     }
     const value = event_.detail.option;
     if (value.length === 0) {
+      return;
+    }
+    if (value == "folders") {
+      this.setPreviousSection();
+      this.activeSection = "folders";
+      this.activeSubSection = "main";
+      this.setActiveCards();
+      this.requestUpdate();
       return;
     }
     if (!Object.keys(this.cards).includes(value)) {
@@ -518,6 +552,15 @@ export class MediaBrowser extends LitElement {
     );
   }
   protected renderBrowserCards(): DirectiveResult {
+    if (this.activeSection == "folders" && this.config.folders.enabled) {
+      return cache(html`
+        <mpc-browser-folder-view
+          .location=${this.folderLocation}
+          .onNavigate=${this.onFolderNavigate}
+          .onMediaSelectedAction=${this.onMediaSelectedAction}
+        ></mpc-browser-folder-view>
+      `);
+    }
     /* eslint-disable unicorn/template-indent */
     return cache(
       this.activeSubSection == "collection" && this.activeSection != "search"
@@ -535,7 +578,10 @@ export class MediaBrowser extends LitElement {
     if (this.hiddenElements.header_title) {
       return html``;
     }
-    const title = this.activeSection;
+    const title =
+      this.activeSection == "folders"
+        ? this.folderLocation.name
+        : this.activeSection;
     return html` <span slot="label" id="title"> ${title} </span> `;
   }
   protected renderSearchMediaTypeButton(): TemplateResult {
@@ -748,7 +794,7 @@ export class MediaBrowser extends LitElement {
     return html`
       <div
         id="container"
-        class="container ${this.useExpressive ? `expressive` : ``}"
+        class="container ${this.useExpressive ? `expressive` : ``} ${this.activeSection == "folders" ? "folders" : ""}"
       >
         ${this.renderHeader()}
         <div

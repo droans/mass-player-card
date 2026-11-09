@@ -6,9 +6,15 @@ import {
   MediaBrowserConfig,
 } from "../config/media-browser";
 import { ExtendedHass, ListItems, newMediaBrowserItemsConfig } from "./types";
+import { mdiFolder } from "@mdi/js";
 
 export type MediaBrowserSection =
-  "favorites" | "recents" | "recommendations" | "search" | "search-collection";
+  | "favorites"
+  | "recents"
+  | "recommendations"
+  | "folders"
+  | "search"
+  | "search-collection";
 
 export type MediaBrowserSubsection = "main" | "collection";
 
@@ -127,6 +133,13 @@ export function getFilterButtons(
       option: "recommendations",
       icon: icons.SUGGESTIONS,
       title: getTranslation("browser.card.recommendations", hass) as string,
+    });
+  }
+  if (config.folders.enabled) {
+    result.push({
+      option: "folders",
+      icon: mdiFolder,
+      title: getTranslation("browser.card.folders", hass) as string,
     });
   }
   return result;

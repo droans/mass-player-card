@@ -2,14 +2,20 @@ import { mdiCreation, mdiHeart, mdiHistory } from "@mdi/js";
 
 import { BaseHiddenElementsConfig, Config } from "./config";
 import { hiddenElementsConfigItem } from "../utils/config";
+import {
+  DEFAULT_FOLDERS_CONFIG,
+  FoldersConfig,
+  foldersConfigForm,
+} from "./folders";
 
-type BrowserSection = "favorites" | "recents" | "recommendations";
+type BrowserSection = "favorites" | "recents" | "recommendations" | "folders";
 
 export interface MediaBrowserConfig {
   enabled: boolean;
   favorites: FavoritesConfig;
   recents: FavoritesConfig;
   recommendations: RecommendationsConfig;
+  folders: FoldersConfig;
   sections: customSection[];
   hide: MediaBrowserHiddenElementsConfig;
   columns: number;
@@ -156,6 +162,7 @@ export const DEFAULT_MEDIA_BROWSER_CONFIG: MediaBrowserConfig = {
   favorites: DEFAULT_FAVORITES_CONFIG,
   recents: DEFAULT_FAVORITES_CONFIG,
   recommendations: DEFAULT_RECOMMENDATIONS_CONFIG,
+  folders: DEFAULT_FOLDERS_CONFIG,
   sections: DEFAULT_CUSTOM_SECTION_CONFIG,
   hide: DEFAULT_MEDIA_BROWSER_HIDDEN_ELEMENTS_CONFIG,
   columns: 2,
@@ -243,6 +250,10 @@ function defaultSectionConfigForm() {
           {
             value: "recommendations",
             label: "Recommendations",
+          },
+          {
+            value: "folders",
+            label: "Folders",
           },
         ],
       },
@@ -432,6 +443,7 @@ export function mediaBrowserConfigForm() {
       ],
     },
     recommendationsConfigForm(),
+    foldersConfigForm(),
     { name: "show_artist_subtitles", selector: { boolean: {} }, default: true },
     hiddenElementsConfigItem(MEDIA_BROWSER_HIDDEN_ITEMS),
     {
@@ -535,6 +547,10 @@ function processDefaults(config: MediaBrowserConfig) {
 export function processMediaBrowserConfig(config: Config): Config {
   let browser_config = config.media_browser;
   browser_config = processDefaults(browser_config);
+  browser_config = {
+    ...browser_config,
+    folders: { ...DEFAULT_FOLDERS_CONFIG, ...browser_config.folders },
+  };
   browser_config = processFavorites(browser_config);
   browser_config = processRecents(browser_config);
   browser_config = processSections(browser_config);

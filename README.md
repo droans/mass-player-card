@@ -693,13 +693,14 @@ Multiple elements on the queue tab can be hidden. By default, all elements are v
 | Parameter                       | Type                                                                      | Required | Default     | Description                                                                |
 |---------------------------------|---------------------------------------------------------------------------|----------|-------------|----------------------------------------------------------------------------|
 | enabled                         | bool                                                                      | No       | true        | Enable/disable media browser tab                                           |
-| default_section                 | "favorites", "recents", "recommendations"                                 | No       | favorites   | Default section when first opening the Media Browser tab.                  |
+| default_section                 | "favorites", "recents", "recommendations", "folders"                      | No       | favorites   | Default section when first opening the Media Browser tab.                  |
 | columns                         | number                                                                    | No       | 2           | Number of columns for each row.                                            |
 | playlists_allow_removing_tracks | bool                                                                      | No       | false       | **EXPERIMENTAL - SEE WARNING BELOW** Allows removing tracks from playlists |
 | default_enqueue_option          | [EnqueueConfigOption](#default_enqueue_option)                            | No       | play_now    | Default enqueue mode when an item is selected, see below for options       |
 | favorites                       | [FavoritesRecentsConfig](#favorites--recents-config)                      | No       | -           | See below                                                                  |
 | recents                         | [FavoritesRecentsConfig](#favorites--recents-config)                      | No       | -           | See below                                                                  |
 | recommendations                 | [RecommendationsConfig](#recommendations-config)                          | No       | -           | See below                                                                  |
+| folders                         | [FoldersConfig](#folders-config)                                          | No       | -           | Native Music Assistant folder browser                                      |
 | sections                        | list of [SectionsConfig](#sections-config)                                | No       | -           | See below                                                                  |
 | show_artist_subtitles           | bool                                                                      | No       | true        | Enable/disable displaying artist names below album/track names on cards.   |
 | hide                            | [MediaBrowserHiddenElementsConfig](#media-browser-hidden-elements-config) | No       | See below   | See Below                                                                  |
@@ -768,6 +769,21 @@ Recommendations can be enabled/disabled. You can also choose which providers can
 | enabled              | bool            | No       | true    | Enable/disable music player tab                   |
 | show_collection_view | bool            | No       | true    | [See below](#show_collection_view)                |
 | providers            | list of strings | No       | true    | Choose which providers to use for recommendations |
+
+#### Folders Config
+
+Select **Folders** from the Media Browser filter, or set `media_browser.default_section: folders` to open it by default. The Disc tab returns to the last browsed folder while the card remains loaded; a newly loaded card starts at Music Assistant's native browse root (Explore > Folder view), not Home Assistant's media-source root.
+
+| Parameter            | Type | Required | Default | Description |
+|----------------------|------|----------|---------|-------------|
+| enabled              | bool | No       | true    | Show the Folders category |
+| show_collection_view | bool | No       | true    | Open folders on tap; when disabled, enqueue their contents instead |
+
+Contents are displayed as a list in case-sensitive lexical filename order (for example, `01`, `10`, `2`). The back arrow navigates to the previously opened folder. Each row uses the same enqueue menu and hidden-button settings as Favorites. Enqueuing a folder collects its contents recursively in lexical order, skips parent links and unavailable items, and submits one ordered batch with shuffle disabled. Playback uses the configured Music Assistant username, if set; browsing uses the account of the `mass_queue` connection.
+
+This uses the existing `mass_queue.send_command` action and Music Assistant's `music/browse` API, without a new backend integration or direct browser connection to Music Assistant.
+
+Run the folder regression tests with `yarn node --test tests/folder-actions.test.mjs`. For a standalone preview with mock Music Assistant responses and mock Home Assistant host elements, run `yarn node tests/folders-preview.mjs` and open the printed local URL. Layout screenshots are available in [desktop](static/media_browser/folders-desktop.png), [mobile](static/media_browser/folders-mobile.png), and [mobile menu](static/media_browser/folders-mobile-menu.png) sizes.
 
 #### show_collection_view
 

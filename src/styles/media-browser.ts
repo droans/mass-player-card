@@ -26,6 +26,14 @@ export default css`
     overflow: hidden;
     height: 100%;
   }
+  #container.folders {
+    display: flex;
+    flex-direction: column;
+  }
+  #container.folders > #mass-browser {
+    flex: 1;
+    min-height: 0;
+  }
   .container.expressive {
     border-radius: var(--expressive-border-radius-container);
     background-color: var(--expressive-color-container);
