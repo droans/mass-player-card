@@ -102,20 +102,19 @@ export class MediaBrowserCards extends LitElement {
       return html``;
     }
     return html`
-        <div id="drill-button">
-          <mpc-button
-            .onPressService=${this.onDrill}
-            role="plain"
-            size="xsmall"
-            elevation="none"
-            class="button drill"
-          >
-            <ha-svg-icon
-              .path=${this.Icons.ARROW_RIGHT_CIRCLE}
-              class="svg drill"
-            ></ha-svg-icon>
-          </mpc-button>
-        </div>
+      <div id="drill-button">
+        <mpc-button
+          .onPressService=${this.onDrill}
+          role="plain"
+          size="xsmall"
+          elevation="none"
+          class="button drill"
+        >
+          <ha-svg-icon
+            .path=${this.Icons.ARROW_RIGHT_CIRCLE}
+            class="svg drill"
+          ></ha-svg-icon>
+        </mpc-button>
       </div>
     `;
   }
