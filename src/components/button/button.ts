@@ -24,7 +24,7 @@ export class MassButton extends LitElement {
   @property({ attribute: "role", type: String }) colorRole: ButtonColorRole =
     DEFAULT_COLOR_ROLE;
   @property({ attribute: "size", type: String }) size:
-    "small" | "medium" | "large" = DEFAULT_BUTTON_SIZE;
+    "xsmall" | "small" | "medium" | "large" = DEFAULT_BUTTON_SIZE;
   @property({ attribute: "disabled", type: Boolean }) disabled = false;
   @property({ attribute: "selected", type: Boolean }) selected = false;
   @property({ attribute: "selectable", type: Boolean }) selectable = false;

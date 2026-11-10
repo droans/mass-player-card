@@ -4,6 +4,9 @@ import { css } from "lit";
 // https://lit.dev/docs/components/styles/
 export default css`
   :host {
+    --button-default-height-xsmall: 24px;
+    --button-default-border-radius-xsmall: 40%;
+
     --button-default-height-small: 32px;
     --button-default-border-radius-small: 40%;
 
@@ -66,6 +69,16 @@ export default css`
     --state-layer-color: rgba(0, 0, 0, 0);
   }
 
+  .small::part(base) {
+    min-height: var(--used-button-height, var(--button-default-height-xsmall));
+    min-width: var(--used-button-width, var(--button-default-height-xsmall));
+    --ha-button-border-radius: var(
+      --used-button-border-radius,
+      var(--button-default-border-radius-xsmall)
+    );
+    padding-left: var(--button-padding-left, var(--button-padding, 0px));
+    padding-right: var(--button-padding-right, var(--button-padding, 0px));
+  }
   .small::part(base) {
     min-height: var(--used-button-height, var(--button-default-height-small));
     min-width: var(--used-button-width, var(--button-default-height-small));
