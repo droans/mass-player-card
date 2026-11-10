@@ -123,6 +123,11 @@ export interface MediaBrowserItem {
   image: string;
 }
 
+export interface MediaRecommendationSection {
+  title: string;
+  items: MediaCardItem[];
+}
+
 export interface newMediaBrowserItemsConfig {
   favorites: mediaBrowserSectionConfig;
   recents: mediaBrowserSectionConfig;
