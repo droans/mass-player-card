@@ -285,13 +285,11 @@ export class MassPlaylistTrackRow extends LitElement {
     }
   };
   protected renderThumbnail(): TemplateResult {
-    /* eslint-disable prettier/prettier */
-    const img = this.defaultImageURL?.length
-      ? this.defaultImageURL
-      : (this.fallbackImageURL?.length
-        ? this.fallbackImageURL
-        : getThumbnail(this.hass, Thumbnail.CLEFT));
-    /* eslint-enable prettier/prettier */
+    const fallback = this.fallbackImageURL?.length
+      ? this.fallbackImageURL
+      : getThumbnail(this.hass, Thumbnail.CLEFT);
+    const img = this.defaultImageURL?.length ? this.defaultImageURL : fallback;
+
     return html`
       <img
         class="thumbnail"

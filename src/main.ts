@@ -94,6 +94,7 @@ export class MusicAssistantPlayerCard extends LitElement {
   @provide({ context: configContext })
   private _config!: Config;
   private syncPlayerAcrossDashboard = false;
+  private _playerPowerOn?: boolean;
   private listenElem!: HTMLElement;
   public set hass(hass: ExtendedHass | undefined) {
     if (!hass) {
@@ -118,6 +119,7 @@ export class MusicAssistantPlayerCard extends LitElement {
       this._controller.hass = hass;
       this.entities = new_ents;
     }
+    this.updateDefaultSectionWhenOff(hass);
   }
   public get hass() {
     return this._controller.hass;
@@ -183,6 +185,7 @@ export class MusicAssistantPlayerCard extends LitElement {
     }
     this._controller.config = config;
     this.config = this._controller.config;
+    this._playerPowerOn = undefined;
     if (!this.active_section) {
       this.setDefaultActiveSection();
       /* eslint-enable @typescript-eslint/no-unnecessary-condition */
@@ -194,6 +197,28 @@ export class MusicAssistantPlayerCard extends LitElement {
       return;
     }
     this._controller.activeSection = getDefaultSection(this.config);
+  }
+  private updateDefaultSectionWhenOff(hass: ExtendedHass) {
+    if (!this.config.media_browser_when_off) {
+      return;
+    }
+    if (!this.config.media_browser.enabled) {
+      return;
+    }
+    const entity_id = this._controller.ActivePlayer?.activeEntityID;
+    const playerState = entity_id ? hass.states[entity_id] : undefined;
+    if (!playerState) {
+      return;
+    }
+    const powerOn = playerState.state !== "off";
+    const shouldSwitch =
+      this._playerPowerOn === undefined
+        ? !powerOn
+        : this._playerPowerOn && !powerOn;
+    this._playerPowerOn = powerOn;
+    if (shouldSwitch) {
+      this.setDefaultActiveSection();
+    }
   }
   private setActivePlayer = (
     player_entity: string,

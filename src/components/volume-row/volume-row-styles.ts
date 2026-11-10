@@ -73,10 +73,29 @@ export default css`
   #volume {
     display: flex;
     flex-direction: row;
+    flex-wrap: wrap;
     align-items: center;
     justify-content: space-evenly;
     padding-left: 2em;
     padding-right: 2em;
+  }
+
+  #volume-buttons {
+    display: flex;
+    flex-direction: row;
+    align-items: center;
+    justify-content: center;
+    gap: 4px;
+    width: 100%;
+    margin-top: 0.4em;
+  }
+  #volume-buttons .volume-preset {
+    width: auto;
+    min-width: 40px;
+  }
+  #volume-buttons .preset-label {
+    font-size: 0.75em;
+    font-weight: 600;
   }
 
   #volume-slider {

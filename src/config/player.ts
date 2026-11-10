@@ -5,6 +5,12 @@ export interface PlayerConfig {
   enabled: boolean;
   hide: PlayerHiddenElementsConfig;
   layout: PlayerLayoutConfig;
+  volume_controls: VolumeControlsConfig;
+}
+
+export interface VolumeControlsConfig {
+  enabled: boolean;
+  presets: number[];
 }
 
 export interface PlayerControlsHiddenElementsConfig extends BaseHiddenElementsConfig {
@@ -129,10 +135,15 @@ export const DEFAULT_PLAYER_LAYOUT_CONFIG: PlayerLayoutConfig = {
   hide_labels: false,
   artwork_size: ArtworkSize.LARGE,
 };
+export const DEFAULT_VOLUME_CONTROLS_CONFIG: VolumeControlsConfig = {
+  enabled: true,
+  presets: [15, 30, 50],
+};
 export const DEFAULT_PLAYER_CONFIG: PlayerConfig = {
   enabled: true,
   hide: DEFAULT_PLAYER_HIDDEN_ELEMENTS_CONFIG,
   layout: DEFAULT_PLAYER_LAYOUT_CONFIG,
+  volume_controls: DEFAULT_VOLUME_CONTROLS_CONFIG,
 };
 
 const PLAYER_HIDDEN_ITEMS = [
@@ -237,7 +248,33 @@ export function playerConfigForm() {
     { name: "enabled", selector: { boolean: {} }, default: true },
     hiddenElementsConfigItem(PLAYER_HIDDEN_ITEMS),
     layoutConfigForm(),
+    volumeControlsConfigForm(),
   ];
+}
+
+function volumeControlsConfigForm() {
+  return {
+    name: "volume_controls",
+    type: "expandable",
+    schema: [
+      {
+        name: "enabled",
+        selector: { boolean: {} },
+        default: true,
+        description: {
+          suffix: "Show volume step and preset buttons under the slider",
+        },
+      },
+      {
+        name: "presets",
+        selector: { text: {} },
+        default: "15, 30, 50",
+        description: {
+          suffix: "Comma-separated volume preset percentages (e.g. 15, 30, 50)",
+        },
+      },
+    ],
+  };
 }
 
 function processPlayerIconsConfig(config: PlayerConfig): PlayerConfig {
@@ -319,11 +356,40 @@ function processDefaults(config: PlayerConfig): PlayerConfig {
   };
 }
 
+function processVolumeControlsConfig(config: PlayerConfig): PlayerConfig {
+  const d = DEFAULT_VOLUME_CONTROLS_CONFIG;
+  const c = config.volume_controls;
+  const raw = c.presets as unknown as (number | string)[] | string | undefined;
+  let values: (number | string)[];
+  if (Array.isArray(raw)) {
+    values = raw;
+  } else if (typeof raw === "string") {
+    const s = raw.trim();
+    values = s === "" ? [] : s.split(",");
+  } else {
+    values = d.presets;
+  }
+  const presets = values
+    .map((v) => (typeof v === "number" ? v : Number.parseInt(v.trim(), 10)))
+    .filter((v) => !Number.isNaN(v))
+    .map((v) => Math.round(Math.max(0, Math.min(100, v))))
+    .toSorted((a, b) => a - b);
+  return {
+    ...config,
+    volume_controls: {
+      ...d,
+      ...c,
+      presets,
+    },
+  };
+}
+
 export function processPlayerConfig(config: Config): Config {
   let player_config = config.player;
   player_config = processDefaults(player_config);
   player_config = processHiddenElementsConfig(player_config);
   player_config = processLayoutConfig(player_config);
+  player_config = processVolumeControlsConfig(player_config);
   return {
     ...config,
     player: player_config,
