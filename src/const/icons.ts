@@ -4,6 +4,7 @@ import {
   mdiArrowCollapseUp,
   mdiArrowDown,
   mdiArrowLeft,
+  mdiArrowRightCircle,
   mdiArrowUp,
   mdiBook,
   mdiClose,
@@ -51,6 +52,7 @@ export interface Icons {
   ALBUM: string;
   ARROW_DOWN: string;
   ARROW_LEFT: string;
+  ARROW_RIGHT_CIRCLE: string;
   ARROW_PLAY_NEXT: string;
   ASLEEP: string;
   BOOK: string;
@@ -101,6 +103,7 @@ const MaterialDesignIcons: Icons = {
   ARROW_DOWN: mdiArrowDown,
   ARROW_LEFT: mdiArrowLeft,
   ARROW_PLAY_NEXT: mdiArrowCollapseUp,
+  ARROW_RIGHT_CIRCLE: mdiArrowRightCircle,
   ARROW_UP: mdiArrowUp,
   ASLEEP: mdiSleep,
   BOOK: mdiBook,
@@ -153,6 +156,8 @@ const MaterialExpressiveIcons: Icons = {
     "M11 16.175V5q0-.425.288-.712T12 4t.713.288T13 5v11.175l4.9-4.9q.3-.3.7-.288t.7.313q.275.3.287.7t-.287.7l-6.6 6.6q-.15.15-.325.213t-.375.062t-.375-.062t-.325-.213l-6.6-6.6q-.275-.275-.275-.687T4.7 11.3q.3-.3.713-.3t.712.3z",
   ARROW_LEFT:
     "m7.85 13l2.85 2.85q.3.3.288.7t-.288.7q-.3.3-.712.313t-.713-.288L4.7 12.7q-.3-.3-.3-.7t.3-.7l4.575-4.575q.3-.3.713-.287t.712.312q.275.3.288.7t-.288.7L7.85 11H19q.425 0 .713.288T20 12t-.288.713T19 13z",
+  ARROW_RIGHT_CIRCLE:
+    "M12.675 12L10.3 14.375q-.275.275-.275.688t.275.712q.3.3.713.3t.712-.3L14.8 12.7q.3-.3.3-.7t-.3-.7l-3.1-3.1q-.3-.3-.7-.287t-.7.312q-.275.3-.288.7t.288.7zM12 22q-2.075 0-3.9-.788t-3.175-2.137T2.788 15.9T2 12t.788-3.9t2.137-3.175T8.1 2.788T12 2t3.9.788t3.175 2.137T21.213 8.1T22 12t-.788 3.9t-2.137 3.175t-3.175 2.138T12 22m0-2q3.35 0 5.675-2.325T20 12t-2.325-5.675T12 4T6.325 6.325T4 12t2.325 5.675T12 20m0-8",
   ARROW_PLAY_NEXT:
     "M5 5q-.425 0-.712-.288T4 4t.288-.712T5 3h14q.425 0 .713.288T20 4t-.288.713T19 5zm7 16q-.425 0-.712-.288T11 20v-9.2l-1.9 1.9q-.275.275-.7.275t-.7-.275t-.275-.7t.275-.7l3.6-3.6q.15-.15.325-.212T12 7.425t.375.063t.325.212l3.6 3.6q.275.275.275.7t-.275.7t-.7.275t-.7-.275L13 10.8V20q0 .425-.287.713T12 21",
   ARROW_UP:
@@ -243,7 +248,7 @@ export function getIcons(expressive: boolean): Icons {
 }
 
 /*
-  LICENSE AND COPYRIGHT 
+  LICENSE AND COPYRIGHT
     Material Design Icons and Material Symbols:
       Author: Google
       URL: https://github.com/google/material-design-icons
