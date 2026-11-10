@@ -132,7 +132,7 @@ export interface newMediaBrowserItemsConfig {
   favorites: mediaBrowserSectionConfig;
   recents: mediaBrowserSectionConfig;
   recommendations: mediaBrowserSectionConfig;
-  search: MediaCardItem[];
+  search: mediaBrowserSectionConfig;
 }
 export interface MediaBrowserItemsConfig {
   main: MediaCardItem[];

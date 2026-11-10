@@ -21,6 +21,7 @@ import { mediaBrowserCardsContext } from "../const/context";
 import { CardsUpdatedEventDetail } from "../const/events";
 import {
   ExtendedHass,
+  mediaBrowserSectionConfig,
   MediaCardItem,
   MediaLibraryItem,
   MediaRecommendationSection,
@@ -55,7 +56,7 @@ export class MediaBrowserController {
         favorites: { main: [] },
         recents: { main: [] },
         recommendations: { main: [] },
-        search: [],
+        search: { main: [] },
       },
     });
     this.actions = new BrowserActions(hass);
@@ -107,7 +108,7 @@ export class MediaBrowserController {
       favorites: { main: [] },
       recents: { main: [] },
       recommendations: { main: [] },
-      search: [],
+      search: { main: [] },
     };
     this.generateAllSections();
   }
@@ -154,24 +155,59 @@ export class MediaBrowserController {
   public async search(
     player_entity_id: string,
     search_term: string,
-    media_type: MediaTypes,
     library_only = false as boolean,
     limit: number = DEFAULT_SEARCH_LIMIT,
-  ) {
+    media_type?: MediaTypes,
+  ): Promise<mediaBrowserSectionConfig> {
     const user = this.massUser;
     const search_result = await this.actions.actionSearchMedia(
       player_entity_id,
       search_term,
-      media_type,
       library_only,
       limit,
       user,
-    );
-    return generateFavoritesSectionCards(
-      search_result,
       media_type,
-      this.browserConfig.favorites.show_collection_view,
     );
+    const showCollectionView =
+      this.browserConfig.recommendations.show_collection_view;
+    return {
+      main: [],
+      album: generateFavoritesSectionCards(
+        search_result.albums,
+        MediaTypes.ALBUM,
+        showCollectionView,
+      ),
+      artist: generateFavoritesSectionCards(
+        search_result.artists,
+        MediaTypes.ARTIST,
+        showCollectionView,
+      ),
+      audiobook: generateFavoritesSectionCards(
+        search_result.audiobooks,
+        MediaTypes.AUDIOBOOK,
+        showCollectionView,
+      ),
+      playlist: generateFavoritesSectionCards(
+        search_result.playlists,
+        MediaTypes.PLAYLIST,
+        showCollectionView,
+      ),
+      podcast: generateFavoritesSectionCards(
+        search_result.podcasts,
+        MediaTypes.PODCAST,
+        showCollectionView,
+      ),
+      radio: generateFavoritesSectionCards(
+        search_result.radio,
+        MediaTypes.RADIO,
+        showCollectionView,
+      ),
+      track: generateFavoritesSectionCards(
+        search_result.tracks,
+        MediaTypes.TRACK,
+        showCollectionView,
+      ),
+    };
   }
 
   // Favorites

@@ -10,7 +10,6 @@ import {
   DEFAULT_ACTIVE_SUBSECTION,
   DEFAULT_SEARCH_LIMIT,
   EnqueueConfigMap,
-  getSearchMediaButtons,
   MediaBrowserSection,
   MediaBrowserSubsection,
   SEARCH_SECTIONS,
@@ -59,8 +58,7 @@ import { EnqueueOptions, MediaTypes } from "../const/enums";
 import { MediaBrowserController } from "../controller/browser";
 import { DirectiveResult } from "lit/directive.js";
 import { cache } from "lit/directives/cache.js";
-import { getMediaTypeSvg } from "../utils/thumbnails";
-import { MenuButtonEventData, TargetValueEventData } from "../const/events";
+import { TargetValueEventData } from "../const/events";
 import { getTranslation } from "../utils/translations";
 // eslint-disable-next-line import/no-duplicates
 import { SectionType } from "../components/new-media-browser-cards/media-browser-cards";
@@ -113,8 +111,6 @@ export class MediaBrowser extends LitElement {
   private previousSections: MediaBrowserSection[] = [];
   private previousSubSections: MediaBrowserSubsection[] = [];
   private _cardsJSON = "{}";
-  @state() private searchMediaTypeIcon!: string;
-  @state() private searchMediaType: MediaTypes = MediaTypes.TRACK;
 
   @consume({ context: hassContext, subscribe: true })
   public set hass(hass: ExtendedHass | undefined) {
@@ -217,7 +213,6 @@ export class MediaBrowser extends LitElement {
       const cards = await this.browserController.search(
         this.activeEntityConfig.entity_id,
         search_term,
-        this.searchMediaType,
         this.searchLibrary,
         DEFAULT_SEARCH_LIMIT,
       );
@@ -261,6 +256,7 @@ export class MediaBrowser extends LitElement {
     > = {
       favorite: this.cards?.favorites[this.mediaType],
       recent: this.cards?.recents[this.mediaType],
+      search: this.cards?.search[sectionId],
     };
     const sectionCards = sectionCardMap[sectionType];
     if (!sectionCards) {
@@ -279,16 +275,9 @@ export class MediaBrowser extends LitElement {
     if (!this.cards) {
       return;
     }
-    if (!this.searchMediaTypeIcon) {
-      this.searchMediaTypeIcon = getMediaTypeSvg(
-        MediaTypes.TRACK,
-        this.Icons,
-        this.hass,
-      );
-    }
     this.searchTerm = "";
     this.activeSection = "search";
-    this.cards.search = [];
+    this.cards.search = { main: [] };
     this.searchActivated = true;
   };
   protected onMediaTypeSelection = (selection: string) => {
@@ -402,15 +391,6 @@ export class MediaBrowser extends LitElement {
       user,
     );
   };
-  private onSearchMediaTypeSelect = async (event_: MenuButtonEventData) => {
-    if (!this.hass) {
-      return;
-    }
-    const value = event_.detail.option as MediaTypes;
-    this.searchMediaType = value;
-    this.searchMediaTypeIcon = getMediaTypeSvg(value, this.Icons, this.hass);
-    await this.searchMedia();
-  };
   private onSearchLibrarySelect = async () => {
     this.searchLibrary = !this.searchLibrary;
     await this.searchMedia();
@@ -457,28 +437,6 @@ export class MediaBrowser extends LitElement {
         <ha-svg-icon .path=${this.Icons.SEARCH} class="svg xs"></ha-svg-icon>
       </mpc-button>
     `;
-  }
-  protected renderSearchMediaTypeButton(): TemplateResult {
-    if (!this.hass) {
-      return html``;
-    }
-    if (SEARCH_SECTIONS.includes(this.activeSection)) {
-      const icons = getSearchMediaButtons(this.Icons, this.hass);
-      return html`
-        <mpc-menu-button
-          id="search-media-type-menu"
-          class="search-media-type-menu expressive"
-          scheme="plain"
-          elevation="-1"
-          .iconPath=${this.searchMediaTypeIcon}
-          .initialSelection=${this.searchMediaType}
-          .items=${icons}
-          @menu-item-selected=${this.onSearchMediaTypeSelect}
-          fixedMenuPosition
-        ></mpc-menu-button>
-      `;
-    }
-    return html``;
   }
   protected renderSearchLibraryButton(): TemplateResult {
     if (SEARCH_SECTIONS.includes(this.activeSection)) {
@@ -530,10 +488,7 @@ export class MediaBrowser extends LitElement {
           @sl-input=${this.onSearchInput}
         >
           <span slot="suffix">
-            <div id="search-options">
-              ${this.renderSearchMediaTypeButton()}
-              ${this.renderSearchLibraryButton()}
-            </div>
+            <div id="search-options">${this.renderSearchLibraryButton()}</div>
           </span>
         </sl-input>
       </span>
@@ -714,6 +669,59 @@ export class MediaBrowser extends LitElement {
       </div>
     `;
   }
+  protected renderSearchSection(
+    translationKey: string,
+    id: string,
+    cards: MediaCardItem[] | undefined | null,
+  ): TemplateResult {
+    if (!cards || cards.length === 0) {
+      return html``;
+    }
+    const translation = getTranslation(translationKey, this.hass);
+    return html`
+      <mpc-browser-cards
+        title="${translation}"
+        id="${id}"
+        section-type="search"
+        .cards=${cards}
+        direction="horizontal"
+        .onEnqueueAction=${this.onEnqueue}
+        .onSelectAction=${this.onSelect}
+        .onDrillAction=${this.onDrillDown}
+      ></mpc-browser-cards>
+    `;
+  }
+  protected renderSearch(): DirectiveResult {
+    if (this.searchLoading) {
+      return html`
+        <div class="broser-card-section search">
+          <mpc-browser-cards
+            title=""
+            id=""
+            section-type="search"
+            hide-drilldown
+            .cards=${[]}
+            skeleton
+          ></mpc-browser-cards>
+        </div>
+      `;
+    }
+    if (!this.cards) {
+      return html``;
+    }
+    const cards = this.cards.search;
+    return html`
+      <div class="broser-card-section search">
+        ${this.renderSearchSection("browser.sections.album", "album", cards.album)}
+        ${this.renderSearchSection("browser.sections.artist", "artist", cards.artist)}
+        ${this.renderSearchSection("browser.sections.audiobook", "audiobook", cards.audiobook)}
+        ${this.renderSearchSection("browser.sections.playlist", "playlist", cards.playlist)}
+        ${this.renderSearchSection("browser.sections.podcast", "podcast", cards.podcast)}
+        ${this.renderSearchSection("browser.sections.radio", "radio", cards.radio)}
+        ${this.renderSearchSection("browser.sections.track", "track", cards.track)}
+      </div>
+    `;
+  }
   protected renderBrowserCards(): DirectiveResult {
     /* eslint-disable unicorn/template-indent */
     const isCollectionView =
@@ -725,6 +733,9 @@ export class MediaBrowser extends LitElement {
     const isDrillDown = this.activeSubSection == "drill";
     if (isDrillDown) {
       return this.renderDrillDown();
+    }
+    if (this.searchActivated) {
+      return this.renderSearch();
     }
     const recommendationsHtml = this.config.recommendations.enabled
       ? this.renderRecommendations()
