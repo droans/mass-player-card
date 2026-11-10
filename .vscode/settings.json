@@ -15,5 +15,6 @@
   "tslint.suppressWhileTypeErrorsPresent": true,
   "js/ts.implicitProjectConfig.target": "ES2024",
   "js/ts.reportStyleChecksAsWarnings": true,
-  "tslint.alwaysShowRuleFailuresAsWarnings": true
+  "tslint.alwaysShowRuleFailuresAsWarnings": true,
+  "editor.tabSize": 2,
 }

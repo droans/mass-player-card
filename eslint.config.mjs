@@ -42,6 +42,7 @@ export default tseslint.config(
       "listeners/no-inline-function-event-listener": "error",
       "observers/no-missing-unobserve-or-disconnect": "error",
       "observers/matching-unobserve-target": "error",
+      "prettier/prettier": "warn",
       "unicorn/new-for-builtins": "off",
       "unicorn/no-null": "off",
       "unicorn/prefer-array-some": "off",
