@@ -46,7 +46,10 @@ export class MassButton extends LitElement {
     }
     function_(event_);
   };
-  private onPointerUp = (event_: Event) => {
+  private onPointerUp = (event_: PointerEvent) => {
+    if (event_.button != 0) {
+      return;
+    }
     if ((this.timeout || !this.onHoldService) && this.onPressService) {
       clearTimeout(this.timeout);
       this.onPressService(event_);
