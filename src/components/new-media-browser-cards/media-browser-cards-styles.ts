@@ -23,15 +23,19 @@ export default css`
   :host([direction="horizontal"]) mpc-browser-media-card {
     height: 8em;
     width: 8em;
+    --container-height: 8em;
+    --container-width: 8em;
   }
   :host([direction="vertical"]) mpc-browser-media-card {
     width: 48%;
+    --container-width: 48%;
   }
   mpc-browser-media-card {
     max-height: 100%;
     aspect-ratio: 1;
     width: 100%;
     justify-content: center;
+    padding-inline: 4px;
   }
   #drill-button {
     margin-top: 2px;
@@ -58,6 +62,7 @@ export default css`
     display: flex;
     column-gap: 8px;
     padding-bottom: 8px;
+    height: 8em;
   }
   #title {
     font-size: 1.5em;

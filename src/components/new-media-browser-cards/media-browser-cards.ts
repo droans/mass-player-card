@@ -13,6 +13,7 @@ import styles from "./media-browser-cards-styles";
 import { consume } from "@lit/context";
 import { IconsContext } from "../../const/context";
 import { Icons } from "../../const/icons";
+import { flow } from "@lit-labs/virtualizer/layouts/flow.js";
 
 export type SectionType = "favorite" | "recent" | "recommendation";
 
@@ -63,26 +64,37 @@ export class MediaBrowserCards extends LitElement {
   private onDrill = () => {
     this.onDrillAction(this.sectionType, this.id, this.title);
   };
-  protected renderCards(): TemplateResult[] {
-    return this.cards.map((card) => {
-      const queueable = [
-        "service",
-        "playlist",
-        "album",
-        "artist",
-        "podcast",
-      ].includes(card.data.type)
-        ? literal`queueable`
-        : literal``;
-      return html`
-        <mpc-browser-media-card
-          .config=${card}
-          .onSelectAction=${this.onItemSelected}
-          .onEnqueueAction=${this.onEnqueue}
-          ${queueable}
-        ></mpc-browser-media-card>
-      `;
-    });
+  protected renderCard(card: MediaCardItem): TemplateResult {
+    const queueable = [
+      "service",
+      "playlist",
+      "album",
+      "artist",
+      "podcast",
+    ].includes(card.data.type)
+      ? literal`queueable`
+      : literal``;
+    return html`
+      <mpc-browser-media-card
+        .config=${card}
+        .onSelectAction=${this.onItemSelected}
+        .onEnqueueAction=${this.onEnqueue}
+        ${queueable}
+      ></mpc-browser-media-card>
+    `;
+  }
+  protected renderCards(): TemplateResult {
+    return html`
+      <lit-virtualizer
+        id="cards-virtualizer"
+        .items=${this.cards}
+        .layout=${flow({ direction: "horizontal" })}
+        .renderItem=${(item: MediaCardItem) => {
+          return this.renderCard(item);
+        }}
+      >
+      </lit-virtualizer>
+    `;
   }
 
   protected renderDrillButton(): TemplateResult {
