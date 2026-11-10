@@ -18,12 +18,12 @@ import {
   generateRecommendationSectionCards,
 } from "../utils/media-browser";
 import { mediaBrowserCardsContext } from "../const/context";
-import { jsonMatch } from "../utils/utility";
 import { CardsUpdatedEventDetail } from "../const/events";
 import {
   ExtendedHass,
   MediaCardItem,
   MediaLibraryItem,
+  MediaRecommendationSection,
   newMediaBrowserItemsConfig,
   RecommendationSection,
 } from "../const/types";
@@ -67,15 +67,16 @@ export class MediaBrowserController {
     }
   }
   private set items(items: newMediaBrowserItemsConfig) {
-    // eslint-disable-next-line @typescript-eslint/no-unnecessary-condition
-    if (!items) {
+    if (
+      // eslint-disable-next-line @typescript-eslint/no-unnecessary-condition
+      !items ||
+      (items.favorites.main.length === 0 &&
+        items.recents.main.length === 0 &&
+        items.recommendations.main.length === 0)
+    ) {
       return;
     }
-    if (jsonMatch(this._items.value, items)) {
-      return;
-    }
-    const x = { ...items };
-    this._items.setValue(x);
+    this._items.setValue(items);
   }
   public get items() {
     return this._items.value;
@@ -129,6 +130,10 @@ export class MediaBrowserController {
         };
         const event_ = new CustomEvent("cards-updated", { detail: data });
         this._host.dispatchEvent(event_);
+        const updatedEvent_ = new CustomEvent("cards-full-updated", {
+          detail: data,
+        });
+        this._host.dispatchEvent(updatedEvent_);
       })
       .finally(() => {
         this._updatingCards = false;
@@ -453,6 +458,31 @@ export class MediaBrowserController {
     i.favorites[`custom-${config.name}`] = cards;
     i.favorites.main.push(section_card);
     this.items = { ...i };
+  }
+  public getRecommendationsForMedia(
+    mediaType: MediaTypes,
+  ): MediaRecommendationSection[] {
+    const recommendations = Object.entries(this.items.recommendations).filter(
+      (rec) => {
+        return rec[0] != "main";
+      },
+    );
+    const filteredRecs: MediaRecommendationSection[] = recommendations
+      .map((rec) => {
+        const title = rec[0];
+        const recItems = rec[1];
+        const filteredRecItems = recItems.filter((recItem) => {
+          return (recItem.data.type as MediaTypes) == mediaType;
+        });
+        return {
+          title,
+          items: filteredRecItems,
+        };
+      })
+      .filter((rec) => {
+        return rec.items.length > 0;
+      });
+    return filteredRecs;
   }
   public disconnected() {
     return;

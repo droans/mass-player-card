@@ -10,7 +10,7 @@ import { html } from "lit/static-html.js";
 import { customElement, state } from "lit/decorators.js";
 import { cache } from "lit/directives/cache.js";
 
-import "./sections/media-browser";
+import "./sections/new-media-browser";
 import "./sections/music-player";
 import "./sections/player-queue";
 import "./sections/players";

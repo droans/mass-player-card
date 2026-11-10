@@ -2,7 +2,7 @@ import { html, TemplateResult } from "lit";
 import { Thumbnail, MediaTypes } from "../const/enums";
 import { asyncImageURLWithFallback } from "./thumbnails";
 import { MediaTypeThumbnails } from "../const/media-browser";
-import { customItem } from "../config/media-browser";
+import { customItem, MediaBrowserConfig } from "../config/media-browser";
 import { getTranslation } from "./translations";
 import {
   ExtendedHass,
@@ -12,8 +12,10 @@ import {
   mediaCardPlaylistData,
   mediaCardPodcastData,
   MediaLibraryItem,
+  newMediaBrowserItemsConfig,
   RecommendationSection,
 } from "../const/types";
+import { Icons } from "../const/icons";
 
 type viewCardFunction = (
   media_content_id: string,
@@ -330,4 +332,144 @@ function generatePodcastCard(
     fallback: Thumbnail.PLAYLIST,
     data,
   };
+}
+
+export interface BrowserChip {
+  icon: string;
+  title: string;
+  enabled: boolean;
+  items: { favorites: MediaCardItem[]; recents: MediaCardItem[] };
+  name: string;
+}
+
+export interface BrowserChips {
+  album: BrowserChip;
+  artist: BrowserChip;
+  audiobook: BrowserChip;
+  playlist: BrowserChip;
+  podcast: BrowserChip;
+  radio: BrowserChip;
+  track: BrowserChip;
+}
+
+export function getBrowserChips(
+  icons: Icons,
+  hass: ExtendedHass,
+  config: MediaBrowserConfig,
+  cards: newMediaBrowserItemsConfig,
+): BrowserChips {
+  const favoriteCards = cards.favorites;
+  const recentCards = cards.recents;
+  const favoriteConfig = config.favorites;
+  const recentsConfig = config.recents;
+
+  /* eslint-disable @typescript-eslint/no-unnecessary-condition */
+  const useAlbum =
+    (favoriteConfig.albums.enabled || recentsConfig.albums.enabled) &&
+    ((favoriteCards?.album?.length ?? 0) > 0 ||
+      (recentCards?.album?.length ?? 0) > 0);
+
+  const useArtist =
+    (favoriteConfig.artists.enabled || recentsConfig.artists.enabled) &&
+    ((favoriteCards?.artist?.length ?? 0) > 0 ||
+      (recentCards?.artist?.length ?? 0) > 0);
+
+  const useAudiobook =
+    (favoriteConfig.audiobooks.enabled || recentsConfig.audiobooks.enabled) &&
+    ((favoriteCards?.audiobook?.length ?? 0) > 0 ||
+      (recentCards?.audiobook?.length ?? 0) > 0);
+
+  const usePlaylist =
+    (favoriteConfig.playlists.enabled || recentsConfig.playlists.enabled) &&
+    ((favoriteCards?.playlist?.length ?? 0) > 0 ||
+      (recentCards?.playlist?.length ?? 0) > 0);
+
+  const usePodcast =
+    (favoriteConfig.podcasts.enabled || recentsConfig.podcasts.enabled) &&
+    ((favoriteCards?.podcast?.length ?? 0) > 0 ||
+      (recentCards?.podcast?.length ?? 0) > 0);
+
+  const useRadio =
+    (favoriteConfig.radios.enabled || recentsConfig.radios.enabled) &&
+    ((favoriteCards?.radio?.length ?? 0) > 0 ||
+      (recentCards?.radio?.length ?? 0) > 0);
+
+  const useTrack =
+    (favoriteConfig.tracks.enabled || recentsConfig.tracks.enabled) &&
+    ((favoriteCards?.track?.length ?? 0) > 0 ||
+      (recentCards?.track?.length ?? 0) > 0);
+
+  return {
+    album: {
+      title: getTranslation("browser.sections.album", hass) as string,
+      icon: icons.ALBUM,
+      enabled: useAlbum,
+      items: {
+        favorites: favoriteCards.album ?? [],
+        recents: recentCards.album ?? [],
+      },
+      name: "album",
+    },
+    artist: {
+      title: getTranslation("browser.sections.artist", hass) as string,
+      icon: icons.ARTIST,
+      enabled: useArtist,
+      items: {
+        favorites: favoriteCards.artist ?? [],
+        recents: recentCards.artist ?? [],
+      },
+      name: "artist",
+    },
+    audiobook: {
+      title: getTranslation("browser.sections.audiobook", hass) as string,
+      icon: icons.BOOK,
+      enabled: useAudiobook,
+      items: {
+        favorites: favoriteCards.audiobook ?? [],
+        recents: recentCards.audiobook ?? [],
+      },
+      name: "audiobook",
+    },
+    playlist: {
+      title: getTranslation("browser.sections.playlist", hass) as string,
+      icon: icons.PLAYLIST,
+      enabled: usePlaylist,
+      items: {
+        favorites: favoriteCards.playlist ?? [],
+        recents: recentCards.playlist ?? [],
+      },
+      name: "playlist",
+    },
+    podcast: {
+      title: getTranslation("browser.sections.podcast", hass) as string,
+      icon: icons.PODCAST,
+      enabled: usePodcast,
+      items: {
+        favorites: favoriteCards.podcast ?? [],
+        recents: recentCards.podcast ?? [],
+      },
+      name: "podcast",
+    },
+    radio: {
+      title: getTranslation("browser.sections.radio", hass) as string,
+      icon: icons.RADIO,
+      enabled: useRadio,
+      items: {
+        favorites: favoriteCards.radio ?? [],
+        recents: recentCards.radio ?? [],
+      },
+      name: "radio",
+    },
+    track: {
+      title: getTranslation("browser.sections.track", hass) as string,
+      icon: icons.MUSIC,
+      enabled: useTrack,
+      items: {
+        favorites: favoriteCards.track ?? [],
+        recents: recentCards.track ?? [],
+      },
+      name: "track",
+    },
+  };
+  /* eslint-enable @typescript-eslint/no-unnecessary-condition */
 }
