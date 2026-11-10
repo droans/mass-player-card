@@ -99,12 +99,13 @@ export type EnqueueConfigOptions =
   | "play_next_clear_queue"
   | "add_to_queue"
   | "radio";
+export const DEFAULT_FAVORITES_ONLY = false;
 
 export const DEFAULT_FAVORITE_ITEM_CONFIG: FavoriteItemConfig = {
   enabled: true,
   limit: 25,
   items: [],
-  favorites_only: true,
+  favorites_only: DEFAULT_FAVORITES_ONLY,
 };
 
 const DEFAULT_FAVORITES_CONFIG: FavoritesConfig = {

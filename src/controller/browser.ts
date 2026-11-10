@@ -3,6 +3,7 @@ import BrowserActions from "../actions/browser-actions";
 import { Config } from "../config/config";
 import {
   customSection,
+  DEFAULT_FAVORITES_ONLY,
   FavoriteItemConfig,
   MediaBrowserConfig,
 } from "../config/media-browser";
@@ -236,7 +237,7 @@ export class MediaBrowserController {
   private async getFavoriteSection(
     config: FavoriteItemConfig,
     media_type: MediaTypes,
-    favorites_only = true,
+    favoritesOnly = DEFAULT_FAVORITES_ONLY,
   ) {
     const limit = config.limit;
     const custom_items = config.items;
@@ -246,7 +247,7 @@ export class MediaBrowserController {
       this.activeEntityId,
       media_type,
       limit,
-      favorites_only ? true : null,
+      favoritesOnly ? true : null,
       sortOrder,
       user,
     );
@@ -262,7 +263,7 @@ export class MediaBrowserController {
   private async generateFavoriteData(
     config: FavoriteItemConfig,
     media_type: MediaTypes,
-    favorites_only = true,
+    favoritesOnly = DEFAULT_FAVORITES_ONLY,
     download_local: boolean,
     proxy_all: boolean,
   ) {
@@ -276,7 +277,7 @@ export class MediaBrowserController {
     const items = await this.getFavoriteSection(
       config,
       media_type,
-      favorites_only,
+      favoritesOnly,
     );
     if (items.length === 0) {
       return;

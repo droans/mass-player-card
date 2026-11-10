@@ -257,31 +257,31 @@ media_browser:
     albums:
       enabled: true
       limit: 25
-      favorites_only: true
+      favorites_only: false
     artists:
       enabled: true
       limit: 25
-      favorites_only: true
+      favorites_only: false
     audiobooks:
       enabled: true
       limit: 25
-      favorites_only: true
+      favorites_only: false
     playlists:
       enabled: true
       limit: 25
-      favorites_only: true
+      favorites_only: false
     podcasts:
       enabled: true
       limit: 25
-      favorites_only: true
+      favorites_only: false
     radios:
       enabled: true
       limit: 25
-      favorites_only: true
+      favorites_only: false
     tracks:
       enabled: true
       limit: 25
-      favorites_only: true
+      favorites_only: false
     sort_order: last_played_desc
   recommendations:
     enabled: true
@@ -292,31 +292,31 @@ media_browser:
     albums:
       enabled: true
       limit: 25
-      favorites_only: true
+      favorites_only: false
     artists:
       enabled: true
       limit: 25
-      favorites_only: true
+      favorites_only: false
     audiobooks:
       enabled: true
       limit: 25
-      favorites_only: true
+      favorites_only: false
     playlists:
       enabled: true
       limit: 25
-      favorites_only: true
+      favorites_only: false
     podcasts:
       enabled: true
       limit: 25
-      favorites_only: true
+      favorites_only: false
     radios:
       enabled: true
       limit: 25
-      favorites_only: true
+      favorites_only: false
     tracks:
       enabled: true
       limit: 25
-      favorites_only: true
+      favorites_only: false
   show_artist_subtitles: true
 ```
 
@@ -392,11 +392,11 @@ media_browser:
     albums:
       enabled: true
       limit: 25
-      favorites_only: true
+      favorites_only: false
     artists:
       enabled: true
       limit: 10
-      favorites_only: true
+      favorites_only: false
     audiobooks:
       enabled: true
       limit: 5
@@ -416,7 +416,7 @@ media_browser:
     tracks:
       enabled: true
       limit: 100
-      favorites_only: true
+      favorites_only: false
       items:
         - name: My Playlist
           image: https://resources.tidal.com/images/10c59b67/bb86/4960/8071/a23a03b8cbdd/750x750.jpg
