@@ -10,7 +10,7 @@ import { ExtendedHass, ListItems, newMediaBrowserItemsConfig } from "./types";
 export type MediaBrowserSection =
   "favorites" | "recents" | "recommendations" | "search" | "search-collection";
 
-export type MediaBrowserSubsection = "main" | "collection";
+export type MediaBrowserSubsection = "main" | "collection" | "drill";
 
 export const MediaTypeThumbnails = {
   album: Thumbnail.DISC,
