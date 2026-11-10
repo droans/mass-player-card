@@ -225,10 +225,16 @@ export class MediaBrowser extends LitElement {
   private onBack = () => {
     const update =
       this.activeSubSection == "collection" && this.activeSection != "search";
-
+    const currentSection = this.activeSection;
     this.activeSection = this.previousSections.pop() ?? DEFAULT_ACTIVE_SECTION;
     this.activeSubSection =
       this.previousSubSections.pop() ?? DEFAULT_ACTIVE_SUBSECTION;
+    if (
+      SEARCH_SECTIONS.includes(currentSection) &&
+      !SEARCH_SECTIONS.includes(this.activeSection)
+    ) {
+      this.searchActivated = false;
+    }
     if (update) {
       this.requestUpdate("collections", "back");
     }
@@ -265,7 +271,9 @@ export class MediaBrowser extends LitElement {
     this.drillCards = sectionCards;
     this.drillTitle = sectionTitle;
     this.setPreviousSection();
-    this.activeSubSection = "drill";
+    this.activeSubSection = SEARCH_SECTIONS.includes(this.activeSection)
+      ? `drill-search`
+      : "drill";
   };
   private onSearchButtonPress = () => {
     if (!this.hass) {
@@ -418,7 +426,7 @@ export class MediaBrowser extends LitElement {
     if (this.hiddenElements.header_title) {
       return html``;
     }
-    return html`<span slot="label" id="title">${this.activeSection}</span>`;
+    return html`<span slot="label" id="title">My Library</span>`;
   }
   protected renderSearchButton(): TemplateResult {
     if (this.hiddenElements.search_button) {
@@ -543,7 +551,7 @@ export class MediaBrowser extends LitElement {
     if (this.hiddenElements.header) {
       return html``;
     }
-    if (["search", "search-collection"].includes(this.activeSection)) {
+    if (SEARCH_SECTIONS.includes(this.activeSection)) {
       return this.renderSearchHeader();
     }
     if (["collection", "drill"].includes(this.activeSubSection)) {
@@ -578,7 +586,7 @@ export class MediaBrowser extends LitElement {
     if (
       !this.hass ||
       !this.cards ||
-      ["search", "search-collection"].includes(this.activeSection) ||
+      SEARCH_SECTIONS.includes(this.activeSection) ||
       this.activeSubSection == "collection"
     ) {
       return html``;
@@ -724,18 +732,20 @@ export class MediaBrowser extends LitElement {
   }
   protected renderBrowserCards(): DirectiveResult {
     /* eslint-disable unicorn/template-indent */
+    if (this.searchActivated && this.activeSubSection != "drill-search") {
+      return this.renderSearch();
+    }
     const isCollectionView =
       this.activeSubSection == "collection" &&
-      !["search", "search-collection"].includes(this.activeSection);
+      !SEARCH_SECTIONS.includes(this.activeSection);
     if (isCollectionView) {
       return this.renderCollectionView();
     }
-    const isDrillDown = this.activeSubSection == "drill";
+    const isDrillDown = ["drill", "drill-search"].includes(
+      this.activeSubSection,
+    );
     if (isDrillDown) {
       return this.renderDrillDown();
-    }
-    if (this.searchActivated) {
-      return this.renderSearch();
     }
     const recommendationsHtml = this.config.recommendations.enabled
       ? this.renderRecommendations()
