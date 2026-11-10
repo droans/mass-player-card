@@ -199,25 +199,25 @@ export class MusicAssistantPlayerCard extends LitElement {
     this._controller.activeSection = getDefaultSection(this.config);
   }
   private updateDefaultSectionWhenOff(hass: ExtendedHass) {
-    if (!this.config?.media_browser_when_off) {
+    if (!this.config.media_browser_when_off) {
       return;
     }
     if (!this.config.media_browser.enabled) {
       return;
     }
     const entity_id = this._controller.ActivePlayer?.activeEntityID;
-    const state = entity_id ? hass.states[entity_id] : undefined;
-    if (!state) {
+    const playerState = entity_id ? hass.states[entity_id] : undefined;
+    if (!playerState) {
       return;
     }
-    const powerOn = state.state !== "off";
+    const powerOn = playerState.state !== "off";
     const shouldSwitch =
       this._playerPowerOn === undefined
         ? !powerOn
         : this._playerPowerOn && !powerOn;
     this._playerPowerOn = powerOn;
-    if (shouldSwitch && this._controller.activeSection !== Sections.MEDIA_BROWSER) {
-      this._controller.activeSection = Sections.MEDIA_BROWSER;
+    if (shouldSwitch) {
+      this.setDefaultActiveSection();
     }
   }
   private setActivePlayer = (

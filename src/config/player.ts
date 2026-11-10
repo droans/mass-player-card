@@ -270,8 +270,7 @@ function volumeControlsConfigForm() {
         selector: { text: {} },
         default: "15, 30, 50",
         description: {
-          suffix:
-            "Comma-separated volume preset percentages (e.g. 15, 30, 50)",
+          suffix: "Comma-separated volume preset percentages (e.g. 15, 30, 50)",
         },
       },
     ],
@@ -360,10 +359,7 @@ function processDefaults(config: PlayerConfig): PlayerConfig {
 function processVolumeControlsConfig(config: PlayerConfig): PlayerConfig {
   const d = DEFAULT_VOLUME_CONTROLS_CONFIG;
   const c = config.volume_controls;
-  const raw = c?.presets as unknown as
-    | (number | string)[]
-    | string
-    | undefined;
+  const raw = c.presets as unknown as (number | string)[] | string | undefined;
   let values: (number | string)[];
   if (Array.isArray(raw)) {
     values = raw;
@@ -374,10 +370,10 @@ function processVolumeControlsConfig(config: PlayerConfig): PlayerConfig {
     values = d.presets;
   }
   const presets = values
-    .map((v) => (typeof v === "number" ? v : parseInt(String(v).trim(), 10)))
+    .map((v) => (typeof v === "number" ? v : Number.parseInt(v.trim(), 10)))
     .filter((v) => !Number.isNaN(v))
     .map((v) => Math.round(Math.max(0, Math.min(100, v))))
-    .sort((a, b) => a - b);
+    .toSorted((a, b) => a - b);
   return {
     ...config,
     volume_controls: {

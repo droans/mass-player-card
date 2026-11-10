@@ -107,10 +107,10 @@ export class VolumeRow extends LitElement {
     await this.actions.actionSetVolume(volume);
   };
   private onVolumeStep = async (direction: 1 | -1) => {
-    const current = this.player_data?.volume ?? 0;
+    const current = this.player_data.volume;
     const next = Math.min(
       this.maxVolume,
-      Math.max(0, current + direction * VOLUME_STEP)
+      Math.max(0, current + direction * VOLUME_STEP),
     );
     this.player_data.volume = next;
     this.requestUpdate("volume", this.player_data.volume);
@@ -269,7 +269,7 @@ export class VolumeRow extends LitElement {
             >
               <span class="preset-label">${preset}%</span>
             </ha-button>
-          `
+          `,
         )}
         <ha-button
           appearance="plain"
