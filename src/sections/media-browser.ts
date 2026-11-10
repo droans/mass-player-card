@@ -156,6 +156,9 @@ export class MediaBrowser extends LitElement {
 
   @consume({ context: mediaBrowserConfigContext, subscribe: true })
   public set config(config: MediaBrowserConfig) {
+    if (jsonMatch(config, this._config)) {
+      return;
+    }
     this._config = config;
     this.activeSection = config.default_section;
     if (this.cards) {
