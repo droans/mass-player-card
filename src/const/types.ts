@@ -279,3 +279,22 @@ export interface getQueueResponse extends Omit<
   current_item: QueueItemSchema | null;
   next_item: QueueItemSchema | null;
 }
+
+type MediaImageType =
+  | "thumb"
+  | "landscape"
+  | "fanart"
+  | "logo"
+  | "clearart"
+  | "banner"
+  | "cutout"
+  | "back"
+  | "discart"
+  | "other";
+
+export interface MediaItemImage {
+  type: MediaImageType;
+  path: string;
+  provider: string;
+  remotely_accessible: boolean;
+}

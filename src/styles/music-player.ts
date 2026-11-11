@@ -11,6 +11,10 @@ export default css`
     background-color: rgba(var(--player-blur-color), 0.9);
     border-radius: 10px;
   }
+  button.hidden {
+    background: unset;
+    border: unset;
+  }
 
   mpc-player-artwork {
     display: flex;

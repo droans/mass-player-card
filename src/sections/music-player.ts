@@ -242,6 +242,29 @@ export class MusicPlayerCard extends LitElement {
     this.favoritesDialog.open = false;
   }
 
+  public openActiveAlbumView() {
+    if (
+      !this.activePlayerController?.albumCollectionData ||
+      !this.controller.Browser
+    ) {
+      return;
+    }
+    this.controller.Browser.activeAlbumCollectionData =
+      this.activePlayerController.albumCollectionData;
+    this.controller.activeSection = Sections.MEDIA_BROWSER;
+  }
+  public openActiveArtistView() {
+    if (
+      !this.activePlayerController?.artistCollectionData ||
+      !this.controller.Browser
+    ) {
+      return;
+    }
+    this.controller.Browser.activeArtistCollectionData =
+      this.activePlayerController.artistCollectionData;
+    this.controller.activeSection = Sections.MEDIA_BROWSER;
+  }
+
   private onForceLoadEvent = (event_: Event) => {
     const coaxed_event = event_ as ForceUpdatePlayerDataEvent;
     const key = coaxed_event.detail.key;
@@ -285,6 +308,12 @@ export class MusicPlayerCard extends LitElement {
       this.activeMediaPlayer,
     );
     this.closeAddToPlaylistDialog();
+  };
+  protected onArtistNameSelect = () => {
+    this.openActiveArtistView();
+  };
+  protected onAlbumNameSelect = () => {
+    this.openActiveAlbumView();
   };
 
   protected hideSectionHeader(): boolean {
@@ -381,7 +410,7 @@ export class MusicPlayerCard extends LitElement {
     }
     if (!isActive(this.hass, this.activeMediaPlayer, this.activeEntityConfig)) {
       return html`
-        <div class="player-track-title">
+        <button class="hidden player-track-title" @click=${this.onAlbumNameSelect}>
           ${this.controller.translate("player.title.inactive")}
         </div>
       `;
@@ -420,8 +449,9 @@ export class MusicPlayerCard extends LitElement {
       `;
     }
     return html`
-      <div
-        class="player-track-artist
+      <button
+        @click=${this.onArtistNameSelect}
+        class="hidden player-track-artist
         ${this.cardConfig.expressive ? `expressive` : ``}"
       >
         ${this.player_data.track_artist}

@@ -204,6 +204,10 @@ export class MassCardController {
       this._activeSection.setValue(section);
       const event_ = new CustomEvent("section-changed", { detail: section });
       this.host.dispatchEvent(event_);
+      if (section != Sections.MEDIA_BROWSER && this.Browser) {
+        this.Browser.activeAlbumCollectionData = undefined;
+        this.Browser.activeArtistCollectionData = undefined;
+      }
     }
   }
   public get activeSection() {

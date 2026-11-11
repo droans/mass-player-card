@@ -25,6 +25,8 @@ import "../components/browser-collection-view/browser-artist-view";
 import "../components/browser-collection-view/browser-podcast-view";
 
 import {
+  activeAlbumCollectionContext,
+  activeArtistCollectionContext,
   activeEntityConfigContext,
   browserControllerContext,
   EntityConfig,
@@ -38,11 +40,14 @@ import { Icons } from "../const/icons";
 import { jsonMatch } from "../utils/utility";
 import {
   ExtendedHass,
+  mediaCardAlbumData,
+  mediaCardArtistData,
   mediaCardCollectionType,
   mediaCardData,
   MediaCardItem,
   mediaCardItemData,
   mediaCardPlaylistData,
+  mediaCardPodcastData,
   mediaCardServiceData,
   MediaRecommendationSection,
   newMediaBrowserItemsConfig,
@@ -184,6 +189,25 @@ export class MediaBrowser extends LitElement {
     return this._activeEntityConfig;
   }
 
+  @consume({ context: activeAlbumCollectionContext, subscribe: true })
+  private set activeAlbumCollection(
+    collectionData: mediaCardAlbumData | undefined,
+  ) {
+    if (!collectionData) {
+      return;
+    }
+    this.loadCollection(collectionData);
+  }
+  @consume({ context: activeArtistCollectionContext, subscribe: true })
+  private set activeArtistCollection(
+    collectionData: mediaCardArtistData | undefined,
+  ) {
+    if (!collectionData) {
+      return;
+    }
+    this.loadCollection(collectionData);
+  }
+
   private createChips() {
     if (!this.hass || !this.cards) {
       return;
@@ -222,6 +246,23 @@ export class MediaBrowser extends LitElement {
       this.searchLoading = false;
     }
   }
+
+  public loadCollection(
+    collectionData:
+      | mediaCardPlaylistData
+      | mediaCardAlbumData
+      | mediaCardArtistData
+      | mediaCardPodcastData
+      | undefined,
+  ) {
+    if (!collectionData) {
+      return;
+    }
+    this.activeCollectionData = collectionData;
+    this.setPreviousSection();
+    this.activeSubSection = "collection";
+  }
+
   private onBack = () => {
     const update =
       this.activeSubSection == "collection" && this.activeSection != "search";

@@ -17,11 +17,17 @@ import {
   generateRecommendationsCard,
   generateRecommendationSectionCards,
 } from "../utils/media-browser";
-import { mediaBrowserCardsContext } from "../const/context";
+import {
+  activeAlbumCollectionContext,
+  activeArtistCollectionContext,
+  mediaBrowserCardsContext,
+} from "../const/context";
 import { CardsUpdatedEventDetail } from "../const/events";
 import {
   ExtendedHass,
   mediaBrowserSectionConfig,
+  mediaCardAlbumData,
+  mediaCardArtistData,
   MediaCardItem,
   MediaLibraryItem,
   MediaRecommendationSection,
@@ -41,6 +47,12 @@ export class MediaBrowserController {
   private _updatingCards = false;
   private _massUser?: string | null;
   private _massUserInfo?: getUserInfoWSResponseSchema;
+  private _activeAlbumCollectionData: ContextProvider<
+    typeof activeAlbumCollectionContext
+  >;
+  private _activeArtistCollectionData: ContextProvider<
+    typeof activeArtistCollectionContext
+  >;
   constructor(
     hass: ExtendedHass,
     config: Config,
@@ -58,6 +70,12 @@ export class MediaBrowserController {
         recommendations: { main: [] },
         search: { main: [] },
       },
+    });
+    this._activeAlbumCollectionData = new ContextProvider(host, {
+      context: activeAlbumCollectionContext,
+    });
+    this._activeArtistCollectionData = new ContextProvider(host, {
+      context: activeArtistCollectionContext,
     });
     this.actions = new BrowserActions(hass);
     this.browserConfig = config.media_browser;
@@ -97,6 +115,24 @@ export class MediaBrowserController {
   }
   public get massUserInfo() {
     return this._massUserInfo;
+  }
+
+  public set activeAlbumCollectionData(
+    collectionData: mediaCardAlbumData | undefined,
+  ) {
+    this._activeAlbumCollectionData.setValue(collectionData);
+  }
+  public get activeAlbumCollectionData() {
+    return this._activeAlbumCollectionData.value;
+  }
+
+  public set activeArtistCollectionData(
+    collectionData: mediaCardArtistData | undefined,
+  ) {
+    this._activeArtistCollectionData.setValue(collectionData);
+  }
+  public get activeArtistCollectionData() {
+    return this._activeArtistCollectionData.value;
   }
 
   private resetAndGenerateSections() {
