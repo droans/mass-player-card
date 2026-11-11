@@ -263,6 +263,11 @@ export class MediaBrowser extends LitElement {
     this.activeSubSection = "collection";
   }
 
+  public resetActiveSections() {
+    this.activeSection = DEFAULT_ACTIVE_SECTION;
+    this.activeSubSection = DEFAULT_ACTIVE_SUBSECTION;
+  }
+
   private onBack = () => {
     const update =
       this.activeSubSection == "collection" && this.activeSection != "search";
