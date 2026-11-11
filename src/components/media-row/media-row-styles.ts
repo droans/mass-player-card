@@ -87,7 +87,22 @@ export default css`
     --md-list-item-leading-space: 0px;
   }
   .button.expressive::part(base) {
-    border-radius: var(--default-border-radius);
+    border-top-left-radius: var(
+      --media-row-top-border-radius,
+      var(--default-border-radius)
+    );
+    border-top-right-radius: var(
+      --media-row-top-border-radius,
+      var(--default-border-radius)
+    );
+    border-bottom-left-radius: var(
+      --media-row-bottom-border-radius,
+      var(--default-border-radius)
+    );
+    border-bottom-right-radius: var(
+      --media-row-bottom-border-radius,
+      var(--default-border-radius)
+    );
   }
   .button:not(.expressive)::part(base) {
     border-radius: var(--media-row-border-radius);
@@ -109,7 +124,22 @@ export default css`
   .button.expressive {
     background-color: var(--expressive-row-color) !important;
     --md-list-item-hover-state-layer-color: var(--md-sys-color-on-surface);
-    border-radius: var(--default-border-radius);
+    border-top-left-radius: var(
+      --media-row-top-border-radius,
+      var(--default-border-radius)
+    );
+    border-top-right-radius: var(
+      --media-row-top-border-radius,
+      var(--default-border-radius)
+    );
+    border-bottom-left-radius: var(
+      --media-row-bottom-border-radius,
+      var(--default-border-radius)
+    );
+    border-bottom-right-radius: var(
+      --media-row-bottom-border-radius,
+      var(--default-border-radius)
+    );
     --md-ripple-hover-color: var(--md-sys-color-on-surface);
     --md-ripple-pressed-color: var(--md-sys-color-on-surface);
   }
@@ -147,17 +177,6 @@ export default css`
     width: 30px;
   }
 
-  .divider {
-    --divider-color: var(--md-sys-color-surface-variant);
-  }
-  .divider::before {
-    content: " ";
-    display: block;
-    height: 1px;
-    background-color: var(--divider-color);
-    margin-left: 64px;
-    margin-right: 24px;
-  }
   #headline {
     line-height: 1.5em;
   }

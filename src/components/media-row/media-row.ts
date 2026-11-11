@@ -497,7 +497,6 @@ export class MediaRow extends LitElement {
         ${this.renderChevron()}
       </ha-list-item-button>
       ${this.renderActionButtons()}
-      <div class="divider"></div>
     `;
   }
   static get styles(): CSSResultGroup {

@@ -302,6 +302,14 @@ export class ActivePlayerController {
     return this._canGroupWith;
   }
 
+  public get queueLength() {
+    return this._playerData?.items ?? 0;
+  }
+
+  public get currentIndex() {
+    return this._playerData?.current_index ?? 0;
+  }
+
   private createObserver() {
     if (!this.config.expressive) {
       return;
