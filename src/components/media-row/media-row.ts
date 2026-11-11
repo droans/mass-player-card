@@ -65,6 +65,10 @@ export class MediaRow extends LitElement {
   private _config!: QueueConfig;
   private _entityConfig!: EntityConfig;
   private _hass!: ExtendedHass;
+  @state() private actionButtonsExpanded = false;
+
+  @query("#action-buttons-div") actionsButtonDiv!: HTMLElement;
+  @query("#action-buttons-headline") actionsButtonHeadline!: HTMLElement;
 
   @consume({ context: playerQueueHiddenElementsConfigContext, subscribe: true })
   private hide!: PlayerQueueHiddenElementsConfig;
@@ -136,6 +140,16 @@ export class MediaRow extends LitElement {
     this.fallbackImageURL = imgs.fallback_url;
   }
 
+  private actionButtonsHidden() {
+    return (
+      this.hide.action_buttons ||
+      (this.hide.move_down_button &&
+        this.hide.move_next_button &&
+        this.hide.move_up_button &&
+        this.hide.remove_button)
+    );
+  }
+
   private callMoveItemUpService = (event_: Event) => {
     if (!this.media_item) {
       return;
@@ -186,6 +200,21 @@ export class MediaRow extends LitElement {
     }
     this.selectedService(this.media_item.queue_item_id);
   };
+  private onChevronSelected = () => {
+    if (this.actionButtonsExpanded) {
+      this.actionsButtonDiv.classList.remove("open");
+      this.actionsButtonDiv.classList.add("closed");
+      this.actionsButtonHeadline.classList.remove("open");
+      this.actionsButtonHeadline.classList.add("closed");
+    } else {
+      this.actionsButtonDiv.classList.remove("closed");
+      this.actionsButtonDiv.classList.add("open");
+      this.actionsButtonHeadline.classList.remove("closed");
+      this.actionsButtonHeadline.classList.add("open");
+    }
+    this.actionButtonsExpanded = !this.actionButtonsExpanded;
+  };
+
   protected shouldUpdate(_changedProperties: PropertyValues<this>): boolean {
     if (_changedProperties.has("media_item")) {
       const oldItem = _changedProperties.get("media_item") as queueItem;
@@ -324,21 +353,46 @@ export class MediaRow extends LitElement {
       </span>
     `;
   }
-  private renderActionButtons(): TemplateResult {
-    if (this.hide.action_buttons || !this.media_item?.show_action_buttons) {
+  private renderChevron(): TemplateResult {
+    if (this.actionButtonsHidden() || !this.media_item?.show_action_buttons) {
       return html``;
     }
+    const icon = this.actionButtonsExpanded
+      ? this.Icons.CARET_UP
+      : this.Icons.CARET_DOWN;
     return html`
-      <span
+      <div
+        class="chevron-div"
         slot="end"
-        class="button-group"
         @click=${(event_: Event) => {
           event_.stopPropagation();
         }}
       >
-        ${this.renderMoveNextButton()} ${this.renderMoveUpButton()}
-        ${this.renderMoveDownButton()} ${this.renderRemoveButton()}
-      </span>
+        <mpc-button
+          .onPressService=${this.onChevronSelected}
+          role="plain"
+          size="medium"
+          elevation="-1"
+          class="chevron-button"
+        >
+          <ha-svg-icon class="chevron-icon" .path=${icon}></ha-svg-icon>
+        </mpc-button>
+      </div>
+    `;
+  }
+  private renderActionButtons(): TemplateResult {
+    if (this.actionButtonsHidden() || !this.media_item?.show_action_buttons) {
+      return html``;
+    }
+    return html`
+      <div id="action-buttons-div" class="closed">
+        <ha-list-item-base class="action-buttons-row" id="action-buttons-row">
+          <div slot="headline" id="action-buttons-headline" class="closed">
+            ${this.renderMoveNextButton()} ${this.renderMoveUpButton()}
+            ${this.renderMoveDownButton()} ${this.renderRemoveButton()}
+          </div>
+        </ha-list-item-base>
+      </div>
     `;
   }
   private renderMoveNextButton(): TemplateResult {
@@ -354,9 +408,11 @@ export class MediaRow extends LitElement {
         class="action-button ${this.useExpressive ? `expressive` : ``}"
       >
         <ha-svg-icon
+          slot="start"
           .path=${this.Icons.ARROW_PLAY_NEXT}
           class="svg-action-button ${this.useExpressive ? `expressive` : ``}"
         ></ha-svg-icon>
+        Next
       </mpc-button>
     `;
   }
@@ -373,9 +429,11 @@ export class MediaRow extends LitElement {
         class="action-button ${this.useExpressive ? `expressive` : ``}"
       >
         <ha-svg-icon
+          slot="start"
           .path=${this.Icons.ARROW_UP}
           class="svg-action-button ${this.useExpressive ? `expressive` : ``}"
         ></ha-svg-icon>
+        Up
       </mpc-button>
     `;
   }
@@ -392,9 +450,11 @@ export class MediaRow extends LitElement {
         class="action-button ${this.useExpressive ? `expressive` : ``}"
       >
         <ha-svg-icon
+          slot="start"
           .path=${this.Icons.ARROW_DOWN}
           class="svg-action-button ${this.useExpressive ? `expressive` : ``}"
         ></ha-svg-icon>
+        Down
       </mpc-button>
     `;
   }
@@ -411,9 +471,11 @@ export class MediaRow extends LitElement {
         class="action-button ${this.useExpressive ? `expressive` : ``}"
       >
         <ha-svg-icon
+          slot="start"
           .path=${this.Icons.CLOSE}
           class="svg-action-button ${this.useExpressive ? `expressive` : ``}"
         ></ha-svg-icon>
+        Remove
       </mpc-button>
     `;
   }
@@ -432,8 +494,9 @@ export class MediaRow extends LitElement {
         <span slot="headline" id="headline">
           ${this.renderTitle()} ${this.renderArtist()}
         </span>
-        ${this.renderActionButtons()}
+        ${this.renderChevron()}
       </ha-list-item-button>
+      ${this.renderActionButtons()}
       <div class="divider"></div>
     `;
   }
