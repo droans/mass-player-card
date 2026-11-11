@@ -16,7 +16,7 @@ import { customElement, query, state } from "lit/decorators.js";
 import { Sections } from "../../const/enums";
 import { Config } from "../../config/config";
 import { MassCardController } from "../../controller/controller";
-import { MediaBrowser } from "../../sections/media-browser";
+import { MediaBrowser } from "../../sections/new-media-browser";
 import { Icons } from "../../const/icons";
 import { WaAnimation } from "../../const/elements";
 import { QueueCard } from "../../sections/player-queue";
