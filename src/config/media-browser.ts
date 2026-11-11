@@ -12,7 +12,6 @@ export interface MediaBrowserConfig {
   recommendations: RecommendationsConfig;
   sections: customSection[];
   hide: MediaBrowserHiddenElementsConfig;
-  columns: number;
   playlists_allow_removing_tracks: boolean;
   default_enqueue_option: EnqueueConfigOptions;
   default_section: BrowserSection;
@@ -61,7 +60,7 @@ export interface MediaBrowserHiddenElementsConfig extends BaseHiddenElementsConf
   header: boolean;
   header_title: boolean;
   back_button: boolean;
-  filter_button: boolean;
+  chips: boolean;
   search_button: boolean;
   titles: boolean;
   enqueue_menu: boolean;
@@ -124,7 +123,7 @@ const DEFAULT_FAVORITES_CONFIG: FavoritesConfig = {
 export const DEFAULT_MEDIA_BROWSER_HIDDEN_ELEMENTS_CONFIG: MediaBrowserHiddenElementsConfig =
   {
     back_button: false,
-    filter_button: false,
+    chips: false,
     search_button: false,
     titles: false,
     enqueue_menu: false,
@@ -159,7 +158,7 @@ export const DEFAULT_MEDIA_BROWSER_CONFIG: MediaBrowserConfig = {
   recommendations: DEFAULT_RECOMMENDATIONS_CONFIG,
   sections: DEFAULT_CUSTOM_SECTION_CONFIG,
   hide: DEFAULT_MEDIA_BROWSER_HIDDEN_ELEMENTS_CONFIG,
-  columns: 2,
+  // columns: 2,
   playlists_allow_removing_tracks: false,
   default_enqueue_option: "play_now",
   default_section: "favorites",

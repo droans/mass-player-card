@@ -242,7 +242,7 @@ media_browser:
     header: false
     header_title: false
     back_button: false
-    filter_button: false
+    chips: false
     search_button: false
     titles: false
     enqueue_menu: false
@@ -799,7 +799,7 @@ Multiple elements on the media browser tab can be hidden. By default, all elemen
 | header                       | bool  | No       | false       | Hides the entire header                    |
 | header_title                 | bool  | No       | false       | Hides the section titles in the header     |
 | back_button                  | bool  | No       | false       | Hides the back button                      |
-| filter_button                | bool  | No       | false       | Hides the filter button                    |
+| chips                        | bool  | No       | false       | Hides the media type chips                 |
 | search_button                | bool  | No       | false       | Hides the search button                    |
 | titles                       | bool  | No       | false       | Hides titles for each section/item         |
 | enqueue_menu                 | bool  | No       | false       | Hides the enqueue menu                     |

@@ -268,7 +268,6 @@ export class MediaCard extends LitElement {
     if (this.hide.enqueue_menu || !this.queueable || !this.Icons) {
       return html``;
     }
-    const cols = this.cardConfig?.media_browser.columns;
     const expressive = this.cardConfig?.expressive ? `expressive` : ``;
     const withSubtitle = this.subtitlesEnabled() ? `with-subtitle` : ``;
     return html`
@@ -277,7 +276,6 @@ export class MediaCard extends LitElement {
         class="${expressive} ${withSubtitle}"
         .iconPath=${this.Icons.PLAY_CIRCLE}
         .items=${this._enqueue_buttons}
-        style="--columns: ${cols};"
         @menu-item-selected=${this.onEnqueue}
         fixedMenuPosition
         elevation="4"

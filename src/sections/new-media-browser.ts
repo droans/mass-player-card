@@ -633,7 +633,8 @@ export class MediaBrowser extends LitElement {
       !this.hass ||
       !this.cards ||
       SEARCH_SECTIONS.includes(this.activeSection) ||
-      this.activeSubSection == "collection"
+      this.activeSubSection == "collection" ||
+      this.hiddenElements.chips
     ) {
       return html``;
     }
