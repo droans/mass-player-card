@@ -36,4 +36,9 @@ export default css`
     color: var(--wa-color-brand-on-normal, var(--wa-color-neutral-on-normal));
     border-radius: 50%;
   }
+  #trigger-button {
+    --used-button-border-radius: 16px;
+    --button-padding-left: 8px;
+    --button-padding-right: 4px;
+  }
 `;

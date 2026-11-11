@@ -6,6 +6,7 @@ import {
   getLibraryServiceSchema,
 } from "mass-queue-types/packages/music_assistant/actions/get_library";
 import {
+  searchPartialServiceResponse,
   searchServiceData,
   searchServiceResponse,
   searchServiceSchema,
@@ -167,11 +168,11 @@ export default class BrowserActions {
   async actionSearchMedia(
     player_entity_id: string,
     search_term: string,
-    media_type: MediaTypes,
     library_only = false,
     limit: number = DEFAULT_SEARCH_LIMIT,
     userId: string | null = null,
-  ): Promise<MediaLibraryItem[]> {
+    media_type?: MediaTypes,
+  ): Promise<searchPartialServiceResponse> {
     const config_id = await this.getPlayerConfigEntry(player_entity_id);
     const userParameter = userId ? { username: userId } : {};
     const arguments_: searchServiceData = {
@@ -179,9 +180,11 @@ export default class BrowserActions {
       library_only,
       config_entry_id: config_id,
       name: search_term,
-      media_type: [media_type],
       ...userParameter,
     };
+    if (media_type) {
+      arguments_.media_type = [media_type];
+    }
     const data: searchServiceSchema = {
       type: "call_service",
       domain: "music_assistant",
@@ -190,9 +193,7 @@ export default class BrowserActions {
       return_response: true,
     };
     const response = await this.hass.callWS<searchServiceResponse>(data);
-    const response_media_type =
-      media_type == MediaTypes.RADIO ? `radio` : `${media_type}s`;
-    return (response.response[response_media_type] ?? []) as MediaLibraryItem[];
+    return response.response;
   }
   async actionGetRecommendations(
     player_entity_id: string,

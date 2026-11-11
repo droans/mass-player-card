@@ -20,6 +20,9 @@ import {
   getQueueResponse,
   MassGetQueueServiceDataSchema,
   MassGetQueueServiceResponseSchema,
+  mediaCardAlbumData,
+  mediaCardArtistData,
+  MediaItemImage,
   PlayerData,
 } from "../const/types";
 import { DynamicScheme } from "@ktibow/material-color-utilities-nightly";
@@ -48,6 +51,7 @@ import WaCarousel from "@droans/webawesome/dist/components/carousel/carousel.js"
 import { RepeatMode } from "../const/enums";
 import { MassCardConfigController } from "./config";
 import { computeEntityName } from "../utils/entity-name";
+import BrowserActions from "../actions/browser-actions";
 
 export class ActivePlayerController {
   private _activeEntityConfig: ContextProvider<
@@ -66,6 +70,9 @@ export class ActivePlayerController {
   private _playerData?: getQueueResponse;
   private _maxPlayerDataUpdateTimestampDelta = 5000;
   private _playerDataUpdateInterval?: number;
+  private _browserActions!: BrowserActions;
+  public albumCollectionData?: mediaCardAlbumData;
+  public artistCollectionData?: mediaCardArtistData;
 
   private _hass!: ExtendedHass;
   private _config!: Config;
@@ -119,6 +126,7 @@ export class ActivePlayerController {
       context: activePlayerDataContext,
     });
     this._hass = hass;
+    this._browserActions = new BrowserActions(hass);
     this.config = configController.config;
     this.configController = configController;
     this._host = host;
@@ -272,6 +280,7 @@ export class ActivePlayerController {
 
   private set activePlayerData(data: PlayerData) {
     this._activePlayerData.setValue(data);
+    void this.setActiveArtistAndAlbum();
   }
   public get activePlayerData() {
     return this._activePlayerData.value;
@@ -664,5 +673,70 @@ export class ActivePlayerController {
     this._playerDataUpdateInterval = setInterval(() => {
       void this.actionGetCurrentQueue();
     }, this._maxPlayerDataUpdateTimestampDelta);
+  }
+  private async setActiveArtistAndAlbum() {
+    if (!this.activeEntityID) {
+      return;
+    }
+    const activeItem = this._playerData?.current_item?.media_item;
+    if (!activeItem) {
+      return;
+    }
+    const albumUri = activeItem.album?.uri;
+    const artists = activeItem.artists;
+    if (albumUri) {
+      const albumData = await this._browserActions.actionGetAlbumData(
+        albumUri,
+        this.activeEntityID,
+      );
+      const artistNames = albumData.response.artists.map((artist) => {
+        return artist.name;
+      });
+      const usedArtistNames =
+        artistNames.length > 0 ? artistNames.join(", ") : "Unknown Artists";
+      const images = albumData.response.metadata.images as
+        MediaItemImage | MediaItemImage[] | null;
+      let albumImageUrl = "";
+      if (images) {
+        // eslint-disable-next-line @typescript-eslint/no-unnecessary-condition
+        if ((images as unknown as MediaItemImage[])?.length) {
+          const usedImage = (images as MediaItemImage[])[0];
+          albumImageUrl = usedImage.path;
+        } else {
+          albumImageUrl = (images as MediaItemImage).path;
+        }
+      }
+      this.albumCollectionData = {
+        type: "album",
+        media_artist: usedArtistNames,
+        media_content_id: albumUri,
+        media_image: albumImageUrl,
+        media_title: albumData.response.name,
+      };
+    }
+    if (artists) {
+      const artistData = await this._browserActions.actionGetArtistData(
+        artists[0].uri,
+        this.activeEntityID,
+      );
+      const images = artistData.response.metadata.images;
+      let artistImageUrl = "";
+      if (images) {
+        // eslint-disable-next-line @typescript-eslint/no-unnecessary-condition
+        if ((images as unknown as MediaItemImage[])?.length) {
+          const usedImage = (images as unknown as MediaItemImage[])[0];
+          artistImageUrl = usedImage.path;
+        } else {
+          artistImageUrl = images.path;
+        }
+      }
+      this.artistCollectionData = {
+        type: "artist",
+        media_content_id: artists[0].uri,
+        media_image: artistImageUrl,
+        media_title: artists[0].name,
+        media_artist: artists[0].name,
+      };
+    }
   }
 }

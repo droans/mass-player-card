@@ -11,6 +11,10 @@ export default css`
     background-color: rgba(var(--player-blur-color), 0.9);
     border-radius: 10px;
   }
+  button.hidden {
+    background: unset;
+    border: unset;
+  }
 
   mpc-player-artwork {
     display: flex;
@@ -24,7 +28,7 @@ export default css`
     position: relative;
     z-index: -1;
     position: relative;
-    top: -0.5em;
+    top: 0em;
   }
 
   #active-track-text {
@@ -100,6 +104,10 @@ export default css`
     background-color: var(--divider-color);
     margin-left: 64px;
     margin-right: 24px;
+  }
+  #header {
+    justify-self: center;
+    padding-block: 8px;
   }
   .header-art.large {
     z-index: 2;

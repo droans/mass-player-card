@@ -17,10 +17,17 @@ import {
   generateRecommendationsCard,
   generateRecommendationSectionCards,
 } from "../utils/media-browser";
-import { mediaBrowserCardsContext } from "../const/context";
+import {
+  activeAlbumCollectionContext,
+  activeArtistCollectionContext,
+  mediaBrowserCardsContext,
+} from "../const/context";
 import { CardsUpdatedEventDetail } from "../const/events";
 import {
   ExtendedHass,
+  mediaBrowserSectionConfig,
+  mediaCardAlbumData,
+  mediaCardArtistData,
   MediaCardItem,
   MediaLibraryItem,
   MediaRecommendationSection,
@@ -40,6 +47,12 @@ export class MediaBrowserController {
   private _updatingCards = false;
   private _massUser?: string | null;
   private _massUserInfo?: getUserInfoWSResponseSchema;
+  private _activeAlbumCollectionData: ContextProvider<
+    typeof activeAlbumCollectionContext
+  >;
+  private _activeArtistCollectionData: ContextProvider<
+    typeof activeArtistCollectionContext
+  >;
   constructor(
     hass: ExtendedHass,
     config: Config,
@@ -55,8 +68,14 @@ export class MediaBrowserController {
         favorites: { main: [] },
         recents: { main: [] },
         recommendations: { main: [] },
-        search: [],
+        search: { main: [] },
       },
+    });
+    this._activeAlbumCollectionData = new ContextProvider(host, {
+      context: activeAlbumCollectionContext,
+    });
+    this._activeArtistCollectionData = new ContextProvider(host, {
+      context: activeArtistCollectionContext,
     });
     this.actions = new BrowserActions(hass);
     this.browserConfig = config.media_browser;
@@ -98,6 +117,24 @@ export class MediaBrowserController {
     return this._massUserInfo;
   }
 
+  public set activeAlbumCollectionData(
+    collectionData: mediaCardAlbumData | undefined,
+  ) {
+    this._activeAlbumCollectionData.setValue(collectionData);
+  }
+  public get activeAlbumCollectionData() {
+    return this._activeAlbumCollectionData.value;
+  }
+
+  public set activeArtistCollectionData(
+    collectionData: mediaCardArtistData | undefined,
+  ) {
+    this._activeArtistCollectionData.setValue(collectionData);
+  }
+  public get activeArtistCollectionData() {
+    return this._activeArtistCollectionData.value;
+  }
+
   private resetAndGenerateSections() {
     if (this._updatingCards) {
       return;
@@ -107,7 +144,7 @@ export class MediaBrowserController {
       favorites: { main: [] },
       recents: { main: [] },
       recommendations: { main: [] },
-      search: [],
+      search: { main: [] },
     };
     this.generateAllSections();
   }
@@ -154,24 +191,59 @@ export class MediaBrowserController {
   public async search(
     player_entity_id: string,
     search_term: string,
-    media_type: MediaTypes,
     library_only = false as boolean,
     limit: number = DEFAULT_SEARCH_LIMIT,
-  ) {
+    media_type?: MediaTypes,
+  ): Promise<mediaBrowserSectionConfig> {
     const user = this.massUser;
     const search_result = await this.actions.actionSearchMedia(
       player_entity_id,
       search_term,
-      media_type,
       library_only,
       limit,
       user,
-    );
-    return generateFavoritesSectionCards(
-      search_result,
       media_type,
-      this.browserConfig.favorites.show_collection_view,
     );
+    const showCollectionView =
+      this.browserConfig.recommendations.show_collection_view;
+    return {
+      main: [],
+      album: generateFavoritesSectionCards(
+        search_result.albums,
+        MediaTypes.ALBUM,
+        showCollectionView,
+      ),
+      artist: generateFavoritesSectionCards(
+        search_result.artists,
+        MediaTypes.ARTIST,
+        showCollectionView,
+      ),
+      audiobook: generateFavoritesSectionCards(
+        search_result.audiobooks,
+        MediaTypes.AUDIOBOOK,
+        showCollectionView,
+      ),
+      playlist: generateFavoritesSectionCards(
+        search_result.playlists,
+        MediaTypes.PLAYLIST,
+        showCollectionView,
+      ),
+      podcast: generateFavoritesSectionCards(
+        search_result.podcasts,
+        MediaTypes.PODCAST,
+        showCollectionView,
+      ),
+      radio: generateFavoritesSectionCards(
+        search_result.radio,
+        MediaTypes.RADIO,
+        showCollectionView,
+      ),
+      track: generateFavoritesSectionCards(
+        search_result.tracks,
+        MediaTypes.TRACK,
+        showCollectionView,
+      ),
+    };
   }
 
   // Favorites

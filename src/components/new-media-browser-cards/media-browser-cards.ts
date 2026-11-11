@@ -13,8 +13,10 @@ import styles from "./media-browser-cards-styles";
 import { consume } from "@lit/context";
 import { IconsContext } from "../../const/context";
 import { Icons } from "../../const/icons";
+import { flow } from "@lit-labs/virtualizer/layouts/flow.js";
+import { grid } from "@lit-labs/virtualizer/layouts/grid.js";
 
-export type SectionType = "favorite" | "recent" | "recommendation";
+export type SectionType = "favorite" | "recent" | "recommendation" | "search";
 
 @customElement("mpc-browser-cards")
 export class MediaBrowserCards extends LitElement {
@@ -35,6 +37,10 @@ export class MediaBrowserCards extends LitElement {
   ) => void;
   @property({ attribute: "section-type", type: String })
   public sectionType!: SectionType | "drill";
+  @property({ attribute: "hide-drilldown", type: Boolean })
+  public hideDrillDown = false;
+  @property({ attribute: "skeleton", type: Boolean })
+  public skeleton = false;
 
   @state()
   private _cards!: MediaCardItem[];
@@ -63,47 +69,103 @@ export class MediaBrowserCards extends LitElement {
   private onDrill = () => {
     this.onDrillAction(this.sectionType, this.id, this.title);
   };
-  protected renderCards(): TemplateResult[] {
-    return this.cards.map((card) => {
-      const queueable = [
-        "service",
-        "playlist",
-        "album",
-        "artist",
-        "podcast",
-      ].includes(card.data.type)
-        ? literal`queueable`
-        : literal``;
-      return html`
-        <mpc-browser-media-card
-          .config=${card}
-          .onSelectAction=${this.onItemSelected}
-          .onEnqueueAction=${this.onEnqueue}
-          ${queueable}
-        ></mpc-browser-media-card>
-      `;
-    });
+  protected renderCard(card: MediaCardItem): TemplateResult {
+    const queueable = [
+      "service",
+      "playlist",
+      "album",
+      "artist",
+      "podcast",
+    ].includes(card.data.type)
+      ? literal`queueable`
+      : literal``;
+    return html`
+      <mpc-browser-media-card
+        .config=${card}
+        .onSelectAction=${this.onItemSelected}
+        .onEnqueueAction=${this.onEnqueue}
+        ${queueable}
+      ></mpc-browser-media-card>
+    `;
+  }
+  protected renderSkeleton(): TemplateResult {
+    return html`
+      <lit-virtualizer
+        id="cards-virtualizer"
+        .items=${[1, 2, 3, 4, 5, 6, 7, 8]}
+        .layout=${grid({ flex: { preserve: "aspect-ratio" } })}
+        .renderItem=${(i) => {
+          return html`
+            <mpc-browser-media-card
+              skeleton
+              fake="${i}"
+            ></mpc-browser-media-card>
+          `;
+        }}
+      >
+      </lit-virtualizer>
+    `;
+  }
+  protected renderVerticalCards(): TemplateResult {
+    // Virtualize rows of two cards; CSS grid lays out the columns in each row.
+    const rows: MediaCardItem[][] = [];
+    for (let i = 0; i < this.cards.length; i += 2) {
+      rows.push(this.cards.slice(i, i + 2));
+    }
+    return html`
+      <lit-virtualizer
+        id="cards-virtualizer"
+        .items=${rows}
+        .layout=${flow({ direction: "vertical" })}
+        .renderItem=${(row: MediaCardItem[]) => {
+          return html`
+            <div class="cards-row">
+              ${row.map((card) => this.renderCard(card))}
+            </div>
+          `;
+        }}
+      >
+      </lit-virtualizer>
+    `;
+  }
+  protected renderCards(): TemplateResult {
+    if (this.skeleton) {
+      return this.renderSkeleton();
+    }
+    if (this.direction == "vertical") {
+      return this.renderVerticalCards();
+    }
+    return html`
+      <lit-virtualizer
+        id="cards-virtualizer"
+        .items=${this.cards}
+        .layout=${flow({ direction: "horizontal" })}
+        .renderItem=${(item: MediaCardItem) => {
+          return this.renderCard(item);
+        }}
+      >
+      </lit-virtualizer>
+    `;
   }
 
   protected renderDrillButton(): TemplateResult {
-    if (this.sectionType == "drill") {
+    if (this.sectionType == "drill" || this.hideDrillDown) {
       return html``;
     }
     return html`
-        <div id="drill-button">
-          <mpc-button
-            .onPressService=${this.onDrill}
-            role="plain"
-            size="xsmall"
-            elevation="none"
-            class="button drill"
-          >
-            <ha-svg-icon
-              .path=${this.Icons.ARROW_RIGHT_CIRCLE}
-              class="svg drill"
-            ></ha-svg-icon>
-          </mpc-button>
-        </div>
+      <div id="drill-button">
+        <mpc-button
+          .onPressService=${this.onDrill}
+          role="plain"
+          size="xsmall"
+          elevation="none"
+          class="button drill"
+        >
+          <ha-svg-icon
+            .path=${this.Icons.ARROW_RIGHT_CIRCLE}
+            class="svg drill"
+          ></ha-svg-icon>
+        </mpc-button>
       </div>
     `;
   }

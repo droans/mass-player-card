@@ -1,13 +1,15 @@
 import { createContext } from "@lit/context";
 
-import type {
-  ExtendedHass,
-  ExtendedHassEntity,
-  MediaCardItem,
-  newMediaBrowserItemsConfig,
-  PlayerData,
-  QueueItem,
-  QueueItems,
+import {
+  mediaCardAlbumData,
+  mediaCardArtistData,
+  type ExtendedHass,
+  type ExtendedHassEntity,
+  type MediaCardItem,
+  type newMediaBrowserItemsConfig,
+  type PlayerData,
+  type QueueItem,
+  type QueueItems,
 } from "./types";
 
 import {
@@ -100,3 +102,10 @@ export const mediaBrowserHiddenElementsConfigContext =
   createContext<MediaBrowserHiddenElementsConfig>(uuid4());
 export const playersHiddenElementsConfigContext =
   createContext<PlayersHiddenElementsConfig>(uuid4());
+
+export const activeAlbumCollectionContext = createContext<
+  mediaCardAlbumData | undefined
+>(uuid4());
+export const activeArtistCollectionContext = createContext<
+  mediaCardArtistData | undefined
+>(uuid4());

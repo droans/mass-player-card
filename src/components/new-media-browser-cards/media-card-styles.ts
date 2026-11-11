@@ -32,6 +32,10 @@ export default css`
     position: relative;
     display: flex;
   }
+  #container-outer {
+    height: var(--container-height, 10em);
+    width: var(--container-width, 10em);
+  }
 
   .media-card {
     border-radius: var(--browser-card-border-radius) !important;

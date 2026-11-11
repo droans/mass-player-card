@@ -4,6 +4,7 @@ import styles from "./player-selector-menu-styles";
 import { consume } from "@lit/context";
 import {
   activeEntityConfigContext,
+  activePlayerDataContext,
   entitiesConfigContext,
   EntityConfig,
   hassContext,
@@ -13,9 +14,9 @@ import {
 } from "../../const/context";
 import { PlayerConfig } from "../../config/player";
 import { Icons } from "../../const/icons";
-import { ExtendedHass, ListItemData } from "../../const/types";
+import { ExtendedHass, ListItemData, PlayerData } from "../../const/types";
 import { computeEntityName } from "../../utils/entity-name";
-import { customElement } from "lit/decorators.js";
+import { customElement, state } from "lit/decorators.js";
 import { playerIsAvailable } from "../../utils/utility";
 
 @customElement("mpc-player-selector")
@@ -37,6 +38,10 @@ export class MassCardPlayerSelector extends LitElement {
 
   @consume({ context: hassContext, subscribe: true })
   private hass!: ExtendedHass;
+
+  @consume({ context: activePlayerDataContext, subscribe: true })
+  @state()
+  public playerData?: PlayerData;
 
   protected renderPlayerItems() {
     const ents = this.playerEntities.map((item) => {
@@ -84,6 +89,44 @@ export class MassCardPlayerSelector extends LitElement {
     const _event = new CustomEvent("menu-item-selected", data);
     this.dispatchEvent(_event);
   };
+  protected renderPlayers(): TemplateResult[] {
+    const players = this.renderPlayerItems();
+    return players.map((player) => {
+      return html`
+        <ha-dropdown-item
+          value=${player?.option}
+          ?selected=${this.activeEntityConfig.entity_id == player?.option}
+          ?disabled=${player?.disabled}
+        >
+          <ha-svg-icon
+            class="player icon"
+            .path=${player?.icon}
+            slot="icon"
+          ></ha-svg-icon>
+          ${player?.title}
+        </ha-dropdown-item>
+      `;
+    });
+  }
+  protected renderTriggerButton(): TemplateResult {
+    return html`
+      <mpc-button
+        slot="trigger"
+        id="trigger-button"
+        .onPressService=${() => {
+          return;
+        }}
+        role="tonal"
+      >
+        ${this.playerData?.player_name}
+        <ha-svg-icon
+          slot="end"
+          id="trigger-icon"
+          .path=${this.Icons.CARET_DOWN}
+        ></ha-svg-icon>
+      </mpc-button>
+    `;
+  }
 
   protected render(): TemplateResult {
     const config_hide = this.config.hide.player_selector;
@@ -92,20 +135,27 @@ export class MassCardPlayerSelector extends LitElement {
       return html``;
     }
     return html`
-      <mpc-menu-button
-        id="players-select-menu"
-        class="menu-header ${this.useExpressive ? `expressive` : ``}"
-        .iconPath=${this.Icons.SPEAKER}
-        .initialSelection=${this.activeEntityConfig.entity_id}
-        .items=${this.renderPlayerItems()}
-        dividers
-        use-md
-        fixedMenuPosition
-        naturalMenuWidth
-        @menu-item-selected=${this.onSelect}
-        elevation="1"
-      ></mpc-menu-button>
+      <div id="container">
+        <ha-dropdown id="player-selector" @wa-select=${this.onSelect}>
+          ${this.renderTriggerButton()} ${this.renderPlayers()}
+        </ha-dropdown>
+      </div>
     `;
+    // return html`
+    //   <mpc-menu-button
+    //     id="players-select-menu"
+    //     class="menu-header ${this.useExpressive ? `expressive` : ``}"
+    //     .iconPath=${this.Icons.SPEAKER}
+    //     .initialSelection=${this.activeEntityConfig.entity_id}
+    //     .items=${this.renderPlayerItems()}
+    //     dividers
+    //     use-md
+    //     fixedMenuPosition
+    //     naturalMenuWidth
+    //     @menu-item-selected=${this.onSelect}
+    //     elevation="1"
+    //   ></mpc-menu-button>
+    // `;
   }
 
   static get styles(): CSSResultGroup {

@@ -10,7 +10,6 @@ import {
   DEFAULT_ACTIVE_SUBSECTION,
   DEFAULT_SEARCH_LIMIT,
   EnqueueConfigMap,
-  getSearchMediaButtons,
   MediaBrowserSection,
   MediaBrowserSubsection,
   SEARCH_SECTIONS,
@@ -26,6 +25,8 @@ import "../components/browser-collection-view/browser-artist-view";
 import "../components/browser-collection-view/browser-podcast-view";
 
 import {
+  activeAlbumCollectionContext,
+  activeArtistCollectionContext,
   activeEntityConfigContext,
   browserControllerContext,
   EntityConfig,
@@ -39,11 +40,14 @@ import { Icons } from "../const/icons";
 import { jsonMatch } from "../utils/utility";
 import {
   ExtendedHass,
+  mediaCardAlbumData,
+  mediaCardArtistData,
   mediaCardCollectionType,
   mediaCardData,
   MediaCardItem,
   mediaCardItemData,
   mediaCardPlaylistData,
+  mediaCardPodcastData,
   mediaCardServiceData,
   MediaRecommendationSection,
   newMediaBrowserItemsConfig,
@@ -59,8 +63,7 @@ import { EnqueueOptions, MediaTypes } from "../const/enums";
 import { MediaBrowserController } from "../controller/browser";
 import { DirectiveResult } from "lit/directive.js";
 import { cache } from "lit/directives/cache.js";
-import { getMediaTypeSvg } from "../utils/thumbnails";
-import { MenuButtonEventData, TargetValueEventData } from "../const/events";
+import { TargetValueEventData } from "../const/events";
 import { getTranslation } from "../utils/translations";
 // eslint-disable-next-line import/no-duplicates
 import { SectionType } from "../components/new-media-browser-cards/media-browser-cards";
@@ -113,8 +116,6 @@ export class MediaBrowser extends LitElement {
   private previousSections: MediaBrowserSection[] = [];
   private previousSubSections: MediaBrowserSubsection[] = [];
   private _cardsJSON = "{}";
-  @state() private searchMediaTypeIcon!: string;
-  @state() private searchMediaType: MediaTypes = MediaTypes.TRACK;
 
   @consume({ context: hassContext, subscribe: true })
   public set hass(hass: ExtendedHass | undefined) {
@@ -188,6 +189,25 @@ export class MediaBrowser extends LitElement {
     return this._activeEntityConfig;
   }
 
+  @consume({ context: activeAlbumCollectionContext, subscribe: true })
+  private set activeAlbumCollection(
+    collectionData: mediaCardAlbumData | undefined,
+  ) {
+    if (!collectionData) {
+      return;
+    }
+    this.loadCollection(collectionData);
+  }
+  @consume({ context: activeArtistCollectionContext, subscribe: true })
+  private set activeArtistCollection(
+    collectionData: mediaCardArtistData | undefined,
+  ) {
+    if (!collectionData) {
+      return;
+    }
+    this.loadCollection(collectionData);
+  }
+
   private createChips() {
     if (!this.hass || !this.cards) {
       return;
@@ -217,7 +237,6 @@ export class MediaBrowser extends LitElement {
       const cards = await this.browserController.search(
         this.activeEntityConfig.entity_id,
         search_term,
-        this.searchMediaType,
         this.searchLibrary,
         DEFAULT_SEARCH_LIMIT,
       );
@@ -227,13 +246,41 @@ export class MediaBrowser extends LitElement {
       this.searchLoading = false;
     }
   }
+
+  public loadCollection(
+    collectionData:
+      | mediaCardPlaylistData
+      | mediaCardAlbumData
+      | mediaCardArtistData
+      | mediaCardPodcastData
+      | undefined,
+  ) {
+    if (!collectionData) {
+      return;
+    }
+    this.activeCollectionData = collectionData;
+    this.setPreviousSection();
+    this.activeSubSection = "collection";
+  }
+
+  public resetActiveSections() {
+    this.activeSection = DEFAULT_ACTIVE_SECTION;
+    this.activeSubSection = DEFAULT_ACTIVE_SUBSECTION;
+  }
+
   private onBack = () => {
     const update =
       this.activeSubSection == "collection" && this.activeSection != "search";
-
+    const currentSection = this.activeSection;
     this.activeSection = this.previousSections.pop() ?? DEFAULT_ACTIVE_SECTION;
     this.activeSubSection =
       this.previousSubSections.pop() ?? DEFAULT_ACTIVE_SUBSECTION;
+    if (
+      SEARCH_SECTIONS.includes(currentSection) &&
+      !SEARCH_SECTIONS.includes(this.activeSection)
+    ) {
+      this.searchActivated = false;
+    }
     if (update) {
       this.requestUpdate("collections", "back");
     }
@@ -261,6 +308,7 @@ export class MediaBrowser extends LitElement {
     > = {
       favorite: this.cards?.favorites[this.mediaType],
       recent: this.cards?.recents[this.mediaType],
+      search: this.cards?.search[sectionId],
     };
     const sectionCards = sectionCardMap[sectionType];
     if (!sectionCards) {
@@ -269,7 +317,9 @@ export class MediaBrowser extends LitElement {
     this.drillCards = sectionCards;
     this.drillTitle = sectionTitle;
     this.setPreviousSection();
-    this.activeSubSection = "drill";
+    this.activeSubSection = SEARCH_SECTIONS.includes(this.activeSection)
+      ? `drill-search`
+      : "drill";
   };
   private onSearchButtonPress = () => {
     if (!this.hass) {
@@ -279,16 +329,9 @@ export class MediaBrowser extends LitElement {
     if (!this.cards) {
       return;
     }
-    if (!this.searchMediaTypeIcon) {
-      this.searchMediaTypeIcon = getMediaTypeSvg(
-        MediaTypes.TRACK,
-        this.Icons,
-        this.hass,
-      );
-    }
     this.searchTerm = "";
     this.activeSection = "search";
-    this.cards.search = [];
+    this.cards.search = { main: [] };
     this.searchActivated = true;
   };
   protected onMediaTypeSelection = (selection: string) => {
@@ -402,15 +445,6 @@ export class MediaBrowser extends LitElement {
       user,
     );
   };
-  private onSearchMediaTypeSelect = async (event_: MenuButtonEventData) => {
-    if (!this.hass) {
-      return;
-    }
-    const value = event_.detail.option as MediaTypes;
-    this.searchMediaType = value;
-    this.searchMediaTypeIcon = getMediaTypeSvg(value, this.Icons, this.hass);
-    await this.searchMedia();
-  };
   private onSearchLibrarySelect = async () => {
     this.searchLibrary = !this.searchLibrary;
     await this.searchMedia();
@@ -438,7 +472,7 @@ export class MediaBrowser extends LitElement {
     if (this.hiddenElements.header_title) {
       return html``;
     }
-    return html`<span slot="label" id="title">${this.activeSection}</span>`;
+    return html`<span slot="label" id="title">My Library</span>`;
   }
   protected renderSearchButton(): TemplateResult {
     if (this.hiddenElements.search_button) {
@@ -457,28 +491,6 @@ export class MediaBrowser extends LitElement {
         <ha-svg-icon .path=${this.Icons.SEARCH} class="svg xs"></ha-svg-icon>
       </mpc-button>
     `;
-  }
-  protected renderSearchMediaTypeButton(): TemplateResult {
-    if (!this.hass) {
-      return html``;
-    }
-    if (SEARCH_SECTIONS.includes(this.activeSection)) {
-      const icons = getSearchMediaButtons(this.Icons, this.hass);
-      return html`
-        <mpc-menu-button
-          id="search-media-type-menu"
-          class="search-media-type-menu expressive"
-          scheme="plain"
-          elevation="-1"
-          .iconPath=${this.searchMediaTypeIcon}
-          .initialSelection=${this.searchMediaType}
-          .items=${icons}
-          @menu-item-selected=${this.onSearchMediaTypeSelect}
-          fixedMenuPosition
-        ></mpc-menu-button>
-      `;
-    }
-    return html``;
   }
   protected renderSearchLibraryButton(): TemplateResult {
     if (SEARCH_SECTIONS.includes(this.activeSection)) {
@@ -530,10 +542,7 @@ export class MediaBrowser extends LitElement {
           @sl-input=${this.onSearchInput}
         >
           <span slot="suffix">
-            <div id="search-options">
-              ${this.renderSearchMediaTypeButton()}
-              ${this.renderSearchLibraryButton()}
-            </div>
+            <div id="search-options">${this.renderSearchLibraryButton()}</div>
           </span>
         </sl-input>
       </span>
@@ -588,7 +597,7 @@ export class MediaBrowser extends LitElement {
     if (this.hiddenElements.header) {
       return html``;
     }
-    if (["search", "search-collection"].includes(this.activeSection)) {
+    if (SEARCH_SECTIONS.includes(this.activeSection)) {
       return this.renderSearchHeader();
     }
     if (["collection", "drill"].includes(this.activeSubSection)) {
@@ -623,18 +632,20 @@ export class MediaBrowser extends LitElement {
     if (
       !this.hass ||
       !this.cards ||
-      ["search", "search-collection"].includes(this.activeSection) ||
+      SEARCH_SECTIONS.includes(this.activeSection) ||
       this.activeSubSection == "collection"
     ) {
       return html``;
     }
     const chips = this.chips;
     return html`
-      <div class="button-group chips">
-        ${this.renderChip(chips.playlist)} ${this.renderChip(chips.artist)}
-        ${this.renderChip(chips.album)} ${this.renderChip(chips.track)}
-        ${this.renderChip(chips.podcast)} ${this.renderChip(chips.radio)}
-        ${this.renderChip(chips.audiobook)}
+      <div id="subsection-buttons">
+        <div class="button-group chips">
+          ${this.renderChip(chips.playlist)} ${this.renderChip(chips.artist)}
+          ${this.renderChip(chips.album)} ${this.renderChip(chips.track)}
+          ${this.renderChip(chips.podcast)} ${this.renderChip(chips.radio)}
+          ${this.renderChip(chips.audiobook)}
+        </div>
       </div>
     `;
   }
@@ -714,15 +725,73 @@ export class MediaBrowser extends LitElement {
       </div>
     `;
   }
+  protected renderSearchSection(
+    translationKey: string,
+    id: string,
+    cards: MediaCardItem[] | undefined | null,
+  ): TemplateResult {
+    if (!cards || cards.length === 0) {
+      return html``;
+    }
+    const translation = getTranslation(translationKey, this.hass);
+    return html`
+      <mpc-browser-cards
+        title="${translation}"
+        id="${id}"
+        section-type="search"
+        .cards=${cards}
+        direction="horizontal"
+        .onEnqueueAction=${this.onEnqueue}
+        .onSelectAction=${this.onSelect}
+        .onDrillAction=${this.onDrillDown}
+      ></mpc-browser-cards>
+    `;
+  }
+  protected renderSearch(): DirectiveResult {
+    if (this.searchLoading) {
+      return html`
+        <div class="broser-card-section search">
+          <mpc-browser-cards
+            title=""
+            id=""
+            section-type="search"
+            hide-drilldown
+            .cards=${[]}
+            skeleton
+          ></mpc-browser-cards>
+        </div>
+      `;
+    }
+    if (!this.cards) {
+      return html``;
+    }
+    const cards = this.cards.search;
+    return html`
+      <div class="broser-card-section search">
+        ${this.renderSearchSection("browser.sections.album", "album", cards.album)}
+        ${this.renderSearchSection("browser.sections.artist", "artist", cards.artist)}
+        ${this.renderSearchSection("browser.sections.audiobook", "audiobook", cards.audiobook)}
+        ${this.renderSearchSection("browser.sections.playlist", "playlist", cards.playlist)}
+        ${this.renderSearchSection("browser.sections.podcast", "podcast", cards.podcast)}
+        ${this.renderSearchSection("browser.sections.radio", "radio", cards.radio)}
+        ${this.renderSearchSection("browser.sections.track", "track", cards.track)}
+      </div>
+    `;
+  }
   protected renderBrowserCards(): DirectiveResult {
     /* eslint-disable unicorn/template-indent */
+    if (this.searchActivated && this.activeSubSection != "drill-search") {
+      return this.renderSearch();
+    }
     const isCollectionView =
       this.activeSubSection == "collection" &&
-      !["search", "search-collection"].includes(this.activeSection);
+      !SEARCH_SECTIONS.includes(this.activeSection);
     if (isCollectionView) {
       return this.renderCollectionView();
     }
-    const isDrillDown = this.activeSubSection == "drill";
+    const isDrillDown = ["drill", "drill-search"].includes(
+      this.activeSubSection,
+    );
     if (isDrillDown) {
       return this.renderDrillDown();
     }
@@ -777,8 +846,7 @@ export class MediaBrowser extends LitElement {
       <div id="container" class="container expressive">
         ${this.renderHeader()}
         <div id="mass-browser" class="mass-browser expressive">
-          <div id="subsection-buttons">${this.renderChips()}</div>
-          ${this.renderBrowserCards()}
+          ${this.renderChips()} ${this.renderBrowserCards()}
         </div>
       </div>
     `;

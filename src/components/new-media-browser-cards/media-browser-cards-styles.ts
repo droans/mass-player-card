@@ -12,26 +12,41 @@ export default css`
     row-gap: 8px;
   }
   :host([direction="vertical"]) #cards {
-    overflow-y: scroll;
-    scrollbar-width: none;
-    row-gap: 8px;
-    justify-content: center;
-    display: flex;
-    flex-flow: wrap;
-    columns: 2;
+    display: block;
+    height: auto;
+  }
+  :host([direction="vertical"]) #cards-virtualizer {
+    width: 100%;
+  }
+  .cards-row {
+    display: grid;
+    grid-template-columns: repeat(2, minmax(0, 1fr));
+    column-gap: 8px;
+    width: 100%;
+    padding-bottom: 8px;
   }
   :host([direction="horizontal"]) mpc-browser-media-card {
     height: 8em;
     width: 8em;
+    --container-height: 8em;
+    --container-width: 8em;
   }
   :host([direction="vertical"]) mpc-browser-media-card {
-    width: 48%;
+    display: block;
+    width: 100%;
+    height: auto;
+    max-height: none;
+    padding-inline: 0;
+    --container-width: 100%;
+    --container-height: 100%;
   }
   mpc-browser-media-card {
     max-height: 100%;
     aspect-ratio: 1;
-    width: 100%;
+    height: 100%;
+    /* width: 100%; */
     justify-content: center;
+    padding-inline: 4px;
   }
   #drill-button {
     margin-top: 2px;
@@ -58,6 +73,7 @@ export default css`
     display: flex;
     column-gap: 8px;
     padding-bottom: 8px;
+    height: 8em;
   }
   #title {
     font-size: 1.5em;
