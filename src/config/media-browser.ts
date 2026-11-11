@@ -3,8 +3,6 @@ import { mdiCreation, mdiHeart, mdiHistory } from "@mdi/js";
 import { BaseHiddenElementsConfig, Config } from "./config";
 import { hiddenElementsConfigItem } from "../utils/config";
 
-type BrowserSection = "favorites" | "recents" | "recommendations";
-
 export interface MediaBrowserConfig {
   enabled: boolean;
   favorites: FavoritesConfig;
@@ -12,10 +10,9 @@ export interface MediaBrowserConfig {
   recommendations: RecommendationsConfig;
   sections: customSection[];
   hide: MediaBrowserHiddenElementsConfig;
-  columns: number;
   playlists_allow_removing_tracks: boolean;
   default_enqueue_option: EnqueueConfigOptions;
-  default_section: BrowserSection;
+  initial_media_selection: ConfigMediaTypes;
   show_artist_subtitles: boolean;
 }
 
@@ -61,7 +58,7 @@ export interface MediaBrowserHiddenElementsConfig extends BaseHiddenElementsConf
   header: boolean;
   header_title: boolean;
   back_button: boolean;
-  filter_button: boolean;
+  chips: boolean;
   search_button: boolean;
   titles: boolean;
   enqueue_menu: boolean;
@@ -71,6 +68,11 @@ export interface MediaBrowserHiddenElementsConfig extends BaseHiddenElementsConf
   play_next_button: boolean;
   play_next_clear_queue_button: boolean;
 }
+
+type ConfigMediaTypes =
+  "album" | "artist" | "audiobook" | "playlist" | "podcast" | "radio" | "track";
+
+const DEFAULT_INITIAL_MEDIA_SELECTION: ConfigMediaTypes = "album";
 
 export type GetLibrarySortOrders =
   | "artist_name"
@@ -124,7 +126,7 @@ const DEFAULT_FAVORITES_CONFIG: FavoritesConfig = {
 export const DEFAULT_MEDIA_BROWSER_HIDDEN_ELEMENTS_CONFIG: MediaBrowserHiddenElementsConfig =
   {
     back_button: false,
-    filter_button: false,
+    chips: false,
     search_button: false,
     titles: false,
     enqueue_menu: false,
@@ -159,11 +161,10 @@ export const DEFAULT_MEDIA_BROWSER_CONFIG: MediaBrowserConfig = {
   recommendations: DEFAULT_RECOMMENDATIONS_CONFIG,
   sections: DEFAULT_CUSTOM_SECTION_CONFIG,
   hide: DEFAULT_MEDIA_BROWSER_HIDDEN_ELEMENTS_CONFIG,
-  columns: 2,
   playlists_allow_removing_tracks: false,
   default_enqueue_option: "play_now",
-  default_section: "favorites",
   show_artist_subtitles: true,
+  initial_media_selection: DEFAULT_INITIAL_MEDIA_SELECTION,
 };
 
 const MEDIA_BROWSER_HIDDEN_ITEMS = [
@@ -224,33 +225,6 @@ function recommendationsConfigForm() {
     ],
   };
 }
-function defaultSectionConfigForm() {
-  return {
-    name: "default_section",
-    required: false,
-    selector: {
-      select: {
-        multiple: false,
-        mode: "dropdown",
-        options: [
-          {
-            value: "favorites",
-            label: "Favorites",
-          },
-          {
-            value: "recents",
-            label: "Recents",
-          },
-          {
-            value: "recommendations",
-            label: "Recommendations",
-          },
-        ],
-      },
-    },
-  };
-}
-
 function sortOrderConfigForm() {
   interface opt {
     value: GetLibrarySortOrders;
@@ -385,13 +359,60 @@ function defaultEnqueueOptionConfigForm() {
     },
   };
 }
+function defaultInitialMediaSelectionConfigForm() {
+  interface opt {
+    value: ConfigMediaTypes;
+    label: string;
+  }
+  const options: opt[] = [
+    {
+      value: "album",
+      label: "Albums",
+    },
+    {
+      value: "artist",
+      label: "Artists",
+    },
+    {
+      value: "audiobook",
+      label: "Audiobooks",
+    },
+    {
+      value: "playlist",
+      label: "Playlists",
+    },
+    {
+      value: "podcast",
+      label: "Podcasts",
+    },
+    {
+      value: "radio",
+      label: "Radio",
+    },
+    {
+      value: "track",
+      label: "Tracks",
+    },
+  ];
+  return {
+    name: "initial_media_selection",
+    required: false,
+    selector: {
+      select: {
+        multiple: false,
+        mode: "dropdown",
+        options,
+      },
+    },
+  };
+}
 
 export function mediaBrowserConfigForm() {
   return [
     { name: "enabled", selector: { boolean: {} }, default: true },
     { name: "columns", selector: { number: { min: 1, max: 10, mode: "box" } } },
-    defaultSectionConfigForm(),
     defaultEnqueueOptionConfigForm(),
+    defaultInitialMediaSelectionConfigForm(),
     {
       name: "favorites",
       type: "expandable",

@@ -8,6 +8,7 @@ import {
   mdiArrowUp,
   mdiBook,
   mdiChevronDown,
+  mdiChevronUp,
   mdiClose,
   mdiCreation,
   mdiDotsVertical,
@@ -59,6 +60,7 @@ export interface Icons {
   BOOK: string;
   ARROW_UP: string;
   CARET_DOWN: string;
+  CARET_UP: string;
   CLEAR: string;
   CLOSE: string;
   FILTER: string;
@@ -110,6 +112,7 @@ const MaterialDesignIcons: Icons = {
   ASLEEP: mdiSleep,
   BOOK: mdiBook,
   CARET_DOWN: mdiChevronDown,
+  CARET_UP: mdiChevronUp,
   CLEAR: mdiPlaylistRemove,
   CLOSE: mdiClose,
   FILTER: mdiFilterVariant,
@@ -170,6 +173,8 @@ const MaterialExpressiveIcons: Icons = {
   BOOK: "M6 22q-.825 0-1.412-.587T4 20V4q0-.825.588-1.412T6 2h12q.825 0 1.413.588T20 4v16q0 .825-.587 1.413T18 22zm5-18v6.125q0 .3.238.438t.512-.013l1.225-.725q.25-.15.513-.15t.512.15l1.225.725q.275.15.525.013t.25-.438V4z",
   CARET_DOWN:
     "M11.625 14.913q-.175-.063-.325-.213l-4.6-4.6q-.275-.275-.275-.7t.275-.7t.7-.275t.7.275l3.9 3.9l3.9-3.9q.275-.275.7-.275t.7.275t.275.7t-.275.7l-4.6 4.6q-.15.15-.325.213t-.375.062t-.375-.062",
+  CARET_UP:
+    "m12 10.8l-3.9 3.9q-.275.275-.7.275t-.7-.275t-.275-.7t.275-.7l4.6-4.6q.3-.3.7-.3t.7.3l4.6 4.6q.275.275.275.7t-.275.7t-.7.275t-.7-.275z",
   CLEAR:
     "m17 19.4l-1.9 1.9q-.275.275-.7.275t-.7-.275t-.275-.7t.275-.7l1.9-1.9l-1.9-1.9q-.275-.275-.275-.7t.275-.7t.7-.275t.7.275l1.9 1.9l1.9-1.9q.275-.275.7-.275t.7.275t.275.7t-.275.7L18.4 18l1.9 1.9q.275.275.275.7t-.275.7t-.7.275t-.7-.275zM4 16q-.425 0-.712-.288T3 15t.288-.712T4 14h5q.425 0 .713.288T10 15t-.288.713T9 16zm0-4q-.425 0-.712-.288T3 11t.288-.712T4 10h9q.425 0 .713.288T14 11t-.288.713T13 12zm0-4q-.425 0-.712-.288T3 7t.288-.712T4 6h9q.425 0 .713.288T14 7t-.288.713T13 8z",
   CLOSE:

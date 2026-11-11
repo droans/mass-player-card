@@ -226,11 +226,48 @@ export class QueueCard extends LitElement {
   private hideSectionHeader(): boolean {
     return this.hiddenElements.header;
   }
-  private renderQueueItem(queueItem: QueueItem): TemplateResult {
+  private renderQueueItem(
+    queueItem: QueueItem,
+    activeIndex: number,
+    index: number,
+  ): TemplateResult {
     const show_album_covers = this.config.show_album_covers;
+    const queueLength = this.activePlayerController.queueLength;
+    const queueIndex = this.activePlayerController.currentIndex;
+    const remainingItems = queueLength - queueIndex;
+    const translatedUpNext = getTranslation(
+      "queue.up_next",
+      this.hass,
+    ) as string;
+    /* eslint-disable unicorn/template-indent */
+    const upNextHtml = queueItem.playing
+      ? html`
+          <div class="media-row up-next">
+            <div class="up-next-title">
+              ${translatedUpNext} • ${remainingItems}
+            </div>
+            <div class="divider"></div>
+          </div>
+        `
+      : html``;
+    /* eslint-enable unicorn/template-indent */
+    /* eslint-disable unicorn/no-nested-ternary */
+    const indexClass =
+      activeIndex < index
+        ? `upcoming`
+        : activeIndex > index
+          ? `played`
+          : `active`;
+    const indexPlacementClass =
+      activeIndex - 1 == index
+        ? `last`
+        : activeIndex + 1 == index || index == 0
+          ? `first`
+          : ``;
+    /* eslint-enable unicorn/no-nested-ternary */
     return html`
       <mpc-queue-media-row
-        class="${queueItem.playing ? `active` : ``}"
+        class="${indexClass} ${indexPlacementClass}"
         .media_item=${queueItem}
         .showAlbumCovers=${show_album_covers}
         .selectedService=${this.onQueueItemSelected}
@@ -239,6 +276,7 @@ export class QueueCard extends LitElement {
         .moveQueueItemUpService=${this.onQueueItemMoveUp}
         .moveQueueItemDownService=${this.onQueueItemMoveDown}
       ></mpc-queue-media-row>
+      ${upNextHtml}
     `;
   }
   private renderQueueItems(): TemplateResult {
@@ -247,8 +285,8 @@ export class QueueCard extends LitElement {
       <lit-virtualizer
         scroller
         .items=${this.queue ?? []}
-        .renderItem=${(item: QueueItem) => {
-          return this.renderQueueItem(item);
+        .renderItem=${(item: QueueItem, index: number) => {
+          return this.renderQueueItem(item, activeIndex, index);
         }}
         .keyFunction=${(item: QueueItem) => {
           return item.queue_item_id;

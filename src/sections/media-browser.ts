@@ -1,801 +1,802 @@
-import "@shoelace-style/shoelace/dist/components/input/input.js";
-import {
-  CSSResultGroup,
-  html,
-  LitElement,
-  PropertyValues,
-  TemplateResult,
-} from "lit";
-import { MediaTypes, EnqueueOptions } from "../const/enums";
-import {
-  MediaBrowserConfig,
-  MediaBrowserHiddenElementsConfig,
-} from "../config/media-browser";
-import { customElement, property, query, state } from "lit/decorators.js";
-import {
-  DEFAULT_ACTIVE_SECTION,
-  DEFAULT_ACTIVE_SUBSECTION,
-  DEFAULT_SEARCH_LIMIT,
-  EnqueueConfigMap,
-  getFilterButtons,
-  getSearchMediaButtons,
-  MediaBrowserSection,
-  MediaBrowserSubsection,
-  SEARCH_SECTIONS,
-  SEARCH_TERM_MIN_LENGTH,
-  SEARCH_UPDATE_DELAY,
-} from "../const/media-browser";
-import { consume, provide } from "@lit/context";
+/* eslint-disable unicorn/no-empty-file */
+// import "@shoelace-style/shoelace/dist/components/input/input.js";
+// import {
+//   CSSResultGroup,
+//   html,
+//   LitElement,
+//   PropertyValues,
+//   TemplateResult,
+// } from "lit";
+// import { MediaTypes, EnqueueOptions } from "../const/enums";
+// import {
+//   MediaBrowserConfig,
+//   MediaBrowserHiddenElementsConfig,
+// } from "../config/media-browser";
+// import { customElement, property, query, state } from "lit/decorators.js";
+// import {
+//   DEFAULT_ACTIVE_SECTION,
+//   DEFAULT_ACTIVE_SUBSECTION,
+//   DEFAULT_SEARCH_LIMIT,
+//   EnqueueConfigMap,
+//   getFilterButtons,
+//   getSearchMediaButtons,
+//   MediaBrowserSection,
+//   MediaBrowserSubsection,
+//   SEARCH_SECTIONS,
+//   SEARCH_TERM_MIN_LENGTH,
+//   SEARCH_UPDATE_DELAY,
+// } from "../const/media-browser";
+// import { consume, provide } from "@lit/context";
 
-import { type MediaBrowserCards } from "../components/media-browser-cards/media-browser-cards";
-import "../components/media-browser-cards/media-browser-cards";
-import "../components/section-header/section-header";
-import "../components/browser-collection-view/browser-playlist-view";
-import "../components/browser-collection-view/browser-album-view";
-import "../components/browser-collection-view/browser-artist-view";
-import "../components/browser-collection-view/browser-podcast-view";
-import styles from "../styles/media-browser";
+// import { type MediaBrowserCards } from "../components/media-browser-cards/media-browser-cards";
+// import "../components/media-browser-cards/media-browser-cards";
+// import "../components/section-header/section-header";
+// import "../components/browser-collection-view/browser-playlist-view";
+// import "../components/browser-collection-view/browser-album-view";
+// import "../components/browser-collection-view/browser-artist-view";
+// import "../components/browser-collection-view/browser-podcast-view";
+// import styles from "../styles/media-browser";
 
-import {
-  activeEntityConfigContext,
-  activeMediaBrowserCardsContext,
-  activeMediaBrowserSectionContext,
-  browserControllerContext,
-  EntityConfig,
-  hassContext,
-  IconsContext,
-  mediaBrowserCardsContext,
-  mediaBrowserConfigContext,
-  mediaBrowserHiddenElementsConfigContext,
-  useExpressiveContext,
-} from "../const/context";
-import { Icons } from "../const/icons";
-import { MediaBrowserController } from "../controller/browser";
-import BrowserActions from "../actions/browser-actions";
-import { getMediaTypeSvg } from "../utils/thumbnails";
-import { jsonMatch } from "../utils/utility";
-import { getTranslation } from "../utils/translations";
-import {
-  CardsUpdatedEvent,
-  MenuButtonEventData,
-  TargetValueEventData,
-} from "../const/events";
-import {
-  ExtendedHass,
-  mediaCardData,
-  MediaCardItem,
-  newMediaBrowserItemsConfig,
-  mediaCardPlaylistData,
-  mediaCardServiceData,
-  mediaCardSectionData,
-  mediaCardItemData,
-  mediaCardEnqueueType,
-  mediaCardCollectionType,
-} from "../const/types";
-import { cache } from "lit/directives/cache.js";
-import { DirectiveResult } from "lit/async-directive.js";
+// import {
+//   activeEntityConfigContext,
+//   activeMediaBrowserCardsContext,
+//   activeMediaBrowserSectionContext,
+//   browserControllerContext,
+//   EntityConfig,
+//   hassContext,
+//   IconsContext,
+//   mediaBrowserCardsContext,
+//   mediaBrowserConfigContext,
+//   mediaBrowserHiddenElementsConfigContext,
+//   useExpressiveContext,
+// } from "../const/context";
+// import { Icons } from "../const/icons";
+// import { MediaBrowserController } from "../controller/browser";
+// import BrowserActions from "../actions/browser-actions";
+// import { getMediaTypeSvg } from "../utils/thumbnails";
+// import { jsonMatch } from "../utils/utility";
+// import { getTranslation } from "../utils/translations";
+// import {
+//   CardsUpdatedEvent,
+//   MenuButtonEventData,
+//   TargetValueEventData,
+// } from "../const/events";
+// import {
+//   ExtendedHass,
+//   mediaCardData,
+//   MediaCardItem,
+//   newMediaBrowserItemsConfig,
+//   mediaCardPlaylistData,
+//   mediaCardServiceData,
+//   mediaCardSectionData,
+//   mediaCardItemData,
+//   mediaCardEnqueueType,
+//   mediaCardCollectionType,
+// } from "../const/types";
+// import { cache } from "lit/directives/cache.js";
+// import { DirectiveResult } from "lit/async-directive.js";
 
-@customElement(`mpc-media-browser`)
-export class MediaBrowser extends LitElement {
-  @property({ attribute: false }) private _config!: MediaBrowserConfig;
-  @property({ attribute: false }) public onMediaSelectedAction!: () => void;
+// @customElement(`mpc-media-browser`)
+// export class MediaBrowser extends LitElement {
+//   @property({ attribute: false }) private _config!: MediaBrowserConfig;
+//   @property({ attribute: false }) public onMediaSelectedAction!: () => void;
 
-  @state() public _cards?: newMediaBrowserItemsConfig;
-  @state() private searchMediaTypeIcon!: string;
-  @state() private searchMediaType: MediaTypes = MediaTypes.TRACK;
-  @state() private searchLibrary = false;
-  @query("mpc-browser-cards") cardsElement?: MediaBrowserCards;
+//   @state() public _cards?: newMediaBrowserItemsConfig;
+//   @state() private searchMediaTypeIcon!: string;
+//   @state() private searchMediaType: MediaTypes = MediaTypes.TRACK;
+//   @state() private searchLibrary = false;
+//   @query("mpc-browser-cards") cardsElement?: MediaBrowserCards;
 
-  @provide({ context: activeMediaBrowserCardsContext })
-  @state()
-  public _activeCards!: MediaCardItem[];
+//   @provide({ context: activeMediaBrowserCardsContext })
+//   @state()
+//   public _activeCards!: MediaCardItem[];
 
-  @consume({ context: useExpressiveContext, subscribe: true })
-  private useExpressive!: boolean;
-  @consume({ context: IconsContext }) private Icons!: Icons;
-  @consume({ context: activeEntityConfigContext, subscribe: true })
-  private _activeEntityConfig!: EntityConfig;
+//   @consume({ context: useExpressiveContext, subscribe: true })
+//   private useExpressive!: boolean;
+//   @consume({ context: IconsContext }) private Icons!: Icons;
+//   @consume({ context: activeEntityConfigContext, subscribe: true })
+//   private _activeEntityConfig!: EntityConfig;
 
-  @consume({
-    context: mediaBrowserHiddenElementsConfigContext,
-    subscribe: true,
-  })
-  private hiddenElements!: MediaBrowserHiddenElementsConfig;
+//   @consume({
+//     context: mediaBrowserHiddenElementsConfigContext,
+//     subscribe: true,
+//   })
+//   private hiddenElements!: MediaBrowserHiddenElementsConfig;
 
-  @provide({ context: activeMediaBrowserSectionContext })
-  public activeSection: MediaBrowserSection = DEFAULT_ACTIVE_SECTION;
-  public activeSubSection: MediaBrowserSubsection = DEFAULT_ACTIVE_SUBSECTION;
-  @property() private activeCollectionData!: mediaCardCollectionType;
-  private previousSections: MediaBrowserSection[] = [];
-  private previousSubSections: MediaBrowserSubsection[] = [];
+//   @provide({ context: activeMediaBrowserSectionContext })
+//   public activeSection: MediaBrowserSection = DEFAULT_ACTIVE_SECTION;
+//   public activeSubSection: MediaBrowserSubsection = DEFAULT_ACTIVE_SUBSECTION;
+//   @property() private activeCollectionData!: mediaCardCollectionType;
+//   private previousSections: MediaBrowserSection[] = [];
+//   private previousSubSections: MediaBrowserSubsection[] = [];
 
-  private _hass?: ExtendedHass;
-  private _browserController?: MediaBrowserController;
-  private actions?: BrowserActions;
-  private searchTerm = "";
-  private _searchTimeout!: number;
-  @state() private searchActivated = false;
-  @state() private searchLoading = false;
+//   private _hass?: ExtendedHass;
+//   private _browserController?: MediaBrowserController;
+//   private actions?: BrowserActions;
+//   private searchTerm = "";
+//   private _searchTimeout!: number;
+//   @state() private searchActivated = false;
+//   @state() private searchLoading = false;
 
-  @state()
-  public set activeCards(cards: MediaCardItem[] | undefined) {
-    if (!cards) {
-      return;
-    }
-    if (jsonMatch(this._activeCards, cards)) {
-      return;
-    }
-    this._activeCards = cards;
-  }
-  public get activeCards() {
-    return this._activeCards;
-  }
+//   @state()
+//   public set activeCards(cards: MediaCardItem[] | undefined) {
+//     if (!cards) {
+//       return;
+//     }
+//     if (jsonMatch(this._activeCards, cards)) {
+//       return;
+//     }
+//     this._activeCards = cards;
+//   }
+//   public get activeCards() {
+//     return this._activeCards;
+//   }
 
-  @consume({ context: hassContext, subscribe: true })
-  public set hass(hass: ExtendedHass | undefined) {
-    if (!hass) {
-      return;
-    }
-    this._hass = hass;
-    this.actions ??= new BrowserActions(hass);
-  }
-  public get hass() {
-    return this._hass;
-  }
+//   @consume({ context: hassContext, subscribe: true })
+//   public set hass(hass: ExtendedHass | undefined) {
+//     if (!hass) {
+//       return;
+//     }
+//     this._hass = hass;
+//     this.actions ??= new BrowserActions(hass);
+//   }
+//   public get hass() {
+//     return this._hass;
+//   }
 
-  @consume({ context: browserControllerContext, subscribe: true })
-  public set browserController(controller: MediaBrowserController | undefined) {
-    if (!controller) {
-      return;
-    }
-    this._browserController = controller;
-  }
-  public get browserController() {
-    return this._browserController;
-  }
+//   @consume({ context: browserControllerContext, subscribe: true })
+//   public set browserController(controller: MediaBrowserController | undefined) {
+//     if (!controller) {
+//       return;
+//     }
+//     this._browserController = controller;
+//   }
+//   public get browserController() {
+//     return this._browserController;
+//   }
 
-  @consume({ context: mediaBrowserConfigContext, subscribe: true })
-  public set config(config: MediaBrowserConfig) {
-    if (jsonMatch(config, this._config)) {
-      return;
-    }
-    this._config = config;
-    this.activeSection = config.default_section;
-    if (this.cards) {
-      this.setActiveCards();
-    }
-  }
-  public get config() {
-    return this._config;
-  }
+//   @consume({ context: mediaBrowserConfigContext, subscribe: true })
+//   public set config(config: MediaBrowserConfig) {
+//     if (jsonMatch(config, this._config)) {
+//       return;
+//     }
+//     this._config = config;
+//     this.activeSection = config.default_section;
+//     if (this.cards) {
+//       this.setActiveCards();
+//     }
+//   }
+//   public get config() {
+//     return this._config;
+//   }
 
-  @consume({ context: activeEntityConfigContext, subscribe: true })
-  private set activeEntityConfig(config: EntityConfig) {
-    this._activeEntityConfig = config;
-  }
-  private get activeEntityConfig() {
-    return this._activeEntityConfig;
-  }
+//   @consume({ context: activeEntityConfigContext, subscribe: true })
+//   private set activeEntityConfig(config: EntityConfig) {
+//     this._activeEntityConfig = config;
+//   }
+//   private get activeEntityConfig() {
+//     return this._activeEntityConfig;
+//   }
 
-  @consume({ context: mediaBrowserCardsContext, subscribe: true })
-  public set cards(cards: newMediaBrowserItemsConfig | undefined) {
-    if (jsonMatch(this._cards, cards)) {
-      return;
-    }
-    this._cards = cards;
-    if (SEARCH_SECTIONS.includes(this.activeSection)) {
-      this.activeCards = [];
-      return;
-    }
-    if (!this.activeCards) {
-      this.setActiveCards();
-    }
-  }
-  public get cards() {
-    return this._cards;
-  }
-  private setPreviousSection() {
-    this.previousSections.push(this.activeSection);
-    this.previousSubSections.push(this.activeSubSection);
-  }
-  public setActiveCards() {
-    const section = this.activeSection;
-    const subsection = this.activeSubSection;
-    let new_cards: MediaCardItem[];
-    if (
-      this.activeSubSection == "collection" &&
-      this.activeSection != "search"
-    ) {
-      this.requestUpdate("collection", "selected");
-      return;
-    }
-    if (!this.cards) {
-      return;
-    }
-    try {
-      // eslint-disable-next-line @typescript-eslint/no-unsafe-member-access
-      new_cards = [...(this.cards[section][subsection] as MediaCardItem[])];
-    } catch {
-      return;
-    }
-    const current_cards = this.activeCards;
-    if (!jsonMatch(new_cards, current_cards)) {
-      this.activeCards = new_cards;
-    }
-    this.scrollCardsToTop();
-  }
-  public scrollCardsToTop() {
-    if (this.offsetHeight) {
-      this.cardsElement?.resetScroll();
-    }
-  }
-  public resetActiveSections() {
-    this.activeSection = DEFAULT_ACTIVE_SECTION;
-    this.activeSubSection = DEFAULT_ACTIVE_SUBSECTION;
-    this.previousSections = [];
-    this.previousSubSections = [];
-    this.setActiveCards();
-  }
-  private onServiceSelect = (data: mediaCardServiceData) => {
-    if (!this.actions) {
-      return;
-    }
-    if (data.service) {
-      void this.actions.actionPlayMediaFromService(
-        data.service,
-        this.activeEntityConfig.entity_id,
-      );
-      return;
-    }
-    const enqueue = EnqueueConfigMap[this.config.default_enqueue_option];
-    const user = this.browserController?.massUser;
-    void this.actions.actionEnqueueMedia(
-      this.activeEntityConfig.entity_id,
-      data.media_content_id,
-      data.media_content_type,
-      enqueue,
-      user,
-    );
-    this.onMediaSelectedAction();
-  };
-  private onSectionSelect = (data: mediaCardSectionData) => {
-    this.setPreviousSection();
-    this.activeSection = data.subtype;
-    this.activeSubSection = data.section as MediaBrowserSubsection;
-    this.setActiveCards();
-  };
-  private onItemSelect = (data: mediaCardItemData) => {
-    if (!this.actions) {
-      return;
-    }
-    const user = this._browserController?.massUser;
-    void this.actions.actionPlayMedia(
-      this.activeEntityConfig.entity_id,
-      data.media_content_id,
-      data.media_content_type,
-      user,
-    );
-  };
-  private onCollectionSelect = (data: mediaCardCollectionType) => {
-    this.setPreviousSection();
-    this.activeCollectionData = data;
-    this.activeSubSection = "collection";
-    if (SEARCH_SECTIONS.includes(this.activeSection)) {
-      this.activeSection = "search-collection";
-    }
-    this.searchActivated = false;
-    this.requestUpdate("collection", "selected");
-  };
-  private onSelect = (data: mediaCardData) => {
-    const funcs = {
-      section: this.onSectionSelect,
-      item: this.onItemSelect,
-      service: this.onServiceSelect,
-      playlist: this.onCollectionSelect,
-      album: this.onCollectionSelect,
-      artist: this.onCollectionSelect,
-      podcast: this.onCollectionSelect,
-    };
-    const function_ = funcs[data.type as string] as (
-      data: mediaCardData,
-    ) => void;
-    if (["playlist", "album", "artist"].includes(data.type)) {
-      this.onCollectionSelect(data as mediaCardCollectionType);
-      return;
-    }
-    function_(data);
-  };
-  private onEnqueue = (data: mediaCardEnqueueType, enqueue: EnqueueOptions) => {
-    const content_id =
-      data.type == "playlist" ? data.media_content_id : data.media_content_id;
-    const content_type =
-      data.type == "playlist" ? "music" : data.media_content_id;
-    if (!this.actions) {
-      return;
-    }
-    const user = this.browserController?.massUser;
-    if (enqueue == EnqueueOptions.RADIO) {
-      void this.actions.actionPlayRadio(
-        this.activeEntityConfig.entity_id,
-        content_id,
-        content_type,
-        user,
-      );
-      return;
-    }
-    void this.actions.actionEnqueueMedia(
-      this.activeEntityConfig.entity_id,
-      content_id,
-      content_type,
-      enqueue,
-      user,
-    );
-  };
-  private onPlaylistEnqueue = (
-    data: mediaCardPlaylistData,
-    enqueue: EnqueueOptions,
-  ) => {
-    if (!this.actions) {
-      return;
-    }
-    const content_id: string = data.media_content_id;
-    const content_type = "playlist";
-    const user = this.browserController?.massUser;
-    void this.actions.actionEnqueueMedia(
-      this.activeEntityConfig.entity_id,
-      content_id,
-      content_type,
-      enqueue,
-      user,
-    );
-  };
-  private onBack = () => {
-    const update =
-      this.activeSubSection == "collection" && this.activeSection != "search";
+//   @consume({ context: mediaBrowserCardsContext, subscribe: true })
+//   public set cards(cards: newMediaBrowserItemsConfig | undefined) {
+//     if (jsonMatch(this._cards, cards)) {
+//       return;
+//     }
+//     this._cards = cards;
+//     if (SEARCH_SECTIONS.includes(this.activeSection)) {
+//       this.activeCards = [];
+//       return;
+//     }
+//     if (!this.activeCards) {
+//       this.setActiveCards();
+//     }
+//   }
+//   public get cards() {
+//     return this._cards;
+//   }
+//   private setPreviousSection() {
+//     this.previousSections.push(this.activeSection);
+//     this.previousSubSections.push(this.activeSubSection);
+//   }
+//   public setActiveCards() {
+//     const section = this.activeSection;
+//     const subsection = this.activeSubSection;
+//     let new_cards: MediaCardItem[];
+//     if (
+//       this.activeSubSection == "collection" &&
+//       this.activeSection != "search"
+//     ) {
+//       this.requestUpdate("collection", "selected");
+//       return;
+//     }
+//     if (!this.cards) {
+//       return;
+//     }
+//     try {
+//       // eslint-disable-next-line @typescript-eslint/no-unsafe-member-access
+//       new_cards = [...(this.cards[section][subsection] as MediaCardItem[])];
+//     } catch {
+//       return;
+//     }
+//     const current_cards = this.activeCards;
+//     if (!jsonMatch(new_cards, current_cards)) {
+//       this.activeCards = new_cards;
+//     }
+//     this.scrollCardsToTop();
+//   }
+//   public scrollCardsToTop() {
+//     if (this.offsetHeight) {
+//       this.cardsElement?.resetScroll();
+//     }
+//   }
+//   public resetActiveSections() {
+//     this.activeSection = DEFAULT_ACTIVE_SECTION;
+//     this.activeSubSection = DEFAULT_ACTIVE_SUBSECTION;
+//     this.previousSections = [];
+//     this.previousSubSections = [];
+//     this.setActiveCards();
+//   }
+//   private onServiceSelect = (data: mediaCardServiceData) => {
+//     if (!this.actions) {
+//       return;
+//     }
+//     if (data.service) {
+//       void this.actions.actionPlayMediaFromService(
+//         data.service,
+//         this.activeEntityConfig.entity_id,
+//       );
+//       return;
+//     }
+//     const enqueue = EnqueueConfigMap[this.config.default_enqueue_option];
+//     const user = this.browserController?.massUser;
+//     void this.actions.actionEnqueueMedia(
+//       this.activeEntityConfig.entity_id,
+//       data.media_content_id,
+//       data.media_content_type,
+//       enqueue,
+//       user,
+//     );
+//     this.onMediaSelectedAction();
+//   };
+//   private onSectionSelect = (data: mediaCardSectionData) => {
+//     this.setPreviousSection();
+//     this.activeSection = data.subtype;
+//     this.activeSubSection = data.section as MediaBrowserSubsection;
+//     this.setActiveCards();
+//   };
+//   private onItemSelect = (data: mediaCardItemData) => {
+//     if (!this.actions) {
+//       return;
+//     }
+//     const user = this._browserController?.massUser;
+//     void this.actions.actionPlayMedia(
+//       this.activeEntityConfig.entity_id,
+//       data.media_content_id,
+//       data.media_content_type,
+//       user,
+//     );
+//   };
+//   private onCollectionSelect = (data: mediaCardCollectionType) => {
+//     this.setPreviousSection();
+//     this.activeCollectionData = data;
+//     this.activeSubSection = "collection";
+//     if (SEARCH_SECTIONS.includes(this.activeSection)) {
+//       this.activeSection = "search-collection";
+//     }
+//     this.searchActivated = false;
+//     this.requestUpdate("collection", "selected");
+//   };
+//   private onSelect = (data: mediaCardData) => {
+//     const funcs = {
+//       section: this.onSectionSelect,
+//       item: this.onItemSelect,
+//       service: this.onServiceSelect,
+//       playlist: this.onCollectionSelect,
+//       album: this.onCollectionSelect,
+//       artist: this.onCollectionSelect,
+//       podcast: this.onCollectionSelect,
+//     };
+//     const function_ = funcs[data.type as string] as (
+//       data: mediaCardData,
+//     ) => void;
+//     if (["playlist", "album", "artist"].includes(data.type)) {
+//       this.onCollectionSelect(data as mediaCardCollectionType);
+//       return;
+//     }
+//     function_(data);
+//   };
+//   private onEnqueue = (data: mediaCardEnqueueType, enqueue: EnqueueOptions) => {
+//     const content_id =
+//       data.type == "playlist" ? data.media_content_id : data.media_content_id;
+//     const content_type =
+//       data.type == "playlist" ? "music" : data.media_content_id;
+//     if (!this.actions) {
+//       return;
+//     }
+//     const user = this.browserController?.massUser;
+//     if (enqueue == EnqueueOptions.RADIO) {
+//       void this.actions.actionPlayRadio(
+//         this.activeEntityConfig.entity_id,
+//         content_id,
+//         content_type,
+//         user,
+//       );
+//       return;
+//     }
+//     void this.actions.actionEnqueueMedia(
+//       this.activeEntityConfig.entity_id,
+//       content_id,
+//       content_type,
+//       enqueue,
+//       user,
+//     );
+//   };
+//   private onPlaylistEnqueue = (
+//     data: mediaCardPlaylistData,
+//     enqueue: EnqueueOptions,
+//   ) => {
+//     if (!this.actions) {
+//       return;
+//     }
+//     const content_id: string = data.media_content_id;
+//     const content_type = "playlist";
+//     const user = this.browserController?.massUser;
+//     void this.actions.actionEnqueueMedia(
+//       this.activeEntityConfig.entity_id,
+//       content_id,
+//       content_type,
+//       enqueue,
+//       user,
+//     );
+//   };
+//   private onBack = () => {
+//     const update =
+//       this.activeSubSection == "collection" && this.activeSection != "search";
 
-    this.activeSection = this.previousSections.pop() ?? DEFAULT_ACTIVE_SECTION;
-    this.activeSubSection =
-      this.previousSubSections.pop() ?? DEFAULT_ACTIVE_SUBSECTION;
-    this.setActiveCards();
-    if (update) {
-      this.requestUpdate("collections", "back");
-    }
-  };
-  private onSearchButtonPress = () => {
-    if (!this.hass) {
-      return;
-    }
-    this.setPreviousSection();
-    if (!this.cards) {
-      return;
-    }
-    if (!this.searchMediaTypeIcon) {
-      this.searchMediaTypeIcon = getMediaTypeSvg(
-        MediaTypes.TRACK,
-        this.Icons,
-        this.hass,
-      );
-    }
-    this.searchTerm = "";
-    this.activeSection = "search";
-    this.cards.search = [];
-    this.activeCards = this.cards.search;
-    this.searchActivated = true;
-  };
-  private onSearchMediaTypeSelect = async (event_: MenuButtonEventData) => {
-    if (!this.hass) {
-      return;
-    }
-    const value = event_.detail.option as MediaTypes;
-    this.searchMediaType = value;
-    this.searchMediaTypeIcon = getMediaTypeSvg(value, this.Icons, this.hass);
-    await this.searchMedia();
-  };
-  private onSearchLibrarySelect = async () => {
-    this.searchLibrary = !this.searchLibrary;
-    await this.searchMedia();
-  };
-  private onSearchInput = (event_: TargetValueEventData) => {
-    const value = event_.target.value.trim();
-    if (value.length < SEARCH_TERM_MIN_LENGTH) {
-      return;
-    }
-    this.searchTerm = value;
-    if (this._searchTimeout) {
-      try {
-        clearTimeout(this._searchTimeout);
-      } finally {
-        this._searchTimeout = 0;
-      }
-    }
-    this._searchTimeout = window.setTimeout(() => {
-      this._searchTimeout = 0;
-      void this.searchMedia();
-    }, SEARCH_UPDATE_DELAY);
-  };
-  private onFilterType = (event_: MenuButtonEventData) => {
-    if (!this.cards) {
-      return;
-    }
-    const value = event_.detail.option;
-    if (value.length === 0) {
-      return;
-    }
-    if (!Object.keys(this.cards).includes(value)) {
-      return;
-    }
-    this.activeSection = value as MediaBrowserSection;
-    this.activeSubSection = "main";
-    /* eslint-disable-next-line
-      @typescript-eslint/no-unsafe-member-access
-    */
-    this.activeCards = this.cards[value].main as MediaCardItem[];
-  };
-  private async searchMedia() {
-    const search_term = this.searchTerm;
-    if (!this.browserController) {
-      return;
-    }
-    if (search_term.length < SEARCH_TERM_MIN_LENGTH) {
-      return;
-    }
-    this.searchLoading = true;
-    try {
-      const cards = await this.browserController.search(
-        this.activeEntityConfig.entity_id,
-        search_term,
-        this.searchMediaType,
-        this.searchLibrary,
-        DEFAULT_SEARCH_LIMIT,
-      );
-      this.searchLoading = false;
-      this.activeCards = cards;
-    } finally {
-      this.searchLoading = false;
-    }
-  }
-  private onCardsUpdated = (event_: Event) => {
-    const _event = event_ as CardsUpdatedEvent;
-    const detail = _event.detail;
-    const section = detail.section;
-    if (section == "all") {
-      this._cards = detail.cards as newMediaBrowserItemsConfig;
-    }
-    if (!this.cards) {
-      return;
-    }
-    if (
-      !this.activeCards?.length &&
-      (section == "all" || section == this.activeSection)
-    ) {
-      this.setActiveCards();
-    }
-  };
+//     this.activeSection = this.previousSections.pop() ?? DEFAULT_ACTIVE_SECTION;
+//     this.activeSubSection =
+//       this.previousSubSections.pop() ?? DEFAULT_ACTIVE_SUBSECTION;
+//     this.setActiveCards();
+//     if (update) {
+//       this.requestUpdate("collections", "back");
+//     }
+//   };
+//   private onSearchButtonPress = () => {
+//     if (!this.hass) {
+//       return;
+//     }
+//     this.setPreviousSection();
+//     if (!this.cards) {
+//       return;
+//     }
+//     if (!this.searchMediaTypeIcon) {
+//       this.searchMediaTypeIcon = getMediaTypeSvg(
+//         MediaTypes.TRACK,
+//         this.Icons,
+//         this.hass,
+//       );
+//     }
+//     this.searchTerm = "";
+//     this.activeSection = "search";
+//     this.cards.search = [];
+//     this.activeCards = this.cards.search;
+//     this.searchActivated = true;
+//   };
+//   private onSearchMediaTypeSelect = async (event_: MenuButtonEventData) => {
+//     if (!this.hass) {
+//       return;
+//     }
+//     const value = event_.detail.option as MediaTypes;
+//     this.searchMediaType = value;
+//     this.searchMediaTypeIcon = getMediaTypeSvg(value, this.Icons, this.hass);
+//     await this.searchMedia();
+//   };
+//   private onSearchLibrarySelect = async () => {
+//     this.searchLibrary = !this.searchLibrary;
+//     await this.searchMedia();
+//   };
+//   private onSearchInput = (event_: TargetValueEventData) => {
+//     const value = event_.target.value.trim();
+//     if (value.length < SEARCH_TERM_MIN_LENGTH) {
+//       return;
+//     }
+//     this.searchTerm = value;
+//     if (this._searchTimeout) {
+//       try {
+//         clearTimeout(this._searchTimeout);
+//       } finally {
+//         this._searchTimeout = 0;
+//       }
+//     }
+//     this._searchTimeout = window.setTimeout(() => {
+//       this._searchTimeout = 0;
+//       void this.searchMedia();
+//     }, SEARCH_UPDATE_DELAY);
+//   };
+//   private onFilterType = (event_: MenuButtonEventData) => {
+//     if (!this.cards) {
+//       return;
+//     }
+//     const value = event_.detail.option;
+//     if (value.length === 0) {
+//       return;
+//     }
+//     if (!Object.keys(this.cards).includes(value)) {
+//       return;
+//     }
+//     this.activeSection = value as MediaBrowserSection;
+//     this.activeSubSection = "main";
+//     /* eslint-disable-next-line
+//       @typescript-eslint/no-unsafe-member-access
+//     */
+//     this.activeCards = this.cards[value].main as MediaCardItem[];
+//   };
+//   private async searchMedia() {
+//     const search_term = this.searchTerm;
+//     if (!this.browserController) {
+//       return;
+//     }
+//     if (search_term.length < SEARCH_TERM_MIN_LENGTH) {
+//       return;
+//     }
+//     this.searchLoading = true;
+//     try {
+//       const cards = await this.browserController.search(
+//         this.activeEntityConfig.entity_id,
+//         search_term,
+//         this.searchMediaType,
+//         this.searchLibrary,
+//         DEFAULT_SEARCH_LIMIT,
+//       );
+//       this.searchLoading = false;
+//       this.activeCards = cards;
+//     } finally {
+//       this.searchLoading = false;
+//     }
+//   }
+//   private onCardsUpdated = (event_: Event) => {
+//     const _event = event_ as CardsUpdatedEvent;
+//     const detail = _event.detail;
+//     const section = detail.section;
+//     if (section == "all") {
+//       this._cards = detail.cards as newMediaBrowserItemsConfig;
+//     }
+//     if (!this.cards) {
+//       return;
+//     }
+//     if (
+//       !this.activeCards?.length &&
+//       (section == "all" || section == this.activeSection)
+//     ) {
+//       this.setActiveCards();
+//     }
+//   };
 
-  protected hideSectionHeader(): boolean {
-    return this.hiddenElements.header;
-  }
+//   protected hideSectionHeader(): boolean {
+//     return this.hiddenElements.header;
+//   }
 
-  protected renderAlbumView = (): TemplateResult => {
-    return html`
-      <mpc-collection-album-view
-        .collectionData=${this.activeCollectionData}
-        .onEnqueueAction=${this.onPlaylistEnqueue}
-      ></mpc-collection-album-view>
-    `;
-  };
-  protected renderArtistView = (): TemplateResult => {
-    return html`
-      <mpc-collection-artist-view
-        .collectionData=${this.activeCollectionData}
-        .onEnqueueAction=${this.onPlaylistEnqueue}
-      ></mpc-collection-artist-view>
-    `;
-  };
-  protected renderPodcastView = (): TemplateResult => {
-    return html`
-      <mpc-collection-podcast-view
-        .collectionData=${this.activeCollectionData}
-        .onEnqueueAction=${this.onPlaylistEnqueue}
-      ></mpc-collection-podcast-view>
-    `;
-  };
-  protected renderPlaylistView = (): TemplateResult => {
-    return html`
-      <mpc-collection-playlist-view
-        .collectionData=${this.activeCollectionData}
-        .onEnqueueAction=${this.onPlaylistEnqueue}
-      ></mpc-collection-playlist-view>
-    `;
-  };
+//   protected renderAlbumView = (): TemplateResult => {
+//     return html`
+//       <mpc-collection-album-view
+//         .collectionData=${this.activeCollectionData}
+//         .onEnqueueAction=${this.onPlaylistEnqueue}
+//       ></mpc-collection-album-view>
+//     `;
+//   };
+//   protected renderArtistView = (): TemplateResult => {
+//     return html`
+//       <mpc-collection-artist-view
+//         .collectionData=${this.activeCollectionData}
+//         .onEnqueueAction=${this.onPlaylistEnqueue}
+//       ></mpc-collection-artist-view>
+//     `;
+//   };
+//   protected renderPodcastView = (): TemplateResult => {
+//     return html`
+//       <mpc-collection-podcast-view
+//         .collectionData=${this.activeCollectionData}
+//         .onEnqueueAction=${this.onPlaylistEnqueue}
+//       ></mpc-collection-podcast-view>
+//     `;
+//   };
+//   protected renderPlaylistView = (): TemplateResult => {
+//     return html`
+//       <mpc-collection-playlist-view
+//         .collectionData=${this.activeCollectionData}
+//         .onEnqueueAction=${this.onPlaylistEnqueue}
+//       ></mpc-collection-playlist-view>
+//     `;
+//   };
 
-  protected renderCollectionView(): DirectiveResult {
-    const collectionType = this.activeCollectionData.type;
-    return cache(
-      {
-        album: this.renderAlbumView,
-        artist: this.renderArtistView,
-        playlist: this.renderPlaylistView,
-        podcast: this.renderPodcastView,
-      }[collectionType](),
-    );
-  }
-  protected renderBrowserCards(): DirectiveResult {
-    /* eslint-disable unicorn/template-indent */
-    return cache(
-      this.activeSubSection == "collection" && this.activeSection != "search"
-        ? this.renderCollectionView()
-        : html`
-            <mpc-browser-cards
-              .onSelectAction=${this.onSelect}
-              .onEnqueueAction=${this.onEnqueue}
-              ?loading=${this.searchLoading}
-            ></mpc-browser-cards>
-          `,
-    );
-  }
-  protected renderTitle(): TemplateResult {
-    if (this.hiddenElements.header_title) {
-      return html``;
-    }
-    const title = this.activeSection;
-    return html` <span slot="label" id="title"> ${title} </span> `;
-  }
-  protected renderSearchMediaTypeButton(): TemplateResult {
-    if (!this.hass) {
-      return html``;
-    }
-    if (SEARCH_SECTIONS.includes(this.activeSection)) {
-      const icons = getSearchMediaButtons(this.Icons, this.hass);
-      return html`
-        <mpc-menu-button
-          id="search-media-type-menu"
-          class="search-media-type-menu ${
-            this.useExpressive ? `expressive` : ``
-          }"
-          scheme="plain"
-          elevation="-1"
-          .iconPath=${this.searchMediaTypeIcon}
-          .initialSelection=${this.searchMediaType}
-          .items=${icons}
-          @menu-item-selected=${this.onSearchMediaTypeSelect}
-          fixedMenuPosition
-        ></mpc-menu-button>
-      `;
-    }
-    return html``;
-  }
-  protected renderSearchLibraryButton(): TemplateResult {
-    if (SEARCH_SECTIONS.includes(this.activeSection)) {
-      return html`
-        <mpc-button
-          .onPressService=${this.onSearchLibrarySelect}
-          role="plain"
-          size="small"
-          elevation="-1"
-          id="search-favorite-button"
-          class="search-library-button button min ${
-            this.useExpressive ? `expressive` : ``
-          }"
-        >
-          <ha-svg-icon
-            .path=${
-              this.searchLibrary
-                ? this.Icons.LIBRARY
-                : this.Icons.LIBRARY_OUTLINED
-            }
-            class="svg xs menu ${this.useExpressive ? `expressive` : ``}"
-          ></ha-svg-icon>
-        </mpc-button>
-      `;
-    }
-    return html``;
-    /* eslint-enable unicorn/template-indent */
-  }
-  protected renderSearchBar() {
-    if (!this.hass) {
-      return;
-    }
-    const styles_base_url =
-      "https://cdn.jsdelivr.net/npm/@shoelace-style/shoelace@2.20.1/cdn/themes/";
-    const darkMode = this.hass.themes.darkMode;
-    const styles_url = styles_base_url + (darkMode ? "dark.css" : "light.css");
-    const placeholder = getTranslation(
-      "browser.search.placeholder",
-      this.hass,
-    ) as string;
-    return html`
-      <span slot="end" id="search-input">
-        <link rel="stylesheet" href="${styles_url}" />
-        <sl-input
-          placeholder="${placeholder}"
-          type="search"
-          class="${darkMode ? `sl-theme-dark` : `sl-theme-light`}"
-          inputmode="search"
-          size="medium"
-          clearable
-          pill
-          @sl-input=${this.onSearchInput}
-        >
-          <span slot="suffix">
-            <div id="search-options">
-              ${this.renderSearchMediaTypeButton()}
-              ${this.renderSearchLibraryButton()}
-            </div>
-          </span>
-        </sl-input>
-      </span>
-    `;
-  }
-  protected renderEndButtons(): TemplateResult {
-    return html`
-      <span slot="end" id="buttons-end">
-        <div id="header-buttons-end">
-          ${this.renderFilterButton()} ${this.renderSearchButton()}
-        </div>
-      </span>
-    `;
-  }
-  protected renderSearchButton(): TemplateResult {
-    const hide = this.hiddenElements.search_button;
-    if (hide) {
-      return html``;
-    }
-    return html`
-      <mpc-button
-        .onPressService=${this.onSearchButtonPress}
-        role="filled"
-        size="small"
-        elevation="1"
-        id="button-search"
-        class="button min ${this.useExpressive ? `expressive` : ``}"
-      >
-        <ha-svg-icon .path=${this.Icons.SEARCH} class="svg xs"></ha-svg-icon>
-      </mpc-button>
-    `;
-  }
-  protected renderBackButton(): TemplateResult {
-    const hide = this.hiddenElements.back_button;
-    if (hide) {
-      return html``;
-    }
-    return html`
-      <span slot="start" id="back-button">
-        <mpc-button
-          .onPressService=${this.onBack}
-          role="filled"
-          size="small"
-          elevation="1"
-          id="button-back"
-          class="button min ${this.useExpressive ? `expressive` : ``}"
-        >
-          <ha-svg-icon
-            .path=${this.Icons.ARROW_LEFT}
-            class="header-icon"
-          ></ha-svg-icon>
-        </mpc-button>
-      </span>
-    `;
-  }
-  protected renderFilterButton(): TemplateResult {
-    if (!this.hass || this.hiddenElements.filter_button) {
-      return html``;
-    }
-    const icons = getFilterButtons(
-      this.Icons,
-      this.hass,
-      this.config,
-      this.cards,
-    );
-    const icon = this.Icons.FILTER;
-    return html`
-      <mpc-menu-button
-        id="filter-menu"
-        class="hdr-menu ${this.useExpressive ? `expressive` : ``}"
-        .iconPath=${icon}
-        .initialSelection=${this.activeSection}
-        .items=${icons}
-        @menu-item-selected=${this.onFilterType}
-        fixedMenuPosition
-      ></mpc-menu-button>
-    `;
-  }
-  protected renderSearchHeader(): TemplateResult {
-    return html`
-      <mpc-section-header id="search">
-        ${this.renderBackButton()} ${this.renderSearchBar()}
-      </mpc-section-header>
-    `;
-  }
-  protected renderSubsectionHeader(): TemplateResult {
-    return html`
-      <mpc-section-header>
-        ${this.renderBackButton()} ${this.renderTitle()}
-        ${this.renderEndButtons()}
-      </mpc-section-header>
-    `;
-  }
-  protected renderMainHeader(): TemplateResult {
-    return html`
-      <mpc-section-header>
-        ${this.renderTitle()} ${this.renderEndButtons()}
-      </mpc-section-header>
-    `;
-  }
-  protected shouldUpdate(_changedProperties: PropertyValues): boolean {
-    return _changedProperties.size > 0;
-  }
-  protected renderHeader(): TemplateResult {
-    if (this.hideSectionHeader()) {
-      return html``;
-    }
-    if (SEARCH_SECTIONS.includes(this.activeSection)) {
-      return this.renderSearchHeader();
-    }
-    if (
-      this.activeSection == DEFAULT_ACTIVE_SECTION &&
-      this.activeSubSection == DEFAULT_ACTIVE_SUBSECTION
-    ) {
-      return this.renderMainHeader();
-    }
-    return this.renderSubsectionHeader();
-  }
-  protected firstUpdated(): void {
-    // eslint-disable-next-line @typescript-eslint/no-non-null-assertion
-    this.browserController!._host.addEventListener(
-      "cards-updated",
-      this.onCardsUpdated,
-    );
-  }
-  protected render(): TemplateResult {
-    return html`
-      <div
-        id="container"
-        class="container ${this.useExpressive ? `expressive` : ``}"
-      >
-        ${this.renderHeader()}
-        <div
-          id="mass-browser"
-          class="mass-browser ${this.useExpressive ? `expressive` : ``}"
-        >
-          ${this.renderBrowserCards()}
-        </div>
-      </div>
-    `;
-  }
+//   protected renderCollectionView(): DirectiveResult {
+//     const collectionType = this.activeCollectionData.type;
+//     return cache(
+//       {
+//         album: this.renderAlbumView,
+//         artist: this.renderArtistView,
+//         playlist: this.renderPlaylistView,
+//         podcast: this.renderPodcastView,
+//       }[collectionType](),
+//     );
+//   }
+//   protected renderBrowserCards(): DirectiveResult {
+//     /* eslint-disable unicorn/template-indent */
+//     return cache(
+//       this.activeSubSection == "collection" && this.activeSection != "search"
+//         ? this.renderCollectionView()
+//         : html`
+//             <mpc-browser-cards
+//               .onSelectAction=${this.onSelect}
+//               .onEnqueueAction=${this.onEnqueue}
+//               ?loading=${this.searchLoading}
+//             ></mpc-browser-cards>
+//           `,
+//     );
+//   }
+//   protected renderTitle(): TemplateResult {
+//     if (this.hiddenElements.header_title) {
+//       return html``;
+//     }
+//     const title = this.activeSection;
+//     return html` <span slot="label" id="title"> ${title} </span> `;
+//   }
+//   protected renderSearchMediaTypeButton(): TemplateResult {
+//     if (!this.hass) {
+//       return html``;
+//     }
+//     if (SEARCH_SECTIONS.includes(this.activeSection)) {
+//       const icons = getSearchMediaButtons(this.Icons, this.hass);
+//       return html`
+//         <mpc-menu-button
+//           id="search-media-type-menu"
+//           class="search-media-type-menu ${
+//             this.useExpressive ? `expressive` : ``
+//           }"
+//           scheme="plain"
+//           elevation="-1"
+//           .iconPath=${this.searchMediaTypeIcon}
+//           .initialSelection=${this.searchMediaType}
+//           .items=${icons}
+//           @menu-item-selected=${this.onSearchMediaTypeSelect}
+//           fixedMenuPosition
+//         ></mpc-menu-button>
+//       `;
+//     }
+//     return html``;
+//   }
+//   protected renderSearchLibraryButton(): TemplateResult {
+//     if (SEARCH_SECTIONS.includes(this.activeSection)) {
+//       return html`
+//         <mpc-button
+//           .onPressService=${this.onSearchLibrarySelect}
+//           role="plain"
+//           size="small"
+//           elevation="-1"
+//           id="search-favorite-button"
+//           class="search-library-button button min ${
+//             this.useExpressive ? `expressive` : ``
+//           }"
+//         >
+//           <ha-svg-icon
+//             .path=${
+//               this.searchLibrary
+//                 ? this.Icons.LIBRARY
+//                 : this.Icons.LIBRARY_OUTLINED
+//             }
+//             class="svg xs menu ${this.useExpressive ? `expressive` : ``}"
+//           ></ha-svg-icon>
+//         </mpc-button>
+//       `;
+//     }
+//     return html``;
+//     /* eslint-enable unicorn/template-indent */
+//   }
+//   protected renderSearchBar() {
+//     if (!this.hass) {
+//       return;
+//     }
+//     const styles_base_url =
+//       "https://cdn.jsdelivr.net/npm/@shoelace-style/shoelace@2.20.1/cdn/themes/";
+//     const darkMode = this.hass.themes.darkMode;
+//     const styles_url = styles_base_url + (darkMode ? "dark.css" : "light.css");
+//     const placeholder = getTranslation(
+//       "browser.search.placeholder",
+//       this.hass,
+//     ) as string;
+//     return html`
+//       <span slot="end" id="search-input">
+//         <link rel="stylesheet" href="${styles_url}" />
+//         <sl-input
+//           placeholder="${placeholder}"
+//           type="search"
+//           class="${darkMode ? `sl-theme-dark` : `sl-theme-light`}"
+//           inputmode="search"
+//           size="medium"
+//           clearable
+//           pill
+//           @sl-input=${this.onSearchInput}
+//         >
+//           <span slot="suffix">
+//             <div id="search-options">
+//               ${this.renderSearchMediaTypeButton()}
+//               ${this.renderSearchLibraryButton()}
+//             </div>
+//           </span>
+//         </sl-input>
+//       </span>
+//     `;
+//   }
+//   protected renderEndButtons(): TemplateResult {
+//     return html`
+//       <span slot="end" id="buttons-end">
+//         <div id="header-buttons-end">
+//           ${this.renderFilterButton()} ${this.renderSearchButton()}
+//         </div>
+//       </span>
+//     `;
+//   }
+//   protected renderSearchButton(): TemplateResult {
+//     const hide = this.hiddenElements.search_button;
+//     if (hide) {
+//       return html``;
+//     }
+//     return html`
+//       <mpc-button
+//         .onPressService=${this.onSearchButtonPress}
+//         role="filled"
+//         size="small"
+//         elevation="1"
+//         id="button-search"
+//         class="button min ${this.useExpressive ? `expressive` : ``}"
+//       >
+//         <ha-svg-icon .path=${this.Icons.SEARCH} class="svg xs"></ha-svg-icon>
+//       </mpc-button>
+//     `;
+//   }
+//   protected renderBackButton(): TemplateResult {
+//     const hide = this.hiddenElements.back_button;
+//     if (hide) {
+//       return html``;
+//     }
+//     return html`
+//       <span slot="start" id="back-button">
+//         <mpc-button
+//           .onPressService=${this.onBack}
+//           role="filled"
+//           size="small"
+//           elevation="1"
+//           id="button-back"
+//           class="button min ${this.useExpressive ? `expressive` : ``}"
+//         >
+//           <ha-svg-icon
+//             .path=${this.Icons.ARROW_LEFT}
+//             class="header-icon"
+//           ></ha-svg-icon>
+//         </mpc-button>
+//       </span>
+//     `;
+//   }
+//   protected renderFilterButton(): TemplateResult {
+//     if (!this.hass || this.hiddenElements.filter_button) {
+//       return html``;
+//     }
+//     const icons = getFilterButtons(
+//       this.Icons,
+//       this.hass,
+//       this.config,
+//       this.cards,
+//     );
+//     const icon = this.Icons.FILTER;
+//     return html`
+//       <mpc-menu-button
+//         id="filter-menu"
+//         class="hdr-menu ${this.useExpressive ? `expressive` : ``}"
+//         .iconPath=${icon}
+//         .initialSelection=${this.activeSection}
+//         .items=${icons}
+//         @menu-item-selected=${this.onFilterType}
+//         fixedMenuPosition
+//       ></mpc-menu-button>
+//     `;
+//   }
+//   protected renderSearchHeader(): TemplateResult {
+//     return html`
+//       <mpc-section-header id="search">
+//         ${this.renderBackButton()} ${this.renderSearchBar()}
+//       </mpc-section-header>
+//     `;
+//   }
+//   protected renderSubsectionHeader(): TemplateResult {
+//     return html`
+//       <mpc-section-header>
+//         ${this.renderBackButton()} ${this.renderTitle()}
+//         ${this.renderEndButtons()}
+//       </mpc-section-header>
+//     `;
+//   }
+//   protected renderMainHeader(): TemplateResult {
+//     return html`
+//       <mpc-section-header>
+//         ${this.renderTitle()} ${this.renderEndButtons()}
+//       </mpc-section-header>
+//     `;
+//   }
+//   protected shouldUpdate(_changedProperties: PropertyValues): boolean {
+//     return _changedProperties.size > 0;
+//   }
+//   protected renderHeader(): TemplateResult {
+//     if (this.hideSectionHeader()) {
+//       return html``;
+//     }
+//     if (SEARCH_SECTIONS.includes(this.activeSection)) {
+//       return this.renderSearchHeader();
+//     }
+//     if (
+//       this.activeSection == DEFAULT_ACTIVE_SECTION &&
+//       this.activeSubSection == DEFAULT_ACTIVE_SUBSECTION
+//     ) {
+//       return this.renderMainHeader();
+//     }
+//     return this.renderSubsectionHeader();
+//   }
+//   protected firstUpdated(): void {
+//     // eslint-disable-next-line @typescript-eslint/no-non-null-assertion
+//     this.browserController!._host.addEventListener(
+//       "cards-updated",
+//       this.onCardsUpdated,
+//     );
+//   }
+//   protected render(): TemplateResult {
+//     return html`
+//       <div
+//         id="container"
+//         class="container ${this.useExpressive ? `expressive` : ``}"
+//       >
+//         ${this.renderHeader()}
+//         <div
+//           id="mass-browser"
+//           class="mass-browser ${this.useExpressive ? `expressive` : ``}"
+//         >
+//           ${this.renderBrowserCards()}
+//         </div>
+//       </div>
+//     `;
+//   }
 
-  disconnectedCallback(): void {
-    super.disconnectedCallback();
-    // eslint-disable-next-line @typescript-eslint/no-non-null-assertion
-    this.browserController!._host.removeEventListener(
-      "cards-updated",
-      this.onCardsUpdated,
-    );
-  }
-  connectedCallback(): void {
-    super.connectedCallback();
-    if (this.browserController?._host) {
-      // eslint-disable-next-line @typescript-eslint/no-non-null-assertion, @typescript-eslint/no-unnecessary-type-assertion
-      this.browserController!._host.addEventListener(
-        "cards-updated",
-        this.onCardsUpdated,
-      );
-    }
-  }
+//   disconnectedCallback(): void {
+//     super.disconnectedCallback();
+//     // eslint-disable-next-line @typescript-eslint/no-non-null-assertion
+//     this.browserController!._host.removeEventListener(
+//       "cards-updated",
+//       this.onCardsUpdated,
+//     );
+//   }
+//   connectedCallback(): void {
+//     super.connectedCallback();
+//     if (this.browserController?._host) {
+//       // eslint-disable-next-line @typescript-eslint/no-non-null-assertion, @typescript-eslint/no-unnecessary-type-assertion
+//       this.browserController!._host.addEventListener(
+//         "cards-updated",
+//         this.onCardsUpdated,
+//       );
+//     }
+//   }
 
-  protected updated(): void {
-    if (this.searchActivated) {
-      setTimeout(() => {
-        this.shadowRoot
-          ?.querySelector("#search")
-          ?.querySelector("sl-input")
-          ?.shadowRoot?.querySelector("input")
-          ?.focus();
-        this.searchActivated = false;
-      }, 50);
-    }
-  }
-  static get styles(): CSSResultGroup {
-    return styles;
-  }
-}
+//   protected updated(): void {
+//     if (this.searchActivated) {
+//       setTimeout(() => {
+//         this.shadowRoot
+//           ?.querySelector("#search")
+//           ?.querySelector("sl-input")
+//           ?.shadowRoot?.querySelector("input")
+//           ?.focus();
+//         this.searchActivated = false;
+//       }, 50);
+//     }
+//   }
+//   static get styles(): CSSResultGroup {
+//     return styles;
+//   }
+// }

@@ -46,6 +46,7 @@ export default {
 
   "players.header": "Players",
 
-  "queue.header": "Queue",
+  "queue.header": "Now Playing",
+  "queue.up_next": "Up Next",
   "player.playlist_dialog.header": "Add to Playlist",
 };

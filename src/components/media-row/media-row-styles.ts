@@ -4,6 +4,7 @@ export default css`
   :host {
     --primary-text-color: var(--md-sys-color-on-surface);
     --ha-ripple-hover-color: var(--md-sys-color-on-surface);
+    --animation-duration: 0.25s;
   }
   .action-button {
     width: var(--media-row-icon-width);
@@ -19,6 +20,8 @@ export default css`
     --ha-button-end-border-radius: 8px !important;
     --button-button-height: 48px;
     --used-button-height: 48px;
+    --button-padding-left: 16px;
+    --button-padding-right: 16px;
   }
   .action-button.expressive:hover {
     background-color: var(--expressive-row-button-color-hover) !important;
@@ -55,6 +58,23 @@ export default css`
   .action-button.expressive:only-of-type:hover {
     --button-border-radius: 16px !important;
   }
+  #action-buttons-row {
+    --ha-row-item-padding-block: 0px;
+  }
+  #action-buttons-div.open,
+  #action-buttons-headline.open {
+    height: var(--media-row-height);
+    transition: height var(--animation-duration);
+  }
+  #action-buttons-div.closed,
+  #action-buttons-headline.closed {
+    height: 0px;
+    transition: height var(--animation-duration);
+  }
+  #action-buttons-headline {
+    place-self: center;
+    padding-block-end: 8px;
+  }
 
   .button {
     margin: 0.15rem;
@@ -67,7 +87,22 @@ export default css`
     --md-list-item-leading-space: 0px;
   }
   .button.expressive::part(base) {
-    border-radius: var(--default-border-radius);
+    border-top-left-radius: var(
+      --media-row-top-border-radius,
+      var(--default-border-radius)
+    );
+    border-top-right-radius: var(
+      --media-row-top-border-radius,
+      var(--default-border-radius)
+    );
+    border-bottom-left-radius: var(
+      --media-row-bottom-border-radius,
+      var(--default-border-radius)
+    );
+    border-bottom-right-radius: var(
+      --media-row-bottom-border-radius,
+      var(--default-border-radius)
+    );
   }
   .button:not(.expressive)::part(base) {
     border-radius: var(--media-row-border-radius);
@@ -89,7 +124,22 @@ export default css`
   .button.expressive {
     background-color: var(--expressive-row-color) !important;
     --md-list-item-hover-state-layer-color: var(--md-sys-color-on-surface);
-    border-radius: var(--default-border-radius);
+    border-top-left-radius: var(
+      --media-row-top-border-radius,
+      var(--default-border-radius)
+    );
+    border-top-right-radius: var(
+      --media-row-top-border-radius,
+      var(--default-border-radius)
+    );
+    border-bottom-left-radius: var(
+      --media-row-bottom-border-radius,
+      var(--default-border-radius)
+    );
+    border-bottom-right-radius: var(
+      --media-row-bottom-border-radius,
+      var(--default-border-radius)
+    );
     --md-ripple-hover-color: var(--md-sys-color-on-surface);
     --md-ripple-pressed-color: var(--md-sys-color-on-surface);
   }
@@ -119,17 +169,16 @@ export default css`
     right: 4px;
     position: absolute;
   }
-
-  .divider {
-    --divider-color: var(--md-sys-color-surface-variant);
+  .chevron-div {
+    width: 56px;
   }
-  .divider::before {
-    content: " ";
-    display: block;
-    height: 1px;
-    background-color: var(--divider-color);
-    margin-left: 64px;
-    margin-right: 24px;
+  .chevron-icon {
+    height: 30px;
+    width: 30px;
+  }
+
+  #headline {
+    line-height: 1.5em;
   }
   .hide-covers .title {
     margin-left: 14px;

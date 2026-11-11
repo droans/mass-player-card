@@ -141,6 +141,7 @@ export class MediaBrowser extends LitElement {
     this._cards = cards;
     this._cardsJSON = JSON.stringify(this._cards);
     this.createChips();
+    this.setActiveCards();
   }
   public get cards() {
     return this._cards;
@@ -151,7 +152,9 @@ export class MediaBrowser extends LitElement {
       return;
     }
     this._config = config;
-    this.activeSection = config.default_section;
+    if (!this.mediaType) {
+      this.mediaType = config.initial_media_selection;
+    }
     this.createChips();
   }
   public get config() {
@@ -164,6 +167,7 @@ export class MediaBrowser extends LitElement {
       return;
     }
     this._browserController = controller;
+    this.setActiveCards();
   }
   public get browserController() {
     return this._browserController;
@@ -208,6 +212,18 @@ export class MediaBrowser extends LitElement {
     this.loadCollection(collectionData);
   }
 
+  private setActiveCards() {
+    if (!this.mediaType || !this.cards || !this.browserController) {
+      return;
+    }
+    const mediaType = this.mediaType;
+    this.recentsCards = this.cards.recents[mediaType];
+    this.recommendations = this.browserController.getRecommendationsForMedia(
+      mediaType as MediaTypes,
+    );
+    this.favoriteCards = this.cards.favorites[mediaType];
+  }
+
   private createChips() {
     if (!this.hass || !this.cards) {
       return;
@@ -218,6 +234,7 @@ export class MediaBrowser extends LitElement {
       this.config,
       this.cards,
     );
+    this.setActiveCards();
   }
   private setPreviousSection() {
     this.previousSections.push(this.activeSection);
@@ -336,14 +353,15 @@ export class MediaBrowser extends LitElement {
   };
   protected onMediaTypeSelection = (selection: string) => {
     this.mediaType = selection;
-    this.recentsCards = this.cards?.recents[selection] ?? [];
-    this.favoriteCards = this.cards?.favorites[selection] ?? [];
-    if (this.browserController) {
-      const usedSelection = selection == `track` ? `service` : selection;
-      this.recommendations = this.browserController.getRecommendationsForMedia(
-        usedSelection as MediaTypes,
-      );
-    }
+    this.setActiveCards();
+    // this.recentsCards = this.cards?.recents[selection] ?? [];
+    // this.favoriteCards = this.cards?.favorites[selection] ?? [];
+    // if (this.browserController) {
+    //   const usedSelection = selection == `track` ? `service` : selection;
+    //   this.recommendations = this.browserController.getRecommendationsForMedia(
+    //     usedSelection as MediaTypes,
+    //   );
+    // }
   };
   private onEnqueue = (
     data: mediaCardPlaylistData,
@@ -633,7 +651,8 @@ export class MediaBrowser extends LitElement {
       !this.hass ||
       !this.cards ||
       SEARCH_SECTIONS.includes(this.activeSection) ||
-      this.activeSubSection == "collection"
+      this.activeSubSection == "collection" ||
+      this.hiddenElements.chips
     ) {
       return html``;
     }

@@ -88,7 +88,7 @@ export default css`
 
     --expressive-row-color: var(
       --mass-player-card-expressive-row-color,
-      var(--md-sys-color-surface)
+      var(--md-sys-color-surface-container)
     );
     --expressive-row-color-text: var(
       --mass-player-card-expressive-row-color-text,
