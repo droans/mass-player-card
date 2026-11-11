@@ -639,11 +639,13 @@ export class MediaBrowser extends LitElement {
     }
     const chips = this.chips;
     return html`
-      <div class="button-group chips">
-        ${this.renderChip(chips.playlist)} ${this.renderChip(chips.artist)}
-        ${this.renderChip(chips.album)} ${this.renderChip(chips.track)}
-        ${this.renderChip(chips.podcast)} ${this.renderChip(chips.radio)}
-        ${this.renderChip(chips.audiobook)}
+      <div id="subsection-buttons">
+        <div class="button-group chips">
+          ${this.renderChip(chips.playlist)} ${this.renderChip(chips.artist)}
+          ${this.renderChip(chips.album)} ${this.renderChip(chips.track)}
+          ${this.renderChip(chips.podcast)} ${this.renderChip(chips.radio)}
+          ${this.renderChip(chips.audiobook)}
+        </div>
       </div>
     `;
   }
@@ -844,8 +846,7 @@ export class MediaBrowser extends LitElement {
       <div id="container" class="container expressive">
         ${this.renderHeader()}
         <div id="mass-browser" class="mass-browser expressive">
-          <div id="subsection-buttons">${this.renderChips()}</div>
-          ${this.renderBrowserCards()}
+          ${this.renderChips()} ${this.renderBrowserCards()}
         </div>
       </div>
     `;
