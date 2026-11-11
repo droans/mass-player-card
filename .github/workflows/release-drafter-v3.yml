@@ -95,7 +95,7 @@ jobs:
       - name: Run Release Drafter
         uses: release-drafter/release-drafter@v6.1.0
         with:
-          config-name: release-drafter-v3.yml
+          config-name: release-drafter-dev.yml
           prerelease: true
           prerelease-identifier: b
           tag: v${{ steps.version.outputs.pkg_version }}
