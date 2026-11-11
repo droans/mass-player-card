@@ -46,6 +46,13 @@ export interface MenuButtonEventData extends CustomEventNoDetail {
   };
 }
 
+export interface HaDropdownEventData extends CustomEventNoDetail {
+  detail: {
+    item: {
+      value: string;
+    };
+  };
+}
 export interface TrackRemovedEventData extends CustomEventNoDetail {
   detail: {
     playlist: string;
