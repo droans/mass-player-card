@@ -23,7 +23,7 @@ jobs:
     steps:
       - uses: actions/checkout@v3
         with:
-          ref: dev
+          ref: v3-preview
       - name: Use Node.js ${{ matrix.node-version }}
         uses: actions/setup-node@v4
         with:
@@ -95,7 +95,7 @@ jobs:
       - name: Run Release Drafter
         uses: release-drafter/release-drafter@v6.1.0
         with:
-          config-name: release-drafter-dev.yml
+          config-name: release-drafter-v3.yml
           prerelease: true
           prerelease-identifier: b
           tag: v${{ steps.version.outputs.pkg_version }}
@@ -110,4 +110,4 @@ jobs:
           tag_name: v${{ steps.version.outputs.pkg_version }}
           draft: true
           prerelease: true
-          target_commitish: dev
+          target_commitish: v3-preview
