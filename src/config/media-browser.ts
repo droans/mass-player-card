@@ -3,7 +3,6 @@ import { mdiCreation, mdiHeart, mdiHistory } from "@mdi/js";
 import { BaseHiddenElementsConfig, Config } from "./config";
 import { hiddenElementsConfigItem } from "../utils/config";
 
-type BrowserSection = "favorites" | "recents" | "recommendations";
 
 export interface MediaBrowserConfig {
   enabled: boolean;
@@ -14,7 +13,6 @@ export interface MediaBrowserConfig {
   hide: MediaBrowserHiddenElementsConfig;
   playlists_allow_removing_tracks: boolean;
   default_enqueue_option: EnqueueConfigOptions;
-  default_section: BrowserSection;
   show_artist_subtitles: boolean;
 }
 
@@ -158,10 +156,8 @@ export const DEFAULT_MEDIA_BROWSER_CONFIG: MediaBrowserConfig = {
   recommendations: DEFAULT_RECOMMENDATIONS_CONFIG,
   sections: DEFAULT_CUSTOM_SECTION_CONFIG,
   hide: DEFAULT_MEDIA_BROWSER_HIDDEN_ELEMENTS_CONFIG,
-  // columns: 2,
   playlists_allow_removing_tracks: false,
   default_enqueue_option: "play_now",
-  default_section: "favorites",
   show_artist_subtitles: true,
 };
 
@@ -223,33 +219,6 @@ function recommendationsConfigForm() {
     ],
   };
 }
-function defaultSectionConfigForm() {
-  return {
-    name: "default_section",
-    required: false,
-    selector: {
-      select: {
-        multiple: false,
-        mode: "dropdown",
-        options: [
-          {
-            value: "favorites",
-            label: "Favorites",
-          },
-          {
-            value: "recents",
-            label: "Recents",
-          },
-          {
-            value: "recommendations",
-            label: "Recommendations",
-          },
-        ],
-      },
-    },
-  };
-}
-
 function sortOrderConfigForm() {
   interface opt {
     value: GetLibrarySortOrders;
@@ -389,7 +358,6 @@ export function mediaBrowserConfigForm() {
   return [
     { name: "enabled", selector: { boolean: {} }, default: true },
     { name: "columns", selector: { number: { min: 1, max: 10, mode: "box" } } },
-    defaultSectionConfigForm(),
     defaultEnqueueOptionConfigForm(),
     {
       name: "favorites",

@@ -151,7 +151,6 @@ export class MediaBrowser extends LitElement {
       return;
     }
     this._config = config;
-    this.activeSection = config.default_section;
     this.createChips();
   }
   public get config() {

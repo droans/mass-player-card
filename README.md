@@ -387,7 +387,6 @@ players:
   enabled: true
 media_browser:
   enabled: true
-  columns: 2
   favorites:
     albums:
       enabled: true
@@ -693,8 +692,6 @@ Multiple elements on the queue tab can be hidden. By default, all elements are v
 | Parameter                       | Type                                                                      | Required | Default     | Description                                                                |
 |---------------------------------|---------------------------------------------------------------------------|----------|-------------|----------------------------------------------------------------------------|
 | enabled                         | bool                                                                      | No       | true        | Enable/disable media browser tab                                           |
-| default_section                 | "favorites", "recents", "recommendations"                                 | No       | favorites   | Default section when first opening the Media Browser tab.                  |
-| columns                         | number                                                                    | No       | 2           | Number of columns for each row.                                            |
 | playlists_allow_removing_tracks | bool                                                                      | No       | false       | **EXPERIMENTAL - SEE WARNING BELOW** Allows removing tracks from playlists |
 | default_enqueue_option          | [EnqueueConfigOption](#default_enqueue_option)                            | No       | play_now    | Default enqueue mode when an item is selected, see below for options       |
 | favorites                       | [FavoritesRecentsConfig](#favorites--recents-config)                      | No       | -           | See below                                                                  |
