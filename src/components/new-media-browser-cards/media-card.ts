@@ -175,7 +175,10 @@ export class MediaCard extends LitElement {
   private updateHiddenElements() {
     this.generateCode();
   }
-  private onSelect = () => {
+  private onSelect = (event_: PointerEvent) => {
+    if (event_.button != 0) {
+      return;
+    }
     if (this.skeleton) {
       return;
     }
