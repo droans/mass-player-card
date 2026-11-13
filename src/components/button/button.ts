@@ -78,18 +78,12 @@ export class MassButton extends LitElement {
     const elevation = `elevation-${elevationValue}`;
     const disabled = this.disabled ? `disabled` : ``;
     const outlined = this.outlined ? `outlined` : ``;
-    /* eslint-disable
-      unicorn/no-nested-ternary
-    */
     const selected =
       !this.selected && this.selectable
         ? `unselected`
         : this.selected
           ? `selected`
           : ``;
-    /* eslint-enable
-      unicorn/no-nested-ternary
-    */
     return html`
       <ha-button
         appearance="${BUTTON_ROLE_MAP[this.colorRole]}"
