@@ -30,7 +30,11 @@ import {
   getThumbnail,
   getTrackFallbackImg,
 } from "../../utils/thumbnails";
-import { jsonMatch, queueItemhasUpdated } from "../../utils/utility";
+import {
+  jsonMatch,
+  queueItemhasUpdated,
+  stopEventPropagation,
+} from "../../utils/utility";
 import {
   PlayerQueueHiddenElementsConfig,
   QueueConfig,
@@ -150,37 +154,38 @@ export class MediaRow extends LitElement {
     );
   }
 
+  /* eslint-disable @typescript-eslint/no-unnecessary-condition */
   private callMoveItemUpService = (event_: Event) => {
     if (!this.media_item) {
       return;
     }
-    // eslint-disable-next-line @typescript-eslint/no-unnecessary-condition
     if (navigator.vibrate) {
       navigator.vibrate(VibrationPattern.Queue.ACTION_MOVE_UP);
     }
     event_.stopPropagation();
+    this.changeActionButtonVisibility(false);
     this.moveQueueItemUpService(this.media_item.queue_item_id);
   };
   private callMoveItemDownService = (event_: Event) => {
     if (!this.media_item) {
       return;
     }
-    // eslint-disable-next-line @typescript-eslint/no-unnecessary-condition
     if (navigator.vibrate) {
       navigator.vibrate(VibrationPattern.Queue.ACTION_MOVE_DOWN);
     }
     event_.stopPropagation();
+    this.changeActionButtonVisibility(false);
     this.moveQueueItemDownService(this.media_item.queue_item_id);
   };
   private callMoveItemNextService = (event_: Event) => {
     if (!this.media_item) {
       return;
     }
-    // eslint-disable-next-line @typescript-eslint/no-unnecessary-condition
     if (navigator.vibrate) {
       navigator.vibrate(VibrationPattern.Queue.ACTION_MOVE_NEXT);
     }
     event_.stopPropagation();
+    this.changeActionButtonVisibility(false);
     this.moveQueueItemNextService(this.media_item.queue_item_id);
   };
   private callRemoveItemService = (event_: Event) => {
@@ -188,31 +193,31 @@ export class MediaRow extends LitElement {
       return;
     }
     event_.stopPropagation();
-    // eslint-disable-next-line @typescript-eslint/no-unnecessary-condition
     if (navigator.vibrate) {
       navigator.vibrate(VibrationPattern.Queue.ACTION_REMOVE);
     }
+    this.changeActionButtonVisibility(false);
     this.removeService(this.media_item.queue_item_id);
   };
   private callOnQueueItemSelectedService = () => {
     if (!this.media_item) {
       return;
     }
+    this.changeActionButtonVisibility(false);
     this.selectedService(this.media_item.queue_item_id);
   };
+  /* eslint-enable @typescript-eslint/no-unnecessary-condition */
+  private changeActionButtonVisibility(visibility: boolean): void {
+    const addClass = visibility ? `open` : `closed`;
+    const removeClass = visibility ? `closed` : `open`;
+    this.actionsButtonDiv.classList.remove(removeClass);
+    this.actionsButtonHeadline.classList.remove(removeClass);
+    this.actionsButtonDiv.classList.add(addClass);
+    this.actionsButtonHeadline.classList.add(addClass);
+    this.actionButtonsExpanded = visibility;
+  }
   private onChevronSelected = () => {
-    if (this.actionButtonsExpanded) {
-      this.actionsButtonDiv.classList.remove("open");
-      this.actionsButtonDiv.classList.add("closed");
-      this.actionsButtonHeadline.classList.remove("open");
-      this.actionsButtonHeadline.classList.add("closed");
-    } else {
-      this.actionsButtonDiv.classList.remove("closed");
-      this.actionsButtonDiv.classList.add("open");
-      this.actionsButtonHeadline.classList.remove("closed");
-      this.actionsButtonHeadline.classList.add("open");
-    }
-    this.actionButtonsExpanded = !this.actionButtonsExpanded;
+    this.changeActionButtonVisibility(!this.actionButtonsExpanded);
   };
 
   protected shouldUpdate(_changedProperties: PropertyValues<this>): boolean {
@@ -255,7 +260,6 @@ export class MediaRow extends LitElement {
       return html``;
     }
     /* eslint-disable
-          unicorn/no-nested-ternary,
           @typescript-eslint/no-unnecessary-condition
     */
     const img = this.defaultImageURL?.length
@@ -266,7 +270,6 @@ export class MediaRow extends LitElement {
     const played =
       !this.media_item.show_action_buttons && !this.media_item?.playing;
     /* eslint-enable
-          unicorn/no-nested-ternary,
           @typescript-eslint/no-unnecessary-condition
     */
     if (this.imagesExhausted) {
@@ -385,7 +388,11 @@ export class MediaRow extends LitElement {
       return html``;
     }
     return html`
-      <div id="action-buttons-div" class="closed">
+      <div
+        id="action-buttons-div"
+        class="closed"
+        @click=${stopEventPropagation}
+      >
         <ha-list-item-base class="action-buttons-row" id="action-buttons-row">
           <div slot="headline" id="action-buttons-headline" class="closed">
             ${this.renderMoveNextButton()} ${this.renderMoveUpButton()}
