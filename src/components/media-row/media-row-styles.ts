@@ -179,6 +179,7 @@ export default css`
 
   #headline {
     line-height: 1.5em;
+    color: var(--md-sys-color-on-surface);
   }
   .hide-covers .title {
     margin-left: 14px;

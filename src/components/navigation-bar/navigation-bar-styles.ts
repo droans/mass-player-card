@@ -93,16 +93,18 @@ export default css`
   }
   .tabbed {
     --tabbed-elevation: var(--md-sys-elevation-level1);
-    --tab-active-icon-color: var(--md-sys-color-on-secondary-container);
+    --tab-active-icon-color: var(--md-sys-color-on-primary-container);
     --tab-active-indicator-color: var(--md-sys-color-secondary-container);
-    --tab-inactive-icon-color: var(--md-sys-color-on-surface-variant);
+    --tab-inactive-icon-color: var(--md-sys-color-on-surface);
     --tab-icon-height: 24px;
   }
   .tabbed:not(.expressive) {
     --tabbed-background-color: var(--tabbed-background-color);
   }
   .tabbed.expressive {
-    --tabbed-background-color: var(--md-sys-color-surface-container) !important;
+    --tabbed-background-color: var(
+      --md-sys-color-secondary-container
+    ) !important;
     box-shadow: var(--tabbed-elevation);
     padding-inline: 8px;
     column-gap: 8px;
