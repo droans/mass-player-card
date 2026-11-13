@@ -251,7 +251,6 @@ export class QueueCard extends LitElement {
         `
       : html``;
     /* eslint-enable unicorn/template-indent */
-    /* eslint-disable unicorn/no-nested-ternary */
     const indexClass =
       activeIndex < index
         ? `upcoming`
@@ -264,7 +263,6 @@ export class QueueCard extends LitElement {
         : activeIndex + 1 == index || index == 0
           ? `first`
           : ``;
-    /* eslint-enable unicorn/no-nested-ternary */
     return html`
       <mpc-queue-media-row
         class="${indexClass} ${indexPlacementClass}"
@@ -281,10 +279,13 @@ export class QueueCard extends LitElement {
   }
   private renderQueueItems(): TemplateResult {
     const activeIndex = this.getActiveIndex();
+    if (!this.queue?.length) {
+      return html``;
+    }
     return html`
       <lit-virtualizer
         scroller
-        .items=${this.queue ?? []}
+        .items=${this.queue}
         .renderItem=${(item: QueueItem, index: number) => {
           return this.renderQueueItem(item, activeIndex, index);
         }}

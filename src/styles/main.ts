@@ -163,7 +163,7 @@ export default css`
       --mass-player-card-row-icon-button-height,
       1.5rem
     );
-    --navbar-height: 4em;
+    --navbar-height: calc(4em + 2%);
     --search-text-color: var(
       --mass-player-card-search-text-color,
       var(--ha-color-text-primary)
@@ -315,6 +315,9 @@ export default css`
   #navbar.expressive {
     border-radius: 0px 0px var(--default-border-radius)
       var(--default-border-radius);
+    width: 98%;
+    bottom: 1%;
+    left: 1%;
   }
   #navbar {
     position: absolute;

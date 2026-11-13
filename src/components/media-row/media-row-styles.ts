@@ -18,10 +18,10 @@ export default css`
     --button-border-radius: 8px !important;
     --ha-button-start-border-radius: 8px !important;
     --ha-button-end-border-radius: 8px !important;
-    --button-button-height: 48px;
-    --used-button-height: 48px;
-    --button-padding-left: 16px;
-    --button-padding-right: 16px;
+    --button-button-height: 40px;
+    --used-button-height: 40px;
+    --button-padding-left: 8px;
+    --button-padding-right: 8px;
   }
   .action-button.expressive:hover {
     background-color: var(--expressive-row-button-color-hover) !important;

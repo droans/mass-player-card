@@ -24,7 +24,7 @@ export default css`
   #container {
     box-shadow: unset;
     overflow: hidden;
-    height: 100%;
+    height: 98%;
   }
   .container.expressive {
     border-radius: var(--expressive-border-radius-container);

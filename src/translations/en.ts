@@ -49,4 +49,8 @@ export default {
   "queue.header": "Now Playing",
   "queue.up_next": "Up Next",
   "player.playlist_dialog.header": "Add to Playlist",
+  "tab.player.label": "MUSIC",
+  "tab.queue.label": "QUEUE",
+  "tab.browser.label": "LIBRARY",
+  "tab.players.label": "PLAYERS",
 };

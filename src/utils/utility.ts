@@ -248,3 +248,7 @@ export function playerSupportsFeature(
   const feats = (playerSupportedFeatures >>> 0).toString(2);
   return feats.at(feature) == "1";
 }
+
+export function stopEventPropagation(event_: Event) {
+  event_.stopPropagation();
+}
