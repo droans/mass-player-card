@@ -9,6 +9,7 @@ import styles from "./navigation-bar-styles";
 import {
   activeSectionContext,
   controllerContext,
+  hassContext,
   IconsContext,
 } from "../../const/context";
 import { consume } from "@lit/context";
@@ -20,6 +21,15 @@ import { MediaBrowser } from "../../sections/new-media-browser";
 import { Icons } from "../../const/icons";
 import { WaAnimation } from "../../const/elements";
 import { QueueCard } from "../../sections/player-queue";
+import { getTranslation } from "../../utils/translations";
+import { ExtendedHass } from "../../const/types";
+
+const TRANSLATION_KEYS: Record<Sections, string> = {
+  "music-player": "tab.player.label",
+  queue: "tab.queue.label",
+  "media-browser": "tab.browser.label",
+  players: "tab.players.label",
+};
 
 @customElement("mpc-navbar-expressive")
 export class MassNavBar extends LitElement {
@@ -35,23 +45,32 @@ export class MassNavBar extends LitElement {
   @query("#animation") animationElement?: WaAnimation;
   @query("#navigation") navbar?: HTMLDivElement;
   @query(".icon-active") activeIconElem?: HTMLElement;
-  private animationLength = 350;
+  private animationDuration = 300;
+  private bounceAwayDuration = 60;
+  private bounceInDuration = 30;
   private animating = false;
-  private tabIndicatorLeftPx = 0;
-  private tabIndicatorWidthPx = 0;
+  private tabIndicatorLeftPx = "0px";
+  private tabIndicatorWidthPx = "0px";
+  private previousSection?: Sections;
+  private sections: Sections[] = [];
+
+  @consume({ context: hassContext, subscribe: true }) hass!: ExtendedHass;
 
   @consume({ context: activeSectionContext, subscribe: true })
   @state()
-  public set active_section(section: Sections | undefined) {
+  public set activeSection(section: Sections | undefined) {
     if (!this.controller) {
       return;
     }
-    if (section != this.active_section && section) {
+    if (section != this.activeSection && section) {
       this.handleTabChanged(section);
+    }
+    if (this._activeSection) {
+      this.previousSection = this.activeSection;
     }
     this._activeSection = section;
   }
-  public get active_section() {
+  public get activeSection() {
     return this._activeSection;
   }
   private setActiveSection(section: Sections) {
@@ -64,7 +83,7 @@ export class MassNavBar extends LitElement {
       return;
     }
     this._controller = controller;
-    this.active_section = controller.activeSection;
+    this.activeSection = controller.activeSection;
     this.config = controller.config;
   }
   private get controller() {
@@ -72,16 +91,20 @@ export class MassNavBar extends LitElement {
   }
   private set config(config: Config | undefined) {
     this._config = config;
+    if (config) {
+      const sections: Sections[] = [];
+      if (config.player.enabled) sections.push(Sections.MUSIC_PLAYER);
+      if (config.queue.enabled) sections.push(Sections.QUEUE);
+      if (config.media_browser.enabled) sections.push(Sections.MEDIA_BROWSER);
+      if (config.players.enabled) sections.push(Sections.PLAYERS);
+      this.sections = sections;
+    }
   }
   private get config() {
     return this._config;
   }
 
   private handleTabChanged = (section: Sections) => {
-    const current_section = this.active_section;
-    if (current_section) {
-      this.animateTabChange(current_section, section);
-    }
     this.setActiveSection(section);
     if (section == Sections.MEDIA_BROWSER) {
       this.returnMediaBrowserToHome();
@@ -117,105 +140,156 @@ export class MassNavBar extends LitElement {
     };
     return elements[section];
   }
-  private animateBounceLeft(
-    from_element: HTMLAnchorElement,
-    to_element: HTMLAnchorElement,
-  ): Keyframe {
-    const from_left = from_element.offsetLeft;
-    const from_width = from_element.offsetWidth;
-
-    const to_left = to_element.offsetLeft;
-    const to_width = to_element.offsetWidth;
-
-    const bounce_move = to_width * 0.2;
-
-    const bounce_left = Math.max(0, to_left - bounce_move);
-    const bounce_width = bounce_left > 0 ? to_width : to_width - bounce_move;
-    const extra_left = to_left == 0 ? bounce_move / 2 : 0;
-    const translate_x = bounce_left - from_left - extra_left;
-    const scale_x = bounce_width / from_width;
-
-    return {
-      transform: `translateX(${translate_x.toString()}px) scaleX(${scale_x.toString()})`,
-      offset: 0.8,
-    };
+  private getActiveSectionIndex(): number {
+    const activeSection = this.activeSection;
+    const idx = this.sections.findIndex((item) => {
+      return item == activeSection;
+    });
+    if (!idx && idx != 0) {
+      return 0;
+    }
+    return idx;
   }
-  private animateBounceRight(
-    from_element: HTMLAnchorElement,
-    to_element: HTMLAnchorElement,
-  ): Keyframe {
-    const from_left = from_element.offsetLeft;
-    const from_width = from_element.offsetWidth;
-
-    const to_left = to_element.offsetLeft;
-    const to_width = to_element.offsetWidth;
-
-    const bounce_move = to_width * 0.2;
-    const navbarWidth = this.navbar?.offsetWidth ?? 0;
-    const to_element_x_end = to_left + to_width;
-
-    const bounce_left = to_left + bounce_move;
-    const bounce_width =
-      to_element_x_end >= navbarWidth ? navbarWidth - bounce_left : to_width;
-    const extra_left = to_element_x_end >= navbarWidth ? bounce_move / 2 : 0;
-    const translate_x = bounce_left - from_left - extra_left;
-    const scale_x = bounce_width / from_width;
-    return {
-      transform: `translateX(${translate_x.toString()}px) scaleX(${scale_x.toString()})`,
-      offset: 0.8,
-    };
-  }
-  private animateTabChange(from_section: Sections, to_section: Sections) {
-    this.animating = true;
-    if (from_section == to_section) {
-      return;
+  private getPriorSectionIndex(): number {
+    if (!this.previousSection) {
+      return this.getActiveSectionIndex();
     }
-    const from_element = this.getSectionElement(from_section);
-    const to_element = this.getSectionElement(to_section);
-    if (!from_element || !to_element) {
-      return;
+    const idx = this.sections.findIndex((item) => {
+      return item == this.previousSection;
+    });
+    if (!idx && idx != 0) {
+      return 0;
     }
-    const from_width = from_element.offsetWidth;
-    const from_left = from_element.offsetLeft;
-    const to_width = to_element.offsetWidth;
-    const to_left = to_element.offsetLeft;
-    const bounce =
-      from_left - to_left > 0
-        ? this.animateBounceLeft(from_element, to_element)
-        : this.animateBounceRight(from_element, to_element);
-
-    const translate_x = to_left - from_left;
-    const scale_x = to_width / from_width;
-
-    const _keyframes = [
-      {
-        transform: `translateX(${translate_x.toString()}px) scaleX(${scale_x.toString()})`,
-        offset: 0.6,
-      },
-      bounce,
-      {
-        transform: `translateX(${translate_x.toString()}px) scaleX(${scale_x.toString()})`,
-      },
-    ];
-    const indicator = this.tabIndicator;
-    if (!this.animationElement || !indicator) {
-      return;
-    }
-    this.animationElement.keyframes = _keyframes;
-    this.tabIndicatorLeftPx = to_left;
-    this.tabIndicatorWidthPx = to_width;
-    this.animationElement.addEventListener("wa-finish", this.onAnimationFinish);
-    this.animationElement.play = true;
+    return idx;
   }
 
-  private onAnimationFinish = () => {
-    this.animating = false;
-    if (!this.tabIndicator) {
-      return;
-    }
-    this.tabIndicator.style.left = `${this.tabIndicatorLeftPx.toString()}px`;
-    this.tabIndicator.style.width = `${this.tabIndicatorWidthPx.toString()}px`;
-  };
+  // private animateBounceLeft(
+  //   from_element: HTMLAnchorElement,
+  //   to_element: HTMLAnchorElement,
+  // ): Keyframe {
+  //   const from_left = from_element.offsetLeft;
+  //   const from_width = from_element.offsetWidth;
+
+  //   const to_left = to_element.offsetLeft;
+  //   const to_width = from_element.offsetWidth;
+  //   // const to_width = to_element.offsetWidth;
+
+  //   const bounce_move = to_width * 0.2;
+
+  //   const bounce_left = Math.max(0, to_left - bounce_move);
+  //   const bounce_width = bounce_left > 0 ? to_width : to_width - bounce_move;
+  //   const extra_left = to_left == 0 ? bounce_move / 2 : 0;
+  //   const translate_x = bounce_left - from_left - extra_left;
+  //   const scale_x = bounce_width / from_width;
+  //   console.log(`Animate left:`);
+  //   console.log(`From left: ${from_left}`);
+  //   console.log(`Bounce left: ${bounce_left}`);
+  //   console.log(`Bounce width: ${bounce_width}`);
+  //   console.log(`extra left: ${extra_left}`);
+  //   console.log(`TranslateX: ${translate_x}`);
+  //   console.log(`scaleX: ${scale_x}`);
+  //   console.log(`-------------`);
+
+  //   return {
+  //     transform: `translateX(${translate_x.toString()}px) scaleX(${scale_x.toString()})`,
+  //     offset: 0.8,
+  //   };
+  // }
+  // private animateBounceRight(
+  //   from_element: HTMLAnchorElement,
+  //   to_element: HTMLAnchorElement,
+  // ): Keyframe {
+  //   const from_left = from_element.offsetLeft;
+  //   const from_width = from_element.offsetWidth;
+
+  //   const to_left = to_element.offsetLeft;
+  //   const to_width = from_element.offsetWidth;
+  //   const to_element_width = to_element.offsetWidth;
+
+  //   const bounce_move = to_element_width * 0.2;
+  //   const navbarWidth = this.navbar?.offsetWidth ?? 0;
+  //   const to_element_x_end = to_left + to_width;
+
+  //   const bounce_left = to_left + bounce_move;
+  //   const bounce_width =
+  //     to_element_x_end >= navbarWidth
+  //       ? navbarWidth - bounce_left
+  //       : to_element_width;
+  //   const extra_left = to_element_x_end >= navbarWidth ? bounce_move / 2 : 0;
+  //   const translate_x = bounce_left - from_left - extra_left;
+  //   const scale_x = bounce_width / from_width;
+  //   console.log(`Animate right:`);
+  //   console.log(`From left: ${from_left}`);
+  //   console.log(`Bounce left: ${bounce_left}`);
+  //   console.log(`Bounce width: ${bounce_width}`);
+  //   console.log(`extra left: ${extra_left}`);
+  //   console.log(`TranslateX: ${translate_x}`);
+  //   console.log(`scaleX: ${scale_x}`);
+  //   console.log(`-------------`);
+  //   return {
+  //     transform: `translateX(${translate_x.toString()}px) scaleX(${scale_x.toString()})`,
+  //     offset: 0.8,
+  //   };
+  // }
+  // private animateTabChange(from_section: Sections, to_section: Sections) {
+  //   this.animating = true;
+  //   if (from_section == to_section) {
+  //     return;
+  //   }
+  //   const from_element = this.getSectionElement(from_section);
+  //   const to_element = this.getSectionElement(to_section);
+  //   if (!from_element || !to_element) {
+  //     return;
+  //   }
+  //   const from_width = from_element.offsetWidth;
+  //   const from_left = from_element.offsetLeft;
+  //   // const to_width = to_element.offsetWidth;
+  //   const to_width = from_width;
+  //   const to_left = to_element.offsetLeft;
+  //   const bounce =
+  //     from_left - to_left > 0
+  //       ? this.animateBounceLeft(from_element, to_element)
+  //       : this.animateBounceRight(from_element, to_element);
+
+  //   const translate_x = to_left - from_left;
+  //   const scale_x = to_width / from_width;
+
+  //   const _keyframes = [
+  //     {
+  //       transform: `translateX(${translate_x.toString()}px) scaleX(${scale_x.toString()})`,
+  //       offset: 0.6,
+  //     },
+  //     bounce,
+  //     {
+  //       transform: `translateX(${translate_x.toString()}px) scaleX(${scale_x.toString()})`,
+  //     },
+  //   ];
+  //   const indicator = this.tabIndicator;
+  //   if (!this.animationElement || !indicator) {
+  //     return;
+  //   }
+  //   this.animationElement.keyframes = _keyframes;
+  //   this.tabIndicatorLeftPx =
+  //     translate_x > 0
+  //       ? `calc(${to_left.toString()}px - 4rem)`
+  //       : `${to_left.toString()}px`;
+  //   this.tabIndicatorWidthPx = `${to_width.toString()}px`;
+  //   // this.tabIndicatorLeftPx = from_left;
+  //   // this.tabIndicatorWidthPx = from_width;
+  //   this.animationElement.addEventListener("wa-finish", this.onAnimationFinish);
+  //   this.animationElement.play = true;
+  // }
+
+  // private onAnimationFinish = () => {
+  //   this.animating = false;
+  //   if (!this.tabIndicator) {
+  //     return;
+  //   }
+  //   this.tabIndicator.style.left = this.tabIndicatorLeftPx;
+  //   this.tabIndicator.style.width = this.tabIndicatorWidthPx;
+  //   // this.tabIndicator.style.left = `${this.tabIndicatorLeftPx.toString()}px`;
+  //   // this.tabIndicator.style.width = `${this.tabIndicatorWidthPx.toString()}px`;
+  // };
 
   protected renderMusicPlayerTab(): TemplateResult {
     const section = Sections.MUSIC_PLAYER;
@@ -250,21 +324,27 @@ export class MassNavBar extends LitElement {
     return html``;
   }
   private renderTab(section: Sections, icon: string): TemplateResult {
-    const active = this.active_section == section;
+    const active = this.activeSection == section;
+    const label = active
+      ? getTranslation(TRANSLATION_KEYS[section], this.hass)
+      : ``;
     return html`
       <a
         id="tab-${section}"
-        class="player-tabs"
+        class="player-tabs ${active ? `active` : ``}"
         @click=${() => {
           this.handleTabChanged(section);
         }}
       >
-        <i class="icon-i ${active ? `active` : ``}">
-          <ha-svg-icon
-            .path=${icon}
-            class="action-button-svg ${active ? "" : "inactive"}"
-          ></ha-svg-icon>
-        </i>
+        <div class="icon-div">
+          <i class="icon-i ${active ? `active` : ``}">
+            <ha-svg-icon
+              .path=${icon}
+              class="action-button-svg ${active ? "" : "inactive"}"
+            ></ha-svg-icon>
+          </i>
+        </div>
+        <div class="label-div">${label}</div>
       </a>
     `;
   }
@@ -288,48 +368,48 @@ export class MassNavBar extends LitElement {
     }
     return _changedProperties.size > 0;
   }
-  protected firstUpdated(): void {
-    if (!this.tabIndicator && this.active_section) {
-      const tabs = this.navbar?.querySelectorAll("a").length ?? 0;
-      const width = Math.round((1 / Math.max(1, tabs)) * 100);
-      const indicator = document.createElement("div");
-      indicator.id = "tab-indicator";
-      const config = this.config;
-      if (!config) {
-        return;
-      }
-      const sections: Sections[] = [];
-      if (config.player.enabled) sections.push(Sections.MUSIC_PLAYER);
-      if (config.queue.enabled) sections.push(Sections.QUEUE);
-      if (config.media_browser.enabled) sections.push(Sections.MEDIA_BROWSER);
-      if (config.players.enabled) sections.push(Sections.PLAYERS);
-      const activeSection = this.active_section;
-      const idx = sections.findIndex((item) => {
-        return item == activeSection;
-      });
-      if (!idx && idx != 0) {
-        return;
-      }
-      const leftPct = (idx / sections.length) * 100;
-      indicator.style = `left: ${leftPct.toString()}%; width: ${width.toString()}%;`;
-      const animation = document.createElement("wa-animation") as WaAnimation;
-      animation.id = "animation";
-      animation.duration = this.animationLength;
-      animation.iterations = 1;
-      animation.append(indicator);
-      this.navbar?.append(animation);
-    }
-  }
-  disconnectedCallback(): void {
-    super.disconnectedCallback();
-    if (!this.animationElement) {
-      return;
-    }
-    this.animationElement.removeEventListener(
-      "wa-finish",
-      this.onAnimationFinish,
-    );
-  }
+  // protected firstUpdated(): void {
+  //   if (!this.tabIndicator && this.active_section) {
+  //     const tabs = this.navbar?.querySelectorAll("a").length ?? 0;
+  //     const width = Math.round((1 / Math.max(1, tabs)) * 100);
+  //     const indicator = document.createElement("div");
+  //     indicator.id = "tab-indicator";
+  //     const config = this.config;
+  //     if (!config) {
+  //       return;
+  //     }
+  //     const sections: Sections[] = [];
+  //     if (config.player.enabled) sections.push(Sections.MUSIC_PLAYER);
+  //     if (config.queue.enabled) sections.push(Sections.QUEUE);
+  //     if (config.media_browser.enabled) sections.push(Sections.MEDIA_BROWSER);
+  //     if (config.players.enabled) sections.push(Sections.PLAYERS);
+  //     const activeSection = this.active_section;
+  //     const idx = sections.findIndex((item) => {
+  //       return item == activeSection;
+  //     });
+  //     if (!idx && idx != 0) {
+  //       return;
+  //     }
+  //     const leftPct = (idx / sections.length) * 100;
+  //     indicator.style = `left: ${leftPct.toString()}%; width: calc(${width.toString()}% + 3rem);`;
+  //     const animation = document.createElement("wa-animation") as WaAnimation;
+  //     animation.id = "animation";
+  //     animation.duration = this.animationLength;
+  //     animation.iterations = 1;
+  //     animation.append(indicator);
+  //     this.navbar?.append(animation);
+  //   }
+  // }
+  // disconnectedCallback(): void {
+  //   super.disconnectedCallback();
+  //   if (!this.animationElement) {
+  //     return;
+  //   }
+  //   this.animationElement.removeEventListener(
+  //     "wa-finish",
+  //     this.onAnimationFinish,
+  //   );
+  // }
   static get styles(): CSSResultGroup {
     return styles;
   }
