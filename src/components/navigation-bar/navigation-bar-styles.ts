@@ -58,6 +58,7 @@ export default css`
   }
   .icon-div {
     width: var(--nav-icon-width);
+    display: flex;
   }
   .icon-i {
     height: var(--nav-icon-width);
