@@ -310,7 +310,7 @@ export class QueueCard extends LitElement {
     return html`
       <mpc-button
         .onPressService=${this.onClearQueue}
-        role="filled"
+        role="tonal"
         size="small"
         elevation="1"
         id="button-back"

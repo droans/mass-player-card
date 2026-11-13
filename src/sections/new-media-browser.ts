@@ -499,7 +499,7 @@ export class MediaBrowser extends LitElement {
     return html`
       <mpc-button
         .onPressService=${this.onSearchButtonPress}
-        role="filled"
+        role="tonal"
         size="small"
         elevation="1"
         id="button-search"
