@@ -28,8 +28,10 @@ export default css`
   :host([direction="horizontal"]) mpc-browser-media-card {
     height: 8em;
     width: 8em;
-    --container-height: 8em;
+    --container-height: 12em;
     --container-width: 8em;
+    --image-height: 8em;
+    --image-width: var(--container-width);
   }
   :host([direction="vertical"]) mpc-browser-media-card {
     display: block;
@@ -39,6 +41,8 @@ export default css`
     padding-inline: 0;
     --container-width: 100%;
     --container-height: 100%;
+    --image-height: 100%;
+    --image-width: 100%;
   }
   mpc-browser-media-card {
     max-height: 100%;
@@ -73,7 +77,7 @@ export default css`
     display: flex;
     column-gap: 8px;
     padding-bottom: 8px;
-    height: 8em;
+    height: 10em;
   }
   #title {
     font-size: 1.5em;

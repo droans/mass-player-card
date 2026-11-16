@@ -50,6 +50,8 @@ import { getThumbnail } from "../../utils/thumbnails";
 
 @customElement("mpc-browser-media-card")
 export class MediaCard extends LitElement {
+  @property({ attribute: "direction", type: String })
+  direction: "horizontal" | "vertical" = "horizontal";
   @property({ type: Boolean }) queueable = false;
   @property({ type: Boolean, attribute: "skeleton" }) skeleton = false;
   @property({ type: String, attribute: "size" }) size!: "medium" | "large";
@@ -204,9 +206,9 @@ export class MediaCard extends LitElement {
     const img = this.config?.thumbnail;
     return html`
       <img
-        id="thumbnail-div ${this.size}"
+        id="thumbnail-img"
         slot="media"
-        class="wa-grid"
+        class="wa-grid ${this.size}"
         src="${img}"
         @error=${this._renderImageFallback}
         loading="lazy"

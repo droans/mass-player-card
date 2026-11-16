@@ -7,6 +7,15 @@ export default css`
     --mdc-icon-size: calc(10em / var(--columns, 2));
     --browser-card-border-radius: 12px;
   }
+  :host([direction="vertical"]) #container-outer {
+    height: calc(var(--container-height) + 3rem);
+    width: 100%;
+    aspect-ratio: unset !important;
+  }
+  :host([direction="vertical"]) #media img {
+    width: 100%;
+    height: unset;
+  }
   wa-card {
     --wa-panel-border-width: var(--browser-card-border-width);
     height: 100%;
@@ -36,6 +45,12 @@ export default css`
     height: var(--container-height, 10em);
     width: var(--container-width, 10em);
   }
+  #media {
+    height: var(--image-height, 10em);
+    width: var(--image-width, 10em);
+    border-radius: var(--browser-card-border-radius) !important;
+    overflow: hidden;
+  }
 
   .media-card {
     border-radius: var(--browser-card-border-radius) !important;
@@ -46,13 +61,17 @@ export default css`
     text-align: center;
   }
   .media-card.expressive {
-    box-shadow: var(--md-sys-elevation-level2);
     border-width: 0px;
+    box-shadow: unset;
+    background-color: var(--md-sys-color-background);
   }
 
   .thumbnail {
     border-radius: var(--browser-card-border-radius);
     overflow: hidden !important;
+  }
+  #media img {
+    border-radius: var(--browser-card-border-radius) !important;
   }
   .thumbnail,
   .thumbnail-section {
@@ -77,12 +96,12 @@ export default css`
   #title-div {
     font-size: 0.9rem;
     text-transform: capitalize;
-    position: absolute;
+    /* position: absolute; */
     width: 100%;
     line-height: 160%;
     bottom: 0;
-    background-color: var(--md-sys-color-surface-container-low);
-    color: var(--md-sys-color-primary);
+    background-color: var(--md-sys-color-background);
+    color: var(--md-sys-color-on-background);
     border-radius: 0px 0px var(--browser-card-border-radius)
       var(--browser-card-border-radius);
     overflow: hidden;

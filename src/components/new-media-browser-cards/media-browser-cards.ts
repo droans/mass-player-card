@@ -84,6 +84,7 @@ export class MediaBrowserCards extends LitElement {
         .config=${card}
         .onSelectAction=${this.onItemSelected}
         .onEnqueueAction=${this.onEnqueue}
+        direction="${this.direction}"
         ${queueable}
       ></mpc-browser-media-card>
     `;
