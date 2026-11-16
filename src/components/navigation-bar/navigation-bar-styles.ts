@@ -3,25 +3,35 @@ import { css } from "lit";
 // Styles belonging to the card
 // https://lit.dev/docs/components/styles/
 export default css`
+  @media (width <= 450px) {
+    :host {
+      --label-font-size: 1rem;
+      --nav-icon-width: 24px;
+    }
+  }
+  @media (width > 450px) {
+    :host {
+      --label-font-size: 1.7rem;
+      --nav-icon-width: 36px;
+    }
+  }
   :host {
     --transform-duration: 350ms;
-    --nav-icon-width: 36px;
     interpolate-size: allow-keywords;
   }
   #navigation a {
     z-index: 2;
     height: 80%;
     transition:
-      flex-basis,
+      width,
       padding var(--transform-duration);
   }
   #navigation a.active {
     --primary-container: var(--md-sys-color-primary-container);
-    flex-grow: 1;
+    /* flex-grow: 1;
     flex-shrink: 1;
-    flex-basis: 200%;
-    padding-inline: 2rem;
-    font-size: 1.7rem;
+    flex-basis: 200%; */
+    font-size: var(--label-font-size, 1.7rem);
     font-stretch: 50%;
     font-weight: 600;
     font-variation-settings: "ROND" 100;
@@ -40,9 +50,9 @@ export default css`
     border-radius: unset;
   }
   #navigation a:not(.active) {
-    flex-grow: 1;
+    /* flex-grow: 1;
     flex-shrink: 1;
-    flex-basis: 100%;
+    flex-basis: 100%; */
     background-color: var(--md-sys-color-surface);
   }
   :is(nav.tabbed > a, .tabs > a):is(:hover)::after {
@@ -70,6 +80,8 @@ export default css`
   nav.tabbed {
     background-color: var(--tabbed-background-color);
     overflow: hidden;
+    /* display: block; */
+    place-content: center;
   }
   #tab-indicator {
     height: 100%;
