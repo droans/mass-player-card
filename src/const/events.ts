@@ -53,6 +53,14 @@ export interface HaDropdownEventData extends CustomEventNoDetail {
     };
   };
 }
+export interface HaCheckboxDropdownEventData extends CustomEventNoDetail {
+  detail: {
+    item: {
+      value: string;
+      checked: boolean;
+    };
+  };
+}
 export interface TrackRemovedEventData extends CustomEventNoDetail {
   detail: {
     playlist: string;

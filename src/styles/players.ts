@@ -9,6 +9,20 @@ export default css`
   *[hide] {
     display: none;
   }
+  :host {
+    --media-row-normal-border-radius: 8px;
+    --media-row-end-border-radius: var(--default-border-radius);
+  }
+  .player-row:first-of-type {
+    --media-row-top-border-radius: var(--media-row-end-border-radius);
+  }
+  .player-row:last-of-type {
+    --media-row-bottom-border-radius: var(--media-row-end-border-radius);
+  }
+  .player-row {
+    --media-row-top-border-radius: var(--media-row-normal-border-radius);
+    --media-row-bottom-border-radius: var(--media-row-normal-border-radius);
+  }
 
   #container {
     overflow: hidden;
