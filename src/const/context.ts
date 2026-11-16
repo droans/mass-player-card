@@ -109,3 +109,5 @@ export const activeAlbumCollectionContext = createContext<
 export const activeArtistCollectionContext = createContext<
   mediaCardArtistData | undefined
 >(uuid4());
+
+export const canGroupWithContext = createContext<string[]>(uuid4());

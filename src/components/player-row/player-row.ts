@@ -3,10 +3,8 @@ import { html, type CSSResultGroup, LitElement, PropertyValues } from "lit";
 import { customElement, property } from "lit/decorators.js";
 
 import {
-  PlayerJoinService,
   PlayerSelectedService,
   PlayerTransferService,
-  PlayerUnjoinService,
 } from "../../const/actions";
 import { VibrationPattern } from "../../const/common";
 import {
@@ -40,7 +38,7 @@ import { HTMLImageElementEvent } from "../../const/events";
 @customElement("mpc-player-row")
 export class PlayerRow extends LitElement {
   @property({ attribute: false }) joined = false;
-  @property({ attribute: false }) selected = false;
+  @property({ attribute: "selected", type: Boolean }) selected = false;
   @consume({ context: IconsContext }) private Icons!: Icons;
   @consume({ context: useExpressiveContext, subscribe: true })
   private useExpressive!: boolean;
@@ -48,10 +46,8 @@ export class PlayerRow extends LitElement {
 
   public allowJoin = true;
   public playerName!: EntityName;
-  public joinService!: PlayerJoinService;
   public selectedService!: PlayerSelectedService;
   public transferService!: PlayerTransferService;
-  public unjoinService!: PlayerUnjoinService;
 
   private _player_entity!: ExtendedHassEntity;
 
@@ -113,19 +109,6 @@ export class PlayerRow extends LitElement {
   protected shouldUpdate(_changedProperties: PropertyValues<this>): boolean {
     return _changedProperties.size > 0;
   }
-  private onJoinPressed = async (event_: Event) => {
-    // eslint-disable-next-line @typescript-eslint/no-unnecessary-condition
-    if (navigator.vibrate) {
-      navigator.vibrate(VibrationPattern.Players.ACTION_JOIN);
-    }
-    event_.stopPropagation();
-    const service = this.joined ? this.unjoinService : this.joinService;
-    if (!this.player_entity) {
-      return;
-    }
-    await service([this.player_entity.entity_id]);
-    this.joined = !this.joined;
-  };
   private onTransferPressed = (event_: Event) => {
     event_.stopPropagation();
     // eslint-disable-next-line @typescript-eslint/no-unnecessary-condition
@@ -160,13 +143,14 @@ export class PlayerRow extends LitElement {
     const source = loc ?? pic ?? fallback;
 
     return html`
-      <img
-        class="thumbnail"
-        slot="start"
-        src="${source}"
-        loading="lazy"
-        @error=${this._renderThumbnailFallback}
-      />
+      <div class="div-thumbnail" slot="start">
+        <img
+          class="thumbnail"
+          src="${source}"
+          loading="lazy"
+          @error=${this._renderThumbnailFallback}
+        />
+      </div>
     `;
   }
   private _calculateTitleWidth() {
@@ -232,33 +216,11 @@ export class PlayerRow extends LitElement {
         .onPressService=${this.onTransferPressed}
         role="tonal"
         size="small"
-        elevation="1"
+        elevation="-1"
         class="action-button ${this.useExpressive ? `expressive` : ``}"
       >
         <ha-svg-icon
           .path=${this.Icons.SWAP}
-          class="svg-action-button ${this.useExpressive ? `expressive` : ``}"
-        ></ha-svg-icon>
-      </mpc-button>
-    `;
-  }
-  protected renderJoinButon() {
-    if (this.hide.join_button || !this.canGroup) {
-      return html``;
-    }
-    if (!this.player_entity?.attributes.group_members || !this.allowJoin) {
-      return;
-    }
-    return html`
-      <mpc-button
-        .onPressService=${this.onJoinPressed}
-        role="tonal"
-        size="small"
-        elevation="1"
-        class="action-button ${this.useExpressive ? `expressive` : ``}"
-      >
-        <ha-svg-icon
-          .path=${this.joined ? this.Icons.LINK_OFF : this.Icons.LINK}
           class="svg-action-button ${this.useExpressive ? `expressive` : ``}"
         ></ha-svg-icon>
       </mpc-button>
@@ -274,7 +236,7 @@ export class PlayerRow extends LitElement {
             event_.stopPropagation();
           }}
         >
-          ${this.renderJoinButon()} ${this.renderTransferButton()}
+          ${this.renderTransferButton()}
         </span>
       `;
     }
@@ -299,7 +261,6 @@ export class PlayerRow extends LitElement {
         ${this.renderThumbnail()} ${this.renderTitle()}
         ${this.renderActionButtons()}
       </ha-list-item-button>
-      <div class="divider"></div>
     `;
   }
   static get styles(): CSSResultGroup {

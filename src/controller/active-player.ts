@@ -5,6 +5,7 @@ import {
   activeMediaPlayerContext,
   activePlayerDataContext,
   activePlayerNameContext,
+  canGroupWithContext,
   expressiveSchemeContext,
   groupedPlayersContext,
   groupVolumeContext,
@@ -84,7 +85,8 @@ export class ActivePlayerController {
   private _activeSchemeColor!: number;
   private _timeout?: number;
   private _observerDelay = 300;
-  private _canGroupWith: string[] = [];
+  private _canGroupWith: ContextProvider<typeof canGroupWithContext>;
+  // private _canGroupWith: string[] = [];
   private volumeEntityId!: string;
 
   constructor(
@@ -124,6 +126,10 @@ export class ActivePlayerController {
     });
     this._activePlayerData = new ContextProvider(host, {
       context: activePlayerDataContext,
+    });
+    this._canGroupWith = new ContextProvider(host, {
+      context: canGroupWithContext,
+      initialValue: [],
     });
     this._hass = hass;
     this._browserActions = new BrowserActions(hass);
@@ -296,10 +302,10 @@ export class ActivePlayerController {
   }
 
   private set canGroupWith(entity_ids: string[]) {
-    this._canGroupWith = entity_ids;
+    this._canGroupWith.setValue(entity_ids);
   }
   public get canGroupWith() {
-    return this._canGroupWith;
+    return this._canGroupWith.value;
   }
 
   public get queueLength() {

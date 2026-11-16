@@ -10,6 +10,7 @@ import {
 import { customElement, property, query } from "lit/decorators.js";
 import { keyed } from "lit/directives/keyed.js";
 
+import "../components/player-row/active-player-row";
 import "../components/player-row/player-row";
 
 import PlayersActions from "../actions/players-actions";
@@ -164,19 +165,23 @@ export class PlayersCard extends LitElement {
         (entity) => entity.entity_id == item.entity_id,
       )!;
       const allowJoin = attributes?.group_members !== undefined;
+      if (this.activePlayerEntity.entity_id == item.entity_id) {
+        return html``;
+      }
       return keyed(
         item.entity_id,
         html`
           <mpc-player-row
+            class="player-row"
             .player_entity=${item}
             .playerName=${player.name}
-            .selected=${this.activePlayerEntity.entity_id == item.entity_id}
             .selectedService=${this.selectedPlayerService}
             .joinService=${this.joinPlayers}
             .unjoinService=${this.unjoinPlayers}
             .transferService=${this.transferQueue}
             .joined=${group_members.includes(item.entity_id)}
             .allowJoin=${allowJoin}
+            ?selected=${this.activePlayerEntity.entity_id == item.entity_id}
             ?can-group=${canGroupWith.includes(player.entity_id)}
           >
           </mpc-player-row>
@@ -210,6 +215,13 @@ export class PlayersCard extends LitElement {
           play=${this.checkVisibility()}
           playback-rate="4"
         >
+          <div class="selected-player">
+            <mpc-active-player-row
+              .joinService=${this.joinPlayers}
+              .unjoinService=${this.unjoinPlayers}
+            >
+            </mpc-active-player-row>
+          </div>
           <div class="list ${expressiveCls} ${paddedCls}">
             ${this.renderPlayerRows()}
           </div>

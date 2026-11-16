@@ -31,6 +31,7 @@ export default {
   "player.controls.pause": "Pause",
   "player.controls.play_pause": "Play/Pause",
   "player.controls.next": "Next",
+  "player.playlist_dialog.header": "Add to Playlist",
 
   "player.header": "Media Player",
   "player.messages.inactive": [
@@ -45,10 +46,11 @@ export default {
   "player.title.inactive": "Nothing is currently active!",
 
   "players.header": "Players",
+  "players.label.controlling": "CONTROLLING",
+  "players.label.group": "Group",
 
   "queue.header": "Now Playing",
   "queue.up_next": "Up Next",
-  "player.playlist_dialog.header": "Add to Playlist",
   "tab.player.label": "MUSIC",
   "tab.queue.label": "QUEUE",
   "tab.browser.label": "LIBRARY",

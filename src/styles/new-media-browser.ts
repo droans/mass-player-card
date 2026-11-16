@@ -20,9 +20,8 @@ export default css`
   #container {
     box-shadow: unset;
     overflow: hidden;
-    height: 100%;
+    height: 98%;
     border-radius: var(--expressive-border-radius-container);
-    background-color: var(--expressive-color-container);
   }
   .chip.button {
     --ha-button-start-border-radius: 16px;

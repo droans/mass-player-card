@@ -14,7 +14,7 @@ export default css`
     display: none;
   }
   lit-virtualizer {
-    height: calc(var(--queue-height) - 8px);
+    height: var(--queue-height);
     scrollbar-width: none;
   }
   mpc-queue-media-row {
@@ -61,10 +61,6 @@ export default css`
   }
   #container.expressive {
     border-radius: var(--expressive-border-radius-container);
-    background-color: var(
-      --expressive-color-container,
-      var(--ha-card-background)
-    );
   }
 
   .header {
@@ -89,7 +85,7 @@ export default css`
     border-radius: var(--queue-border-radius-expressive, 28px);
   }
   .list:not(.padded) {
-    --queue-height: calc(100% - 3.5em);
+    --queue-height: calc(100% - 3em);
     height: var(--queue-height);
   }
   .list.padded {

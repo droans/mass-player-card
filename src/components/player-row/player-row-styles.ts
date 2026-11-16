@@ -8,6 +8,8 @@ export default css`
     --me-icon-color: var(--md-sys-color-primary-container);
     --primary-text-color: var(--md-sys-color-on-surface);
     --ha-ripple-hover-color: var(--md-sys-color-on-surface);
+    --action-button-width: 42px;
+    --action-button-height: 42px;
   }
 
   .action-button {
@@ -21,50 +23,15 @@ export default css`
   }
 
   .action-button.expressive {
-    --button-border-radius: var(--button-small-border-radius) !important;
-    --ha-button-start-border-radius: 8px !important;
-    --ha-button-end-border-radius: 8px !important;
-    --button-button-height: 48px;
-    --used-button-height: 48px;
+    --used-button-border-radius: 50% !important;
+    aspect-ratio: 1;
+    height: 100%;
+    --button-button-height: var(--action-button-width);
+    --used-button-height: var(--action-button-width);
   }
-  .action-button.expressive:hover {
-    background-color: var(--expressive-row-button-color-hover);
-    --button-border-radius: 16px !important;
-    --ha-button-start-border-radius: 16px !important;
-    --ha-button-end-border-radius: 16px !important;
-    transition: border-radius background-color var(--animation-duration);
+  .action-button::part(button) {
+    width: 100%;
   }
-  .action-button.expressive:first-of-type {
-    --button-border-radius: 24px 8px 8px 24px !important;
-    --ha-button-start-border-radius: 24px !important;
-    --ha-button-end-border-radius: 8px !important;
-  }
-  .action-button.expressive:first-of-type:hover {
-    --button-border-radius: 24px 16px 16px 24px !important;
-    --ha-button-end-border-radius: 16px !important;
-  }
-  .action-button.expressive:last-of-type {
-    --button-border-radius: 8px 24px 24px 8px !important;
-    --ha-button-start-border-radius: 8px !important;
-    --ha-button-end-border-radius: 24px !important;
-  }
-  .action-button.expressive:last-of-type:hover {
-    --button-border-radius: 16px 24px 24px 16px !important;
-    --ha-button-start-border-radius: 16px !important;
-  }
-  .action-button.expressive:only-of-type {
-    --button-border-radius: 16px !important;
-    --ha-button-start-border-radius: 16px !important;
-    --ha-button-end-border-radius: 16px !important;
-    --button-button-width: 48px;
-    --used-button-width: 48px;
-  }
-  .action-button.expressive:only-of-type:hover {
-    --button-border-radius: 24px !important;
-    --ha-button-start-border-radius: 24px !important;
-    --ha-button-end-border-radius: 24px !important;
-  }
-
   .audio-bars {
     width: 0.55rem;
     position: absolute;
@@ -106,6 +73,25 @@ export default css`
     left: 20px;
     animation-duration: 375ms;
   }
+  .button.expressive,
+  .button.expressive::part(base) {
+    border-top-left-radius: var(
+      --media-row-top-border-radius,
+      var(--default-border-radius)
+    );
+    border-top-right-radius: var(
+      --media-row-top-border-radius,
+      var(--default-border-radius)
+    );
+    border-bottom-left-radius: var(
+      --media-row-bottom-border-radius,
+      var(--default-border-radius)
+    );
+    border-bottom-right-radius: var(
+      --media-row-bottom-border-radius,
+      var(--default-border-radius)
+    );
+  }
 
   .button-group {
     display: flex;
@@ -113,13 +99,9 @@ export default css`
     align-items: center;
     justify-content: flex-end;
     gap: 2px;
-    height: 48px;
-    right: 4px;
+    height: var(--action-button-width);
+    right: 8px;
     position: absolute;
-  }
-
-  .button.expressive::part(base) {
-    border-radius: var(--default-border-radius);
   }
   .button:not(.expressive)::part(base) {
     border-radius: var(--player-row-border-radius);
@@ -148,7 +130,6 @@ export default css`
   .button.expressive {
     background-color: var(--expressive-row-color) !important;
     --md-list-item-hover-state-layer-color: var(--md-sys-color-on-surface);
-    border-radius: var(--default-border-radius);
     --md-ripple-hover-color: var(--md-sys-color-on-surface);
     --md-ripple-pressed-color: var(--md-sys-color-on-surface);
     --md-list-item-leading-space: 0px;
@@ -166,18 +147,6 @@ export default css`
   }
   .button.expressive.active > .title {
     color: var(--expressive-row-active-color-text);
-  }
-
-  .divider {
-    --divider-color: var(--md-sys-color-surface-variant);
-  }
-  .divider::before {
-    content: " ";
-    display: block;
-    height: 1px;
-    background-color: var(--divider-color);
-    margin-left: 64px;
-    margin-right: 24px;
   }
 
   .svg-action-button {

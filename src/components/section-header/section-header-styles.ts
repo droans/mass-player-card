@@ -19,7 +19,7 @@ export default css`
     height: 3.5em;
   }
   .header.expressive {
-    background-color: var(--md-sys-primary-container);
+    background-color: var(--md-sys-color-background);
     border-radius: 20px 20px 0px 0px;
   }
 
@@ -29,15 +29,15 @@ export default css`
     height: 40px;
     width: 100%;
     font-size: 1.5rem;
-    text-align: center;
-    font-weight: 600;
+    padding-left: 1.5rem;
+    font-weight: 700;
     z-index: 0;
-    color: var(--md-sys-color-on-primary-container);
+    color: var(--md-sys-color-on-background);
   }
   .label.expressive {
     font-family: var(--expressive-font-family);
     font-variation-settings: "ROND" 100;
-    font-stretch: 25%;
+    font-stretch: 50%;
     font-size: 2em;
     line-height: 1em;
   }
