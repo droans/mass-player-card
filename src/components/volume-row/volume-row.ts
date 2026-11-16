@@ -48,7 +48,7 @@ export class VolumeRow extends LitElement {
 
   @consume({ context: musicPlayerHiddenElementsConfigContext, subscribe: true })
   private hide!: PlayerHiddenElementsConfig;
-  @state() public _player_data!: PlayerData;
+  @state() public _playerData?: PlayerData;
 
   @consume({ context: actionsControllerContext, subscribe: true })
   private actions!: ActionsController;
@@ -80,15 +80,15 @@ export class VolumeRow extends LitElement {
   }
 
   @consume({ context: activePlayerDataContext, subscribe: true })
-  public set player_data(player_data: PlayerData) {
-    if (jsonMatch(this._player_data, player_data)) {
+  public set playerData(playerData: PlayerData | undefined) {
+    if (!playerData || jsonMatch(this._playerData, playerData)) {
       return;
     }
-    this._player_data = player_data;
-    this.favorite = player_data.favorite;
+    this._playerData = playerData;
+    this.favorite = playerData.favorite;
   }
-  public get player_data() {
-    return this._player_data;
+  public get playerData() {
+    return this._playerData;
   }
 
   private onToggle = async () => {
@@ -99,15 +99,18 @@ export class VolumeRow extends LitElement {
   };
   private onVolume = async (event_: DetailValueEventData) => {
     let volume: number = event_.detail.value;
-    if (Number.isNaN(volume)) return;
-    this.player_data.volume = volume;
+    if (!this.playerData || Number.isNaN(volume)) return;
+    this.playerData.volume = volume;
     volume = volume / 100;
-    this.requestUpdate("volume", this.player_data.volume);
+    this.requestUpdate("volume", this.playerData.volume);
     await this.actions.actionSetVolume(volume);
   };
   private onFavorite = async () => {
+    if (!this.playerData) {
+      return;
+    }
     this.favorite = !this.favorite;
-    await (this.player_data.favorite
+    await (this.playerData.favorite
       ? this.actions.actionRemoveFavorite()
       : this.actions.actionAddFavorite());
   };
@@ -145,7 +148,7 @@ export class VolumeRow extends LitElement {
       >
         <ha-svg-icon
           .path=${
-            this.player_data.muted
+            this.playerData?.muted
               ? this.Icons.VOLUME_MUTE
               : this.Icons.VOLUME_HIGH
           }
@@ -181,7 +184,7 @@ export class VolumeRow extends LitElement {
     }
     const tickCt = 19;
     const rng = [...Array(tickCt).keys()];
-    const vol = this.player_data.volume;
+    const vol = this.playerData?.volume ?? 0;
     const max_vol = this.maxVolume;
     return html`
       <div id="ticks">
@@ -207,7 +210,7 @@ export class VolumeRow extends LitElement {
       <div id="div-slider">
         <ha-control-slider
           .unit="%"
-          .value=${this.player_data.volume}
+          .value=${this.playerData?.volume ?? 0}
           .min="0"
           .max=${this.maxVolume}
           @value-changed=${this.onVolume}
