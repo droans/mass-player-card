@@ -4,6 +4,9 @@ export default css`
   .browser-card-section {
     padding-inline: 8px;
   }
+  #browser-cards {
+    height: 100%;
+  }
   .button-group.chips {
     padding-top: 8px;
     padding-left: 8px;
