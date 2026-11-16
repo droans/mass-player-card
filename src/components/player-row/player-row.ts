@@ -143,14 +143,13 @@ export class PlayerRow extends LitElement {
     const source = loc ?? pic ?? fallback;
 
     return html`
-      <div class="div-thumbnail" slot="start">
-        <img
-          class="thumbnail"
-          src="${source}"
-          loading="lazy"
-          @error=${this._renderThumbnailFallback}
-        />
-      </div>
+      <img
+        class="thumbnail"
+        src="${source}"
+        loading="lazy"
+        @error=${this._renderThumbnailFallback}
+        slot="start"
+      />
     `;
   }
   private _calculateTitleWidth() {
