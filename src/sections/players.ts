@@ -204,6 +204,7 @@ export class PlayersCard extends LitElement {
   protected render(): TemplateResult {
     const expressiveCls = this.config?.expressive ? `expressive` : ``;
     const paddedCls = this.hideSectionHeader() ? `padded` : ``;
+    const label = getTranslation("players.label.move_players_label", this.hass);
     return html`
       <div id="container" class="${expressiveCls}">
         ${this.renderHeader()}
@@ -221,6 +222,10 @@ export class PlayersCard extends LitElement {
               .unjoinService=${this.unjoinPlayers}
             >
             </mpc-active-player-row>
+          </div>
+          <div class="div-players-title">
+            <div class="players-title">${label}</div>
+            <div class="divider"></div>
           </div>
           <div class="list ${expressiveCls} ${paddedCls}">
             ${this.renderPlayerRows()}

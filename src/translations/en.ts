@@ -48,6 +48,7 @@ export default {
   "players.header": "Players",
   "players.label.controlling": "CONTROLLING",
   "players.label.group": "Group",
+  "players.label.move_players_label": "Move playback to:",
 
   "queue.header": "Now Playing",
   "queue.up_next": "Up Next",

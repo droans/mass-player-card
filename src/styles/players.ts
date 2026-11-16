@@ -34,6 +34,21 @@ export default css`
   #container.expressive {
     border-radius: var(--expressive-border-radius-container);
   }
+  .div-players-title {
+    display: flex;
+    padding-inline: 8px;
+  }
+  .players-title {
+    font-size: 1.2rem;
+    text-wrap: nowrap;
+  }
+  .div-players-title .divider {
+    width: 100%;
+    background-color: var(--divider-color);
+    height: 1px;
+    align-self: center;
+    margin-left: 8px;
+  }
 
   .header {
     display: flex;
