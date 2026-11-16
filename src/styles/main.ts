@@ -1,7 +1,7 @@
 import { css } from "lit";
 export default css`
   :host {
-    --mass-player-card-height: var(--mass-player-card-section-height, 40em);
+    --mass-player-card-height: var(--mass-player-card-section-height, 40rem);
 
     --artwork-large-height: var(
       --mass-player-card-artwork-large-height,
@@ -163,7 +163,7 @@ export default css`
       --mass-player-card-row-icon-button-height,
       1.5rem
     );
-    --navbar-height: calc(4em + 2%);
+    --navbar-height: calc(4rem + 8px);
     --search-text-color: var(
       --mass-player-card-search-text-color,
       var(--ha-color-text-primary)

@@ -13,7 +13,7 @@ export default css`
     padding: 0.5em 0.5em 0em 0.5em;
     box-sizing: border-box;
     width: 100%;
-    display: block;
+    display: flex;
     position: relative;
     z-index: 2;
     height: 3.5em;
@@ -47,7 +47,7 @@ export default css`
 
   .start {
     display: block;
-    position: absolute;
+    /* position: absolute; */
     left: 1em;
     top: 0.5em;
     z-index: 1;
