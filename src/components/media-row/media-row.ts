@@ -46,7 +46,7 @@ import { HTMLImageElementEvent } from "../../const/events";
 
 @customElement("mpc-queue-media-row")
 export class MediaRow extends LitElement {
-  @consume({ context: IconsContext }) public Icons!: Icons;
+  @property({ attribute: "active-item", type: Boolean }) activeItem = false;
 
   @state() public defaultImageURL?: string;
   @state() public fallbackImageURL?: string;
@@ -509,5 +509,19 @@ export class MediaRow extends LitElement {
   }
   static get styles(): CSSResultGroup {
     return styles;
+  }
+
+  protected updated(): void {
+    if (this.reconnected && this.activeItem) {
+      setTimeout(() => {
+        this.scrollIntoView({ block: "start", behavior: "auto" });
+      }, 25);
+      this.reconnected = false;
+    }
+  }
+
+  connectedCallback(): void {
+    this.reconnected = true;
+    super.connectedCallback();
   }
 }
