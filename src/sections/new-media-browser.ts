@@ -657,14 +657,13 @@ export class MediaBrowser extends LitElement {
       return html``;
     }
     const chips = this.chips;
+    const chipsHtml = this.config.chip_order.map((chipName) => {
+      const chip = chips[chipName];
+      return this.renderChip(chip);
+    });
     return html`
       <div id="subsection-buttons">
-        <div class="button-group chips">
-          ${this.renderChip(chips.playlist)} ${this.renderChip(chips.artist)}
-          ${this.renderChip(chips.album)} ${this.renderChip(chips.track)}
-          ${this.renderChip(chips.podcast)} ${this.renderChip(chips.radio)}
-          ${this.renderChip(chips.audiobook)}
-        </div>
+        <div class="button-group chips">${chipsHtml}</div>
       </div>
     `;
   }
