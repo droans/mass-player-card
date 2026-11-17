@@ -14,6 +14,7 @@ export interface MediaBrowserConfig {
   default_enqueue_option: EnqueueConfigOptions;
   initial_media_selection: ConfigMediaTypes;
   show_artist_subtitles: boolean;
+  chip_order: ConfigMediaTypes[];
 }
 
 export interface FavoritesConfig {
@@ -69,10 +70,20 @@ export interface MediaBrowserHiddenElementsConfig extends BaseHiddenElementsConf
   play_next_clear_queue_button: boolean;
 }
 
-type ConfigMediaTypes =
+export type ConfigMediaTypes =
   "album" | "artist" | "audiobook" | "playlist" | "podcast" | "radio" | "track";
 
 const DEFAULT_INITIAL_MEDIA_SELECTION: ConfigMediaTypes = "album";
+
+export const DEFAULT_CHIP_ORDER: ConfigMediaTypes[] = [
+  "album",
+  "artist",
+  "audiobook",
+  "playlist",
+  "podcast",
+  "radio",
+  "track",
+];
 
 export type GetLibrarySortOrders =
   | "artist_name"
@@ -165,6 +176,7 @@ export const DEFAULT_MEDIA_BROWSER_CONFIG: MediaBrowserConfig = {
   default_enqueue_option: "play_now",
   show_artist_subtitles: true,
   initial_media_selection: DEFAULT_INITIAL_MEDIA_SELECTION,
+  chip_order: DEFAULT_CHIP_ORDER,
 };
 
 const MEDIA_BROWSER_HIDDEN_ITEMS = [

@@ -7,13 +7,7 @@ import {
   PropertyValues,
   TemplateResult,
 } from "lit";
-import {
-  customElement,
-  property,
-  query,
-  queryAll,
-  state,
-} from "lit/decorators.js";
+import { customElement, property, query, state } from "lit/decorators.js";
 import "../components/media-row/media-row";
 import "../components/section-header/section-header";
 import "../components/lit-virtualizer/lit-virtualizer";
@@ -44,30 +38,27 @@ import { QueueController } from "../controller/queue";
 import { jsonMatch } from "../utils/utility";
 import { getTranslation } from "../utils/translations";
 import { Icons } from "../const/icons";
-import { LitVirtualizer, WaAnimation } from "../const/elements";
+import { PlayerRow } from "../components/player-row/player-row";
 
 @customElement("mpc-queue-card")
 export class QueueCard extends LitElement {
+  @state() private _queue: QueueItems = [];
+  @state() public _tabSwitchFirstUpdate = false;
+
+  @query(".queue.current") private currentItemElement?: PlayerRow;
+
   @consume({ context: activePlayerControllerContext })
   private activePlayerController!: ActivePlayerController;
-
   @consume({ context: IconsContext, subscribe: true })
   private Icons!: Icons;
-
   @consume({ context: playerQueueHiddenElementsConfigContext, subscribe: true })
   private hiddenElements!: PlayerQueueHiddenElementsConfig;
 
   @provide({ context: playerQueueConfigContext })
   public _config!: QueueConfig;
-  @state() private _queue: QueueItems = [];
+
   private _queueController?: QueueController;
-
-  @queryAll("#animation") _animations?: WaAnimation[];
-  @query("lit-virtualizer") virtualizerElement!: LitVirtualizer;
-
-  private _firstLoaded = false;
-
-  @state() public _tabSwitchFirstUpdate = false;
+  // private reconnected = false;
 
   @consume({ context: queueControllerContext, subscribe: true })
   public set queueController(controller: QueueController | undefined) {
@@ -174,10 +165,10 @@ export class QueueCard extends LitElement {
     return activeIdx == -1 ? 0 : activeIdx;
   }
   public scrollToActive() {
-    const activeIdx = this.getActiveIndex();
-    this.virtualizerElement
-      .element(activeIdx)
-      .scrollIntoView({ block: "start", behavior: "auto" });
+    this.currentItemElement?.scrollIntoView({
+      block: "start",
+      behavior: "auto",
+    });
   }
   private onQueueItemSelected = async (queue_item_id: string) => {
     if (!this.queueController) {
@@ -228,44 +219,27 @@ export class QueueCard extends LitElement {
   }
   private renderQueueItem(
     queueItem: QueueItem,
-    activeIndex: number,
-    index: number,
+    itemStatusClass: "upcoming" | "played" | "active",
+    itemIndex: number,
+    itemCount: number,
   ): TemplateResult {
     const show_album_covers = this.config.show_album_covers;
-    const queueLength = this.activePlayerController.queueLength;
-    const queueIndex = this.activePlayerController.currentIndex;
-    const remainingItems = queueLength - queueIndex;
-    const translatedUpNext = getTranslation(
-      "queue.up_next",
-      this.hass,
-    ) as string;
-    /* eslint-disable unicorn/template-indent */
-    const upNextHtml = queueItem.playing
-      ? html`
-          <div class="media-row up-next">
-            <div class="up-next-title">
-              ${translatedUpNext} • ${remainingItems}
-            </div>
-            <div class="divider"></div>
-          </div>
-        `
-      : html``;
-    /* eslint-enable unicorn/template-indent */
-    const indexClass =
-      activeIndex < index
-        ? `upcoming`
-        : activeIndex > index
-          ? `played`
-          : `active`;
-    const indexPlacementClass =
-      activeIndex - 1 == index
-        ? `last`
-        : activeIndex + 1 == index || index == 0
+    /*
+      If itemIndex == 0 and itemCount == 1, there is only one item so it is marked as `only`.
+      Otherwise, if itemIndex == 0, it is the first item and is marked as `first`.
+      And if itemIndex == itemCount - 1, it is the last item and is marked as `last`.
+    */
+    const itemLocationClass =
+      itemIndex == 0 && itemCount == 1
+        ? `only`
+        : itemIndex == 0
           ? `first`
-          : ``;
+          : itemIndex == itemCount - 1
+            ? `last`
+            : ``;
     return html`
       <mpc-queue-media-row
-        class="${indexClass} ${indexPlacementClass}"
+        class="${itemStatusClass} ${itemLocationClass}"
         .media_item=${queueItem}
         .showAlbumCovers=${show_album_covers}
         .selectedService=${this.onQueueItemSelected}
@@ -273,32 +247,47 @@ export class QueueCard extends LitElement {
         .moveQueueItemNextService=${this.onQueueItemMoveNext}
         .moveQueueItemUpService=${this.onQueueItemMoveUp}
         .moveQueueItemDownService=${this.onQueueItemMoveDown}
+        ?active-item=${itemStatusClass == "active"}
       ></mpc-queue-media-row>
-      ${upNextHtml}
     `;
   }
-  private renderQueueItems(): TemplateResult {
-    const activeIndex = this.getActiveIndex();
-    if (!this.queue?.length) {
-      return html``;
-    }
+  private renderQueueItems(queueItems: QueueItems): TemplateResult {
+    const queueItemCount = queueItems.length;
     return html`
       <lit-virtualizer
-        scroller
-        .items=${this.queue}
+        .items=${queueItems}
         .renderItem=${(item: QueueItem, index: number) => {
-          return this.renderQueueItem(item, activeIndex, index);
+          return this.renderQueueItem(item, "played", index, queueItemCount);
         }}
         .keyFunction=${(item: QueueItem) => {
           return item.queue_item_id;
         }}
-        .layout=${{
-          pin: {
-            index: activeIndex,
-            block: "start",
-          },
-        }}
       ></lit-virtualizer>
+    `;
+  }
+  protected renderQueue(): TemplateResult {
+    if (!this.queue || this.queue.length === 0) {
+      return html``;
+    }
+    const currentIndex = this.getActiveIndex();
+    const currentItem = this.queue[currentIndex];
+    const priorQueue = this.queue.slice(0, currentIndex);
+    const upcomingQueue = this.queue.slice(currentIndex + 1);
+    const translatedUpNext = getTranslation(
+      "queue.up_next",
+      this.hass,
+    ) as string;
+    const remainingItems = this.queue.length - (currentIndex + 1);
+    return html`
+      <div class="queue prior">${this.renderQueueItems(priorQueue)}</div>
+      <div class="queue current">
+        ${this.renderQueueItem(currentItem, "active", 0, 1)}
+      </div>
+      <div class="media-row up-next">
+        <div class="up-next-title">${translatedUpNext} • ${remainingItems}</div>
+        <div class="divider"></div>
+      </div>
+      <div class="queue upcoming">${this.renderQueueItems(upcomingQueue)}</div>
     `;
   }
   protected renderClearQueueButton(): TemplateResult {
@@ -349,7 +338,7 @@ export class QueueCard extends LitElement {
         <div id="container" class="${expressiveCls}">
           ${this.renderHeader()}
           <div class="list ${expressiveCls} ${paddedCls}">
-            ${this.renderQueueItems()}
+            ${this.renderQueue()}
           </div>
         </div>
       `
@@ -382,17 +371,14 @@ export class QueueCard extends LitElement {
       void this.queueController.getQueue();
       void this.queueController.subscribeUpdates();
     }
-    if (this._animations && this._firstLoaded) {
-      this._animations.forEach((animation) => (animation.play = true));
-    }
     this.queueController?._host.addEventListener(
       "section-changed",
       this.onTabSwitch,
     );
+    // this.reconnected = true;
     super.connectedCallback();
   }
   protected firstUpdated(): void {
-    this._firstLoaded = true;
     if (!this.queueController) {
       return;
     }

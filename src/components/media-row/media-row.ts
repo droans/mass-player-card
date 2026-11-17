@@ -46,38 +46,39 @@ import { HTMLImageElementEvent } from "../../const/events";
 
 @customElement("mpc-queue-media-row")
 export class MediaRow extends LitElement {
-  @consume({ context: IconsContext }) public Icons!: Icons;
+  @property({ attribute: "active-item", type: Boolean }) activeItem = false;
 
-  @consume({ context: useExpressiveContext, subscribe: true })
-  public useExpressive!: boolean;
   @state() public defaultImageURL?: string;
   @state() public fallbackImageURL?: string;
+  @state() private actionButtonsExpanded = false;
+
   @query(".thumbnail") thumbnailElement!: HTMLImageElement;
-  private imagesExhausted = false;
-  private imgElemErrorCount = 0;
-  private maxImgElemErrorCount = 5;
+  @query("#action-buttons-div") actionsButtonDiv?: HTMLElement;
+  @query("#action-buttons-headline") actionsButtonHeadline?: HTMLElement;
+
+  @consume({ context: IconsContext }) public Icons!: Icons;
+  @consume({ context: useExpressiveContext, subscribe: true })
+  public useExpressive!: boolean;
+  @consume({ context: playerQueueHiddenElementsConfigContext, subscribe: true })
+  private hide!: PlayerQueueHiddenElementsConfig;
+  @consume({ context: configContext, subscribe: true })
+  protected cardConfig!: Config;
 
   public moveQueueItemDownService!: QueueService;
   public moveQueueItemNextService!: QueueService;
   public moveQueueItemUpService!: QueueService;
   public removeService!: QueueService;
   public selectedService!: QueueItemSelectedService;
-
   public showAlbumCovers = true;
-  private _media_item!: QueueItem;
 
+  private _media_item!: QueueItem;
   private _config!: QueueConfig;
   private _entityConfig!: EntityConfig;
   private _hass!: ExtendedHass;
-  @state() private actionButtonsExpanded = false;
-
-  @query("#action-buttons-div") actionsButtonDiv!: HTMLElement;
-  @query("#action-buttons-headline") actionsButtonHeadline!: HTMLElement;
-
-  @consume({ context: playerQueueHiddenElementsConfigContext, subscribe: true })
-  private hide!: PlayerQueueHiddenElementsConfig;
-  @consume({ context: configContext, subscribe: true })
-  protected cardConfig!: Config;
+  private imagesExhausted = false;
+  private imgElemErrorCount = 0;
+  private maxImgElemErrorCount = 5;
+  private reconnected = false;
 
   @consume({ context: playerQueueConfigContext, subscribe: true })
   public set config(config: QueueConfig | undefined) {
@@ -210,10 +211,10 @@ export class MediaRow extends LitElement {
   private changeActionButtonVisibility(visibility: boolean): void {
     const addClass = visibility ? `open` : `closed`;
     const removeClass = visibility ? `closed` : `open`;
-    this.actionsButtonDiv.classList.remove(removeClass);
-    this.actionsButtonHeadline.classList.remove(removeClass);
-    this.actionsButtonDiv.classList.add(addClass);
-    this.actionsButtonHeadline.classList.add(addClass);
+    this.actionsButtonDiv?.classList.remove(removeClass);
+    this.actionsButtonDiv?.classList.add(addClass);
+    this.actionsButtonHeadline?.classList.remove(removeClass);
+    this.actionsButtonHeadline?.classList.add(addClass);
     this.actionButtonsExpanded = visibility;
   }
   private onChevronSelected = () => {
@@ -508,5 +509,19 @@ export class MediaRow extends LitElement {
   }
   static get styles(): CSSResultGroup {
     return styles;
+  }
+
+  protected updated(): void {
+    if (this.reconnected && this.activeItem) {
+      setTimeout(() => {
+        this.scrollIntoView({ block: "start", behavior: "auto" });
+      }, 25);
+      this.reconnected = false;
+    }
+  }
+
+  connectedCallback(): void {
+    this.reconnected = true;
+    super.connectedCallback();
   }
 }

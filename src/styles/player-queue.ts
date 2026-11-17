@@ -85,7 +85,7 @@ export default css`
     border-radius: var(--queue-border-radius-expressive, 28px);
   }
   .list:not(.padded) {
-    --queue-height: calc(100% - 3em);
+    --queue-height: calc(100% - 4em);
     height: var(--queue-height);
   }
   .list.padded {
