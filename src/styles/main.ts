@@ -328,8 +328,4 @@ export default css`
     border-radius: var(--default-border-radius);
     background-color: var(--card-background-color);
   }
-
-  .section.hidden {
-    display: none;
-  }
 `;
