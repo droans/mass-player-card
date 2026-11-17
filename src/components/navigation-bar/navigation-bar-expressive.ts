@@ -200,13 +200,10 @@ export class MassNavBar extends LitElement {
     const label = active
       ? getTranslation(TRANSLATION_KEYS[section], this.hass)
       : ``;
-    const tabCount = this.sections.length + 1;
-    const tabWidth = Math.round(((active ? 2 : 1) / tabCount) * 100);
     return html`
       <a
         id="tab-${section}"
         class="player-tabs ${active ? `active` : ``}"
-        style="width: ${tabWidth.toString()}%;"
         @click=${() => {
           this.handleTabChanged(section);
         }}

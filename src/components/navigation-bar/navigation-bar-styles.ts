@@ -22,23 +22,17 @@ export default css`
   #navigation a {
     z-index: 2;
     height: 80%;
-    transition:
-      width,
-      padding var(--transform-duration);
+    transition-property: flex-basis, padding;
+    transition-duration: var(--transform-duration);
   }
   #navigation a.active {
     --primary-container: var(--md-sys-color-primary-container);
-    /* flex-grow: 1;
-    flex-shrink: 1;
-    flex-basis: 200%; */
     font-size: var(--label-font-size, 1.7rem);
     font-stretch: 50%;
     font-weight: 600;
     font-variation-settings: "ROND" 100;
+    flex-basis: 200%;
     color: var(--tab-active-icon-color);
-  }
-  #navigation a.active .label-div {
-    width: 100%;
   }
   #navigation a:not(.active) .label-div {
     width: 0%;
@@ -50,10 +44,8 @@ export default css`
     border-radius: unset;
   }
   #navigation a:not(.active) {
-    /* flex-grow: 1;
-    flex-shrink: 1;
-    flex-basis: 100%; */
     background-color: var(--md-sys-color-surface);
+    flex-basis: 100%;
   }
   :is(nav.tabbed > a, .tabs > a):is(:hover)::after {
     opacity: 0 !important;
@@ -94,7 +86,6 @@ export default css`
     border-radius: var(--default-border-radius);
     /* width: 40%; */
     top: 0;
-    /* transition: left var(--transform-duration); */
     left: var(--left);
   }
   #tab-indicator.left {
