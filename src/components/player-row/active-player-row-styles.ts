@@ -8,7 +8,7 @@ export default css`
   .audio-bars {
     width: 0.55rem;
     position: relative;
-    right: 1rem;
+    right: -1rem;
     height: 100%;
     margin-left: 1rem;
   }
@@ -75,6 +75,7 @@ export default css`
     align-content: center;
     line-height: 1.8rem;
     width: 100%;
+    overflow: hidden;
   }
   .player-name {
     font-size: 1.8rem;
@@ -82,9 +83,11 @@ export default css`
     font-stretch: 75%;
     font-variation-settings: "ROND" 100;
     text-wrap: nowrap;
+    text-overflow: ellipsis;
+    overflow: hidden;
   }
   .player-name-bars {
-    width: 100%;
+    width: 90%;
   }
   .player-overview {
     display: flex;

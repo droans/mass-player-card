@@ -44,6 +44,10 @@ export default {
     "Let's use our imagination instead.",
   ],
   "player.title.inactive": "Nothing is currently active!",
+  "player.label.crossfade.enabled": "Crossfade Enabled",
+  "player.label.crossfade.disabled": "Crossfade Disabled",
+  "player.label.autoplay.enabled": "Autoplay Enabled",
+  "player.label.autoplay.disabled": "Autoplay Disabled",
 
   "players.header": "Players",
   "players.label.controlling": "CONTROLLING",

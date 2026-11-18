@@ -84,8 +84,6 @@ export default css`
     border-radius: 10px;
     --disabled-color: var(--control-slider-color);
     height: var(--player-volume-slider-height);
-  }
-  .volume-slider.expressive {
     --control-slider-color: var(--md-sys-color-primary);
     --disabled-color: var(--md-sys-color-secondary-container);
     box-shadow: var(--md-sys-elevation-level1);

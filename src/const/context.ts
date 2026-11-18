@@ -37,6 +37,7 @@ import { QueueController } from "../controller/queue";
 import { MediaBrowserController } from "../controller/browser";
 import { uuid4 } from "../utils/utility";
 import { MediaBrowserSection } from "./media-browser";
+import { getQueueInfoWSServiceResponseSchema } from "./actions";
 export type { EntityConfig } from "../config/config";
 
 export const hassContext = createContext<ExtendedHass>(uuid4());
@@ -111,3 +112,6 @@ export const activeArtistCollectionContext = createContext<
 >(uuid4());
 
 export const canGroupWithContext = createContext<string[]>(uuid4());
+
+export const activeQueueInfoContext =
+  createContext<getQueueInfoWSServiceResponseSchema>(uuid4());

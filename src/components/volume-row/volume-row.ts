@@ -18,7 +18,6 @@ import {
   IconsContext,
   musicPlayerConfigContext,
   musicPlayerHiddenElementsConfigContext,
-  useExpressiveContext,
 } from "../../const/context";
 import { PlayerData } from "../../const/types";
 
@@ -52,9 +51,6 @@ export class VolumeRow extends LitElement {
 
   @consume({ context: actionsControllerContext, subscribe: true })
   private actions!: ActionsController;
-
-  @consume({ context: useExpressiveContext, subscribe: true })
-  private useExpressive?: boolean;
 
   @consume({ context: musicPlayerConfigContext, subscribe: true })
   public set config(config: PlayerConfig | undefined) {
@@ -114,24 +110,6 @@ export class VolumeRow extends LitElement {
       ? this.actions.actionRemoveFavorite()
       : this.actions.actionAddFavorite());
   };
-  protected renderPower(): TemplateResult {
-    if (this.hide.power_button || this.useExpressive) {
-      return html``;
-    }
-    return html`
-      <ha-button
-        appearance="plain"
-        variant="brand"
-        size="m"
-        id="button-power"
-        class="button min"
-        part="button-power"
-        @click=${this.onToggle}
-      >
-        <ha-svg-icon .path=${this.Icons.POWER} class="svg plain"></ha-svg-icon>
-      </ha-button>
-    `;
-  }
   protected renderMute(): TemplateResult {
     if (this.hide.mute_button || !this.canMute) {
       return html``;
@@ -157,31 +135,7 @@ export class VolumeRow extends LitElement {
       </ha-button>
     `;
   }
-  protected renderFavorite(): TemplateResult {
-    if (this.hide.favorite_button || this.useExpressive) {
-      return html``;
-    }
-    return html`
-      <ha-button
-        appearance="plain"
-        variant="brand"
-        size="m"
-        id="button-favorite"
-        class="button min"
-        part="button-favorite"
-        @click=${this.onFavorite}
-      >
-        <ha-svg-icon
-          .path=${this.favorite ? this.Icons.HEART : this.Icons.HEART_PLUS}
-          class="svg plain"
-        ></ha-svg-icon>
-      </ha-button>
-    `;
-  }
   protected renderTicks() {
-    if (!this.useExpressive) {
-      return html``;
-    }
     const tickCt = 19;
     const rng = [...Array(tickCt).keys()];
     const vol = this.playerData?.volume ?? 0;
@@ -215,9 +169,7 @@ export class VolumeRow extends LitElement {
           .max=${this.maxVolume}
           @value-changed=${this.onVolume}
           id="volume-slider"
-          class="volume-slider ${
-            this.controller.ActivePlayer?.useExpressive ? `expressive` : ``
-          }"
+          class="volume-slider"
           part="volume-slider"
         ></ha-control-slider>
         ${this.renderTicks()}
@@ -227,8 +179,7 @@ export class VolumeRow extends LitElement {
   protected render(): TemplateResult {
     return html`
       <div id="volume" part="volume-div">
-        ${this.renderPower()} ${this.renderVolumeBar()} ${this.renderMute()}
-        ${this.renderFavorite()}
+        ${this.renderVolumeBar()} ${this.renderMute()}
       </div>
     `;
   }
