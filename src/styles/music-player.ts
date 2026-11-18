@@ -42,9 +42,13 @@ export default css`
     display: flex;
     width: 100%;
   }
-  .menu-player {
+  .menu-grouped {
     position: absolute;
     right: 1rem;
+  }
+  .menu-player {
+    position: absolute;
+    left: 1rem;
   }
   .menu-player-selector {
     justify-content: center;

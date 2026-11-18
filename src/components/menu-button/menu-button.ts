@@ -17,11 +17,26 @@ import styles from "./menu-button-styles";
 import "./menu-item";
 
 export type MenuButtonScheme = "filled" | "tonal" | "standard" | "plain";
+export type MenuPlacement =
+  | "bottom-start"
+  | "bottom"
+  | "bottom-end"
+  | "top-start"
+  | "top"
+  | "top-end"
+  | "left-start"
+  | "left"
+  | "left-end"
+  | "right-start"
+  | "right"
+  | "right-end";
 const DEFAULT_SCHEME: MenuButtonScheme = "filled";
 
 @customElement("mpc-menu-button")
 export class MassMenuButton extends LitElement {
   @property({ attribute: false }) public iconPath!: string;
+  @property({ attribute: "placement", type: String }) placement: MenuPlacement =
+    "bottom-start";
 
   @property({ attribute: false }) private _items?: ListItems;
 
@@ -149,6 +164,7 @@ export class MassMenuButton extends LitElement {
           class="${vibrant_class}"
           part="menu-select-menu"
           naturalMenuWidth
+          placement="${this.placement}"
           @menu-item-selected=${this.onSelect}
           ?fixedMenuPosition=${this.fixedMenuPosition}
           @click=${(event_: Event) => {
@@ -161,6 +177,7 @@ export class MassMenuButton extends LitElement {
             role="variant"
             elevation="${this.elevation}"
             ?outlined=${this.outlined}
+            style="display: block; height: 100%;"
           >
             <ha-svg-icon
               class="svg-menu"

@@ -199,6 +199,7 @@ export class MassCardPlayerSelector extends LitElement {
         naturalMenuWidth
         fixedMenuPosition
         elevation="1"
+        placement="bottom-end"
       >
         ${this.renderGroupedVolume()} ${this.renderGroupedPlayers()}
       </mpc-menu-button>

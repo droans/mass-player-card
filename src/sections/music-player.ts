@@ -419,7 +419,7 @@ export class MusicPlayerCard extends LitElement {
       return html``;
     }
     return html`
-      <div class="menu-player" slot="end">
+      <div class="menu-player">
         <ha-dropdown
           class="player-menu-dropdown"
           @wa-select=${this.onPlayerMenuItemSelected}
@@ -493,7 +493,9 @@ export class MusicPlayerCard extends LitElement {
     const hide = this.hiddenElements.group_selector;
     if (this.groupedPlayers && this.groupedPlayers.length > 1 && !hide) {
       return html`
-        <mpc-grouped-player-menu slot="start"></mpc-grouped-player-menu>
+        <div class="menu-grouped">
+          <mpc-grouped-player-menu></mpc-grouped-player-menu>
+        </div>
       `;
     }
     return html``;
