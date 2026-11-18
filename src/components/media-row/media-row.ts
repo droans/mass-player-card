@@ -51,6 +51,7 @@ export class MediaRow extends LitElement {
   @state() public defaultImageURL?: string;
   @state() public fallbackImageURL?: string;
   @state() private actionButtonsExpanded = false;
+  @state() private reconnected = false;
 
   @query(".thumbnail") thumbnailElement!: HTMLImageElement;
   @query("#action-buttons-div") actionsButtonDiv?: HTMLElement;
@@ -78,7 +79,7 @@ export class MediaRow extends LitElement {
   private imagesExhausted = false;
   private imgElemErrorCount = 0;
   private maxImgElemErrorCount = 5;
-  private reconnected = false;
+  private actionButtonsDisplayed = false;
 
   @consume({ context: playerQueueConfigContext, subscribe: true })
   public set config(config: QueueConfig | undefined) {
@@ -147,6 +148,7 @@ export class MediaRow extends LitElement {
 
   private actionButtonsHidden() {
     return (
+      !this.media_item?.show_action_buttons ||
       this.hide.action_buttons ||
       (this.hide.move_down_button &&
         this.hide.move_next_button &&
@@ -216,9 +218,11 @@ export class MediaRow extends LitElement {
     this.actionsButtonHeadline?.classList.remove(removeClass);
     this.actionsButtonHeadline?.classList.add(addClass);
     this.actionButtonsExpanded = visibility;
+    this.actionButtonsDisplayed = true;
   }
   private onChevronSelected = () => {
     this.changeActionButtonVisibility(!this.actionButtonsExpanded);
+    this.actionButtonsDisplayed = true;
   };
 
   protected shouldUpdate(_changedProperties: PropertyValues<this>): boolean {
@@ -385,17 +389,16 @@ export class MediaRow extends LitElement {
     `;
   }
   private renderActionButtons(): TemplateResult {
-    if (this.actionButtonsHidden() || !this.media_item?.show_action_buttons) {
+    if (
+      this.actionButtonsHidden() ||
+      (!this.actionButtonsDisplayed && !this.actionButtonsExpanded)
+    ) {
       return html``;
     }
     return html`
-      <div
-        id="action-buttons-div"
-        class="closed"
-        @click=${stopEventPropagation}
-      >
+      <div id="action-buttons-div" class="open" @click=${stopEventPropagation}>
         <ha-list-item-base class="action-buttons-row" id="action-buttons-row">
-          <div slot="headline" id="action-buttons-headline" class="closed">
+          <div slot="headline" id="action-buttons-headline" class="open">
             ${this.renderMoveNextButton()} ${this.renderMoveUpButton()}
             ${this.renderMoveDownButton()} ${this.renderRemoveButton()}
           </div>
@@ -519,9 +522,16 @@ export class MediaRow extends LitElement {
       this.reconnected = false;
     }
   }
+  disconnectedCallback(): void {
+    if (this.activeItem) {
+      this.reconnected = false;
+    }
+  }
 
   connectedCallback(): void {
-    this.reconnected = true;
+    if (this.activeItem) {
+      this.reconnected = true;
+    }
     super.connectedCallback();
   }
 }

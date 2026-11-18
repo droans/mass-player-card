@@ -135,7 +135,9 @@ export class MediaBrowser extends LitElement {
 
   @consume({ context: mediaBrowserCardsContext, subscribe: true })
   public set cards(cards: newMediaBrowserItemsConfig | undefined) {
-    if (jsonMatch(JSON.parse(this._cardsJSON), cards)) {
+    const newCardsJson = JSON.stringify(cards);
+    const oldCardsJson = this._cardsJSON;
+    if (newCardsJson == oldCardsJson) {
       return;
     }
     this._cards = cards;

@@ -211,7 +211,7 @@ export class QueueCard extends LitElement {
   private onTabSwitch = (event_: Event) => {
     if ((event_ as CustomEvent).detail == Sections.QUEUE) {
       this._tabSwitchFirstUpdate = true;
-      this.scrollToActive();
+      // this.scrollToActive();
     }
   };
   private hideSectionHeader(): boolean {
@@ -280,7 +280,7 @@ export class QueueCard extends LitElement {
     const remainingItems = this.queue.length - (currentIndex + 1);
     return html`
       <div class="queue prior">${this.renderQueueItems(priorQueue)}</div>
-      <div class="queue current">
+      <div id="current-queue-item" class="queue current">
         ${this.renderQueueItem(currentItem, "active", 0, 1)}
       </div>
       <div class="media-row up-next">
@@ -362,27 +362,6 @@ export class QueueCard extends LitElement {
     if (this.queueController.isSubscribed)
       this.queueController.unsubscribeUpdates();
     this.queueController._host.removeEventListener(
-      "section-changed",
-      this.onTabSwitch,
-    );
-  }
-  public connectedCallback(): void {
-    if (this.queueController) {
-      void this.queueController.getQueue();
-      void this.queueController.subscribeUpdates();
-    }
-    this.queueController?._host.addEventListener(
-      "section-changed",
-      this.onTabSwitch,
-    );
-    // this.reconnected = true;
-    super.connectedCallback();
-  }
-  protected firstUpdated(): void {
-    if (!this.queueController) {
-      return;
-    }
-    this.queueController._host.addEventListener(
       "section-changed",
       this.onTabSwitch,
     );
