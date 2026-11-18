@@ -149,47 +149,6 @@ export default css`
     width: var(--play-pause-icon-height);
   }
 
-  #button-next .icons {
-    fill: var(--player-button-next-icon-color);
-  }
-  #button-previous .icons {
-    fill: var(--player-button-previous-icon-color);
-  }
-  #button-pause .icons {
-    fill: var(--player-button-pause-icon-color);
-  }
-  #button-play .icons {
-    fill: var(--player-button-play-icon-color);
-  }
-
-  #button-shuffle .icons {
-    fill: var(--player-button-shuffle-icon-color);
-  }
-  #button-shuffle .button-label {
-    color: var(--player-button-shuffle-text-color);
-  }
-
-  #button-repeat .icons {
-    fill: var(--player-button-repeat-icon-color);
-  }
-  #button-repeat .button-label {
-    color: var(--player-button-repeat-text-color);
-  }
-
-  #button-favorite .icons {
-    fill: var(--player-button-favorite-icon-color);
-  }
-  #button-favorite .button-label {
-    color: var(--player-button-favorite-text-color);
-  }
-
-  #button-power .icons {
-    fill: var(--player-button-power-icon-color);
-  }
-  #button-power .button-label {
-    color: var(--player-button-power-text-color);
-  }
-
   .no-label::part(button) {
     --button-padding-left: 12px;
     --button-padding-right: 12px;

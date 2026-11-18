@@ -93,7 +93,7 @@ export class MassPlayerControlsExpressive extends MassPlayerControlsBase {
     return html`
       <mpc-button
         .onPressService=${this.onPower}
-        role="variant"
+        role="filled-variant"
         size="medium"
         id="button-power"
         class="mpc-button lower ${no_label_class}"
@@ -124,7 +124,7 @@ export class MassPlayerControlsExpressive extends MassPlayerControlsBase {
     return html`
       <mpc-button
         .onPressService=${this.onShuffle}
-        role="variant"
+        role="filled-variant"
         size="medium"
         selectable
         ?selected=${shuffle}
@@ -159,7 +159,7 @@ export class MassPlayerControlsExpressive extends MassPlayerControlsBase {
     return html`
       <mpc-button
         .onPressService=${this.onRepeat}
-        role="variant"
+        role="filled-variant"
         size="medium"
         selectable
         ?selected=${repeat_on}
@@ -193,7 +193,7 @@ export class MassPlayerControlsExpressive extends MassPlayerControlsBase {
       <mpc-button
         .onPressService=${this.onFavorite}
         .onHoldService=${this.onFavoriteHold}
-        role="variant"
+        role="filled-variant"
         size="medium"
         selectable
         ?selected=${favorite}
