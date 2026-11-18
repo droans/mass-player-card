@@ -1,3 +1,4 @@
+import { consume } from "@lit/context";
 import {
   CSSResultGroup,
   html,
@@ -5,10 +6,7 @@ import {
   PropertyValues,
   TemplateResult,
 } from "lit";
-import styles from "./media-progress-styles";
 import { customElement, query, state } from "lit/decorators.js";
-import { consume } from "@lit/context";
-import { ActivePlayerController } from "../../controller/active-player";
 import {
   actionsControllerContext,
   activeMediaPlayerContext,
@@ -17,32 +15,34 @@ import {
   controllerContext,
   hassContext,
 } from "../../const/context";
-import { ActionsController } from "../../controller/actions";
-import {
-  playerHasUpdated,
-  playerIsAvailable,
-  secondsToTime,
-} from "../../utils/utility";
 import {
   ExtendedHass,
   ExtendedHassEntity,
   PlayerData,
 } from "../../const/types";
+import { ActionsController } from "../../controller/actions";
+import { ActivePlayerController } from "../../controller/active-player";
 import { MassCardController } from "../../controller/controller";
+import {
+  playerHasUpdated,
+  playerIsAvailable,
+  secondsToTime,
+} from "../../utils/utility";
+import styles from "./media-progress-styles";
 
 @customElement("mpc-progress-bar")
 export class MassPlayerProgressBar extends LitElement {
-  @state() private _media_duration!: number;
-  @state() private _media_position!: number;
+  @state() private _mediaDuration!: number;
+  @state() private _mediaPosition!: number;
   @query("#progress-bar") private progressBar?: HTMLElement;
-  private entity_duration = 1;
-  private entity_position = 0;
-  private _prog_pct = 0;
+  private entityDuration = 1;
+  private entityPosition = 0;
+  private _progPct = 0;
   private _lastUpdate = 0;
   private _tickListener: number | undefined;
   private _handleBarWidth = 8;
   private _refreshMilliseconds = 5000;
-  private _tick_duration_ms = 250;
+  private _tickDurationMs = 250;
   private _dragging = false;
   private _requestProgress = true;
   private _updateTimeout!: number | undefined;
@@ -55,30 +55,30 @@ export class MassPlayerProgressBar extends LitElement {
   private actions?: ActionsController;
   @consume({ context: controllerContext, subscribe: true })
   private controller?: MassCardController;
-  @state() public _player_data?: PlayerData;
+  @state() public _playerData?: PlayerData;
 
   private _activePlayer?: ExtendedHassEntity;
   @consume({ context: hassContext, subscribe: true })
   private hass!: ExtendedHass;
 
-  private set media_position(pos: number | undefined) {
+  private set mediaPosition(pos: number | undefined) {
     pos ??= 0;
-    this._media_position = pos;
-    const prog = Math.min(1, pos / this._media_duration);
-    this._prog_pct = prog;
+    this._mediaPosition = pos;
+    const prog = Math.min(1, pos / this._mediaDuration);
+    this._progPct = prog;
   }
-  private get media_position() {
-    return this._media_position;
+  private get mediaPosition() {
+    return this._mediaPosition;
   }
 
-  private set media_duration(dur: number | undefined) {
+  private set mediaDuration(dur: number | undefined) {
     dur ??= 1;
-    this._media_duration = dur;
-    const prog = Math.min(1, this._media_position / dur);
-    this._prog_pct = prog;
+    this._mediaDuration = dur;
+    const prog = Math.min(1, this._mediaPosition / dur);
+    this._progPct = prog;
   }
-  private get media_duration() {
-    return this._media_duration;
+  private get mediaDuration() {
+    return this._mediaDuration;
   }
 
   @consume({ context: activeMediaPlayerContext, subscribe: true })
@@ -96,8 +96,8 @@ export class MassPlayerProgressBar extends LitElement {
         ? player.attributes.media_position
         : 1;
     this._activePlayer = player;
-    this.media_duration ??= current_dur;
-    this.media_position ??= current_pos;
+    this.mediaDuration ??= current_dur;
+    this.mediaPosition ??= current_pos;
     this.requestProgress();
   }
   public get activePlayer() {
@@ -105,15 +105,15 @@ export class MassPlayerProgressBar extends LitElement {
   }
 
   @consume({ context: activePlayerDataContext, subscribe: true })
-  public set player_data(player_data: PlayerData | undefined) {
-    if (!player_data) {
+  public set playerData(playerData: PlayerData | undefined) {
+    if (!playerData) {
       return;
     }
-    this._player_data = player_data;
+    this._playerData = playerData;
     this.requestProgress();
   }
-  public get player_data() {
-    return this._player_data;
+  public get playerData() {
+    return this._playerData;
   }
 
   private requestProgress() {
@@ -125,14 +125,14 @@ export class MassPlayerProgressBar extends LitElement {
     }
     void this.activePlayerController.getPlayerProgress().then((progress) => {
       const prog = progress as number | undefined;
-      this.entity_position = prog ?? this.entity_position;
-      this._newSetPosition = prog ?? this.entity_position;
+      this.entityPosition = prog ?? this.entityPosition;
+      this._newSetPosition = prog ?? this.entityPosition;
     });
     void this.activePlayerController
       .getPlayerActiveItemDuration()
       .then((duration) => {
-        this.media_duration = duration;
-        this.entity_duration = duration;
+        this.mediaDuration = duration;
+        this.entityDuration = duration;
       });
     if (this.activePlayer?.state == "playing") {
       this.startProgressTick();
@@ -141,33 +141,32 @@ export class MassPlayerProgressBar extends LitElement {
     }
   }
   private tickProgress = () => {
-    const playing = this.player_data?.playing;
+    const playing = this.playerData?.playing;
     if (!playing || this._dragging) {
       return;
     }
     const t = Date.now();
     if (
       this._requestProgress &&
-      (!this.media_duration ||
-        t - this._lastUpdate >= this._refreshMilliseconds)
+      (!this.mediaDuration || t - this._lastUpdate >= this._refreshMilliseconds)
     ) {
       this._lastUpdate = t;
       this.requestProgress();
       return;
     }
-    let pos = (this.media_position ?? 0) + this._tick_duration_ms / 1000;
+    let pos = (this.mediaPosition ?? 0) + this._tickDurationMs / 1000;
     if (this._currentSetPosition != this._newSetPosition) {
       this._currentSetPosition = this._newSetPosition;
       pos = this._currentSetPosition;
     }
-    this.media_position = Math.min(pos, this.media_duration ?? 1);
+    this.mediaPosition = Math.min(pos, this.mediaDuration ?? 1);
   };
 
   private startProgressTick() {
     this.stopProgressTick();
     this._tickListener = window.setInterval(
       this.tickProgress,
-      this._tick_duration_ms,
+      this._tickDurationMs,
     );
   }
   private stopProgressTick() {
@@ -186,7 +185,7 @@ export class MassPlayerProgressBar extends LitElement {
     }
     const prog_width = this.progressBar?.offsetWidth ?? 1;
     const seek = event_.offsetX / prog_width;
-    const pos = Math.floor(seek * (this.media_duration ?? 1));
+    const pos = Math.floor(seek * (this.mediaDuration ?? 1));
     await this.actions.actionSeek(pos);
     this._dragging = false;
     this._requestProgress = true;
@@ -198,12 +197,12 @@ export class MassPlayerProgressBar extends LitElement {
     const offset = bar?.offsetLeft ?? 36;
     const prog_width = bar?.offsetWidth ?? 1;
     const seek = (event_.offsetX - offset) / prog_width;
-    let pos = Math.floor(seek * (this.media_duration ?? 1));
-    pos = Math.min(this.media_duration ?? 1, pos);
+    let pos = Math.floor(seek * (this.mediaDuration ?? 1));
+    pos = Math.min(this.mediaDuration ?? 1, pos);
     pos = Math.max(0, pos);
-    this.media_position = pos;
+    this.mediaPosition = pos;
     this._newSetPosition = pos;
-    this.entity_position = pos;
+    this.entityPosition = pos;
   };
   protected onPointerDown = () => {
     this._dragging = true;
@@ -222,7 +221,7 @@ export class MassPlayerProgressBar extends LitElement {
       window.removeEventListener("pointerup", this.onPointerUp);
       this.removeEventListener("pointermove", this.pointerMoveListener);
     }
-    this._newSetPosition = this.media_position ?? 0;
+    this._newSetPosition = this.mediaPosition ?? 0;
     if (this._updateTimeout) {
       clearTimeout(this._updateTimeout);
     }
@@ -236,10 +235,9 @@ export class MassPlayerProgressBar extends LitElement {
     if (this.controller?.Config.MusicPlayer.hide.track_progress_bar) {
       return html``;
     }
-    const cls =
-      this.player_data?.playing && this.controller?.config?.expressive
-        ? `wavy medium`
-        : `medium progress-plain`;
+    const cls = this.playerData?.playing
+      ? `wavy medium`
+      : `medium progress-plain`;
     return html`
       <div
         id="progress-div"
@@ -253,13 +251,13 @@ export class MassPlayerProgressBar extends LitElement {
         <div
           class="prog-incomplete"
           style="--incomplete-progress-start-pct: ${Math.round(
-            this._prog_pct * 100,
+            this._progPct * 100,
           )}%;"
         ></div>
         <progress
           class="${cls}"
           id="progress-bar"
-          value="${this._prog_pct}"
+          value="${this._progPct}"
           max="1"
         ></progress>
         ${this.renderVolumeBarHandle()}
@@ -270,41 +268,34 @@ export class MassPlayerProgressBar extends LitElement {
     if (this.controller?.Config.MusicPlayer.hide.track_progress_time) {
       return html``;
     }
-    const pos = secondsToTime(this.media_position ?? 0);
-    const dur = secondsToTime(this.media_duration ?? 1);
-    return html`
-      <div
-        id="time"
-        class="${this.controller?.config?.expressive ? `time-expressive` : ``}"
-      >
-        ${pos} - ${dur}
-      </div>
-    `;
+    const pos = secondsToTime(this.mediaPosition ?? 0);
+    const dur = secondsToTime(this.mediaDuration ?? 1);
+    return html` <div id="time">${pos} - ${dur}</div> `;
   }
   protected renderVolumeBarHandle(): TemplateResult {
+    const prog = `${(this._progPct * 100).toString()}%`;
+    const barWidth = `${this._handleBarWidth.toString()}px`;
     return html`
       <div
         id="progress-handle"
         style="
           width: ${this._handleBarWidth.toString()}px;
           position: absolute;
-          left: calc(${(
-            this._prog_pct * 100
-          ).toString()}% - (${this._handleBarWidth.toString()}px / 2));
+          left: calc(${prog} - ${barWidth} / 2)
         "
       ></div>
     `;
   }
   protected render(): TemplateResult {
     return html`
-      <div class="progress">${this.renderTime()} ${this.renderVolumeBar()}</div>
+      <div class="progress">${this.renderVolumeBar()}${this.renderTime()}</div>
     `;
   }
 
   connectedCallback(): void {
     this._tickListener ??= window.setInterval(
       this.tickProgress,
-      this._tick_duration_ms,
+      this._tickDurationMs,
     );
     if (this.activePlayerController && this.hasUpdated) {
       this.requestProgress();
@@ -325,7 +316,7 @@ export class MassPlayerProgressBar extends LitElement {
   }
   protected shouldUpdate(_changedProperties: PropertyValues): boolean {
     const bar_playing = this.progressBar?.classList.contains("wavy");
-    const playing_changed = bar_playing != this.player_data?.playing;
+    const playing_changed = bar_playing != this.playerData?.playing;
     return _changedProperties.size > 0 || playing_changed;
   }
 

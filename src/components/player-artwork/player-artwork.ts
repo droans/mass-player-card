@@ -182,13 +182,11 @@ export class MassPlayerArtwork extends LitElement {
   };
 
   protected renderEmptyQueue(): TemplateResult {
-    const expressive = this.controller.config?.expressive ? "expressive" : ``;
     return html`
       <wa-carousel-item>
         <ha-svg-icon
-          .path=${this.Icons.ASLEEP}  
+          .path=${this.Icons.ASLEEP}
           id="asleep"
-          class="${expressive}"
         >
       </wa-carousel-item>
     `;
@@ -400,6 +398,7 @@ export class MassPlayerArtwork extends LitElement {
       const element = document.createElement("wa-carousel-item");
       const div = document.createElement("div");
       div.className = "slot";
+      div.style = "overflow: hidden;";
       const img = document.createElement("img");
       img.loading = "lazy";
       div.append(img);

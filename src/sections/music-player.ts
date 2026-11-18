@@ -11,23 +11,16 @@ import { customElement, query, state } from "lit/decorators.js";
 import { html } from "lit/static-html.js";
 
 import "../components/grouped-player-menu/grouped-player-menu";
+import "../components/marquee-text/marquee-text";
 import "../components/media-progress/media-progress";
 import "../components/player-artwork/player-artwork";
-import "../components/player-controls/player-controls";
 import "../components/player-controls/player-controls-expressive";
 import "../components/player-selector-menu/player-selector-menu";
 import "../components/section-header/section-header";
 import "../components/volume-row/volume-row";
-import "../components/marquee-text/marquee-text";
 
 import PlayerActions from "../actions/player-actions";
 
-import {
-  MediaTypes,
-  PlayerSupportedFeatures,
-  Sections,
-  Thumbnail,
-} from "../const/enums";
 import {
   activeEntityConfigContext,
   activeMediaPlayerContext,
@@ -45,42 +38,44 @@ import {
   musicPlayerHiddenElementsConfigContext,
 } from "../const/context";
 import {
+  MediaTypes,
+  PlayerSupportedFeatures,
+  Sections,
+  Thumbnail,
+} from "../const/enums";
+import { PLAYLIST_DIALOG_MAX_ITEMS } from "../const/music-player";
+import {
   ExtendedHass,
   ExtendedHassEntity,
   MediaLibraryItem,
   PlayerData,
   PlaylistDialogItem,
 } from "../const/types";
-import { PLAYLIST_DIALOG_MAX_ITEMS } from "../const/music-player";
 
 import styles from "../styles/music-player";
 
+import { Config } from "../config/config";
+import { PlayerConfig, PlayerHiddenElementsConfig } from "../config/player";
 import {
   getQueueInfoWSServiceResponseSchema,
   PlayerSelectedService,
 } from "../const/actions";
+import { DialogElement } from "../const/elements";
 import {
-  ArtworkSize,
-  PlayerConfig,
-  PlayerHiddenElementsConfig,
-} from "../config/player";
+  ForceUpdatePlayerDataEvent,
+  HaDropdownEventData,
+} from "../const/events";
+import { Icons } from "../const/icons";
 import { ActivePlayerController } from "../controller/active-player";
-import { Config } from "../config/config";
+import { MassCardController } from "../controller/controller";
+import { asyncImageURLWithFallback } from "../utils/thumbnails";
+import { getTranslation } from "../utils/translations";
 import {
   isActive,
   jsonMatch,
   playerHasUpdated,
   playerSupportsFeature,
 } from "../utils/utility";
-import { MassCardController } from "../controller/controller";
-import {
-  ForceUpdatePlayerDataEvent,
-  HaDropdownEventData,
-} from "../const/events";
-import { asyncImageURLWithFallback } from "../utils/thumbnails";
-import { DialogElement } from "../const/elements";
-import { Icons } from "../const/icons";
-import { getTranslation } from "../utils/translations";
 
 @customElement("mpc-music-player-card")
 export class MusicPlayerCard extends LitElement {
@@ -90,7 +85,7 @@ export class MusicPlayerCard extends LitElement {
 
   @consume({ context: activePlayerDataContext, subscribe: true })
   @state()
-  public player_data?: PlayerData;
+  public playerData?: PlayerData;
   @consume({ context: activeQueueInfoContext, subscribe: true })
   @state()
   private queueInfo!: getQueueInfoWSServiceResponseSchema;
@@ -171,7 +166,7 @@ export class MusicPlayerCard extends LitElement {
       return;
     }
     this._activePlayerController = controller;
-    if (!this.player_data) {
+    if (!this.playerData) {
       // eslint-disable-next-line @typescript-eslint/no-non-null-assertion
       void this.activePlayerController!.updateActivePlayerData();
     }
@@ -196,15 +191,15 @@ export class MusicPlayerCard extends LitElement {
   }
 
   public forceUpdatePlayerDataValue(key: string, value: string) {
-    if (!this.player_data) {
+    if (!this.playerData) {
       return;
     }
-    const data = this.player_data;
+    const data = this.playerData;
     if (!Object.keys(data).includes(key)) {
       return;
     }
     data[key] = value;
-    this.player_data = { ...data };
+    this.playerData = { ...data };
   }
   private async generatePlaylistData(
     playlist: MediaLibraryItem,
@@ -346,6 +341,107 @@ export class MusicPlayerCard extends LitElement {
     return this.hiddenElements.header;
   }
 
+  /*
+    Render Playlist Dialog
+  */
+  protected renderPlaylistDialogList(): TemplateResult | TemplateResult[] {
+    if (!this._playlists) {
+      return html`
+        <div class="dialog-playlists-none-loading">Loading Playlists...</div>
+      `;
+    }
+    if (this._playlists.length === 0) {
+      return html`
+        <div class="dialog-playlists-none-loading">No playlists found!</div>
+      `;
+    }
+    return this._playlists.map((playlist) => {
+      return html`
+        <ha-list-item-button
+          class="dialog-playlist-item"
+          @click=${this.onAddToPlaylist}
+          data-uri="${playlist.uri}"
+          type="button"
+        >
+          <img
+            class="dialog-playlist-thumbnail"
+            slot="start"
+            src="${playlist.image.image_url}"
+            loading="lazy"
+            onerror="this.src = '${playlist.image.fallback_url}'"
+          />
+          <span slot="headline" class="dialog-playlist-title" inert>
+            ${playlist.name}
+          </span>
+        </ha-list-item-button>
+      `;
+    });
+  }
+  protected renderAddToPlaylistDialog(): TemplateResult {
+    if (!this.cardConfig) {
+      return html``;
+    }
+    return html`
+      <ha-dialog
+        id="dialog-favorites"
+        class="dialog-favorites"
+        header-title="${this.controller.translate("player.playlist_dialog.header")}"
+      >
+        <div class="dialog-items">${this.renderPlaylistDialogList()}</div>
+      </ha-dialog>
+    `;
+  }
+
+  /*
+    Render Header
+  */
+  protected renderHeader(): TemplateResult {
+    if (!this.cardConfig) {
+      return html``;
+    }
+    return html`
+      <div id="player-card-header">${this.renderSectionHeader()}</div>
+    `;
+  }
+  protected renderSectionHeader(): TemplateResult {
+    if (!this.cardConfig) {
+      return html``;
+    }
+    return html`
+      <div id="header">
+        ${this.renderPlayerMenu()} ${this.renderPlayerSelector()}
+        ${this.renderGrouped()}
+      </div>
+    `;
+  }
+  protected renderPlayerMenu(): TemplateResult {
+    if (this.hiddenElements.menu) {
+      return html``;
+    }
+    return html`
+      <div class="menu-player" slot="end">
+        <ha-dropdown
+          class="player-menu-dropdown"
+          @wa-select=${this.onPlayerMenuItemSelected}
+        >
+          <mpc-button
+            slot="trigger"
+            class="player-menu-trigger"
+            .onPressService=${() => {
+              return;
+            }}
+            role="tonal"
+          >
+            <ha-svg-icon
+              class="player-menu-trigger-icon"
+              .path=${this.Icons.MENU}
+            ></ha-svg-icon>
+          </mpc-button>
+          ${this.renderAutoplayMenuItem()} ${this.renderCrossfadeMenuItem()}
+        </ha-dropdown>
+      </div>
+    `;
+  }
   protected renderAutoplayMenuItem(): TemplateResult {
     if (this.hiddenElements.autoplay_button) {
       return html``;
@@ -382,101 +478,60 @@ export class MusicPlayerCard extends LitElement {
       </ha-dropdown-item>
     `;
   }
-  protected renderPlayerMenu(): TemplateResult {
-    if (this.hiddenElements.menu) {
+  protected renderPlayerSelector(): TemplateResult {
+    if (this.hiddenElements.player_selector) {
       return html``;
     }
     return html`
-      <div class="menu-player" slot="end">
-        <ha-dropdown
-          class="player-menu-dropdown"
-          @wa-select=${this.onPlayerMenuItemSelected}
-        >
-          <mpc-button
-            slot="trigger"
-            class="player-menu-trigger"
-            .onPressService=${() => {
-              return;
-            }}
-            role="tonal"
-          >
-            <ha-svg-icon
-              class="player-menu-trigger-icon"
-              .path=${this.Icons.MENU}
-            ></ha-svg-icon>
-          </mpc-button>
-          ${this.renderAutoplayMenuItem()} ${this.renderCrossfadeMenuItem()}
-        </ha-dropdown>
-      </div>
+      <div class="menu-player-selector">
+        <mpc-player-selector @menu-item-selected=${this.onPlayerSelect}>
+        </mpc-player-selector>
+      </span>
     `;
   }
-  protected renderPlaylistDialogList(): TemplateResult | TemplateResult[] {
-    if (!this._playlists) {
+  protected renderGrouped(): TemplateResult {
+    const hide = this.hiddenElements.group_selector;
+    if (this.groupedPlayers && this.groupedPlayers.length > 1 && !hide) {
       return html`
-        <div class="dialog-playlists-none-loading">Loading Playlists...</div>
+        <mpc-grouped-player-menu slot="start"></mpc-grouped-player-menu>
       `;
     }
-    if (this._playlists.length === 0) {
-      return html`
-        <div class="dialog-playlists-none-loading">No playlists found!</div>
-      `;
-    }
-    return this._playlists.map((playlist) => {
-      return html`
-        <ha-list-item-button
-          class="dialog-playlist-item"
-          @click=${this.onAddToPlaylist}
-          data-uri="${playlist.uri}"
-          type="button"
-        >
-          <img
-            class="dialog-playlist-thumbnail"
-            slot="start"
-            src="${playlist.image.image_url}"
-            loading="lazy"
-            onerror="this.src = '${playlist.image.fallback_url}'"
-          />
-          <span
-            slot="headline"
-            class="dialog-playlist-title
-              ${this.cardConfig?.expressive ? `expressive` : ``}"
-            inert
-          >
-            ${playlist.name}
-          </span>
-        </ha-list-item-button>
-      `;
-    });
+    return html``;
   }
-  protected renderAddToPlaylistDialog(): TemplateResult {
-    if (!this.cardConfig) {
-      return html``;
-    }
-    const cls = `dialog-favorites ${this.cardConfig.expressive ? `expressive` : ``}`;
-    return html`
-      <ha-dialog
-        id="dialog-favorites"
-        class="${cls}"
-        header-title="${this.controller.translate("player.playlist_dialog.header")}"
-      >
-        <div class="dialog-items">${this.renderPlaylistDialogList()}</div>
-      </ha-dialog>
-    `;
+
+  /*
+    Render Artwork
+  */
+  protected renderArtwork(): TemplateResult {
+    return html` <mpc-player-artwork></mpc-player-artwork>`;
   }
+
+  /*
+    Render Active Track section
+  */
   protected wrapTitleMarquee(): TemplateResult {
-    if (!this.player_data) {
+    if (!this.playerData) {
       return html``;
     }
     return html`
-      <mpc-marquee-text
-        class="player-track-title marquee
-        ${this.cardConfig?.expressive ? `expressive` : ``}"
-      >
-        ${this.player_data.track_title}${this.hiddenElements.track_album ? `` : ` - ${this.player_data.track_album}`}
+      <mpc-marquee-text class="player-track-title marquee">
+        <button
+          class="hidden player-track-title"
+          @click=${this.onAlbumNameSelect}
+        >
+          ${this.playerData.track_title}${this.hiddenElements.track_album ? `` : ` - ${this.playerData.track_album}`}
+        </button>
       </mpc-marquee-text>
     `;
   }
 
+  protected renderActiveTrack(): TemplateResult {
+    return html`
+      <div class="title">${this.renderTitle()}</div>
+      <div class="artist">${this.renderArtist()}</div>
+      <div class="progress">${this.renderProgress()}</div>
+    `;
+  }
   protected renderTitle(): TemplateResult {
     if (this.hiddenElements.track_title) {
       return html``;
@@ -490,18 +545,9 @@ export class MusicPlayerCard extends LitElement {
     }
     return this.wrapTitleMarquee();
   }
-  protected renderGrouped(): TemplateResult {
-    const hide = this.hiddenElements.group_selector;
-    if (this.groupedPlayers && this.groupedPlayers.length > 1 && !hide) {
-      return html`
-        <mpc-grouped-player-menu slot="start"></mpc-grouped-player-menu>
-      `;
-    }
-    return html``;
-  }
   protected renderArtist(): TemplateResult {
     if (
-      !this.player_data ||
+      !this.playerData ||
       !this.cardConfig ||
       this.hiddenElements.track_artist
     ) {
@@ -512,101 +558,14 @@ export class MusicPlayerCard extends LitElement {
         "player.messages.inactive",
       ) as string[];
       const i = Math.floor(Math.random() * msgs.length);
-      return html`
-        <div
-          class="player-track-artist
-          ${this.cardConfig.expressive ? `expressive` : ``}"
-        >
-          ${msgs[i]}
-        </div>
-      `;
+      return html` <div class="player-track-artist">${msgs[i]}</div> `;
     }
     return html`
       <button
         @click=${this.onArtistNameSelect}
-        class="hidden player-track-artist
-        ${this.cardConfig.expressive ? `expressive` : ``}"
+        class="hidden player-track-artist"
       >
-        ${this.player_data.track_artist}
-      </div>
-    `;
-  }
-  protected renderSectionTitle(): TemplateResult {
-    if (this.hiddenElements.header_title) {
-      return html``;
-    }
-    const label = this.controller.translate("player.header") as string;
-    return html` <span slot="label">${label}</span> `;
-  }
-  protected renderSectionHeader(): TemplateResult {
-    if (this.hiddenElements.player_selector) {
-      return html``;
-    }
-    if (!this.cardConfig) {
-      return html``;
-    }
-    return html`
-      <div
-        id="header"
-        class="header header-art ${this._config.layout.artwork_size}
-        ${this.cardConfig.expressive ? `expressive` : ``}"
-      >
-        ${this.renderPlayerMenu()} ${this.renderPlayerSelector()}
-        ${this.renderGrouped()}
-      </div>
-    `;
-  }
-  protected renderHeader(): TemplateResult {
-    if (!this.cardConfig) {
-      return html``;
-    }
-    const expressive = this.cardConfig.expressive;
-    return html`
-      <div
-        id="player-card-header"
-        class="player-card-header ${expressive ? `expressive` : ``}"
-      >
-        ${this.renderSectionHeader()} ${this.renderActiveItemSection()}
-      </div>
-    `;
-  }
-  protected renderPlayerSelector(): TemplateResult {
-    if (this.hiddenElements.player_selector) {
-      return html``;
-    }
-    return html`
-      <div class="menu-player-selector">
-        <mpc-player-selector @menu-item-selected=${this.onPlayerSelect}>
-        </mpc-player-selector>
-      </span>
-    `;
-  }
-  protected renderActiveItemSection(): TemplateResult {
-    if (!this.cardConfig) {
-      return html``;
-    }
-    return html`
-      <div id="active-track" class="${this._config.layout.artwork_size}">
-        <div
-          id="active-track-text"
-          class="active-track-text
-          ${this.cardConfig.expressive ? `expressive` : ``}
-          ${
-            this.config.layout.artwork_size == ArtworkSize.LARGE
-              ? ``
-              : `rounded`
-          }"
-        >
-          ${this.renderPlayerHeader()} ${this.renderProgress()}
-        </div>
-      </div>
-    `;
-  }
-  protected renderPlayerHeader(): TemplateResult {
-    const padCls = this.hideSectionHeader() ? `padded` : ``;
-    return html`
-      <div class="player-header ${padCls}">
-        ${this.renderArtist()} ${this.renderTitle()}
+        ${this.playerData.track_artist}
       </div>
     `;
   }
@@ -631,8 +590,20 @@ export class MusicPlayerCard extends LitElement {
       ></mpc-progress-bar>
     `;
   }
-  protected renderArtwork(): TemplateResult {
-    return html` <mpc-player-artwork></mpc-player-artwork>`;
+
+  /*
+    Render Controls
+  */
+  protected renderControls(): TemplateResult {
+    if (!this.cardConfig) {
+      return html``;
+    }
+    return html`
+      <div class="player-controls">
+        <mpc-player-controls-expressive></mpc-player-controls-expressive>
+      </div>
+      ${this.renderVolumeRow()}
+    `;
   }
   protected renderVolumeRow(): TemplateResult {
     const feats = this.activeEntity.attributes.supported_features;
@@ -650,28 +621,9 @@ export class MusicPlayerCard extends LitElement {
     return html`
       <div id="volume">
         <mpc-volume-row
-          class="volume vol-art ${this._config.layout.artwork_size}
-          ${this.cardConfig.expressive ? `expressive` : ``}"
+          class="volume vol-art"
           ?can-mute=${canMute}
         ></mpc-volume-row>
-      </div>
-    `;
-  }
-  protected renderControls(): TemplateResult {
-    if (!this.cardConfig) {
-      return html``;
-    }
-    return html`
-      <div
-        class="media-controls controls-art ${this._config.layout.artwork_size}
-        ${this.cardConfig.expressive ? `expressive` : ``}"
-      >
-        ${
-          this.cardConfig.expressive
-            ? html`<mpc-player-controls-expressive></mpc-player-controls-expressive>`
-            : html`<mpc-player-controls></mpc-player-controls>`
-        }
-        ${this.renderVolumeRow()}
       </div>
     `;
   }
@@ -679,17 +631,12 @@ export class MusicPlayerCard extends LitElement {
     if (!this.cardConfig) {
       return html``;
     }
-    const expressive = this.cardConfig.expressive;
     return html`
-      <div id="container" class="${expressive ? `expressive` : ``}">
+      <div id="container">
         ${this.renderHeader()}
-        <div
-          id="player-card"
-          class="player-card ${expressive ? `expressive` : ``}"
-        >
-          ${this.renderArtwork()} ${this.renderControls()}
-        </div>
-        ${this.renderAddToPlaylistDialog()}
+        <div class="artwork">${this.renderArtwork()}</div>
+        <div class="active-track">${this.renderActiveTrack()}</div>
+        <div class="controls">${this.renderControls()}</div>
       </div>
     `;
   }
@@ -747,7 +694,7 @@ export class MusicPlayerCard extends LitElement {
     }
   }
   protected shouldUpdate(_changedProperties: PropertyValues): boolean {
-    if (!this.player_data || _changedProperties.size === 0) {
+    if (!this.playerData || _changedProperties.size === 0) {
       return false;
     }
     return super.shouldUpdate(_changedProperties);

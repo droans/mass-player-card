@@ -28,7 +28,7 @@ export default css`
     --prev-end-border-radius: 18px;
     --prev-border-radius: 18px 36px 36px 18px !important;
 
-    --play-pause-icon-height: 64px;
+    --play-pause-icon-height: 80px;
     --pause-button-width: 96px;
     --play-button-width: 110px;
     --play-pause-border-radius: 18px !important;
@@ -126,7 +126,6 @@ export default css`
     container-type: inline-size;
     row-gap: 6px;
     display: grid;
-    margin-top: 12px;
     margin-bottom: 6px;
   }
 
@@ -208,7 +207,8 @@ export default css`
   }
   #player-controls-upper {
     place-self: center;
-    column-gap: 4px;
+    column-gap: 8px;
+    display: flex;
     margin-top: unset;
     row-gap: unset;
   }

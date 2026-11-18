@@ -1,21 +1,9 @@
 import { css } from "lit";
 export default css`
   :host {
-    --mass-player-card-height: var(--mass-player-card-section-height, 40rem);
+    --mass-player-card-height: var(--mass-player-card-section-height, 50rem);
 
-    --artwork-large-height: var(
-      --mass-player-card-artwork-large-height,
-      var(--mass-player-card-height)
-    ) !important;
-    --artwork-medium-height: var(
-      --mass-player-card-artwork-medium-height,
-      22em
-    ) !important;
-    --artwork-small-height: var(
-      --mass-player-card-artwork-small-height,
-      14em
-    ) !important;
-
+    --artwork-height: 20rem !important;
     --audio-bars-color: var(
       --mass-player-card-audio-bars-color,
       var(--secondary-text-color)
