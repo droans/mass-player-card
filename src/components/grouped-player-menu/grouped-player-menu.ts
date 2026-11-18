@@ -16,7 +16,6 @@ import {
   groupVolumeContext,
   hassContext,
   IconsContext,
-  useExpressiveContext,
   useVibrantContext,
 } from "../../const/context";
 import { Icons } from "../../const/icons";
@@ -39,10 +38,6 @@ import "../volume-slider/volume-slider";
 export class MassCardPlayerSelector extends LitElement {
   @state()
   private _groupedPlayers: EntityConfig[] = [];
-
-  @state()
-  @consume({ context: useExpressiveContext, subscribe: true })
-  private useExpressive!: boolean;
 
   @state()
   @consume({ context: useVibrantContext, subscribe: true })
@@ -101,9 +96,7 @@ export class MassCardPlayerSelector extends LitElement {
             hide-label
           >
             <ha-svg-icon
-              class="grouped-players-select-item-icon ${
-                this.useExpressive ? `expressive` : ``
-              }"
+              class="grouped-players-select-item-icon"
               slot="start"
               .path=${this.Icons.SPEAKER_MULTIPLE}
             ></ha-svg-icon>
@@ -140,7 +133,6 @@ export class MassCardPlayerSelector extends LitElement {
   protected renderGroupedPlayers(): TemplateResult[] {
     const players = this.groupedPlayers;
     const ct = players.length;
-    const expressive = this.useExpressive;
     const role = this.useVibrant ? `tonal` : `filled-variant`;
     return this.groupedPlayers.map((item, idx) => {
       const ent = this.hass.states[item.entity_id];
@@ -157,9 +149,7 @@ export class MassCardPlayerSelector extends LitElement {
               hide-label
             >
               <img
-                class="grouped-players-select-item-image ${
-                  expressive ? `expressive` : ``
-                }"
+                class="grouped-players-select-item-image"
                 slot="start"
                 src="${img}"
                 loading="lazy"
@@ -174,13 +164,11 @@ export class MassCardPlayerSelector extends LitElement {
                   role="${role}"
                   size="small"
                   elevation="1"
-                  class="grouped-button-unjoin ${
-                    expressive ? `grouped-button-unjoin-expressive` : ``
-                  }"
+                  class="grouped-button-unjoin"
                 >
                   <ha-svg-icon
                     .path=${this.Icons.LINK_OFF}
-                    class="grouped-svg-unjoin ${expressive ? `expressive` : ``}"
+                    class="grouped-svg-unjoin"
                     .entity="${item.entity_id}"
                   ></ha-svg-icon>
                 </mpc-button>
@@ -206,11 +194,12 @@ export class MassCardPlayerSelector extends LitElement {
       <mpc-menu-button
         slot="end"
         id="grouped-players-menu"
-        class="menu-header ${this.useExpressive ? `expressive` : ``}"
+        class="menu-header"
         .iconPath=${this.Icons.SPEAKER_MULTIPLE}
         naturalMenuWidth
         fixedMenuPosition
-        elevation="1"
+        elevation="-1"
+        placement="bottom-end"
       >
         ${this.renderGroupedVolume()} ${this.renderGroupedPlayers()}
       </mpc-menu-button>

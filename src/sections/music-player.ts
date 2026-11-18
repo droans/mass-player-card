@@ -82,6 +82,7 @@ export class MusicPlayerCard extends LitElement {
   @state() protected _playlists?: PlaylistDialogItem[];
   @state()
   private _activePlayerController?: ActivePlayerController;
+  @state() private _groupedPlayers?: EntityConfig[];
 
   @consume({ context: activePlayerDataContext, subscribe: true })
   @state()
@@ -109,7 +110,6 @@ export class MusicPlayerCard extends LitElement {
 
   public selectedPlayerService!: PlayerSelectedService;
   private _hass!: ExtendedHass;
-  private _groupedPlayers?: EntityConfig[];
   private actions!: PlayerActions;
 
   @consume({ context: activeEntityConfigContext, subscribe: true })
@@ -419,7 +419,7 @@ export class MusicPlayerCard extends LitElement {
       return html``;
     }
     return html`
-      <div class="menu-player" slot="end">
+      <div class="menu-player">
         <ha-dropdown
           class="player-menu-dropdown"
           @wa-select=${this.onPlayerMenuItemSelected}
@@ -431,6 +431,7 @@ export class MusicPlayerCard extends LitElement {
               return;
             }}
             role="tonal"
+            elevation="-1"
           >
             <ha-svg-icon
               class="player-menu-trigger-icon"
@@ -493,7 +494,9 @@ export class MusicPlayerCard extends LitElement {
     const hide = this.hiddenElements.group_selector;
     if (this.groupedPlayers && this.groupedPlayers.length > 1 && !hide) {
       return html`
-        <mpc-grouped-player-menu slot="start"></mpc-grouped-player-menu>
+        <div class="menu-grouped">
+          <mpc-grouped-player-menu></mpc-grouped-player-menu>
+        </div>
       `;
     }
     return html``;

@@ -1,16 +1,16 @@
 import { consume, provide } from "@lit/context";
 import { LovelaceCard } from "custom-card-helpers";
 import {
-  LitElement,
   html,
-  type CSSResultGroup,
+  LitElement,
   PropertyValues,
   TemplateResult,
+  type CSSResultGroup,
 } from "lit";
 import { customElement, property, query, state } from "lit/decorators.js";
+import "../components/lit-virtualizer/lit-virtualizer";
 import "../components/media-row/media-row";
 import "../components/section-header/section-header";
-import "../components/lit-virtualizer/lit-virtualizer";
 
 import {
   DEFAULT_QUEUE_CONFIG,
@@ -19,7 +19,6 @@ import {
   QueueConfigErrors,
 } from "../config/player-queue";
 
-import { ExtendedHass, QueueItem, QueueItems } from "../const/types";
 import {
   activeEntityIDContext,
   activePlayerControllerContext,
@@ -30,15 +29,16 @@ import {
   queueContext,
   queueControllerContext,
 } from "../const/context";
+import { ExtendedHass, QueueItem, QueueItems } from "../const/types";
 
-import styles from "../styles/player-queue";
+import { PlayerRow } from "../components/player-row/player-row";
 import { Sections } from "../const/enums";
+import { Icons } from "../const/icons";
 import { ActivePlayerController } from "../controller/active-player";
 import { QueueController } from "../controller/queue";
-import { jsonMatch } from "../utils/utility";
+import styles from "../styles/player-queue";
 import { getTranslation } from "../utils/translations";
-import { Icons } from "../const/icons";
-import { PlayerRow } from "../components/player-row/player-row";
+import { jsonMatch } from "../utils/utility";
 
 @customElement("mpc-queue-card")
 export class QueueCard extends LitElement {
@@ -291,7 +291,6 @@ export class QueueCard extends LitElement {
     `;
   }
   protected renderClearQueueButton(): TemplateResult {
-    const expressive = this.activePlayerController.useExpressive;
     const hide = this.hiddenElements.clear_queue_button;
     if (hide) {
       return html``;
@@ -303,7 +302,7 @@ export class QueueCard extends LitElement {
         size="small"
         elevation="1"
         id="button-back"
-        class="button min ${expressive ? `expressive` : ``}"
+        class="button min"
       >
         <ha-svg-icon
           .path=${this.Icons.CLEAR}
@@ -328,18 +327,13 @@ export class QueueCard extends LitElement {
     `;
   }
   protected render() {
-    const expressiveCls = this.activePlayerController.useExpressive
-      ? `expressive`
-      : ``;
     const paddedCls = this.hideSectionHeader() ? `padded` : ``;
     return (
       this.error ??
       html`
-        <div id="container" class="${expressiveCls}">
+        <div id="container">
           ${this.renderHeader()}
-          <div class="list ${expressiveCls} ${paddedCls}">
-            ${this.renderQueue()}
-          </div>
+          <div class="list ${paddedCls}">${this.renderQueue()}</div>
         </div>
       `
     );

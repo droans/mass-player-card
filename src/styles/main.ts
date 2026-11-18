@@ -160,94 +160,6 @@ export default css`
       --mass-player-card-search-placeholder-text-color,
       var(--ha-color-neutral-50)
     );
-    --player-control-icon-color: var(
-      --mass-player-card-player-control-icon-color,
-      var(--icon-primary-color, currentcolor)
-    );
-    --player-control-text-color: var(
-      --mass-player-card-player-control-text-color,
-      var(--primary-text-color)
-    );
-
-    --player-button-play-pause-icon-color: var(
-      --mass-player-card-player-button-play-pause-icon-color,
-      var(--player-control-icon-color)
-    );
-    --player-button-play-pause-text-color: var(
-      --mass-player-card-player-button-play-pause-text-color,
-      var(--player-control-text-color)
-    );
-
-    --player-button-play-icon-color: var(
-      --mass-player-card-player-button-play-icon-color,
-      var(--player-button-play-pause-icon-color)
-    );
-    --player-button-play-text-color: var(
-      --mass-player-card-player-button-play-text-color,
-      var(--player-button-play-pause-text-color)
-    );
-    --player-button-pause-icon-color: var(
-      --mass-player-card-player-button-pause-icon-color,
-      var(--player-button-play-pause-icon-color)
-    );
-    --player-button-pause-text-color: var(
-      --mass-player-card-player-button-pause-text-color,
-      var(--player-button-play-pause-text-color)
-    );
-
-    --player-button-previous-icon-color: var(
-      --mass-player-card-player-button-previous-icon-color,
-      var(--player-control-icon-color)
-    );
-    --player-button-previous-text-color: var(
-      --mass-player-card-player-button-previous-text-color,
-      var(--player-control-text-color)
-    );
-
-    --player-button-next-icon-color: var(
-      --mass-player-card-player-button-next-icon-color,
-      var(--player-control-icon-color)
-    );
-    --player-button-next-text-color: var(
-      --mass-player-card-player-button-next-text-color,
-      var(--player-control-text-color)
-    );
-
-    --player-button-shuffle-icon-color: var(
-      --mass-player-card-player-button-shuffle-icon-color,
-      var(--player-control-icon-color)
-    );
-    --player-button-shuffle-text-color: var(
-      --mass-player-card-player-button-shuffle-text-color,
-      var(--player-control-text-color)
-    );
-
-    --player-button-repeat-icon-color: var(
-      --mass-player-card-player-button-repeat-icon-color,
-      var(--player-control-icon-color)
-    );
-    --player-button-repeat-text-color: var(
-      --mass-player-card-player-button-repeat-text-color,
-      var(--player-control-text-color)
-    );
-
-    --player-button-power-icon-color: var(
-      --mass-player-card-player-button-power-icon-color,
-      var(--player-control-icon-color)
-    );
-    --player-button-power-text-color: var(
-      --mass-player-card-player-button-power-text-color,
-      var(--player-control-text-color)
-    );
-
-    --player-button-favorite-icon-color: var(
-      --mass-player-card-player-button-favorite-icon-color,
-      var(--player-control-icon-color)
-    );
-    --player-button-favorite-text-color: var(
-      --mass-player-card-player-button-favorite-text-color,
-      var(--player-control-text-color)
-    );
 
     --player-button-mute-icon-color: var(
       --mass-player-card-player-button-mute-icon-color,
@@ -294,26 +206,16 @@ export default css`
     border-radius: var(--default-border-radius);
     font-family: "Roboto" sans-serif !important;
     height: calc(var(--mass-player-card-height) + var(--navbar-height));
-  }
-  ha-card#expressive {
     background-color: var(--md-sys-color-background, var(--ha-card-background));
     font-family: var(--expressive-font-family);
   }
 
-  #navbar.expressive {
+  #navbar {
     border-radius: 0px 0px var(--default-border-radius)
       var(--default-border-radius);
     width: 98%;
     bottom: 1%;
     left: 1%;
-  }
-  #navbar {
     position: absolute;
-    bottom: 0;
-    width: 100%;
-  }
-  #navbar:not(.expressive) {
-    border-radius: var(--default-border-radius);
-    background-color: var(--card-background-color);
   }
 `;

@@ -85,7 +85,7 @@ export default css`
     --disabled-color: var(--control-slider-color);
     height: var(--player-volume-slider-height);
     --control-slider-color: var(--md-sys-color-primary);
-    --disabled-color: var(--md-sys-color-secondary-container);
+    --disabled-color: var(--md-sys-color-primary-container);
     box-shadow: var(--md-sys-elevation-level1);
   }
 `;

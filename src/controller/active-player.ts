@@ -1,4 +1,23 @@
+import WaCarousel from "@droans/webawesome/dist/components/carousel/carousel.js";
+import { DynamicScheme } from "@ktibow/material-color-utilities-nightly";
 import { ContextProvider } from "@lit/context";
+import {
+  getGroupVolumeServiceResponse,
+  getGroupVolumeServiceSchema,
+} from "mass-queue-types/packages/mass_queue/actions/get_group_volume";
+import { setGroupVolumeServiceSchema } from "mass-queue-types/packages/mass_queue/actions/set_group_volume";
+import {
+  getInfoWSResponseSchema,
+  getInfoWSServiceSchema,
+} from "mass-queue-types/packages/mass_queue/ws/get_info";
+import BrowserActions from "../actions/browser-actions";
+import { Config, EntityConfig } from "../config/config";
+import {
+  getQueueInfoWSServiceResponseSchema,
+  getQueueInfoWSServiceSchema,
+  setAutoplayServiceSchema,
+  setCrossfadeServiceSchema,
+} from "../const/actions";
 import {
   activeEntityConfigContext,
   activeEntityIDContext,
@@ -10,11 +29,10 @@ import {
   expressiveSchemeContext,
   groupedPlayersContext,
   groupVolumeContext,
-  useExpressiveContext,
   useVibrantContext,
   volumeMediaPlayerContext,
 } from "../const/context";
-import { Config, EntityConfig } from "../config/config";
+import { RepeatMode } from "../const/enums";
 import {
   EntityName,
   ExtendedHass,
@@ -27,18 +45,7 @@ import {
   MediaItemImage,
   PlayerData,
 } from "../const/types";
-import { DynamicScheme } from "@ktibow/material-color-utilities-nightly";
-import {
-  getGroupVolumeServiceResponse,
-  getGroupVolumeServiceSchema,
-} from "mass-queue-types/packages/mass_queue/actions/get_group_volume";
-import { setGroupVolumeServiceSchema } from "mass-queue-types/packages/mass_queue/actions/set_group_volume";
-import {
-  isActive,
-  jsonMatch,
-  playerHasUpdated,
-  playerIsAvailable,
-} from "../utils/utility";
+import { computeEntityName } from "../utils/entity-name";
 import {
   applyExpressiveScheme,
   generateDefaultExpressiveSchemeColor,
@@ -46,20 +53,12 @@ import {
   getOrGenerateExpressiveScheme,
 } from "../utils/expressive";
 import {
-  getInfoWSResponseSchema,
-  getInfoWSServiceSchema,
-} from "mass-queue-types/packages/mass_queue/ws/get_info";
-import WaCarousel from "@droans/webawesome/dist/components/carousel/carousel.js";
-import { RepeatMode } from "../const/enums";
+  isActive,
+  jsonMatch,
+  playerHasUpdated,
+  playerIsAvailable,
+} from "../utils/utility";
 import { MassCardConfigController } from "./config";
-import { computeEntityName } from "../utils/entity-name";
-import BrowserActions from "../actions/browser-actions";
-import {
-  getQueueInfoWSServiceResponseSchema,
-  getQueueInfoWSServiceSchema,
-  setAutoplayServiceSchema,
-  setCrossfadeServiceSchema,
-} from "../const/actions";
 
 export class ActivePlayerController {
   private _activeEntityConfig: ContextProvider<
@@ -70,7 +69,6 @@ export class ActivePlayerController {
   private _activePlayerName: ContextProvider<typeof activePlayerNameContext>;
   private _volumeMediaPlayer: ContextProvider<typeof volumeMediaPlayerContext>;
   private _expressiveScheme!: ContextProvider<typeof expressiveSchemeContext>;
-  private _useExpressive!: ContextProvider<typeof useExpressiveContext>;
   private _useVibrant!: ContextProvider<typeof useVibrantContext>;
   private _groupMembers!: ContextProvider<typeof groupedPlayersContext>;
   private _groupVolume!: ContextProvider<typeof groupVolumeContext>;
@@ -104,9 +102,6 @@ export class ActivePlayerController {
   ) {
     this._expressiveScheme = new ContextProvider(host, {
       context: expressiveSchemeContext,
-    });
-    this._useExpressive = new ContextProvider(host, {
-      context: useExpressiveContext,
     });
     this._useVibrant = new ContextProvider(host, {
       context: useVibrantContext,
@@ -176,18 +171,10 @@ export class ActivePlayerController {
 
   public set config(config: Config) {
     this._config = config;
-    this.useExpressive = config.expressive;
     this.useVibrant = config.expressive_scheme == "vibrant";
   }
   public get config() {
     return this._config;
-  }
-
-  public set useExpressive(expressive: boolean) {
-    this._useExpressive.setValue(expressive);
-  }
-  public get useExpressive() {
-    return this._useExpressive.value;
   }
 
   public set useVibrant(vibrant: boolean) {
@@ -259,6 +246,10 @@ export class ActivePlayerController {
   }
   private set groupMembers(members: string[] | undefined) {
     if (jsonMatch(this._groupMembers.value, members) || !members) {
+      return;
+    }
+    if (members.length == 1 && members[0] == this.activeEntityID) {
+      this._groupMembers.setValue([]);
       return;
     }
     this._groupMembers.setValue(members);
@@ -336,9 +327,6 @@ export class ActivePlayerController {
   }
 
   private createObserver() {
-    if (!this.config.expressive) {
-      return;
-    }
     if (this._observer) {
       try {
         this._observer.disconnect();
@@ -410,7 +398,7 @@ export class ActivePlayerController {
     });
     this._host.dispatchEvent(event_);
   }
-  private setGroupAttributes() {
+  public setGroupAttributes() {
     this.groupMembers = this.getGroupedPlayers().map((item) => {
       return item.entity_id;
     });
@@ -550,9 +538,6 @@ export class ActivePlayerController {
     }
   }
   public createAndApplyExpressiveScheme() {
-    if (!this.config.expressive) {
-      return;
-    }
     void this.createExpressiveSchemeFromArtwork().then((result) => {
       if (!result) {
         return;
@@ -740,6 +725,11 @@ export class ActivePlayerController {
         }
       }
     }
+    this.groupMembers?.forEach((member) => {
+      if (!result.includes(member) && member != this.activeEntityID) {
+        result.push(member);
+      }
+    });
     return result;
   }
   private async setCanGroupWith() {

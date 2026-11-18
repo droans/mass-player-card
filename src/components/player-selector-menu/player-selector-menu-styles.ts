@@ -19,22 +19,15 @@ export default css`
     --control-select-menu-padding: 7px;
     --mdc-icon-size: 1.5em;
     --control-select-menu-height: 2.5em;
-  }
-  .menu-header.expressive::part(menu-select-menu) {
     --control-select-menu-background-color: var(
       --md-sys-color-surface-container-low
     ) !important;
     background-color: var(--control-select-menu-background-color);
   }
-  .menu-header.expressive::part(menu-svg) {
+  .menu-header::part(menu-select-menu) {
+  }
+  .menu-header::part(menu-svg) {
     color: var(--md-sys-color-on-primary);
-  }
-  .menu-header:not(.expressive)::part(menu-select-menu) {
-    background-color: var(--control-select-menu-background-color);
-  }
-  .menu-header::part(menu-svg):not(.expressive) {
-    color: var(--wa-color-brand-on-normal, var(--wa-color-neutral-on-normal));
-    border-radius: 50%;
   }
   #trigger-button {
     --used-button-border-radius: 16px;

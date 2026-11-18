@@ -1,57 +1,3 @@
-import {
-  mdiAccountMusic,
-  mdiAlbum,
-  mdiArrowCollapseUp,
-  mdiArrowDown,
-  mdiArrowLeft,
-  mdiArrowRightCircle,
-  mdiArrowUp,
-  mdiBook,
-  mdiChevronDown,
-  mdiChevronUp,
-  mdiClose,
-  mdiCreation,
-  mdiDotsVertical,
-  mdiFilterVariant,
-  mdiHeart,
-  mdiHeartPlusOutline,
-  mdiHistory,
-  mdiInfinity,
-  mdiLibrary,
-  mdiLibraryOutline,
-  mdiLink,
-  mdiLinkOff,
-  mdiMagnify,
-  mdiMore,
-  mdiMusic,
-  mdiPause,
-  mdiPlay,
-  mdiPlayCircle,
-  mdiPlayCircleOutline,
-  mdiPlaylistMusic,
-  mdiPlaylistPlus,
-  mdiPlaylistRemove,
-  mdiPodcast,
-  mdiPower,
-  mdiRadio,
-  mdiRepeat,
-  mdiRepeatOff,
-  mdiRepeatOnce,
-  mdiSetNone,
-  mdiShuffle,
-  mdiShuffleDisabled,
-  mdiSkipNext,
-  mdiSkipNextCircle,
-  mdiSkipNextCircleOutline,
-  mdiSkipPrevious,
-  mdiSleep,
-  mdiSpeaker,
-  mdiSpeakerMultiple,
-  mdiSwapHorizontal,
-  mdiVolumeHigh,
-  mdiVolumeMute,
-} from "@mdi/js";
-
 export interface Icons {
   ARTIST: string;
   ALBUM: string;
@@ -107,62 +53,6 @@ export interface Icons {
   VOLUME_HIGH: string;
   VOLUME_MUTE: string;
 }
-
-const MaterialDesignIcons: Icons = {
-  ARTIST: mdiAccountMusic,
-  ALBUM: mdiAlbum,
-  ARROW_DOWN: mdiArrowDown,
-  ARROW_LEFT: mdiArrowLeft,
-  ARROW_PLAY_NEXT: mdiArrowCollapseUp,
-  ARROW_RIGHT_CIRCLE: mdiArrowRightCircle,
-  ARROW_UP: mdiArrowUp,
-  ASLEEP: mdiSleep,
-  AUTOPLAY: mdiInfinity,
-  BOOK: mdiBook,
-  CARET_DOWN: mdiChevronDown,
-  CARET_UP: mdiChevronUp,
-  CLEAR: mdiPlaylistRemove,
-  CLOSE: mdiClose,
-  CROSSFADE: mdiSetNone,
-  FILTER: mdiFilterVariant,
-  HEART: mdiHeart,
-  HEART_ALT: mdiHeart,
-  HEART_PLUS: mdiHeartPlusOutline,
-  JOIN: mdiLink,
-  LIBRARY: mdiLibrary,
-  LIBRARY_OUTLINED: mdiLibraryOutline,
-  LINK: mdiLink,
-  LINK_OFF: mdiLinkOff,
-  MENU: mdiMore,
-  MUSIC: mdiMusic,
-  OVERFLOW: mdiDotsVertical,
-  PAUSE: mdiPause,
-  PLAY: mdiPlay,
-  PLAY_CIRCLE: mdiPlayCircle,
-  PLAY_CIRCLE_OUTLINE: mdiPlayCircleOutline,
-  PLAYLIST: mdiPlaylistMusic,
-  PLAYLIST_PLUS: mdiPlaylistPlus,
-  PODCAST: mdiPodcast,
-  POWER: mdiPower,
-  RADIO: mdiRadio,
-  RECENTS: mdiHistory,
-  REPEAT: mdiRepeat,
-  REPEAT_OFF: mdiRepeatOff,
-  REPEAT_ONCE: mdiRepeatOnce,
-  SEARCH: mdiMagnify,
-  SHUFFLE: mdiShuffle,
-  SHUFFLE_DISABLED: mdiShuffleDisabled,
-  SKIP_NEXT: mdiSkipNext,
-  SKIP_NEXT_CIRCLE: mdiSkipNextCircle,
-  SKIP_NEXT_CIRCLE_OUTLINED: mdiSkipNextCircleOutline,
-  SKIP_PREVIOUS: mdiSkipPrevious,
-  SPEAKER: mdiSpeaker,
-  SPEAKER_MULTIPLE: mdiSpeakerMultiple,
-  SUGGESTIONS: mdiCreation,
-  SWAP: mdiSwapHorizontal,
-  VOLUME_HIGH: mdiVolumeHigh,
-  VOLUME_MUTE: mdiVolumeMute,
-};
 
 const MaterialExpressiveIcons: Icons = {
   ARTIST:
@@ -267,11 +157,8 @@ const MaterialExpressiveIcons: Icons = {
     "M16.775 19.575q-.275.175-.55.325t-.575.275q-.375.175-.762 0t-.538-.575q-.15-.375.038-.737t.562-.538q.1-.05.188-.1t.187-.1L12 14.8v2.775q0 .675-.612.938T10.3 18.3L7 15H4q-.425 0-.712-.288T3 14v-4q0-.425.288-.712T4 9h2.2L2.1 4.9q-.275-.275-.275-.7t.275-.7t.7-.275t.7.275l17 17q.275.275.275.7t-.275.7t-.7.275t-.7-.275zm2.225-7.6q0-2.075-1.1-3.787t-2.95-2.563q-.375-.175-.55-.537t-.05-.738q.15-.4.538-.575t.787 0Q18.1 4.85 19.55 7.05T21 11.975q0 .825-.15 1.638t-.425 1.562q-.2.55-.612.688t-.763.012t-.562-.45t-.013-.75q.275-.65.4-1.312T19 11.975m-4.225-3.55Q15.6 8.95 16.05 10t.45 2v.25q0 .125-.025.25q-.05.325-.35.425t-.55-.15L14.3 11.5q-.15-.15-.225-.337T14 10.775V8.85q0-.3.263-.437t.512.012M9.75 6.95Q9.6 6.8 9.6 6.6t.15-.35l.55-.55q.475-.475 1.087-.213t.613.938V8q0 .35-.3.475t-.55-.125z",
 };
 
-export function getIcons(expressive: boolean): Icons {
-  if (expressive) {
-    return MaterialExpressiveIcons;
-  }
-  return MaterialDesignIcons;
+export function getIcons(): Icons {
+  return MaterialExpressiveIcons;
 }
 
 /*

@@ -1,42 +1,42 @@
 import { consume, provide } from "@lit/context";
 import { HassEntity } from "home-assistant-js-websocket";
 import {
-  LitElement,
-  type TemplateResult,
   type CSSResultGroup,
+  LitElement,
   PropertyValues,
+  type TemplateResult,
 } from "lit";
-import { html } from "lit/static-html.js";
 import { customElement, state } from "lit/decorators.js";
 import { cache } from "lit/directives/cache.js";
+import { html } from "lit/static-html.js";
 
-import "./sections/new-media-browser";
 import "./sections/music-player";
+import "./sections/new-media-browser";
 import "./sections/player-queue";
 import "./sections/players";
 
+// import "./components/navigation-bar/navigation-bar";
 import "./components/navigation-bar/navigation-bar-expressive";
-import "./components/navigation-bar/navigation-bar";
 
 import { Config, createConfigForm, createStubConfig } from "./config/config";
 
-import { Sections } from "./const/enums";
 import {
   activeSectionContext,
   configContext,
   controllerContext,
 } from "./const/context";
+import { Sections } from "./const/enums";
 
 import { version } from "../package.json";
 
-import styles from "./styles/main";
 import head_styles from "./styles/head";
+import styles from "./styles/main";
 
-import { delay, getDefaultSection, jsonMatch } from "./utils/utility";
-import { MassCardController } from "./controller/controller";
-import { ExtendedHass } from "./const/types";
-import { PlayerSyncEvent, UserNotFoundEvent } from "./const/events";
 import localForage from "localforage";
+import { PlayerSyncEvent, UserNotFoundEvent } from "./const/events";
+import { ExtendedHass } from "./const/types";
+import { MassCardController } from "./controller/controller";
+import { delay, getDefaultSection, jsonMatch } from "./utils/utility";
 
 const DEV = false;
 
@@ -325,12 +325,8 @@ export class MusicAssistantPlayerCard extends LitElement {
   /* eslint-enable unicorn/template-indent */
   protected renderTabs() {
     return html`
-      <div id="navbar" class="${this.config.expressive ? `expressive` : ``}">
-        ${
-          this.config.expressive
-            ? html`<mpc-navbar-expressive></mpc-navbar-expressive>`
-            : html`<mpc-navbar></mpc-navbar>`
-        }
+      <div id="navbar">
+        <mpc-navbar-expressive></mpc-navbar-expressive>
       </div>
     `;
   }
@@ -348,10 +344,7 @@ export class MusicAssistantPlayerCard extends LitElement {
     return (
       this.error ??
       html`
-        <ha-card
-          id="${this.config.expressive ? `expressive` : ``}"
-          style="${style}"
-        >
+        <ha-card style="${style}">
           ${this.renderSections()} ${this.renderTabs()}
         </ha-card>
       `

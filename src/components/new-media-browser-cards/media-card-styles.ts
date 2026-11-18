@@ -55,25 +55,17 @@ export default css`
   .media-card {
     border-radius: var(--browser-card-border-radius) !important;
     overflow: hidden;
+    border-width: 0px;
+    box-shadow: unset;
+    background-color: var(--md-sys-color-background);
   }
   .media-card::part(body) {
     padding: unset;
     text-align: center;
   }
-  .media-card.expressive {
-    border-width: 0px;
-    box-shadow: unset;
-    background-color: var(--md-sys-color-background);
-  }
-
-  .thumbnail {
-    border-radius: var(--browser-card-border-radius);
-    overflow: hidden !important;
-  }
   #media img {
     border-radius: var(--browser-card-border-radius) !important;
   }
-  .thumbnail,
   .thumbnail-section {
     -webkit-user-select: none;
     -moz-user-select: none;
@@ -94,7 +86,6 @@ export default css`
   }
 
   #title-div {
-    font-size: 0.9rem;
     text-transform: capitalize;
     /* position: absolute; */
     width: 100%;
@@ -107,8 +98,6 @@ export default css`
     overflow: hidden;
     text-wrap: nowrap;
     text-overflow: ellipsis;
-  }
-  #title-div.expressive {
     font-size: 0.9rem;
     font-family: var(--expressive-font-family);
     font-stretch: 80%;
@@ -120,8 +109,6 @@ export default css`
     line-height: 1em;
     padding-bottom: 0.4em;
     font-weight: 400;
-  }
-  #subtitle-div.expressive {
     font-style: italic;
     font-stretch: 60%;
   }

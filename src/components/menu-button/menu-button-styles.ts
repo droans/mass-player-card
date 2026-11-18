@@ -40,33 +40,21 @@ export default css`
     --menu-button-background-color: none;
     --button-icon-color: var(--md-sys-color-on-surface-variant);
   }
-  .divider {
-    margin-top: 2px;
-    margin-bottom: 2px;
-  }
-  .divider::before {
-    content: " ";
-    display: block;
-    height: 1px;
-    background-color: var(--divider-color);
-    margin-left: 24px;
-    margin-right: 24px;
-  }
   mpc-button::part(button) {
     --used-button-background-color: var(--menu-button-background-color);
   }
   #menu-button {
     border-radius: var(--used-border-radius);
   }
-  #menu-select-menu.expressive {
+  #menu-select-menu {
     --menu-background-color: var(--mass-menu-background-color-expressive);
     --mdc-shape-medium: var(--default-border-radius);
   }
-  #menu-select-menu.expressive::part(menu) {
+  #menu-select-menu::part(menu) {
     background-color: var(--menu-background-color);
     border-radius: 24px;
   }
-  #menu-select-menu.expressive.vibrant {
+  #menu-select-menu.vibrant {
     --menu-background-color: var(
       --mass-menu-background-color-expressive-vibrant
     );
@@ -89,20 +77,6 @@ export default css`
   .svg-menu {
     border-radius: var(--used-border-radius);
     --icon-primary-color: var(--button-icon-color);
-  }
-  .svg-menu:not(.expressive) {
-    color: var(--md-sys-color-primary);
-  }
-  .svg-expressive {
-    margin-left: 14px;
-  }
-  .svg-menu.expressive {
     color: var(--md-sys-color-on-secondary-container);
-  }
-  .title-md,
-  .title,
-  .menu-list-item-image,
-  .menu-list-item-svg {
-    touch-action: none;
   }
 `;

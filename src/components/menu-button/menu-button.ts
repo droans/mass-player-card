@@ -7,25 +7,36 @@ import {
 } from "lit";
 import { customElement, property, query, state } from "lit/decorators.js";
 
-import { ListItems } from "../../const/types";
 import { consume } from "@lit/context";
-import {
-  controllerContext,
-  useExpressiveContext,
-  useVibrantContext,
-} from "../../const/context";
-import styles from "./menu-button-styles";
-import { jsonMatch } from "../../utils/utility";
-import { MassCardController } from "../../controller/controller";
-import "./menu-item";
+import { controllerContext, useVibrantContext } from "../../const/context";
 import { ControlSelectMenuElement } from "../../const/elements";
+import { ListItems } from "../../const/types";
+import { MassCardController } from "../../controller/controller";
+import { jsonMatch } from "../../utils/utility";
+import styles from "./menu-button-styles";
+import "./menu-item";
 
 export type MenuButtonScheme = "filled" | "tonal" | "standard" | "plain";
+export type MenuPlacement =
+  | "bottom-start"
+  | "bottom"
+  | "bottom-end"
+  | "top-start"
+  | "top"
+  | "top-end"
+  | "left-start"
+  | "left"
+  | "left-end"
+  | "right-start"
+  | "right"
+  | "right-end";
 const DEFAULT_SCHEME: MenuButtonScheme = "filled";
 
 @customElement("mpc-menu-button")
 export class MassMenuButton extends LitElement {
   @property({ attribute: false }) public iconPath!: string;
+  @property({ attribute: "placement", type: String }) placement: MenuPlacement =
+    "bottom-start";
 
   @property({ attribute: false }) private _items?: ListItems;
 
@@ -54,9 +65,6 @@ export class MassMenuButton extends LitElement {
 
   @query("#menu-select-menu")
   public menuElement?: ControlSelectMenuElement;
-
-  @consume({ context: useExpressiveContext, subscribe: true })
-  private useExpressive!: boolean;
 
   @consume({ context: useVibrantContext, subscribe: true })
   private useVibrant!: boolean;
@@ -137,7 +145,6 @@ export class MassMenuButton extends LitElement {
         <mpc-menu-item
           class="menu-items"
           ?divider=${use_dividers}
-          ?expressive=${this.useExpressive}
           ?vibrant=${this.useVibrant}
           ?selected=${this._selectedItem == item.option}
           .menuItem=${item}
@@ -149,15 +156,15 @@ export class MassMenuButton extends LitElement {
   }
 
   protected render() {
-    const expressive_class = this.useExpressive ? `expressive` : ``;
     const vibrant_class = this.useVibrant ? `vibrant` : ``;
     return html`
       <div id="menu-button" part="menu-button">
         <ha-dropdown
           id="menu-select-menu"
-          class="${expressive_class} ${vibrant_class}"
+          class="${vibrant_class}"
           part="menu-select-menu"
           naturalMenuWidth
+          placement="${this.placement}"
           @menu-item-selected=${this.onSelect}
           ?fixedMenuPosition=${this.fixedMenuPosition}
           @click=${(event_: Event) => {
@@ -170,9 +177,10 @@ export class MassMenuButton extends LitElement {
             role="variant"
             elevation="${this.elevation}"
             ?outlined=${this.outlined}
+            style="display: block; height: 100%;"
           >
             <ha-svg-icon
-              class="svg-menu ${this.useExpressive ? `expressive` : ``}"
+              class="svg-menu"
               part="menu-svg"
               .path=${this.iconPath}
             ></ha-svg-icon>

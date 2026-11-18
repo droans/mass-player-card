@@ -15,7 +15,6 @@ import {
   hassContext,
   IconsContext,
   mediaBrowserConfigContext,
-  useExpressiveContext,
   useVibrantContext,
 } from "../../const/context";
 import { ExtendedHass, ListItemData, ListItems } from "../../const/types";
@@ -57,8 +56,6 @@ export class MassPlaylistTrackRow extends LitElement {
   @consume({ context: browserControllerContext, subscribe: true })
   private browserController!: MediaBrowserController;
 
-  @consume({ context: useExpressiveContext, subscribe: true })
-  private useExpressive?: boolean;
   @consume({ context: useVibrantContext, subscribe: true })
   private useVibrant?: boolean;
   private _Icons?: Icons;
@@ -222,7 +219,7 @@ export class MassPlaylistTrackRow extends LitElement {
   protected renderTitle(): TemplateResult {
     return html`
       <div
-        class="title track ${this.useExpressive ? `expressive` : ``}"
+        class="title track"
       >
         ${this.track.media_title}
       </span>
@@ -231,7 +228,7 @@ export class MassPlaylistTrackRow extends LitElement {
   protected renderArtist(): TemplateResult {
     return html`
       <div
-        class="title artist ${this.useExpressive ? `expressive` : ``}"
+        class="title artist"
       >
         ${this.track.media_artist}
       </span>
@@ -303,11 +300,10 @@ export class MassPlaylistTrackRow extends LitElement {
     `;
   }
   protected render(): TemplateResult {
-    const expressiveClass = this.useExpressive ? `expressive` : ``;
     const vibrantClass = this.useVibrant ? `vibrant` : ``;
     return html`
       <ha-list-item-button
-        class="button ${expressiveClass} ${vibrantClass}"
+        class="button ${vibrantClass}"
         @click=${this.onPlaylistItemSelected}
         type="button"
       >

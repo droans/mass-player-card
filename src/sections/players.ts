@@ -21,18 +21,18 @@ import { Config, EntityConfig } from "../config/config";
 import { DEFAULT_PLAYERS_CONFIG, PlayersConfig } from "../config/players";
 
 import { PlayerSelectedService } from "../const/actions";
-import { ExtendedHass, ExtendedHassEntity } from "../const/types";
 import {
   activeEntityConfigContext,
   controllerContext,
   hassContext,
   playersConfigContext,
 } from "../const/context";
+import { ExtendedHass, ExtendedHassEntity } from "../const/types";
 
-import styles from "../styles/players";
-import { getTranslation } from "../utils/translations";
 import { WaAnimation } from "../const/elements";
 import { MassCardController } from "../controller/controller";
+import styles from "../styles/players";
+import { getTranslation } from "../utils/translations";
 
 @customElement("mpc-players-card")
 export class PlayersCard extends LitElement {
@@ -113,12 +113,14 @@ export class PlayersCard extends LitElement {
       this.activePlayerEntity.entity_id,
       group_member,
     );
+    this.controller.ActivePlayer?.setGroupAttributes();
   };
   private unjoinPlayers = async (player_entity: string[]) => {
     if (!this.actions) {
       return;
     }
     await this.actions.actionUnjoinPlayers(player_entity);
+    this.controller.ActivePlayer?.setGroupAttributes();
   };
   private transferQueue = async (target_player: string) => {
     if (!this.actions) {
@@ -202,11 +204,10 @@ export class PlayersCard extends LitElement {
     `;
   }
   protected render(): TemplateResult {
-    const expressiveCls = this.config?.expressive ? `expressive` : ``;
     const paddedCls = this.hideSectionHeader() ? `padded` : ``;
     const label = getTranslation("players.label.move_players_label", this.hass);
     return html`
-      <div id="container" class="${expressiveCls}">
+      <div id="container">
         ${this.renderHeader()}
         <wa-animation
           id="animation"
@@ -219,7 +220,7 @@ export class PlayersCard extends LitElement {
           <div class="selected-player">
             <mpc-active-player-row
               .joinService=${this.joinPlayers}
-              .unjoinService=${this.unjoinPlayers}
+              .unJoinService=${this.unjoinPlayers}
             >
             </mpc-active-player-row>
           </div>
@@ -227,9 +228,7 @@ export class PlayersCard extends LitElement {
             <div class="players-title">${label}</div>
             <div class="divider"></div>
           </div>
-          <div class="list ${expressiveCls} ${paddedCls}">
-            ${this.renderPlayerRows()}
-          </div>
+          <div class="list ${paddedCls}">${this.renderPlayerRows()}</div>
         </wa-animation>
       </div>
     `;

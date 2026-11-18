@@ -1,3 +1,4 @@
+import { consume } from "@lit/context";
 import {
   CSSResultGroup,
   html,
@@ -5,12 +6,11 @@ import {
   PropertyValues,
   TemplateResult,
 } from "lit";
-import styles from "./menu-item-styles";
 import { customElement, property, query, state } from "lit/decorators.js";
+import { hassContext } from "../../const/context";
 import { ExtendedHass, ListItemData } from "../../const/types";
 import { tryPrefetchImageWithFallbacks } from "../../utils/utility";
-import { consume } from "@lit/context";
-import { hassContext } from "../../const/context";
+import styles from "./menu-item-styles";
 
 @customElement("mpc-menu-item")
 export class MassMenuItem extends LitElement {
@@ -23,10 +23,6 @@ export class MassMenuItem extends LitElement {
 
   // Add a divider
   @property({ attribute: "divider", type: Boolean }) public divider = false;
-
-  // Use Expressive Design tokens
-  @property({ attribute: "expressive", type: Boolean }) public expressive =
-    false;
 
   // Use Vibrant Expressive scheme
   @property({ attribute: "vibrant", type: Boolean }) public vibrant = false;
@@ -96,12 +92,11 @@ export class MassMenuItem extends LitElement {
   }
 
   protected renderIcon(): TemplateResult {
-    const expressive_class = this.expressive ? `expressive` : ``;
     const vibrant_class = this.vibrant ? `vibrant` : ``;
     const selected_class = this.selected ? `selected` : ``;
     return html`
       <ha-svg-icon
-        class="menu-list-item-svg ${expressive_class} ${vibrant_class} ${selected_class}"
+        class="menu-list-item-svg ${vibrant_class} ${selected_class}"
         part="menu-list-item-svg"
         slot="icon"
         .path=${this.menuItem.icon}
@@ -109,10 +104,9 @@ export class MassMenuItem extends LitElement {
     `;
   }
   protected renderImage(): TemplateResult {
-    const expressive_class = this.expressive ? `expressive` : ``;
     return html`
       <img
-        class="menu-list-item-image ${expressive_class}"
+        class="menu-list-item-image"
         part="menu-list-item-image"
         src="${this.imgPath}"
         slot="icon"
@@ -135,19 +129,18 @@ export class MassMenuItem extends LitElement {
   }
 
   protected render(): TemplateResult {
-    const expressive_class = this.expressive ? `expressive` : ``;
     const vibrant_class = this.vibrant ? `vibrant` : ``;
     const selected_class = this.selected ? `selected` : ``;
     const itm = this.menuItem;
     return html`
       <ha-dropdown-item
-        class="menu-list-item-md ${expressive_class} ${vibrant_class} ${selected_class}"
+        class="menu-list-item-md ${vibrant_class} ${selected_class}"
         type="button"
         @click=${this.onSelection}
         ?disabled=${this.disabled}
       >
         ${this.renderImageOrIcon()}
-        <div class="title ${expressive_class}">${itm.title}</div>
+        <div class="title">${itm.title}</div>
       </ha-dropdown-item>
       ${this.renderDivider()}
     `;

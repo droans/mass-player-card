@@ -7,18 +7,14 @@ export default css`
     margin-top: var(--md-list-item-top-space);
     margin-bottom: var(--md-list-item-bottom-space);
   }
-  .button.expressive {
-    border-radius: var(--default-border-radius);
-  }
   .button {
+    border-radius: var(--default-border-radius);
     border-radius: var(--media-row-border-radius);
     margin: 0.15rem;
   }
   .button::part(base) {
     height: var(--media-row-height);
     padding-inline: 6px;
-  }
-  .button.expressive::part(base) {
     border-radius: var(--default-border-radius);
   }
   .divider {
@@ -50,17 +46,17 @@ export default css`
     -moz-user-select: none;
     user-select: none;
   }
-  .title.expressive {
+  .title {
     font-family: var(--expressive-font-family);
     font-variation-settings: "ROND" 100;
     text-transform: uppercase;
   }
-  .title.track.expressive {
+  .title.track {
     font-size: 1.3em;
     font-stretch: 25%;
     font-weight: 500;
   }
-  .title.artist.expressive {
+  .title.artist {
     font-size: 1.2em;
     font-stretch: 30%;
     font-weight: 275;

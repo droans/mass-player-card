@@ -1,7 +1,7 @@
-import { CSSResultGroup, html, LitElement, TemplateResult } from "lit";
-import "../menu-button/menu-button";
-import styles from "./player-selector-menu-styles";
 import { consume } from "@lit/context";
+import { CSSResultGroup, html, LitElement, TemplateResult } from "lit";
+import { customElement, state } from "lit/decorators.js";
+import { PlayerConfig } from "../../config/player";
 import {
   activeEntityConfigContext,
   activePlayerDataContext,
@@ -10,14 +10,13 @@ import {
   hassContext,
   IconsContext,
   musicPlayerConfigContext,
-  useExpressiveContext,
 } from "../../const/context";
-import { PlayerConfig } from "../../config/player";
 import { Icons } from "../../const/icons";
 import { ExtendedHass, ListItemData, PlayerData } from "../../const/types";
 import { computeEntityName } from "../../utils/entity-name";
-import { customElement, state } from "lit/decorators.js";
 import { playerIsAvailable } from "../../utils/utility";
+import "../menu-button/menu-button";
+import styles from "./player-selector-menu-styles";
 
 @customElement("mpc-player-selector")
 export class MassCardPlayerSelector extends LitElement {
@@ -26,9 +25,6 @@ export class MassCardPlayerSelector extends LitElement {
 
   @consume({ context: activeEntityConfigContext, subscribe: true })
   private activeEntityConfig!: EntityConfig;
-
-  @consume({ context: useExpressiveContext, subscribe: true })
-  private useExpressive!: boolean;
 
   @consume({ context: IconsContext, subscribe: true })
   private Icons!: Icons;
@@ -117,6 +113,8 @@ export class MassCardPlayerSelector extends LitElement {
           return;
         }}
         role="tonal"
+        style="display: block; height: 100%;"
+        elevation="-1"
       >
         ${this.playerData?.player_name}
         <ha-svg-icon
@@ -136,26 +134,15 @@ export class MassCardPlayerSelector extends LitElement {
     }
     return html`
       <div id="container">
-        <ha-dropdown id="player-selector" @wa-select=${this.onSelect}>
+        <ha-dropdown
+          id="player-selector"
+          @wa-select=${this.onSelect}
+          placement="bottom"
+        >
           ${this.renderTriggerButton()} ${this.renderPlayers()}
         </ha-dropdown>
       </div>
     `;
-    // return html`
-    //   <mpc-menu-button
-    //     id="players-select-menu"
-    //     class="menu-header ${this.useExpressive ? `expressive` : ``}"
-    //     .iconPath=${this.Icons.SPEAKER}
-    //     .initialSelection=${this.activeEntityConfig.entity_id}
-    //     .items=${this.renderPlayerItems()}
-    //     dividers
-    //     use-md
-    //     fixedMenuPosition
-    //     naturalMenuWidth
-    //     @menu-item-selected=${this.onSelect}
-    //     elevation="1"
-    //   ></mpc-menu-button>
-    // `;
   }
 
   static get styles(): CSSResultGroup {

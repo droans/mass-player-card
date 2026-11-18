@@ -30,8 +30,6 @@ export default css`
     justify-content: center;
     box-shadow: unset;
     height: 100%;
-  }
-  #container.expressive {
     border-radius: var(--expressive-border-radius-container);
   }
   .div-players-title {
@@ -50,28 +48,6 @@ export default css`
     margin-left: 8px;
   }
 
-  .header {
-    display: flex;
-    flex-direction: column;
-    font-size: 1.5rem;
-    text-align: center;
-    font-weight: 600;
-    padding-top: 12px;
-    height: auto;
-  }
-
-  .main {
-    display: flex;
-    height: 100%;
-    margin: auto;
-    padding: 6px 16px 6px 16px;
-    width: 100%;
-    justify-content: space-around;
-    overflow-x: scroll;
-    -ms-overflow-style: none; /* IE and Edge */
-    scrollbar-width: none; /* Firefox */
-  }
-
   .list {
     overflow-y: scroll;
     -ms-overflow-style: none;
@@ -79,6 +55,7 @@ export default css`
     padding-left: 4px;
     padding-right: 4px;
     border-radius: var(--players-border-radius-expressive, 28px);
+    background-color: var(--md-sys-color-background);
   }
   .list:not(.padded) {
     --queue-height: calc(100% - 3.5em);
@@ -87,26 +64,5 @@ export default css`
   .list.padded {
     --queue-height: 100%;
     height: var(--mass-player-card-height);
-  }
-  .list.expressive {
-    background-color: var(--md-sys-color-background);
-  }
-  .list:not(.expressive) {
-    border-radius: var(--players-border-radius, 12px);
-  }
-
-  .name {
-    font-weight: 300;
-    font-size: var(--fontSize);
-    line-height: var(--fontSize);
-    cursor: pointer;
-  }
-  .title {
-    text-align: center;
-    font-size: 1.2rem;
-    font-weight: bold;
-    align-items: center;
-    justify-content: center;
-    padding: 0.5rem;
   }
 `;

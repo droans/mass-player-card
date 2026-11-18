@@ -55,24 +55,6 @@ export default css`
   #drill-button {
     margin-top: 2px;
   }
-  .icons {
-    display: flex;
-    justify-content: space-evenly;
-    flex-wrap: wrap;
-    row-gap: 20px;
-    overflow-y: scroll;
-    max-height: calc(
-      var(--mass-player-card-height) - var(--navbar-height) - 8px
-    );
-    scrollbar-width: none;
-    padding-bottom: 8px;
-    padding-top: 8px;
-  }
-  .loading-indicator {
-    background-color: var(--md-sys-color-primary);
-    justify-self: center;
-    top: 2em;
-  }
   #cards {
     display: flex;
     column-gap: 8px;

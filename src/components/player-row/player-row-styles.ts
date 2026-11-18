@@ -17,12 +17,8 @@ export default css`
     transform: scale(1);
     align-content: center;
   }
-  .action-button:not(.expressive)::part(button) {
-    --button-button-height: 38px;
-    --button-button-width: 38px;
-  }
 
-  .action-button.expressive {
+  .action-button {
     --used-button-border-radius: 50% !important;
     aspect-ratio: 1;
     height: 100%;
@@ -47,12 +43,7 @@ export default css`
     display: block;
     animation: player-active 0ms -800ms linear infinite alternate;
   }
-  .audio-bars.normal > div {
-    --start-color: var(--audio-bars-color);
-    --mid-color: var(--audio-bars-color);
-    --end-color: var(--audio-bars-color);
-  }
-  .audio-bars.expressive > div {
+  .audio-bars > div {
     --start-color: var(--expressive-audio-bars-initial-color);
     --mid-color: var(--expressive-audio-bars-middle-color);
     --max-color: var(--expressive-audio-bars-max-color);
@@ -73,8 +64,8 @@ export default css`
     left: 20px;
     animation-duration: 375ms;
   }
-  .button.expressive,
-  .button.expressive::part(base) {
+  .button,
+  .button::part(base) {
     border-top-left-radius: var(
       --media-row-top-border-radius,
       var(--default-border-radius)
@@ -103,12 +94,14 @@ export default css`
     right: 8px;
     position: absolute;
   }
-  .button:not(.expressive)::part(base) {
-    border-radius: var(--player-row-border-radius);
-  }
   .button {
     margin: 0.15rem;
     height: var(--media-row-height);
+    background-color: var(--expressive-row-color) !important;
+    --md-list-item-hover-state-layer-color: var(--md-sys-color-on-surface);
+    --md-ripple-hover-color: var(--md-sys-color-on-surface);
+    --md-ripple-pressed-color: var(--md-sys-color-on-surface);
+    --md-list-item-leading-space: 0px;
   }
   .button::part(base) {
     height: var(--media-row-height);
@@ -127,17 +120,10 @@ export default css`
     color: var(--accent-color);
   }
 
-  .button.expressive {
-    background-color: var(--expressive-row-color) !important;
-    --md-list-item-hover-state-layer-color: var(--md-sys-color-on-surface);
-    --md-ripple-hover-color: var(--md-sys-color-on-surface);
-    --md-ripple-pressed-color: var(--md-sys-color-on-surface);
-    --md-list-item-leading-space: 0px;
-  }
-  .button.expressive > .title {
+  .button > .title {
     color: var(--expressive-row-color-text);
   }
-  .button.expressive.active {
+  .button.active {
     --primary-text-color: var(--expressive-row-active-color-text) !important;
     --font-color: var(--expressive-row-active-color-text) !important;
     background-color: var(--expressive-row-active-color) !important;
@@ -145,22 +131,16 @@ export default css`
     --md-ripple-hover-color: var(--md-sys-color-on-surface);
     --md-ripple-pressed-color: var(--md-sys-color-on-surface);
   }
-  .button.expressive.active > .title {
+  .button.active > .title {
     color: var(--expressive-row-active-color-text);
   }
 
   .svg-action-button {
     height: var(--row-icon-button-height);
     width: var(--row-icon-button-height);
-    color: var(
-      --md-sys-color-on-secondary-container,
-      var(--md-sys-color-on-secondary-container)
-    ) !important;
-  }
-  .svg-action-button.expressive {
     color: var(--expressive-row-button-color-text);
   }
-  .svg-action-button.expressive:hover {
+  .svg-action-button:hover {
     color: var(--expressive-row-button-color-text-hover);
   }
 
@@ -176,15 +156,13 @@ export default css`
     user-select: none;
   }
   .title {
-    font-size: 1.1rem;
     overflow: hidden;
     text-overflow: ellipsis;
     white-space: nowrap;
     min-width: 0;
     color: var(--font-color);
     width: fit-content;
-  }
-  .title.expressive {
+
     font-family: var(--expressive-font-family);
     font-variation-settings: "ROND" 100;
     font-size: 1.3em;

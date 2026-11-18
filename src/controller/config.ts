@@ -115,7 +115,7 @@ export class MassCardConfigController {
     this._musicPlayerConfig.value = config_.player;
     this._playersConfig.value = config_.players;
     this._mediaBrowserConfig.value = config_.media_browser;
-    this.Icons = getIcons(config_.expressive);
+    this.Icons = getIcons();
     this.updateHiddenElements();
   }
   public get config() {
