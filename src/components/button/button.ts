@@ -70,7 +70,6 @@ export class MassButton extends LitElement {
   };
 
   protected render(): TemplateResult {
-    const expressive = this.config.expressive ? `expressive` : ``;
     const elevationValue =
       this.elevation >= 0 && this.elevation <= 5
         ? this.elevation.toString()
@@ -91,7 +90,7 @@ export class MassButton extends LitElement {
         @pointerup=${this.onPointerUp}
         class="${this.colorRole} ${
           this.size
-        } ${expressive} ${elevation} ${disabled} ${outlined} ${selected}"
+        } ${elevation} ${disabled} ${outlined} ${selected}"
         part="button"
       >
         <slot name="start" slot="start"></slot>

@@ -52,22 +52,19 @@ export default css`
   .grouped-players-select-item-icon {
     height: 3em;
     width: 3em;
-  }
-  .grouped-players-select-item-icon.expressive,
-  .grouped-players-select-item-image.expressive {
     margin-left: 14px;
   }
-  .grouped-players-select-item-image.expressive {
+  .grouped-players-select-item-image {
     border-radius: 12px;
   }
   .grouped-svg-unjoin {
     --button-button-height: var(--row-icon-button-height);
     width: var(--row-icon-button-height);
   }
-  .grouped-svg-unjoin.expressive {
+  .grouped-svg-unjoin {
     color: var(--expressive-row-button-color-text);
   }
-  .grouped-svg-unjoin.expressive:hover {
+  .grouped-svg-unjoin:hover {
     color: var(--expressive-row-button-color-text-hover);
   }
   #grouped-volume,
@@ -92,15 +89,12 @@ export default css`
     --control-select-menu-height: 2.5em;
     background-color: var(--control-select-menu-background-color);
   }
-  .menu-header::part(menu-svg):not(.expressive) {
-    color: var(--wa-color-brand-on-normal, var(--wa-color-neutral-on-normal));
-  }
-  .menu-header.expressive::part(menu-select-menu) {
+  .menu-header::part(menu-select-menu) {
     --control-select-menu-background-color: var(
       --md-sys-color-secondary-container
     ) !important;
   }
-  .menu-header.expressive::part(menu-svg) {
+  .menu-header::part(menu-svg) {
     color: var(--md-sys-color-on-secondary-container);
   }
 `;

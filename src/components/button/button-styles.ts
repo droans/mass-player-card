@@ -22,22 +22,6 @@ export default css`
     --ha-space-1: 0px;
     --used-button-border-radius: var(--button-border-radius, 50%);
   }
-  ha-button:not(.expressive)::part(base) {
-    --inherited-background-color: var(
-      --used-button-background-color,
-      var(--button-background-color)
-    );
-    background-color: var(
-      --used-button-background-color,
-      var(--button-background-color)
-    );
-    --inherited-text-color: var(
-      --used-button-text-color,
-      var(--button-text-color)
-    );
-    color: var(--used-button-text-color, var(--button-text-color));
-    --ha-button-border-radius: var(--used-button-border-radius);
-  }
   ha-button {
     border-radius: var(--used-button-border-radius) !important;
     transition: border-radius var(--animation-duration);
@@ -118,9 +102,6 @@ export default css`
       --md-sys-color-outline-variant,
       var(--outline-color)
     );
-    --button-background-color: var(--md-sys-color-secondary-container);
-  }
-  .filled.expressive {
     --button-background-color: var(--md-sys-color-primary);
     --button-text-color: var(--md-sys-color-on-primary);
 
@@ -136,8 +117,6 @@ export default css`
 
   .filled-variant {
     --button-outline-color: var(--md-sys-color-outline, var(--outline-color));
-  }
-  .filled-variant.expressive {
     --button-background-color: var(--md-sys-color-surface-variant);
     --button-text-color: var(--md-sys-color-on-surface-variant);
 
@@ -156,9 +135,6 @@ export default css`
       --md-sys-color-outline-variant,
       var(--outline-color)
     );
-    --button-background-color: var(--md-sys-color-secondary-container);
-  }
-  .standard.expressive {
     --button-background-color: var(--md-sys-color-primary);
     --button-text-color: var(--md-sys-color-on-primary);
 
@@ -174,9 +150,6 @@ export default css`
 
   .tonal {
     --button-outline-color: var(--md-sys-color-outline, var(--outline-color));
-    --button-background-color: var(--md-sys-color-secondary-container);
-  }
-  .tonal.expressive {
     --button-background-color: var(--md-sys-color-secondary-container);
     --button-text-color: var(--md-sys-color-on-secondary-container);
 
@@ -197,9 +170,6 @@ export default css`
       --md-sys-color-outline-variant,
       var(--outline-color)
     );
-    --button-background-color: var(--md-sys-color-secondary-container);
-  }
-  .variant.expressive {
     --button-background-color: var(--md-sys-color-tertiary-container);
     --button-text-color: var(--md-sys-color-on-tertiary-container);
 
@@ -215,7 +185,7 @@ export default css`
     --button-disabled-text-color: var(--md-sys-color-on-surface-variant);
   }
 
-  .plain.expressive {
+  .plain {
     --button-background-color: transparent;
     --button-text-color: var(--md-sys-color-on-tertiary-container);
 

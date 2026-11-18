@@ -10,12 +10,8 @@ export default css`
     margin-right: 0.5em;
     font-style: italic;
   }
-  #collection-artists.expressive,
-  #collection-year.expressive {
+  #collection-artists,
+  #collection-year {
     font-family: var(--expressive-font-family);
-  }
-  #collection-artists::not(.expressive),
-  #collection-year::not(.expressive) {
-    font-family: "Roboto", sans-serif;
   }
 `;

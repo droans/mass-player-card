@@ -48,7 +48,6 @@ export interface Config {
   player: PlayerConfig;
   media_browser: MediaBrowserConfig;
   players: PlayersConfig;
-  expressive: boolean;
   expressive_scheme: ExpressiveScheme;
   download_local: boolean;
   proxy_all_artwork: boolean;
@@ -101,7 +100,6 @@ export const DEFAULT_CONFIG: Config = {
   player: DEFAULT_PLAYER_CONFIG,
   players: DEFAULT_PLAYERS_CONFIG,
   media_browser: DEFAULT_MEDIA_BROWSER_CONFIG,
-  expressive: true,
   expressive_scheme: "expressive",
   entities: [],
   download_local: false,

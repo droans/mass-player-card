@@ -1,3 +1,4 @@
+import "@droans/webawesome/dist/components/card/card.js";
 import { consume } from "@lit/context";
 import {
   CSSResultGroup,
@@ -5,19 +6,12 @@ import {
   PropertyValues,
   TemplateResult,
 } from "lit";
-import { html } from "lit/static-html.js";
 import { customElement, property, query, state } from "lit/decorators.js";
-import "@droans/webawesome/dist/components/card/card.js";
+import { html } from "lit/static-html.js";
 
 import "../menu-button/menu-button";
 
 import { CardSelectedService } from "../../const/actions";
-import {
-  ExtendedHass,
-  ListItems,
-  mediaCardCollectionData,
-  MediaCardItem,
-} from "../../const/types";
 import {
   activeEntityConfigContext,
   activeSectionContext,
@@ -27,26 +21,31 @@ import {
   IconsContext,
   mediaBrowserConfigContext,
   mediaBrowserHiddenElementsConfigContext,
-  useExpressiveContext,
 } from "../../const/context";
 import {
   getSearchMediaButtons,
   SHOW_ARTIST_SUBTITLE_SECTIONS,
 } from "../../const/media-browser";
+import {
+  ExtendedHass,
+  ListItems,
+  mediaCardCollectionData,
+  MediaCardItem,
+} from "../../const/types";
 
 import styles from "./media-card-styles";
 
-import { jsonMatch } from "../../utils/utility";
+import { Config } from "../../config/config";
 import {
   MediaBrowserConfig,
   MediaBrowserHiddenElementsConfig,
 } from "../../config/media-browser";
-import { Sections, Thumbnail } from "../../const/enums";
-import { Icons } from "../../const/icons";
-import { Config } from "../../config/config";
 import { WaAnimation } from "../../const/elements";
+import { Sections, Thumbnail } from "../../const/enums";
 import { HTMLImageElementEvent } from "../../const/events";
+import { Icons } from "../../const/icons";
 import { getThumbnail } from "../../utils/thumbnails";
+import { jsonMatch } from "../../utils/utility";
 
 @customElement("mpc-browser-media-card")
 export class MediaCard extends LitElement {
@@ -65,9 +64,6 @@ export class MediaCard extends LitElement {
 
   @consume({ context: hassContext })
   public hass?: ExtendedHass;
-
-  @consume({ context: useExpressiveContext })
-  private useExpressive!: boolean;
 
   private _cardConfig!: Config;
 
@@ -226,9 +222,7 @@ export class MediaCard extends LitElement {
       return html``;
     }
     return html`
-      <div id="title-div" class="${this.useExpressive ? `expressive` : ``}">
-        ${this.config?.title} ${this.generateSubtitle()}
-      </div>
+      <div id="title-div">${this.config?.title} ${this.generateSubtitle()}</div>
     `;
   }
   private generateSubtitle(): TemplateResult {
@@ -236,27 +230,20 @@ export class MediaCard extends LitElement {
       return html``;
     }
     const _config = this.config?.data as mediaCardCollectionData;
-    return html`
-      <div id="subtitle-div" class="${this.useExpressive ? `expressive` : ``}">
-        ${_config.media_artist}
-      </div>
-    `;
+    return html` <div id="subtitle-div">${_config.media_artist}</div> `;
   }
   private generateSkeleton(): TemplateResult {
     return html`
       <wa-skeleton
         id="skeleton"
         effect="sheen"
-        class="media-card${this.useExpressive ? ` expressive` : ``}"
+        class="media-card"
       ></wa-skeleton>
     `;
   }
   private generateCard(): TemplateResult {
     return html`
-      <wa-card
-        class="media-card${this.useExpressive ? ` expressive` : ``}"
-        @pointerup=${this.onSelect}
-      >
+      <wa-card class="media-card" @pointerup=${this.onSelect}>
         <div slot="media" id="media">${this.renderThumbnail()}</div>
         ${this.renderTitle()}
       </wa-card>

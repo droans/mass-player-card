@@ -229,10 +229,9 @@ export class MassNavBar extends LitElement {
     `;
   }
   protected render(): TemplateResult {
-    // <nav id="navigation" class="tabbed expressive">
     return html`
       <div id="nav-div">
-        <nav id="navigation" class="tabbed expressive">
+        <nav id="navigation" class="tabbed">
           <link
             href="https://cdn.jsdelivr.net/npm/beercss@4.0.20/dist/cdn/beer.min.css"
             rel="stylesheet"

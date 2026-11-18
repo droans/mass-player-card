@@ -294,26 +294,16 @@ export default css`
     border-radius: var(--default-border-radius);
     font-family: "Roboto" sans-serif !important;
     height: calc(var(--mass-player-card-height) + var(--navbar-height));
-  }
-  ha-card#expressive {
     background-color: var(--md-sys-color-background, var(--ha-card-background));
     font-family: var(--expressive-font-family);
   }
 
-  #navbar.expressive {
+  #navbar {
     border-radius: 0px 0px var(--default-border-radius)
       var(--default-border-radius);
     width: 98%;
     bottom: 1%;
     left: 1%;
-  }
-  #navbar {
     position: absolute;
-    bottom: 0;
-    width: 100%;
-  }
-  #navbar:not(.expressive) {
-    border-radius: var(--default-border-radius);
-    background-color: var(--card-background-color);
   }
 `;

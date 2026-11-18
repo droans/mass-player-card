@@ -148,7 +148,6 @@ entities:
 
 ```yaml
 type: custom:mass-player-card
-expressive: true
 expressive_theme: expressive
 panel: false
 default_section: music_player
@@ -338,8 +337,6 @@ media_browser:
 
 ```yaml
 type: custom:mass-player-card
-expressive: true
-expressive: true
 expressive_theme: fruit_salad
 download_local: false
 panel: false
@@ -469,7 +466,6 @@ media_browser:
 | proxy_all_artwork            | boolean                                            | No       | false        | Download and encode all images despite accessibility         |
 | panel                        | boolean                                            | No       | false        | Displays a full-height card when enabled                     |
 | sync_player_across_dashboard | boolean                                            | No       | false        | Syncs the selected player across all cards on the dashboard. |
-| expressive                   | boolean                                            | No       | true         | Enables Material Expressive theme                            |
 | expressive_scheme            | [ExpressiveScheme](#expressive-scheme)             | No       | expressive   | The expressive scheme to use for the theme, see below        |
 | default_section              | [Section](#default-section)                        | No       | music_player | Default starting section, see below                          |
 | player                       | [MusicPlayerConfig](#music-player-config)          | No       | 5            | See Below                                                    |

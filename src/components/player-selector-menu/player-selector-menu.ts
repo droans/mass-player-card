@@ -10,7 +10,6 @@ import {
   hassContext,
   IconsContext,
   musicPlayerConfigContext,
-  useExpressiveContext,
 } from "../../const/context";
 import { PlayerConfig } from "../../config/player";
 import { Icons } from "../../const/icons";
@@ -26,9 +25,6 @@ export class MassCardPlayerSelector extends LitElement {
 
   @consume({ context: activeEntityConfigContext, subscribe: true })
   private activeEntityConfig!: EntityConfig;
-
-  @consume({ context: useExpressiveContext, subscribe: true })
-  private useExpressive!: boolean;
 
   @consume({ context: IconsContext, subscribe: true })
   private Icons!: Icons;
@@ -141,21 +137,6 @@ export class MassCardPlayerSelector extends LitElement {
         </ha-dropdown>
       </div>
     `;
-    // return html`
-    //   <mpc-menu-button
-    //     id="players-select-menu"
-    //     class="menu-header ${this.useExpressive ? `expressive` : ``}"
-    //     .iconPath=${this.Icons.SPEAKER}
-    //     .initialSelection=${this.activeEntityConfig.entity_id}
-    //     .items=${this.renderPlayerItems()}
-    //     dividers
-    //     use-md
-    //     fixedMenuPosition
-    //     naturalMenuWidth
-    //     @menu-item-selected=${this.onSelect}
-    //     elevation="1"
-    //   ></mpc-menu-button>
-    // `;
   }
 
   static get styles(): CSSResultGroup {

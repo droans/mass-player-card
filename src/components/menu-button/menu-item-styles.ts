@@ -40,38 +40,29 @@ export default css`
     padding-inline: unset;
     padding-right: 14px;
   }
-  /* 
-    Expressive: True
-  */
-  .menu-list-item-md.expressive {
+  .menu-list-item-md {
     border-radius: 1.5em;
-  }
-  .menu-list-item-md.expressive {
     padding-top: 0px;
     padding-bottom: 0px;
   }
 
-  /* 
-    Expressive: True
+  /*
     Vibrant: False
     Selected: False
   */
-  .menu-list-item-md.expressive:not(.vibrant):not(.selected) {
+  .menu-list-item-md:not(.vibrant):not(.selected) {
     --wa-color-text-normal: var(--text-color-expressive);
     --wa-color-neutral-fill-normal: rgba(
       from var(--ripple-hover-color-expressive) r g b / 0.08
     );
-  }
-  .menu-list-item-md:not(.vibrant):not(.selected) {
     color: var(--text-color-expressive);
   }
 
-  /* 
-    Expressive: True
+  /*
     Vibrant: False
     Selected: True
   */
-  .menu-list-item-md.expressive.selected:not(.vibrant) {
+  .menu-list-item-md.selected:not(.vibrant) {
     background-color: var(--background-color-expressive-active);
     --wa-color-text-normal: var(--text-color-expressive-active);
     --wa-color-neutral-fill-normal: rgba(
@@ -79,8 +70,7 @@ export default css`
     );
   }
 
-  /* 
-    Expressive: True
+  /*
     Vibrant: True
     Selected: False
   */
@@ -91,8 +81,7 @@ export default css`
     );
   }
 
-  /* 
-    Expressive: True
+  /*
     Vibrant: True
     Selected: True
   */
@@ -104,36 +93,25 @@ export default css`
     );
   }
 
-  .menu-list-item-svg.expressive:not(.vibrant) {
+  .menu-list-item-svg:not(.vibrant) {
     color: var(--md-sys-color-on-surface-variant);
     fill: var(--md-sys-color-on-surface-variant);
   }
-  .menu-list-item-svg.expressive.vibrant {
+  .menu-list-item-svg.vibrant {
     color: var(--md-sys-color-on-tertiary-container);
     fill: var(--md-sys-color-on-tertiary-container);
   }
 
-  .menu-list-item-svg.expressive,
-  .menu-list-item-image.expressive {
+  .menu-list-item-svg,
+  .menu-list-item-image {
     margin-left: 14px;
     height: 3em;
     width: 3em;
   }
-  .menu-list-item-svg:not(.expressive),
-  .menu-list-item-image:not(.expressive) {
-    height: 2em;
-    width: 2em;
-    margin-left: 12px;
-  }
-  .menu-list-item-image.expressive {
+  .menu-list-item-image {
     border-radius: var(--media-row-thumbnail-border-radius);
   }
-  .menu-list-item-md.selected:not(.expressive) {
-    background-color: rgba(
-      from var(--background-color-normal-active) r g b / 0.2
-    );
-  }
-  .title.expressive {
+  .title {
     font-family: var(--expressive-font-family);
     font-variation-settings: "ROND" 100;
     font-size: 1.2em;

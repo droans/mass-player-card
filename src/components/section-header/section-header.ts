@@ -2,21 +2,17 @@ import { html, LitElement, PropertyValues } from "lit";
 
 import styles from "./section-header-styles";
 import { consume } from "@lit/context";
-import { useExpressiveContext } from "../../const/context";
 import { customElement } from "lit/decorators.js";
 
 @customElement("mpc-section-header")
 export class MassSectionHeader extends LitElement {
-  @consume({ context: useExpressiveContext, subscribe: true })
-  private useExpressive!: boolean;
   private _initialUpdate = false;
 
   protected render() {
-    const expressiveCls = this.useExpressive ? `expressive` : ``;
     return html`
-      <div id="header" class="header ${expressiveCls}" part="header">
+      <div id="header" class="header" part="header">
         <slot name="start" part="start" class="start"></slot>
-        <slot name="label" part="label" class="label ${expressiveCls}"></slot>
+        <slot name="label" part="label" class="label"></slot>
         <slot name="end" part="end" class="end"></slot>
       </div>
     `;

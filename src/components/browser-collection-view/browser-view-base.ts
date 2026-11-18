@@ -27,7 +27,6 @@ import {
   IconsContext,
   mediaBrowserConfigContext,
   mediaBrowserHiddenElementsConfigContext,
-  useExpressiveContext,
   useVibrantContext,
 } from "../../const/context";
 import { consume } from "@lit/context";
@@ -104,10 +103,6 @@ export class BrowserViewBase extends LitElement {
   }
 
   @state() public tracks?: Tracks | PodcastEpisode[];
-
-  // Ensure style adjustments are handled
-  @consume({ context: useExpressiveContext })
-  protected useExpressive!: boolean;
 
   @consume({ context: useVibrantContext })
   protected useVibrant!: boolean;
@@ -327,9 +322,8 @@ export class BrowserViewBase extends LitElement {
     `;
   }
   protected renderTitle(): TemplateResult {
-    const expressiveClass = this.useExpressive ? `expressive` : ``;
     return html`
-      <mpc-marquee-text id="title" class="${expressiveClass}">
+      <mpc-marquee-text id="title">
         <div id="title-text">${this.collectionData?.media_title}</div>
       </mpc-marquee-text>
     `;
@@ -390,15 +384,14 @@ export class BrowserViewBase extends LitElement {
     `;
   }
   protected render(): TemplateResult {
-    const expressiveClass = this.useExpressive ? `expressive` : ``;
     const vibrantClass = this.useVibrant ? `vibrant` : ``;
     const scrollClass = this.tracks?.length ? `` : `no-scroll`;
     return html`
-      <div id="container" class="${expressiveClass} ${vibrantClass}">
+      <div id="container" class="${vibrantClass}">
         <div id="header">
           ${this.renderHeader()}
         </div>
-          <div id="tracks-container ${expressiveClass}">
+          <div id="tracks-container">
             <div id="tracks" class="${scrollClass}">
               ${this.renderTracks()}
             </div>

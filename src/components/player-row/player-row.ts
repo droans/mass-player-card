@@ -1,5 +1,5 @@
 import { consume } from "@lit/context";
-import { html, type CSSResultGroup, LitElement, PropertyValues } from "lit";
+import { html, LitElement, PropertyValues, type CSSResultGroup } from "lit";
 import { customElement, property } from "lit/decorators.js";
 
 import {
@@ -14,16 +14,16 @@ import {
   IconsContext,
   playersConfigContext,
   playersHiddenElementsConfigContext,
-  useExpressiveContext,
 } from "../../const/context";
 
 import { isActive, jsonMatch, playerIsAvailable } from "../../utils/utility";
 
-import styles from "./player-row-styles";
 import {
   PlayersConfig,
   PlayersHiddenElementsConfig,
 } from "../../config/players";
+import { Thumbnail } from "../../const/enums";
+import { HTMLImageElementEvent } from "../../const/events";
 import { Icons } from "../../const/icons";
 import {
   EntityName,
@@ -31,17 +31,14 @@ import {
   ExtendedHassEntity,
 } from "../../const/types";
 import { computeEntityName } from "../../utils/entity-name";
-import { Thumbnail } from "../../const/enums";
 import { getThumbnail } from "../../utils/thumbnails";
-import { HTMLImageElementEvent } from "../../const/events";
+import styles from "./player-row-styles";
 
 @customElement("mpc-player-row")
 export class PlayerRow extends LitElement {
   @property({ attribute: false }) joined = false;
   @property({ attribute: "selected", type: Boolean }) selected = false;
   @consume({ context: IconsContext }) private Icons!: Icons;
-  @consume({ context: useExpressiveContext, subscribe: true })
-  private useExpressive!: boolean;
   @property({ attribute: "can-group", type: Boolean }) canGroup = false;
 
   public allowJoin = true;
@@ -183,19 +180,14 @@ export class PlayerRow extends LitElement {
       this.player_entity?.state == "playing"
         ? `audio-bars`
         : `audio-bars-inactive`;
-    const active_expressive_style = this.useExpressive
-      ? `expressive`
-      : `normal`;
     return html`
       <span slot="headline">
         <div
           class="title-bars"
           style="max-width: ${this._calculateTitleWidth()}"
         >
-          <div class="title ${this.useExpressive ? `expressive` : ``}">
-            ${title}
-          </div>
-          <div class="${active_style} ${active_expressive_style}">
+          <div class="title">${title}</div>
+          <div class="${active_style}">
             <div></div>
             <div></div>
             <div></div>
@@ -216,11 +208,11 @@ export class PlayerRow extends LitElement {
         role="tonal"
         size="small"
         elevation="-1"
-        class="action-button ${this.useExpressive ? `expressive` : ``}"
+        class="action-button"
       >
         <ha-svg-icon
           .path=${this.Icons.SWAP}
-          class="svg-action-button ${this.useExpressive ? `expressive` : ``}"
+          class="svg-action-button"
         ></ha-svg-icon>
       </mpc-button>
     `;
@@ -243,7 +235,6 @@ export class PlayerRow extends LitElement {
   }
   render() {
     const active = this.selected ? `active` : ``;
-    const expressive = this.useExpressive ? `expressive` : ``;
     const entityExists = this.player_entity;
     const entityAvailable = playerIsAvailable(
       this.hass,
@@ -252,7 +243,7 @@ export class PlayerRow extends LitElement {
     const disabled = !entityExists || !entityAvailable;
     return html`
       <ha-list-item-button
-        class="button ${active} ${expressive}"
+        class="button ${active}"
         @click=${this.callOnPlayerSelectedService}
         type="button"
         ?disabled=${disabled}

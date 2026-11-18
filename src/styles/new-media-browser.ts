@@ -87,8 +87,8 @@ export default css`
     height: 30px;
     width: 30px;
   }
-  .search-media-type-menu.expressive::part(menu-svg),
-  .search-library-button.expressive .svg.menu.expressive {
+  .search-media-type-menu::part(menu-svg),
+  .search-library-button .svg.menu {
     color: var(--md-sys-color-on-surface-variant) !important;
   }
   #search-options {

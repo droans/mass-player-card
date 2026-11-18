@@ -18,7 +18,6 @@ import {
   IconsContext,
   playerQueueConfigContext,
   playerQueueHiddenElementsConfigContext,
-  useExpressiveContext,
 } from "../../const/context";
 import { ExtendedHass, QueueItem } from "../../const/types";
 import { VibrationPattern } from "../../const/common";
@@ -58,8 +57,6 @@ export class MediaRow extends LitElement {
   @query("#action-buttons-headline") actionsButtonHeadline?: HTMLElement;
 
   @consume({ context: IconsContext }) public Icons!: Icons;
-  @consume({ context: useExpressiveContext, subscribe: true })
-  public useExpressive!: boolean;
   @consume({ context: playerQueueHiddenElementsConfigContext, subscribe: true })
   private hide!: PlayerQueueHiddenElementsConfig;
   @consume({ context: configContext, subscribe: true })
@@ -336,8 +333,7 @@ export class MediaRow extends LitElement {
     return html`
       <div
         class="title track
-        ${played ? "disabled" : ""}
-        ${this.useExpressive ? `expressive` : ``}"
+        ${played ? "disabled" : ""}"
         style="width: ${this._calculateTitleWidth()}"
       >
         ${this.media_item?.media_title}
@@ -353,8 +349,7 @@ export class MediaRow extends LitElement {
     return html`
       <div
         class="title artist
-        ${played ? "disabled" : ""}
-        ${this.useExpressive ? `expressive` : ``}"
+        ${played ? "disabled" : ""}"
         style="width: ${this._calculateTitleWidth()}"
       >
         ${this.media_item?.media_artist}
@@ -416,12 +411,12 @@ export class MediaRow extends LitElement {
         role="tonal"
         size="small"
         elevation="1"
-        class="action-button ${this.useExpressive ? `expressive` : ``}"
+        class="action-button"
       >
         <ha-svg-icon
           slot="start"
           .path=${this.Icons.ARROW_PLAY_NEXT}
-          class="svg-action-button ${this.useExpressive ? `expressive` : ``}"
+          class="svg-action-button"
         ></ha-svg-icon>
         Next
       </mpc-button>
@@ -437,12 +432,12 @@ export class MediaRow extends LitElement {
         role="tonal"
         size="small"
         elevation="1"
-        class="action-button ${this.useExpressive ? `expressive` : ``}"
+        class="action-button"
       >
         <ha-svg-icon
           slot="start"
           .path=${this.Icons.ARROW_UP}
-          class="svg-action-button ${this.useExpressive ? `expressive` : ``}"
+          class="svg-action-button"
         ></ha-svg-icon>
         Up
       </mpc-button>
@@ -458,12 +453,12 @@ export class MediaRow extends LitElement {
         role="tonal"
         size="small"
         elevation="1"
-        class="action-button ${this.useExpressive ? `expressive` : ``}"
+        class="action-button"
       >
         <ha-svg-icon
           slot="start"
           .path=${this.Icons.ARROW_DOWN}
-          class="svg-action-button ${this.useExpressive ? `expressive` : ``}"
+          class="svg-action-button"
         ></ha-svg-icon>
         Down
       </mpc-button>
@@ -479,12 +474,12 @@ export class MediaRow extends LitElement {
         role="tonal"
         size="small"
         elevation="1"
-        class="action-button ${this.useExpressive ? `expressive` : ``}"
+        class="action-button"
       >
         <ha-svg-icon
           slot="start"
           .path=${this.Icons.CLOSE}
-          class="svg-action-button ${this.useExpressive ? `expressive` : ``}"
+          class="svg-action-button"
         ></ha-svg-icon>
         Remove
       </mpc-button>
@@ -493,11 +488,10 @@ export class MediaRow extends LitElement {
 
   render(): TemplateResult {
     const playing = this.media_item?.playing ? `active` : ``;
-    const expressive = this.useExpressive ? `expressive` : ``;
     const hideCovers = this.showAlbumCovers ? `` : `hide-covers`;
     return html`
       <ha-list-item-button
-        class="button ${playing} ${expressive} ${hideCovers}"
+        class="button ${playing} ${hideCovers}"
         @click=${this.callOnQueueItemSelectedService}
         type="button"
       >

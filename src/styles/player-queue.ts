@@ -58,11 +58,8 @@ export default css`
     justify-content: center;
     box-shadow: unset;
     height: 100%;
-  }
-  #container.expressive {
     border-radius: var(--expressive-border-radius-container);
   }
-
   .header {
     display: flex;
     flex-direction: column;
@@ -83,6 +80,7 @@ export default css`
     padding-left: 4px;
     padding-right: 4px;
     border-radius: var(--queue-border-radius-expressive, 28px);
+    background-color: var(--md-sys-color-background);
   }
   .list:not(.padded) {
     --queue-height: calc(100% - 4em);
@@ -91,12 +89,6 @@ export default css`
   .list.padded {
     --queue-height: 100%;
     height: var(--mass-player-card-height);
-  }
-  .list.expressive {
-    background-color: var(--md-sys-color-background);
-  }
-  .ist:not(.expressive) {
-    border-radius: var(--queue-border-radius, 12px);
   }
 
   .main {

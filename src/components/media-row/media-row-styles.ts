@@ -10,11 +10,7 @@ export default css`
     width: var(--media-row-icon-width);
     align-content: center;
   }
-  .action-button:not(.expressive)::part(button) {
-    --button-button-height: 38px;
-    --button-button-width: 38px;
-  }
-  .action-button.expressive {
+  .action-button {
     --button-border-radius: 8px !important;
     --ha-button-start-border-radius: 8px !important;
     --ha-button-end-border-radius: 8px !important;
@@ -23,39 +19,39 @@ export default css`
     --button-padding-left: 8px;
     --button-padding-right: 8px;
   }
-  .action-button.expressive:hover {
+  .action-button:hover {
     background-color: var(--expressive-row-button-color-hover) !important;
     --button-border-radius: 16px !important;
     transition: border-radius background-color var(--animation-duration);
     --ha-button-start-border-radius: 16px !important;
     --ha-button-end-border-radius: 16px !important;
   }
-  .action-button.expressive:first-of-type {
+  .action-button:first-of-type {
     --button-border-radius: 24px 8px 8px 24px !important;
     --ha-button-start-border-radius: 24px !important;
     --ha-button-end-border-radius: 8px !important;
   }
-  .action-button.expressive:first-of-type:hover {
+  .action-button:first-of-type:hover {
     --button-border-radius: 24px 16px 16px 24px !important;
     --ha-button-end-border-radius: 16px !important;
   }
-  .action-button.expressive:last-of-type {
+  .action-button:last-of-type {
     --button-border-radius: 8px 24px 24px 8px !important;
     --ha-button-start-border-radius: 8px !important;
     --ha-button-end-border-radius: 24px !important;
   }
-  .action-button.expressive:last-of-type:hover {
+  .action-button:last-of-type:hover {
     --button-border-radius: 16px 24px 24px 16px !important;
     --ha-button-start-border-radius: 16px !important;
   }
-  .action-button.expressive:only-of-type {
+  .action-button:only-of-type {
     --button-border-radius: 16px !important;
     --ha-button-start-border-radius: 16px !important;
     --ha-button-end-border-radius: 16px !important;
     --button-button-width: 48px;
     --used-button-width: 48px;
   }
-  .action-button.expressive:only-of-type:hover {
+  .action-button:only-of-type:hover {
     --button-border-radius: 16px !important;
   }
   #action-buttons-row {
@@ -83,45 +79,8 @@ export default css`
     height: var(--media-row-height);
     padding-inline: 6px;
   }
-  .button.expressive {
+  .button {
     --md-list-item-leading-space: 0px;
-  }
-  .button.expressive::part(base) {
-    border-top-left-radius: var(
-      --media-row-top-border-radius,
-      var(--default-border-radius)
-    );
-    border-top-right-radius: var(
-      --media-row-top-border-radius,
-      var(--default-border-radius)
-    );
-    border-bottom-left-radius: var(
-      --media-row-bottom-border-radius,
-      var(--default-border-radius)
-    );
-    border-bottom-right-radius: var(
-      --media-row-bottom-border-radius,
-      var(--default-border-radius)
-    );
-  }
-  .button:not(.expressive)::part(base) {
-    border-radius: var(--media-row-border-radius);
-  }
-  .button.active {
-    margin: 0.15rem;
-    background-color: var(
-      --media-row-active-background-color,
-      var(--md-sys-color-secondary-container)
-    );
-    height: var(--media-row-height);
-    padding-inline-start: 0px;
-    color: var(--accent-color);
-  }
-  .button.active :host {
-    --md-sys-color-primary: unset;
-  }
-
-  .button.expressive {
     background-color: var(--expressive-row-color) !important;
     --md-list-item-hover-state-layer-color: var(--md-sys-color-on-surface);
     border-top-left-radius: var(
@@ -143,11 +102,33 @@ export default css`
     --md-ripple-hover-color: var(--md-sys-color-on-surface);
     --md-ripple-pressed-color: var(--md-sys-color-on-surface);
   }
-  .button.expressive > .title {
-    color: var(--expressive-row-color-text);
+  .button::part(base) {
+    border-top-left-radius: var(
+      --media-row-top-border-radius,
+      var(--default-border-radius)
+    );
+    border-top-right-radius: var(
+      --media-row-top-border-radius,
+      var(--default-border-radius)
+    );
+    border-bottom-left-radius: var(
+      --media-row-bottom-border-radius,
+      var(--default-border-radius)
+    );
+    border-bottom-right-radius: var(
+      --media-row-bottom-border-radius,
+      var(--default-border-radius)
+    );
   }
-
-  .button.expressive.active {
+  .button.active {
+    margin: 0.15rem;
+    background-color: var(
+      --media-row-active-background-color,
+      var(--md-sys-color-secondary-container)
+    );
+    height: var(--media-row-height);
+    padding-inline-start: 0px;
+    color: var(--accent-color);
     --primary-text-color: var(--expressive-row-active-color-text) !important;
     --font-color: var(--expressive-row-active-color-text) !important;
     background-color: var(--expressive-row-active-color) !important;
@@ -155,7 +136,14 @@ export default css`
     --md-ripple-hover-color: var(--md-sys-color-on-surface);
     --md-ripple-pressed-color: var(--md-sys-color-on-surface);
   }
-  .button.expressive.active > .title {
+  .button.active :host {
+    --md-sys-color-primary: unset;
+  }
+
+  .button > .title {
+    color: var(--expressive-row-color-text);
+  }
+  .button.active > .title {
     color: var(--expressive-row-active-color-text);
   }
 
@@ -193,10 +181,10 @@ export default css`
       var(--md-sys-color-on-secondary-container)
     ) !important;
   }
-  .svg-action-button.expressive {
+  .svg-action-button {
     color: var(--expressive-row-button-color-text);
   }
-  .svg-action-button.expressive:hover {
+  .svg-action-button:hover {
     color: var(--expressive-row-button-color-text-hover);
     transition: color var(--animation-duration);
   }
@@ -223,17 +211,17 @@ export default css`
     min-width: 0;
     color: var(--font-color);
   }
-  .title.expressive {
+  .title {
     font-family: var(--expressive-font-family);
     font-variation-settings: "ROND" 100;
     text-transform: uppercase;
   }
-  .title.track.expressive {
+  .title.track {
     font-size: 1.3em;
     font-stretch: 25%;
     font-weight: 500;
   }
-  .title.artist.expressive {
+  .title.artist {
     font-size: 1.2em;
     font-stretch: 30%;
     font-weight: 275;

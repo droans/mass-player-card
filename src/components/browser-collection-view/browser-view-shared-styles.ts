@@ -146,13 +146,9 @@ export default css`
     font-stretch: 25%;
     text-align: end;
   }
-  #title.expressive,
-  #tracks-length.expressive {
+  #title,
+  #tracks-length {
     font-family: var(--expressive-font-family);
-  }
-  #title::not(.expressive),
-  #tracks-length::not(.expressive) {
-    font-family: "Roboto", sans-serif;
   }
   #title-text {
     padding-right: 4px;
@@ -172,14 +168,8 @@ export default css`
   }
   #tracks-container {
     overflow: hidden;
-  }
-  #tracks-container.expressive {
     border-top-left-radius: var(--default-border-radius);
     border-top-right-radius: var(--default-border-radius);
-  }
-  #tracks-container:not(.expressive) {
-    border-top-left-radius: var(--queue-border-radius);
-    border-top-right-radius: var(--queue-border-radius);
   }
   #tracks-length {
     margin-right: 0.5em;

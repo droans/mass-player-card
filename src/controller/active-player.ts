@@ -10,7 +10,6 @@ import {
   expressiveSchemeContext,
   groupedPlayersContext,
   groupVolumeContext,
-  useExpressiveContext,
   useVibrantContext,
   volumeMediaPlayerContext,
 } from "../const/context";
@@ -70,7 +69,6 @@ export class ActivePlayerController {
   private _activePlayerName: ContextProvider<typeof activePlayerNameContext>;
   private _volumeMediaPlayer: ContextProvider<typeof volumeMediaPlayerContext>;
   private _expressiveScheme!: ContextProvider<typeof expressiveSchemeContext>;
-  private _useExpressive!: ContextProvider<typeof useExpressiveContext>;
   private _useVibrant!: ContextProvider<typeof useVibrantContext>;
   private _groupMembers!: ContextProvider<typeof groupedPlayersContext>;
   private _groupVolume!: ContextProvider<typeof groupVolumeContext>;
@@ -104,9 +102,6 @@ export class ActivePlayerController {
   ) {
     this._expressiveScheme = new ContextProvider(host, {
       context: expressiveSchemeContext,
-    });
-    this._useExpressive = new ContextProvider(host, {
-      context: useExpressiveContext,
     });
     this._useVibrant = new ContextProvider(host, {
       context: useVibrantContext,
@@ -176,18 +171,10 @@ export class ActivePlayerController {
 
   public set config(config: Config) {
     this._config = config;
-    this.useExpressive = config.expressive;
     this.useVibrant = config.expressive_scheme == "vibrant";
   }
   public get config() {
     return this._config;
-  }
-
-  public set useExpressive(expressive: boolean) {
-    this._useExpressive.setValue(expressive);
-  }
-  public get useExpressive() {
-    return this._useExpressive.value;
   }
 
   public set useVibrant(vibrant: boolean) {
@@ -336,9 +323,6 @@ export class ActivePlayerController {
   }
 
   private createObserver() {
-    if (!this.config.expressive) {
-      return;
-    }
     if (this._observer) {
       try {
         this._observer.disconnect();
@@ -550,9 +534,6 @@ export class ActivePlayerController {
     }
   }
   public createAndApplyExpressiveScheme() {
-    if (!this.config.expressive) {
-      return;
-    }
     void this.createExpressiveSchemeFromArtwork().then((result) => {
       if (!result) {
         return;

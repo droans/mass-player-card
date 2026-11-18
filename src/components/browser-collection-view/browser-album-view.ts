@@ -1,11 +1,11 @@
 import { CSSResultOrNative, html, TemplateResult } from "lit";
 import { customElement, query, state } from "lit/decorators.js";
-import sharedStyles from "./browser-view-shared-styles";
-import styles from "./browser-album-view-styles";
-import { delay } from "../../utils/utility";
 import { getAlbumServiceResponse } from "mass-queue-types/packages/mass_queue/actions/get_album";
-import { BrowserViewBase } from "../browser-collection-view/browser-view-base";
 import { getTranslation } from "../../utils/translations";
+import { delay } from "../../utils/utility";
+import { BrowserViewBase } from "../browser-collection-view/browser-view-base";
+import styles from "./browser-album-view-styles";
+import sharedStyles from "./browser-view-shared-styles";
 
 @customElement("mpc-collection-album-view")
 export class MassBrowserAlbumView extends BrowserViewBase {
@@ -81,15 +81,12 @@ export class MassBrowserAlbumView extends BrowserViewBase {
     });
     const artistString =
       artistLs.length > 0 ? artistLs.join(", ") : loadingLabel;
-    const expressiveClass = this.useExpressive ? `expressive` : ``;
     return html`
       ${this.renderTitle()}
       <div id="collection-info">
-        <div id="collection-artists" class="${expressiveClass}">
-          ${artistString}
-        </div>
-        <div id="tracks-length" class="${expressiveClass}">${trackString}</div>
-        <div id="collection-year" class="${expressiveClass}">
+        <div id="collection-artists">${artistString}</div>
+        <div id="tracks-length">${trackString}</div>
+        <div id="collection-year">
           ${this.albumMetadata?.response.year ?? ``}
         </div>
       </div>

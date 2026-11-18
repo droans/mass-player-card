@@ -6,13 +6,6 @@ export default css`
     font-size: 1em;
     margin-right: 0.5em;
     font-style: italic;
-  }
-  #playlist-duration::not(.expressive),
-  #playlist-owner::not(.expressive) {
-    font-family: "Roboto", sans-serif;
-  }
-  #playlist-duration.expressive,
-  #playlist-owner.expressive {
     font-family: var(--expressive-font-family);
   }
   #overview {

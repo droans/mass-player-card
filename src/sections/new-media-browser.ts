@@ -505,7 +505,7 @@ export class MediaBrowser extends LitElement {
         size="small"
         elevation="1"
         id="button-search"
-        class="button min expressive"
+        class="button min"
         slot="end"
       >
         <ha-svg-icon .path=${this.Icons.SEARCH} class="svg xs"></ha-svg-icon>
@@ -521,7 +521,7 @@ export class MediaBrowser extends LitElement {
           size="small"
           elevation="-1"
           id="search-favorite-button"
-          class="search-library-button button min expressive"
+          class="search-library-button button min"
         >
           <ha-svg-icon
             .path=${
@@ -529,7 +529,7 @@ export class MediaBrowser extends LitElement {
                 ? this.Icons.LIBRARY
                 : this.Icons.LIBRARY_OUTLINED
             }
-            class="svg xs menu expressive"
+            class="svg xs menu"
           ></ha-svg-icon>
         </mpc-button>
       `;
@@ -581,7 +581,7 @@ export class MediaBrowser extends LitElement {
           size="small"
           elevation="1"
           id="button-back"
-          class="button min expressive"
+          class="button min"
         >
           <ha-svg-icon
             .path=${this.Icons.ARROW_LEFT}
@@ -863,9 +863,9 @@ export class MediaBrowser extends LitElement {
   }
   protected render(): TemplateResult {
     return html`
-      <div id="container" class="container expressive">
+      <div id="container" class="container">
         ${this.renderHeader()}
-        <div id="mass-browser" class="mass-browser expressive">
+        <div id="mass-browser" class="mass-browser">
           ${this.renderChips()} ${this.renderBrowserCards()}
         </div>
       </div>
