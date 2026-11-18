@@ -431,6 +431,7 @@ export class MusicPlayerCard extends LitElement {
               return;
             }}
             role="tonal"
+            elevation="-1"
           >
             <ha-svg-icon
               class="player-menu-trigger-icon"

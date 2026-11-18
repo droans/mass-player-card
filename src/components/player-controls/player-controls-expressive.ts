@@ -27,6 +27,7 @@ export class MassPlayerControlsExpressive extends MassPlayerControlsBase {
         role="filled-variant"
         size="large"
         id="button-previous"
+        elevation="-1"
         class="mpc-button previous"
       >
         <ha-svg-icon
@@ -44,7 +45,6 @@ export class MassPlayerControlsExpressive extends MassPlayerControlsBase {
         .onPressService=${this.onPlayPause}
         role="filled-variant"
         size="large"
-        elevation="1"
         selectable
         ?selected=${playing}
         id="${playing ? `button-play` : `button-pause`}"
@@ -66,6 +66,7 @@ export class MassPlayerControlsExpressive extends MassPlayerControlsBase {
         size="large"
         id="button-next"
         class="mpc-button next"
+        elevation="-1"
       >
         <ha-svg-icon
           .path=${this.Icons.SKIP_NEXT}
@@ -127,7 +128,7 @@ export class MassPlayerControlsExpressive extends MassPlayerControlsBase {
         size="medium"
         selectable
         ?selected=${shuffle}
-        elevation=${shuffle ? 2 : 1}
+        elevation=${shuffle ? -1 : 1}
         id="button-shuffle"
         class="mpc-button lower ${active_class} ${no_label_class}"
       >
@@ -162,7 +163,7 @@ export class MassPlayerControlsExpressive extends MassPlayerControlsBase {
         size="medium"
         selectable
         ?selected=${repeat_on}
-        elevation=${repeat_on ? 2 : 1}
+        elevation=${repeat_on ? -1 : 1}
         id="button-repeat"
         class="mpc-button lower ${active_class} ${no_label_class}"
       >
@@ -196,7 +197,7 @@ export class MassPlayerControlsExpressive extends MassPlayerControlsBase {
         size="medium"
         selectable
         ?selected=${favorite}
-        elevation=${favorite ? 2 : 1}
+        elevation=${favorite ? -1 : 1}
         id="button-favorite"
         class="mpc-button lower ${active_class} ${no_label_class}"
       >

@@ -114,6 +114,7 @@ export class MassCardPlayerSelector extends LitElement {
         }}
         role="tonal"
         style="display: block; height: 100%;"
+        elevation="-1"
       >
         ${this.playerData?.player_name}
         <ha-svg-icon
