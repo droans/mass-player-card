@@ -82,6 +82,7 @@ export class MusicPlayerCard extends LitElement {
   @state() protected _playlists?: PlaylistDialogItem[];
   @state()
   private _activePlayerController?: ActivePlayerController;
+  @state() private _groupedPlayers?: EntityConfig[];
 
   @consume({ context: activePlayerDataContext, subscribe: true })
   @state()
@@ -109,7 +110,6 @@ export class MusicPlayerCard extends LitElement {
 
   public selectedPlayerService!: PlayerSelectedService;
   private _hass!: ExtendedHass;
-  private _groupedPlayers?: EntityConfig[];
   private actions!: PlayerActions;
 
   @consume({ context: activeEntityConfigContext, subscribe: true })

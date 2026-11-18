@@ -113,12 +113,14 @@ export class PlayersCard extends LitElement {
       this.activePlayerEntity.entity_id,
       group_member,
     );
+    this.controller.ActivePlayer?.setGroupAttributes();
   };
   private unjoinPlayers = async (player_entity: string[]) => {
     if (!this.actions) {
       return;
     }
     await this.actions.actionUnjoinPlayers(player_entity);
+    this.controller.ActivePlayer?.setGroupAttributes();
   };
   private transferQueue = async (target_player: string) => {
     if (!this.actions) {
@@ -218,7 +220,7 @@ export class PlayersCard extends LitElement {
           <div class="selected-player">
             <mpc-active-player-row
               .joinService=${this.joinPlayers}
-              .unjoinService=${this.unjoinPlayers}
+              .unJoinService=${this.unjoinPlayers}
             >
             </mpc-active-player-row>
           </div>

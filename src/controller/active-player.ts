@@ -1,4 +1,23 @@
+import WaCarousel from "@droans/webawesome/dist/components/carousel/carousel.js";
+import { DynamicScheme } from "@ktibow/material-color-utilities-nightly";
 import { ContextProvider } from "@lit/context";
+import {
+  getGroupVolumeServiceResponse,
+  getGroupVolumeServiceSchema,
+} from "mass-queue-types/packages/mass_queue/actions/get_group_volume";
+import { setGroupVolumeServiceSchema } from "mass-queue-types/packages/mass_queue/actions/set_group_volume";
+import {
+  getInfoWSResponseSchema,
+  getInfoWSServiceSchema,
+} from "mass-queue-types/packages/mass_queue/ws/get_info";
+import BrowserActions from "../actions/browser-actions";
+import { Config, EntityConfig } from "../config/config";
+import {
+  getQueueInfoWSServiceResponseSchema,
+  getQueueInfoWSServiceSchema,
+  setAutoplayServiceSchema,
+  setCrossfadeServiceSchema,
+} from "../const/actions";
 import {
   activeEntityConfigContext,
   activeEntityIDContext,
@@ -13,7 +32,7 @@ import {
   useVibrantContext,
   volumeMediaPlayerContext,
 } from "../const/context";
-import { Config, EntityConfig } from "../config/config";
+import { RepeatMode } from "../const/enums";
 import {
   EntityName,
   ExtendedHass,
@@ -26,18 +45,7 @@ import {
   MediaItemImage,
   PlayerData,
 } from "../const/types";
-import { DynamicScheme } from "@ktibow/material-color-utilities-nightly";
-import {
-  getGroupVolumeServiceResponse,
-  getGroupVolumeServiceSchema,
-} from "mass-queue-types/packages/mass_queue/actions/get_group_volume";
-import { setGroupVolumeServiceSchema } from "mass-queue-types/packages/mass_queue/actions/set_group_volume";
-import {
-  isActive,
-  jsonMatch,
-  playerHasUpdated,
-  playerIsAvailable,
-} from "../utils/utility";
+import { computeEntityName } from "../utils/entity-name";
 import {
   applyExpressiveScheme,
   generateDefaultExpressiveSchemeColor,
@@ -45,20 +53,12 @@ import {
   getOrGenerateExpressiveScheme,
 } from "../utils/expressive";
 import {
-  getInfoWSResponseSchema,
-  getInfoWSServiceSchema,
-} from "mass-queue-types/packages/mass_queue/ws/get_info";
-import WaCarousel from "@droans/webawesome/dist/components/carousel/carousel.js";
-import { RepeatMode } from "../const/enums";
+  isActive,
+  jsonMatch,
+  playerHasUpdated,
+  playerIsAvailable,
+} from "../utils/utility";
 import { MassCardConfigController } from "./config";
-import { computeEntityName } from "../utils/entity-name";
-import BrowserActions from "../actions/browser-actions";
-import {
-  getQueueInfoWSServiceResponseSchema,
-  getQueueInfoWSServiceSchema,
-  setAutoplayServiceSchema,
-  setCrossfadeServiceSchema,
-} from "../const/actions";
 
 export class ActivePlayerController {
   private _activeEntityConfig: ContextProvider<
@@ -248,6 +248,10 @@ export class ActivePlayerController {
     if (jsonMatch(this._groupMembers.value, members) || !members) {
       return;
     }
+    if (members.length == 1 && members[0] == this.activeEntityID) {
+      this._groupMembers.setValue([]);
+      return;
+    }
     this._groupMembers.setValue(members);
   }
   public get groupMembers() {
@@ -394,7 +398,7 @@ export class ActivePlayerController {
     });
     this._host.dispatchEvent(event_);
   }
-  private setGroupAttributes() {
+  public setGroupAttributes() {
     this.groupMembers = this.getGroupedPlayers().map((item) => {
       return item.entity_id;
     });
@@ -721,6 +725,11 @@ export class ActivePlayerController {
         }
       }
     }
+    this.groupMembers?.forEach((member) => {
+      if (!result.includes(member) && member != this.activeEntityID) {
+        result.push(member);
+      }
+    });
     return result;
   }
   private async setCanGroupWith() {
