@@ -108,6 +108,8 @@ export default css`
   #header {
     justify-self: center;
     padding-block: 8px;
+    display: flex;
+    width: 100%;
   }
   .header-art.large {
     z-index: 2;
@@ -141,6 +143,15 @@ export default css`
     border-bottom-right-radius: var(--default-border-radius);
     backdrop-filter: blur(8px);
     mask: linear-gradient(transparent, black 5%, black);
+  }
+  .menu-player {
+    position: absolute;
+    right: 1rem;
+  }
+  .menu-player-selector {
+    justify-content: center;
+    display: flex;
+    width: 100%;
   }
   .padded {
     padding-top: 0.5em;

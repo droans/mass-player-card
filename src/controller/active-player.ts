@@ -5,6 +5,7 @@ import {
   activeMediaPlayerContext,
   activePlayerDataContext,
   activePlayerNameContext,
+  activeQueueInfoContext,
   canGroupWithContext,
   expressiveSchemeContext,
   groupedPlayersContext,
@@ -53,6 +54,12 @@ import { RepeatMode } from "../const/enums";
 import { MassCardConfigController } from "./config";
 import { computeEntityName } from "../utils/entity-name";
 import BrowserActions from "../actions/browser-actions";
+import {
+  getQueueInfoWSServiceResponseSchema,
+  getQueueInfoWSServiceSchema,
+  setAutoplayServiceSchema,
+  setCrossfadeServiceSchema,
+} from "../const/actions";
 
 export class ActivePlayerController {
   private _activeEntityConfig: ContextProvider<
@@ -68,6 +75,7 @@ export class ActivePlayerController {
   private _groupMembers!: ContextProvider<typeof groupedPlayersContext>;
   private _groupVolume!: ContextProvider<typeof groupVolumeContext>;
   private _activePlayerData!: ContextProvider<typeof activePlayerDataContext>;
+  private _queueInfo: ContextProvider<typeof activeQueueInfoContext>;
   private _playerData?: getQueueResponse;
   private _maxPlayerDataUpdateTimestampDelta = 5000;
   private _playerDataUpdateInterval?: number;
@@ -131,6 +139,9 @@ export class ActivePlayerController {
       context: canGroupWithContext,
       initialValue: [],
     });
+    this._queueInfo = new ContextProvider(host, {
+      context: activeQueueInfoContext,
+    });
     this._hass = hass;
     this._browserActions = new BrowserActions(hass);
     this.config = configController.config;
@@ -186,6 +197,13 @@ export class ActivePlayerController {
     return this._useVibrant.value;
   }
 
+  public set queueInfo(queueInfo: getQueueInfoWSServiceResponseSchema) {
+    this._queueInfo.setValue(queueInfo);
+  }
+  public get queueInfo() {
+    return this._queueInfo.value;
+  }
+
   private set activeEntityConfig(config: EntityConfig) {
     this._activeEntityConfig.setValue(config);
     const states = this.hass.states;
@@ -203,6 +221,7 @@ export class ActivePlayerController {
 
   public set activeEntityID(entity_id: string) {
     this._activeEntityID.setValue(entity_id);
+    void this.setQueueInfo();
   }
   public get activeEntityID() {
     return this._activeEntityID.value;
@@ -633,6 +652,61 @@ export class ActivePlayerController {
       await this.hass.callWS<getGroupVolumeServiceResponse>(data);
     const vol = returnValue.response.volume_level;
     return vol;
+  }
+  public async toggleAutoplay(entity_id = this.activeEntityID) {
+    const currentAutoplay = this.queueInfo.autoplay_enabled;
+    const data: setAutoplayServiceSchema = {
+      type: "call_service",
+      domain: "mass_queue",
+      service: "set_autoplay",
+      service_data: {
+        entity: entity_id,
+        enabled: !currentAutoplay,
+      },
+    };
+    await this.hass.callWS<setCrossfadeServiceSchema>(data);
+    await this.setQueueInfo();
+  }
+  public async toggleCrossfade(entity_id = this.activeEntityID) {
+    const currentCrossfade = this.queueInfo.crossfade_enabled;
+    const data: setCrossfadeServiceSchema = {
+      type: "call_service",
+      domain: "mass_queue",
+      service: "set_crossfade",
+      service_data: {
+        entity: entity_id,
+        enabled: !currentCrossfade,
+      },
+    };
+    await this.hass.callWS<setCrossfadeServiceSchema>(data);
+    await this.setQueueInfo();
+  }
+  public async setQueueInfo() {
+    this.queueInfo = await this.getQueueInfo();
+  }
+  public async getQueueInfo(
+    entity_id = this.activeEntityID,
+  ): Promise<getQueueInfoWSServiceResponseSchema> {
+    const data: getQueueInfoWSServiceSchema = {
+      type: "mass_queue/get_queue_info",
+      entity_id,
+    };
+    try {
+      const resp =
+        await this.hass.callWS<getQueueInfoWSServiceResponseSchema>(data);
+      return resp;
+    } catch {
+      return {
+        autoplay_enabled: false,
+        crossfade_enabled: false,
+        display_name: "N/A",
+        ended: false,
+        flow_mode: false,
+        playback_speed: 1,
+        smart_fades_active: false,
+        smart_shuffle_active: false,
+      };
+    }
   }
   public async getEntityInfo(
     entity_id = this.activeEntityID,

@@ -30,6 +30,9 @@ export interface PlayerHiddenElementsConfig extends BaseHiddenElementsConfig {
   favorite_button: boolean;
   volume: boolean;
   mute_button: boolean;
+  menu: boolean;
+  crossfade_button: boolean;
+  autoplay_button: boolean;
 }
 
 export interface PlayerLayoutConfig {
@@ -85,6 +88,9 @@ export const DEFAULT_PLAYER_HIDDEN_ELEMENTS_CONFIG: PlayerHiddenElementsConfig =
     track_title: false,
     header_title: false,
     header: false,
+    menu: false,
+    crossfade_button: false,
+    autoplay_button: false,
   };
 export const DEFAULT_PLAYER_ICON_CONFIG: PlayerIcons = {
   shuffle: {

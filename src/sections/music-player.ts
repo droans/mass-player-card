@@ -33,12 +33,14 @@ import {
   activeMediaPlayerContext,
   activePlayerControllerContext,
   activePlayerDataContext,
+  activeQueueInfoContext,
   configContext,
   controllerContext,
   entitiesConfigContext,
   EntityConfig,
   groupedPlayersContext,
   hassContext,
+  IconsContext,
   musicPlayerConfigContext,
   musicPlayerHiddenElementsConfigContext,
 } from "../const/context";
@@ -53,7 +55,10 @@ import { PLAYLIST_DIALOG_MAX_ITEMS } from "../const/music-player";
 
 import styles from "../styles/music-player";
 
-import { PlayerSelectedService } from "../const/actions";
+import {
+  getQueueInfoWSServiceResponseSchema,
+  PlayerSelectedService,
+} from "../const/actions";
 import {
   ArtworkSize,
   PlayerConfig,
@@ -74,27 +79,34 @@ import {
 } from "../const/events";
 import { asyncImageURLWithFallback } from "../utils/thumbnails";
 import { DialogElement } from "../const/elements";
+import { Icons } from "../const/icons";
+import { getTranslation } from "../utils/translations";
 
 @customElement("mpc-music-player-card")
 export class MusicPlayerCard extends LitElement {
-  @query("#dialog-favorites") favoritesDialog?: DialogElement;
   @state() protected _playlists?: PlaylistDialogItem[];
-
-  @consume({ context: entitiesConfigContext, subscribe: true })
-  public playerEntities!: EntityConfig[];
-
-  @consume({ context: configContext, subscribe: true })
-  private cardConfig?: Config;
-
-  @consume({ context: controllerContext, subscribe: true })
-  private controller!: MassCardController;
+  @state()
+  private _activePlayerController?: ActivePlayerController;
 
   @consume({ context: activePlayerDataContext, subscribe: true })
   @state()
   public player_data?: PlayerData;
+  @consume({ context: activeQueueInfoContext, subscribe: true })
+  @state()
+  private queueInfo!: getQueueInfoWSServiceResponseSchema;
 
+  @query("#dialog-favorites") favoritesDialog?: DialogElement;
+
+  @consume({ context: entitiesConfigContext, subscribe: true })
+  public playerEntities!: EntityConfig[];
+  @consume({ context: configContext, subscribe: true })
+  private cardConfig?: Config;
+  @consume({ context: controllerContext, subscribe: true })
+  private controller!: MassCardController;
   @consume({ context: musicPlayerHiddenElementsConfigContext, subscribe: true })
   private hiddenElements!: PlayerHiddenElementsConfig;
+  @consume({ context: IconsContext, subscribe: true })
+  private Icons!: Icons;
 
   private _activeEntityConfig!: EntityConfig;
   private _activeEntity!: ExtendedHassEntity;
@@ -104,9 +116,6 @@ export class MusicPlayerCard extends LitElement {
   private _hass!: ExtendedHass;
   private _groupedPlayers?: EntityConfig[];
   private actions!: PlayerActions;
-
-  @state()
-  private _activePlayerController?: ActivePlayerController;
 
   @consume({ context: activeEntityConfigContext, subscribe: true })
   public set activeEntityConfig(entity: EntityConfig) {
@@ -321,8 +330,85 @@ export class MusicPlayerCard extends LitElement {
     this.openActiveAlbumView();
   };
 
+  protected onPlayerMenuItemSelected = (event_: HaDropdownEventData) => {
+    const selection = event_.detail.item.value;
+    if (selection == "autoplay") {
+      void this.activePlayerController?.toggleAutoplay();
+      return;
+    }
+    if (selection == "crossfade") {
+      void this.activePlayerController?.toggleCrossfade();
+      return;
+    }
+  };
+
   protected hideSectionHeader(): boolean {
     return this.hiddenElements.header;
+  }
+
+  protected renderAutoplayMenuItem(): TemplateResult {
+    if (this.hiddenElements.autoplay_button) {
+      return html``;
+    }
+    const autoplay = this.queueInfo.autoplay_enabled;
+    const translationKey = `player.label.autoplay.${autoplay ? `enabled` : `disabled`}`;
+    const translation = getTranslation(translationKey, this.hass);
+    return html`
+      <ha-dropdown-item value="autoplay">
+        <ha-svg-icon
+          class="player-menu-icon autoplay"
+          .path=${this.Icons.AUTOPLAY}
+          slot="icon"
+        ></ha-svg-icon>
+        ${translation}
+      </ha-dropdown-item>
+    `;
+  }
+  protected renderCrossfadeMenuItem(): TemplateResult {
+    if (this.hiddenElements.crossfade_button) {
+      return html``;
+    }
+    const crossfade = this.queueInfo.crossfade_enabled;
+    const translationKey = `player.label.crossfade.${crossfade ? `enabled` : `disabled`}`;
+    const translation = getTranslation(translationKey, this.hass);
+    return html`
+      <ha-dropdown-item value="crossfade">
+        <ha-svg-icon
+          class="player-menu-icon crossfade"
+          .path=${this.Icons.CROSSFADE}
+          slot="icon"
+        ></ha-svg-icon>
+        ${translation}
+      </ha-dropdown-item>
+    `;
+  }
+  protected renderPlayerMenu(): TemplateResult {
+    if (this.hiddenElements.menu) {
+      return html``;
+    }
+    return html`
+      <div class="menu-player" slot="end">
+        <ha-dropdown
+          class="player-menu-dropdown"
+          @wa-select=${this.onPlayerMenuItemSelected}
+        >
+          <mpc-button
+            slot="trigger"
+            class="player-menu-trigger"
+            .onPressService=${() => {
+              return;
+            }}
+            role="tonal"
+          >
+            <ha-svg-icon
+              class="player-menu-trigger-icon"
+              .path=${this.Icons.MENU}
+            ></ha-svg-icon>
+          </mpc-button>
+          ${this.renderAutoplayMenuItem()} ${this.renderCrossfadeMenuItem()}
+        </ha-dropdown>
+      </div>
+    `;
   }
   protected renderPlaylistDialogList(): TemplateResult | TemplateResult[] {
     if (!this._playlists) {
@@ -408,7 +494,7 @@ export class MusicPlayerCard extends LitElement {
     const hide = this.hiddenElements.group_selector;
     if (this.groupedPlayers && this.groupedPlayers.length > 1 && !hide) {
       return html`
-        <mpc-grouped-player-menu slot="end"></mpc-grouped-player-menu>
+        <mpc-grouped-player-menu slot="start"></mpc-grouped-player-menu>
       `;
     }
     return html``;
@@ -465,7 +551,8 @@ export class MusicPlayerCard extends LitElement {
         class="header header-art ${this._config.layout.artwork_size}
         ${this.cardConfig.expressive ? `expressive` : ``}"
       >
-        ${this.renderPlayerSelector()} ${this.renderGrouped()}
+        ${this.renderPlayerMenu()} ${this.renderPlayerSelector()}
+        ${this.renderGrouped()}
       </div>
     `;
   }
@@ -488,7 +575,7 @@ export class MusicPlayerCard extends LitElement {
       return html``;
     }
     return html`
-      <span slot="start">
+      <div class="menu-player-selector">
         <mpc-player-selector @menu-item-selected=${this.onPlayerSelect}>
         </mpc-player-selector>
       </span>
