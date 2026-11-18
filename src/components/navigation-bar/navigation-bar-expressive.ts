@@ -200,10 +200,18 @@ export class MassNavBar extends LitElement {
     const label = active
       ? getTranslation(TRANSLATION_KEYS[section], this.hass)
       : ``;
+    /*
+      Inactive tabs takes up one unit of space.
+      The Active tab takes up two.
+    */
+    const navbarWidthUnits = this.sections.length + 1;
+    const tabUnits = active ? 2 : 1;
+    const tabWidthPct = Math.round((tabUnits / navbarWidthUnits) * 100);
     return html`
       <a
         id="tab-${section}"
         class="player-tabs ${active ? `active` : ``}"
+        style="--tab-width: ${tabWidthPct}%;"
         @click=${() => {
           this.handleTabChanged(section);
         }}
@@ -221,8 +229,9 @@ export class MassNavBar extends LitElement {
     `;
   }
   protected render(): TemplateResult {
+    // <nav id="navigation" class="tabbed expressive">
     return html`
-      <div>
+      <div id="nav-div">
         <nav id="navigation" class="tabbed expressive">
           <link
             href="https://cdn.jsdelivr.net/npm/beercss@4.0.20/dist/cdn/beer.min.css"
