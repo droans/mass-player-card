@@ -1,7 +1,6 @@
 import { html, LitElement, PropertyValues } from "lit";
 
 import styles from "./section-header-styles";
-import { consume } from "@lit/context";
 import { customElement } from "lit/decorators.js";
 
 @customElement("mpc-section-header")
