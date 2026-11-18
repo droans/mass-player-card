@@ -147,16 +147,6 @@ export default css`
     color: var(--expressive-row-active-color-text);
   }
 
-  .button-group {
-    display: flex;
-    flex-direction: row;
-    align-items: center;
-    justify-content: flex-end;
-    gap: 2px;
-    height: 48px;
-    right: 4px;
-    position: absolute;
-  }
   .chevron-div {
     width: 56px;
   }

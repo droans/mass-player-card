@@ -56,9 +56,6 @@ export default css`
     padding-left: 4px;
     padding-right: 4px;
   }
-  #animation-image {
-    display: block;
-  }
   #browser-view {
     background-color: var(--md-sys-color-background);
     border-radius: var(--default-border-radius);

@@ -63,14 +63,9 @@ export default css`
     padding: unset;
     text-align: center;
   }
-  .thumbnail {
-    border-radius: var(--browser-card-border-radius);
-    overflow: hidden !important;
-  }
   #media img {
     border-radius: var(--browser-card-border-radius) !important;
   }
-  .thumbnail,
   .thumbnail-section {
     -webkit-user-select: none;
     -moz-user-select: none;

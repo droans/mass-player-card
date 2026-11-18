@@ -4,9 +4,6 @@ export default css`
   .browser-card-section {
     padding-inline: 8px;
   }
-  #browser-cards {
-    height: 100%;
-  }
   .button-group.chips {
     padding-top: 8px;
     padding-left: 8px;
@@ -67,27 +64,6 @@ export default css`
     width: calc(100% - 5em);
     z-index: 2;
   }
-  #search-media-type-menu {
-    border-radius: var(--button-small-border-radius);
-    height: 30px;
-    width: 30px;
-  }
-  #search-media-type-menu::part(menu-list-item-svg) {
-    height: 2em;
-    width: 2em;
-  }
-  #search-media-type-menu::part(menu-select-menu) {
-    --mdc-icon-size: 1.5em;
-    --control-select-menu-padding: 0px;
-    --control-select-menu-background-color: unset;
-    height: 30px;
-    width: 30px;
-  }
-  #search-media-type-menu::part(menu-svg) {
-    height: 30px;
-    width: 30px;
-  }
-  .search-media-type-menu::part(menu-svg),
   .search-library-button .svg.menu {
     color: var(--md-sys-color-on-surface-variant) !important;
   }

@@ -40,18 +40,6 @@ export default css`
     --menu-button-background-color: none;
     --button-icon-color: var(--md-sys-color-on-surface-variant);
   }
-  .divider {
-    margin-top: 2px;
-    margin-bottom: 2px;
-  }
-  .divider::before {
-    content: " ";
-    display: block;
-    height: 1px;
-    background-color: var(--divider-color);
-    margin-left: 24px;
-    margin-right: 24px;
-  }
   mpc-button::part(button) {
     --used-button-background-color: var(--menu-button-background-color);
   }
@@ -90,11 +78,5 @@ export default css`
     border-radius: var(--used-border-radius);
     --icon-primary-color: var(--button-icon-color);
     color: var(--md-sys-color-on-secondary-container);
-  }
-  .title-md,
-  .title,
-  .menu-list-item-image,
-  .menu-list-item-svg {
-    touch-action: none;
   }
 `;

@@ -48,28 +48,6 @@ export default css`
     margin-left: 8px;
   }
 
-  .header {
-    display: flex;
-    flex-direction: column;
-    font-size: 1.5rem;
-    text-align: center;
-    font-weight: 600;
-    padding-top: 12px;
-    height: auto;
-  }
-
-  .main {
-    display: flex;
-    height: 100%;
-    margin: auto;
-    padding: 6px 16px 6px 16px;
-    width: 100%;
-    justify-content: space-around;
-    overflow-x: scroll;
-    -ms-overflow-style: none; /* IE and Edge */
-    scrollbar-width: none; /* Firefox */
-  }
-
   .list {
     overflow-y: scroll;
     -ms-overflow-style: none;
@@ -86,19 +64,5 @@ export default css`
   .list.padded {
     --queue-height: 100%;
     height: var(--mass-player-card-height);
-  }
-  .name {
-    font-weight: 300;
-    font-size: var(--fontSize);
-    line-height: var(--fontSize);
-    cursor: pointer;
-  }
-  .title {
-    text-align: center;
-    font-size: 1.2rem;
-    font-weight: bold;
-    align-items: center;
-    justify-content: center;
-    padding: 0.5rem;
   }
 `;
