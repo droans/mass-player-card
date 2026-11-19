@@ -1,3 +1,4 @@
+import { consume } from "@lit/context";
 import {
   CSSResultGroup,
   html,
@@ -6,8 +7,11 @@ import {
   TemplateResult,
 } from "lit";
 import { customElement, property, query, state } from "lit/decorators.js";
-import styles from "./browser-collection-track-row-styles";
-import { consume } from "@lit/context";
+import { PlaylistTrack } from "mass-queue-types/packages/mass_queue/actions/get_playlist_tracks";
+import { Track } from "mass-queue-types/packages/mass_queue/utils";
+import BrowserActions from "../../actions/browser-actions";
+import { Config } from "../../config/config";
+import { MediaBrowserConfig } from "../../config/media-browser";
 import {
   activeEntityIDContext,
   browserControllerContext,
@@ -17,23 +21,19 @@ import {
   mediaBrowserConfigContext,
   useVibrantContext,
 } from "../../const/context";
+import { EnqueueOptions, Thumbnail } from "../../const/enums";
+import { HTMLImageElementEvent, MenuButtonEventData } from "../../const/events";
+import { Icons } from "../../const/icons";
+import { EnqueueConfigMap } from "../../const/media-browser";
 import { ExtendedHass, ListItemData, ListItems } from "../../const/types";
+import { MediaBrowserController } from "../../controller/browser";
 import {
   asyncImageURLWithFallback,
   getThumbnail,
   getTrackFallbackImg,
 } from "../../utils/thumbnails";
-import { EnqueueOptions, Thumbnail } from "../../const/enums";
-import BrowserActions from "../../actions/browser-actions";
-import { Track } from "mass-queue-types/packages/mass_queue/utils";
-import { Icons } from "../../const/icons";
-import { HTMLImageElementEvent, MenuButtonEventData } from "../../const/events";
 import { getTranslation } from "../../utils/translations";
-import { PlaylistTrack } from "mass-queue-types/packages/mass_queue/actions/get_playlist_tracks";
-import { EnqueueConfigMap } from "../../const/media-browser";
-import { MediaBrowserConfig } from "../../config/media-browser";
-import { Config } from "../../config/config";
-import { MediaBrowserController } from "../../controller/browser";
+import styles from "./browser-collection-track-row-styles";
 
 @customElement("mpc-collection-track-row")
 export class MassPlaylistTrackRow extends LitElement {
@@ -107,6 +107,11 @@ export class MassPlaylistTrackRow extends LitElement {
     return this._enqueueButtons;
   }
 
+  private hasThumbnails() {
+    const hasDefault = (this.defaultImageURL?.length ?? 0) > 0;
+    const hasFallback = (this.fallbackImageURL?.length ?? 0) > 0;
+    return hasDefault || hasFallback;
+  }
   private setEnqueueButtons() {
     if (!this._enqueueButtons || !this.Icons?.CLOSE || !this.playlist) {
       return;
@@ -134,7 +139,7 @@ export class MassPlaylistTrackRow extends LitElement {
   }
 
   private async getTrackImage() {
-    if (!this.hass) {
+    if (!this.hass || this.hasThumbnails()) {
       return;
     }
     const locImg = this.track.local_image_encoded?.length
@@ -282,13 +287,11 @@ export class MassPlaylistTrackRow extends LitElement {
     }
   };
   protected renderThumbnail(): TemplateResult {
-    /* eslint-disable prettier/prettier */
     const img = this.defaultImageURL?.length
       ? this.defaultImageURL
-      : (this.fallbackImageURL?.length
+      : this.fallbackImageURL?.length
         ? this.fallbackImageURL
-        : getThumbnail(this.hass, Thumbnail.CLEFT));
-    /* eslint-enable prettier/prettier */
+        : getThumbnail(this.hass, Thumbnail.CLEFT);
     return html`
       <img
         class="thumbnail"
