@@ -116,10 +116,15 @@ export class MassCardPlayerSelector extends LitElement {
         style="display: block; height: 100%;"
         elevation="-1"
       >
+        <ha-svg-icon
+          slot="start"
+          id="trigger-icon-player"
+          .path=${this.Icons.SPEAKER_OUTLINE}
+        ></ha-svg-icon>
         ${this.playerData?.player_name}
         <ha-svg-icon
           slot="end"
-          id="trigger-icon"
+          id="trigger-icon-caret"
           .path=${this.Icons.CARET_DOWN}
         ></ha-svg-icon>
       </mpc-button>
