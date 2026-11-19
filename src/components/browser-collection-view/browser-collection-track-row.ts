@@ -60,7 +60,6 @@ export class MassPlaylistTrackRow extends LitElement {
   private useVibrant?: boolean;
   private _Icons?: Icons;
 
-  @consume({ context: hassContext, subscribe: true })
   private _hass?: ExtendedHass;
 
   @consume({ context: activeEntityIDContext, subscribe: true })
@@ -68,6 +67,7 @@ export class MassPlaylistTrackRow extends LitElement {
 
   private _browserActions?: BrowserActions;
 
+  @consume({ context: hassContext, subscribe: true })
   public set hass(hass: ExtendedHass | undefined) {
     this._hass = hass;
     void this.getTrackImage();
