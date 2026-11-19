@@ -587,10 +587,7 @@ export class MusicPlayerCard extends LitElement {
       ? ``
       : `opacity: 0;`;
     return html`
-      <mpc-progress-bar
-        class="bg-art ${this._config.layout.artwork_size}"
-        style="${style}"
-      ></mpc-progress-bar>
+      <mpc-progress-bar class="bg-art" style="${style}"></mpc-progress-bar>
     `;
   }
 

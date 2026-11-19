@@ -1,29 +1,5 @@
-import { html } from "lit";
-import { PlayerIcon, PlayerIconSize } from "../config/player";
 import { RepeatMode } from "../const/enums";
 import { Icons } from "../const/icons";
-
-export function generateControlSlotHtml(icon_style: PlayerIcon) {
-  if (icon_style.size == PlayerIconSize.LARGE || !icon_style.label) {
-    return html``;
-  }
-  return html`slot="start"`;
-}
-
-export function generateControlLabelHtml(
-  icon_style: PlayerIcon,
-  label: string,
-  hide_labels: boolean,
-) {
-  if (
-    icon_style.size == PlayerIconSize.LARGE ||
-    !icon_style.label ||
-    hide_labels
-  ) {
-    return html``;
-  }
-  return html`${label}`;
-}
 
 export function getIteratedRepeatMode(current_repeat: RepeatMode): RepeatMode {
   if (current_repeat == RepeatMode.ALL) {

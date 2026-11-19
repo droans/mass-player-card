@@ -1,14 +1,13 @@
 import { CSSResultGroup, PropertyValues, TemplateResult } from "lit";
-import { html, literal } from "lit/static-html.js";
-import { MassPlayerControlsBase } from "./player-controls-base";
-import { VibrationPattern } from "../../const/common";
-import { getRepeatIcon } from "../../utils/music-player";
-import styles from "./player-controls-expressive-styles";
-import "../button/button";
-import { PlayerIcon } from "../../config/player";
-import { PlayerSupportedFeatures, RepeatMode } from "../../const/enums";
-import { playerSupportsFeature } from "../../utils/utility";
 import { customElement } from "lit/decorators.js";
+import { html, literal } from "lit/static-html.js";
+import { VibrationPattern } from "../../const/common";
+import { PlayerSupportedFeatures, RepeatMode } from "../../const/enums";
+import { getRepeatIcon } from "../../utils/music-player";
+import { playerSupportsFeature } from "../../utils/utility";
+import "../button/button";
+import { MassPlayerControlsBase } from "./player-controls-base";
+import styles from "./player-controls-expressive-styles";
 
 @customElement("mpc-player-controls-expressive")
 export class MassPlayerControlsExpressive extends MassPlayerControlsBase {
@@ -84,10 +83,8 @@ export class MassPlayerControlsExpressive extends MassPlayerControlsBase {
     if (this.hiddenElements.power_button || !canToggle) {
       return html``;
     }
-    const label = this.renderLabel(
-      "player.controls.power",
-      this.layoutConfig.icons.power,
-    ) as string | undefined;
+    const label = this.renderLabel("player.controls.power") as
+      string | undefined;
     const icon = this.renderLowerIcon(this.Icons.POWER, `icons power lower`);
     const no_label_class = label?.length ? `` : `no-label`;
     return html`
@@ -108,10 +105,8 @@ export class MassPlayerControlsExpressive extends MassPlayerControlsBase {
       return html``;
     }
     const shuffle = this.shuffle;
-    const label = this.renderLabel(
-      "player.controls.shuffle",
-      this.layoutConfig.icons.power,
-    ) as string | undefined;
+    const label = this.renderLabel("player.controls.shuffle") as
+      string | undefined;
     const _icon = shuffle ? this.Icons.SHUFFLE : this.Icons.SHUFFLE_DISABLED;
     const no_label_class = label?.length ? `` : `no-label`;
     const active_class = shuffle ? `active` : ``;
@@ -143,10 +138,8 @@ export class MassPlayerControlsExpressive extends MassPlayerControlsBase {
     const repeat = this.repeat;
     const repeat_on = repeat != RepeatMode.OFF;
 
-    const label = this.renderLabel(
-      "player.controls.repeat",
-      this.layoutConfig.icons.power,
-    ) as string | undefined;
+    const label = this.renderLabel("player.controls.repeat") as
+      string | undefined;
     const _icon = getRepeatIcon(repeat, this.Icons);
     const no_label_class = label?.length ? `` : `no-label`;
     const active_class = repeat_on ? `active` : ``;
@@ -176,10 +169,8 @@ export class MassPlayerControlsExpressive extends MassPlayerControlsBase {
       return html``;
     }
     const favorite = this.favorite;
-    const label = this.renderLabel(
-      "player.controls.favorite",
-      this.layoutConfig.icons.favorite,
-    ) as string | undefined;
+    const label = this.renderLabel("player.controls.favorite") as
+      string | undefined;
     const no_label_class = label?.length ? `` : `no-label`;
     const active_class = favorite ? `active` : ``;
     const _icon = favorite ? this.Icons.HEART_ALT : this.Icons.HEART_PLUS;
@@ -266,15 +257,7 @@ export class MassPlayerControlsExpressive extends MassPlayerControlsBase {
       ></ha-svg-icon>
     `;
   }
-  private renderLabel(
-    label_key: string,
-    icon_config: PlayerIcon,
-  ): string | TemplateResult {
-    const hide_labels = this.layoutConfig.hide_labels;
-    const hide_icon = !icon_config.label;
-    if (hide_labels || hide_icon) {
-      return ``;
-    }
+  private renderLabel(label_key: string): string | TemplateResult {
     return html`
       <div class="button-label">${this.controller.translate(label_key)}</div>
     `;
