@@ -298,35 +298,6 @@ export class MediaRow extends LitElement {
     }
     return html``;
   }
-  private _calculateTitleWidth() {
-    if (!this.config || !this.media_item) {
-      return;
-    }
-    let button_ct = 0;
-    const hide = this.hide;
-    const media_item = this.media_item;
-    if (media_item.show_move_up_next && !hide.move_next_button) {
-      button_ct += 1;
-    }
-    if (media_item.show_move_up_next && !hide.move_up_button) {
-      button_ct += 1;
-    }
-    if (!hide.move_down_button) {
-      button_ct += 1;
-    }
-    if (!hide.remove_button) {
-      button_ct += 1;
-    }
-    if (
-      button_ct == 0 ||
-      !media_item.show_action_buttons ||
-      hide.action_buttons
-    ) {
-      return `100%`;
-    }
-    const gap_ct = button_ct - 1;
-    return `calc(100% - ((32px * ${button_ct.toString()}) + (8px * ${gap_ct.toString()}) + 16px));`;
-  }
   private renderTitle(): TemplateResult {
     const played =
       !this.media_item?.show_action_buttons && !this.media_item?.playing;
@@ -334,7 +305,6 @@ export class MediaRow extends LitElement {
       <div
         class="title track
         ${played ? "disabled" : ""}"
-        style="width: ${this._calculateTitleWidth()}"
       >
         ${this.media_item?.media_title}
       </span>
@@ -350,7 +320,6 @@ export class MediaRow extends LitElement {
       <div
         class="title artist
         ${played ? "disabled" : ""}"
-        style="width: ${this._calculateTitleWidth()}"
       >
         ${this.media_item?.media_artist}
       </span>
