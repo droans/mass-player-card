@@ -102,6 +102,9 @@ export class ActionsController {
   public async actionSeek(pos: number) {
     await this.PlayerActions.actionSeek(this._activeEntity, pos);
   }
+  public async actionSkip(skipSeconds: number) {
+    await this.PlayerActions.actionSkip(this._activeEntity, skipSeconds);
+  }
 
   /*
           Current Item

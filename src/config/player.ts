@@ -4,6 +4,8 @@ import { BaseHiddenElementsConfig, Config } from "./config";
 export interface PlayerConfig {
   enabled: boolean;
   hide: PlayerHiddenElementsConfig;
+  skip_forward_seconds: number;
+  skip_backwards_seconds: number;
 }
 
 export interface PlayerControlsHiddenElementsConfig extends BaseHiddenElementsConfig {
@@ -11,6 +13,8 @@ export interface PlayerControlsHiddenElementsConfig extends BaseHiddenElementsCo
   repeat_button: boolean;
   shuffle_button: boolean;
   favorite_button: boolean;
+  skip_forward_button: boolean;
+  skip_backwards_button: boolean;
 }
 export interface PlayerHiddenElementsConfig extends PlayerControlsHiddenElementsConfig {
   header: boolean;
@@ -49,6 +53,8 @@ export const DEFAULT_PLAYER_HIDDEN_ELEMENTS_CONFIG: PlayerHiddenElementsConfig =
     menu: false,
     crossfade_button: false,
     autoplay_button: false,
+    skip_backwards_button: false,
+    skip_forward_button: false,
   };
 export const DEFAULT_PLAYER_CONFIG: PlayerConfig = {
   enabled: true,
@@ -65,6 +71,8 @@ const PLAYER_HIDDEN_ITEMS = [
   "mute_button",
   "crossfade_button",
   "autoplay_button",
+  "skip_forward_button",
+  "skip_backwards_button",
   "volume",
   "track_title",
   "track_album",

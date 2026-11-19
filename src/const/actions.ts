@@ -28,6 +28,11 @@ export type CardEnqueueService = (
   enqueue: EnqueueOptions,
 ) => void;
 
+export interface skipServiceData {
+  entity: string;
+  skip_seconds: number;
+}
+
 export interface setCrossfadeServiceData {
   entity: string;
   enabled: boolean;
@@ -43,6 +48,11 @@ export interface setCrossfadeServiceSchema extends baseMassQueueServiceSchema {
 export interface setAutoplayServiceSchema extends baseMassQueueServiceSchema {
   service: "set_autoplay";
   service_data: setAutoplayServiceData;
+}
+
+export interface skipServiceSchema extends baseMassQueueServiceSchema {
+  service: "skip";
+  service_data: skipServiceData;
 }
 
 export interface getQueueInfoWSServiceSchema {
