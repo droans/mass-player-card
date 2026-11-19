@@ -8,7 +8,16 @@
   "js/ts.tsdk.path": "node_modules/typescript/lib",
   "editor.defaultFormatter": "vscode.typescript-language-features",
   "[typescript]": {
-    "editor.defaultFormatter": "esbenp.prettier-vscode"
+    "editor.defaultFormatter": "esbenp.prettier-vscode",
+    "editor.formatOnSave": true,
+    "editor.acceptSuggestionOnCommitCharacter": false,
+    "editor.codeActionsOnSave": {
+      // "source.fixAll.prettier": "always",
+      "source.fixAll.eslint": "always",
+      "source.fixAll.ts": "always",
+      "source.organizeImports": "always",
+      "source.sortImports": "always"
+  }
   },
   "tslint.configFile": "./tsconfig.json",
   "tslint.packageManager": "yarn",

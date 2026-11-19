@@ -44,7 +44,6 @@ export default tseslint.config(
       "observers/matching-unobserve-target": "error",
       "prettier/prettier": "warn",
       "@typescript-eslint/no-unused-vars": "warn",
-      "unicorn/template-indent": "warn",
       "unicorn/new-for-builtins": "off",
       "unicorn/no-nested-ternary": "off",
       "unicorn/no-null": "off",
@@ -66,6 +65,7 @@ export default tseslint.config(
         },
       ],
       "unicorn/no-array-for-each": "off",
+      "unicorn/template-indent": "off",
     },
   },
   // default language/parser options

@@ -4,9 +4,11 @@ export default css`
   .browser-card-section {
     padding-inline: 8px;
   }
+  .browser-card-section.search {
+    padding-top: 1rem;
+  }
   .button-group.chips {
     padding-top: 8px;
-    padding-left: 8px;
     display: flex;
   }
   #button-search {

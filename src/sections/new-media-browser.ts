@@ -1,10 +1,14 @@
+import { consume } from "@lit/context";
 import "@shoelace-style/shoelace/dist/components/input/input.js";
 import { html, LitElement, PropertyValues, TemplateResult } from "lit";
+import { customElement, property, state } from "lit/decorators.js";
 import {
+  ConfigMediaTypes,
+  DEFAULT_FAVORITE_ITEM_CONFIG,
+  FavoriteItemConfig,
   MediaBrowserConfig,
   MediaBrowserHiddenElementsConfig,
 } from "../config/media-browser";
-import { customElement, property, state } from "lit/decorators.js";
 import {
   DEFAULT_ACTIVE_SECTION,
   DEFAULT_ACTIVE_SUBSECTION,
@@ -16,14 +20,16 @@ import {
   SEARCH_TERM_MIN_LENGTH,
   SEARCH_UPDATE_DELAY,
 } from "../const/media-browser";
-import { consume } from "@lit/context";
 
-import "../components/section-header/section-header";
-import "../components/browser-collection-view/browser-playlist-view";
 import "../components/browser-collection-view/browser-album-view";
 import "../components/browser-collection-view/browser-artist-view";
+import "../components/browser-collection-view/browser-playlist-view";
 import "../components/browser-collection-view/browser-podcast-view";
+import "../components/section-header/section-header";
 
+import { DirectiveResult } from "lit/directive.js";
+import { cache } from "lit/directives/cache.js";
+import BrowserActions from "../actions/browser-actions";
 import {
   activeAlbumCollectionContext,
   activeArtistCollectionContext,
@@ -36,8 +42,9 @@ import {
   mediaBrowserConfigContext,
   mediaBrowserHiddenElementsConfigContext,
 } from "../const/context";
+import { EnqueueOptions, MediaTypes } from "../const/enums";
+import { TargetValueEventData } from "../const/events";
 import { Icons } from "../const/icons";
-import { jsonMatch } from "../utils/utility";
 import {
   ExtendedHass,
   mediaCardAlbumData,
@@ -52,23 +59,29 @@ import {
   MediaRecommendationSection,
   newMediaBrowserItemsConfig,
 } from "../const/types";
-import BrowserActions from "../actions/browser-actions";
+import { MediaBrowserController } from "../controller/browser";
 import styles from "../styles/new-media-browser";
 import {
   BrowserChip,
   BrowserChips,
   getBrowserChips,
 } from "../utils/media-browser";
-import { EnqueueOptions, MediaTypes } from "../const/enums";
-import { MediaBrowserController } from "../controller/browser";
-import { DirectiveResult } from "lit/directive.js";
-import { cache } from "lit/directives/cache.js";
-import { TargetValueEventData } from "../const/events";
 import { getTranslation } from "../utils/translations";
+import { jsonMatch } from "../utils/utility";
 // eslint-disable-next-line import/no-duplicates
 import { SectionType } from "../components/new-media-browser-cards/media-browser-cards";
 // eslint-disable-next-line import/no-duplicates
 import "../components/new-media-browser-cards/media-browser-cards";
+
+const MEDIA_TYPE_TRANSLATION_KEYS: Record<ConfigMediaTypes, string> = {
+  album: "browser.sections.album",
+  artist: "browser.sections.artist",
+  audiobook: "browser.sections.audiobook",
+  playlist: "browser.sections.playlist",
+  podcast: "browser.sections.podcast",
+  radio: "browser.sections.radio",
+  track: "browser.sections.track",
+};
 
 @customElement(`mpc-media-browser`)
 export class MediaBrowser extends LitElement {
@@ -76,7 +89,7 @@ export class MediaBrowser extends LitElement {
   @property({ attribute: false }) public onMediaSelectedAction!: () => void;
   @property() private activeCollectionData!: mediaCardCollectionType;
   @property()
-  private mediaType = "";
+  private mediaType: ConfigMediaTypes | "" = "";
 
   @consume({
     context: mediaBrowserHiddenElementsConfigContext,
@@ -226,6 +239,39 @@ export class MediaBrowser extends LitElement {
     this.favoriteCards = this.cards.favorites[mediaType];
   }
 
+  private getMediaTypeFavoriteConfig(): FavoriteItemConfig {
+    const favoritesConfig = this.config.favorites;
+    const configs: Record<ConfigMediaTypes, FavoriteItemConfig> = {
+      album: favoritesConfig.albums,
+      artist: favoritesConfig.artists,
+      audiobook: favoritesConfig.audiobooks,
+      playlist: favoritesConfig.playlists,
+      podcast: favoritesConfig.podcasts,
+      radio: favoritesConfig.radios,
+      track: favoritesConfig.tracks,
+    };
+    if (this.mediaType == "") {
+      return DEFAULT_FAVORITE_ITEM_CONFIG;
+    }
+    return configs[this.mediaType];
+  }
+  private getMediaTypeRecentsConfig(): FavoriteItemConfig {
+    const recentsConfig = this.config.recents;
+    const configs: Record<ConfigMediaTypes, FavoriteItemConfig> = {
+      album: recentsConfig.albums,
+      artist: recentsConfig.artists,
+      audiobook: recentsConfig.audiobooks,
+      playlist: recentsConfig.playlists,
+      podcast: recentsConfig.podcasts,
+      radio: recentsConfig.radios,
+      track: recentsConfig.tracks,
+    };
+    if (this.mediaType == "") {
+      return DEFAULT_FAVORITE_ITEM_CONFIG;
+    }
+    return configs[this.mediaType];
+  }
+
   private createChips() {
     if (!this.hass || !this.cards) {
       return;
@@ -354,16 +400,8 @@ export class MediaBrowser extends LitElement {
     this.searchActivated = true;
   };
   protected onMediaTypeSelection = (selection: string) => {
-    this.mediaType = selection;
+    this.mediaType = selection as ConfigMediaTypes;
     this.setActiveCards();
-    // this.recentsCards = this.cards?.recents[selection] ?? [];
-    // this.favoriteCards = this.cards?.favorites[selection] ?? [];
-    // if (this.browserController) {
-    //   const usedSelection = selection == `track` ? `service` : selection;
-    //   this.recommendations = this.browserController.getRecommendationsForMedia(
-    //     usedSelection as MediaTypes,
-    //   );
-    // }
   };
   private onEnqueue = (
     data: mediaCardPlaylistData,
@@ -716,7 +754,10 @@ export class MediaBrowser extends LitElement {
       }[collectionType](),
     );
   }
-  protected renderRecommendations(): TemplateResult[] {
+  protected renderRecommendations(): DirectiveResult {
+    if (!this.config.recommendations.enabled) {
+      return html``;
+    }
     const recs = this.recommendations;
     return recs.map((rec) => {
       return html`
@@ -774,7 +815,7 @@ export class MediaBrowser extends LitElement {
   protected renderSearch(): DirectiveResult {
     if (this.searchLoading) {
       return html`
-        <div class="broser-card-section search">
+        <div class="browser-card-section search">
           <mpc-browser-cards
             title=""
             id=""
@@ -802,8 +843,48 @@ export class MediaBrowser extends LitElement {
     });
     return html` <div class="browser-card-section search">${cardsHtml}</div> `;
   }
+  protected renderRecentsCards(): DirectiveResult {
+    const recentsMediaTypeConfig = this.getMediaTypeRecentsConfig();
+    if (!this.config.recents.enabled || !recentsMediaTypeConfig.enabled) {
+      return html``;
+    }
+    return html`
+      <div class="browser-card-section recents">
+        <mpc-browser-cards
+          title="🕑 Recently Played"
+          id="recents"
+          direction="horizontal"
+          .onEnqueueAction=${this.onEnqueue}
+          .onSelectAction=${this.onSelect}
+          .onDrillAction=${this.onDrillDown}
+          .cards=${this.recentsCards}
+          section-type="recent"
+        ></mpc-browser-cards>
+      </div>
+    `;
+  }
+  protected renderFavoritesCards(): DirectiveResult {
+    const favoritesMediaTypeConfig = this.getMediaTypeFavoriteConfig();
+    if (!this.config.recents.enabled || !favoritesMediaTypeConfig.enabled) {
+      return html``;
+    }
+    return html`
+      <div class="browser-card-section favorites">
+        <mpc-browser-cards
+          title="Your Favorites"
+          id="favorite"
+          direction="horizontal"
+          .onEnqueueAction=${this.onEnqueue}
+          .onSelectAction=${this.onSelect}
+          .onDrillAction=${this.onDrillDown}
+          .cards=${this.favoriteCards}
+          section-type="favorite"
+        ></mpc-browser-cards>
+      </div>
+    `;
+  }
+
   protected renderBrowserCards(): DirectiveResult {
-    /* eslint-disable unicorn/template-indent */
     if (this.searchActivated && this.activeSubSection != "drill-search") {
       return this.renderSearch();
     }
@@ -819,48 +900,12 @@ export class MediaBrowser extends LitElement {
     if (isDrillDown) {
       return this.renderDrillDown();
     }
-    const recommendationsHtml = this.config.recommendations.enabled
-      ? this.renderRecommendations()
-      : html``;
-    const recentsHtml = this.config.recents.enabled
-      ? html`
-          <div class="browser-card-section recents">
-            <mpc-browser-cards
-              title="🕑 Recently Played"
-              id="recents"
-              direction="horizontal"
-              .onEnqueueAction=${this.onEnqueue}
-              .onSelectAction=${this.onSelect}
-              .onDrillAction=${this.onDrillDown}
-              .cards=${this.recentsCards}
-              section-type="recent"
-            ></mpc-browser-cards>
-          </div>
-        `
-      : html``;
-
-    const favoritesHtml = this.config.recents.enabled
-      ? html`
-          <div class="browser-card-section favorites">
-            <mpc-browser-cards
-              title="Your Favorites"
-              id="favorite"
-              direction="horizontal"
-              .onEnqueueAction=${this.onEnqueue}
-              .onSelectAction=${this.onSelect}
-              .onDrillAction=${this.onDrillDown}
-              .cards=${this.favoriteCards}
-              section-type="favorite"
-            ></mpc-browser-cards>
-          </div>
-        `
-      : html``;
     return html`
       <div class="browser-cards">
-        ${recentsHtml} ${favoritesHtml} ${recommendationsHtml}
+        ${this.renderFavoritesCards()} ${this.renderRecentsCards()}
+        ${this.renderRecommendations()}
       </div>
     `;
-    /* eslint-enable unicorn/template-indent */
   }
   protected shouldUpdate(_changedProperties: PropertyValues): boolean {
     return _changedProperties.size > 0;
