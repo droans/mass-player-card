@@ -250,7 +250,15 @@ media_browser:
     play_next_clear_queue_button: false
     play_now_button: false
     play_now_clear_queue_button: false
-  chip_order:
+  chip_sort:
+    - album
+    - artist
+    - audiobook
+    - playlist
+    - podcast
+    - radio
+    - track
+  search_sort:
     - album
     - artist
     - audiobook
@@ -706,7 +714,8 @@ Multiple elements on the queue tab can be hidden. By default, all elements are v
 | show_artist_subtitles           | bool                                                                      | No       | true        | Enable/disable displaying artist names below album/track names on cards.   |
 | hide                            | [MediaBrowserHiddenElementsConfig](#media-browser-hidden-elements-config) | No       | See below   | See Below                                                                  |
 | initial_media_selection         | [MediaType][#media-type-options]                                          | No       | album       | Initial media type selected in the media browser.                          |
-| chip_order                      | list of [MediaType][#media-type-options]                                  | No       | album       | Order to display media type chips in the browser.                          |
+| chip_sort                       | list of [MediaType][#media-type-options]                                  | No       | album       | Order to display media type chips in the browser.                          |
+| search_sort                     | list of [MediaType][#media-type-options]                                  | No       | album       | Order to display search results in the browser.                            |
 
 #### WARNING:
 `playlists_allow_removing_tracks` is experimental and **VERY** risky. Music Assistant uses the position in a playlist to determine which tracks to remove. However, it does not provide an updated playlist when tracks are removed, instead waiting for its next refresh.
