@@ -5,6 +5,7 @@ export default {
   "browser.collections.track_count": "tracks",
   "browser.collections.playlist.unknown_owner": "Unknown",
   "browser.collections.podcast.episodes": "episodes",
+  "browser.collections.label.no_tracks": "No tracks were found!",
   "browser.enqueue.play": "Play Now",
   "browser.enqueue.next": "Play Next",
   "browser.enqueue.play_clear": "Play Now & Clear Queue",

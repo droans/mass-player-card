@@ -117,6 +117,27 @@ export default css`
     justify-self: center;
     top: 2em;
   }
+  .no-tracks.div {
+    display: flex;
+    flex-direction: column;
+    padding-top: 6rem;
+    opacity: 75%;
+  }
+  .no-tracks.icon {
+    align-self: center;
+  }
+  .no-tracks.svg {
+    --mdc-icon-size: 10rem;
+    fill: var(--md-sys-color-on-background);
+  }
+  .no-tracks.text {
+    font-size: 2rem;
+    font-stretch: 60%;
+    font-weight: 200;
+    font-variation-settings: "ROND" 100;
+    text-align: center;
+  }
+
   #overview {
     display: block;
     width: 0%;

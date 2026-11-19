@@ -71,7 +71,7 @@ export class MassBrowserAlbumView extends BrowserViewBase {
       this.hass,
     ) as string;
     const loadingLabel = getTranslation("browser.loading", this.hass) as string;
-    const trackString = this.tracks?.length
+    const trackString = this.tracks
       ? `${this.tracks.length.toString()} ${trackLabel}`
       : loadingLabel;
     const metadata = this.albumMetadata?.response;
