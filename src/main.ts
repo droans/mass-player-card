@@ -268,7 +268,6 @@ export class MusicAssistantPlayerCard extends LitElement {
     this.createError(message);
   };
 
-  /* eslint-disable unicorn/template-indent */
   protected renderPlayers() {
     return cache(
       this.config.players.enabled && this.active_section == Sections.PLAYERS
@@ -322,7 +321,6 @@ export class MusicAssistantPlayerCard extends LitElement {
         : html``,
     );
   }
-  /* eslint-enable unicorn/template-indent */
   protected renderTabs() {
     return html`
       <div id="navbar">
