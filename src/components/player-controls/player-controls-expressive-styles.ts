@@ -120,6 +120,12 @@ export default css`
   #button-pause {
     --button-button-width: var(--pause-button-width);
   }
+  #button-skip-backwards,
+  #button-skip-forwards {
+    --button-button-height: 3.5rem;
+    --button-button-width: 3.5rem;
+    place-content: center;
+  }
 
   #div-controls {
     container-name: controls;
