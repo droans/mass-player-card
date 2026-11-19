@@ -553,7 +553,6 @@ Multiple elements on the Music Player tab can be hidden. By default, all element
 | Parameter           | Type | Required | Default     | Description                                   |
 |---------------------|------|----------|-------------|-----------------------------------------------|
 | header              | bool  | No       | false       | Hides the entire header                      |
-| header_title        | bool  | No       | false       | Hides the "Media Player" title in the header |
 | player_selector     | bool  | No       | false       | Hides the player selector button             |
 | group_selector      | bool  | No       | false       | Hides the grouped player volume menu         |
 | player_name         | bool  | No       | false       | Hides the player name                        |
@@ -568,6 +567,9 @@ Multiple elements on the Music Player tab can be hidden. By default, all element
 | favorite_button     | bool  | No       | false       | Hides the favorite button                    |
 | volume              | bool  | No       | false       | Hides the volume button                      |
 | mute_button         | bool  | No       | false       | Hides the mute button                        |
+| menu                | bool  | No       | false       | Hides the menu for crossfade/autoplay        |
+| crossfade_button    | bool  | No       | false       | Hides the crossfade button                   |
+| autoplay_button     | bool  | No       | false       | Hides the autoplay button                    |
 
 </detail>
 
@@ -800,7 +802,6 @@ Multiple elements on the players tab can be hidden. By default, all elements are
 | header          | bool  | No       | false       | Hides the entire header                 |
 | header_title    | bool  | No       | false       | Hides the "Players" title in the header |
 | action_buttons  | bool  | No       | false       | Hides the action buttons                |
-| join_button     | bool  | No       | false       | Hides the join button                   |
 | transfer_button | bool  | No       | false       | Hides the transfer button               |
 
 # FAQs

@@ -190,10 +190,10 @@ const MEDIA_BROWSER_HIDDEN_ITEMS = [
   "play_next_clear_queue_button",
   "back_button",
   "search_button",
-  "filter_button",
   "titles",
   "header",
   "header_title",
+  "chips",
 ];
 
 function favoritesConfigForm(section: string) {
