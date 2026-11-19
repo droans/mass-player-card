@@ -193,39 +193,6 @@ player:
     favorite_button: false
     volume: false
     mute_button: false
-  layout:
-    controls_layout: compact
-    hide_labels: false
-    artwork_size: large
-    icons:
-      shuffle:
-        size: small
-        box_shadow: false
-        label: true
-      previous:
-        size: small
-        box_shadow: false
-        label: true
-      play_pause:
-        size: large
-        box_shadow: true
-        label: true
-      next:
-        size: small
-        box_shadow: false
-        label: true
-      repeat:
-        size: small
-        box_shadow: false
-        label: true
-      power:
-        size: small
-        box_shadow: false
-        label: true
-      favorite:
-        size: small
-        box_shadow: false
-        label: true
 players:
   enabled: true
   hide:
@@ -391,12 +358,6 @@ queue:
   show_artist_names: true
 player:
   enabled: true
-  layout:
-    controls_layout: spaced
-    icons:
-      play_pause:
-        size: small
-        box_shadow: true
 players:
   enabled: true
 media_browser:
@@ -584,7 +545,6 @@ Certain elements across the different sections can be hidden or displayed depend
 |-----------|-------------------------------------------------------------------------|----------|---------|---------------------------------|
 | enabled   | bool                                                                    | No       | true    | Enable/disable music player tab |
 | hide      | [MusicPlayerHiddenElementsConfig](#music-player-hidden-elements-config) | No       | N/A     | See below                       |
-| layout    | [MusicPlayerLayoutConfig](#music-player-layout-config)                  | No       | N/A     | See below                       |
 
 
 #### Music Player Hidden Elements Config
@@ -608,59 +568,6 @@ Multiple elements on the Music Player tab can be hidden. By default, all element
 | favorite_button     | bool  | No       | false       | Hides the favorite button                    |
 | volume              | bool  | No       | false       | Hides the volume button                      |
 | mute_button         | bool  | No       | false       | Hides the mute button                        |
-
-#### Music Player Layout Config
-The layout of the control buttons can be adjusted to your liking. Use the full default configuration below as an example.
-
-<detail>
-<summary>Full Default Configuration</summary>
-
-```yaml
-type: custom:mass-player-card
-player:
-  layout:
-    controls_layout: compact          # Options: compact or spaced (default: compact)
-    artwork_size: large               # Options: small, medium, large (default: large)
-    hide_labels: false                # Options: True/False (default: false)
-                                      # Note: Medium/Large will display in the background behind the header and player controls. Small will display on its own.
-    icons:
-      shuffle:
-        size: small                   # Options: small or large (default: small)
-        box_shadow: false             # Options: True/False (default: false)
-        label: true                   # Options: True/False (default: false)
-                                      # Note: Label will never show if size is large
-      previous:
-        size: small                   # Options: small or large (default: small)
-        box_shadow: false             # Options: True/False (default: false)
-        label: false                  # Options: True/False (default: false)
-                                      # Note: Label will never show if size is large
-      next:
-        size: small                   # Options: small or large (default: small)
-        box_shadow: false             # Options: True/False (default: false)
-        label: false                  # Options: True/False (default: false)
-                                      # Note: Label will never show if size is large
-      repeat:
-        size: small                   # Options: small or large (default: small)
-        box_shadow: false             # Options: True/False (default: false)
-        label: true                   # Options: True/False (default: false)
-                                      # Note: Label will never show if size is large
-      play_pause:
-        size: large                   # Options: small or large (default: small)
-        box_shadow: true              # Options: True/False (default: false)
-        label: false                  # Options: True/False (default: false)
-                                      # Note: Label will never show if size is large
-      power:
-        size: large                   # Options: small or large (default: small)
-        box_shadow: true              # Options: True/False (default: false)
-        label: false                  # Options: True/False (default: false)
-                                      # Note: Label will never show if size is large
-      favorite:
-        size: large                   # Options: small or large (default: small)
-        box_shadow: true              # Options: True/False (default: false)
-        label: false                  # Options: True/False (default: false)
-                                      # Note: Label will never show if size is large
-
-```
 
 </detail>
 

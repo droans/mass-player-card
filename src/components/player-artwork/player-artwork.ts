@@ -1,5 +1,13 @@
+import "@droans/webawesome/dist/components/carousel-item/carousel-item.js";
+import type WaCarouselItem from "@droans/webawesome/dist/components/carousel-item/carousel-item.js";
+import "@droans/webawesome/dist/components/carousel/carousel.js";
+import type WaCarousel from "@droans/webawesome/dist/components/carousel/carousel.js";
 import { consume } from "@lit/context";
 import { CSSResultGroup, html, LitElement, TemplateResult } from "lit";
+import { customElement, query, queryAll, state } from "lit/decorators.js";
+import { Config } from "../../config/config";
+import { PlayerConfig } from "../../config/player";
+import { VibrationPattern } from "../../const/common";
 import {
   activeMediaPlayerContext,
   configContext,
@@ -9,25 +17,17 @@ import {
   musicPlayerConfigContext,
   queueContext,
 } from "../../const/context";
-import { customElement, query, queryAll, state } from "lit/decorators.js";
-import { PlayerConfig } from "../../config/player";
+import { Thumbnail } from "../../const/enums";
+import { Icons } from "../../const/icons";
 import {
   ExtendedHass,
   ExtendedHassEntity,
   QueueItems,
 } from "../../const/types";
 import { MassCardController } from "../../controller/controller";
-import { Icons } from "../../const/icons";
+import { asyncImageURLWithFallback } from "../../utils/thumbnails";
 import { delay, jsonMatch, playerHasUpdated } from "../../utils/utility";
 import styles from "./player-artwork-styles";
-import { Thumbnail } from "../../const/enums";
-import type WaCarouselItem from "@droans/webawesome/dist/components/carousel-item/carousel-item.js";
-import type WaCarousel from "@droans/webawesome/dist/components/carousel/carousel.js";
-import "@droans/webawesome/dist/components/carousel/carousel.js";
-import "@droans/webawesome/dist/components/carousel-item/carousel-item.js";
-import { VibrationPattern } from "../../const/common";
-import { Config } from "../../config/config";
-import { asyncImageURLWithFallback } from "../../utils/thumbnails";
 
 @customElement("mpc-player-artwork")
 export class MassPlayerArtwork extends LitElement {
@@ -424,7 +424,6 @@ export class MassPlayerArtwork extends LitElement {
     if (!activeItem) {
       return this.renderEmptyQueue();
     }
-    const size = this.playerConfig.layout.artwork_size;
     const attributes = this.activePlayer.attributes;
     const url = attributes.entity_picture_local ?? attributes.entity_picture;
     return html`
@@ -433,19 +432,14 @@ export class MassPlayerArtwork extends LitElement {
         data-queueitem="${activeItem.queue_item_id}"
       >
         <div class="slot">
-          <img
-            class="artwork ${size}"
-            id="img-playing"
-            src="${url}"
-            loading="lazy"
-          />
+          <img class="artwork" id="img-playing" src="${url}" loading="lazy" />
         </div>
       </wa-carousel-item>
     `;
   }
 
   protected render(): TemplateResult {
-    const size = `${this.playerConfig.layout.artwork_size} ${this.Config.panel ? ` panel` : ``}`;
+    const size = this.Config.panel ? ` panel` : ``;
     return html`
       <wa-carousel
         id="carousel"
