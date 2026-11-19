@@ -17,12 +17,6 @@ export default css`
     --button-button-width: 35px;
     --button-padding: 0px;
   }
-  #container {
-    box-shadow: unset;
-    overflow: hidden;
-    height: 98%;
-    border-radius: var(--expressive-border-radius-container);
-  }
   .chip.button {
     --ha-button-start-border-radius: 16px;
     --ha-button-end-border-radius: 16px;
@@ -34,12 +28,22 @@ export default css`
   .chip-title {
     padding-right: 8px;
   }
+  .collection-view {
+    height: 100%;
+  }
+  #container {
+    box-shadow: unset;
+    overflow: hidden;
+    height: var(--mass-player-card-height);
+    border-radius: var(--expressive-border-radius-container);
+    display: flex;
+    flex-direction: column;
+  }
   #mass-browser {
     overflow-y: scroll;
     scrollbar-width: none;
-    padding-bottom: 8em;
     background-color: var(--md-sys-color-background, var(--ha-card-background));
-    height: calc(100% - 8em);
+    height: 100%;
     border-radius: var(--expressive-border-radius-container);
   }
   sl-input::part(base) {

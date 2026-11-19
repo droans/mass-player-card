@@ -205,6 +205,7 @@ export default css`
     font-family: var(--expressive-font-family);
     font-variation-settings: "ROND" 100;
     text-transform: uppercase;
+    width: 100%;
   }
   .title.track {
     font-size: 1.3em;

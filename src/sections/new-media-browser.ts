@@ -672,6 +672,7 @@ export class MediaBrowser extends LitElement {
   protected renderAlbumView = (): TemplateResult => {
     return html`
       <mpc-collection-album-view
+        class="collection-view"
         .collectionData=${this.activeCollectionData}
         .onEnqueueAction=${this.onPlaylistEnqueue}
       ></mpc-collection-album-view>
@@ -680,6 +681,7 @@ export class MediaBrowser extends LitElement {
   protected renderArtistView = (): TemplateResult => {
     return html`
       <mpc-collection-artist-view
+        class="collection-view"
         .collectionData=${this.activeCollectionData}
         .onEnqueueAction=${this.onPlaylistEnqueue}
       ></mpc-collection-artist-view>
@@ -688,6 +690,7 @@ export class MediaBrowser extends LitElement {
   protected renderPodcastView = (): TemplateResult => {
     return html`
       <mpc-collection-podcast-view
+        class="collection-view"
         .collectionData=${this.activeCollectionData}
         .onEnqueueAction=${this.onPlaylistEnqueue}
       ></mpc-collection-podcast-view>
@@ -696,6 +699,7 @@ export class MediaBrowser extends LitElement {
   protected renderPlaylistView = (): TemplateResult => {
     return html`
       <mpc-collection-playlist-view
+        class="collection-view"
         .collectionData=${this.activeCollectionData}
         .onEnqueueAction=${this.onPlaylistEnqueue}
       ></mpc-collection-playlist-view>

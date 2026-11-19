@@ -74,12 +74,10 @@ export default css`
     text-align: end;
   }
   #container {
-    height: calc(100% - 1em);
     overflow: hidden;
-    background-color: var(
-      --md-sys-color-secondary-container,
-      var(--ha-card-background)
-    );
+    display: flex;
+    flex-direction: column;
+    height: 100%;
   }
   #enqueue {
     display: flex;
@@ -90,19 +88,14 @@ export default css`
     z-index: 1;
   }
   #header {
-    height: var(--view-header-height);
     display: flex;
-    position: absolute;
     width: 100%;
-    background-color: var(
-      --md-sys-color-secondary-container,
-      var(--ha-card-background)
-    );
     z-index: 1;
     height: var(--view-header-height);
     border-top-left-radius: var(--default-border-radius);
     border-top-right-radius: var(--default-border-radius);
     z-index: 2;
+    padding-bottom: 1.5rem;
   }
   #img-header {
     display: flex;
@@ -117,6 +110,27 @@ export default css`
     justify-self: center;
     top: 2em;
   }
+  .no-tracks.div {
+    display: flex;
+    flex-direction: column;
+    padding-top: 6rem;
+    opacity: 75%;
+  }
+  .no-tracks.icon {
+    align-self: center;
+  }
+  .no-tracks.svg {
+    --mdc-icon-size: 10rem;
+    fill: var(--md-sys-color-on-background);
+  }
+  .no-tracks.text {
+    font-size: 2rem;
+    font-stretch: 60%;
+    font-weight: 200;
+    font-variation-settings: "ROND" 100;
+    text-align: center;
+  }
+
   #overview {
     display: block;
     width: 0%;
@@ -151,14 +165,9 @@ export default css`
     padding-right: 4px;
   }
   #tracks {
-    height: calc(var(--mass-player-card-height) - var(--navbar-height));
-    padding-bottom: var(--navbar-height);
-    padding-top: calc(
-      var(--view-header-height) 0 var(--view-header-min-height)
-    );
     position: relative;
     scrollbar-width: none;
-    top: var(--view-header-height);
+    height: 98%;
   }
   #tracks:not(.no-scroll) #virtualizer {
     overflow: scroll;
@@ -167,6 +176,7 @@ export default css`
     overflow: hidden;
     border-top-left-radius: var(--default-border-radius);
     border-top-right-radius: var(--default-border-radius);
+    height: 100%;
   }
   #tracks-length {
     margin-right: 0.5em;

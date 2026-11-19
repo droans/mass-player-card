@@ -1,23 +1,16 @@
+import { consume } from "@lit/context";
 import { html, LitElement, PropertyValues, TemplateResult } from "lit";
-import "../lit-virtualizer/lit-virtualizer";
-import {
-  ExtendedHass,
-  ExtendedHassEntity,
-  ListItems,
-  mediaCardAlbumData,
-  mediaCardArtistData,
-  mediaCardCollectionType,
-  mediaCardPlaylistData,
-  mediaCardPodcastData,
-} from "../../const/types";
+import { property, query, state } from "lit/decorators.js";
+import { cache } from "lit/directives/cache.js";
+import { PodcastEpisode } from "mass-queue-types/packages/mass_queue/types/media-items";
+import { Track, Tracks } from "mass-queue-types/packages/mass_queue/utils";
+import BrowserActions from "../../actions/browser-actions";
+import { Config, EntityConfig } from "../../config/config";
 import {
   HIDDEN_BUTTON_VALUE,
   MediaBrowserConfig,
   MediaBrowserHiddenElementsConfig,
 } from "../../config/media-browser";
-import { Icons } from "../../const/icons";
-import { property, query, state } from "lit/decorators.js";
-import { Config, EntityConfig } from "../../config/config";
 import { CardEnqueueService } from "../../const/actions";
 import {
   activeEntityConfigContext,
@@ -29,19 +22,27 @@ import {
   mediaBrowserHiddenElementsConfigContext,
   useVibrantContext,
 } from "../../const/context";
-import { consume } from "@lit/context";
-import BrowserActions from "../../actions/browser-actions";
-import { Track, Tracks } from "mass-queue-types/packages/mass_queue/utils";
-import { HTMLImageElementEvent, MenuButtonEventData } from "../../const/events";
-import { getEnqueueButtons } from "../../const/media-browser";
 import { EnqueueOptions, Thumbnail } from "../../const/enums";
+import { HTMLImageElementEvent, MenuButtonEventData } from "../../const/events";
+import { Icons } from "../../const/icons";
+import { getEnqueueButtons } from "../../const/media-browser";
+import {
+  ExtendedHass,
+  ExtendedHassEntity,
+  ListItems,
+  mediaCardAlbumData,
+  mediaCardArtistData,
+  mediaCardCollectionType,
+  mediaCardPlaylistData,
+  mediaCardPodcastData,
+} from "../../const/types";
 import {
   asyncImageURLWithFallback,
   getThumbnail,
 } from "../../utils/thumbnails";
-import { cache } from "lit/directives/cache.js";
+import { getTranslation } from "../../utils/translations";
+import "../lit-virtualizer/lit-virtualizer";
 import "../marquee-text/marquee-text";
-import { PodcastEpisode } from "mass-queue-types/packages/mass_queue/types/media-items";
 import "./browser-collection-track-row";
 
 export class BrowserViewBase extends LitElement {
@@ -358,8 +359,28 @@ export class BrowserViewBase extends LitElement {
     `);
   }
 
+  protected renderNoTracks(): TemplateResult {
+    const translation = getTranslation(
+      "browser.collections.label.no_tracks",
+      this.hass,
+    );
+    return html`
+      <div id="browser-view" style="height: 100%;">
+        <div class="no-tracks div">
+          <div class="no-tracks icon">
+            <ha-svg-icon
+              class="no-tracks svg"
+              .path=${this.Icons?.SEARCH}
+            ></ha-svg-icon>
+          </div>
+          <div class="no-tracks text">${translation}</div>
+        </div>
+      </div>
+    `;
+  }
+
   protected renderTracks(): TemplateResult {
-    if (!this.tracks?.length) {
+    if (!this.tracks) {
       return html`
         <link
           href="https://cdn.jsdelivr.net/npm/beercss@4.0.20/dist/cdn/beer.min.css"
@@ -369,6 +390,9 @@ export class BrowserViewBase extends LitElement {
           <div class="shape loading-indicator extra"></div>
         </div>
       `;
+    }
+    if (this.tracks.length === 0) {
+      return this.renderNoTracks();
     }
     return html`
       <div id="virtualizer">

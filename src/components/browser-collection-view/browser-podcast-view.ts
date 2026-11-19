@@ -79,7 +79,7 @@ export class MassBrowserPodcastView extends BrowserViewBase {
       this.hass,
     ) as string;
     const loadingLabel = getTranslation("browser.loading", this.hass) as string;
-    const trackString = this.tracks?.length
+    const trackString = this.tracks
       ? `${this.tracks.length.toString()} ${episodeLabel}`
       : loadingLabel;
     const desc = this.podcastMetadata?.response.metadata.description ?? ``;
