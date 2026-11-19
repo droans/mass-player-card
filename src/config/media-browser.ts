@@ -1,7 +1,7 @@
 import { mdiCreation, mdiHeart, mdiHistory } from "@mdi/js";
 
-import { BaseHiddenElementsConfig, Config } from "./config";
 import { hiddenElementsConfigItem } from "../utils/config";
+import { BaseHiddenElementsConfig, Config } from "./config";
 
 export interface MediaBrowserConfig {
   enabled: boolean;
@@ -15,6 +15,7 @@ export interface MediaBrowserConfig {
   initial_media_selection: ConfigMediaTypes;
   show_artist_subtitles: boolean;
   chip_sort: ConfigMediaTypes[];
+  search_sort: ConfigMediaTypes[];
 }
 
 export interface FavoritesConfig {
@@ -177,6 +178,7 @@ export const DEFAULT_MEDIA_BROWSER_CONFIG: MediaBrowserConfig = {
   show_artist_subtitles: true,
   initial_media_selection: DEFAULT_INITIAL_MEDIA_SELECTION,
   chip_sort: DEFAULT_CHIP_SORT,
+  search_sort: DEFAULT_CHIP_SORT,
 };
 
 const MEDIA_BROWSER_HIDDEN_ITEMS = [

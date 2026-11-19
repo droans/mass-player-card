@@ -790,17 +790,17 @@ export class MediaBrowser extends LitElement {
       return html``;
     }
     const cards = this.cards.search;
-    return html`
-      <div class="broser-card-section search">
-        ${this.renderSearchSection("browser.sections.album", "album", cards.album)}
-        ${this.renderSearchSection("browser.sections.artist", "artist", cards.artist)}
-        ${this.renderSearchSection("browser.sections.audiobook", "audiobook", cards.audiobook)}
-        ${this.renderSearchSection("browser.sections.playlist", "playlist", cards.playlist)}
-        ${this.renderSearchSection("browser.sections.podcast", "podcast", cards.podcast)}
-        ${this.renderSearchSection("browser.sections.radio", "radio", cards.radio)}
-        ${this.renderSearchSection("browser.sections.track", "track", cards.track)}
-      </div>
-    `;
+    const searchOrder = this.config.search_sort;
+    const cardsHtml = searchOrder.map((item) => {
+      const translationKey = MEDIA_TYPE_TRANSLATION_KEYS[item];
+      const mediaCards = cards[item];
+      // eslint-disable-next-line @typescript-eslint/no-unnecessary-condition
+      if ((mediaCards?.length ?? 0) > 0) {
+        return this.renderSearchSection(translationKey, item, mediaCards);
+      }
+      return html``;
+    });
+    return html` <div class="browser-card-section search">${cardsHtml}</div> `;
   }
   protected renderBrowserCards(): DirectiveResult {
     /* eslint-disable unicorn/template-indent */
