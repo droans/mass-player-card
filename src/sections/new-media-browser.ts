@@ -659,7 +659,7 @@ export class MediaBrowser extends LitElement {
       return html``;
     }
     const chips = this.chips;
-    const chipsHtml = this.config.chip_order.map((chipName) => {
+    const chipsHtml = this.config.chip_sort.map((chipName) => {
       const chip = chips[chipName];
       return this.renderChip(chip);
     });

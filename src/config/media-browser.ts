@@ -14,7 +14,7 @@ export interface MediaBrowserConfig {
   default_enqueue_option: EnqueueConfigOptions;
   initial_media_selection: ConfigMediaTypes;
   show_artist_subtitles: boolean;
-  chip_order: ConfigMediaTypes[];
+  chip_sort: ConfigMediaTypes[];
 }
 
 export interface FavoritesConfig {
@@ -75,7 +75,7 @@ export type ConfigMediaTypes =
 
 const DEFAULT_INITIAL_MEDIA_SELECTION: ConfigMediaTypes = "album";
 
-export const DEFAULT_CHIP_ORDER: ConfigMediaTypes[] = [
+export const DEFAULT_CHIP_SORT: ConfigMediaTypes[] = [
   "album",
   "artist",
   "audiobook",
@@ -176,7 +176,7 @@ export const DEFAULT_MEDIA_BROWSER_CONFIG: MediaBrowserConfig = {
   default_enqueue_option: "play_now",
   show_artist_subtitles: true,
   initial_media_selection: DEFAULT_INITIAL_MEDIA_SELECTION,
-  chip_order: DEFAULT_CHIP_ORDER,
+  chip_sort: DEFAULT_CHIP_SORT,
 };
 
 const MEDIA_BROWSER_HIDDEN_ITEMS = [
