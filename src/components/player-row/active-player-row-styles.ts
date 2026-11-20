@@ -98,6 +98,12 @@ export default css`
     display: flex;
     gap: 0.25rem;
   }
+  .track {
+    text-wrap: nowrap;
+    overflow: hidden;
+    text-overflow: ellipsis;
+    flex: 1;
+  }
   .thumbnail {
     height: calc(var(--media-row-thumbnail-height) * 1.5);
     border-radius: 50%;
