@@ -722,6 +722,8 @@ export class MediaBrowser extends LitElement {
         class="collection-view"
         .collectionData=${this.activeCollectionData}
         .onEnqueueAction=${this.onPlaylistEnqueue}
+        .onCollectionSelectAction=${this.onSelect}
+        .onCollectionDrillAction=${this.onDrillDown}
       ></mpc-collection-artist-view>
     `;
   };

@@ -6,6 +6,7 @@ export default {
   "browser.collections.playlist.unknown_owner": "Unknown",
   "browser.collections.podcast.episodes": "episodes",
   "browser.collections.label.no_tracks": "No tracks were found!",
+  "browser.collections.label.similar_artists": "Similar Artists",
   "browser.enqueue.play": "Play Now",
   "browser.enqueue.next": "Play Next",
   "browser.enqueue.play_clear": "Play Now & Clear Queue",

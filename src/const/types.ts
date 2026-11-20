@@ -280,7 +280,7 @@ export interface getQueueResponse extends Omit<
   next_item: QueueItemSchema | null;
 }
 
-type MediaImageType =
+export type MediaImageType =
   | "thumb"
   | "landscape"
   | "fanart"
