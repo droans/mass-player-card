@@ -396,7 +396,7 @@ export class MusicPlayerCard extends LitElement {
     Render Header
   */
   protected renderHeader(): TemplateResult {
-    if (!this.cardConfig) {
+    if (!this.cardConfig || this.hiddenElements.header) {
       return html``;
     }
     return html`

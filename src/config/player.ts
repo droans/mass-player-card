@@ -4,6 +4,8 @@ import { BaseHiddenElementsConfig, Config } from "./config";
 export interface PlayerConfig {
   enabled: boolean;
   hide: PlayerHiddenElementsConfig;
+  skip_forward_seconds: number;
+  skip_backwards_seconds: number;
 }
 
 export interface PlayerControlsHiddenElementsConfig extends BaseHiddenElementsConfig {
@@ -11,10 +13,11 @@ export interface PlayerControlsHiddenElementsConfig extends BaseHiddenElementsCo
   repeat_button: boolean;
   shuffle_button: boolean;
   favorite_button: boolean;
+  skip_forward_button: boolean;
+  skip_backwards_button: boolean;
 }
-export interface PlayerHiddenElementsConfig extends BaseHiddenElementsConfig {
+export interface PlayerHiddenElementsConfig extends PlayerControlsHiddenElementsConfig {
   header: boolean;
-  header_title: boolean;
   player_selector: boolean;
   group_selector: boolean;
   player_name: boolean;
@@ -23,10 +26,6 @@ export interface PlayerHiddenElementsConfig extends BaseHiddenElementsConfig {
   track_artist: boolean;
   track_progress_time: boolean;
   track_progress_bar: boolean;
-  power_button: boolean;
-  repeat_button: boolean;
-  shuffle_button: boolean;
-  favorite_button: boolean;
   volume: boolean;
   mute_button: boolean;
   menu: boolean;
@@ -50,11 +49,12 @@ export const DEFAULT_PLAYER_HIDDEN_ELEMENTS_CONFIG: PlayerHiddenElementsConfig =
     track_progress_bar: false,
     track_progress_time: false,
     track_title: false,
-    header_title: false,
     header: false,
     menu: false,
     crossfade_button: false,
     autoplay_button: false,
+    skip_backwards_button: false,
+    skip_forward_button: false,
   };
 export const DEFAULT_PLAYER_CONFIG: PlayerConfig = {
   enabled: true,
@@ -69,6 +69,10 @@ const PLAYER_HIDDEN_ITEMS = [
   "power_button",
   "favorite_button",
   "mute_button",
+  "crossfade_button",
+  "autoplay_button",
+  "skip_forward_button",
+  "skip_backwards_button",
   "volume",
   "track_title",
   "track_album",
@@ -77,9 +81,9 @@ const PLAYER_HIDDEN_ITEMS = [
   "track_progress_bar",
   "player_name",
   "header",
-  "header_title",
   "player_selector",
   "group_selector",
+  "menu",
 ];
 
 export function playerConfigForm() {

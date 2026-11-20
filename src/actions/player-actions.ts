@@ -1,7 +1,5 @@
 /* eslint-disable no-console */
 import { HassEntity } from "home-assistant-js-websocket";
-import { RepeatMode } from "../const/enums";
-import { ExtendedHass, ExtendedHassEntity, QueueItem } from "../const/types";
 import {
   getQueueItemsServiceResponse,
   getQueueItemsServiceSchema,
@@ -10,6 +8,9 @@ import {
   getInfoWSResponseSchema,
   getInfoWSServiceSchema,
 } from "mass-queue-types/packages/mass_queue/ws/get_info";
+import { skipServiceSchema } from "../const/actions";
+import { RepeatMode } from "../const/enums";
+import { ExtendedHass, ExtendedHassEntity, QueueItem } from "../const/types";
 
 export default class PlayerActions {
   private _hass!: ExtendedHass;
@@ -167,6 +168,19 @@ export default class PlayerActions {
     } catch (error) {
       console.error(`Error unjoining players`, error);
     }
+  }
+  async actionSkip(playerEntity: ExtendedHassEntity, skipSeconds: number) {
+    const data: skipServiceSchema = {
+      type: "call_service",
+      domain: "mass_queue",
+      service: "skip",
+      service_data: {
+        entity: playerEntity.entity_id,
+        skip_seconds: skipSeconds,
+      },
+    };
+    console.log(data);
+    await this.hass.sendWS(data);
   }
   async actionAddToPlaylist(
     media_uri: string,

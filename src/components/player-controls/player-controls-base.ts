@@ -2,6 +2,10 @@ import { consume } from "@lit/context";
 import { LitElement, PropertyValues } from "lit";
 import { state } from "lit/decorators.js";
 import {
+  PlayerConfig,
+  PlayerControlsHiddenElementsConfig,
+} from "../../config/player";
+import {
   actionsControllerContext,
   activeMediaPlayerContext,
   activePlayerDataContext,
@@ -10,22 +14,16 @@ import {
   musicPlayerConfigContext,
   musicPlayerHiddenElementsConfigContext,
 } from "../../const/context";
-import { ActionsController } from "../../controller/actions";
-import { ExtendedHassEntity, PlayerData } from "../../const/types";
-import { Icons } from "../../const/icons";
-import { getIteratedRepeatMode } from "../../utils/music-player";
 import { RepeatMode } from "../../const/enums";
-import { jsonMatch } from "../../utils/utility";
-import {
-  PlayerConfig,
-  PlayerControlsHiddenElementsConfig,
-  PlayerLayoutConfig,
-} from "../../config/player";
-import { MassCardController } from "../../controller/controller";
 import { ForceUpdatePlayerDataEventData } from "../../const/events";
+import { Icons } from "../../const/icons";
+import { ExtendedHassEntity, PlayerData } from "../../const/types";
+import { ActionsController } from "../../controller/actions";
+import { MassCardController } from "../../controller/controller";
+import { getIteratedRepeatMode } from "../../utils/music-player";
+import { jsonMatch } from "../../utils/utility";
 
 export class MassPlayerControlsBase extends LitElement {
-  protected layoutConfig!: PlayerLayoutConfig;
   protected _config!: PlayerConfig;
 
   @consume({ context: activeMediaPlayerContext, subscribe: true })
@@ -38,7 +36,6 @@ export class MassPlayerControlsBase extends LitElement {
       return;
     }
     this._config = config;
-    this.layoutConfig = config.layout;
   }
   public get config() {
     return this._config;
@@ -73,8 +70,8 @@ export class MassPlayerControlsBase extends LitElement {
   public get playerData() {
     return this._playerData;
   }
-  /* 
-    eslint-disable 
+  /*
+    eslint-disable
       @typescript-eslint/no-explicit-any,
       @typescript-eslint/no-unsafe-assignment
   */
@@ -86,8 +83,8 @@ export class MassPlayerControlsBase extends LitElement {
     const event_ = new CustomEvent("force-update-player", { detail: data });
     this.controller.host.dispatchEvent(event_);
   }
-  /* 
-    eslint-enable 
+  /*
+    eslint-enable
       @typescript-eslint/no-explicit-any,
       @typescript-eslint/no-unsafe-assignment
   */
@@ -138,6 +135,14 @@ export class MassPlayerControlsBase extends LitElement {
     } else {
       await this.actions.actionAddFavorite();
     }
+  };
+  protected onSkipBackwards = async () => {
+    const skipSeconds = -1 * Math.abs(this.config.skip_backwards_seconds);
+    await this.actions.actionSkip(skipSeconds);
+  };
+  protected onSkipForwards = async () => {
+    const skipSeconds = this.config.skip_forward_seconds;
+    await this.actions.actionSkip(skipSeconds);
   };
   protected shouldUpdate(_changedProperties: PropertyValues): boolean {
     return _changedProperties.size > 0;

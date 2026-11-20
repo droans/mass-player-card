@@ -19,6 +19,27 @@ export class MassPlayerControlsExpressive extends MassPlayerControlsBase {
     const event_ = new Event("open-add-to-playlist-dialog");
     this.controller.host.dispatchEvent(event_);
   };
+  protected renderSkipBackwards(): TemplateResult {
+    if (this.hiddenElements.skip_backwards_button) {
+      return html``;
+    }
+    return html`
+      <mpc-button
+        .onPressService=${this.onSkipBackwards}
+        role="filled-variant"
+        size="small"
+        id="button-skip-backwards"
+        elevation="-1"
+        class="mpc-button skip backwards"
+      >
+        <ha-svg-icon
+          .path=${this.Icons.SKIP_BACKWARD}
+          class="icons backwards"
+          id="icon-backwards"
+        ></ha-svg-icon>
+      </mpc-button>
+    `;
+  }
   protected renderPrevious(): TemplateResult {
     return html`
       <mpc-button
@@ -71,6 +92,27 @@ export class MassPlayerControlsExpressive extends MassPlayerControlsBase {
           .path=${this.Icons.SKIP_NEXT}
           class="icons next"
           id="icon-previous"
+        ></ha-svg-icon>
+      </mpc-button>
+    `;
+  }
+  protected renderSkipForwards(): TemplateResult {
+    if (this.hiddenElements.skip_backwards_button) {
+      return html``;
+    }
+    return html`
+      <mpc-button
+        .onPressService=${this.onSkipForwards}
+        role="filled-variant"
+        size="small"
+        id="button-skip-forwards"
+        elevation="-1"
+        class="mpc-button skip forwards"
+      >
+        <ha-svg-icon
+          .path=${this.Icons.SKIP_FORWARD}
+          class="icons forwards"
+          id="icon-forwards"
         ></ha-svg-icon>
       </mpc-button>
     `;
@@ -199,7 +241,9 @@ export class MassPlayerControlsExpressive extends MassPlayerControlsBase {
   protected renderUpperControls(): TemplateResult {
     return html`
       <div id="player-controls-upper" class="player-controls">
-        ${this.renderPrevious()} ${this.renderPlayPause()} ${this.renderNext()}
+        ${this.renderSkipBackwards()} ${this.renderPrevious()}
+        ${this.renderPlayPause()} ${this.renderNext()}
+        ${this.renderSkipForwards()}
       </div>
     `;
   }
