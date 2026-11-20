@@ -128,8 +128,8 @@ export class MassPlayerArtwork extends LitElement {
     }
     this.queue[idx].playing = true;
     const item = this.queue[idx];
-    const media_content_id = item.media_content_id;
-    if (media_content_id == this.activePlayer.attributes.media_content_id) {
+    const mediaContentId = item.media_content_id;
+    if (mediaContentId == this.activePlayer.attributes.media_content_id) {
       return;
     }
     // eslint-disable-next-line @typescript-eslint/no-unnecessary-condition
@@ -264,16 +264,16 @@ export class MassPlayerArtwork extends LitElement {
       }
       if (item.playing) {
         const attributes = this.activePlayer.attributes;
-        const ent_img = attributes.entity_picture ?? url;
-        const ent_img_local = attributes.entity_picture_local ?? ent_img;
+        const entityImage = attributes.entity_picture ?? url;
+        const entityImageLocal = attributes.entity_picture_local ?? entityImage;
         const fallbacks: string[] = [];
-        if (ent_img) {
-          fallbacks.push(ent_img);
+        if (entityImage) {
+          fallbacks.push(entityImage);
         }
         fallbacks.push(url);
         void this.updateCarouselImg(
           idx,
-          ent_img_local,
+          entityImageLocal,
           item.queue_item_id,
           fallbacks,
           true,
@@ -285,8 +285,8 @@ export class MassPlayerArtwork extends LitElement {
   }
   protected async updateCarouselImg(
     index: number,
-    img_url: string,
-    queue_item_id: string,
+    imageUrl: string,
+    queueItemId: string,
     fallbacks: string[] = [],
     playing = false,
   ) {
@@ -296,7 +296,7 @@ export class MassPlayerArtwork extends LitElement {
     }
     const imgs = await asyncImageURLWithFallback(
       this.hass,
-      img_url,
+      imageUrl,
       Thumbnail.CLEFT,
       this.Config.download_local,
       this.Config.proxy_all_artwork,
@@ -305,7 +305,7 @@ export class MassPlayerArtwork extends LitElement {
       imgs.image_url.length > 0 ? imgs.image_url : imgs.fallback_url;
     // eslint-disable-next-line unicorn/prefer-add-event-listener
     element.onerror = async () => {
-      const urls = [img_url, ...fallbacks, Thumbnail.CLEFT];
+      const urls = [imageUrl, ...fallbacks, Thumbnail.CLEFT];
       const currentIdx = urls.findIndex((item) => {
         return element.src == item;
       });
@@ -319,7 +319,7 @@ export class MassPlayerArtwork extends LitElement {
       );
       element.src = imgUrls.image_url;
     };
-    element.parentElement?.setAttribute("data-queueitem", queue_item_id);
+    element.parentElement?.setAttribute("data-queueitem", queueItemId);
     if (playing) {
       element.setAttribute("id", "img-playing");
       element.parentElement?.setAttribute("id", "active-slide");

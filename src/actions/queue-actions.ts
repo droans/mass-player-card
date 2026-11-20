@@ -10,9 +10,9 @@ export default class QueueActions {
   private _hass!: ExtendedHass;
   public _player_entity!: string;
 
-  constructor(hass: ExtendedHass, player_entity: string) {
+  constructor(hass: ExtendedHass, playerEntity: string) {
     this.hass = hass;
-    this.player_entity = player_entity;
+    this.player_entity = playerEntity;
   }
   public set hass(hass: ExtendedHass) {
     // eslint-disable-next-line @typescript-eslint/no-unnecessary-condition
@@ -62,59 +62,59 @@ export default class QueueActions {
     const result: QueueItems = resp.response[this.player_entity];
     return result;
   }
-  async playQueueItem(queue_item_id: string) {
+  async playQueueItem(queueItemId: string) {
     try {
       await this.hass.callService("mass_queue", "play_queue_item", {
         entity: this.player_entity,
-        queue_item_id,
+        queue_item_id: queueItemId,
       });
     } catch (error) {
       console.error("Error selecting queue item", error);
     }
   }
-  async removeQueueItem(queue_item_id: string) {
+  async removeQueueItem(queueItemId: string) {
     try {
       await this.hass.callService("mass_queue", "remove_queue_item", {
         entity: this.player_entity,
-        queue_item_id,
+        queue_item_id: queueItemId,
       });
     } catch (error) {
       console.error("Error removing queue item", error);
     }
   }
-  async MoveQueueItemNext(queue_item_id: string) {
+  async MoveQueueItemNext(queueItemId: string) {
     try {
       await this.hass.callService("mass_queue", "move_queue_item_next", {
         entity: this.player_entity,
-        queue_item_id,
+        queue_item_id: queueItemId,
       });
     } catch (error) {
       console.error("Error moving queue item next", error);
     }
   }
-  async MoveQueueItemUp(queue_item_id: string) {
+  async MoveQueueItemUp(queueItemId: string) {
     try {
       await this.hass.callService("mass_queue", "move_queue_item_up", {
         entity: this.player_entity,
-        queue_item_id,
+        queue_item_id: queueItemId,
       });
     } catch (error) {
       console.error("Error moving queue item up", error);
     }
   }
-  async MoveQueueItemDown(queue_item_id: string) {
+  async MoveQueueItemDown(queueItemId: string) {
     try {
       await this.hass.callService("mass_queue", "move_queue_item_down", {
         entity: this.player_entity,
-        queue_item_id,
+        queue_item_id: queueItemId,
       });
     } catch (error) {
       console.error("Error moving queue item down", error);
     }
   }
-  async clearQueue(entity_id: string = this.player_entity) {
+  async clearQueue(entityId: string = this.player_entity) {
     await this.hass.callService("media_player", "clear_playlist", {
-      entity_id,
+      entity_id: entityId,
     });
   }
   async getLocalImage(url: string) {

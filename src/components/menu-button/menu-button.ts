@@ -140,11 +140,11 @@ export class MassMenuButton extends LitElement {
     }
     const ct = this.items.length;
     return this.items.map((item, idx) => {
-      const use_dividers = idx < ct - 1 && this.dividers;
+      const useDividers = idx < ct - 1 && this.dividers;
       return html`
         <mpc-menu-item
           class="menu-items"
-          ?divider=${use_dividers}
+          ?divider=${useDividers}
           ?vibrant=${this.useVibrant}
           ?selected=${this._selectedItem == item.option}
           .menuItem=${item}
@@ -156,12 +156,12 @@ export class MassMenuButton extends LitElement {
   }
 
   protected render() {
-    const vibrant_class = this.useVibrant ? `vibrant` : ``;
+    const vibrantClass = this.useVibrant ? `vibrant` : ``;
     return html`
       <div id="menu-button" part="menu-button">
         <ha-dropdown
           id="menu-select-menu"
-          class="${vibrant_class}"
+          class="${vibrantClass}"
           part="menu-select-menu"
           naturalMenuWidth
           placement="${this.placement}"

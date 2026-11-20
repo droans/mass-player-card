@@ -36,15 +36,15 @@ async function generateSectionBackgroundPart(
   hass: ExtendedHass,
   thumbnail: string,
   fallback: Thumbnail | string = Thumbnail.DISC,
-  download_local: boolean,
-  proxy_all: boolean,
+  downloadLocal: boolean,
+  proxyAll: boolean,
 ): Promise<TemplateResult> {
   const imgs = await asyncImageURLWithFallback(
     hass,
     thumbnail,
     fallback,
-    download_local,
-    proxy_all,
+    downloadLocal,
+    proxyAll,
   );
   return html`
     <img
@@ -59,8 +59,8 @@ async function generateSectionBackground(
   hass: ExtendedHass,
   cards: MediaCardItem[],
   fallback: Thumbnail,
-  download_local: boolean,
-  proxy_all: boolean,
+  downloadLocal: boolean,
+  proxyAll: boolean,
 ): Promise<TemplateResult> {
   const rng = [...Array(4).keys()];
   const promiseThumbnails: Promise<TemplateResult>[] = [];
@@ -72,78 +72,78 @@ async function generateSectionBackground(
         hass,
         cards[idx]?.thumbnail ?? fallback,
         fallback,
-        download_local,
-        proxy_all,
+        downloadLocal,
+        proxyAll,
       ),
     );
   });
   const thumbnails = await Promise.all(promiseThumbnails);
-  let thumbnail_html = html``;
+  let thumbnailHtml = html``;
   thumbnails.forEach((thumbnail) => {
-    thumbnail_html = html` ${thumbnail_html} ${thumbnail} `;
+    thumbnailHtml = html` ${thumbnailHtml} ${thumbnail} `;
   });
   return html`
     <div
       class="thumbnail"
       style="display: grid; grid-template-columns: 1fr 1fr; padding-bottom: 0%; height: unset; width: unset; padding-left: unset; padding-right: unset;"
     >
-      ${thumbnail_html}
+      ${thumbnailHtml}
     </div>
   `;
 }
 export async function generateFavoriteCard(
   hass: ExtendedHass,
-  media_type: MediaTypes,
+  mediaType: MediaTypes,
   cards: MediaCardItem[],
-  download_local: boolean,
-  proxy_all: boolean,
+  downloadLocal: boolean,
+  proxyAll: boolean,
 ): Promise<MediaCardItem> {
-  const thumbnail: Thumbnail = MediaTypeThumbnails[media_type];
-  const translate_key = `browser.sections.${media_type}`;
-  const title = getTranslation(translate_key, hass);
+  const thumbnail: Thumbnail = MediaTypeThumbnails[mediaType];
+  const translateKey = `browser.sections.${mediaType}`;
+  const title = getTranslation(translateKey, hass);
   return {
     title: title as string,
     background: await generateSectionBackground(
       hass,
       cards,
       thumbnail,
-      download_local,
-      proxy_all,
+      downloadLocal,
+      proxyAll,
     ),
     thumbnail,
     fallback: thumbnail,
     data: {
       type: "section",
       subtype: "favorites",
-      section: media_type,
+      section: mediaType,
     },
   };
 }
 export async function generateRecentsCard(
   hass: ExtendedHass,
-  media_type: MediaTypes,
+  mediaType: MediaTypes,
   cards: MediaCardItem[],
-  download_local: boolean,
-  proxy_all: boolean,
+  downloadLocal: boolean,
+  proxyAll: boolean,
 ): Promise<MediaCardItem> {
-  const thumbnail: Thumbnail = MediaTypeThumbnails[media_type];
-  const translate_key = `browser.sections.${media_type}`;
-  const title = getTranslation(translate_key, hass);
+  const thumbnail: Thumbnail = MediaTypeThumbnails[mediaType];
+  const translateKey = `browser.sections.${mediaType}`;
+  const title = getTranslation(translateKey, hass);
   return {
     title: title as string,
     background: await generateSectionBackground(
       hass,
       cards,
       thumbnail,
-      download_local,
-      proxy_all,
+      downloadLocal,
+      proxyAll,
     ),
     thumbnail,
     fallback: thumbnail,
     data: {
       type: "section",
       subtype: "recents",
-      section: media_type,
+      section: mediaType,
     },
   };
 }
@@ -151,8 +151,8 @@ export async function generateRecommendationsCard(
   hass: ExtendedHass,
   section: RecommendationSection,
   cards: MediaCardItem[],
-  download_local: boolean,
-  proxy_all: boolean,
+  downloadLocal: boolean,
+  proxyAll: boolean,
 ): Promise<MediaCardItem> {
   const thumbnail: Thumbnail = Thumbnail.CLEFT;
   return {
@@ -161,8 +161,8 @@ export async function generateRecommendationsCard(
       hass,
       cards,
       thumbnail,
-      download_local,
-      proxy_all,
+      downloadLocal,
+      proxyAll,
     ),
     thumbnail,
     fallback: thumbnail,
@@ -176,13 +176,13 @@ export async function generateRecommendationsCard(
 
 export function generateRecommendationSectionCards(
   section: RecommendationSection,
-  show_track_view: boolean,
+  showTrackView: boolean,
 ): MediaCardItem[] {
   const items = section.items;
   return items.map((item) => {
     const function_ = funcs[item.media_type];
     // eslint-disable-next-line @typescript-eslint/no-unnecessary-condition
-    if (function_ && show_track_view) {
+    if (function_ && showTrackView) {
       return function_(item.uri, item.image, item.name);
     }
     const r: MediaCardItem = {
@@ -218,14 +218,14 @@ export function generateCustomSectionCards(
 }
 export function generateFavoritesSectionCards(
   config: MediaLibraryItem[],
-  media_type: MediaTypes,
-  show_track_view: boolean,
+  mediaType: MediaTypes,
+  showTrackView: boolean,
 ): MediaCardItem[] {
-  const thumbnail = MediaTypeThumbnails[media_type];
+  const thumbnail = MediaTypeThumbnails[mediaType];
   return config.map((item) => {
     const function_ = funcs[item.media_type];
     // eslint-disable-next-line @typescript-eslint/no-unnecessary-condition
-    if (function_ && show_track_view) {
+    if (function_ && showTrackView) {
       const mediaArtists = item.artists ?? [];
       const artistNames = mediaArtists.map((artist) => {
         return artist.name;
@@ -254,21 +254,21 @@ export function generateFavoritesSectionCards(
   });
 }
 function generatePlaylistCard(
-  media_content_id: string,
-  media_image: string,
-  media_title: string,
+  mediaContentId: string,
+  mediaImage: string,
+  mediaTitle: string,
   // eslint-disable-next-line @typescript-eslint/no-unused-vars
   _mediaArtist = "",
 ): MediaCardItem {
   const data: mediaCardPlaylistData = {
     type: "playlist",
-    media_content_id,
-    media_image,
-    media_title,
+    media_content_id: mediaContentId,
+    media_image: mediaImage,
+    media_title: mediaTitle,
   };
   return {
-    title: media_title,
-    thumbnail: media_image,
+    title: mediaTitle,
+    thumbnail: mediaImage,
     fallback: Thumbnail.PLAYLIST,
     data,
   };
@@ -294,41 +294,41 @@ function generateAlbumCard(
   };
 }
 function generateArtistCard(
-  media_content_id: string,
-  media_image: string,
-  media_title: string,
+  mediaContentId: string,
+  mediaImage: string,
+  mediaTitle: string,
   // eslint-disable-next-line @typescript-eslint/no-unused-vars
   _mediaArtist = "",
 ): MediaCardItem {
   const data: mediaCardArtistData = {
     type: "artist",
-    media_content_id,
-    media_image,
-    media_title,
+    media_content_id: mediaContentId,
+    media_image: mediaImage,
+    media_title: mediaTitle,
   };
   return {
-    title: media_title,
-    thumbnail: media_image,
+    title: mediaTitle,
+    thumbnail: mediaImage,
     fallback: Thumbnail.PLAYLIST,
     data,
   };
 }
 function generatePodcastCard(
-  media_content_id: string,
-  media_image: string,
-  media_title: string,
+  mediaContentId: string,
+  mediaImage: string,
+  mediaTitle: string,
   // eslint-disable-next-line @typescript-eslint/no-unused-vars
   _mediaArtist = "",
 ): MediaCardItem {
   const data: mediaCardPodcastData = {
     type: "podcast",
-    media_content_id,
-    media_image,
-    media_title,
+    media_content_id: mediaContentId,
+    media_image: mediaImage,
+    media_title: mediaTitle,
   };
   return {
-    title: media_title,
-    thumbnail: media_image,
+    title: mediaTitle,
+    thumbnail: mediaImage,
     fallback: Thumbnail.PLAYLIST,
     data,
   };

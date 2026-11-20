@@ -62,13 +62,13 @@ export class MassCardPlayerSelector extends LitElement {
 
   @consume({ context: groupedPlayersContext, subscribe: true })
   private set groupedPlayersList(players: string[]) {
-    const card_players = this.playerEntities?.filter((entity) => {
+    const cardPlayers = this.playerEntities?.filter((entity) => {
       return players.includes(entity.entity_id);
     });
-    if (jsonMatch(this._groupedPlayers, card_players) || !card_players) {
+    if (jsonMatch(this._groupedPlayers, cardPlayers) || !cardPlayers) {
       return;
     }
-    this._groupedPlayers = card_players;
+    this._groupedPlayers = cardPlayers;
   }
   private get groupedPlayers() {
     return this._groupedPlayers;
@@ -85,7 +85,7 @@ export class MassCardPlayerSelector extends LitElement {
   };
 
   protected renderGroupedVolume(): TemplateResult {
-    const vol_level = this.groupVolumeLevel;
+    const volumeLevel = this.groupVolumeLevel;
     return html`
       <div class="grouped-players-item grouped-volume">
         <div class="player-name-icon">
@@ -108,7 +108,7 @@ export class MassCardPlayerSelector extends LitElement {
               .min="0"
               .max="100"
               slot="content"
-              .value=${vol_level}
+              .value=${volumeLevel}
               @value-changed=${this.onGroupVolumeChange}
             ></ha-control-slider>
           </ha-list-item-base>

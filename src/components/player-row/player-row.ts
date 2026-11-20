@@ -150,7 +150,7 @@ export class PlayerRow extends LitElement {
     `;
   }
   private _calculateTitleWidth() {
-    let button_ct = 0;
+    let buttonCount = 0;
     if (!this.config) {
       return;
     }
@@ -160,22 +160,22 @@ export class PlayerRow extends LitElement {
       this.player_entity?.attributes.group_members &&
       this.allowJoin
     ) {
-      button_ct += 1;
+      buttonCount += 1;
     }
     if (!hide.transfer_button) {
-      button_ct += 1;
+      buttonCount += 1;
     }
     if (this.selected || hide.action_buttons) {
       return `100%;`;
     }
-    const gap_ct = button_ct - 1;
-    return `calc(100% - ( (32px * ${button_ct.toString()}) + (8px * ${gap_ct.toString()}) + 16px));`;
+    const gapCount = buttonCount - 1;
+    return `calc(100% - ( (32px * ${buttonCount.toString()}) + (8px * ${gapCount.toString()}) + 16px));`;
   }
   private renderTitle() {
     const title =
       computeEntityName(this.hass, this.player_entity, this.playerName) ||
       "Media Player";
-    const active_style =
+    const activeStyle =
       isActive(this.hass, this.player_entity, this._entityConfig) &&
       this.player_entity?.state == "playing"
         ? `audio-bars`
@@ -187,7 +187,7 @@ export class PlayerRow extends LitElement {
           style="max-width: ${this._calculateTitleWidth()}"
         >
           <div class="title">${title}</div>
-          <div class="${active_style}">
+          <div class="${activeStyle}">
             <div></div>
             <div></div>
             <div></div>

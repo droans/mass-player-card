@@ -1,11 +1,11 @@
 import { RepeatMode } from "../const/enums";
 import { Icons } from "../const/icons";
 
-export function getIteratedRepeatMode(current_repeat: RepeatMode): RepeatMode {
-  if (current_repeat == RepeatMode.ALL) {
+export function getIteratedRepeatMode(currentRepeat: RepeatMode): RepeatMode {
+  if (currentRepeat == RepeatMode.ALL) {
     return RepeatMode.ONCE;
   }
-  if (current_repeat == RepeatMode.ONCE) {
+  if (currentRepeat == RepeatMode.ONCE) {
     return RepeatMode.OFF;
   }
   return RepeatMode.ALL;

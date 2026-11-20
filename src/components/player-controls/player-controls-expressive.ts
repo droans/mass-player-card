@@ -128,14 +128,14 @@ export class MassPlayerControlsExpressive extends MassPlayerControlsBase {
     const label = this.renderLabel("player.controls.power") as
       string | undefined;
     const icon = this.renderLowerIcon(this.Icons.POWER, `icons power lower`);
-    const no_label_class = label?.length ? `` : `no-label`;
+    const noLabelClass = label?.length ? `` : `no-label`;
     return html`
       <mpc-button
         .onPressService=${this.onPower}
         role="filled-variant"
         size="medium"
         id="button-power"
-        class="mpc-button lower ${no_label_class}"
+        class="mpc-button lower ${noLabelClass}"
         elevation="1"
       >
         ${icon} ${label}
@@ -150,12 +150,12 @@ export class MassPlayerControlsExpressive extends MassPlayerControlsBase {
     const label = this.renderLabel("player.controls.shuffle") as
       string | undefined;
     const _icon = shuffle ? this.Icons.SHUFFLE : this.Icons.SHUFFLE_DISABLED;
-    const no_label_class = label?.length ? `` : `no-label`;
-    const active_class = shuffle ? `active` : ``;
+    const noLabelClass = label?.length ? `` : `no-label`;
+    const activeClass = shuffle ? `active` : ``;
 
-    const icon_html = this.renderLowerIcon(
+    const iconHtml = this.renderLowerIcon(
       _icon,
-      `icons shuffle lower ${active_class}`,
+      `icons shuffle lower ${activeClass}`,
       label,
     );
     return html`
@@ -167,9 +167,9 @@ export class MassPlayerControlsExpressive extends MassPlayerControlsBase {
         ?selected=${shuffle}
         elevation=${shuffle ? -1 : 1}
         id="button-shuffle"
-        class="mpc-button lower ${active_class} ${no_label_class}"
+        class="mpc-button lower ${activeClass} ${noLabelClass}"
       >
-        ${icon_html} ${label}
+        ${iconHtml} ${label}
       </mpc-button>
     `;
   }
@@ -178,17 +178,17 @@ export class MassPlayerControlsExpressive extends MassPlayerControlsBase {
       return html``;
     }
     const repeat = this.repeat;
-    const repeat_on = repeat != RepeatMode.OFF;
+    const repeatOn = repeat != RepeatMode.OFF;
 
     const label = this.renderLabel("player.controls.repeat") as
       string | undefined;
     const _icon = getRepeatIcon(repeat, this.Icons);
-    const no_label_class = label?.length ? `` : `no-label`;
-    const active_class = repeat_on ? `active` : ``;
+    const noLabelClass = label?.length ? `` : `no-label`;
+    const activeClass = repeatOn ? `active` : ``;
 
-    const icon_html = this.renderLowerIcon(
+    const iconHtml = this.renderLowerIcon(
       _icon,
-      `icons repeat lower ${active_class}`,
+      `icons repeat lower ${activeClass}`,
       label,
     );
     return html`
@@ -197,12 +197,12 @@ export class MassPlayerControlsExpressive extends MassPlayerControlsBase {
         role="filled-variant"
         size="medium"
         selectable
-        ?selected=${repeat_on}
-        elevation=${repeat_on ? -1 : 1}
+        ?selected=${repeatOn}
+        elevation=${repeatOn ? -1 : 1}
         id="button-repeat"
-        class="mpc-button lower ${active_class} ${no_label_class}"
+        class="mpc-button lower ${activeClass} ${noLabelClass}"
       >
-        ${icon_html} ${label}
+        ${iconHtml} ${label}
       </mpc-button>
     `;
   }
@@ -213,13 +213,13 @@ export class MassPlayerControlsExpressive extends MassPlayerControlsBase {
     const favorite = this.favorite;
     const label = this.renderLabel("player.controls.favorite") as
       string | undefined;
-    const no_label_class = label?.length ? `` : `no-label`;
-    const active_class = favorite ? `active` : ``;
+    const noLabelClass = label?.length ? `` : `no-label`;
+    const activeClass = favorite ? `active` : ``;
     const _icon = favorite ? this.Icons.HEART_ALT : this.Icons.HEART_PLUS;
 
-    const icon_html = this.renderLowerIcon(
+    const iconHtml = this.renderLowerIcon(
       _icon,
-      `icons favorite lower ${active_class}`,
+      `icons favorite lower ${activeClass}`,
       label,
     );
     return html`
@@ -232,9 +232,9 @@ export class MassPlayerControlsExpressive extends MassPlayerControlsBase {
         ?selected=${favorite}
         elevation=${favorite ? -1 : 1}
         id="button-favorite"
-        class="mpc-button lower ${active_class} ${no_label_class}"
+        class="mpc-button lower ${activeClass} ${noLabelClass}"
       >
-        ${icon_html} ${label}
+        ${iconHtml} ${label}
       </mpc-button>
     `;
   }
@@ -248,13 +248,13 @@ export class MassPlayerControlsExpressive extends MassPlayerControlsBase {
     `;
   }
   protected renderLowerControls(): TemplateResult {
-    const h = this.hiddenElements;
-    const all_hidden =
-      h.power_button &&
-      h.shuffle_button &&
-      h.repeat_button &&
-      h.favorite_button;
-    if (all_hidden) {
+    const hiddenElements = this.hiddenElements;
+    const allHidden =
+      hiddenElements.power_button &&
+      hiddenElements.shuffle_button &&
+      hiddenElements.repeat_button &&
+      hiddenElements.favorite_button;
+    if (allHidden) {
       return html``;
     }
     return html`
@@ -292,18 +292,18 @@ export class MassPlayerControlsExpressive extends MassPlayerControlsBase {
     _class: string,
     _label: string | null = null,
   ) {
-    const slot_attribute = _label?.length ? literal`slot="start"` : ``;
+    const slotAttributes = _label?.length ? literal`slot="start"` : ``;
     return html`
       <ha-svg-icon
-        ${slot_attribute}
+        ${slotAttributes}
         .path=${path}
         class="${_class}"
       ></ha-svg-icon>
     `;
   }
-  private renderLabel(label_key: string): string | TemplateResult {
+  private renderLabel(labelKey: string): string | TemplateResult {
     return html`
-      <div class="button-label">${this.controller.translate(label_key)}</div>
+      <div class="button-label">${this.controller.translate(labelKey)}</div>
     `;
   }
 }

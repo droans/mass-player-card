@@ -18,17 +18,17 @@ export function getDefaultSection(config: Config) {
   if (config.default_section) {
     return ConfigSectionMap[config.default_section];
   }
-  const sections_config: Record<string, boolean> = {
+  const sectionsConfig: Record<string, boolean> = {
     [Sections.MUSIC_PLAYER]: config.player.enabled,
     [Sections.QUEUE]: config.queue.enabled,
     [Sections.PLAYERS]: config.players.enabled,
     [Sections.MEDIA_BROWSER]: config.media_browser.enabled,
   };
-  const filtered = Object.entries(sections_config)
+  const filtered = Object.entries(sectionsConfig)
     .filter((item) => item[1])
     .map((item) => item[0]);
-  const enabled_default = defaults.find((item) => filtered.includes(item));
-  return enabled_default;
+  const enabledDefault = defaults.find((item) => filtered.includes(item));
+  return enabledDefault;
 }
 
 export function secondsToTime(seconds: number) {
@@ -40,17 +40,17 @@ export function secondsToTime(seconds: number) {
   return `${mins.toString()}:${secs < 10 ? "0" : ""}${secs.toString()}`;
 }
 export function playerHasUpdated(
-  old_player: ExtendedHassEntity | undefined,
-  new_player: ExtendedHassEntity | undefined,
+  oldPlayer: ExtendedHassEntity | undefined,
+  newPlayer: ExtendedHassEntity | undefined,
 ): boolean {
-  if (!new_player && !old_player) {
+  if (!newPlayer && !oldPlayer) {
     return false;
   }
-  if (!new_player || !old_player) {
+  if (!newPlayer || !oldPlayer) {
     return true;
   }
-  const old_attributes = old_player.attributes;
-  const new_attributes = new_player.attributes;
+  const oldAttributes = oldPlayer.attributes;
+  const newAttributes = newPlayer.attributes;
   const attributes = [
     "active_queue",
     "app_id",
@@ -70,56 +70,56 @@ export function playerHasUpdated(
     "shuffle",
     "volume_level",
   ];
-  const old_state = old_player.state;
-  const new_state = new_player.state;
-  const changed_attributes = attributes.filter((attribute) => {
+  const oldState = oldPlayer.state;
+  const newState = newPlayer.state;
+  const changedAttributes = attributes.filter((attribute) => {
     try {
-      return old_attributes[attribute] !== new_attributes[attribute];
+      return oldAttributes[attribute] !== newAttributes[attribute];
     } catch {
       return true;
     }
   });
-  const state_changed = old_state != new_state;
-  const attributes_changed = changed_attributes.length > 0;
-  return state_changed || attributes_changed;
+  const stateChanged = oldState != newState;
+  const attributesChanged = changedAttributes.length > 0;
+  return stateChanged || attributesChanged;
 }
 
 export function queueItemhasUpdated(
-  old_item: QueueItem | undefined,
-  new_item: QueueItem | undefined,
+  oldItem: QueueItem | undefined,
+  newItem: QueueItem | undefined,
 ): boolean {
   return (
-    old_item?.media_content_id !== new_item?.media_content_id ||
-    old_item?.playing !== new_item?.playing ||
-    old_item?.queue_item_id !== new_item?.queue_item_id ||
-    old_item?.show_action_buttons !== new_item?.show_action_buttons ||
-    old_item?.show_artist_name !== new_item?.show_artist_name ||
-    old_item?.show_move_up_next !== new_item?.show_move_up_next
+    oldItem?.media_content_id !== newItem?.media_content_id ||
+    oldItem?.playing !== newItem?.playing ||
+    oldItem?.queue_item_id !== newItem?.queue_item_id ||
+    oldItem?.show_action_buttons !== newItem?.show_action_buttons ||
+    oldItem?.show_artist_name !== newItem?.show_artist_name ||
+    oldItem?.show_move_up_next !== newItem?.show_move_up_next
   );
 }
 export function isActive(
   hass: ExtendedHass | undefined,
   entity: ExtendedHassEntity | undefined,
-  entity_config: EntityConfig,
+  entityConfig: EntityConfig,
 ): boolean {
   if (!entity || !hass) {
     return false;
   }
-  const inactive_states = entity_config.inactive_when_idle
+  const inactiveStates = entityConfig.inactive_when_idle
     ? ["off", "idle"]
     : ["off"];
-  const not_off = !inactive_states.includes(entity.state);
-  const has_item = !!entity.attributes.media_content_id;
-  const is_mass = entity.attributes.app_id == MUSIC_ASSISTANT_APP_NAME;
-  const has_queue = !!entity.attributes.active_queue;
+  const notOff = !inactiveStates.includes(entity.state);
+  const hasItem = !!entity.attributes.media_content_id;
+  const isMass = entity.attributes.app_id == MUSIC_ASSISTANT_APP_NAME;
+  const hasQueue = !!entity.attributes.active_queue;
   const connected = hass.connected;
-  const updated_ms = new Date(entity.last_updated).getTime();
-  const now_ms = Date.now();
-  const updated_recently =
-    now_ms - updated_ms <= MAX_ACTIVE_LAST_ACTIVE_DURATION ||
-    !entity_config.inactive_when_not_updated;
+  const updatedMs = new Date(entity.last_updated).getTime();
+  const nowMs = Date.now();
+  const updatedRecently =
+    nowMs - updatedMs <= MAX_ACTIVE_LAST_ACTIVE_DURATION ||
+    !entityConfig.inactive_when_not_updated;
   return (
-    not_off && is_mass && has_queue && connected && updated_recently && has_item
+    notOff && isMass && hasQueue && connected && updatedRecently && hasItem
   );
 }
 
@@ -142,12 +142,12 @@ export function ensureThumbnail(img: string, hass: ExtendedHass): string {
 }
 
 export async function tryPrefetchImageWithFallbacks(
-  img_url: string,
+  imgUrl: string,
   fallbacks: string[],
   hass: ExtendedHass,
   returnElement = false,
 ): Promise<string | HTMLImageElement | false> {
-  const imgs = [img_url, ...fallbacks];
+  const imgs = [imgUrl, ...fallbacks];
   const img = await findFirstAccessibleImage(imgs, hass, returnElement);
   return img;
 }
@@ -204,14 +204,14 @@ export function formatDuration(dur: number | undefined) {
     return `0 minutes`;
   }
   let _dur = dur;
-  const days_s = 86_400;
-  const hr_s = 3600;
-  const min_s = 60;
-  const days = Math.floor(_dur / days_s);
-  _dur = _dur % days_s;
-  const hrs = Math.floor(_dur / hr_s);
-  _dur = _dur % hr_s;
-  const mins = Math.floor(_dur / min_s);
+  const daysSeconds = 86_400;
+  const hourSeconds = 3600;
+  const minuteSeconds = 60;
+  const days = Math.floor(_dur / daysSeconds);
+  _dur = _dur % daysSeconds;
+  const hrs = Math.floor(_dur / hourSeconds);
+  _dur = _dur % hourSeconds;
+  const mins = Math.floor(_dur / minuteSeconds);
   if (days) {
     return `${days.toString()} days, ${hrs.toString()} hours, ${mins.toString()} minutes`;
   }
@@ -223,15 +223,15 @@ export function formatDuration(dur: number | undefined) {
 
 export function playerIsAvailable(
   hass: ExtendedHass | undefined,
-  entity_id: string,
+  entityId: string,
 ): boolean {
-  if (typeof entity_id != "string" || !entity_id.startsWith("media_player")) {
+  if (typeof entityId != "string" || !entityId.startsWith("media_player")) {
     return false;
   }
   if (!hass?.states) {
     return false;
   }
-  const entity = hass.states[entity_id];
+  const entity = hass.states[entityId];
   if (!entity) {
     return false;
   }

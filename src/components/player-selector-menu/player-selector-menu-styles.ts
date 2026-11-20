@@ -30,8 +30,12 @@ export default css`
     color: var(--md-sys-color-on-primary);
   }
   #trigger-button {
-    --used-button-border-radius: 16px;
-    --button-padding-left: 8px;
-    --button-padding-right: 4px;
+    --used-button-border-radius: 1.5rem;
+    --button-padding-left: 16px;
+    --button-padding-right: 12px;
+    --button-button-height: 3rem;
+  }
+  #trigger-icon-player {
+    --mdc-icon-size: 2rem;
   }
 `;

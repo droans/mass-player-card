@@ -89,15 +89,15 @@ export class MassPlayerProgressBar extends LitElement {
     if (!player) {
       return;
     }
-    const current_dur = player.attributes.media_duration ?? 1;
-    const current_pos =
+    const currentDuration = player.attributes.media_duration ?? 1;
+    const currentPosition =
       !this._activePlayer?.attributes.media_title ||
       player.attributes.media_title == this._activePlayer.attributes.media_title
         ? player.attributes.media_position
         : 1;
     this._activePlayer = player;
-    this.mediaDuration ??= current_dur;
-    this.mediaPosition ??= current_pos;
+    this.mediaDuration ??= currentDuration;
+    this.mediaPosition ??= currentPosition;
     this.requestProgress();
   }
   public get activePlayer() {
@@ -183,8 +183,8 @@ export class MassPlayerProgressBar extends LitElement {
     if (!this.actions) {
       return;
     }
-    const prog_width = this.progressBar?.offsetWidth ?? 1;
-    const seek = event_.offsetX / prog_width;
+    const progressWidth = this.progressBar?.offsetWidth ?? 1;
+    const seek = event_.offsetX / progressWidth;
     const pos = Math.floor(seek * (this.mediaDuration ?? 1));
     await this.actions.actionSeek(pos);
     this._dragging = false;
@@ -195,8 +195,8 @@ export class MassPlayerProgressBar extends LitElement {
   protected pointerMoveListener = (event_: PointerEvent | MouseEvent) => {
     const bar = this.progressBar;
     const offset = bar?.offsetLeft ?? 36;
-    const prog_width = bar?.offsetWidth ?? 1;
-    const seek = (event_.offsetX - offset) / prog_width;
+    const progressWidth = bar?.offsetWidth ?? 1;
+    const seek = (event_.offsetX - offset) / progressWidth;
     let pos = Math.floor(seek * (this.mediaDuration ?? 1));
     pos = Math.min(this.mediaDuration ?? 1, pos);
     pos = Math.max(0, pos);
@@ -315,9 +315,9 @@ export class MassPlayerProgressBar extends LitElement {
     super.disconnectedCallback();
   }
   protected shouldUpdate(_changedProperties: PropertyValues): boolean {
-    const bar_playing = this.progressBar?.classList.contains("wavy");
-    const playing_changed = bar_playing != this.playerData?.playing;
-    return _changedProperties.size > 0 || playing_changed;
+    const barPlaying = this.progressBar?.classList.contains("wavy");
+    const playingChanged = barPlaying != this.playerData?.playing;
+    return _changedProperties.size > 0 || playingChanged;
   }
 
   static get styles(): CSSResultGroup {

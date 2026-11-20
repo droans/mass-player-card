@@ -177,13 +177,13 @@ export class MusicPlayerCard extends LitElement {
 
   @consume({ context: groupedPlayersContext, subscribe: true })
   private set groupedPlayersList(players: string[] | undefined) {
-    const card_players = this.playerEntities.filter((entity) =>
+    const cardPlayers = this.playerEntities.filter((entity) =>
       players?.includes(entity.entity_id),
     );
-    if (jsonMatch(this._groupedPlayers, card_players)) {
+    if (jsonMatch(this._groupedPlayers, cardPlayers)) {
       return;
     }
-    this._groupedPlayers = card_players;
+    this._groupedPlayers = cardPlayers;
   }
 
   private get groupedPlayers() {
@@ -275,13 +275,13 @@ export class MusicPlayerCard extends LitElement {
   }
 
   private onForceLoadEvent = (event_: Event) => {
-    const coaxed_event = event_ as ForceUpdatePlayerDataEvent;
-    const key = coaxed_event.detail.key;
+    const coaxedEvent = event_ as ForceUpdatePlayerDataEvent;
+    const key = coaxedEvent.detail.key;
     /* eslint-disable
       @typescript-eslint/no-unsafe-argument,
       @typescript-eslint/no-unsafe-assignment
     */
-    const value = coaxed_event.detail.value;
+    const value = coaxedEvent.detail.value;
     this.forceUpdatePlayerDataValue(key, value);
     /* eslint-enable
       @typescript-eslint/no-unsafe-argument,
@@ -307,15 +307,11 @@ export class MusicPlayerCard extends LitElement {
     if (!ent) {
       return;
     }
-    const media_id = ent.attributes.media_content_id;
-    if (!media_id) {
+    const mediaId = ent.attributes.media_content_id;
+    if (!mediaId) {
       return;
     }
-    void this.actions.actionAddToPlaylist(
-      media_id,
-      uri,
-      this.activeMediaPlayer,
-    );
+    void this.actions.actionAddToPlaylist(mediaId, uri, this.activeMediaPlayer);
     this.closeAddToPlaylistDialog();
   };
   protected onArtistNameSelect = () => {
@@ -680,17 +676,15 @@ export class MusicPlayerCard extends LitElement {
     if (!favoritesDialog) {
       return;
     }
-    const actions_div = favoritesDialog.shadowRoot?.querySelector(
-      "#actions",
-    ) as HTMLElement | undefined;
-    if (actions_div && actions_div.style.display != "none") {
-      actions_div.style.display = "none";
+    const actionsDiv = favoritesDialog.shadowRoot?.querySelector("#actions") as
+      HTMLElement | undefined;
+    if (actionsDiv && actionsDiv.style.display != "none") {
+      actionsDiv.style.display = "none";
     }
-    const content_div = favoritesDialog.shadowRoot?.querySelector(
-      "#content",
-    ) as HTMLElement | undefined;
-    if (content_div && content_div.style.scrollbarWidth != "none") {
-      content_div.style.scrollbarWidth = "none";
+    const contentDiv = favoritesDialog.shadowRoot?.querySelector("#content") as
+      HTMLElement | undefined;
+    if (contentDiv && contentDiv.style.scrollbarWidth != "none") {
+      contentDiv.style.scrollbarWidth = "none";
     }
   }
   protected shouldUpdate(_changedProperties: PropertyValues): boolean {

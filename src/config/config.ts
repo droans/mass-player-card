@@ -118,14 +118,14 @@ const ENTITY_DEFAULT_HIDDEN_ITEM_CONFIG: HiddenElementsConfig = {
 };
 
 export function createStubConfig(hass: ExtendedHass, entities: string[]) {
-  const media_players = entities.filter((ent) => {
+  const mediaPlayers = entities.filter((ent) => {
     return ent.split(".")[0] == "media_player";
   });
-  const mass_player = media_players.find((ent) => {
+  const massPlayer = mediaPlayers.find((ent) => {
     return hass.states[ent]?.attributes.mass_player_type;
   });
   return {
-    entities: [mass_player],
+    entities: [massPlayer],
   };
 }
 
@@ -283,10 +283,10 @@ export function createConfigForm() {
 function processEntityHiddenItemConfig(
   config: EntityConfig,
 ): HiddenElementsConfig {
-  const used_hide = config?.hide;
+  const usedHide = config?.hide;
   const hide: HiddenElementsConfig = {
     ...ENTITY_DEFAULT_HIDDEN_ITEM_CONFIG,
-    ...used_hide,
+    ...usedHide,
   };
   hide.player = {
     ...DEFAULT_PLAYER_HIDDEN_ELEMENTS_CONFIG,
@@ -296,10 +296,10 @@ function processEntityHiddenItemConfig(
   return hide;
 }
 
-function entityConfigFromEntityID(entity_id: string): EntityConfig {
+function entityConfigFromEntityID(entityId: string): EntityConfig {
   return {
-    entity_id,
-    volume_entity_id: entity_id,
+    entity_id: entityId,
+    volume_entity_id: entityId,
     name: "",
     max_volume: DEFAULT_MAX_VOLUME,
     hide: ENTITY_DEFAULT_HIDDEN_ITEM_CONFIG,
@@ -333,9 +333,9 @@ function mergeDefaultConfig(config: Config): Config {
 }
 
 function processEntitiesConfig(config: Config): Config {
-  const entity_config = config.entities;
+  const entityConfig = config.entities;
   const result: EntityConfig[] = [];
-  entity_config.forEach((entity: string | EntityConfig) => {
+  entityConfig.forEach((entity: string | EntityConfig) => {
     result.push(processEntityConfig(entity));
   });
   return {

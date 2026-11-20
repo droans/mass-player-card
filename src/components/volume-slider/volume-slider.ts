@@ -23,12 +23,12 @@ export class VolumeSlider extends LitElement {
   private _hass!: ExtendedHass;
 
   @property({ attribute: false })
-  public set entityId(entity_id: string) {
-    this._entityId = entity_id;
+  public set entityId(entityId: string) {
+    this._entityId = entityId;
     if (!this.hass) {
       return;
     }
-    const ent = this.hass.states[entity_id];
+    const ent = this.hass.states[entityId];
     if (ent) {
       this.entity = ent;
     }

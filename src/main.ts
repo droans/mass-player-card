@@ -29,7 +29,7 @@ import { Sections } from "./const/enums";
 
 import { version } from "../package.json";
 
-import head_styles from "./styles/head";
+import headStyles from "./styles/head";
 import styles from "./styles/main";
 
 import localForage from "localforage";
@@ -100,23 +100,23 @@ export class MusicAssistantPlayerCard extends LitElement {
       return;
     }
     const ents = this.config.entities;
-    let should_update = false;
+    let shouldUpdate = false;
     this._controller.hass = hass;
-    const new_ents: HassEntity[] = [];
+    const newEntities: HassEntity[] = [];
     ents.forEach((entity) => {
-      const old_state = this.hass?.states[entity.entity_id];
-      const new_state = hass.states[entity.entity_id];
-      if (new_state) {
-        new_ents.push(new_state);
+      const oldState = this.hass?.states[entity.entity_id];
+      const newState = hass.states[entity.entity_id];
+      if (newState) {
+        newEntities.push(newState);
       }
-      if (!jsonMatch(old_state, new_state)) {
-        should_update = true;
+      if (!jsonMatch(oldState, newState)) {
+        shouldUpdate = true;
       }
     });
     // eslint-disable-next-line @typescript-eslint/no-unnecessary-condition
-    if (should_update) {
+    if (shouldUpdate) {
       this._controller.hass = hass;
-      this.entities = new_ents;
+      this.entities = newEntities;
     }
   }
   public get hass() {
@@ -195,14 +195,11 @@ export class MusicAssistantPlayerCard extends LitElement {
     }
     this._controller.activeSection = getDefaultSection(this.config);
   }
-  private setActivePlayer = (
-    player_entity: string,
-    playerWasSynced = false,
-  ) => {
-    if (player_entity.length === 0) {
+  private setActivePlayer = (playerEntity: string, playerWasSynced = false) => {
+    if (playerEntity.length === 0) {
       return;
     }
-    this._controller.activeEntityId = player_entity;
+    this._controller.activeEntityId = playerEntity;
     if (!playerWasSynced && this.syncPlayerAcrossDashboard) {
       this.syncPlayerSelection();
     }
@@ -242,8 +239,8 @@ export class MusicAssistantPlayerCard extends LitElement {
       this._controller.activeSection = Sections.MUSIC_PLAYER;
     }
   };
-  private playerSelected = (entity_id: string) => {
-    this.setActivePlayer(entity_id);
+  private playerSelected = (entityId: string) => {
+    this.setActivePlayer(entityId);
     if (this.config.player.enabled) {
       this.active_section = Sections.MUSIC_PLAYER;
       this._controller.activeSection = Sections.MUSIC_PLAYER;
@@ -352,7 +349,7 @@ export class MusicAssistantPlayerCard extends LitElement {
     return styles;
   }
   protected firstUpdated(): void {
-    const stylesheet = head_styles.styleSheet as CSSStyleSheet;
+    const stylesheet = headStyles.styleSheet as CSSStyleSheet;
     document.adoptedStyleSheets.push(stylesheet);
     if (this.syncPlayerAcrossDashboard) {
       void this.prepareSyncPlayerAcrossDashboard();

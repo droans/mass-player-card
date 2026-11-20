@@ -90,52 +90,52 @@ export class PlayersCard extends LitElement {
       this.setEntities(hass);
       return;
     }
-    let update_entities = false;
+    let updateEntities = false;
     this.entities.forEach((item) => {
-      const new_state = hass.states[item.entity_id];
-      if (new_state !== item) {
-        update_entities = true;
+      const newState = hass.states[item.entity_id];
+      if (newState !== item) {
+        updateEntities = true;
       }
     });
     // eslint-disable-next-line @typescript-eslint/no-unnecessary-condition
-    if (update_entities) {
+    if (updateEntities) {
       this.setEntities(hass);
     }
   }
   public get hass() {
     return this._hass;
   }
-  private joinPlayers = async (group_member: string[]) => {
+  private joinPlayers = async (groupMember: string[]) => {
     if (!this.actions) {
       return;
     }
     await this.actions.actionJoinPlayers(
       this.activePlayerEntity.entity_id,
-      group_member,
+      groupMember,
     );
     this.controller.ActivePlayer?.setGroupAttributes();
   };
-  private unjoinPlayers = async (player_entity: string[]) => {
+  private unjoinPlayers = async (playerEntity: string[]) => {
     if (!this.actions) {
       return;
     }
-    await this.actions.actionUnjoinPlayers(player_entity);
+    await this.actions.actionUnjoinPlayers(playerEntity);
     this.controller.ActivePlayer?.setGroupAttributes();
   };
-  private transferQueue = async (target_player: string) => {
+  private transferQueue = async (targetPlayer: string) => {
     if (!this.actions) {
       return;
     }
     await this.actions.actionTransferQueue(
       this.activePlayerEntity.entity_id,
-      target_player,
+      targetPlayer,
     );
     // eslint-disable-next-line @typescript-eslint/no-non-null-assertion
     const player = this.config!.entities.find(
-      (entity) => entity.entity_id == target_player,
+      (entity) => entity.entity_id == targetPlayer,
     )!;
     this.activePlayerEntity = player;
-    this.selectedPlayerService(target_player);
+    this.selectedPlayerService(targetPlayer);
   };
   private setEntities(hass: ExtendedHass) {
     if (!this._config) {
@@ -159,7 +159,7 @@ export class PlayersCard extends LitElement {
     }
     const attributes =
       this._hass.states[this.activePlayerEntity.entity_id]?.attributes;
-    const group_members: string[] = attributes?.group_members ?? [];
+    const groupMembers: string[] = attributes?.group_members ?? [];
     const canGroupWith = this.controller.ActivePlayer.canGroupWith;
     return this.entities.map((item) => {
       // eslint-disable-next-line @typescript-eslint/no-non-null-assertion
@@ -181,7 +181,7 @@ export class PlayersCard extends LitElement {
             .joinService=${this.joinPlayers}
             .unjoinService=${this.unjoinPlayers}
             .transferService=${this.transferQueue}
-            .joined=${group_members.includes(item.entity_id)}
+            .joined=${groupMembers.includes(item.entity_id)}
             .allowJoin=${allowJoin}
             ?selected=${this.activePlayerEntity.entity_id == item.entity_id}
             ?can-group=${canGroupWith.includes(player.entity_id)}

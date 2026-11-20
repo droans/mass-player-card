@@ -110,11 +110,11 @@ export class MediaRow extends LitElement {
   }
 
   @property({ attribute: false })
-  public set media_item(media_item: QueueItem | undefined) {
-    if (!media_item) {
+  public set media_item(mediaItem: QueueItem | undefined) {
+    if (!mediaItem) {
       return;
     }
-    this._media_item = media_item;
+    this._media_item = mediaItem;
     void this.getTrackImage();
   }
   public get media_item() {
