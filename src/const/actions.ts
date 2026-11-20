@@ -1,3 +1,4 @@
+import { getArtistTracksServiceData } from "mass-queue-types/packages/mass_queue/actions/get_artist_tracks";
 import {
   Album,
   Artist,
@@ -79,6 +80,11 @@ export interface getSimilarArtistsServiceSchema extends baseMassQueueServiceWith
 export interface getArtistAlbumsServiceSchema extends baseMassQueueServiceWithResponseSchema {
   service: "get_artist_albums";
   service_data: getSimilarServiceData;
+}
+
+export interface getArtistTopTracksServiceSchema extends baseMassQueueServiceWithResponseSchema {
+  service: "get_artist_top_tracks";
+  service_data: getArtistTracksServiceData;
 }
 
 export interface getArtistAlbumsServiceResponse {

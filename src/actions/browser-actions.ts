@@ -50,8 +50,10 @@ import { GetLibrarySortOrders } from "../config/media-browser";
 import {
   getArtistAlbumsServiceResponse,
   getArtistAlbumsServiceSchema,
+  getArtistTopTracksServiceSchema,
   getSimilarArtistsServiceResponse,
   getSimilarArtistsServiceSchema,
+  getSimilarTracksServiceSchema,
 } from "../const/actions";
 import { EnqueueOptions, MediaTypes } from "../const/enums";
 import { DEFAULT_SEARCH_LIMIT } from "../const/media-browser";
@@ -320,6 +322,25 @@ export default class BrowserActions {
       type: "call_service",
       domain: "mass_queue",
       service: "get_artist_tracks",
+      service_data: {
+        uri: playlistUri,
+        config_entry_id: configEntry,
+      },
+      return_response: true,
+    };
+    return await this.hass.callWS(data);
+  }
+  async actionGetArtistTopTracks(
+    playlistUri: string,
+    entityIdOrConfigEntryId: string,
+  ): Promise<getArtistTracksServiceResponse> {
+    const configEntry = entityIdOrConfigEntryId.includes(".")
+      ? await this.getPlayerMassQueueConfigEntry(entityIdOrConfigEntryId)
+      : entityIdOrConfigEntryId;
+    const data: getArtistTopTracksServiceSchema = {
+      type: "call_service",
+      domain: "mass_queue",
+      service: "get_artist_top_tracks",
       service_data: {
         uri: playlistUri,
         config_entry_id: configEntry,
