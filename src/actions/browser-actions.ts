@@ -53,7 +53,6 @@ import {
   getArtistTopTracksServiceSchema,
   getSimilarArtistsServiceResponse,
   getSimilarArtistsServiceSchema,
-  getSimilarTracksServiceSchema,
 } from "../const/actions";
 import { EnqueueOptions, MediaTypes } from "../const/enums";
 import { DEFAULT_SEARCH_LIMIT } from "../const/media-browser";
