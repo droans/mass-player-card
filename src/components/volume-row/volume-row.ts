@@ -139,16 +139,16 @@ export class VolumeRow extends LitElement {
     const tickCt = 19;
     const rng = [...Array(tickCt).keys()];
     const vol = this.playerData?.volume ?? 0;
-    const max_vol = this.maxVolume;
+    const maxVolume = this.maxVolume;
     return html`
       <div id="ticks">
         ${rng.map((i) => {
-          const tick_pct = ((i + 1) * max_vol) / (tickCt + 1);
-          const tick_inside = tick_pct <= vol;
+          const tickPercent = ((i + 1) * maxVolume) / (tickCt + 1);
+          const tickInside = tickPercent <= vol;
           return html`
             <div
-              class="tick ${tick_inside ? `in` : `out`}"
-              value=${tick_pct}
+              class="tick ${tickInside ? `in` : `out`}"
+              value=${tickPercent}
               tick=${i}
             ></div>
           `;

@@ -189,57 +189,57 @@ export class MediaBrowserController {
   }
 
   public async search(
-    player_entity_id: string,
-    search_term: string,
-    library_only = false as boolean,
+    playerEntityId: string,
+    searchTerm: string,
+    libraryOnly = false as boolean,
     limit: number = DEFAULT_SEARCH_LIMIT,
-    media_type?: MediaTypes,
+    mediaType?: MediaTypes,
   ): Promise<mediaBrowserSectionConfig> {
     const user = this.massUser;
-    const search_result = await this.actions.actionSearchMedia(
-      player_entity_id,
-      search_term,
-      library_only,
+    const searchResult = await this.actions.actionSearchMedia(
+      playerEntityId,
+      searchTerm,
+      libraryOnly,
       limit,
       user,
-      media_type,
+      mediaType,
     );
     const showCollectionView =
       this.browserConfig.recommendations.show_collection_view;
     return {
       main: [],
       album: generateFavoritesSectionCards(
-        search_result.albums,
+        searchResult.albums,
         MediaTypes.ALBUM,
         showCollectionView,
       ),
       artist: generateFavoritesSectionCards(
-        search_result.artists,
+        searchResult.artists,
         MediaTypes.ARTIST,
         showCollectionView,
       ),
       audiobook: generateFavoritesSectionCards(
-        search_result.audiobooks,
+        searchResult.audiobooks,
         MediaTypes.AUDIOBOOK,
         showCollectionView,
       ),
       playlist: generateFavoritesSectionCards(
-        search_result.playlists,
+        searchResult.playlists,
         MediaTypes.PLAYLIST,
         showCollectionView,
       ),
       podcast: generateFavoritesSectionCards(
-        search_result.podcasts,
+        searchResult.podcasts,
         MediaTypes.PODCAST,
         showCollectionView,
       ),
       radio: generateFavoritesSectionCards(
-        search_result.radio,
+        searchResult.radio,
         MediaTypes.RADIO,
         showCollectionView,
       ),
       track: generateFavoritesSectionCards(
-        search_result.tracks,
+        searchResult.tracks,
         MediaTypes.TRACK,
         showCollectionView,
       ),
@@ -313,16 +313,16 @@ export class MediaBrowserController {
   }
   private async getFavoriteSection(
     config: FavoriteItemConfig,
-    media_type: MediaTypes,
+    mediaType: MediaTypes,
     favoritesOnly = DEFAULT_FAVORITES_ONLY,
   ) {
     const limit = config.limit;
-    const custom_items = config.items;
+    const customItems = config.items;
     const sortOrder = this.config.media_browser.favorites.sort_order;
     const user = this.massUser;
     const resp: MediaLibraryItem[] = await this.actions.actionGetLibrary(
       this.activeEntityId,
-      media_type,
+      mediaType,
       limit,
       favoritesOnly ? true : null,
       sortOrder,
@@ -331,42 +331,42 @@ export class MediaBrowserController {
     return [
       ...generateFavoritesSectionCards(
         resp,
-        media_type,
+        mediaType,
         this.browserConfig.favorites.show_collection_view,
       ),
-      ...generateCustomSectionCards(custom_items),
+      ...generateCustomSectionCards(customItems),
     ];
   }
   private async generateFavoriteData(
     config: FavoriteItemConfig,
-    media_type: MediaTypes,
+    mediaType: MediaTypes,
     favoritesOnly = DEFAULT_FAVORITES_ONLY,
-    download_local: boolean,
-    proxy_all: boolean,
+    downloadLocal: boolean,
+    proxyAll: boolean,
   ) {
     if (
       // eslint-disable-next-line @typescript-eslint/prefer-optional-chain, @typescript-eslint/no-unnecessary-condition
-      (this.items?.favorites ?? {})[media_type] ||
+      (this.items?.favorites ?? {})[mediaType] ||
       !config.enabled
     ) {
       return;
     }
     const items = await this.getFavoriteSection(
       config,
-      media_type,
+      mediaType,
       favoritesOnly,
     );
     if (items.length === 0) {
       return;
     }
     const i = { ...this.items };
-    i.favorites[media_type] = items;
+    i.favorites[mediaType] = items;
     const card = await generateFavoriteCard(
       this.hass,
-      media_type,
+      mediaType,
       items,
-      download_local,
-      proxy_all,
+      downloadLocal,
+      proxyAll,
     );
     i.favorites.main.push(card);
     this.items = { ...i };
@@ -394,46 +394,46 @@ export class MediaBrowserController {
   }
   private async getRecentSection(
     config: FavoriteItemConfig,
-    media_type: MediaTypes,
+    mediaType: MediaTypes,
   ) {
     const limit = config.limit;
     const sortOrder = this.config.media_browser.recents.sort_order;
     const user = this.massUser;
     const resp: MediaLibraryItem[] = await this.actions.actionGetLibraryRecents(
       this.activeEntityId,
-      media_type,
+      mediaType,
       limit,
       sortOrder,
       user,
     );
     const items = generateFavoritesSectionCards(
       resp,
-      media_type,
+      mediaType,
       this.browserConfig.recents.show_collection_view,
     );
     return [...items];
   }
   private async generateRecentsData(
     config: FavoriteItemConfig,
-    media_type: MediaTypes,
+    mediaType: MediaTypes,
   ) {
     // eslint-disable-next-line @typescript-eslint/no-unnecessary-condition
-    if (this.items.recents[media_type] || !config.enabled) {
+    if (this.items.recents[mediaType] || !config.enabled) {
       return;
     }
 
-    const items = await this.getRecentSection(config, media_type);
+    const items = await this.getRecentSection(config, mediaType);
     if (items.length > 0) {
       const card = await generateRecentsCard(
         this.hass,
-        media_type,
+        mediaType,
         items,
         this.config.download_local,
         this.config.proxy_all_artwork,
       );
       const i = { ...this.items };
       i.recents.main.push(card);
-      i.recents[media_type] = items;
+      i.recents[mediaType] = items;
       this.items = { ...i };
     }
   }
@@ -515,7 +515,7 @@ export class MediaBrowserController {
     });
   }
   private generateCustomSectionData(config: customSection) {
-    const section_card: MediaCardItem = {
+    const sectionCard: MediaCardItem = {
       title: config.name,
       thumbnail: config.image,
       fallback: Thumbnail.CLEFT,
@@ -528,7 +528,7 @@ export class MediaBrowserController {
     const cards = generateCustomSectionCards(config.items);
     const i = { ...this.items };
     i.favorites[`custom-${config.name}`] = cards;
-    i.favorites.main.push(section_card);
+    i.favorites.main.push(sectionCard);
     this.items = { ...i };
   }
   public getRecommendationsForMedia(

@@ -77,12 +77,12 @@ export enum QueueConfigErrors {
 }
 
 function processHiddenElementsConfig(config: QueueConfig): QueueConfig {
-  const hidden_elements_config = config.hide;
+  const hiddenElementsConfig = config.hide;
   return {
     ...config,
     hide: {
       ...DEFAULT_PLAYER_QUEUE_HIDDEN_ELEMENTS_CONFIG,
-      ...hidden_elements_config,
+      ...hiddenElementsConfig,
     },
   };
 }
@@ -94,11 +94,11 @@ function processDefaults(config: QueueConfig): QueueConfig {
 }
 
 export function processQueueConfig(config: Config): Config {
-  let queue_config = config.queue;
-  queue_config = processDefaults(queue_config);
-  queue_config = processHiddenElementsConfig(queue_config);
+  let queueConfig = config.queue;
+  queueConfig = processDefaults(queueConfig);
+  queueConfig = processHiddenElementsConfig(queueConfig);
   return {
     ...config,
-    queue: queue_config,
+    queue: queueConfig,
   };
 }

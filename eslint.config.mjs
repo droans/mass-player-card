@@ -37,6 +37,7 @@ export default tseslint.config(
     rules: {
       ...lit.configs.recommended.rules,
       ...wc.configs.recommended.rules,
+      camelcase: ["warn", { properties: "never" }],
       "listeners/no-missing-remove-event-listener": "error",
       "listeners/matching-remove-event-listener": "error",
       "listeners/no-inline-function-event-listener": "error",
@@ -69,7 +70,6 @@ export default tseslint.config(
       "no-console": "warn",
       "@typescript-eslint/no-unnecessary-condition": "warn",
       "@typescript-eslint/non-nullable-type-assertion-style": "off",
-      camelcase: "warn",
       eqeqeq: "off",
       "no-unused-vars": "off",
       "eslint-comments/no-use": "off",

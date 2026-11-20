@@ -43,13 +43,13 @@ export function getThumbnail(
   return LightModeThumbnails[thumbnail];
 }
 export function getMediaTypeSvg(
-  media_type: MediaTypes,
+  mediaType: MediaTypes,
   icons: Icons,
   hass: ExtendedHass,
 ) {
   const data = getSearchMediaButtons(icons, hass);
   const result = data.find((item) => {
-    return (item.option as MediaTypes) == media_type;
+    return (item.option as MediaTypes) == mediaType;
   });
   return result?.icon ?? Thumbnail.CLEFT;
 }

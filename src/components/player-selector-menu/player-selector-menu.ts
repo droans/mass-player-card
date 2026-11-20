@@ -132,9 +132,9 @@ export class MassCardPlayerSelector extends LitElement {
   }
 
   protected render(): TemplateResult {
-    const config_hide = this.config.hide.player_selector;
-    const entity_hide = this.activeEntityConfig.hide.player.player_selector;
-    if (config_hide || entity_hide) {
+    const configHide = this.config.hide.player_selector;
+    const entityHide = this.activeEntityConfig.hide.player.player_selector;
+    if (configHide || entityHide) {
       return html``;
     }
     return html`

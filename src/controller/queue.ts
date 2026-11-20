@@ -42,7 +42,7 @@ export class QueueController {
 
   constructor(
     hass: ExtendedHass,
-    active_player: ExtendedHassEntity,
+    activePlayer: ExtendedHassEntity,
     config: Config,
     host: HTMLElement,
   ) {
@@ -59,25 +59,25 @@ export class QueueController {
     this._previousQueueItem = new ContextProvider(host, {
       context: previousQueueItemContext,
     });
-    this._actions = new QueueActions(hass, active_player.entity_id);
-    this.activeMediaPlayer = active_player;
+    this._actions = new QueueActions(hass, activePlayer.entity_id);
+    this.activeMediaPlayer = activePlayer;
     void this.getQueue();
     void this.subscribeUpdates();
   }
 
-  private set queue(queue_items: QueueItems | null) {
-    if (jsonMatch(this._queue.value, queue_items)) {
+  private set queue(queueItems: QueueItems | null) {
+    if (jsonMatch(this._queue.value, queueItems)) {
       return;
     }
     if (!this.activeMediaPlayer) {
       this._queue.setValue([]);
       return;
     }
-    if (this.activeMediaPlayer.state == "playing" && !queue_items?.length) {
+    if (this.activeMediaPlayer.state == "playing" && !queueItems?.length) {
       // If the player is playing, there must be active player items; assume then that we received bad data.
       return;
     }
-    this._queue.setValue(queue_items);
+    this._queue.setValue(queueItems);
   }
   public get queue() {
     return this._queue.value;
@@ -125,38 +125,38 @@ export class QueueController {
     return this._actions;
   }
 
-  private set currentQueueItem(queue_item: QueueItem | null) {
-    if (jsonMatch(this._currentQueueItem.value, queue_item)) {
+  private set currentQueueItem(queueItem: QueueItem | null) {
+    if (jsonMatch(this._currentQueueItem.value, queueItem)) {
       return;
     }
-    this._currentQueueItem.setValue(queue_item);
+    this._currentQueueItem.setValue(queueItem);
   }
   public get currentQueueItem() {
     return this._currentQueueItem.value;
   }
 
-  private set nextQueueItem(queue_item: QueueItem | null) {
-    if (jsonMatch(this._nextQueueItem.value, queue_item)) {
+  private set nextQueueItem(queueItem: QueueItem | null) {
+    if (jsonMatch(this._nextQueueItem.value, queueItem)) {
       return;
     }
-    this._nextQueueItem.setValue(queue_item);
+    this._nextQueueItem.setValue(queueItem);
   }
   public get nextQueueItem() {
     return this._nextQueueItem.value;
   }
 
-  private set previousQueueItem(queue_item: QueueItem | null) {
-    if (jsonMatch(this._previousQueueItem.value, queue_item)) {
+  private set previousQueueItem(queueItem: QueueItem | null) {
+    if (jsonMatch(this._previousQueueItem.value, queueItem)) {
       return;
     }
-    this._previousQueueItem.setValue(queue_item);
+    this._previousQueueItem.setValue(queueItem);
   }
   public get previousQueueItem() {
     return this._previousQueueItem.value;
   }
 
-  public setActiveEntityId(entity_id: string) {
-    this.activeMediaPlayer = this.hass.states[entity_id];
+  public setActiveEntityId(entityId: string) {
+    this.activeMediaPlayer = this.hass.states[entityId];
   }
   private raiseQueueFailure() {
     // eslint-disable-next-line no-console
@@ -169,8 +169,8 @@ export class QueueController {
       return;
     }
     const ents = this.config.entities;
-    const ent_id = this.activeMediaPlayer.entity_id;
-    const activeEntityConfig = ents.find((item) => item.entity_id == ent_id);
+    const entityId = this.activeMediaPlayer.entity_id;
+    const activeEntityConfig = ents.find((item) => item.entity_id == entityId);
     // eslint-disable-next-line @typescript-eslint/no-non-null-assertion
     if (isActive(this.hass, this.activeMediaPlayer, activeEntityConfig!)) {
       const queue = await this._getQueue();
@@ -183,12 +183,12 @@ export class QueueController {
     if (!this.activeMediaPlayer) {
       return;
     }
-    const active_track = this.activeMediaPlayer.attributes.media_content_id;
-    const active_idx = queue.findIndex(
-      (i) => i.media_content_id == active_track,
+    const activeTrack = this.activeMediaPlayer.attributes.media_content_id;
+    const activeIndex = queue.findIndex(
+      (i) => i.media_content_id == activeTrack,
     );
-    if (active_idx !== -1) {
-      queue[active_idx].playing = true;
+    if (activeIndex !== -1) {
+      queue[activeIndex].playing = true;
     }
     return queue;
   }
@@ -267,9 +267,9 @@ export class QueueController {
   };
 
   private eventListener = (event: MassQueueEvent) => {
-    const event_data = event.data;
-    const queue_id = event_data.data.queue_id;
-    if (event_data.type == "queue_updated" && queue_id == this._activeQueueID) {
+    const eventData = event.data;
+    const queueId = eventData.data.queue_id;
+    if (eventData.type == "queue_updated" && queueId == this._activeQueueID) {
       if (this._updatingQueue) {
         return;
       }
@@ -320,97 +320,97 @@ export class QueueController {
     this.nextQueueItem = idx < queue.length - 1 ? queue[idx + 1] : null;
   }
 
-  private setItemActive(queue_item_id: string) {
+  private setItemActive(queueItemId: string) {
     if (!this.queue) {
       return;
     }
 
-    const new_idx = this.getIndex(queue_item_id);
-    if (new_idx === -1 || !this.queue[new_idx]) {
+    const newIndex = this.getIndex(queueItemId);
+    if (newIndex === -1 || !this.queue[newIndex]) {
       return;
     }
 
-    const current_idx = this.queue.findIndex((i) => i.playing);
-    if (current_idx !== -1) {
-      this.queue[current_idx].playing = false;
+    const currentIndex = this.queue.findIndex((i) => i.playing);
+    if (currentIndex !== -1) {
+      this.queue[currentIndex].playing = false;
     }
 
-    this.queue[new_idx].playing = true;
+    this.queue[newIndex].playing = true;
   }
 
-  private getIndex(queue_item_id: string): number {
+  private getIndex(queueItemId: string): number {
     if (!this.queue) {
       return -1;
     }
 
-    return this.queue.findIndex((i) => i.queue_item_id === queue_item_id);
+    return this.queue.findIndex((i) => i.queue_item_id === queueItemId);
   }
 
-  private moveQueueItem(old_index: number, new_index: number) {
+  private moveQueueItem(oldIndex: number, newIndex: number) {
     if (!this.queue) {
       return;
     }
     const queue = [...this.queue];
 
-    queue.splice(new_index, 0, queue.splice(old_index, 1)[0]);
+    queue.splice(newIndex, 0, queue.splice(oldIndex, 1)[0]);
     this.queue = queue;
   }
 
-  public async playQueueItem(queue_item_id: string) {
-    this.setItemActive(queue_item_id);
-    await this.actions.playQueueItem(queue_item_id);
+  public async playQueueItem(queueItemId: string) {
+    this.setItemActive(queueItemId);
+    await this.actions.playQueueItem(queueItemId);
   }
 
-  public async moveQueueItemUp(queue_item_id: string) {
-    const current_idx = this.getIndex(queue_item_id);
-    if (current_idx <= 0) {
+  public async moveQueueItemUp(queueItemId: string) {
+    const currentIndex = this.getIndex(queueItemId);
+    if (currentIndex <= 0) {
       return;
     }
 
-    this.moveQueueItem(current_idx, current_idx - 1);
-    await this.actions.MoveQueueItemUp(queue_item_id);
+    this.moveQueueItem(currentIndex, currentIndex - 1);
+    await this.actions.MoveQueueItemUp(queueItemId);
   }
-  public async moveQueueItemDown(queue_item_id: string) {
+  public async moveQueueItemDown(queueItemId: string) {
     if (!this.queue) {
       return;
     }
 
-    const current_idx = this.getIndex(queue_item_id);
-    if (current_idx === -1 || current_idx >= this.queue.length - 1) {
+    const currentIndex = this.getIndex(queueItemId);
+    if (currentIndex === -1 || currentIndex >= this.queue.length - 1) {
       return;
     }
 
-    this.moveQueueItem(current_idx, current_idx + 1);
-    await this.actions.MoveQueueItemDown(queue_item_id);
+    this.moveQueueItem(currentIndex, currentIndex + 1);
+    await this.actions.MoveQueueItemDown(queueItemId);
   }
-  public async moveQueueItemNext(queue_item_id: string) {
+  public async moveQueueItemNext(queueItemId: string) {
     if (!this.queue) {
       return;
     }
 
-    const current_idx = this.getIndex(queue_item_id);
-    if (current_idx === -1) {
+    const currentIndex = this.getIndex(queueItemId);
+    if (currentIndex === -1) {
       return;
     }
 
-    const playing_idx = this.queue.findIndex((i) => i.playing);
-    if (playing_idx === -1) {
+    const playingIndex = this.queue.findIndex((i) => i.playing);
+    if (playingIndex === -1) {
       return;
     }
 
-    const new_idx = playing_idx + 1;
-    this.moveQueueItem(current_idx, new_idx);
-    await this.actions.MoveQueueItemNext(queue_item_id);
+    const newIndex = playingIndex + 1;
+    this.moveQueueItem(currentIndex, newIndex);
+    await this.actions.MoveQueueItemNext(queueItemId);
   }
-  public async removeQueueItem(queue_item_id: string) {
+  public async removeQueueItem(queueItemId: string) {
     if (!this.queue) return;
-    this.queue = this.queue.filter((i) => i.queue_item_id !== queue_item_id);
-    await this.actions.removeQueueItem(queue_item_id);
+    this.queue = this.queue.filter((i) => i.queue_item_id !== queueItemId);
+    await this.actions.removeQueueItem(queueItemId);
   }
   public async clearQueue(
-    entity_id: string = this.activeMediaPlayer?.entity_id ?? "",
+    entityId: string = this.activeMediaPlayer?.entity_id ?? "",
   ) {
-    await this.actions.clearQueue(entity_id);
+    await this.actions.clearQueue(entityId);
   }
   public disconnected() {
     this.unsubscribeUpdates();

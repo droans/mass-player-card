@@ -290,16 +290,16 @@ export class BrowserViewBase extends LitElement {
     if (!this.Icons) {
       return;
     }
-    const default_buttons = getEnqueueButtons(
+    const defaultButtons = getEnqueueButtons(
       this.Icons,
       this.hass as ExtendedHass,
     );
-    const button_mapping = HIDDEN_BUTTON_VALUE;
-    const options = default_buttons.filter((item) => {
+    const buttonMapping = HIDDEN_BUTTON_VALUE;
+    const options = defaultButtons.filter((item) => {
       //eslint-disable-next-line @typescript-eslint/no-unsafe-assignment
-      const hide_value = button_mapping[item.option];
+      const hideValue = buttonMapping[item.option];
       //eslint-disable-next-line @typescript-eslint/no-unsafe-member-access
-      return !this.hide[hide_value];
+      return !this.hide[hideValue];
     });
     this._enqueue_buttons = options;
   }

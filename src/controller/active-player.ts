@@ -206,8 +206,8 @@ export class ActivePlayerController {
     return this._activeEntityConfig.value;
   }
 
-  public set activeEntityID(entity_id: string) {
-    this._activeEntityID.setValue(entity_id);
+  public set activeEntityID(entityId: string) {
+    this._activeEntityID.setValue(entityId);
     void this.setQueueInfo();
   }
   public get activeEntityID() {
@@ -269,12 +269,12 @@ export class ActivePlayerController {
     if (!player) {
       return;
     }
-    const old_attributes = this.volumeMediaPlayer?.attributes;
-    const new_attributes = player.attributes;
+    const oldAttributes = this.volumeMediaPlayer?.attributes;
+    const newAttributes = player.attributes;
     if (
-      old_attributes?.volume_level != new_attributes.volume_level ||
-      old_attributes?.is_volume_muted != new_attributes.is_volume_muted ||
-      !old_attributes
+      oldAttributes?.volume_level != newAttributes.volume_level ||
+      oldAttributes?.is_volume_muted != newAttributes.is_volume_muted ||
+      !oldAttributes
     ) {
       this._volumeMediaPlayer.setValue(player);
     }
@@ -309,8 +309,8 @@ export class ActivePlayerController {
     return this._carouselElement;
   }
 
-  private set canGroupWith(entity_ids: string[]) {
-    this._canGroupWith.setValue(entity_ids);
+  private set canGroupWith(entityIds: string[]) {
+    this._canGroupWith.setValue(entityIds);
   }
   public get canGroupWith() {
     return this._canGroupWith.value;
@@ -383,9 +383,9 @@ export class ActivePlayerController {
       return;
     }
     const data = await this.getactivePlayerData(forceUpdate);
-    const new_data = JSON.stringify(data);
-    const current_data = JSON.stringify(this.activePlayerData);
-    if (new_data != current_data) {
+    const newData = JSON.stringify(data);
+    const currentData = JSON.stringify(this.activePlayerData);
+    if (newData != currentData) {
       this.activePlayerData = data;
     }
   }
@@ -406,14 +406,14 @@ export class ActivePlayerController {
     if (!this.activeMediaPlayer) {
       return [];
     }
-    const active_queue = this.activeMediaPlayer.attributes.active_queue;
+    const activeQueue = this.activeMediaPlayer.attributes.active_queue;
     const ents = this.config.entities;
     return ents.filter((item) => {
       const ent = this.hass.states[item.entity_id];
       if (ent) {
         const attributes = ent.attributes;
         return (
-          attributes.active_queue == active_queue &&
+          attributes.active_queue == activeQueue &&
           attributes.mass_player_type != "group"
         );
       }
@@ -440,24 +440,24 @@ export class ActivePlayerController {
     }
     this.activeEntityConfig = players[0];
   }
-  public setActivePlayer(entity_id: string) {
-    const entities_config = this.config.entities;
-    const player_config = entities_config.find((item) => {
-      return item.entity_id == entity_id;
+  public setActivePlayer(entityId: string) {
+    const entitiesConfig = this.config.entities;
+    const playerConfig = entitiesConfig.find((item) => {
+      return item.entity_id == entityId;
     });
-    if (player_config) {
-      this.activeEntityConfig = player_config;
+    if (playerConfig) {
+      this.activeEntityConfig = playerConfig;
     }
   }
 
   public async getactivePlayerData(forceUpdate = false): Promise<PlayerData> {
     const player = this.activeMediaPlayer;
-    const vol_player = this.volumeMediaPlayer;
-    const current_queue =
+    const volumePlayer = this.volumeMediaPlayer;
+    const currentQueue =
       forceUpdate || !this._playerData
         ? await this.actionGetCurrentQueue()
         : this._playerData;
-    const current_item = current_queue.current_item;
+    const currentItem = currentQueue.current_item;
 
     return {
       playing: player?.state == "playing",
@@ -470,10 +470,10 @@ export class ActivePlayerController {
         player?.attributes.entity_picture ??
         "",
       track_title: player?.attributes.media_title ?? "",
-      muted: vol_player?.attributes.is_volume_muted ?? true,
-      volume: Math.floor((vol_player?.attributes.volume_level ?? 0) * 100),
+      muted: volumePlayer?.attributes.is_volume_muted ?? true,
+      volume: Math.floor((volumePlayer?.attributes.volume_level ?? 0) * 100),
       player_name: this.activePlayerName,
-      favorite: current_item?.media_item?.favorite ?? false,
+      favorite: currentItem?.media_item?.favorite ?? false,
     };
   }
   public async getPlayerProgress(): Promise<number> {
@@ -495,7 +495,7 @@ export class ActivePlayerController {
     return this._playerData?.current_item?.duration ?? 1;
   }
   async actionGetCurrentQueue(): Promise<getQueueResponse> {
-    const entity_id = this.activeEntityID;
+    const entityId = this.activeEntityID;
     const player = this.activeMediaPlayer;
     const defaultResponse = {
       queue_id: "",
@@ -510,7 +510,7 @@ export class ActivePlayerController {
       next_item: null,
     };
     if (
-      !playerIsAvailable(this.hass, entity_id) ||
+      !playerIsAvailable(this.hass, entityId) ||
       !player?.state ||
       ["unknown", "unavailable"].includes(player.state)
     ) {
@@ -521,14 +521,14 @@ export class ActivePlayerController {
       domain: "music_assistant",
       service: "get_queue",
       service_data: {
-        entity_id,
+        entity_id: entityId,
       },
       return_response: true,
     };
     try {
       const returnValue =
         await this.hass.callWS<MassGetQueueServiceResponseSchema>(data);
-      const result = returnValue.response[entity_id];
+      const result = returnValue.response[entityId];
       this._playerData = result;
       return result;
     } catch {
@@ -594,26 +594,26 @@ export class ActivePlayerController {
     this.groupVolume = vol;
   }
   public async setGroupedVolume(
-    entity_id: string,
-    volume_level: number,
+    entityId: string,
+    volumeLevel: number,
   ): Promise<void> {
     const data: setGroupVolumeServiceSchema = {
       type: "call_service",
       domain: "mass_queue",
       service: "set_group_volume",
       service_data: {
-        entity: entity_id,
-        volume_level,
+        entity: entityId,
+        volume_level: volumeLevel,
       },
     };
     await this.hass.callWS(data);
   }
-  public async setActiveGroupVolume(volume_level: number): Promise<void> {
+  public async setActiveGroupVolume(volumeLevel: number): Promise<void> {
     if (!this.activeMediaPlayer) {
       return;
     }
-    await this.setGroupedVolume(this.activeMediaPlayer.entity_id, volume_level);
-    this.groupVolume = volume_level;
+    await this.setGroupedVolume(this.activeMediaPlayer.entity_id, volumeLevel);
+    this.groupVolume = volumeLevel;
   }
   public async getActiveGroupVolume(): Promise<number> {
     if (!this.activeMediaPlayer) {
@@ -621,13 +621,13 @@ export class ActivePlayerController {
     }
     return await this.getGroupedVolume(this.activeMediaPlayer.entity_id);
   }
-  public async getGroupedVolume(entity_id: string): Promise<number> {
+  public async getGroupedVolume(entityId: string): Promise<number> {
     const data: getGroupVolumeServiceSchema = {
       type: "call_service",
       domain: "mass_queue",
       service: "get_group_volume",
       service_data: {
-        entity: entity_id,
+        entity: entityId,
       },
       return_response: true,
     };
@@ -636,28 +636,28 @@ export class ActivePlayerController {
     const vol = returnValue.response.volume_level;
     return vol;
   }
-  public async toggleAutoplay(entity_id = this.activeEntityID) {
+  public async toggleAutoplay(entityId = this.activeEntityID) {
     const currentAutoplay = this.queueInfo.autoplay_enabled;
     const data: setAutoplayServiceSchema = {
       type: "call_service",
       domain: "mass_queue",
       service: "set_autoplay",
       service_data: {
-        entity: entity_id,
+        entity: entityId,
         enabled: !currentAutoplay,
       },
     };
     await this.hass.callWS<setCrossfadeServiceSchema>(data);
     await this.setQueueInfo();
   }
-  public async toggleCrossfade(entity_id = this.activeEntityID) {
+  public async toggleCrossfade(entityId = this.activeEntityID) {
     const currentCrossfade = this.queueInfo.crossfade_enabled;
     const data: setCrossfadeServiceSchema = {
       type: "call_service",
       domain: "mass_queue",
       service: "set_crossfade",
       service_data: {
-        entity: entity_id,
+        entity: entityId,
         enabled: !currentCrossfade,
       },
     };
@@ -668,11 +668,11 @@ export class ActivePlayerController {
     this.queueInfo = await this.getQueueInfo();
   }
   public async getQueueInfo(
-    entity_id = this.activeEntityID,
+    entityId = this.activeEntityID,
   ): Promise<getQueueInfoWSServiceResponseSchema> {
     const data: getQueueInfoWSServiceSchema = {
       type: "mass_queue/get_queue_info",
-      entity_id,
+      entity_id: entityId,
     };
     try {
       const resp =
@@ -692,26 +692,26 @@ export class ActivePlayerController {
     }
   }
   public async getEntityInfo(
-    entity_id = this.activeEntityID,
+    entityId = this.activeEntityID,
   ): Promise<getInfoWSResponseSchema> {
     const data: getInfoWSServiceSchema = {
       type: "mass_queue/get_info",
-      entity_id,
+      entity_id: entityId,
     };
     const resp = await this.hass.callWS<getInfoWSResponseSchema>(data);
     return resp;
   }
-  private async getPlayerProvider(entity_id: string) {
-    const resp = await this.getEntityInfo(entity_id);
+  private async getPlayerProvider(entityId: string) {
+    const resp = await this.getEntityInfo(entityId);
     return resp.provider;
   }
   public async playerCanGroupWith(
-    entity_id = this.activeEntityID,
+    entityId = this.activeEntityID,
   ): Promise<string[]> {
-    if (!playerIsAvailable(this.hass, entity_id)) {
+    if (!playerIsAvailable(this.hass, entityId)) {
       return [];
     }
-    const info = await this.getEntityInfo(entity_id);
+    const info = await this.getEntityInfo(entityId);
     const groupableIds = info.can_group_with;
     const result: string[] = [];
     for (const entity of this.config.entities) {

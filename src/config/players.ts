@@ -40,12 +40,12 @@ export function playersConfigForm() {
 }
 
 function processHiddenElementsConfig(config: PlayersConfig): PlayersConfig {
-  const hidden_elements_config = config.hide;
+  const hiddenElementsConfig = config.hide;
   return {
     ...config,
     hide: {
       ...DEFAULT_PLAYERS_HIDDEN_ELEMENTS_CONFIG,
-      ...hidden_elements_config,
+      ...hiddenElementsConfig,
     },
   };
 }
@@ -56,11 +56,11 @@ function processDefaults(config: PlayersConfig): PlayersConfig {
   };
 }
 export function processPlayersConfig(config: Config): Config {
-  let players_config = config.players;
-  players_config = processDefaults(players_config);
-  players_config = processHiddenElementsConfig(players_config);
+  let playersConfig = config.players;
+  playersConfig = processDefaults(playersConfig);
+  playersConfig = processHiddenElementsConfig(playersConfig);
   return {
     ...config,
-    players: players_config,
+    players: playersConfig,
   };
 }

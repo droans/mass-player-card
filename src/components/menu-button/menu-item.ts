@@ -52,13 +52,13 @@ export class MassMenuItem extends LitElement {
   };
 
   private getImagePath() {
-    const img_data = this.menuItem.image;
-    const default_img = img_data?.url;
-    const fallback = img_data?.fallback;
-    if (default_img?.length ?? fallback?.length) {
+    const imageData = this.menuItem.image;
+    const defaultImage = imageData?.url;
+    const fallback = imageData?.fallback;
+    if (defaultImage?.length ?? fallback?.length) {
       void tryPrefetchImageWithFallbacks(
-        default_img ?? (fallback as string),
-        [fallback ?? (default_img as string)],
+        defaultImage ?? (fallback as string),
+        [fallback ?? (defaultImage as string)],
         this.hass,
       ).then((source) => {
         this.getImageCallback(source as string | false);
@@ -92,11 +92,11 @@ export class MassMenuItem extends LitElement {
   }
 
   protected renderIcon(): TemplateResult {
-    const vibrant_class = this.vibrant ? `vibrant` : ``;
-    const selected_class = this.selected ? `selected` : ``;
+    const vibrantClass = this.vibrant ? `vibrant` : ``;
+    const selectedClass = this.selected ? `selected` : ``;
     return html`
       <ha-svg-icon
-        class="menu-list-item-svg ${vibrant_class} ${selected_class}"
+        class="menu-list-item-svg ${vibrantClass} ${selectedClass}"
         part="menu-list-item-svg"
         slot="icon"
         .path=${this.menuItem.icon}
@@ -129,12 +129,12 @@ export class MassMenuItem extends LitElement {
   }
 
   protected render(): TemplateResult {
-    const vibrant_class = this.vibrant ? `vibrant` : ``;
-    const selected_class = this.selected ? `selected` : ``;
+    const vibrantClass = this.vibrant ? `vibrant` : ``;
+    const selectedClass = this.selected ? `selected` : ``;
     const itm = this.menuItem;
     return html`
       <ha-dropdown-item
-        class="menu-list-item-md ${vibrant_class} ${selected_class}"
+        class="menu-list-item-md ${vibrantClass} ${selectedClass}"
         type="button"
         @click=${this.onSelection}
         ?disabled=${this.disabled}

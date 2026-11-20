@@ -86,14 +86,14 @@ export class QueueCard extends LitElement {
   }
 
   private processQueue(queue: QueueItems) {
-    const active_idx = queue.findIndex((i) => i.playing);
+    const activeIdx = queue.findIndex((i) => i.playing);
 
     return queue.map((item, idx) => {
       {
         const r: QueueItem = {
           ...item,
-          show_action_buttons: idx > active_idx,
-          show_move_up_next: idx > active_idx + 1,
+          show_action_buttons: idx > activeIdx,
+          show_move_up_next: idx > activeIdx + 1,
         };
         return r;
       }
@@ -117,8 +117,8 @@ export class QueueCard extends LitElement {
 
   @consume({ context: activeEntityIDContext, subscribe: true })
   @property({ attribute: false })
-  public set active_player_entity(active_player_entity: string) {
-    this._active_player_entity = active_player_entity;
+  public set active_player_entity(activePlayerEntity: string) {
+    this._active_player_entity = activePlayerEntity;
   }
   public get active_player_entity() {
     return this._active_player_entity;
@@ -138,11 +138,11 @@ export class QueueCard extends LitElement {
     return this._config;
   }
 
-  private testConfig(config: QueueConfig | undefined, test_active = true) {
+  private testConfig(config: QueueConfig | undefined, testActive = true) {
     if (!config) {
       return QueueConfigErrors.CONFIG_MISSING;
     }
-    if (test_active) {
+    if (testActive) {
       if (!this.active_player_entity) {
         return QueueConfigErrors.NO_ENTITY;
       }
@@ -170,37 +170,37 @@ export class QueueCard extends LitElement {
       behavior: "auto",
     });
   }
-  private onQueueItemSelected = async (queue_item_id: string) => {
+  private onQueueItemSelected = async (queueItemId: string) => {
     if (!this.queueController) {
       return;
     }
-    await this.queueController.playQueueItem(queue_item_id);
+    await this.queueController.playQueueItem(queueItemId);
     void this.queueController.getQueue();
     this.scrollToActive();
   };
-  private onQueueItemRemoved = async (queue_item_id: string) => {
+  private onQueueItemRemoved = async (queueItemId: string) => {
     if (!this.queueController) {
       return;
     }
-    await this.queueController.removeQueueItem(queue_item_id);
+    await this.queueController.removeQueueItem(queueItemId);
   };
-  private onQueueItemMoveNext = async (queue_item_id: string) => {
+  private onQueueItemMoveNext = async (queueItemId: string) => {
     if (!this.queueController) {
       return;
     }
-    await this.queueController.moveQueueItemNext(queue_item_id);
+    await this.queueController.moveQueueItemNext(queueItemId);
   };
-  private onQueueItemMoveUp = async (queue_item_id: string) => {
+  private onQueueItemMoveUp = async (queueItemId: string) => {
     if (!this.queueController) {
       return;
     }
-    await this.queueController.moveQueueItemUp(queue_item_id);
+    await this.queueController.moveQueueItemUp(queueItemId);
   };
-  private onQueueItemMoveDown = async (queue_item_id: string) => {
+  private onQueueItemMoveDown = async (queueItemId: string) => {
     if (!this.queueController) {
       return;
     }
-    await this.queueController.moveQueueItemDown(queue_item_id);
+    await this.queueController.moveQueueItemDown(queueItemId);
   };
   private onClearQueue = async () => {
     if (!this.queueController) {
@@ -223,7 +223,7 @@ export class QueueCard extends LitElement {
     itemIndex: number,
     itemCount: number,
   ): TemplateResult {
-    const show_album_covers = this.config.show_album_covers;
+    const showAlbumCovers = this.config.show_album_covers;
     /*
       If itemIndex == 0 and itemCount == 1, there is only one item so it is marked as `only`.
       Otherwise, if itemIndex == 0, it is the first item and is marked as `first`.
@@ -241,7 +241,7 @@ export class QueueCard extends LitElement {
       <mpc-queue-media-row
         class="${itemStatusClass} ${itemLocationClass}"
         .media_item=${queueItem}
-        .showAlbumCovers=${show_album_covers}
+        .showAlbumCovers=${showAlbumCovers}
         .selectedService=${this.onQueueItemSelected}
         .removeService=${this.onQueueItemRemoved}
         .moveQueueItemNextService=${this.onQueueItemMoveNext}

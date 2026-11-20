@@ -290,18 +290,18 @@ export class MediaBrowser extends LitElement {
   }
 
   private async searchMedia() {
-    const search_term = this.searchTerm;
+    const searchTerm = this.searchTerm;
     if (!this.browserController || !this.cards) {
       return;
     }
-    if (search_term.length < SEARCH_TERM_MIN_LENGTH) {
+    if (searchTerm.length < SEARCH_TERM_MIN_LENGTH) {
       return;
     }
     this.searchLoading = true;
     try {
       const cards = await this.browserController.search(
         this.activeEntityConfig.entity_id,
-        search_term,
+        searchTerm,
         this.searchLibrary,
         DEFAULT_SEARCH_LIMIT,
       );
@@ -410,13 +410,13 @@ export class MediaBrowser extends LitElement {
     if (!this.actions) {
       return;
     }
-    const content_id: string = data.media_content_id;
-    const content_type = "playlist";
+    const contentId: string = data.media_content_id;
+    const contentType = "playlist";
     const user = this.browserController?.massUser;
     void this.actions.actionEnqueueMedia(
       this.activeEntityConfig.entity_id,
-      content_id,
-      content_type,
+      contentId,
+      contentType,
       enqueue,
       user,
     );
@@ -492,13 +492,13 @@ export class MediaBrowser extends LitElement {
     if (!this.actions) {
       return;
     }
-    const content_id: string = data.media_content_id;
-    const content_type = "playlist";
+    const contentId: string = data.media_content_id;
+    const contentType = "playlist";
     const user = this.browserController?.massUser;
     void this.actions.actionEnqueueMedia(
       this.activeEntityConfig.entity_id,
-      content_id,
-      content_type,
+      contentId,
+      contentType,
       enqueue,
       user,
     );
@@ -578,17 +578,17 @@ export class MediaBrowser extends LitElement {
     if (!this.hass) {
       return;
     }
-    const styles_base_url =
+    const stylesBaseUrl =
       "https://cdn.jsdelivr.net/npm/@shoelace-style/shoelace@2.20.1/cdn/themes/";
     const darkMode = this.hass.themes.darkMode;
-    const styles_url = styles_base_url + (darkMode ? "dark.css" : "light.css");
+    const stylesUrl = stylesBaseUrl + (darkMode ? "dark.css" : "light.css");
     const placeholder = getTranslation(
       "browser.search.placeholder",
       this.hass,
     ) as string;
     return html`
       <span slot="end" id="search-input">
-        <link rel="stylesheet" href="${styles_url}" />
+        <link rel="stylesheet" href="${stylesUrl}" />
         <sl-input
           placeholder="${placeholder}"
           type="search"

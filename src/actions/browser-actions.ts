@@ -84,10 +84,10 @@ export default class BrowserActions {
       ...userParameter,
     });
   }
-  async actionPlayMediaFromService(service: string, player_entity_id: string) {
+  async actionPlayMediaFromService(service: string, playerEntityId: string) {
     const action = service.split(".");
     await this.hass.callService(action[0], action[1], {
-      entity_id: player_entity_id,
+      entity_id: playerEntityId,
     });
   }
   async actionEnqueueMedia(
@@ -111,13 +111,13 @@ export default class BrowserActions {
     await this.hass.callService("music_assistant", "play_media", arguments_);
   }
   async actionGetLibraryRecents(
-    player_entity_id: string,
-    media_type: MediaTypes,
+    playerEntityId: string,
+    mediaType: MediaTypes,
     limit = 25,
     sortOrder: GetLibrarySortOrders | null = "last_played_desc",
     userId: string | null = null,
   ): Promise<MediaLibraryItem[]> {
-    const config_id = await this.getPlayerConfigEntry(player_entity_id);
+    const configId = await this.getPlayerConfigEntry(playerEntityId);
     const sort: GetLibrarySortOrders = sortOrder ?? "last_played_desc";
     const userParameter = userId ? { username: userId } : {};
     const data: getLibraryServiceSchema = {
@@ -126,8 +126,8 @@ export default class BrowserActions {
       service: "get_library",
       service_data: {
         limit,
-        config_entry_id: config_id,
-        media_type,
+        config_entry_id: configId,
+        media_type: mediaType,
         order_by: sort,
         ...userParameter,
       },
@@ -166,24 +166,24 @@ export default class BrowserActions {
     return response.response.items;
   }
   async actionSearchMedia(
-    player_entity_id: string,
-    search_term: string,
-    library_only = false,
+    playerEntityId: string,
+    searchTerm: string,
+    libraryOnly = false,
     limit: number = DEFAULT_SEARCH_LIMIT,
     userId: string | null = null,
-    media_type?: MediaTypes,
+    mediaType?: MediaTypes,
   ): Promise<searchPartialServiceResponse> {
-    const config_id = await this.getPlayerConfigEntry(player_entity_id);
+    const configId = await this.getPlayerConfigEntry(playerEntityId);
     const userParameter = userId ? { username: userId } : {};
     const arguments_: searchServiceData = {
       limit,
-      library_only,
-      config_entry_id: config_id,
-      name: search_term,
+      library_only: libraryOnly,
+      config_entry_id: configId,
+      name: searchTerm,
       ...userParameter,
     };
-    if (media_type) {
-      arguments_.media_type = [media_type];
+    if (mediaType) {
+      arguments_.media_type = [mediaType];
     }
     const data: searchServiceSchema = {
       type: "call_service",
@@ -196,7 +196,7 @@ export default class BrowserActions {
     return response.response;
   }
   async actionGetRecommendations(
-    player_entity_id: string,
+    playerEntityId: string,
     providers: string[] | null,
   ): Promise<RecommendationResponse> {
     const _providers = providers ? { providers } : {};
@@ -205,7 +205,7 @@ export default class BrowserActions {
       domain: "mass_queue",
       service: "get_recommendations",
       service_data: {
-        entity: player_entity_id,
+        entity: playerEntityId,
         ..._providers,
       },
       return_response: true,
@@ -213,287 +213,287 @@ export default class BrowserActions {
     return await this.hass.callWS<RecommendationResponse>(data);
   }
   async actionPlayRadio(
-    entity_id: string,
-    content_id: string,
-    content_type: string,
+    entityId: string,
+    contentId: string,
+    contentType: string,
     userId: string | null = null,
   ) {
     const userParameter = userId ? { username: userId } : {};
     await this.hass.callService("music_assistant", "play_media", {
-      entity_id,
-      media_id: content_id,
-      media_type: content_type,
+      entity_id: entityId,
+      media_id: contentId,
+      media_type: contentType,
       radio_mode: true,
       ...userParameter,
     });
   }
   async actionGetPlaylistTracks(
-    playlist_uri: string,
-    entity_id_or_config_entry_id: string,
+    playlistUri: string,
+    entityIdOrConfigEntryId: string,
   ): Promise<getPlaylistTracksServiceResponse> {
-    let config_entry: string;
-    if (entity_id_or_config_entry_id.includes(".")) {
-      const info = await this.actionGetPlayerInfo(entity_id_or_config_entry_id);
+    let configEntry: string;
+    if (entityIdOrConfigEntryId.includes(".")) {
+      const info = await this.actionGetPlayerInfo(entityIdOrConfigEntryId);
       if (!info) {
         throw new Error(
-          `Received nothing back when getting tracks for playlist ${playlist_uri}!`,
+          `Received nothing back when getting tracks for playlist ${playlistUri}!`,
         );
       }
-      config_entry = info.entries.mass_queue;
+      configEntry = info.entries.mass_queue;
     } else {
-      config_entry = entity_id_or_config_entry_id;
+      configEntry = entityIdOrConfigEntryId;
     }
     const data: getPlaylistTracksServiceSchema = {
       type: "call_service",
       domain: "mass_queue",
       service: "get_playlist_tracks",
       service_data: {
-        uri: playlist_uri,
-        config_entry_id: config_entry,
+        uri: playlistUri,
+        config_entry_id: configEntry,
       },
       return_response: true,
     };
     return await this.hass.callWS(data);
   }
   async actionGetAlbumTracks(
-    playlist_uri: string,
-    entity_id_or_config_entry_id: string,
+    playlistUri: string,
+    entityIdOrConfigEntryId: string,
   ): Promise<getAlbumTracksServiceResponse> {
-    let config_entry: string;
-    if (entity_id_or_config_entry_id.includes(".")) {
-      const info = await this.actionGetPlayerInfo(entity_id_or_config_entry_id);
+    let configEntry: string;
+    if (entityIdOrConfigEntryId.includes(".")) {
+      const info = await this.actionGetPlayerInfo(entityIdOrConfigEntryId);
       if (!info) {
         throw new Error(
-          `Received nothing back when getting tracks for playlist ${playlist_uri}!`,
+          `Received nothing back when getting tracks for playlist ${playlistUri}!`,
         );
       }
-      config_entry = info.entries.mass_queue;
+      configEntry = info.entries.mass_queue;
     } else {
-      config_entry = entity_id_or_config_entry_id;
+      configEntry = entityIdOrConfigEntryId;
     }
     const data: getAlbumTracksServiceSchema = {
       type: "call_service",
       domain: "mass_queue",
       service: "get_album_tracks",
       service_data: {
-        uri: playlist_uri,
-        config_entry_id: config_entry,
+        uri: playlistUri,
+        config_entry_id: configEntry,
       },
       return_response: true,
     };
     return await this.hass.callWS(data);
   }
   async actionGetArtistTracks(
-    playlist_uri: string,
-    entity_id_or_config_entry_id: string,
+    playlistUri: string,
+    entityIdOrConfigEntryId: string,
   ): Promise<getArtistTracksServiceResponse> {
-    let config_entry: string;
-    if (entity_id_or_config_entry_id.includes(".")) {
-      const info = await this.actionGetPlayerInfo(entity_id_or_config_entry_id);
+    let configEntry: string;
+    if (entityIdOrConfigEntryId.includes(".")) {
+      const info = await this.actionGetPlayerInfo(entityIdOrConfigEntryId);
       if (!info) {
         throw new Error(
-          `Received nothing back when getting tracks for playlist ${playlist_uri}!`,
+          `Received nothing back when getting tracks for playlist ${playlistUri}!`,
         );
       }
-      config_entry = info.entries.mass_queue;
+      configEntry = info.entries.mass_queue;
     } else {
-      config_entry = entity_id_or_config_entry_id;
+      configEntry = entityIdOrConfigEntryId;
     }
     const data: getArtistTracksServiceSchema = {
       type: "call_service",
       domain: "mass_queue",
       service: "get_artist_tracks",
       service_data: {
-        uri: playlist_uri,
-        config_entry_id: config_entry,
+        uri: playlistUri,
+        config_entry_id: configEntry,
       },
       return_response: true,
     };
     return await this.hass.callWS(data);
   }
   async actionGetPodcastEpisodes(
-    podcast_uri: string,
-    entity_id_or_config_entry_id: string,
+    podcastUri: string,
+    entityIdOrConfigEntryId: string,
   ): Promise<getPodcastEpisodesServiceRespnse> {
-    let config_entry: string;
-    if (entity_id_or_config_entry_id.includes(".")) {
-      const info = await this.actionGetPlayerInfo(entity_id_or_config_entry_id);
+    let configEntry: string;
+    if (entityIdOrConfigEntryId.includes(".")) {
+      const info = await this.actionGetPlayerInfo(entityIdOrConfigEntryId);
       if (!info) {
         throw new Error(
-          `Received nothing back when getting tracks for playlist ${podcast_uri}!`,
+          `Received nothing back when getting tracks for playlist ${podcastUri}!`,
         );
       }
-      config_entry = info.entries.mass_queue;
+      configEntry = info.entries.mass_queue;
     } else {
-      config_entry = entity_id_or_config_entry_id;
+      configEntry = entityIdOrConfigEntryId;
     }
     const data: getPodcastEpisodeServiceSchema = {
       type: "call_service",
       domain: "mass_queue",
       service: "get_podcast_episodes",
       service_data: {
-        uri: podcast_uri,
-        config_entry_id: config_entry,
+        uri: podcastUri,
+        config_entry_id: configEntry,
       },
       return_response: true,
     };
     return await this.hass.callWS(data);
   }
   async actionGetPlaylistData(
-    playlist_uri: string,
-    entity_id_or_config_entry_id: string,
+    playlistUri: string,
+    entityIdOrConfigEntryId: string,
   ): Promise<getPlaylistServiceResponse> {
-    let config_entry: string;
-    if (entity_id_or_config_entry_id.includes(".")) {
-      const info = await this.actionGetPlayerInfo(entity_id_or_config_entry_id);
+    let configEntry: string;
+    if (entityIdOrConfigEntryId.includes(".")) {
+      const info = await this.actionGetPlayerInfo(entityIdOrConfigEntryId);
       if (!info) {
         throw new Error(
-          `Received nothing back when getting tracks for playlist ${playlist_uri}!`,
+          `Received nothing back when getting tracks for playlist ${playlistUri}!`,
         );
       }
-      config_entry = info.entries.mass_queue;
+      configEntry = info.entries.mass_queue;
     } else {
-      config_entry = entity_id_or_config_entry_id;
+      configEntry = entityIdOrConfigEntryId;
     }
     const data: getPlaylistServiceSchema = {
       type: "call_service",
       domain: "mass_queue",
       service: "get_playlist",
       service_data: {
-        uri: playlist_uri,
-        config_entry_id: config_entry,
+        uri: playlistUri,
+        config_entry_id: configEntry,
       },
       return_response: true,
     };
     return await this.hass.callWS(data);
   }
   async actionGetAlbumData(
-    album_uri: string,
-    entity_id_or_config_entry_id: string,
+    albumUri: string,
+    entityIdOrConfigEntryId: string,
   ): Promise<getAlbumServiceResponse> {
-    let config_entry: string;
-    if (entity_id_or_config_entry_id.includes(".")) {
-      const info = await this.actionGetPlayerInfo(entity_id_or_config_entry_id);
+    let configEntry: string;
+    if (entityIdOrConfigEntryId.includes(".")) {
+      const info = await this.actionGetPlayerInfo(entityIdOrConfigEntryId);
       if (!info) {
         throw new Error(
-          `Received nothing back when getting tracks for album ${album_uri}!`,
+          `Received nothing back when getting tracks for album ${albumUri}!`,
         );
       }
-      config_entry = info.entries.mass_queue;
+      configEntry = info.entries.mass_queue;
     } else {
-      config_entry = entity_id_or_config_entry_id;
+      configEntry = entityIdOrConfigEntryId;
     }
     const data: getAlbumServiceSchema = {
       type: "call_service",
       domain: "mass_queue",
       service: "get_album",
       service_data: {
-        uri: album_uri,
-        config_entry_id: config_entry,
+        uri: albumUri,
+        config_entry_id: configEntry,
       },
       return_response: true,
     };
     return await this.hass.callWS(data);
   }
   async actionGetArtistData(
-    album_uri: string,
-    entity_id_or_config_entry_id: string,
+    albumUri: string,
+    entityIdOrConfigEntryId: string,
   ): Promise<getArtistServiceResponse> {
-    let config_entry: string;
-    if (entity_id_or_config_entry_id.includes(".")) {
-      const info = await this.actionGetPlayerInfo(entity_id_or_config_entry_id);
+    let configEntry: string;
+    if (entityIdOrConfigEntryId.includes(".")) {
+      const info = await this.actionGetPlayerInfo(entityIdOrConfigEntryId);
       if (!info) {
         throw new Error(
-          `Received nothing back when getting tracks for album ${album_uri}!`,
+          `Received nothing back when getting tracks for album ${albumUri}!`,
         );
       }
-      config_entry = info.entries.mass_queue;
+      configEntry = info.entries.mass_queue;
     } else {
-      config_entry = entity_id_or_config_entry_id;
+      configEntry = entityIdOrConfigEntryId;
     }
     const data: getArtistServiceSchema = {
       type: "call_service",
       domain: "mass_queue",
       service: "get_artist",
       service_data: {
-        uri: album_uri,
-        config_entry_id: config_entry,
+        uri: albumUri,
+        config_entry_id: configEntry,
       },
       return_response: true,
     };
     return await this.hass.callWS(data);
   }
   async actionGetPodcastData(
-    podcast_uri: string,
-    entity_id_or_config_entry_id: string,
+    podcastUri: string,
+    entityIdOrConfigEntryId: string,
   ): Promise<getPodcastServiceResponse> {
-    let config_entry: string;
-    if (entity_id_or_config_entry_id.includes(".")) {
-      const info = await this.actionGetPlayerInfo(entity_id_or_config_entry_id);
+    let configEntry: string;
+    if (entityIdOrConfigEntryId.includes(".")) {
+      const info = await this.actionGetPlayerInfo(entityIdOrConfigEntryId);
       if (!info) {
         throw new Error(
-          `Received nothing back when getting episodes for podcast ${podcast_uri}!`,
+          `Received nothing back when getting episodes for podcast ${podcastUri}!`,
         );
       }
-      config_entry = info.entries.mass_queue;
+      configEntry = info.entries.mass_queue;
     } else {
-      config_entry = entity_id_or_config_entry_id;
+      configEntry = entityIdOrConfigEntryId;
     }
     const data: getPodcastServiceSchema = {
       type: "call_service",
       domain: "mass_queue",
       service: "get_podcast",
       service_data: {
-        uri: podcast_uri,
-        config_entry_id: config_entry,
+        uri: podcastUri,
+        config_entry_id: configEntry,
       },
       return_response: true,
     };
     return await this.hass.callWS(data);
   }
   async actionRemovePlaylistTrack(
-    playlist_id: string,
+    playlistId: string,
     position: number,
-    entity_id_or_config_entry_id: string,
+    entityIdOrConfigEntryId: string,
   ) {
-    let config_entry: string;
-    if (entity_id_or_config_entry_id.includes(".")) {
-      const info = await this.actionGetPlayerInfo(entity_id_or_config_entry_id);
+    let configEntry: string;
+    if (entityIdOrConfigEntryId.includes(".")) {
+      const info = await this.actionGetPlayerInfo(entityIdOrConfigEntryId);
       if (!info) {
         throw new Error(
-          `Received nothing back when getting config entry for ${entity_id_or_config_entry_id}!`,
+          `Received nothing back when getting config entry for ${entityIdOrConfigEntryId}!`,
         );
       }
-      config_entry = info.entries.mass_queue;
+      configEntry = info.entries.mass_queue;
     } else {
-      config_entry = entity_id_or_config_entry_id;
+      configEntry = entityIdOrConfigEntryId;
     }
     const data: removePlaylistTracksServiceSchema = {
       type: "call_service",
       domain: "mass_queue",
       service: "remove_playlist_tracks",
       service_data: {
-        playlist_id,
+        playlist_id: playlistId,
         positions_to_remove: [position],
-        config_entry_id: config_entry,
+        config_entry_id: configEntry,
       },
     };
     await this.hass.callWS(data);
   }
-  private async getPlayerConfigEntry(entity_id: string): Promise<string> {
+  private async getPlayerConfigEntry(entityId: string): Promise<string> {
     const entry = await this.hass.callWS<{ config_entry_id: string }>({
       type: "config/entity_registry/get",
-      entity_id,
+      entity_id: entityId,
     });
     const result = entry.config_entry_id;
     return result;
   }
   private async actionGetPlayerInfo(
-    entity_id: string,
+    entityId: string,
   ): Promise<getInfoWSResponseSchema | null> {
     const data: getInfoWSServiceSchema = {
       type: "mass_queue/get_info",
-      entity_id,
+      entity_id: entityId,
     };
     return await this.hass.callWS(data);
   }

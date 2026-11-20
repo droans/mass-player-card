@@ -32,18 +32,18 @@ export class ActionsController {
   }
   public setEntityConfig(config: EntityConfig) {
     this._entityConf = config;
-    const entity_id = config.entity_id;
-    const volume_entity_id = config.volume_entity_id;
-    const ent = this._hass.states[entity_id];
-    const volEnt = this._hass.states[volume_entity_id];
+    const entityId = config.entity_id;
+    const volumeEntityId = config.volume_entity_id;
+    const ent = this._hass.states[entityId];
+    const volEnt = this._hass.states[volumeEntityId];
     if (ent) {
       this._activeEntity = ent;
     }
     if (volEnt) {
       this._volumeEntity = volEnt;
     }
-    this._activeEntityId = entity_id;
-    this._volumeEntityId = volume_entity_id;
+    this._activeEntityId = entityId;
+    this._volumeEntityId = volumeEntityId;
   }
   public set hass(hass: ExtendedHass) {
     this._hass = hass;
@@ -120,8 +120,8 @@ export class ActionsController {
           Volume
       */
   public async actionSetVolume(volume: number) {
-    const used_vol = volume > 1 ? volume / 100 : volume;
-    await this.PlayerActions.actionSetVolume(this._volumeEntity, used_vol);
+    const usedVolume = volume > 1 ? volume / 100 : volume;
+    await this.PlayerActions.actionSetVolume(this._volumeEntity, usedVolume);
   }
   public async actionToggleMute() {
     await this.PlayerActions.actionMuteToggle(this._volumeEntity);
