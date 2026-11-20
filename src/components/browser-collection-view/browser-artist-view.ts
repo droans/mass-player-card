@@ -27,6 +27,7 @@ export class MassBrowserArtistView extends BrowserViewBase {
   ) => void;
 
   @state() protected similarArtistCards: MediaCardItem[] = [];
+  @state() protected artistAlbums: MediaCardItem[] = [];
 
   protected _browserController?: MediaBrowserController;
 
@@ -36,6 +37,7 @@ export class MassBrowserArtistView extends BrowserViewBase {
   @consume({ context: browserControllerContext, subscribe: true })
   public set browserController(controller: MediaBrowserController | undefined) {
     this._browserController = controller;
+    this.getArtistAlbums();
     this.getSimilarArtists();
   }
   public get browserController() {
@@ -52,13 +54,24 @@ export class MassBrowserArtistView extends BrowserViewBase {
         this.similarArtistCards = cards;
       });
   }
+  public getArtistAlbums() {
+    if (!this.browserController || !this.collectionData) {
+      return;
+    }
+    void this.browserController
+      .getArtistAlbumsCards(this.collectionData.media_content_id)
+      .then((cards) => {
+        this.artistAlbums = cards;
+      });
+  }
+
   // Ask HA to return the tracks in the artist
   public getTracks() {
     if (!this.hass || !this.collectionData || !this.activePlayer) {
       return;
     }
     void this.browserActions
-      .actionGetArtistTracks(
+      .actionGetArtistTopTracks(
         this.collectionData.media_content_id,
         this.activePlayer.entity_id,
       )
@@ -67,6 +80,7 @@ export class MassBrowserArtistView extends BrowserViewBase {
       });
     this.setHiddenElements();
     void this.getMetadata();
+    this.getArtistAlbums();
     this.getSimilarArtists();
   }
   public async getMetadata() {
@@ -126,6 +140,27 @@ export class MassBrowserArtistView extends BrowserViewBase {
       </div>
     `;
   }
+  protected renderArtistAlbums(): TemplateResult {
+    if (this.artistAlbums.length === 0) {
+      return html``;
+    }
+    const translation = getTranslation(
+      "browser.collections.label.artist_albums",
+      this.hass,
+    );
+    return html`
+      <mpc-browser-cards
+        title="${translation}"
+        id="similar-artists-cards"
+        direction="horizontal"
+        .onEnqueueAction=${this.onEnqueue}
+        .onSelectAction=${this.onItemSelected}
+        .onDrillAction=${this.onDrill}
+        .cards=${this.artistAlbums}
+        section-type="favorite"
+      ></mpc-browser-cards>
+    `;
+  }
   protected renderSimilarArtists(): TemplateResult {
     if (this.similarArtistCards.length === 0) {
       return html``;
@@ -155,6 +190,7 @@ export class MassBrowserArtistView extends BrowserViewBase {
         <div id="header">${this.renderHeader()}</div>
         <div id="tracks-container" class="artist">
           <div id="tracks" class="artist no-scroll">${this.renderTracks()}</div>
+          <div id="artist-albums">${this.renderArtistAlbums()}</div>
           <div id="similar-artists">${this.renderSimilarArtists()}</div>
         </div>
       </div>

@@ -1,5 +1,7 @@
 import { css } from "lit";
 
+export default css`
+  #artist-albums,
   #similar-artists {
     padding-left: 4px;
   }

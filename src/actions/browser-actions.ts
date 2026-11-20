@@ -48,6 +48,9 @@ import {
 } from "mass-queue-types/packages/music_assistant/actions/search";
 import { GetLibrarySortOrders } from "../config/media-browser";
 import {
+  getArtistAlbumsServiceResponse,
+  getArtistAlbumsServiceSchema,
+  getArtistTopTracksServiceSchema,
   getSimilarArtistsServiceResponse,
   getSimilarArtistsServiceSchema,
 } from "../const/actions";
@@ -216,6 +219,25 @@ export default class BrowserActions {
     };
     return await this.hass.callWS<RecommendationResponse>(data);
   }
+  async actionGetArtistAlbums(
+    entityIdOrConfigEntryId: string,
+    uri: string,
+  ): Promise<getArtistAlbumsServiceResponse> {
+    const configEntry = entityIdOrConfigEntryId.includes(".")
+      ? await this.getPlayerMassQueueConfigEntry(entityIdOrConfigEntryId)
+      : entityIdOrConfigEntryId;
+    const data: getArtistAlbumsServiceSchema = {
+      type: "call_service",
+      domain: "mass_queue",
+      service: "get_artist_albums",
+      service_data: {
+        config_entry_id: configEntry,
+        uri,
+      },
+      return_response: true,
+    };
+    return await this.hass.callWS<getArtistAlbumsServiceResponse>(data);
+  }
   async actionGetSimilarArtists(
     entityIdOrConfigEntryId: string,
     uri: string,
@@ -299,6 +321,25 @@ export default class BrowserActions {
       type: "call_service",
       domain: "mass_queue",
       service: "get_artist_tracks",
+      service_data: {
+        uri: playlistUri,
+        config_entry_id: configEntry,
+      },
+      return_response: true,
+    };
+    return await this.hass.callWS(data);
+  }
+  async actionGetArtistTopTracks(
+    playlistUri: string,
+    entityIdOrConfigEntryId: string,
+  ): Promise<getArtistTracksServiceResponse> {
+    const configEntry = entityIdOrConfigEntryId.includes(".")
+      ? await this.getPlayerMassQueueConfigEntry(entityIdOrConfigEntryId)
+      : entityIdOrConfigEntryId;
+    const data: getArtistTopTracksServiceSchema = {
+      type: "call_service",
+      domain: "mass_queue",
+      service: "get_artist_top_tracks",
       service_data: {
         uri: playlistUri,
         config_entry_id: configEntry,
