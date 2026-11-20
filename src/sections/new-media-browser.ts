@@ -850,10 +850,11 @@ export class MediaBrowser extends LitElement {
     if (!this.config.recents.enabled || !recentsMediaTypeConfig.enabled) {
       return html``;
     }
+    const translation = getTranslation("browser.label.recents", this.hass);
     return html`
       <div class="browser-card-section recents">
         <mpc-browser-cards
-          title="🕑 Recently Played"
+          title="🕑 ${translation}"
           id="recents"
           direction="horizontal"
           .onEnqueueAction=${this.onEnqueue}
@@ -870,10 +871,11 @@ export class MediaBrowser extends LitElement {
     if (!this.config.recents.enabled || !favoritesMediaTypeConfig.enabled) {
       return html``;
     }
+    const translation = getTranslation("browser.label.favorites", this.hass);
     return html`
       <div class="browser-card-section favorites">
         <mpc-browser-cards
-          title="Your Favorites"
+          title="❤️ ${translation}"
           id="favorite"
           direction="horizontal"
           .onEnqueueAction=${this.onEnqueue}
