@@ -103,6 +103,7 @@ export default css`
     overflow: hidden;
     text-overflow: ellipsis;
     flex: 1;
+    font-weight: 600;
   }
   .thumbnail {
     height: calc(var(--media-row-thumbnail-height) * 1.5);
