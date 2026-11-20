@@ -25,6 +25,7 @@ export default css`
     --prev-start-border-radius: 36px;
     --prev-end-border-radius: 18px;
     --prev-border-radius: 18px 36px 36px 18px !important;
+    --play-pause-icon-height: 80px;
 
     --play-pause-border-radius: 18px !important;
   }
