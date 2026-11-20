@@ -44,7 +44,7 @@ export class MassPlayerControlsExpressive extends MassPlayerControlsBase {
     return html`
       <mpc-button
         .onPressService=${this.onPrevious}
-        role="filled-variant"
+        role="tonal"
         size="large"
         id="button-previous"
         elevation="-1"
@@ -82,7 +82,7 @@ export class MassPlayerControlsExpressive extends MassPlayerControlsBase {
     return html`
       <mpc-button
         .onPressService=${this.onNext}
-        role="filled-variant"
+        role="tonal"
         size="large"
         id="button-next"
         class="mpc-button next"

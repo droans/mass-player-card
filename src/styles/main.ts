@@ -142,11 +142,6 @@ export default css`
       var(--ha-color-text-secondary)
     );
 
-    --player-play-pause-icon-size: var(
-      --mass-player-card-player-play-pause-icon-size,
-      6rem
-    );
-
     --row-icon-button-height: var(
       --mass-player-card-row-icon-button-height,
       1.5rem

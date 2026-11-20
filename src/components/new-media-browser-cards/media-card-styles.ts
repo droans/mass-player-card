@@ -16,9 +16,15 @@ export default css`
     width: 100%;
     height: unset;
   }
+  button.hidden {
+    height: 0px;
+    background: unset;
+    border: unset;
+    padding: unset;
+  }
   wa-card {
     --wa-panel-border-width: var(--browser-card-border-width);
-    height: 100%;
+    height: fit-content;
     width: 100%;
   }
   wa-skeleton,
@@ -35,6 +41,7 @@ export default css`
     overflow: visible !important;
     margin: 0px 0px 3px;
     aspect-ratio: 1;
+    flex-direction: column;
   }
   #container,
   #container-outer {

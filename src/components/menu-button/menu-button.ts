@@ -9,7 +9,7 @@ import { customElement, property, query, state } from "lit/decorators.js";
 
 import { consume } from "@lit/context";
 import { controllerContext, useVibrantContext } from "../../const/context";
-import { ControlSelectMenuElement } from "../../const/elements";
+import { HaDropdownMenuElement } from "../../const/elements";
 import { ListItems } from "../../const/types";
 import { MassCardController } from "../../controller/controller";
 import { jsonMatch } from "../../utils/utility";
@@ -64,7 +64,7 @@ export class MassMenuButton extends LitElement {
   outlined = false;
 
   @query("#menu-select-menu")
-  public menuElement?: ControlSelectMenuElement;
+  public menuElement?: HaDropdownMenuElement;
 
   @consume({ context: useVibrantContext, subscribe: true })
   private useVibrant!: boolean;

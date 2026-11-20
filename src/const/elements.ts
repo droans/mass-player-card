@@ -12,7 +12,7 @@ export interface DialogElement extends LitElement {
   open: boolean;
 }
 
-export interface ControlSelectMenuElement extends LitElement {
+export interface HaDropdownMenuElement extends LitElement {
   open: boolean;
 }
 

@@ -18,8 +18,6 @@ export default css`
     --lower-controls-button-start-border-radius: 8px;
     --lower-controls-button-end-border-radius: 8px;
 
-    --next-prev-button-height: var(--play-pause-icon-height);
-    --next-prev-button-width: 48px;
     --next-prev-icon-height: 48px;
     --next-border-radius: 36px 18px 18px 36px !important;
     --next-start-border-radius: 18px;
@@ -27,13 +25,57 @@ export default css`
     --prev-start-border-radius: 36px;
     --prev-end-border-radius: 18px;
     --prev-border-radius: 18px 36px 36px 18px !important;
-
     --play-pause-icon-height: 80px;
-    --pause-button-width: 96px;
-    --play-button-width: 110px;
+
     --play-pause-border-radius: 18px !important;
   }
 
+  .button-label {
+    display: contents;
+  }
+
+  #button-next {
+    --ha-button-start-border-radius: var(--next-start-border-radius);
+    --ha-button-end-border-radius: var(--next-end-border-radius);
+    --used-button-border-radius: var(--prev-border-radius);
+  }
+  #button-previous {
+    --ha-button-start-border-radius: var(--prev-start-border-radius);
+    --ha-button-end-border-radius: var(--prev-end-border-radius);
+    --used-button-border-radius: var(--next-border-radius);
+  }
+  #button-skip-backwards,
+  #button-skip-forwards {
+    place-content: center;
+  }
+
+  #div-controls {
+    container-name: controls;
+    container-type: inline-size;
+    row-gap: 6px;
+    display: grid;
+    margin-bottom: 6px;
+  }
+
+  .icons.favorite.lower.active {
+    color: var(--md-sys-color-tertiary);
+  }
+
+  .icons.lower,
+  .icons.lower.active {
+    height: var(--icon-height);
+    width: var(--icon-height);
+  }
+
+  .icons.next,
+  .icons.previous {
+    height: var(--next-prev-icon-height);
+    width: var(--next-prev-icon-height);
+  }
+  .icons.play-pause {
+    height: var(--play-pause-icon-height);
+    width: var(--play-pause-icon-height);
+  }
   .mpc-button.lower {
     --ha-button-start-border-radius: var(
       --lower-controls-button-start-border-radius
@@ -85,74 +127,36 @@ export default css`
   .mpc-button.lower.active {
     --button-border-radius: 20px;
   }
-
+  .mpc-button.play-pause {
+    width: 30%;
+  }
+  .mpc-button.play-pause::part(button) {
+    width: 100%;
+    height: 100%;
+  }
   .mpc-button.next,
-  .mpc-button.previous::part(button) {
-    --button-button-height: var(--next-prev-button-height);
-    --button-button-width: var(--next-prev-button-width);
+  .mpc-button.previous {
+    width: 20%;
+  }
+  :is(.mpc-button.next, .mpc-button.previous)::part(button) {
+    width: 100%;
+    height: 100%;
     --button-elevation: var(--md-sys-elevation-level1);
     --button-padding: 0px;
   }
 
-  .button-label {
-    display: contents;
+  .mpc-button.skip {
+    width: 10%;
   }
-
-  #button-next {
-    --ha-button-start-border-radius: var(--next-start-border-radius);
-    --ha-button-end-border-radius: var(--next-end-border-radius);
-    --used-button-border-radius: var(--prev-border-radius);
-  }
-  #button-previous {
-    --ha-button-start-border-radius: var(--prev-start-border-radius);
-    --ha-button-end-border-radius: var(--prev-end-border-radius);
-    --used-button-border-radius: var(--next-border-radius);
+  .mpc-button.skip::part(button) {
+    --button-background-color: var(--md-sys-color-surface-container);
+    width: 100%;
+    aspect-ratio: 1;
   }
   .mpc-button.play-pause {
-    --button-button-height: var(--play-pause-icon-height);
     --button-border-radius: var(--play-pause-border-radius);
     --button-padding: 0px;
     --button-elevation: var(--md-sys-elevation-level2);
-  }
-  #button-play {
-    --button-button-width: var(--play-button-width);
-  }
-  #button-pause {
-    --button-button-width: var(--pause-button-width);
-  }
-  #button-skip-backwards,
-  #button-skip-forwards {
-    --button-button-height: 3.5rem;
-    --button-button-width: 3.5rem;
-    place-content: center;
-  }
-
-  #div-controls {
-    container-name: controls;
-    container-type: inline-size;
-    row-gap: 6px;
-    display: grid;
-    margin-bottom: 6px;
-  }
-
-  .icons.favorite.lower.active {
-    color: var(--md-sys-color-tertiary);
-  }
-
-  .icons.lower,
-  .icons.lower.active {
-    height: var(--icon-height);
-    width: var(--icon-height);
-  }
-
-  .icons.next,
-  .icons.previous {
-    height: var(--next-prev-icon-height);
-    width: var(--next-prev-icon-height);
-  }
-  .icons.play-pause {
-    height: var(--play-pause-icon-height);
-    width: var(--play-pause-icon-height);
   }
 
   .no-label::part(button) {
@@ -176,6 +180,8 @@ export default css`
     display: flex;
     margin-top: unset;
     row-gap: unset;
+    width: 100%;
+    justify-content: center;
   }
   @container controls (width <= 30em) {
     #player-controls-lower {

@@ -11,7 +11,7 @@ import { html } from "lit/static-html.js";
 
 import "../menu-button/menu-button";
 
-import { CardSelectedService } from "../../const/actions";
+import { CardEnqueueService, CardSelectedService } from "../../const/actions";
 import {
   activeEntityConfigContext,
   activeSectionContext,
@@ -23,11 +23,13 @@ import {
   mediaBrowserHiddenElementsConfigContext,
 } from "../../const/context";
 import {
+  getEnqueueButtons,
   getSearchMediaButtons,
   SHOW_ARTIST_SUBTITLE_SECTIONS,
 } from "../../const/media-browser";
 import {
   ExtendedHass,
+  ListItemData,
   ListItems,
   mediaCardCollectionData,
   MediaCardItem,
@@ -37,12 +39,13 @@ import styles from "./media-card-styles";
 
 import { Config } from "../../config/config";
 import {
+  HIDDEN_BUTTON_VALUE,
   MediaBrowserConfig,
   MediaBrowserHiddenElementsConfig,
 } from "../../config/media-browser";
-import { WaAnimation } from "../../const/elements";
-import { Sections, Thumbnail } from "../../const/enums";
-import { HTMLImageElementEvent } from "../../const/events";
+import { HaDropdownMenuElement } from "../../const/elements";
+import { EnqueueOptions, Sections, Thumbnail } from "../../const/enums";
+import { HaDropdownEventData, HTMLImageElementEvent } from "../../const/events";
 import { Icons } from "../../const/icons";
 import { getThumbnail } from "../../utils/thumbnails";
 import { jsonMatch } from "../../utils/utility";
@@ -54,32 +57,35 @@ export class MediaCard extends LitElement {
   @property({ type: Boolean }) queueable = false;
   @property({ type: Boolean, attribute: "skeleton" }) skeleton = false;
   @property({ type: String, attribute: "size" }) size!: "medium" | "large";
+  @property({ attribute: false }) onEnqueueAction!: CardEnqueueService;
+
   @state() code!: TemplateResult;
-  private _search_buttons!: ListItems;
-
-  @query("#animation") _animation!: WaAnimation;
-  private _firstLoaded = false;
-
-  private _icons!: Icons;
 
   @consume({ context: hassContext })
   public hass?: ExtendedHass;
-
-  private _cardConfig!: Config;
-
-  public onSelectAction!: CardSelectedService;
-
-  private _sectionConfig!: MediaBrowserConfig;
-  private _activeSection!: Sections;
-  private _play = false;
-
-  private _config!: MediaCardItem;
-  private _entityConfig!: EntityConfig;
   @consume({
     context: mediaBrowserHiddenElementsConfigContext,
     subscribe: true,
   })
   private hide!: MediaBrowserHiddenElementsConfig;
+
+  @query("#enqueue-dropdown") dropdownElement!: HaDropdownMenuElement;
+
+  public onSelectAction!: CardSelectedService;
+
+  private _search_buttons!: ListItems;
+  private _firstLoaded = false;
+  private _icons!: Icons;
+  private _cardConfig!: Config;
+  private _sectionConfig!: MediaBrowserConfig;
+  private _activeSection!: Sections;
+  private _play = false;
+  private _config!: MediaCardItem;
+  private _entityConfig!: EntityConfig;
+  private timeout?: number;
+  private holdDelayMs = 500;
+  private _enqueueButtons?: ListItems;
+
   @consume({ context: activeSectionContext, subscribe: true })
   public set activeSection(section: Sections | undefined) {
     if (!section) {
@@ -171,8 +177,59 @@ export class MediaCard extends LitElement {
   }
 
   private updateHiddenElements() {
+    this.updateEnqueueButtons();
     this.generateCode();
   }
+  private updateEnqueueButtons() {
+    if (!this.hass || !this.Icons) {
+      return;
+    }
+    const defaultButtons = getEnqueueButtons(this.Icons, this.hass);
+    const buttonMapping = HIDDEN_BUTTON_VALUE;
+    const options = defaultButtons.filter((item) => {
+      //eslint-disable-next-line @typescript-eslint/no-unsafe-assignment
+      const hideValue = buttonMapping[item.option];
+      //eslint-disable-next-line @typescript-eslint/no-unsafe-member-access
+      return !this.hide[hideValue];
+    });
+    this._enqueueButtons = options;
+  }
+  private onEnqueueSelect = (event_: HaDropdownEventData) => {
+    event_.stopPropagation();
+    if (this.skeleton) {
+      return;
+    }
+    const target = event_.detail;
+    const value = target.item.value as unknown as EnqueueOptions;
+    this.onEnqueueAction(this._config.data, value);
+  };
+  private onHold = () => {
+    this.dropdownElement.open = true;
+  };
+  private onPointerDown = (event_: PointerEvent) => {
+    event_.stopImmediatePropagation();
+    if (event_.button != 0) {
+      return;
+    }
+    this.timeout = window.setTimeout(() => {
+      if (!this.timeout) {
+        return;
+      }
+      this.timeout = undefined;
+      this.onHold();
+    }, this.holdDelayMs);
+  };
+  private onPointerUp = (event_: PointerEvent) => {
+    event_.stopImmediatePropagation();
+    if (event_.button != 0) {
+      return;
+    }
+    if (this.timeout) {
+      clearTimeout(this.timeout);
+      this.onSelect(event_);
+      this.timeout = undefined;
+    }
+  };
   private onSelect = (event_: PointerEvent) => {
     if (event_.button != 0) {
       return;
@@ -182,6 +239,36 @@ export class MediaCard extends LitElement {
     }
     this.onSelectAction(this._config.data, this);
   };
+  protected renderEnqueueButton(button: ListItemData): TemplateResult {
+    return html`
+      <ha-dropdown-item class="enqueue" value=${button.option}>
+        <ha-svg-icon
+          class="icon"
+          slot="icon"
+          .path=${button.icon}
+        ></ha-svg-icon>
+        <div class="label">${button.title}</div>
+      </ha-dropdown-item>
+    `;
+  }
+  protected renderEnqueueMenu(): TemplateResult {
+    if (!this._enqueueButtons?.length) {
+      return html``;
+    }
+    const dropdownHtml = this._enqueueButtons.map((button) => {
+      return this.renderEnqueueButton(button);
+    });
+    return html`
+      <ha-dropdown
+        id="enqueue-dropdown"
+        @wa-select=${this.onEnqueueSelect}
+        placement="bottom"
+      >
+        <button class="hidden" slot="trigger"></button>
+        ${dropdownHtml}
+      </ha-dropdown>
+    `;
+  }
   protected renderThumbnailFromBackground() {
     return html` ${this.config?.background} `;
   }
@@ -243,10 +330,16 @@ export class MediaCard extends LitElement {
   }
   private generateCard(): TemplateResult {
     return html`
-      <wa-card class="media-card" @pointerup=${this.onSelect}>
+      <wa-card
+        class="media-card"
+        @pointerdown=${this.onPointerDown}
+        @pointerup=${this.onPointerUp}
+        slot="trigger"
+      >
         <div slot="media" id="media">${this.renderThumbnail()}</div>
         ${this.renderTitle()}
       </wa-card>
+      ${this.renderEnqueueMenu()}
     `;
   }
   private generateCode() {
@@ -261,18 +354,9 @@ export class MediaCard extends LitElement {
     }
     this.code = html`
       <div id="container-outer">
-        <wa-animation
-          id="animation"
-          name="pulse"
-          easing="ease"
-          iterations="1"
-          play=${this._play}
-          playback-rate="1"
-        >
-          <div id="container">
-            ${this.skeleton ? this.generateSkeleton() : this.generateCard()}
-          </div>
-        </wa-animation>
+        <div id="container">
+          ${this.skeleton ? this.generateSkeleton() : this.generateCard()}
+        </div>
       </div>
     `;
   }
@@ -284,12 +368,6 @@ export class MediaCard extends LitElement {
   }
   protected shouldUpdate(_changedProperties: PropertyValues): boolean {
     return _changedProperties.size > 0;
-  }
-  connectedCallback(): void {
-    if (this._firstLoaded) {
-      this._animation.play = true;
-    }
-    super.connectedCallback();
   }
   static get styles(): CSSResultGroup {
     return styles;

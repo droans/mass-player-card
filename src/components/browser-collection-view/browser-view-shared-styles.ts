@@ -165,7 +165,7 @@ export default css`
     padding-right: 4px;
   }
   #tracks {
-    position: relative;
+    /* position: relative; */
     scrollbar-width: none;
     height: 98%;
   }
@@ -174,8 +174,6 @@ export default css`
   }
   #tracks-container {
     overflow: hidden;
-    border-top-left-radius: var(--default-border-radius);
-    border-top-right-radius: var(--default-border-radius);
     height: 100%;
   }
   #tracks-length {
