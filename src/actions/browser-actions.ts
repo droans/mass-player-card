@@ -48,6 +48,8 @@ import {
 } from "mass-queue-types/packages/music_assistant/actions/search";
 import { GetLibrarySortOrders } from "../config/media-browser";
 import {
+  getArtistAlbumsServiceResponse,
+  getArtistAlbumsServiceSchema,
   getSimilarArtistsServiceResponse,
   getSimilarArtistsServiceSchema,
 } from "../const/actions";
@@ -215,6 +217,25 @@ export default class BrowserActions {
       return_response: true,
     };
     return await this.hass.callWS<RecommendationResponse>(data);
+  }
+  async actionGetArtistAlbums(
+    entityIdOrConfigEntryId: string,
+    uri: string,
+  ): Promise<getArtistAlbumsServiceResponse> {
+    const configEntry = entityIdOrConfigEntryId.includes(".")
+      ? await this.getPlayerMassQueueConfigEntry(entityIdOrConfigEntryId)
+      : entityIdOrConfigEntryId;
+    const data: getArtistAlbumsServiceSchema = {
+      type: "call_service",
+      domain: "mass_queue",
+      service: "get_artist_albums",
+      service_data: {
+        config_entry_id: configEntry,
+        uri,
+      },
+      return_response: true,
+    };
+    return await this.hass.callWS<getArtistAlbumsServiceResponse>(data);
   }
   async actionGetSimilarArtists(
     entityIdOrConfigEntryId: string,

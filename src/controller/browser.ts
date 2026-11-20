@@ -28,6 +28,7 @@ import {
   RecommendationSection,
 } from "../const/types";
 import {
+  generateCardFromAlbum,
   generateCardFromArtist,
   generateCustomSectionCards,
   generateFavoriteCard,
@@ -257,6 +258,23 @@ export class MediaBrowserController {
     const result: MediaCardItem[] = [];
     resp.response.artists.forEach((artist) => {
       const card = generateCardFromArtist(artist);
+      if (card) {
+        result.push(card);
+      }
+    });
+    return result;
+  }
+  public async getArtistAlbumsCards(
+    artistUri: string,
+  ): Promise<MediaCardItem[]> {
+    const resp = await this.actions.actionGetArtistAlbums(
+      this.activeEntityId,
+      artistUri,
+    );
+
+    const result: MediaCardItem[] = [];
+    resp.response.albums.forEach((album) => {
+      const card = generateCardFromAlbum(album);
       if (card) {
         result.push(card);
       }

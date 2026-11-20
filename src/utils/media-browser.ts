@@ -1,5 +1,8 @@
 import { html, TemplateResult } from "lit";
-import { Artist } from "mass-queue-types/packages/mass_queue/types/media-items";
+import {
+  Album,
+  Artist,
+} from "mass-queue-types/packages/mass_queue/types/media-items";
 import { customItem, MediaBrowserConfig } from "../config/media-browser";
 import { MediaTypes, Thumbnail } from "../const/enums";
 import { Icons } from "../const/icons";
@@ -513,6 +516,30 @@ export function generateCardFromArtist(
       media_image: image ?? Thumbnail.PERSON,
       media_title: artistData.name,
       media_artist: artistData.name,
+    },
+  };
+}
+
+export function generateCardFromAlbum(
+  albumData: Album,
+): MediaCardItem | undefined {
+  const metadata = albumData.metadata;
+  const image = getImageFromMetadata(
+    metadata.images as unknown as MediaItemImage[],
+  );
+  if (!albumData.uri) {
+    return;
+  }
+  return {
+    title: albumData.name,
+    thumbnail: image ?? Thumbnail.PERSON,
+    fallback: Thumbnail.PERSON,
+    data: {
+      type: "album",
+      media_content_id: albumData.uri,
+      media_image: image ?? Thumbnail.PERSON,
+      media_title: albumData.name,
+      media_artist: albumData.name,
     },
   };
 }

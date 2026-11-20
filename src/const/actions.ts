@@ -1,4 +1,7 @@
-import { Artist } from "mass-queue-types/packages/mass_queue/types/media-items";
+import {
+  Album,
+  Artist,
+} from "mass-queue-types/packages/mass_queue/types/media-items";
 import {
   baseMassQueueServiceSchema,
   baseMassQueueServiceWithResponseSchema,
@@ -42,6 +45,11 @@ export interface getSimilarServiceData {
   uri: string;
 }
 
+export interface getArtistAlbumsServiceData {
+  config_entry_id: string;
+  uri: string;
+}
+
 export interface setCrossfadeServiceData {
   entity: string;
   enabled: boolean;
@@ -67,6 +75,14 @@ export interface skipServiceSchema extends baseMassQueueServiceSchema {
 export interface getSimilarArtistsServiceSchema extends baseMassQueueServiceWithResponseSchema {
   service: "get_similar_artists";
   service_data: getSimilarServiceData;
+}
+export interface getArtistAlbumsServiceSchema extends baseMassQueueServiceWithResponseSchema {
+  service: "get_artist_albums";
+  service_data: getSimilarServiceData;
+}
+
+export interface getArtistAlbumsServiceResponse {
+  response: { albums: Album[] };
 }
 
 export interface getSimilarArtistsServiceResponse {
