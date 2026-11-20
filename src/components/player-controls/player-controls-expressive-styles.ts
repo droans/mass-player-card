@@ -148,6 +148,7 @@ export default css`
     width: 10%;
   }
   .mpc-button.skip::part(button) {
+    --button-background-color: var(--md-sys-color-surface-container);
     width: 100%;
     aspect-ratio: 1;
   }
