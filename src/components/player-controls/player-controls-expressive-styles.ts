@@ -18,8 +18,6 @@ export default css`
     --lower-controls-button-start-border-radius: 8px;
     --lower-controls-button-end-border-radius: 8px;
 
-    --next-prev-button-height: var(--play-pause-icon-height);
-    --next-prev-button-width: 48px;
     --next-prev-icon-height: 48px;
     --next-border-radius: 36px 18px 18px 36px !important;
     --next-start-border-radius: 18px;
@@ -28,9 +26,6 @@ export default css`
     --prev-end-border-radius: 18px;
     --prev-border-radius: 18px 36px 36px 18px !important;
 
-    --play-pause-icon-height: 80px;
-    --pause-button-width: 96px;
-    --play-button-width: 110px;
     --play-pause-border-radius: 18px !important;
   }
 
@@ -85,11 +80,20 @@ export default css`
   .mpc-button.lower.active {
     --button-border-radius: 20px;
   }
-
+  .mpc-button.play-pause {
+    width: 30%;
+  }
+  .mpc-button.play-pause::part(button) {
+    width: 100%;
+    height: 100%;
+  }
   .mpc-button.next,
-  .mpc-button.previous::part(button) {
-    --button-button-height: var(--next-prev-button-height);
-    --button-button-width: var(--next-prev-button-width);
+  .mpc-button.previous {
+    width: 20%;
+  }
+  :is(.mpc-button.next, .mpc-button.previous)::part(button) {
+    width: 100%;
+    height: 100%;
     --button-elevation: var(--md-sys-elevation-level1);
     --button-padding: 0px;
   }
@@ -103,27 +107,25 @@ export default css`
     --ha-button-end-border-radius: var(--next-end-border-radius);
     --used-button-border-radius: var(--prev-border-radius);
   }
+  .mpc-button.skip {
+    width: 10%;
+  }
+  .mpc-button.skip::part(button) {
+    width: 100%;
+    aspect-ratio: 1;
+  }
   #button-previous {
     --ha-button-start-border-radius: var(--prev-start-border-radius);
     --ha-button-end-border-radius: var(--prev-end-border-radius);
     --used-button-border-radius: var(--next-border-radius);
   }
   .mpc-button.play-pause {
-    --button-button-height: var(--play-pause-icon-height);
     --button-border-radius: var(--play-pause-border-radius);
     --button-padding: 0px;
     --button-elevation: var(--md-sys-elevation-level2);
   }
-  #button-play {
-    --button-button-width: var(--play-button-width);
-  }
-  #button-pause {
-    --button-button-width: var(--pause-button-width);
-  }
   #button-skip-backwards,
   #button-skip-forwards {
-    --button-button-height: 3.5rem;
-    --button-button-width: 3.5rem;
     place-content: center;
   }
 
@@ -176,6 +178,8 @@ export default css`
     display: flex;
     margin-top: unset;
     row-gap: unset;
+    width: 100%;
+    justify-content: center;
   }
   @container controls (width <= 30em) {
     #player-controls-lower {
