@@ -18,6 +18,11 @@ export class MassBrowserArtistView extends BrowserViewBase {
   @query("#collection-info") private infoElement?: HTMLElement;
   @query("#collection-artists") private artistsElement!: HTMLElement;
 
+  @query("#tracks-container.artist")
+  protected virtDiv?: HTMLElement;
+  @query("#tracks-container.artist")
+  protected virtElement?: HTMLElement;
+
   @property({ attribute: false })
   onCollectionSelectAction!: CardSelectedService;
   public onCollectionDrillAction!: (
@@ -185,11 +190,18 @@ export class MassBrowserArtistView extends BrowserViewBase {
 
   protected render(): TemplateResult {
     const vibrantClass = this.useVibrant ? `vibrant` : ``;
+    const tracksLabel = getTranslation(
+      "browser.collections.label.artist_tracks",
+      this.hass,
+    );
     return html`
       <div id="container" class="${vibrantClass}">
         <div id="header">${this.renderHeader()}</div>
         <div id="tracks-container" class="artist">
-          <div id="tracks" class="artist no-scroll">${this.renderTracks()}</div>
+          <div id="tracks" class="artist no-scroll">
+            <div class="label">${tracksLabel}</div>
+            ${this.renderTracks()}
+          </div>
           <div id="artist-albums">${this.renderArtistAlbums()}</div>
           <div id="similar-artists">${this.renderSimilarArtists()}</div>
         </div>
@@ -201,7 +213,7 @@ export class MassBrowserArtistView extends BrowserViewBase {
     await delay(delayMs);
     if (
       !this.animationsAdded &&
-      (this.virtElement?.scrollHeight ?? 0) >
+      (this.virtDiv?.scrollHeight ?? 0) >
         (this.tracksElement?.offsetHeight ?? 1) &&
       this.titleElement &&
       this.infoElement &&
