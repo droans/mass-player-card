@@ -29,6 +29,52 @@ export default css`
     --play-pause-border-radius: 18px !important;
   }
 
+  .button-label {
+    display: contents;
+  }
+
+  #button-next {
+    --ha-button-start-border-radius: var(--next-start-border-radius);
+    --ha-button-end-border-radius: var(--next-end-border-radius);
+    --used-button-border-radius: var(--prev-border-radius);
+  }
+  #button-previous {
+    --ha-button-start-border-radius: var(--prev-start-border-radius);
+    --ha-button-end-border-radius: var(--prev-end-border-radius);
+    --used-button-border-radius: var(--next-border-radius);
+  }
+  #button-skip-backwards,
+  #button-skip-forwards {
+    place-content: center;
+  }
+
+  #div-controls {
+    container-name: controls;
+    container-type: inline-size;
+    row-gap: 6px;
+    display: grid;
+    margin-bottom: 6px;
+  }
+
+  .icons.favorite.lower.active {
+    color: var(--md-sys-color-tertiary);
+  }
+
+  .icons.lower,
+  .icons.lower.active {
+    height: var(--icon-height);
+    width: var(--icon-height);
+  }
+
+  .icons.next,
+  .icons.previous {
+    height: var(--next-prev-icon-height);
+    width: var(--next-prev-icon-height);
+  }
+  .icons.play-pause {
+    height: var(--play-pause-icon-height);
+    width: var(--play-pause-icon-height);
+  }
   .mpc-button.lower {
     --ha-button-start-border-radius: var(
       --lower-controls-button-start-border-radius
@@ -98,15 +144,6 @@ export default css`
     --button-padding: 0px;
   }
 
-  .button-label {
-    display: contents;
-  }
-
-  #button-next {
-    --ha-button-start-border-radius: var(--next-start-border-radius);
-    --ha-button-end-border-radius: var(--next-end-border-radius);
-    --used-button-border-radius: var(--prev-border-radius);
-  }
   .mpc-button.skip {
     width: 10%;
   }
@@ -114,47 +151,10 @@ export default css`
     width: 100%;
     aspect-ratio: 1;
   }
-  #button-previous {
-    --ha-button-start-border-radius: var(--prev-start-border-radius);
-    --ha-button-end-border-radius: var(--prev-end-border-radius);
-    --used-button-border-radius: var(--next-border-radius);
-  }
   .mpc-button.play-pause {
     --button-border-radius: var(--play-pause-border-radius);
     --button-padding: 0px;
     --button-elevation: var(--md-sys-elevation-level2);
-  }
-  #button-skip-backwards,
-  #button-skip-forwards {
-    place-content: center;
-  }
-
-  #div-controls {
-    container-name: controls;
-    container-type: inline-size;
-    row-gap: 6px;
-    display: grid;
-    margin-bottom: 6px;
-  }
-
-  .icons.favorite.lower.active {
-    color: var(--md-sys-color-tertiary);
-  }
-
-  .icons.lower,
-  .icons.lower.active {
-    height: var(--icon-height);
-    width: var(--icon-height);
-  }
-
-  .icons.next,
-  .icons.previous {
-    height: var(--next-prev-icon-height);
-    width: var(--next-prev-icon-height);
-  }
-  .icons.play-pause {
-    height: var(--play-pause-icon-height);
-    width: var(--play-pause-icon-height);
   }
 
   .no-label::part(button) {
