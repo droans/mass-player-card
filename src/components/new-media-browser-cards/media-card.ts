@@ -54,32 +54,31 @@ export class MediaCard extends LitElement {
   @property({ type: Boolean }) queueable = false;
   @property({ type: Boolean, attribute: "skeleton" }) skeleton = false;
   @property({ type: String, attribute: "size" }) size!: "medium" | "large";
+
   @state() code!: TemplateResult;
-  private _search_buttons!: ListItems;
-
-  @query("#animation") _animation!: WaAnimation;
-  private _firstLoaded = false;
-
-  private _icons!: Icons;
 
   @consume({ context: hassContext })
   public hass?: ExtendedHass;
-
-  private _cardConfig!: Config;
-
-  public onSelectAction!: CardSelectedService;
-
-  private _sectionConfig!: MediaBrowserConfig;
-  private _activeSection!: Sections;
-  private _play = false;
-
-  private _config!: MediaCardItem;
-  private _entityConfig!: EntityConfig;
   @consume({
     context: mediaBrowserHiddenElementsConfigContext,
     subscribe: true,
   })
   private hide!: MediaBrowserHiddenElementsConfig;
+
+  @query("#animation") _animation!: WaAnimation;
+
+  public onSelectAction!: CardSelectedService;
+
+  private _search_buttons!: ListItems;
+  private _firstLoaded = false;
+  private _icons!: Icons;
+  private _cardConfig!: Config;
+  private _sectionConfig!: MediaBrowserConfig;
+  private _activeSection!: Sections;
+  private _play = false;
+  private _config!: MediaCardItem;
+  private _entityConfig!: EntityConfig;
+
   @consume({ context: activeSectionContext, subscribe: true })
   public set activeSection(section: Sections | undefined) {
     if (!section) {
