@@ -231,18 +231,9 @@ export default class BrowserActions {
     playlistUri: string,
     entityIdOrConfigEntryId: string,
   ): Promise<getPlaylistTracksServiceResponse> {
-    let configEntry: string;
-    if (entityIdOrConfigEntryId.includes(".")) {
-      const info = await this.actionGetPlayerInfo(entityIdOrConfigEntryId);
-      if (!info) {
-        throw new Error(
-          `Received nothing back when getting tracks for playlist ${playlistUri}!`,
-        );
-      }
-      configEntry = info.entries.mass_queue;
-    } else {
-      configEntry = entityIdOrConfigEntryId;
-    }
+    const configEntry = entityIdOrConfigEntryId.includes(".")
+      ? await this.getPlayerMassQueueConfigEntry(entityIdOrConfigEntryId)
+      : entityIdOrConfigEntryId;
     const data: getPlaylistTracksServiceSchema = {
       type: "call_service",
       domain: "mass_queue",
@@ -259,18 +250,9 @@ export default class BrowserActions {
     playlistUri: string,
     entityIdOrConfigEntryId: string,
   ): Promise<getAlbumTracksServiceResponse> {
-    let configEntry: string;
-    if (entityIdOrConfigEntryId.includes(".")) {
-      const info = await this.actionGetPlayerInfo(entityIdOrConfigEntryId);
-      if (!info) {
-        throw new Error(
-          `Received nothing back when getting tracks for playlist ${playlistUri}!`,
-        );
-      }
-      configEntry = info.entries.mass_queue;
-    } else {
-      configEntry = entityIdOrConfigEntryId;
-    }
+    const configEntry = entityIdOrConfigEntryId.includes(".")
+      ? await this.getPlayerMassQueueConfigEntry(entityIdOrConfigEntryId)
+      : entityIdOrConfigEntryId;
     const data: getAlbumTracksServiceSchema = {
       type: "call_service",
       domain: "mass_queue",
@@ -287,18 +269,9 @@ export default class BrowserActions {
     playlistUri: string,
     entityIdOrConfigEntryId: string,
   ): Promise<getArtistTracksServiceResponse> {
-    let configEntry: string;
-    if (entityIdOrConfigEntryId.includes(".")) {
-      const info = await this.actionGetPlayerInfo(entityIdOrConfigEntryId);
-      if (!info) {
-        throw new Error(
-          `Received nothing back when getting tracks for playlist ${playlistUri}!`,
-        );
-      }
-      configEntry = info.entries.mass_queue;
-    } else {
-      configEntry = entityIdOrConfigEntryId;
-    }
+    const configEntry = entityIdOrConfigEntryId.includes(".")
+      ? await this.getPlayerMassQueueConfigEntry(entityIdOrConfigEntryId)
+      : entityIdOrConfigEntryId;
     const data: getArtistTracksServiceSchema = {
       type: "call_service",
       domain: "mass_queue",
@@ -315,18 +288,9 @@ export default class BrowserActions {
     podcastUri: string,
     entityIdOrConfigEntryId: string,
   ): Promise<getPodcastEpisodesServiceRespnse> {
-    let configEntry: string;
-    if (entityIdOrConfigEntryId.includes(".")) {
-      const info = await this.actionGetPlayerInfo(entityIdOrConfigEntryId);
-      if (!info) {
-        throw new Error(
-          `Received nothing back when getting tracks for playlist ${podcastUri}!`,
-        );
-      }
-      configEntry = info.entries.mass_queue;
-    } else {
-      configEntry = entityIdOrConfigEntryId;
-    }
+    const configEntry = entityIdOrConfigEntryId.includes(".")
+      ? await this.getPlayerMassQueueConfigEntry(entityIdOrConfigEntryId)
+      : entityIdOrConfigEntryId;
     const data: getPodcastEpisodeServiceSchema = {
       type: "call_service",
       domain: "mass_queue",
@@ -343,18 +307,9 @@ export default class BrowserActions {
     playlistUri: string,
     entityIdOrConfigEntryId: string,
   ): Promise<getPlaylistServiceResponse> {
-    let configEntry: string;
-    if (entityIdOrConfigEntryId.includes(".")) {
-      const info = await this.actionGetPlayerInfo(entityIdOrConfigEntryId);
-      if (!info) {
-        throw new Error(
-          `Received nothing back when getting tracks for playlist ${playlistUri}!`,
-        );
-      }
-      configEntry = info.entries.mass_queue;
-    } else {
-      configEntry = entityIdOrConfigEntryId;
-    }
+    const configEntry = entityIdOrConfigEntryId.includes(".")
+      ? await this.getPlayerMassQueueConfigEntry(entityIdOrConfigEntryId)
+      : entityIdOrConfigEntryId;
     const data: getPlaylistServiceSchema = {
       type: "call_service",
       domain: "mass_queue",
@@ -371,18 +326,9 @@ export default class BrowserActions {
     albumUri: string,
     entityIdOrConfigEntryId: string,
   ): Promise<getAlbumServiceResponse> {
-    let configEntry: string;
-    if (entityIdOrConfigEntryId.includes(".")) {
-      const info = await this.actionGetPlayerInfo(entityIdOrConfigEntryId);
-      if (!info) {
-        throw new Error(
-          `Received nothing back when getting tracks for album ${albumUri}!`,
-        );
-      }
-      configEntry = info.entries.mass_queue;
-    } else {
-      configEntry = entityIdOrConfigEntryId;
-    }
+    const configEntry = entityIdOrConfigEntryId.includes(".")
+      ? await this.getPlayerMassQueueConfigEntry(entityIdOrConfigEntryId)
+      : entityIdOrConfigEntryId;
     const data: getAlbumServiceSchema = {
       type: "call_service",
       domain: "mass_queue",
@@ -399,18 +345,9 @@ export default class BrowserActions {
     albumUri: string,
     entityIdOrConfigEntryId: string,
   ): Promise<getArtistServiceResponse> {
-    let configEntry: string;
-    if (entityIdOrConfigEntryId.includes(".")) {
-      const info = await this.actionGetPlayerInfo(entityIdOrConfigEntryId);
-      if (!info) {
-        throw new Error(
-          `Received nothing back when getting tracks for album ${albumUri}!`,
-        );
-      }
-      configEntry = info.entries.mass_queue;
-    } else {
-      configEntry = entityIdOrConfigEntryId;
-    }
+    const configEntry = entityIdOrConfigEntryId.includes(".")
+      ? await this.getPlayerMassQueueConfigEntry(entityIdOrConfigEntryId)
+      : entityIdOrConfigEntryId;
     const data: getArtistServiceSchema = {
       type: "call_service",
       domain: "mass_queue",
@@ -427,18 +364,9 @@ export default class BrowserActions {
     podcastUri: string,
     entityIdOrConfigEntryId: string,
   ): Promise<getPodcastServiceResponse> {
-    let configEntry: string;
-    if (entityIdOrConfigEntryId.includes(".")) {
-      const info = await this.actionGetPlayerInfo(entityIdOrConfigEntryId);
-      if (!info) {
-        throw new Error(
-          `Received nothing back when getting episodes for podcast ${podcastUri}!`,
-        );
-      }
-      configEntry = info.entries.mass_queue;
-    } else {
-      configEntry = entityIdOrConfigEntryId;
-    }
+    const configEntry = entityIdOrConfigEntryId.includes(".")
+      ? await this.getPlayerMassQueueConfigEntry(entityIdOrConfigEntryId)
+      : entityIdOrConfigEntryId;
     const data: getPodcastServiceSchema = {
       type: "call_service",
       domain: "mass_queue",
@@ -456,18 +384,9 @@ export default class BrowserActions {
     position: number,
     entityIdOrConfigEntryId: string,
   ) {
-    let configEntry: string;
-    if (entityIdOrConfigEntryId.includes(".")) {
-      const info = await this.actionGetPlayerInfo(entityIdOrConfigEntryId);
-      if (!info) {
-        throw new Error(
-          `Received nothing back when getting config entry for ${entityIdOrConfigEntryId}!`,
-        );
-      }
-      configEntry = info.entries.mass_queue;
-    } else {
-      configEntry = entityIdOrConfigEntryId;
-    }
+    const configEntry = entityIdOrConfigEntryId.includes(".")
+      ? await this.getPlayerMassQueueConfigEntry(entityIdOrConfigEntryId)
+      : entityIdOrConfigEntryId;
     const data: removePlaylistTracksServiceSchema = {
       type: "call_service",
       domain: "mass_queue",
@@ -487,6 +406,17 @@ export default class BrowserActions {
     });
     const result = entry.config_entry_id;
     return result;
+  }
+  private async getPlayerMassQueueConfigEntry(
+    entityId: string,
+  ): Promise<string> {
+    const info = await this.actionGetPlayerInfo(entityId);
+    if (!info) {
+      throw new Error(
+        `Unable to find Music Assistant Queue Actions integration for ${entityId}!`,
+      );
+    }
+    return info.entries.mass_queue;
   }
   private async actionGetPlayerInfo(
     entityId: string,
