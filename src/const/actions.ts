@@ -1,4 +1,8 @@
-import { baseMassQueueServiceSchema } from "mass-queue-types/packages/mass_queue/utils";
+import { Artist } from "mass-queue-types/packages/mass_queue/types/media-items";
+import {
+  baseMassQueueServiceSchema,
+  baseMassQueueServiceWithResponseSchema,
+} from "mass-queue-types/packages/mass_queue/utils";
 import { EnqueueOptions } from "./enums";
 import { mediaCardData } from "./types";
 
@@ -33,6 +37,11 @@ export interface skipServiceData {
   skip_seconds: number;
 }
 
+export interface getSimilarServiceData {
+  config_entry_id: string;
+  uri: string;
+}
+
 export interface setCrossfadeServiceData {
   entity: string;
   enabled: boolean;
@@ -53,6 +62,15 @@ export interface setAutoplayServiceSchema extends baseMassQueueServiceSchema {
 export interface skipServiceSchema extends baseMassQueueServiceSchema {
   service: "skip";
   service_data: skipServiceData;
+}
+
+export interface getSimilarArtistsServiceSchema extends baseMassQueueServiceWithResponseSchema {
+  service: "get_similar_artists";
+  service_data: getSimilarServiceData;
+}
+
+export interface getSimilarArtistsServiceResponse {
+  response: { artists: Artist[] };
 }
 
 export interface getQueueInfoWSServiceSchema {

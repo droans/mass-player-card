@@ -1,6 +1,41 @@
-import { EnqueueOptions, MediaTypes } from "../const/enums";
-import { DEFAULT_SEARCH_LIMIT } from "../const/media-browser";
+import {
+  getAlbumServiceResponse,
+  getAlbumServiceSchema,
+} from "mass-queue-types/packages/mass_queue/actions/get_album";
+import {
+  getAlbumTracksServiceResponse,
+  getAlbumTracksServiceSchema,
+} from "mass-queue-types/packages/mass_queue/actions/get_album_tracks";
+import {
+  getArtistServiceResponse,
+  getArtistServiceSchema,
+} from "mass-queue-types/packages/mass_queue/actions/get_artist";
+import {
+  getArtistTracksServiceResponse,
+  getArtistTracksServiceSchema,
+} from "mass-queue-types/packages/mass_queue/actions/get_artist_tracks";
+import {
+  getPlaylistServiceResponse,
+  getPlaylistServiceSchema,
+} from "mass-queue-types/packages/mass_queue/actions/get_playlist";
+import {
+  getPlaylistTracksServiceResponse,
+  getPlaylistTracksServiceSchema,
+} from "mass-queue-types/packages/mass_queue/actions/get_playlist_tracks";
+import {
+  getPodcastServiceResponse,
+  getPodcastServiceSchema,
+} from "mass-queue-types/packages/mass_queue/actions/get_podcast";
+import {
+  getPodcastEpisodeServiceSchema,
+  getPodcastEpisodesServiceRespnse,
+} from "mass-queue-types/packages/mass_queue/actions/get_podcast_episodes";
 import { getRecommendationsServiceSchema } from "mass-queue-types/packages/mass_queue/actions/get_recommendations";
+import { removePlaylistTracksServiceSchema } from "mass-queue-types/packages/mass_queue/actions/remove_playlist_tracks";
+import {
+  getInfoWSResponseSchema,
+  getInfoWSServiceSchema,
+} from "mass-queue-types/packages/mass_queue/ws/get_info";
 import {
   getLibraryServiceResponse,
   getLibraryServiceSchema,
@@ -11,49 +46,18 @@ import {
   searchServiceResponse,
   searchServiceSchema,
 } from "mass-queue-types/packages/music_assistant/actions/search";
+import { GetLibrarySortOrders } from "../config/media-browser";
 import {
-  getAlbumTracksServiceResponse,
-  getAlbumTracksServiceSchema,
-} from "mass-queue-types/packages/mass_queue/actions/get_album_tracks";
-import {
-  getArtistTracksServiceResponse,
-  getArtistTracksServiceSchema,
-} from "mass-queue-types/packages/mass_queue/actions/get_artist_tracks";
-import {
-  getPlaylistTracksServiceResponse,
-  getPlaylistTracksServiceSchema,
-} from "mass-queue-types/packages/mass_queue/actions/get_playlist_tracks";
-import {
-  getPodcastEpisodesServiceRespnse,
-  getPodcastEpisodeServiceSchema,
-} from "mass-queue-types/packages/mass_queue/actions/get_podcast_episodes";
-import {
-  getPlaylistServiceSchema,
-  getPlaylistServiceResponse,
-} from "mass-queue-types/packages/mass_queue/actions/get_playlist";
+  getSimilarArtistsServiceResponse,
+  getSimilarArtistsServiceSchema,
+} from "../const/actions";
+import { EnqueueOptions, MediaTypes } from "../const/enums";
+import { DEFAULT_SEARCH_LIMIT } from "../const/media-browser";
 import {
   ExtendedHass,
   MediaLibraryItem,
   RecommendationResponse,
 } from "../const/types";
-import {
-  getInfoWSResponseSchema,
-  getInfoWSServiceSchema,
-} from "mass-queue-types/packages/mass_queue/ws/get_info";
-import {
-  getAlbumServiceResponse,
-  getAlbumServiceSchema,
-} from "mass-queue-types/packages/mass_queue/actions/get_album";
-import {
-  getArtistServiceResponse,
-  getArtistServiceSchema,
-} from "mass-queue-types/packages/mass_queue/actions/get_artist";
-import {
-  getPodcastServiceResponse,
-  getPodcastServiceSchema,
-} from "mass-queue-types/packages/mass_queue/actions/get_podcast";
-import { removePlaylistTracksServiceSchema } from "mass-queue-types/packages/mass_queue/actions/remove_playlist_tracks";
-import { GetLibrarySortOrders } from "../config/media-browser";
 export default class BrowserActions {
   private _hass!: ExtendedHass;
 
@@ -211,6 +215,25 @@ export default class BrowserActions {
       return_response: true,
     };
     return await this.hass.callWS<RecommendationResponse>(data);
+  }
+  async actionGetSimilarArtists(
+    entityIdOrConfigEntryId: string,
+    uri: string,
+  ): Promise<getSimilarArtistsServiceResponse> {
+    const configEntry = entityIdOrConfigEntryId.includes(".")
+      ? await this.getPlayerMassQueueConfigEntry(entityIdOrConfigEntryId)
+      : entityIdOrConfigEntryId;
+    const data: getSimilarArtistsServiceSchema = {
+      type: "call_service",
+      domain: "mass_queue",
+      service: "get_similar_artists",
+      service_data: {
+        config_entry_id: configEntry,
+        uri,
+      },
+      return_response: true,
+    };
+    return await this.hass.callWS<getSimilarArtistsServiceResponse>(data);
   }
   async actionPlayRadio(
     entityId: string,

@@ -1,11 +1,16 @@
+import { consume } from "@lit/context";
 import { CSSResultOrNative, html, TemplateResult } from "lit";
-import { customElement, query, state } from "lit/decorators.js";
-import sharedStyles from "./browser-view-shared-styles";
-import styles from "./browser-artist-view-styles";
-import { delay } from "../../utils/utility";
+import { customElement, property, query, state } from "lit/decorators.js";
 import { getArtistServiceResponse } from "mass-queue-types/packages/mass_queue/actions/get_artist";
-import { BrowserViewBase } from "./browser-view-base";
+import { CardSelectedService } from "../../const/actions";
+import { browserControllerContext } from "../../const/context";
+import { mediaCardData, MediaCardItem } from "../../const/types";
+import { MediaBrowserController } from "../../controller/browser";
 import { getTranslation } from "../../utils/translations";
+import { delay } from "../../utils/utility";
+import styles from "./browser-artist-view-styles";
+import { BrowserViewBase } from "./browser-view-base";
+import sharedStyles from "./browser-view-shared-styles";
 
 @customElement("mpc-collection-artist-view")
 export class MassBrowserArtistView extends BrowserViewBase {
@@ -13,9 +18,40 @@ export class MassBrowserArtistView extends BrowserViewBase {
   @query("#collection-info") private infoElement?: HTMLElement;
   @query("#collection-artists") private artistsElement!: HTMLElement;
 
+  @property({ attribute: false })
+  onCollectionSelectAction!: CardSelectedService;
+  public onCollectionDrillAction!: (
+    mediaType: string,
+    mediaId: string,
+    mediaTitle: string,
+  ) => void;
+
+  @state() protected similarArtistCards: MediaCardItem[] = [];
+
+  protected _browserController?: MediaBrowserController;
+
   // Metadata for artist
   @state() private artistMetadata?: getArtistServiceResponse;
 
+  @consume({ context: browserControllerContext, subscribe: true })
+  public set browserController(controller: MediaBrowserController | undefined) {
+    this._browserController = controller;
+    this.getSimilarArtists();
+  }
+  public get browserController() {
+    return this._browserController;
+  }
+
+  public getSimilarArtists() {
+    if (!this.browserController || !this.collectionData) {
+      return;
+    }
+    void this.browserController
+      .getSimilarArtistsCards(this.collectionData.media_content_id)
+      .then((cards) => {
+        this.similarArtistCards = cards;
+      });
+  }
   // Ask HA to return the tracks in the artist
   public getTracks() {
     if (!this.hass || !this.collectionData || !this.activePlayer) {
@@ -31,6 +67,7 @@ export class MassBrowserArtistView extends BrowserViewBase {
       });
     this.setHiddenElements();
     void this.getMetadata();
+    this.getSimilarArtists();
   }
   public async getMetadata() {
     if (!this.hass || !this.collectionData || !this.activePlayer) {
@@ -56,6 +93,13 @@ export class MassBrowserArtistView extends BrowserViewBase {
     this.animateHeaderInfo();
     this.animateHeaderEnqueue();
   }
+  private onItemSelected = (data: mediaCardData, target: HTMLElement) => {
+    // this.resetScroll();
+    this.onCollectionSelectAction(data, target);
+  };
+  private onDrill = () => {
+    this.onCollectionDrillAction("artist", this.id, this.title);
+  };
 
   protected renderHeader(): TemplateResult {
     return html`
@@ -79,6 +123,40 @@ export class MassBrowserArtistView extends BrowserViewBase {
       ${this.renderTitle()}
       <div id="collection-info">
         <div id="tracks-length">${trackString}</div>
+      </div>
+    `;
+  }
+  protected renderSimilarArtists(): TemplateResult {
+    if (this.similarArtistCards.length === 0) {
+      return html``;
+    }
+    const translation = getTranslation(
+      "browser.collections.label.similar_artists",
+      this.hass,
+    );
+    return html`
+      <mpc-browser-cards
+        title="${translation}"
+        id="similar-artists-cards"
+        direction="horizontal"
+        .onEnqueueAction=${this.onEnqueue}
+        .onSelectAction=${this.onItemSelected}
+        .onDrillAction=${this.onDrill}
+        .cards=${this.similarArtistCards}
+        section-type="favorite"
+      ></mpc-browser-cards>
+    `;
+  }
+
+  protected render(): TemplateResult {
+    const vibrantClass = this.useVibrant ? `vibrant` : ``;
+    return html`
+      <div id="container" class="${vibrantClass}">
+        <div id="header">${this.renderHeader()}</div>
+        <div id="tracks-container" class="artist">
+          <div id="tracks" class="artist no-scroll">${this.renderTracks()}</div>
+          <div id="similar-artists">${this.renderSimilarArtists()}</div>
+        </div>
       </div>
     `;
   }

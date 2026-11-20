@@ -1,9 +1,9 @@
 import { html, TemplateResult } from "lit";
-import { Thumbnail, MediaTypes } from "../const/enums";
-import { asyncImageURLWithFallback } from "./thumbnails";
-import { MediaTypeThumbnails } from "../const/media-browser";
+import { Artist } from "mass-queue-types/packages/mass_queue/types/media-items";
 import { customItem, MediaBrowserConfig } from "../config/media-browser";
-import { getTranslation } from "./translations";
+import { MediaTypes, Thumbnail } from "../const/enums";
+import { Icons } from "../const/icons";
+import { MediaTypeThumbnails } from "../const/media-browser";
 import {
   ExtendedHass,
   mediaCardAlbumData,
@@ -11,11 +11,14 @@ import {
   MediaCardItem,
   mediaCardPlaylistData,
   mediaCardPodcastData,
+  MediaImageType,
+  MediaItemImage,
   MediaLibraryItem,
   newMediaBrowserItemsConfig,
   RecommendationSection,
 } from "../const/types";
-import { Icons } from "../const/icons";
+import { asyncImageURLWithFallback } from "./thumbnails";
+import { getTranslation } from "./translations";
 
 type viewCardFunction = (
   media_content_id: string,
@@ -472,4 +475,44 @@ export function getBrowserChips(
     },
   };
   /* eslint-enable @typescript-eslint/no-unnecessary-condition */
+}
+
+export function getImageFromMetadata(
+  images: MediaItemImage[] | null,
+  preferredImageType: MediaImageType = "thumb",
+): string | null {
+  if (!images?.length) {
+    return null;
+  }
+  const matchingImage = images.find((image) => {
+    return image.type == preferredImageType;
+  });
+  if (matchingImage) {
+    return matchingImage.path;
+  }
+  return images[0].path;
+}
+
+export function generateCardFromArtist(
+  artistData: Artist,
+): MediaCardItem | undefined {
+  const metadata = artistData.metadata;
+  const image = getImageFromMetadata(
+    metadata.images as unknown as MediaItemImage[],
+  );
+  if (!artistData.uri) {
+    return;
+  }
+  return {
+    title: artistData.name,
+    thumbnail: image ?? Thumbnail.PERSON,
+    fallback: Thumbnail.PERSON,
+    data: {
+      type: "artist",
+      media_content_id: artistData.uri,
+      media_image: image ?? Thumbnail.PERSON,
+      media_title: artistData.name,
+      media_artist: artistData.name,
+    },
+  };
 }

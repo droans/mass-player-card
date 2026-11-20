@@ -1,4 +1,5 @@
 import { ContextProvider } from "@lit/context";
+import { getUserInfoWSResponseSchema } from "mass-queue-types/packages/mass_queue/ws/get_user_info";
 import BrowserActions from "../actions/browser-actions";
 import { Config } from "../config/config";
 import {
@@ -7,22 +8,14 @@ import {
   FavoriteItemConfig,
   MediaBrowserConfig,
 } from "../config/media-browser";
-import { MediaTypes, Thumbnail } from "../const/enums";
-import { DEFAULT_SEARCH_LIMIT } from "../const/media-browser";
-import {
-  generateCustomSectionCards,
-  generateFavoriteCard,
-  generateFavoritesSectionCards,
-  generateRecentsCard,
-  generateRecommendationsCard,
-  generateRecommendationSectionCards,
-} from "../utils/media-browser";
 import {
   activeAlbumCollectionContext,
   activeArtistCollectionContext,
   mediaBrowserCardsContext,
 } from "../const/context";
+import { MediaTypes, Thumbnail } from "../const/enums";
 import { CardsUpdatedEventDetail } from "../const/events";
+import { DEFAULT_SEARCH_LIMIT } from "../const/media-browser";
 import {
   ExtendedHass,
   mediaBrowserSectionConfig,
@@ -34,7 +27,15 @@ import {
   newMediaBrowserItemsConfig,
   RecommendationSection,
 } from "../const/types";
-import { getUserInfoWSResponseSchema } from "mass-queue-types/packages/mass_queue/ws/get_user_info";
+import {
+  generateCardFromArtist,
+  generateCustomSectionCards,
+  generateFavoriteCard,
+  generateFavoritesSectionCards,
+  generateRecentsCard,
+  generateRecommendationsCard,
+  generateRecommendationSectionCards,
+} from "../utils/media-browser";
 
 export class MediaBrowserController {
   private hass!: ExtendedHass;
@@ -244,6 +245,23 @@ export class MediaBrowserController {
         showCollectionView,
       ),
     };
+  }
+  public async getSimilarArtistsCards(
+    artistUri: string,
+  ): Promise<MediaCardItem[]> {
+    const resp = await this.actions.actionGetSimilarArtists(
+      this.activeEntityId,
+      artistUri,
+    );
+
+    const result: MediaCardItem[] = [];
+    resp.response.artists.forEach((artist) => {
+      const card = generateCardFromArtist(artist);
+      if (card) {
+        result.push(card);
+      }
+    });
+    return result;
   }
 
   // Favorites
