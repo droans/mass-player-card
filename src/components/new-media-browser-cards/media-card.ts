@@ -223,13 +223,15 @@ export class MediaCard extends LitElement {
     }
     this.onSelectAction(this._config.data, this);
   };
-  private addPointerEvents() {
-    addEventListener("pointerup", this.onPointerUp);
-    addEventListener("pointerout", this.onPointerOut);
-  }
   private removePointerEvents() {
-    removeEventListener("pointerup", this.onPointerUp);
-    removeEventListener("pointerout", this.onPointerOut);
+    this.removeEventListener("pointerup", this.onPointerUp);
+    this.removeEventListener("pointerout", this.onPointerOut);
+  }
+  private addPointerEvents() {
+    /* eslint-disable listeners/no-missing-remove-event-listener */
+    this.addEventListener("pointerup", this.onPointerUp);
+    this.addEventListener("pointerout", this.onPointerOut);
+    /* eslint-enable listeners/no-missing-remove-event-listener */
   }
   protected renderEnqueueButton(button: ListItemData): TemplateResult {
     return html`
