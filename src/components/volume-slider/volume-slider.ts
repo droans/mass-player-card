@@ -6,21 +6,57 @@ import {
   PropertyValues,
   TemplateResult,
 } from "lit";
-import { customElement, property, state } from "lit/decorators.js";
+import { customElement, property } from "lit/decorators.js";
 
-import PlayerActions from "../../actions/player-actions";
-import { activeMediaPlayerContext } from "../../const/context";
+import {
+  actionsControllerContext,
+  hassPlayersContext,
+} from "../../const/context";
 import { DetailValueEventData } from "../../const/events";
-import { ExtendedHassEntity } from "../../const/types";
+import { ExtendedHassEntity, PlayersHass } from "../../const/types";
+import { ActionsController } from "../../controller/actions";
 import styles from "./volume-slider-styles";
 
 @customElement("mpc-volume-slider")
 export class VolumeSlider extends LitElement {
   @property({ attribute: false }) public maxVolume = 100;
-  private _actions!: PlayerActions;
-  @consume({ context: activeMediaPlayerContext, subscribe: true })
-  @state()
+  private _entityId!: string;
   private playerEntity?: ExtendedHassEntity;
+  @consume({ context: actionsControllerContext, subscribe: true })
+  private actionsController?: ActionsController;
+
+  private _hassPlayers?: PlayersHass;
+
+  @property({ attribute: false })
+  public set entityId(entityId: string) {
+    this._entityId = entityId;
+    this.setEntity();
+  }
+  public get entityId() {
+    return this._entityId;
+  }
+
+  @consume({ context: hassPlayersContext, subscribe: true })
+  public set hassPlayers(hass: PlayersHass | undefined) {
+    if (!hass) {
+      return;
+    }
+    this._hassPlayers = hass;
+    this.setEntity();
+  }
+  public get hassPlayers() {
+    return this._hassPlayers;
+  }
+
+  private setEntity() {
+    if (!this.hassPlayers || !this.entityId) {
+      return;
+    }
+    const entity = this.hassPlayers.states[this.entityId];
+    if (entity && entity != this.playerEntity) {
+      this.playerEntity = entity;
+    }
+  }
 
   private onVolumeChange = async (event_: DetailValueEventData) => {
     if (!this.playerEntity) {
@@ -29,7 +65,10 @@ export class VolumeSlider extends LitElement {
     let volume: number = event_.detail.value;
     volume = volume / 100;
     this.requestUpdate("volume", volume);
-    await this._actions.actionSetVolume(this.playerEntity, volume);
+    await this.actionsController?.PlayerActions.actionSetVolume(
+      this.playerEntity,
+      volume,
+    );
   };
   protected render(): TemplateResult {
     if (!this.playerEntity) {
