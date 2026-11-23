@@ -651,9 +651,7 @@ export class MusicPlayerCard extends LitElement {
       if (!this.activePlayerController) {
         return;
       }
-      this.activePlayerController.selectivelyUpdateActivePlayerData({
-        updatedPlayer: this.activeMediaPlayer,
-      });
+      void this.activePlayerController.updateActivePlayerData(true);
     }, 2000);
   };
   private openPlaylistDialogOnEvent = () => {
