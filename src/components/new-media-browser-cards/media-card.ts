@@ -14,8 +14,6 @@ import "../menu-button/menu-button";
 import { CardEnqueueService, CardSelectedService } from "../../const/actions";
 import {
   activeEntityConfigContext,
-  activeSectionContext,
-  configContext,
   EntityConfig,
   hassUIServicesContext,
   IconsContext,
@@ -37,14 +35,13 @@ import {
 
 import styles from "./media-card-styles";
 
-import { Config } from "../../config/config";
 import {
   HIDDEN_BUTTON_VALUE,
   MediaBrowserConfig,
   MediaBrowserHiddenElementsConfig,
 } from "../../config/media-browser";
 import { HaDropdownMenuElement } from "../../const/elements";
-import { EnqueueOptions, Sections, Thumbnail } from "../../const/enums";
+import { EnqueueOptions, Thumbnail } from "../../const/enums";
 import { HaDropdownEventData, HTMLImageElementEvent } from "../../const/events";
 import { Icons } from "../../const/icons";
 import { getThumbnail } from "../../utils/thumbnails";
@@ -76,9 +73,7 @@ export class MediaCard extends LitElement {
   private _search_buttons!: ListItems;
   private _firstLoaded = false;
   private _icons!: Icons;
-  private _cardConfig!: Config;
   private _sectionConfig!: MediaBrowserConfig;
-  private _activeSection!: Sections;
   private _play = false;
   private _config!: MediaCardItem;
   private _entityConfig!: EntityConfig;
@@ -86,18 +81,6 @@ export class MediaCard extends LitElement {
   private holdDelayMs = 500;
   private _enqueueButtons?: ListItems;
 
-  @consume({ context: activeSectionContext, subscribe: true })
-  public set activeSection(section: Sections | undefined) {
-    if (!section) {
-      return;
-    }
-    this._play = section == Sections.MEDIA_BROWSER;
-    this._activeSection = section;
-    this.generateCode();
-  }
-  public get activeSection() {
-    return this._activeSection;
-  }
   public set config(config: MediaCardItem | undefined) {
     if (!config) {
       return;
@@ -111,19 +94,6 @@ export class MediaCard extends LitElement {
   }
   public get config() {
     return this._config;
-  }
-  @consume({ context: configContext, subscribe: true })
-  public set cardConfig(config: Config | undefined) {
-    if (!config) {
-      return;
-    }
-    if (jsonMatch(this._cardConfig, config)) {
-      return;
-    }
-    this._cardConfig = config;
-  }
-  public get cardConfig() {
-    return this._cardConfig;
   }
 
   @consume({ context: mediaBrowserConfigContext, subscribe: true })
@@ -167,8 +137,7 @@ export class MediaCard extends LitElement {
     const sectionAllowsSubtitles = SHOW_ARTIST_SUBTITLE_SECTIONS.includes(
       this.config?.data.type ?? ``,
     );
-    const subtitlesEnabled =
-      this.cardConfig?.media_browser.show_artist_subtitles;
+    const subtitlesEnabled = this.sectionConfig?.show_artist_subtitles;
     if (sectionAllowsSubtitles && subtitlesEnabled) {
       const _data = this.config?.data as mediaCardCollectionData | undefined;
       return (_data?.media_artist ?? "").length > 0;
@@ -336,7 +305,6 @@ export class MediaCard extends LitElement {
   private generateCode() {
     if (
       !this.hassUI ||
-      !this.activeSection ||
       !this.sectionConfig ||
       !this.Icons ||
       !this.entityConfig
