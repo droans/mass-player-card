@@ -403,7 +403,8 @@ export class ActivePlayerController {
       const updatedVolume = Math.floor(
         (updatedVolumePlayer.attributes.volume_level ?? 0) * 100,
       );
-      const updatedMute = updatedVolumePlayer.attributes.is_volume_muted;
+      const updatedMute =
+        updatedVolumePlayer.attributes.is_volume_muted ?? true;
       if (this.activePlayerData.volume != updatedVolume) {
         anyChanges = true;
         this.activePlayerData.volume = updatedVolume;
