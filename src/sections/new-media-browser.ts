@@ -45,6 +45,7 @@ import { EnqueueOptions, MediaTypes } from "../const/enums";
 import { TargetValueEventData } from "../const/events";
 import { Icons } from "../const/icons";
 import {
+  customSectionConfig,
   mediaCardAlbumData,
   mediaCardArtistData,
   mediaCardCollectionType,
@@ -115,6 +116,7 @@ export class MediaBrowser extends LitElement {
   @state() private searchLoading = false;
   @state() private searchLibrary = false;
   @state() private recommendations: MediaRecommendationSection[] = [];
+  @state() private customSections: customSectionConfig[] = [];
   @state() private drillCards: MediaCardItem[] = [];
   @state() private drillTitle = "";
 
@@ -217,6 +219,9 @@ export class MediaBrowser extends LitElement {
     const mediaType = this.mediaType;
     this.recentsCards = this.cards.recents[mediaType];
     this.recommendations = this.browserController.getRecommendationsForMedia(
+      mediaType as MediaTypes,
+    );
+    this.customSections = this.browserController.getCustomSectionForMedia(
       mediaType as MediaTypes,
     );
     this.favoriteCards = this.cards.favorites[mediaType];
@@ -735,6 +740,28 @@ export class MediaBrowser extends LitElement {
       }[collectionType](),
     );
   }
+  protected renderCustomSections(): DirectiveResult {
+    const sections = this.cards?.custom;
+    if (!sections) {
+      return html``;
+    }
+    return sections.map((section) => {
+      return html`
+        <div class="browser-card-section custom-section">
+          <mpc-browser-cards
+            title="${section.name}"
+            direction="horizontal"
+            .onEnqueueAction=${this.onEnqueue}
+            .onSelectAction=${this.onSelect}
+            .onDrillAction=${this.onDrillDown}
+            .cards=${section.cards}
+            section-type="recommendation"
+            id=${section.name}
+          ></mpc-browser-cards>
+        </div>
+      `;
+    });
+  }
   protected renderRecommendations(): DirectiveResult {
     if (!this.config.recommendations.enabled) {
       return html``;
@@ -886,7 +913,7 @@ export class MediaBrowser extends LitElement {
     return html`
       <div class="browser-cards">
         ${this.renderFavoritesCards()} ${this.renderRecentsCards()}
-        ${this.renderRecommendations()}
+        ${this.renderCustomSections()} ${this.renderRecommendations()}
       </div>
     `;
   }

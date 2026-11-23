@@ -2,6 +2,7 @@ import { mdiCreation, mdiHeart, mdiHistory } from "@mdi/js";
 
 import { hiddenElementsConfigItem } from "../utils/config";
 import { BaseHiddenElementsConfig, Config } from "./config";
+import { MediaTypes } from "../const/enums";
 
 export interface MediaBrowserConfig {
   enabled: boolean;
@@ -34,7 +35,6 @@ export interface FavoriteItemConfig {
   enabled: boolean;
   limit: number;
   favorites_only: boolean;
-  items: customItem[];
 }
 export interface customItem {
   name: string;
@@ -53,6 +53,7 @@ export interface RecommendationsConfig {
 export interface customSection {
   name: string;
   image: string;
+  media_type: MediaTypes;
   items: customItem[];
 }
 
@@ -118,7 +119,6 @@ export const DEFAULT_FAVORITES_ONLY = false;
 export const DEFAULT_FAVORITE_ITEM_CONFIG: FavoriteItemConfig = {
   enabled: true,
   limit: 25,
-  items: [],
   favorites_only: DEFAULT_FAVORITES_ONLY,
 };
 

@@ -391,14 +391,11 @@ media_browser:
       enabled: true
       limit: 100
       favorites_only: false
-      items:
-        - name: My Playlist
-          image: https://resources.tidal.com/images/10c59b67/bb86/4960/8071/a23a03b8cbdd/750x750.jpg
-          service: script.play_example_playlist
     sort_order: timestamp_added
   sections:
     - name: My Tracks
       image: https://resources.tidal.com/images/0b5ff69d/b031/4445/a804/01b18b5a525f/750x750.jpg
+      media_type: track
       items:
         - name: The Show Goes On
           image: https://resources.tidal.com/images/9a18c67f/1062/4068/986b/45654fade74a/750x750.jpg
@@ -682,7 +679,6 @@ media_browser:
 | enabled        | bool                                      | No       | true    | Enable/disable favorites for the media type                              |
 | favorites_only | bool                                      | No       | true    | True: Only return favorited items. False: Return any items from library  |
 | limit          | int                                       | No       | 25      | Maximum number of favorite items to return                               |
-| items          | [SectionItemConfig](#section-item-config) | No       | N/A     | See below                                                                |
 
 #### Recommendations Config
 Recommendations can be enabled/disabled. You can also choose which providers can supply recommendations.
@@ -702,8 +698,8 @@ Sections lets you add your own sections to the browser with your own items. Thes
 | Parameter  | Type                                      | Required | Default | Description                                        |
 |------------|-------------------------------------------|----------|---------|----------------------------------------------------|
 | name       | str                                       | Yes      | N/A     | The name for the custom section                    |
-| image      | str                                       | Yes      | N/A     | The URL of the image to use for the custom section |
 | items      | [SectionItemConfig](#section-item-config) | Yes      | true    | See below                                          |
+| media_type | list of [MediaType][#media-type-options]  | No       | []      | Media type to display cards in.                    |
 
 #### Section Item Config
 These will be for each item inside of that section. Either `service` must be provided or `media_content_id` and `media_content_type`.

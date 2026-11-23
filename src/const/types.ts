@@ -131,6 +131,7 @@ export interface newMediaBrowserItemsConfig {
   favorites: mediaBrowserSectionConfig;
   recents: mediaBrowserSectionConfig;
   recommendations: mediaBrowserSectionConfig;
+  custom: customSectionConfig[];
   search: mediaBrowserSectionConfig;
 }
 export interface MediaBrowserItemsConfig {
@@ -141,6 +142,12 @@ export interface MediaBrowserItemsConfig {
 export interface mediaBrowserSectionConfig {
   main: MediaCardItem[];
   [str: string]: MediaCardItem[];
+}
+
+export interface customSectionConfig {
+  name: string;
+  mediaType: MediaTypes;
+  cards: MediaCardItem[];
 }
 
 export type mediaBrowserSectionSubtypes =
