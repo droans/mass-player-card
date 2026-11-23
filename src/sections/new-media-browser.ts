@@ -874,10 +874,13 @@ export class MediaBrowser extends LitElement {
   }
   protected renderFavoritesCards(): DirectiveResult {
     const favoritesMediaTypeConfig = this.getMediaTypeFavoriteConfig();
-    if (!this.config.recents.enabled || !favoritesMediaTypeConfig.enabled) {
+    if (!this.config.favorites.enabled || !favoritesMediaTypeConfig.enabled) {
       return html``;
     }
-    const translation = getTranslation("browser.label.favorites", this.hassUI);
+    const translationKey = favoritesMediaTypeConfig.favorites_only
+      ? "browser.label.favorites"
+      : "browser.label.library";
+    const translation = getTranslation(translationKey, this.hassUI);
     return html`
       <div class="browser-card-section favorites">
         <mpc-browser-cards
