@@ -72,7 +72,7 @@ export class MassBrowserArtistView extends BrowserViewBase {
 
   // Ask HA to return the tracks in the artist
   public getTracks() {
-    if (!this.hass || !this.collectionData || !this.activePlayer) {
+    if (!this.browserActions || !this.collectionData || !this.activePlayer) {
       return;
     }
     void this.browserActions
@@ -89,7 +89,7 @@ export class MassBrowserArtistView extends BrowserViewBase {
     this.getSimilarArtists();
   }
   public async getMetadata() {
-    if (!this.hass || !this.collectionData || !this.activePlayer) {
+    if (!this.browserActions || !this.collectionData || !this.activePlayer) {
       return;
     }
     const metadata = await this.browserActions.actionGetArtistData(
@@ -132,9 +132,12 @@ export class MassBrowserArtistView extends BrowserViewBase {
   protected renderOverview(): TemplateResult {
     const trackLabel = getTranslation(
       "browser.collections.track_count",
-      this.hass,
+      this.hassUIServices,
     ) as string;
-    const loadingLabel = getTranslation("browser.loading", this.hass) as string;
+    const loadingLabel = getTranslation(
+      "browser.loading",
+      this.hassUIServices,
+    ) as string;
     const trackString = this.tracks
       ? `${this.tracks.length.toString()} ${trackLabel}`
       : loadingLabel;
@@ -151,7 +154,7 @@ export class MassBrowserArtistView extends BrowserViewBase {
     }
     const translation = getTranslation(
       "browser.collections.label.artist_albums",
-      this.hass,
+      this.hassUIServices,
     );
     return html`
       <mpc-browser-cards
@@ -172,7 +175,7 @@ export class MassBrowserArtistView extends BrowserViewBase {
     }
     const translation = getTranslation(
       "browser.collections.label.similar_artists",
-      this.hass,
+      this.hassUIServices,
     );
     return html`
       <mpc-browser-cards
@@ -192,7 +195,7 @@ export class MassBrowserArtistView extends BrowserViewBase {
     const vibrantClass = this.useVibrant ? `vibrant` : ``;
     const tracksLabel = getTranslation(
       "browser.collections.label.artist_tracks",
-      this.hass,
+      this.hassUIServices,
     );
     return html`
       <div id="container" class="${vibrantClass}">

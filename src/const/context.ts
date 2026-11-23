@@ -8,39 +8,43 @@ import {
   type MediaCardItem,
   type newMediaBrowserItemsConfig,
   type PlayerData,
+  type PlayersHass,
   type QueueItem,
   type QueueItems,
+  type UIServicesHass,
 } from "./types";
 
+import { DynamicScheme } from "@ktibow/material-color-utilities-nightly";
 import {
   Config,
   HiddenElementsConfig,
   type EntityConfig,
 } from "../config/config";
+import {
+  MediaBrowserConfig,
+  MediaBrowserHiddenElementsConfig,
+} from "../config/media-browser";
 import { PlayerConfig, PlayerHiddenElementsConfig } from "../config/player";
 import {
   PlayerQueueHiddenElementsConfig,
   QueueConfig,
 } from "../config/player-queue";
-import {
-  MediaBrowserConfig,
-  MediaBrowserHiddenElementsConfig,
-} from "../config/media-browser";
 import { PlayersConfig, PlayersHiddenElementsConfig } from "../config/players";
-import { Sections } from "./enums";
-import { ActivePlayerController } from "../controller/active-player";
 import { ActionsController } from "../controller/actions";
-import { MassCardController } from "../controller/controller";
-import { DynamicScheme } from "@ktibow/material-color-utilities-nightly";
-import { Icons } from "./icons";
-import { QueueController } from "../controller/queue";
+import { ActivePlayerController } from "../controller/active-player";
 import { MediaBrowserController } from "../controller/browser";
+import { MassCardController } from "../controller/controller";
+import { QueueController } from "../controller/queue";
 import { uuid4 } from "../utils/utility";
-import { MediaBrowserSection } from "./media-browser";
 import { getQueueInfoWSServiceResponseSchema } from "./actions";
+import { Sections } from "./enums";
+import { Icons } from "./icons";
+import { MediaBrowserSection } from "./media-browser";
 export type { EntityConfig } from "../config/config";
 
-export const hassContext = createContext<ExtendedHass>(uuid4());
+export const hassPlayersContext = createContext<PlayersHass>(uuid4());
+export const hassUIServicesContext = createContext<UIServicesHass>(uuid4());
+export const hassUpdatedContext = createContext<ExtendedHass>(uuid4());
 export const activeEntityConfigContext = createContext<EntityConfig>(uuid4());
 export const activeEntityIDContext = createContext<string>(uuid4());
 export const activePlayerNameContext = createContext<string>(uuid4());

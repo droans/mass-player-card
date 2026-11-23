@@ -4,7 +4,6 @@ import { property, query, state } from "lit/decorators.js";
 import { cache } from "lit/directives/cache.js";
 import { PodcastEpisode } from "mass-queue-types/packages/mass_queue/types/media-items";
 import { Track, Tracks } from "mass-queue-types/packages/mass_queue/utils";
-import BrowserActions from "../../actions/browser-actions";
 import { Config, EntityConfig } from "../../config/config";
 import {
   HIDDEN_BUTTON_VALUE,
@@ -13,10 +12,12 @@ import {
 } from "../../config/media-browser";
 import { CardEnqueueService } from "../../const/actions";
 import {
+  actionsControllerContext,
   activeEntityConfigContext,
   activeMediaPlayerContext,
   configContext,
-  hassContext,
+  hassPlayersContext,
+  hassUIServicesContext,
   IconsContext,
   mediaBrowserConfigContext,
   mediaBrowserHiddenElementsConfigContext,
@@ -27,7 +28,6 @@ import { HTMLImageElementEvent, MenuButtonEventData } from "../../const/events";
 import { Icons } from "../../const/icons";
 import { getEnqueueButtons } from "../../const/media-browser";
 import {
-  ExtendedHass,
   ExtendedHassEntity,
   ListItems,
   mediaCardAlbumData,
@@ -35,7 +35,10 @@ import {
   mediaCardCollectionType,
   mediaCardPlaylistData,
   mediaCardPodcastData,
+  PlayersHass,
+  UIServicesHass,
 } from "../../const/types";
+import { ActionsController } from "../../controller/actions";
 import {
   asyncImageURLWithFallback,
   getThumbnail,
@@ -47,7 +50,7 @@ import "./browser-collection-track-row";
 
 export class BrowserViewBase extends LitElement {
   protected _collectionData?: mediaCardCollectionType | undefined;
-  protected _hass?: ExtendedHass;
+  protected _hass?: PlayersHass;
   protected _activePlayer?: ExtendedHassEntity;
   protected _browserConfig?: MediaBrowserConfig;
   protected _activeEntityConf?: EntityConfig;
@@ -75,6 +78,8 @@ export class BrowserViewBase extends LitElement {
   protected _enqueue_buttons!: ListItems;
   @consume({ context: configContext, subscribe: true })
   protected cardConfig!: Config;
+  @consume({ context: hassUIServicesContext, subscribe: false })
+  protected hassUIServices?: UIServicesHass;
 
   public onEnqueueAction!: CardEnqueueService;
 
@@ -108,10 +113,11 @@ export class BrowserViewBase extends LitElement {
   @consume({ context: useVibrantContext })
   protected useVibrant!: boolean;
 
-  protected _browserActions?: BrowserActions;
+  @consume({ context: actionsControllerContext, subscribe: true })
+  private actionsController?: ActionsController;
 
-  @consume({ context: hassContext, subscribe: true })
-  public set hass(hass: ExtendedHass | undefined) {
+  @consume({ context: hassPlayersContext, subscribe: true })
+  public set hassPlayers(hass: PlayersHass | undefined) {
     if (!this._hass) {
       this._hass = hass;
       this.getTracks();
@@ -120,7 +126,7 @@ export class BrowserViewBase extends LitElement {
     }
     this._hass = hass;
   }
-  public get hass() {
+  public get hassPlayers() {
     return this._hass;
   }
 
@@ -165,11 +171,11 @@ export class BrowserViewBase extends LitElement {
     // Implemented by components
   }
   protected async getCollectionImage() {
-    if (!this.hass || !this.collectionData) {
+    if (!this.hassUIServices || !this.collectionData) {
       return;
     }
     const imgs = await asyncImageURLWithFallback(
-      this.hass,
+      this.hassUIServices,
       this.collectionData.media_image,
       Thumbnail.PLAYLIST,
       this.cardConfig.download_local,
@@ -180,8 +186,7 @@ export class BrowserViewBase extends LitElement {
   }
 
   public get browserActions() {
-    this._browserActions ??= new BrowserActions(this.hass as ExtendedHass);
-    return this._browserActions;
+    return this.actionsController?.browserActions;
   }
 
   protected addScrollAnimation(transforms: Keyframe, element: HTMLElement) {
@@ -290,10 +295,7 @@ export class BrowserViewBase extends LitElement {
     if (!this.Icons) {
       return;
     }
-    const defaultButtons = getEnqueueButtons(
-      this.Icons,
-      this.hass as ExtendedHass,
-    );
+    const defaultButtons = getEnqueueButtons(this.Icons, this.hassUIServices);
     const buttonMapping = HIDDEN_BUTTON_VALUE;
     const options = defaultButtons.filter((item) => {
       //eslint-disable-next-line @typescript-eslint/no-unsafe-assignment
@@ -307,7 +309,10 @@ export class BrowserViewBase extends LitElement {
   protected _renderImageFallback = (event_: Event) => {
     // eslint-disable-next-line unicorn/prevent-abbreviations
     const ev_ = event_ as HTMLImageElementEvent;
-    ev_.target.src = getThumbnail(this.hass, Thumbnail.PLAYLIST) as string;
+    ev_.target.src = getThumbnail(
+      this.hassUIServices,
+      Thumbnail.PLAYLIST,
+    ) as string;
     ev_.target.removeEventListener("error", this._renderImageFallback);
   };
   protected renderImage(): TemplateResult {
@@ -362,7 +367,7 @@ export class BrowserViewBase extends LitElement {
   protected renderNoTracks(): TemplateResult {
     const translation = getTranslation(
       "browser.collections.label.no_tracks",
-      this.hass,
+      this.hassUIServices,
     );
     return html`
       <div id="browser-view" style="height: 100%;">

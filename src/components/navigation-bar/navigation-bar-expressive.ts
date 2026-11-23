@@ -1,3 +1,4 @@
+import { consume } from "@lit/context";
 import {
   CSSResultGroup,
   html,
@@ -5,24 +6,23 @@ import {
   PropertyValues,
   TemplateResult,
 } from "lit";
-import styles from "./navigation-bar-styles";
+import { customElement, query, state } from "lit/decorators.js";
+import { Config } from "../../config/config";
 import {
   activeSectionContext,
   controllerContext,
-  hassContext,
+  hassUIServicesContext,
   IconsContext,
 } from "../../const/context";
-import { consume } from "@lit/context";
-import { customElement, query, state } from "lit/decorators.js";
+import { WaAnimation } from "../../const/elements";
 import { Sections } from "../../const/enums";
-import { Config } from "../../config/config";
+import { Icons } from "../../const/icons";
+import { UIServicesHass } from "../../const/types";
 import { MassCardController } from "../../controller/controller";
 import { MediaBrowser } from "../../sections/new-media-browser";
-import { Icons } from "../../const/icons";
-import { WaAnimation } from "../../const/elements";
 import { QueueCard } from "../../sections/player-queue";
 import { getTranslation } from "../../utils/translations";
-import { ExtendedHass } from "../../const/types";
+import styles from "./navigation-bar-styles";
 
 const TRANSLATION_KEYS: Record<Sections, string> = {
   "music-player": "tab.player.label",
@@ -54,7 +54,8 @@ export class MassNavBar extends LitElement {
   private previousSection?: Sections;
   private sections: Sections[] = [];
 
-  @consume({ context: hassContext, subscribe: true }) hass!: ExtendedHass;
+  @consume({ context: hassUIServicesContext, subscribe: true })
+  hassUI!: UIServicesHass;
 
   @consume({ context: activeSectionContext, subscribe: true })
   @state()
@@ -198,7 +199,7 @@ export class MassNavBar extends LitElement {
   private renderTab(section: Sections, icon: string): TemplateResult {
     const active = this.activeSection == section;
     const label = active
-      ? getTranslation(TRANSLATION_KEYS[section], this.hass)
+      ? getTranslation(TRANSLATION_KEYS[section], this.hassUI)
       : ``;
     /*
       Inactive tabs takes up one unit of space.

@@ -153,16 +153,33 @@ export class ActivePlayerController {
     const newEntity = hass.states[this.activeEntityID];
     const currentVolEntity = this.volumeMediaPlayer;
     const newVolEntity = hass.states[this.volumeEntityId];
-    if (playerHasUpdated(currentEntity, newEntity)) {
-      this.setActivePlayer(this.activeEntityID);
+    const playerUpdated = playerHasUpdated(currentEntity, newEntity, true);
+    const volumePlayerUpdated = playerHasUpdated(
+      currentVolEntity,
+      newVolEntity,
+      true,
+    );
+    if (volumePlayerUpdated) {
+      this.volumeMediaPlayer = newVolEntity;
     }
-    this.volumeMediaPlayer =
-      hass.states[this.activeEntityConfig.volume_entity_id];
-    if (
-      playerHasUpdated(currentEntity, newEntity) ||
-      playerHasUpdated(currentVolEntity, newVolEntity)
-    ) {
-      void this.updateActivePlayerData(true);
+    if (playerUpdated) {
+      const mediaChanged =
+        newEntity?.attributes.media_title !=
+          this.activePlayerData?.track_title ||
+        newEntity?.attributes.media_artist !=
+          this.activePlayerData?.track_artist;
+      this.activeMediaPlayer = newEntity;
+      this.setActivePlayer(this.activeEntityID);
+      void this.updateActivePlayerData(mediaChanged);
+    }
+    const volumeChanged =
+      currentVolEntity?.attributes.volume_level !=
+      newVolEntity?.attributes.volume_level;
+    const mutedChanged =
+      currentVolEntity?.attributes.is_volume_muted !=
+      newVolEntity?.attributes.is_volume_muted;
+    if (volumeChanged || mutedChanged) {
+      this.selectivelyUpdateActivePlayerData();
     }
   }
   public get hass() {
@@ -218,11 +235,17 @@ export class ActivePlayerController {
     if (!player) {
       return;
     }
-    if (playerHasUpdated(this.activeMediaPlayer, player)) {
+    if (playerHasUpdated(this.activeMediaPlayer, player, true)) {
+      const updateGroupAttributes =
+        this.activeMediaPlayer?.entity_id != player.entity_id ||
+        this.activeMediaPlayer.attributes.group_members !=
+          player.attributes.group_members;
       this._activeMediaPlayer.setValue(player);
       this.dispatchUpdatedActivePlayer();
-      void this.updateActivePlayerData();
-      this.setGroupAttributes();
+      this.selectivelyUpdateActivePlayerData();
+      if (updateGroupAttributes) {
+        this.setGroupAttributes();
+      }
     }
   }
   public get activeMediaPlayer() {
@@ -292,7 +315,10 @@ export class ActivePlayerController {
     return this._expressiveScheme.value;
   }
 
-  private set activePlayerData(data: PlayerData) {
+  private set activePlayerData(data: PlayerData | undefined) {
+    if (!data) {
+      return;
+    }
     this._activePlayerData.setValue(data);
     void this.setActiveArtistAndAlbum();
   }
@@ -367,6 +393,83 @@ export class ActivePlayerController {
       this.createAndApplyExpressiveScheme();
     }, this._observerDelay);
   };
+
+  public selectivelyUpdateActivePlayerData() {
+    const updatedPlayer = this.activeMediaPlayer;
+    const updatedVolumePlayer = this.volumeMediaPlayer;
+    let anyChanges = false;
+    if (!this.activePlayerData) {
+      void this.updateActivePlayerData(true);
+      return;
+    }
+    const data = { ...this.activePlayerData };
+
+    if (updatedVolumePlayer) {
+      const updatedVolume = Math.floor(
+        (updatedVolumePlayer.attributes.volume_level ?? 0) * 100,
+      );
+      const updatedMute = updatedVolumePlayer.attributes.is_volume_muted;
+      if (data.volume != updatedVolume) {
+        anyChanges = true;
+        data.volume = updatedVolume;
+      }
+      if (data.muted != updatedMute) {
+        anyChanges = true;
+        data.muted = updatedMute ?? false;
+      }
+    }
+
+    if (updatedPlayer) {
+      const newAttributes = updatedPlayer.attributes;
+
+      const playing = updatedPlayer.state == "playing";
+      if (data.playing != playing) {
+        anyChanges = true;
+        data.playing = playing;
+      }
+      if (data.repeat != newAttributes.repeat) {
+        anyChanges = true;
+        data.repeat = newAttributes.repeat ?? RepeatMode.OFF;
+      }
+      if (data.shuffle != newAttributes.shuffle) {
+        anyChanges = true;
+        data.shuffle = newAttributes.shuffle ?? false;
+      }
+
+      const updatedAlbum = newAttributes.media_album_name ?? ``;
+      const updatedArtist = newAttributes.media_artist ?? ``;
+      const updatedTitle = newAttributes.media_title ?? ``;
+      const updatedArtwork =
+        newAttributes.entity_picture_local ?? newAttributes.entity_picture;
+
+      if (data.track_album != updatedAlbum) {
+        anyChanges = true;
+        data.track_album = updatedAlbum;
+      }
+      if (data.track_artist != updatedArtist) {
+        anyChanges = true;
+        data.track_artist = updatedArtist;
+      }
+
+      if (updatedArtwork && updatedArtwork != data.track_artwork) {
+        anyChanges = true;
+        data.track_artwork = updatedArtwork;
+      }
+
+      if (data.track_title != updatedTitle) {
+        anyChanges = true;
+        data.track_title = updatedTitle;
+      }
+
+      if (data.player_name != this.activePlayerName) {
+        anyChanges = true;
+        data.player_name = this.activePlayerName;
+      }
+    }
+    if (anyChanges) {
+      this.activePlayerData = data;
+    }
+  }
 
   public async updateActivePlayerData(forceUpdate = false) {
     const badStates = ["unavailable", "unknown"];
@@ -445,7 +548,7 @@ export class ActivePlayerController {
     const playerConfig = entitiesConfig.find((item) => {
       return item.entity_id == entityId;
     });
-    if (playerConfig) {
+    if (playerConfig && this.activeEntityConfig != playerConfig) {
       this.activeEntityConfig = playerConfig;
     }
   }
@@ -453,11 +556,15 @@ export class ActivePlayerController {
   public async getactivePlayerData(forceUpdate = false): Promise<PlayerData> {
     const player = this.activeMediaPlayer;
     const volumePlayer = this.volumeMediaPlayer;
-    const currentQueue =
-      forceUpdate || !this._playerData
-        ? await this.actionGetCurrentQueue()
-        : this._playerData;
-    const currentItem = currentQueue.current_item;
+    const updateQueue = forceUpdate || !this._playerData;
+    const currentQueue = updateQueue
+      ? await this.actionGetCurrentQueue()
+      : this._playerData;
+    const currentItem = currentQueue?.current_item;
+    const favorite =
+      currentItem?.media_item?.favorite ??
+      this.activePlayerData?.favorite ??
+      false;
 
     return {
       playing: player?.state == "playing",
@@ -473,7 +580,7 @@ export class ActivePlayerController {
       muted: volumePlayer?.attributes.is_volume_muted ?? true,
       volume: Math.floor((volumePlayer?.attributes.volume_level ?? 0) * 100),
       player_name: this.activePlayerName,
-      favorite: currentItem?.media_item?.favorite ?? false,
+      favorite,
     };
   }
   public async getPlayerProgress(): Promise<number> {

@@ -1,29 +1,37 @@
 import { consume } from "@lit/context";
 import {
   html,
-  type CSSResultGroup,
   LitElement,
   PropertyValues,
   TemplateResult,
+  type CSSResultGroup,
 } from "lit";
 import { customElement, property, query, state } from "lit/decorators.js";
 
 import { QueueItemSelectedService, QueueService } from "../../const/actions";
-import { Thumbnail } from "../../const/enums";
+import { VibrationPattern } from "../../const/common";
 import {
   activeEntityConfigContext,
   configContext,
   EntityConfig,
-  hassContext,
+  hassUIServicesContext,
   IconsContext,
   playerQueueConfigContext,
   playerQueueHiddenElementsConfigContext,
 } from "../../const/context";
-import { ExtendedHass, QueueItem } from "../../const/types";
-import { VibrationPattern } from "../../const/common";
+import { Thumbnail } from "../../const/enums";
+import { QueueItem, UIServicesHass } from "../../const/types";
 
 import styles from "./media-row-styles";
 
+import { queueItem } from "mass-queue-types/packages/mass_queue/actions/get_queue_items";
+import { Config } from "../../config/config";
+import {
+  PlayerQueueHiddenElementsConfig,
+  QueueConfig,
+} from "../../config/player-queue";
+import { HTMLImageElementEvent } from "../../const/events";
+import { Icons } from "../../const/icons";
 import {
   asyncImageURLWithFallback,
   getThumbnail,
@@ -34,14 +42,6 @@ import {
   queueItemhasUpdated,
   stopEventPropagation,
 } from "../../utils/utility";
-import {
-  PlayerQueueHiddenElementsConfig,
-  QueueConfig,
-} from "../../config/player-queue";
-import { Icons } from "../../const/icons";
-import { queueItem } from "mass-queue-types/packages/mass_queue/actions/get_queue_items";
-import { Config } from "../../config/config";
-import { HTMLImageElementEvent } from "../../const/events";
 
 @customElement("mpc-queue-media-row")
 export class MediaRow extends LitElement {
@@ -72,11 +72,23 @@ export class MediaRow extends LitElement {
   private _media_item!: QueueItem;
   private _config!: QueueConfig;
   private _entityConfig!: EntityConfig;
-  private _hass!: ExtendedHass;
   private imagesExhausted = false;
   private imgElemErrorCount = 0;
   private maxImgElemErrorCount = 5;
   private actionButtonsDisplayed = false;
+  private _hassUIServices?: UIServicesHass;
+
+  @consume({ context: hassUIServicesContext, subscribe: false })
+  private set hassUIServices(hass: UIServicesHass | undefined) {
+    if (!hass) {
+      return;
+    }
+    this._hassUIServices = hass;
+    void this.getTrackImage();
+  }
+  private get hassUIServices() {
+    return this._hassUIServices;
+  }
 
   @consume({ context: playerQueueConfigContext, subscribe: true })
   public set config(config: QueueConfig | undefined) {
@@ -100,15 +112,6 @@ export class MediaRow extends LitElement {
     return this._entityConfig;
   }
 
-  @consume({ context: hassContext, subscribe: true })
-  public set hass(hass: ExtendedHass) {
-    this._hass = hass;
-    void this.getTrackImage();
-  }
-  public get hass() {
-    return this._hass;
-  }
-
   @property({ attribute: false })
   public set media_item(mediaItem: QueueItem | undefined) {
     if (!mediaItem) {
@@ -122,8 +125,7 @@ export class MediaRow extends LitElement {
   }
 
   protected async getTrackImage() {
-    // eslint-disable-next-line @typescript-eslint/no-unnecessary-condition
-    if (!this.hass || !this.media_item) {
+    if (!this.hassUIServices || !this.media_item) {
       return;
     }
     const track = this.media_item;
@@ -133,7 +135,7 @@ export class MediaRow extends LitElement {
       ? track.local_image_encoded
       : mediaImg;
     const imgs = await asyncImageURLWithFallback(
-      this.hass,
+      this.hassUIServices,
       locImg,
       mediaImg,
       this.cardConfig.download_local,
@@ -163,8 +165,8 @@ export class MediaRow extends LitElement {
       navigator.vibrate(VibrationPattern.Queue.ACTION_MOVE_UP);
     }
     event_.stopPropagation();
-    this.changeActionButtonVisibility(false);
     this.moveQueueItemUpService(this.media_item.queue_item_id);
+    this.changeActionButtonVisibility(false);
   };
   private callMoveItemDownService = (event_: Event) => {
     if (!this.media_item) {
@@ -174,8 +176,8 @@ export class MediaRow extends LitElement {
       navigator.vibrate(VibrationPattern.Queue.ACTION_MOVE_DOWN);
     }
     event_.stopPropagation();
-    this.changeActionButtonVisibility(false);
     this.moveQueueItemDownService(this.media_item.queue_item_id);
+    this.changeActionButtonVisibility(false);
   };
   private callMoveItemNextService = (event_: Event) => {
     if (!this.media_item) {
@@ -185,8 +187,8 @@ export class MediaRow extends LitElement {
       navigator.vibrate(VibrationPattern.Queue.ACTION_MOVE_NEXT);
     }
     event_.stopPropagation();
-    this.changeActionButtonVisibility(false);
     this.moveQueueItemNextService(this.media_item.queue_item_id);
+    this.changeActionButtonVisibility(false);
   };
   private callRemoveItemService = (event_: Event) => {
     if (!this.media_item) {
@@ -196,15 +198,18 @@ export class MediaRow extends LitElement {
     if (navigator.vibrate) {
       navigator.vibrate(VibrationPattern.Queue.ACTION_REMOVE);
     }
-    this.changeActionButtonVisibility(false);
     this.removeService(this.media_item.queue_item_id);
+    this.changeActionButtonVisibility(false);
   };
-  private callOnQueueItemSelectedService = () => {
+  private callOnQueueItemSelectedService = (event_: PointerEvent) => {
+    if (event_.button != 0) {
+      return;
+    }
     if (!this.media_item) {
       return;
     }
-    this.changeActionButtonVisibility(false);
     this.selectedService(this.media_item.queue_item_id);
+    this.changeActionButtonVisibility(false);
   };
   /* eslint-enable @typescript-eslint/no-unnecessary-condition */
   private changeActionButtonVisibility(visibility: boolean): void {
@@ -232,9 +237,12 @@ export class MediaRow extends LitElement {
 
   private _renderThumbnailFallback = (event_: Event) => {
     this.imgElemErrorCount++;
+    if (!this.hassUIServices) {
+      return;
+    }
     const currentSource = this.thumbnailElement.src;
     const thumb = getTrackFallbackImg(
-      this.hass,
+      this.hassUIServices,
       currentSource,
       this.defaultImageURL ?? ``,
       this.fallbackImageURL,
@@ -246,7 +254,7 @@ export class MediaRow extends LitElement {
     ) {
       this.imagesExhausted = true;
       this.thumbnailElement.src =
-        getThumbnail(this.hass, Thumbnail.CLEFT) ?? "";
+        getThumbnail(this.hassUIServices, Thumbnail.CLEFT) ?? "";
       return;
     }
     this.thumbnailElement.src = thumb;
@@ -268,14 +276,14 @@ export class MediaRow extends LitElement {
       ? this.defaultImageURL
       : this.fallbackImageURL?.length
         ? this.fallbackImageURL
-        : getThumbnail(this.hass, Thumbnail.CLEFT);
+        : getThumbnail(this.hassUIServices, Thumbnail.CLEFT);
     const played =
       !this.media_item.show_action_buttons && !this.media_item?.playing;
     /* eslint-enable
           @typescript-eslint/no-unnecessary-condition
     */
     if (this.imagesExhausted) {
-      const fallbackImage = getThumbnail(this.hass, Thumbnail.CLEFT);
+      const fallbackImage = getThumbnail(this.hassUIServices, Thumbnail.CLEFT);
       return html`
         <img
           class="thumbnail ${played ? "disabled" : ""}"
@@ -461,7 +469,7 @@ export class MediaRow extends LitElement {
     return html`
       <ha-list-item-button
         class="button ${playing} ${hideCovers}"
-        @click=${this.callOnQueueItemSelectedService}
+        @pointerup=${this.callOnQueueItemSelectedService}
         type="button"
       >
         ${this.renderThumbnail()}

@@ -135,6 +135,7 @@ export class MassPlayerControlsBase extends LitElement {
     } else {
       await this.actions.actionAddFavorite();
     }
+    void this.controller.ActivePlayer?.updateActivePlayerData(true);
   };
   protected onSkipBackwards = async () => {
     const skipSeconds = -1 * Math.abs(this.config.skip_backwards_seconds);

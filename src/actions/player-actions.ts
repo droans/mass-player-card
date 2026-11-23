@@ -179,7 +179,6 @@ export default class PlayerActions {
         skip_seconds: skipSeconds,
       },
     };
-    console.log(data);
     await this.hass.sendWS(data);
   }
   async actionAddToPlaylist(

@@ -32,6 +32,7 @@ import {
 } from "mass-queue-types/packages/mass_queue/actions/get_podcast_episodes";
 import { getRecommendationsServiceSchema } from "mass-queue-types/packages/mass_queue/actions/get_recommendations";
 import { removePlaylistTracksServiceSchema } from "mass-queue-types/packages/mass_queue/actions/remove_playlist_tracks";
+import { getTracksServiceResponse } from "mass-queue-types/packages/mass_queue/utils";
 import {
   getInfoWSResponseSchema,
   getInfoWSServiceSchema,
@@ -53,6 +54,7 @@ import {
   getArtistTopTracksServiceSchema,
   getSimilarArtistsServiceResponse,
   getSimilarArtistsServiceSchema,
+  getSimilarTracksServiceSchema,
 } from "../const/actions";
 import { EnqueueOptions, MediaTypes } from "../const/enums";
 import { DEFAULT_SEARCH_LIMIT } from "../const/media-browser";
@@ -256,6 +258,25 @@ export default class BrowserActions {
       return_response: true,
     };
     return await this.hass.callWS<getSimilarArtistsServiceResponse>(data);
+  }
+  async actionGetSimilarTracks(
+    entityIdOrConfigEntryId: string,
+    uri: string,
+  ): Promise<getTracksServiceResponse> {
+    const configEntry = entityIdOrConfigEntryId.includes(".")
+      ? await this.getPlayerMassQueueConfigEntry(entityIdOrConfigEntryId)
+      : entityIdOrConfigEntryId;
+    const data: getSimilarTracksServiceSchema = {
+      type: "call_service",
+      domain: "mass_queue",
+      service: "get_similar_tracks",
+      service_data: {
+        config_entry_id: configEntry,
+        uri,
+      },
+      return_response: true,
+    };
+    return await this.hass.callWS<getTracksServiceResponse>(data);
   }
   async actionPlayRadio(
     entityId: string,

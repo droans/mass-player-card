@@ -12,7 +12,7 @@ import {
   activeMediaPlayerContext,
   configContext,
   controllerContext,
-  hassContext,
+  hassUIServicesContext,
   IconsContext,
   musicPlayerConfigContext,
   queueContext,
@@ -20,9 +20,9 @@ import {
 import { Thumbnail } from "../../const/enums";
 import { Icons } from "../../const/icons";
 import {
-  ExtendedHass,
   ExtendedHassEntity,
   QueueItems,
+  UIServicesHass,
 } from "../../const/types";
 import { MassCardController } from "../../controller/controller";
 import { asyncImageURLWithFallback } from "../../utils/thumbnails";
@@ -51,9 +51,8 @@ export class MassPlayerArtwork extends LitElement {
   private _intervalMs = 250;
 
   @state() private _activePlayer!: ExtendedHassEntity;
-  @consume({ context: hassContext, subscribe: true })
-  @state()
-  private hass!: ExtendedHass;
+  @consume({ context: hassUIServicesContext, subscribe: true })
+  private hass!: UIServicesHass;
 
   @state() private _queue: QueueItems | null = null;
 

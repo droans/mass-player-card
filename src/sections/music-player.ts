@@ -7,7 +7,7 @@ import {
   PropertyValues,
   TemplateResult,
 } from "lit";
-import { customElement, query, state } from "lit/decorators.js";
+import { customElement, property, query, state } from "lit/decorators.js";
 import { html } from "lit/static-html.js";
 
 import "../components/grouped-player-menu/grouped-player-menu";
@@ -18,8 +18,6 @@ import "../components/player-controls/player-controls-expressive";
 import "../components/player-selector-menu/player-selector-menu";
 import "../components/section-header/section-header";
 import "../components/volume-row/volume-row";
-
-import PlayerActions from "../actions/player-actions";
 
 import {
   activeEntityConfigContext,
@@ -32,7 +30,8 @@ import {
   entitiesConfigContext,
   EntityConfig,
   groupedPlayersContext,
-  hassContext,
+  hassPlayersContext,
+  hassUIServicesContext,
   IconsContext,
   musicPlayerConfigContext,
   musicPlayerHiddenElementsConfigContext,
@@ -45,15 +44,17 @@ import {
 } from "../const/enums";
 import { PLAYLIST_DIALOG_MAX_ITEMS } from "../const/music-player";
 import {
-  ExtendedHass,
   ExtendedHassEntity,
   MediaLibraryItem,
   PlayerData,
+  PlayersHass,
   PlaylistDialogItem,
+  UIServicesHass,
 } from "../const/types";
 
 import styles from "../styles/music-player";
 
+import { DirectiveResult } from "lit/directive.js";
 import { Config } from "../config/config";
 import { PlayerConfig, PlayerHiddenElementsConfig } from "../config/player";
 import {
@@ -91,6 +92,8 @@ export class MusicPlayerCard extends LitElement {
   @state()
   private queueInfo!: getQueueInfoWSServiceResponseSchema;
 
+  @property({ attribute: "artwork-only", type: Boolean }) artworkOnly = false;
+
   @query("#dialog-favorites") favoritesDialog?: DialogElement;
 
   @consume({ context: entitiesConfigContext, subscribe: true })
@@ -103,14 +106,16 @@ export class MusicPlayerCard extends LitElement {
   private hiddenElements!: PlayerHiddenElementsConfig;
   @consume({ context: IconsContext, subscribe: true })
   private Icons!: Icons;
+  @consume({ context: hassPlayersContext, subscribe: true })
+  private hassPlayers?: PlayersHass;
+  @consume({ context: hassUIServicesContext, subscribe: true })
+  private hassUI?: UIServicesHass;
 
   private _activeEntityConfig!: EntityConfig;
   private _activeEntity!: ExtendedHassEntity;
   private _config!: PlayerConfig;
 
   public selectedPlayerService!: PlayerSelectedService;
-  private _hass!: ExtendedHass;
-  private actions!: PlayerActions;
 
   @consume({ context: activeEntityConfigContext, subscribe: true })
   public set activeEntityConfig(entity: EntityConfig) {
@@ -134,17 +139,6 @@ export class MusicPlayerCard extends LitElement {
   }
   public get activeEntity() {
     return this._activeEntity;
-  }
-
-  @consume({ context: hassContext, subscribe: true })
-  public set hass(hass: ExtendedHass | undefined) {
-    if (hass) {
-      this.actions = new PlayerActions(hass);
-      this._hass = hass;
-    }
-  }
-  public get hass() {
-    return this._hass;
   }
 
   @consume({ context: musicPlayerConfigContext, subscribe: true })
@@ -299,19 +293,19 @@ export class MusicPlayerCard extends LitElement {
   };
 
   protected onAddToPlaylist = (event_: Event) => {
-    if (!this.activeMediaPlayer || !this.hass) {
+    if (!this.activeMediaPlayer) {
       return;
     }
     const uri = (event_.target as HTMLElement).dataset.uri as string;
-    const ent = this.hass.states[this.activeEntity.entity_id];
-    if (!ent) {
-      return;
-    }
-    const mediaId = ent.attributes.media_content_id;
+    const mediaId = this.activeMediaPlayer.attributes.media_content_id;
     if (!mediaId) {
       return;
     }
-    void this.actions.actionAddToPlaylist(mediaId, uri, this.activeMediaPlayer);
+    void this.controller.Actions?.PlayerActions.actionAddToPlaylist(
+      mediaId,
+      uri,
+      this.activeMediaPlayer,
+    );
     this.closeAddToPlaylistDialog();
   };
   protected onArtistNameSelect = () => {
@@ -445,7 +439,7 @@ export class MusicPlayerCard extends LitElement {
     }
     const autoplay = this.queueInfo.autoplay_enabled;
     const translationKey = `player.label.autoplay.${autoplay ? `enabled` : `disabled`}`;
-    const translation = getTranslation(translationKey, this.hass);
+    const translation = getTranslation(translationKey, this.hassUI);
     return html`
       <ha-dropdown-item value="autoplay">
         <ha-svg-icon
@@ -463,7 +457,7 @@ export class MusicPlayerCard extends LitElement {
     }
     const crossfade = this.queueInfo.crossfade_enabled;
     const translationKey = `player.label.crossfade.${crossfade ? `enabled` : `disabled`}`;
-    const translation = getTranslation(translationKey, this.hass);
+    const translation = getTranslation(translationKey, this.hassUI);
     return html`
       <ha-dropdown-item value="crossfade">
         <ha-svg-icon
@@ -535,7 +529,13 @@ export class MusicPlayerCard extends LitElement {
     if (this.hiddenElements.track_title) {
       return html``;
     }
-    if (!isActive(this.hass, this.activeMediaPlayer, this.activeEntityConfig)) {
+    if (
+      !isActive(
+        this.hassPlayers,
+        this.activeMediaPlayer,
+        this.activeEntityConfig,
+      )
+    ) {
       return html`
         <button class="hidden player-track-title" @click=${this.onAlbumNameSelect}>
           ${this.controller.translate("player.title.inactive")}
@@ -552,7 +552,13 @@ export class MusicPlayerCard extends LitElement {
     ) {
       return html``;
     }
-    if (!isActive(this.hass, this.activeMediaPlayer, this.activeEntityConfig)) {
+    if (
+      !isActive(
+        this.hassPlayers,
+        this.activeMediaPlayer,
+        this.activeEntityConfig,
+      )
+    ) {
       const msgs: string[] = this.controller.translate(
         "player.messages.inactive",
       ) as string[];
@@ -576,7 +582,7 @@ export class MusicPlayerCard extends LitElement {
       return html``;
     }
     const style = isActive(
-      this.hass,
+      this.hassPlayers,
       this.activeMediaPlayer,
       this.activeEntityConfig,
     )
@@ -623,25 +629,29 @@ export class MusicPlayerCard extends LitElement {
       </div>
     `;
   }
-  protected render(): TemplateResult {
+  protected render(): DirectiveResult {
     if (!this.cardConfig) {
       return html``;
     }
-    return html`
-      <div id="container">
-        ${this.renderHeader()}
-        <div class="artwork">${this.renderArtwork()}</div>
-        <div class="active-track">${this.renderActiveTrack()}</div>
+    return html` <div id="container">
+      ${this.artworkOnly ? html`` : this.renderHeader()}
+      <div class="artwork">${this.renderArtwork()}</div>
+      ${
+        this.artworkOnly
+          ? html``
+          : html`<div class="active-track">${this.renderActiveTrack()}</div>
         <div class="controls">${this.renderControls()}</div>
       </div>
-    `;
+    `
+      }
+    </div>`;
   }
   private delayedUpdatePlayerData = () => {
     setTimeout(() => {
       if (!this.activePlayerController) {
         return;
       }
-      void this.activePlayerController.updateActivePlayerData();
+      void this.activePlayerController.updateActivePlayerData(true);
     }, 2000);
   };
   private openPlaylistDialogOnEvent = () => {
@@ -657,20 +667,10 @@ export class MusicPlayerCard extends LitElement {
       this.onForceLoadEvent,
     );
     this.controller.host.addEventListener(
-      "active-player-updated",
-      this.onActivePlayerUpdated,
-    );
-    this.controller.host.addEventListener(
       "open-add-to-playlist-dialog",
       this.openPlaylistDialogOnEvent,
     );
   }
-  protected onActivePlayerUpdated = () => {
-    if (!this.activePlayerController) {
-      return;
-    }
-    void this.activePlayerController.updateActivePlayerData();
-  };
   protected updated(): void {
     const favoritesDialog = this.favoritesDialog;
     if (!favoritesDialog) {
@@ -705,10 +705,6 @@ export class MusicPlayerCard extends LitElement {
       this.onForceLoadEvent,
     );
     this.controller.host.removeEventListener(
-      "active-player-updated",
-      this.onActivePlayerUpdated,
-    );
-    this.controller.host.removeEventListener(
       "open-add-to-playlist-dialog",
       this.openPlaylistDialogOnEvent,
     );
@@ -724,10 +720,6 @@ export class MusicPlayerCard extends LitElement {
       this.controller.host.addEventListener(
         "force-update-player",
         this.onForceLoadEvent,
-      );
-      this.controller.host.addEventListener(
-        "active-player-updated",
-        this.onActivePlayerUpdated,
       );
       this.controller.host.addEventListener(
         "open-add-to-playlist-dialog",

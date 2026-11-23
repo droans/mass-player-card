@@ -1,5 +1,4 @@
 import { consume, provide } from "@lit/context";
-import { HassEntity } from "home-assistant-js-websocket";
 import {
   type CSSResultGroup,
   LitElement,
@@ -34,9 +33,14 @@ import styles from "./styles/main";
 
 import localForage from "localforage";
 import { PlayerSyncEvent, UserNotFoundEvent } from "./const/events";
-import { ExtendedHass } from "./const/types";
+import { ExtendedHass, ExtendedHassEntity } from "./const/types";
 import { MassCardController } from "./controller/controller";
-import { delay, getDefaultSection, jsonMatch } from "./utils/utility";
+import {
+  delay,
+  getDefaultSection,
+  jsonMatch,
+  playersHaveUpdated,
+} from "./utils/utility";
 
 const DEV = false;
 
@@ -85,7 +89,7 @@ localForage.config({
 @customElement(`${cardId}${DEV ? "-dev" : ""}`)
 /* eslint-enable */
 export class MusicAssistantPlayerCard extends LitElement {
-  @state() private entities!: HassEntity[];
+  @state() private entities!: ExtendedHassEntity[];
   @state() private error?: TemplateResult;
   @state() private _activeSection?: Sections;
 
@@ -100,23 +104,15 @@ export class MusicAssistantPlayerCard extends LitElement {
       return;
     }
     const ents = this.config.entities;
-    let shouldUpdate = false;
+    const shouldUpdate = playersHaveUpdated(hass, this.hass, ents);
     this._controller.hass = hass;
-    const newEntities: HassEntity[] = [];
-    ents.forEach((entity) => {
-      const oldState = this.hass?.states[entity.entity_id];
-      const newState = hass.states[entity.entity_id];
-      if (newState) {
-        newEntities.push(newState);
-      }
-      if (!jsonMatch(oldState, newState)) {
-        shouldUpdate = true;
-      }
-    });
-    // eslint-disable-next-line @typescript-eslint/no-unnecessary-condition
     if (shouldUpdate) {
-      this._controller.hass = hass;
-      this.entities = newEntities;
+      const entities = ents.map((ent) => {
+        return hass.states[ent.entity_id];
+      });
+      this.entities = entities.filter((ent) => {
+        return ent != undefined;
+      });
     }
   }
   public get hass() {
@@ -280,17 +276,21 @@ export class MusicAssistantPlayerCard extends LitElement {
     );
   }
   protected renderMusicPlayer() {
-    return cache(
-      this.config.player.enabled && this.active_section == Sections.MUSIC_PLAYER
-        ? html`
-            <wa-tab-panel name="${Sections.MUSIC_PLAYER}" class="section">
-              <mpc-music-player-card
-                .selectedPlayerService=${this.playerSelected}
-              ></mpc-music-player-card>
-            </wa-tab-panel>
-          `
-        : html``,
-    );
+    const visible =
+      this.config.player.enabled &&
+      this.active_section == Sections.MUSIC_PLAYER;
+    return html`
+      <wa-tab-panel
+        name="${Sections.MUSIC_PLAYER}"
+        class="section"
+        style="${visible ? `` : `display: none;`}"
+      >
+        <mpc-music-player-card
+          .selectedPlayerService=${this.playerSelected}
+          ?artwork-only=${!visible}
+        ></mpc-music-player-card>
+      </wa-tab-panel>
+    `;
   }
   protected renderPlayerQueue() {
     return cache(

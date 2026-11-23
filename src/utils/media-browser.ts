@@ -8,7 +8,6 @@ import { MediaTypes, Thumbnail } from "../const/enums";
 import { Icons } from "../const/icons";
 import { MediaTypeThumbnails } from "../const/media-browser";
 import {
-  ExtendedHass,
   mediaCardAlbumData,
   mediaCardArtistData,
   MediaCardItem,
@@ -19,6 +18,7 @@ import {
   MediaLibraryItem,
   newMediaBrowserItemsConfig,
   RecommendationSection,
+  UIServicesHass,
 } from "../const/types";
 import { asyncImageURLWithFallback } from "./thumbnails";
 import { getTranslation } from "./translations";
@@ -39,7 +39,7 @@ const funcs: viewCardFunctionMap = {
   podcast: generatePodcastCard,
 };
 async function generateSectionBackgroundPart(
-  hass: ExtendedHass,
+  hass: UIServicesHass,
   thumbnail: string,
   fallback: Thumbnail | string = Thumbnail.DISC,
   downloadLocal: boolean,
@@ -62,7 +62,7 @@ async function generateSectionBackgroundPart(
   `;
 }
 async function generateSectionBackground(
-  hass: ExtendedHass,
+  hass: UIServicesHass,
   cards: MediaCardItem[],
   fallback: Thumbnail,
   downloadLocal: boolean,
@@ -98,7 +98,7 @@ async function generateSectionBackground(
   `;
 }
 export async function generateFavoriteCard(
-  hass: ExtendedHass,
+  hass: UIServicesHass,
   mediaType: MediaTypes,
   cards: MediaCardItem[],
   downloadLocal: boolean,
@@ -126,7 +126,7 @@ export async function generateFavoriteCard(
   };
 }
 export async function generateRecentsCard(
-  hass: ExtendedHass,
+  hass: UIServicesHass,
   mediaType: MediaTypes,
   cards: MediaCardItem[],
   downloadLocal: boolean,
@@ -154,7 +154,7 @@ export async function generateRecentsCard(
   };
 }
 export async function generateRecommendationsCard(
-  hass: ExtendedHass,
+  hass: UIServicesHass,
   section: RecommendationSection,
   cards: MediaCardItem[],
   downloadLocal: boolean,
@@ -360,7 +360,7 @@ export interface BrowserChips {
 
 export function getBrowserChips(
   icons: Icons,
-  hass: ExtendedHass,
+  hass: UIServicesHass,
   config: MediaBrowserConfig,
   cards: newMediaBrowserItemsConfig,
 ): BrowserChips {

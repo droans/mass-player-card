@@ -1,4 +1,4 @@
-import { ExtendedHass } from "../const/types";
+import { UIServicesHass } from "../const/types";
 import ca from "../translations/ca";
 import de from "../translations/de";
 import en from "../translations/en";
@@ -25,7 +25,7 @@ const TRANSLATIONS = {
 const DEFAULT_LANGUAGE = "en";
 const DEFAULT_TRANSLATIONS = TRANSLATIONS.en;
 
-export function getTranslation(key: string, hass: ExtendedHass | undefined) {
+export function getTranslation(key: string, hass: UIServicesHass | undefined) {
   const lang = hass?.language ?? DEFAULT_LANGUAGE;
   /* eslint-disable
     @typescript-eslint/no-unsafe-assignment,

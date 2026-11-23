@@ -29,14 +29,13 @@ import "../components/section-header/section-header";
 
 import { DirectiveResult } from "lit/directive.js";
 import { cache } from "lit/directives/cache.js";
-import BrowserActions from "../actions/browser-actions";
 import {
   activeAlbumCollectionContext,
   activeArtistCollectionContext,
   activeEntityConfigContext,
   browserControllerContext,
   EntityConfig,
-  hassContext,
+  hassUIServicesContext,
   IconsContext,
   mediaBrowserCardsContext,
   mediaBrowserConfigContext,
@@ -46,7 +45,6 @@ import { EnqueueOptions, MediaTypes } from "../const/enums";
 import { TargetValueEventData } from "../const/events";
 import { Icons } from "../const/icons";
 import {
-  ExtendedHass,
   mediaCardAlbumData,
   mediaCardArtistData,
   mediaCardCollectionType,
@@ -58,6 +56,7 @@ import {
   mediaCardServiceData,
   MediaRecommendationSection,
   newMediaBrowserItemsConfig,
+  UIServicesHass,
 } from "../const/types";
 import { MediaBrowserController } from "../controller/browser";
 import styles from "../styles/new-media-browser";
@@ -121,26 +120,14 @@ export class MediaBrowser extends LitElement {
 
   @consume({ context: IconsContext }) private Icons!: Icons;
 
-  private _hass?: ExtendedHass;
-  private actions?: BrowserActions;
   private _browserController?: MediaBrowserController;
   private searchTerm = "";
   private _searchTimeout!: number;
   private previousSections: MediaBrowserSection[] = [];
   private previousSubSections: MediaBrowserSubsection[] = [];
   private _cardsJSON = "{}";
-
-  @consume({ context: hassContext, subscribe: true })
-  public set hass(hass: ExtendedHass | undefined) {
-    if (!hass) {
-      return;
-    }
-    this._hass = hass;
-    this.actions ??= new BrowserActions(hass);
-  }
-  public get hass() {
-    return this._hass;
-  }
+  @consume({ context: hassUIServicesContext, subscribe: true })
+  private hassUI?: UIServicesHass;
 
   protected onCardsUpdated = () => {
     this.createChips();
@@ -273,12 +260,12 @@ export class MediaBrowser extends LitElement {
   }
 
   private createChips() {
-    if (!this.hass || !this.cards) {
+    if (!this.hassUI || !this.cards) {
       return;
     }
     this.chips = getBrowserChips(
       this.Icons,
-      this.hass,
+      this.hassUI,
       this.config,
       this.cards,
     );
@@ -387,9 +374,6 @@ export class MediaBrowser extends LitElement {
       : "drill";
   };
   private onSearchButtonPress = () => {
-    if (!this.hass) {
-      return;
-    }
     this.setPreviousSection();
     if (!this.cards) {
       return;
@@ -407,13 +391,13 @@ export class MediaBrowser extends LitElement {
     data: mediaCardPlaylistData,
     enqueue: EnqueueOptions,
   ) => {
-    if (!this.actions) {
+    if (!this.browserController?.actions) {
       return;
     }
     const contentId: string = data.media_content_id;
     const contentType = "playlist";
-    const user = this.browserController?.massUser;
-    void this.actions.actionEnqueueMedia(
+    const user = this.browserController.massUser;
+    void this.browserController.actions.actionEnqueueMedia(
       this.activeEntityConfig.entity_id,
       contentId,
       contentType,
@@ -423,19 +407,19 @@ export class MediaBrowser extends LitElement {
   };
 
   private onServiceSelect = (data: mediaCardServiceData) => {
-    if (!this.actions) {
+    if (!this.browserController?.actions) {
       return;
     }
     if (data.service) {
-      void this.actions.actionPlayMediaFromService(
+      void this.browserController.actions.actionPlayMediaFromService(
         data.service,
         this.activeEntityConfig.entity_id,
       );
       return;
     }
     const enqueue = EnqueueConfigMap[this.config.default_enqueue_option];
-    const user = this.browserController?.massUser;
-    void this.actions.actionEnqueueMedia(
+    const user = this.browserController.massUser;
+    void this.browserController.actions.actionEnqueueMedia(
       this.activeEntityConfig.entity_id,
       data.media_content_id,
       data.media_content_type,
@@ -445,11 +429,11 @@ export class MediaBrowser extends LitElement {
     this.onMediaSelectedAction();
   };
   private onItemSelect = (data: mediaCardItemData) => {
-    if (!this.actions) {
+    if (!this.browserController?.actions) {
       return;
     }
     const user = this._browserController?.massUser;
-    void this.actions.actionPlayMedia(
+    void this.browserController.actions.actionPlayMedia(
       this.activeEntityConfig.entity_id,
       data.media_content_id,
       data.media_content_type,
@@ -489,13 +473,13 @@ export class MediaBrowser extends LitElement {
     data: mediaCardPlaylistData,
     enqueue: EnqueueOptions,
   ) => {
-    if (!this.actions) {
+    if (!this.browserController?.actions) {
       return;
     }
     const contentId: string = data.media_content_id;
     const contentType = "playlist";
-    const user = this.browserController?.massUser;
-    void this.actions.actionEnqueueMedia(
+    const user = this.browserController.massUser;
+    void this.browserController.actions.actionEnqueueMedia(
       this.activeEntityConfig.entity_id,
       contentId,
       contentType,
@@ -575,16 +559,16 @@ export class MediaBrowser extends LitElement {
     return html``;
   }
   protected renderSearchBar() {
-    if (!this.hass) {
+    if (!this.hassUI) {
       return;
     }
     const stylesBaseUrl =
       "https://cdn.jsdelivr.net/npm/@shoelace-style/shoelace@2.20.1/cdn/themes/";
-    const darkMode = this.hass.themes.darkMode;
+    const darkMode = this.hassUI.themes.darkMode;
     const stylesUrl = stylesBaseUrl + (darkMode ? "dark.css" : "light.css");
     const placeholder = getTranslation(
       "browser.search.placeholder",
-      this.hass,
+      this.hassUI,
     ) as string;
     return html`
       <span slot="end" id="search-input">
@@ -688,7 +672,6 @@ export class MediaBrowser extends LitElement {
   }
   protected renderChips(): TemplateResult {
     if (
-      !this.hass ||
       !this.cards ||
       SEARCH_SECTIONS.includes(this.activeSection) ||
       this.activeSubSection == "collection" ||
@@ -800,7 +783,7 @@ export class MediaBrowser extends LitElement {
     if (!cards || cards.length === 0) {
       return html``;
     }
-    const translation = getTranslation(translationKey, this.hass);
+    const translation = getTranslation(translationKey, this.hassUI);
     return html`
       <mpc-browser-cards
         title="${translation}"
@@ -850,7 +833,7 @@ export class MediaBrowser extends LitElement {
     if (!this.config.recents.enabled || !recentsMediaTypeConfig.enabled) {
       return html``;
     }
-    const translation = getTranslation("browser.label.recents", this.hass);
+    const translation = getTranslation("browser.label.recents", this.hassUI);
     return html`
       <div class="browser-card-section recents">
         <mpc-browser-cards
@@ -871,7 +854,7 @@ export class MediaBrowser extends LitElement {
     if (!this.config.recents.enabled || !favoritesMediaTypeConfig.enabled) {
       return html``;
     }
-    const translation = getTranslation("browser.label.favorites", this.hass);
+    const translation = getTranslation("browser.label.favorites", this.hassUI);
     return html`
       <div class="browser-card-section favorites">
         <mpc-browser-cards

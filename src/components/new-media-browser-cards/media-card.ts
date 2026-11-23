@@ -17,7 +17,7 @@ import {
   activeSectionContext,
   configContext,
   EntityConfig,
-  hassContext,
+  hassUIServicesContext,
   IconsContext,
   mediaBrowserConfigContext,
   mediaBrowserHiddenElementsConfigContext,
@@ -28,11 +28,11 @@ import {
   SHOW_ARTIST_SUBTITLE_SECTIONS,
 } from "../../const/media-browser";
 import {
-  ExtendedHass,
   ListItemData,
   ListItems,
   mediaCardCollectionData,
   MediaCardItem,
+  UIServicesHass,
 } from "../../const/types";
 
 import styles from "./media-card-styles";
@@ -61,8 +61,8 @@ export class MediaCard extends LitElement {
 
   @state() code!: TemplateResult;
 
-  @consume({ context: hassContext })
-  public hass?: ExtendedHass;
+  @consume({ context: hassUIServicesContext, subscribe: true })
+  public hassUI?: UIServicesHass;
   @consume({
     context: mediaBrowserHiddenElementsConfigContext,
     subscribe: true,
@@ -155,8 +155,8 @@ export class MediaCard extends LitElement {
     }
     this._entityConfig = config;
     this.updateHiddenElements();
-    if (this.hass && this.Icons) {
-      this._search_buttons = getSearchMediaButtons(this.Icons, this.hass);
+    if (this.hassUI && this.Icons) {
+      this._search_buttons = getSearchMediaButtons(this.Icons, this.hassUI);
     }
   }
   public get entityConfig() {
@@ -181,10 +181,10 @@ export class MediaCard extends LitElement {
     this.generateCode();
   }
   private updateEnqueueButtons() {
-    if (!this.hass || !this.Icons) {
+    if (!this.hassUI || !this.Icons) {
       return;
     }
-    const defaultButtons = getEnqueueButtons(this.Icons, this.hass);
+    const defaultButtons = getEnqueueButtons(this.Icons, this.hassUI);
     const buttonMapping = HIDDEN_BUTTON_VALUE;
     const options = defaultButtons.filter((item) => {
       //eslint-disable-next-line @typescript-eslint/no-unsafe-assignment
@@ -274,7 +274,7 @@ export class MediaCard extends LitElement {
   }
   private _renderImageFallback = (event_: Event) => {
     const fallback = getThumbnail(
-      this.hass,
+      this.hassUI,
       this.config?.fallback ?? Thumbnail.DISC,
     );
     // eslint-disable-next-line unicorn/prevent-abbreviations
@@ -344,7 +344,7 @@ export class MediaCard extends LitElement {
   }
   private generateCode() {
     if (
-      !this.hass ||
+      !this.hassUI ||
       !this.activeSection ||
       !this.sectionConfig ||
       !this.Icons ||

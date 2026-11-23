@@ -13,13 +13,9 @@ import {
   activePlayerControllerContext,
   activePlayerDataContext,
   controllerContext,
-  hassContext,
+  hassPlayersContext,
 } from "../../const/context";
-import {
-  ExtendedHass,
-  ExtendedHassEntity,
-  PlayerData,
-} from "../../const/types";
+import { ExtendedHassEntity, PlayerData, PlayersHass } from "../../const/types";
 import { ActionsController } from "../../controller/actions";
 import { ActivePlayerController } from "../../controller/active-player";
 import { MassCardController } from "../../controller/controller";
@@ -58,8 +54,8 @@ export class MassPlayerProgressBar extends LitElement {
   @state() public _playerData?: PlayerData;
 
   private _activePlayer?: ExtendedHassEntity;
-  @consume({ context: hassContext, subscribe: true })
-  private hass!: ExtendedHass;
+  @consume({ context: hassPlayersContext, subscribe: true })
+  private hass!: PlayersHass;
 
   private set mediaPosition(pos: number | undefined) {
     pos ??= 0;

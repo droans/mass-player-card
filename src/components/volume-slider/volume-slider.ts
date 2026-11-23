@@ -6,71 +6,81 @@ import {
   PropertyValues,
   TemplateResult,
 } from "lit";
-import { customElement, property, state } from "lit/decorators.js";
+import { customElement, property } from "lit/decorators.js";
 
-import { ExtendedHass, ExtendedHassEntity } from "../../const/types";
-import { hassContext } from "../../const/context";
-import PlayerActions from "../../actions/player-actions";
-import styles from "./volume-slider-styles";
+import {
+  actionsControllerContext,
+  hassPlayersContext,
+} from "../../const/context";
 import { DetailValueEventData } from "../../const/events";
+import { ExtendedHassEntity, PlayersHass } from "../../const/types";
+import { ActionsController } from "../../controller/actions";
+import styles from "./volume-slider-styles";
 
 @customElement("mpc-volume-slider")
 export class VolumeSlider extends LitElement {
   @property({ attribute: false }) public maxVolume = 100;
-  @state() private entity?: ExtendedHassEntity;
   private _entityId!: string;
-  private _actions!: PlayerActions;
-  private _hass!: ExtendedHass;
+  private playerEntity?: ExtendedHassEntity;
+  @consume({ context: actionsControllerContext, subscribe: true })
+  private actionsController?: ActionsController;
+
+  private _hassPlayers?: PlayersHass;
 
   @property({ attribute: false })
   public set entityId(entityId: string) {
     this._entityId = entityId;
-    if (!this.hass) {
-      return;
-    }
-    const ent = this.hass.states[entityId];
-    if (ent) {
-      this.entity = ent;
-    }
+    this.setEntity();
   }
   public get entityId() {
     return this._entityId;
   }
-  @consume({ context: hassContext, subscribe: true })
-  public set hass(hass: ExtendedHass | undefined) {
+
+  @consume({ context: hassPlayersContext, subscribe: true })
+  public set hassPlayers(hass: PlayersHass | undefined) {
     if (!hass) {
       return;
     }
-    this._hass = hass;
-    this._actions = new PlayerActions(hass);
-    const ent = hass.states[this.entityId];
-    if (ent) {
-      this.entity = ent;
+    this._hassPlayers = hass;
+    this.setEntity();
+  }
+  public get hassPlayers() {
+    return this._hassPlayers;
+  }
+
+  private setEntity() {
+    if (!this.hassPlayers || !this.entityId) {
+      return;
+    }
+    const entity = this.hassPlayers.states[this.entityId];
+    if (entity && entity != this.playerEntity) {
+      this.playerEntity = entity;
     }
   }
-  public get hass() {
-    return this._hass;
-  }
+
   private onVolumeChange = async (event_: DetailValueEventData) => {
-    if (!this.entity) {
+    if (!this.playerEntity) {
       return;
     }
     let volume: number = event_.detail.value;
     volume = volume / 100;
     this.requestUpdate("volume", volume);
-    await this._actions.actionSetVolume(this.entity, volume);
+    await this.actionsController?.PlayerActions.actionSetVolume(
+      this.playerEntity,
+      volume,
+    );
   };
   protected render(): TemplateResult {
-    if (!this.entity) {
+    if (!this.playerEntity) {
       return html``;
     }
     return html`
       <ha-control-slider
         part="slider"
         style="--control-slider-color: var(--md-sys-color-primary) !important;"
-        .disabled=${this.entity.attributes.is_volume_muted}
+        .disabled=${this.playerEntity.attributes.is_volume_muted}
         .unit="%"
-        .value=${(this.entity.attributes.volume_level ?? 0) * 100}
+        .value=${(this.playerEntity.attributes.volume_level ?? 0) * 100}
         .min="0"
         .max=${this.maxVolume}
         @value-changed=${this.onVolumeChange}

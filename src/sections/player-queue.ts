@@ -22,14 +22,14 @@ import {
 import {
   activeEntityIDContext,
   activePlayerControllerContext,
-  hassContext,
+  hassUIServicesContext,
   IconsContext,
   playerQueueConfigContext,
   playerQueueHiddenElementsConfigContext,
   queueContext,
   queueControllerContext,
 } from "../const/context";
-import { ExtendedHass, QueueItem, QueueItems } from "../const/types";
+import { QueueItem, QueueItems, UIServicesHass } from "../const/types";
 
 import { PlayerRow } from "../components/player-row/player-row";
 import { Sections } from "../const/enums";
@@ -101,19 +101,10 @@ export class QueueCard extends LitElement {
   }
 
   private _active_player_entity!: string;
-  private _hass?: ExtendedHass;
-  private error?: TemplateResult;
 
-  @consume({ context: hassContext, subscribe: true })
-  public set hass(hass: ExtendedHass | undefined) {
-    if (!hass) {
-      return;
-    }
-    this._hass = hass;
-  }
-  public get hass() {
-    return this._hass;
-  }
+  @consume({ context: hassUIServicesContext, subscribe: true })
+  private hassUI?: UIServicesHass;
+  private error?: TemplateResult;
 
   @consume({ context: activeEntityIDContext, subscribe: true })
   @property({ attribute: false })
@@ -149,9 +140,6 @@ export class QueueCard extends LitElement {
       if (typeof this.active_player_entity !== "string") {
         return QueueConfigErrors.ENTITY_TYPE;
       }
-    }
-    if (this.hass && !this.hass.states[this.active_player_entity]) {
-      return QueueConfigErrors.MISSING_ENTITY;
     }
     return QueueConfigErrors.OK;
   }
@@ -275,7 +263,7 @@ export class QueueCard extends LitElement {
     const upcomingQueue = this.queue.slice(currentIndex + 1);
     const translatedUpNext = getTranslation(
       "queue.up_next",
-      this.hass,
+      this.hassUI,
     ) as string;
     const remainingItems = this.queue.length - (currentIndex + 1);
     return html`
@@ -312,7 +300,7 @@ export class QueueCard extends LitElement {
     `;
   }
   protected renderHeader(): TemplateResult {
-    const label = getTranslation("queue.header", this.hass) as string;
+    const label = getTranslation("queue.header", this.hassUI) as string;
     const usedLabel = this.hiddenElements.header_title ? `` : label;
     if (this.hideSectionHeader()) {
       return html``;

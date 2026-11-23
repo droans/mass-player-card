@@ -1,3 +1,4 @@
+import { consume } from "@lit/context";
 import {
   CSSResultGroup,
   html,
@@ -5,34 +6,34 @@ import {
   PropertyValues,
   TemplateResult,
 } from "lit";
-import "../menu-button/menu-button";
-import styles from "./grouped-player-menu-styles";
-import { consume } from "@lit/context";
+import { customElement, state } from "lit/decorators.js";
+import PlayerActions from "../../actions/player-actions";
 import {
   controllerContext,
   entitiesConfigContext,
   EntityConfig,
   groupedPlayersContext,
   groupVolumeContext,
-  hassContext,
+  hassPlayersContext,
+  hassUIServicesContext,
   IconsContext,
   useVibrantContext,
 } from "../../const/context";
-import { Icons } from "../../const/icons";
-import { ExtendedHass } from "../../const/types";
-import { computeEntityName } from "../../utils/entity-name";
-import { jsonMatch } from "../../utils/utility";
-import { MassCardController } from "../../controller/controller";
-import PlayerActions from "../../actions/player-actions";
+import { Thumbnail } from "../../const/enums";
 import {
   DetailValueEventData,
   HTMLImageElementEvent,
   JoinUnjoinEventData,
 } from "../../const/events";
-import { customElement, state } from "lit/decorators.js";
+import { Icons } from "../../const/icons";
+import { PlayersHass, UIServicesHass } from "../../const/types";
+import { MassCardController } from "../../controller/controller";
+import { computeEntityName } from "../../utils/entity-name";
 import { getThumbnail } from "../../utils/thumbnails";
-import { Thumbnail } from "../../const/enums";
+import { jsonMatch } from "../../utils/utility";
+import "../menu-button/menu-button";
 import "../volume-slider/volume-slider";
+import styles from "./grouped-player-menu-styles";
 
 @customElement("mpc-grouped-player-menu")
 export class MassCardPlayerSelector extends LitElement {
@@ -46,8 +47,10 @@ export class MassCardPlayerSelector extends LitElement {
   @consume({ context: IconsContext, subscribe: true })
   private Icons!: Icons;
 
-  @consume({ context: hassContext, subscribe: true })
-  private hass!: ExtendedHass;
+  @consume({ context: hassPlayersContext, subscribe: true })
+  private playersHass!: PlayersHass;
+  @consume({ context: hassUIServicesContext, subscribe: true })
+  private uiHass!: UIServicesHass;
 
   @state()
   @consume({ context: groupVolumeContext, subscribe: true })
@@ -57,7 +60,7 @@ export class MassCardPlayerSelector extends LitElement {
   @consume({ context: entitiesConfigContext, subscribe: true })
   private playerEntities?: EntityConfig[];
 
-  @consume({ context: controllerContext, subscribe: true })
+  @consume({ context: controllerContext, subscribe: false })
   private controller!: MassCardController;
 
   @consume({ context: groupedPlayersContext, subscribe: true })
@@ -75,7 +78,10 @@ export class MassCardPlayerSelector extends LitElement {
   }
 
   private onUnjoinSelect = (event_: JoinUnjoinEventData) => {
-    const actions = new PlayerActions(this.hass);
+    if (!this.controller.hass) {
+      return;
+    }
+    const actions = new PlayerActions(this.controller.hass);
     const ent = event_.target.entity;
     void actions.actionUnjoinPlayers(ent);
   };
@@ -121,10 +127,11 @@ export class MassCardPlayerSelector extends LitElement {
     event_: HTMLImageElementEvent,
     entityConfig: EntityConfig,
   ) => {
-    const attributes = this.hass.states[entityConfig.entity_id]?.attributes;
+    const attributes =
+      this.playersHass.states[entityConfig.entity_id]?.attributes;
     const locImg = attributes?.entity_picture_local;
     const nonLocImg = attributes?.entity_picture;
-    const fallback = getThumbnail(this.hass, Thumbnail.HEADPHONES) as string;
+    const fallback = getThumbnail(this.uiHass, Thumbnail.HEADPHONES) as string;
     const currentSource = event_.target.src;
     event_.target.src =
       currentSource == locImg ? (nonLocImg ?? fallback) : fallback;
@@ -135,8 +142,10 @@ export class MassCardPlayerSelector extends LitElement {
     const ct = players.length;
     const role = this.useVibrant ? `tonal` : `filled-variant`;
     return this.groupedPlayers.map((item, idx) => {
-      const ent = this.hass.states[item.entity_id];
-      const name = computeEntityName(this.hass, ent, item.name);
+      const ent = this.playersHass.states[item.entity_id];
+      const name = this.controller.hass
+        ? computeEntityName(this.controller.hass, ent, item.name)
+        : ``;
       const img =
         ent?.attributes.entity_picture_local ?? ent?.attributes.entity_picture;
       return html`
