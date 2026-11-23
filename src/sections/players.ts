@@ -24,7 +24,7 @@ import { PlayerSelectedService } from "../const/actions";
 import {
   activeEntityConfigContext,
   controllerContext,
-  hassContext,
+  hassUpdatedContext,
   playersConfigContext,
 } from "../const/context";
 import { ExtendedHass, ExtendedHassEntity } from "../const/types";
@@ -75,7 +75,7 @@ export class PlayersCard extends LitElement {
     return this._config;
   }
 
-  @consume({ context: hassContext, subscribe: true })
+  @consume({ context: hassUpdatedContext, subscribe: true })
   public set hass(hass: ExtendedHass | undefined) {
     if (!hass) {
       return;

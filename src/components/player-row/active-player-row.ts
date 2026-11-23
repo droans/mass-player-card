@@ -15,7 +15,9 @@ import {
   configContext,
   EntityConfig,
   groupedPlayersContext,
-  hassContext,
+  hassPlayersContext,
+  hassUIContext,
+  hassUpdatedContext,
   IconsContext,
   volumeMediaPlayerContext,
 } from "../../const/context";
@@ -29,6 +31,8 @@ import {
   ExtendedHass,
   ExtendedHassEntity,
   PlayerData,
+  PlayersHass,
+  UIHass,
 } from "../../const/types";
 import { ActivePlayerController } from "../../controller/active-player";
 import { computeEntityName } from "../../utils/entity-name";
@@ -36,7 +40,7 @@ import { getThumbnail } from "../../utils/thumbnails";
 import { getTranslation } from "../../utils/translations";
 import {
   isActive,
-  playerIsAvailable,
+  playerEntityIsAvailable,
   playerSupportsFeature,
 } from "../../utils/utility";
 import styles from "./active-player-row-styles";
@@ -67,13 +71,18 @@ export class ActivePlayerRow extends LitElement {
   private config?: Config;
   @consume({ context: IconsContext, subscribe: true })
   private Icons!: Icons;
+  @consume({ context: hassPlayersContext, subscribe: true })
+  private hassPlayers?: PlayersHass;
+  @consume({ context: hassUIContext, subscribe: true })
+  private hassUI?: UIHass;
+
   @property({ attribute: false }) joinService!: PlayerJoinService;
   @property({ attribute: false }) unJoinService!: PlayerUnjoinService;
 
   private _activePlayerController?: ActivePlayerController;
   private _hass?: ExtendedHass;
 
-  @consume({ context: hassContext, subscribe: true })
+  @consume({ context: hassUpdatedContext, subscribe: true })
   public set hass(hass: ExtendedHass | undefined) {
     if (!hass) {
       return;
@@ -135,7 +144,7 @@ export class ActivePlayerRow extends LitElement {
       configEntity?.name,
     );
     const grouped = this.groupedPlayers?.includes(entityId);
-    const disabled = !playerIsAvailable(this.hass, entityId);
+    const disabled = !playerEntityIsAvailable(this.playerEntity);
     return html`
       <ha-dropdown-item
         class="group-dropdown-item"
@@ -157,7 +166,7 @@ export class ActivePlayerRow extends LitElement {
     });
   }
   protected renderGroupTriggerButton(): TemplateResult {
-    const label = getTranslation("players.label.group", this.hass);
+    const label = getTranslation("players.label.group", this.hassUI);
     return html`
       <mpc-button
         slot="trigger"
@@ -206,7 +215,7 @@ export class ActivePlayerRow extends LitElement {
     // eslint-disable-next-line unicorn/prevent-abbreviations
     const ev = event_ as HTMLImageElementEvent;
     const attributes = this.playerEntity?.attributes;
-    const fallback = getThumbnail(this.hass, Thumbnail.HEADPHONES);
+    const fallback = getThumbnail(this.hassUI, Thumbnail.HEADPHONES);
     const loc = attributes?.entity_picture_local;
     const pic = attributes?.entity_picture ?? fallback;
     const source = ev.target.src;
@@ -218,7 +227,7 @@ export class ActivePlayerRow extends LitElement {
   };
   protected renderThumbnail(): TemplateResult {
     const attributes = this.playerEntity?.attributes;
-    const fallback = getThumbnail(this.hass, Thumbnail.HEADPHONES);
+    const fallback = getThumbnail(this.hassUI, Thumbnail.HEADPHONES);
     const loc = attributes?.entity_picture_local;
     const pic = attributes?.entity_picture;
     const source = loc ?? pic ?? fallback;
@@ -237,7 +246,7 @@ export class ActivePlayerRow extends LitElement {
     const activeTrack = this.playerData?.track_title;
     const playerIsActive =
       this.playerConfig &&
-      isActive(this.hass, this.playerEntity, this.playerConfig);
+      isActive(this.hassPlayers, this.playerEntity, this.playerConfig);
     const playLabel = playerIsActive
       ? this.playerData?.playing
         ? `Playing •`
@@ -249,7 +258,10 @@ export class ActivePlayerRow extends LitElement {
     </div>`;
   }
   protected renderPlayerInfo(): TemplateResult {
-    const controlLabel = getTranslation("players.label.controlling", this.hass);
+    const controlLabel = getTranslation(
+      "players.label.controlling",
+      this.hassUI,
+    );
     return html`
       <div class="controlling">${controlLabel}</div>
       <div class="player-name-bars">
@@ -264,7 +276,7 @@ export class ActivePlayerRow extends LitElement {
       return html``;
     }
     const activeStyle =
-      isActive(this.hass, this.playerEntity, this.playerConfig) &&
+      isActive(this.hassPlayers, this.playerEntity, this.playerConfig) &&
       this.playerEntity?.state == "playing"
         ? `audio-bars`
         : `audio-bars-inactive`;

@@ -16,7 +16,8 @@ import {
   activeEntityIDContext,
   browserControllerContext,
   configContext,
-  hassContext,
+  hassPlayersContext,
+  hassUIContext,
   IconsContext,
   mediaBrowserConfigContext,
   useVibrantContext,
@@ -25,7 +26,13 @@ import { EnqueueOptions, Thumbnail } from "../../const/enums";
 import { HTMLImageElementEvent, MenuButtonEventData } from "../../const/events";
 import { Icons } from "../../const/icons";
 import { EnqueueConfigMap } from "../../const/media-browser";
-import { ExtendedHass, ListItemData, ListItems } from "../../const/types";
+import {
+  ExtendedHass,
+  ListItemData,
+  ListItems,
+  PlayersHass,
+  UIHass,
+} from "../../const/types";
 import { MediaBrowserController } from "../../controller/browser";
 import {
   asyncImageURLWithFallback,
@@ -54,21 +61,23 @@ export class MassPlaylistTrackRow extends LitElement {
   private cardConfig!: Config;
 
   @consume({ context: browserControllerContext, subscribe: true })
-  private browserController!: MediaBrowserController;
+  private browserController?: MediaBrowserController;
 
   @consume({ context: useVibrantContext, subscribe: true })
   private useVibrant?: boolean;
   private _Icons?: Icons;
 
-  private _hass?: ExtendedHass;
+  private _hass?: PlayersHass;
+  @consume({ context: hassUIContext, subscribe: false })
+  private uiHass!: UIHass;
 
   @consume({ context: activeEntityIDContext, subscribe: true })
   private activeEntityId?: string;
 
   private _browserActions?: BrowserActions;
 
-  @consume({ context: hassContext, subscribe: true })
-  public set hass(hass: ExtendedHass | undefined) {
+  @consume({ context: hassPlayersContext, subscribe: true })
+  public set hass(hass: PlayersHass | undefined) {
     this._hass = hass;
     void this.getTrackImage();
   }
@@ -131,7 +140,7 @@ export class MassPlaylistTrackRow extends LitElement {
         icon: this.Icons.CLOSE,
         title: getTranslation(
           "browser.playlists.remove_track",
-          this.hass,
+          this.uiHass,
         ) as string,
       };
       this._enqueueButtons = [...this._enqueueButtons, removePlaylistButton];
@@ -139,7 +148,7 @@ export class MassPlaylistTrackRow extends LitElement {
   }
 
   private async getTrackImage() {
-    if (!this.hass || this.hasThumbnails()) {
+    if (!this.browserController || this.hasThumbnails()) {
       return;
     }
     const locImg = this.track.local_image_encoded?.length
@@ -148,7 +157,7 @@ export class MassPlaylistTrackRow extends LitElement {
     const mediaImg =
       this.track.media_image.length > 0 ? this.track.media_image : undefined;
     const imgs = await asyncImageURLWithFallback(
-      this.hass,
+      this.browserController.hass,
       locImg ?? ``,
       mediaImg ?? Thumbnail.CLEFT,
       this.cardConfig.download_local,
@@ -159,7 +168,7 @@ export class MassPlaylistTrackRow extends LitElement {
   }
   private enqueueTrack = (enqueue: EnqueueOptions) => {
     const ent = this.activeEntityId as string;
-    const user = this.browserController.massUser;
+    const user = this.browserController?.massUser;
     void this.browserActions.actionEnqueueMedia(
       ent,
       this.track.media_content_id,
@@ -178,7 +187,7 @@ export class MassPlaylistTrackRow extends LitElement {
     const actions = this.browserActions;
     const uri = this.track.media_content_id;
     const enqueue = EnqueueConfigMap[this.browserConfig.default_enqueue_option];
-    const user = this.browserController.massUser;
+    const user = this.browserController?.massUser;
     await actions.actionEnqueueMedia(
       ent,
       uri,
@@ -291,7 +300,7 @@ export class MassPlaylistTrackRow extends LitElement {
       ? this.defaultImageURL
       : this.fallbackImageURL?.length
         ? this.fallbackImageURL
-        : getThumbnail(this.hass, Thumbnail.CLEFT);
+        : getThumbnail(this.uiHass, Thumbnail.CLEFT);
     return html`
       <img
         class="thumbnail"

@@ -6,6 +6,7 @@ import {
 import {
   baseMassQueueServiceSchema,
   baseMassQueueServiceWithResponseSchema,
+  Track,
 } from "mass-queue-types/packages/mass_queue/utils";
 import { EnqueueOptions } from "./enums";
 import { mediaCardData } from "./types";
@@ -77,6 +78,10 @@ export interface getSimilarArtistsServiceSchema extends baseMassQueueServiceWith
   service: "get_similar_artists";
   service_data: getSimilarServiceData;
 }
+export interface getSimilarTracksServiceSchema extends baseMassQueueServiceWithResponseSchema {
+  service: "get_similar_tracks";
+  service_data: getSimilarServiceData;
+}
 export interface getArtistAlbumsServiceSchema extends baseMassQueueServiceWithResponseSchema {
   service: "get_artist_albums";
   service_data: getSimilarServiceData;
@@ -93,6 +98,10 @@ export interface getArtistAlbumsServiceResponse {
 
 export interface getSimilarArtistsServiceResponse {
   response: { artists: Artist[] };
+}
+
+export interface getSimilarTracksServiceResponse {
+  response: { artists: Track[] };
 }
 
 export interface getQueueInfoWSServiceSchema {

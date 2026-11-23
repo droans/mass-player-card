@@ -3,7 +3,7 @@ import { DarkModeThumbnails, LightModeThumbnails } from "../const/common";
 import { Thumbnail } from "../const/enums";
 import { Icons } from "../const/icons";
 import { getSearchMediaButtons } from "../const/media-browser";
-import { ExtendedHass } from "../const/types";
+import { ExtendedHass, UIHass } from "../const/types";
 import { CheckURLResult, getUrlAccessibility } from "./url";
 
 export interface ImageURLWithFallback {
@@ -31,7 +31,7 @@ export async function asyncImageURLWithFallback(
 }
 
 export function getThumbnail(
-  hass: ExtendedHass | undefined,
+  hass: UIHass | undefined,
   thumbnail: Thumbnail,
 ): string | undefined {
   if (!hass) {

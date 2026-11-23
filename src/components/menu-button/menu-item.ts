@@ -7,7 +7,7 @@ import {
   TemplateResult,
 } from "lit";
 import { customElement, property, query, state } from "lit/decorators.js";
-import { hassContext } from "../../const/context";
+import { hassUpdatedContext } from "../../const/context";
 import { ExtendedHass, ListItemData } from "../../const/types";
 import { tryPrefetchImageWithFallbacks } from "../../utils/utility";
 import styles from "./menu-item-styles";
@@ -16,7 +16,7 @@ import styles from "./menu-item-styles";
 export class MassMenuItem extends LitElement {
   private _menuItem!: ListItemData;
 
-  @consume({ context: hassContext, subscribe: true })
+  @consume({ context: hassUpdatedContext, subscribe: false })
   private hass!: ExtendedHass;
   // Valid Image Path
   @state() imgPath?: string;

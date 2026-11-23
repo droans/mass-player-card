@@ -16,7 +16,9 @@ import {
   activeEntityConfigContext,
   activeMediaPlayerContext,
   configContext,
-  hassContext,
+  hassPlayersContext,
+  hassUIContext,
+  hassUpdatedContext,
   IconsContext,
   mediaBrowserConfigContext,
   mediaBrowserHiddenElementsConfigContext,
@@ -35,6 +37,8 @@ import {
   mediaCardCollectionType,
   mediaCardPlaylistData,
   mediaCardPodcastData,
+  PlayersHass,
+  UIHass,
 } from "../../const/types";
 import {
   asyncImageURLWithFallback,
@@ -47,7 +51,7 @@ import "./browser-collection-track-row";
 
 export class BrowserViewBase extends LitElement {
   protected _collectionData?: mediaCardCollectionType | undefined;
-  protected _hass?: ExtendedHass;
+  protected _hass?: PlayersHass;
   protected _activePlayer?: ExtendedHassEntity;
   protected _browserConfig?: MediaBrowserConfig;
   protected _activeEntityConf?: EntityConfig;
@@ -75,6 +79,10 @@ export class BrowserViewBase extends LitElement {
   protected _enqueue_buttons!: ListItems;
   @consume({ context: configContext, subscribe: true })
   protected cardConfig!: Config;
+  @consume({ context: hassUpdatedContext, subscribe: false })
+  protected updatedHass?: ExtendedHass;
+  @consume({ context: hassUIContext, subscribe: false })
+  protected uiHass?: UIHass;
 
   public onEnqueueAction!: CardEnqueueService;
 
@@ -110,8 +118,8 @@ export class BrowserViewBase extends LitElement {
 
   protected _browserActions?: BrowserActions;
 
-  @consume({ context: hassContext, subscribe: true })
-  public set hass(hass: ExtendedHass | undefined) {
+  @consume({ context: hassPlayersContext, subscribe: true })
+  public set hass(hass: PlayersHass | undefined) {
     if (!this._hass) {
       this._hass = hass;
       this.getTracks();
@@ -165,11 +173,11 @@ export class BrowserViewBase extends LitElement {
     // Implemented by components
   }
   protected async getCollectionImage() {
-    if (!this.hass || !this.collectionData) {
+    if (!this.updatedHass || !this.collectionData) {
       return;
     }
     const imgs = await asyncImageURLWithFallback(
-      this.hass,
+      this.updatedHass,
       this.collectionData.media_image,
       Thumbnail.PLAYLIST,
       this.cardConfig.download_local,
@@ -180,7 +188,9 @@ export class BrowserViewBase extends LitElement {
   }
 
   public get browserActions() {
-    this._browserActions ??= new BrowserActions(this.hass as ExtendedHass);
+    this._browserActions ??= new BrowserActions(
+      this.updatedHass as ExtendedHass,
+    );
     return this._browserActions;
   }
 
@@ -290,10 +300,7 @@ export class BrowserViewBase extends LitElement {
     if (!this.Icons) {
       return;
     }
-    const defaultButtons = getEnqueueButtons(
-      this.Icons,
-      this.hass as ExtendedHass,
-    );
+    const defaultButtons = getEnqueueButtons(this.Icons, this.uiHass);
     const buttonMapping = HIDDEN_BUTTON_VALUE;
     const options = defaultButtons.filter((item) => {
       //eslint-disable-next-line @typescript-eslint/no-unsafe-assignment
@@ -307,7 +314,7 @@ export class BrowserViewBase extends LitElement {
   protected _renderImageFallback = (event_: Event) => {
     // eslint-disable-next-line unicorn/prevent-abbreviations
     const ev_ = event_ as HTMLImageElementEvent;
-    ev_.target.src = getThumbnail(this.hass, Thumbnail.PLAYLIST) as string;
+    ev_.target.src = getThumbnail(this.uiHass, Thumbnail.PLAYLIST) as string;
     ev_.target.removeEventListener("error", this._renderImageFallback);
   };
   protected renderImage(): TemplateResult {
@@ -362,7 +369,7 @@ export class BrowserViewBase extends LitElement {
   protected renderNoTracks(): TemplateResult {
     const translation = getTranslation(
       "browser.collections.label.no_tracks",
-      this.hass,
+      this.uiHass,
     );
     return html`
       <div id="browser-view" style="height: 100%;">

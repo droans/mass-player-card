@@ -12,7 +12,7 @@ import {
   activeMediaPlayerContext,
   configContext,
   controllerContext,
-  hassContext,
+  hassUpdatedContext,
   IconsContext,
   musicPlayerConfigContext,
   queueContext,
@@ -51,8 +51,7 @@ export class MassPlayerArtwork extends LitElement {
   private _intervalMs = 250;
 
   @state() private _activePlayer!: ExtendedHassEntity;
-  @consume({ context: hassContext, subscribe: true })
-  @state()
+  @consume({ context: hassUpdatedContext, subscribe: true })
   private hass!: ExtendedHass;
 
   @state() private _queue: QueueItems | null = null;

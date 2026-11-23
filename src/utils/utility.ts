@@ -1,9 +1,18 @@
 import { Config, ConfigSections, EntityConfig } from "../config/config";
 import { DEFAULT_SECTION_PRIORITY } from "../const/card";
-import { MAX_ACTIVE_LAST_ACTIVE_DURATION } from "../const/common";
+import {
+  MAX_ACTIVE_LAST_ACTIVE_DURATION,
+  PLAYER_CHANGE_COMPARE_ATTRIBUTES,
+} from "../const/common";
 import { PlayerSupportedFeatures, Sections, Thumbnail } from "../const/enums";
 import { MUSIC_ASSISTANT_APP_NAME } from "../const/player-queue";
-import { ExtendedHass, ExtendedHassEntity, QueueItem } from "../const/types";
+import {
+  type ExtendedHass,
+  type ExtendedHassEntity,
+  type PlayersHass,
+  type QueueItem,
+  type UIHass,
+} from "../const/types";
 import { getThumbnail } from "./thumbnails";
 
 const ConfigSectionMap: Record<ConfigSections, Sections> = {
@@ -42,36 +51,27 @@ export function secondsToTime(seconds: number) {
 export function playerHasUpdated(
   oldPlayer: ExtendedHassEntity | undefined,
   newPlayer: ExtendedHassEntity | undefined,
+  compareAttributes = false,
+  attributes: readonly string[] = PLAYER_CHANGE_COMPARE_ATTRIBUTES,
 ): boolean {
+  /* HA keeps the entity objects consistent.
+    As such, we only need to check if the objects are identical.
+
+    However, in case the objects are replaced for whatever reason,
+    compareAttributes and attributes can be used to force a check of attributes and state.
+  */
   if (!newPlayer && !oldPlayer) {
     return false;
   }
   if (!newPlayer || !oldPlayer) {
     return true;
   }
+  if (!compareAttributes) {
+    return oldPlayer != newPlayer;
+  }
+  const stateMatch = oldPlayer.state == newPlayer.state;
   const oldAttributes = oldPlayer.attributes;
   const newAttributes = newPlayer.attributes;
-  const attributes = [
-    "active_queue",
-    "app_id",
-    "entity_picture",
-    "entity_picture_local",
-    "group_members",
-    "is_volume_muted",
-    "mass_player_type",
-    "media_album_name",
-    "media_artist",
-    "media_content_id",
-    "media_content_type",
-    "media_duration",
-    "media_position",
-    "media_title",
-    "repeat",
-    "shuffle",
-    "volume_level",
-  ];
-  const oldState = oldPlayer.state;
-  const newState = newPlayer.state;
   const changedAttributes = attributes.filter((attribute) => {
     try {
       return oldAttributes[attribute] !== newAttributes[attribute];
@@ -79,9 +79,56 @@ export function playerHasUpdated(
       return true;
     }
   });
-  const stateChanged = oldState != newState;
-  const attributesChanged = changedAttributes.length > 0;
-  return stateChanged || attributesChanged;
+  const attributesMatch = changedAttributes.length === 0;
+  return !stateMatch || !attributesMatch;
+}
+
+export function playersHaveUpdated(
+  newHass: PlayersHass | undefined,
+  oldHass: PlayersHass | undefined,
+  entitiesConfig: EntityConfig[] | undefined,
+): boolean {
+  if (!newHass) {
+    return false;
+  }
+  if (!oldHass) {
+    return true;
+  }
+  if (!entitiesConfig) {
+    // If no entities config is passed, we can only assume it will come later.
+    // However, we will need a hass context at that point.
+    return true;
+  }
+  const currentStates = oldHass.states;
+  const updatedStates = newHass.states;
+  const entitiesChanged = entitiesConfig.map((entityConfig) => {
+    const currentPlayerEntity = currentStates[entityConfig.entity_id];
+    const updatedPlayerEntity = updatedStates[entityConfig.entity_id];
+    const currentVolumeEntity = currentStates[entityConfig.volume_entity_id];
+    const updatedVolumeEntity = updatedStates[entityConfig.volume_entity_id];
+    return (
+      playerHasUpdated(currentPlayerEntity, updatedPlayerEntity) ||
+      playerHasUpdated(currentVolumeEntity, updatedVolumeEntity)
+    );
+  });
+  const anyChanged = entitiesChanged.filter(Boolean);
+  return anyChanged.length > 0;
+}
+export function uiConfigUpdated(
+  newHass: UIHass | undefined,
+  oldHass: UIHass | undefined,
+): boolean {
+  if (!newHass) {
+    return false;
+  }
+  if (!oldHass) {
+    return true;
+  }
+  const darkModeUpdated = oldHass.themes.darkMode != newHass.themes.darkMode;
+  const languageUpdated = oldHass.language != newHass.language;
+  const connectedUpdated =
+    !oldHass.connected || oldHass.connected != newHass.connected;
+  return darkModeUpdated || languageUpdated || connectedUpdated;
 }
 
 export function queueItemhasUpdated(
@@ -98,7 +145,7 @@ export function queueItemhasUpdated(
   );
 }
 export function isActive(
-  hass: ExtendedHass | undefined,
+  hass: PlayersHass | undefined,
   entity: ExtendedHassEntity | undefined,
   entityConfig: EntityConfig,
 ): boolean {
@@ -221,8 +268,20 @@ export function formatDuration(dur: number | undefined) {
   return `${mins.toString()} minutes`;
 }
 
+export function playerEntityIsAvailable(
+  entity: ExtendedHassEntity | undefined,
+): boolean {
+  if (!entity) {
+    return false;
+  }
+  const state = entity.state;
+  // eslint-disable-next-line @typescript-eslint/no-unnecessary-condition
+  const hasQueue = (entity?.attributes?.active_queue ?? null) != "";
+  return !["unknown", "unavailable"].includes(state) && hasQueue;
+}
+
 export function playerIsAvailable(
-  hass: ExtendedHass | undefined,
+  hass: PlayersHass | undefined,
   entityId: string,
 ): boolean {
   if (typeof entityId != "string" || !entityId.startsWith("media_player")) {

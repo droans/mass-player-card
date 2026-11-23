@@ -1,11 +1,11 @@
-import { Thumbnail, MediaTypes, EnqueueOptions } from "./enums";
-import { Icons } from "./icons";
-import { getTranslation } from "../utils/translations";
 import {
   EnqueueConfigOptions,
   MediaBrowserConfig,
 } from "../config/media-browser";
-import { ExtendedHass, ListItems, newMediaBrowserItemsConfig } from "./types";
+import { getTranslation } from "../utils/translations";
+import { EnqueueOptions, MediaTypes, Thumbnail } from "./enums";
+import { Icons } from "./icons";
+import { ListItems, newMediaBrowserItemsConfig, UIHass } from "./types";
 
 export type MediaBrowserSection =
   "favorites" | "recents" | "recommendations" | "search" | "search-collection";
@@ -23,7 +23,10 @@ export const MediaTypeThumbnails = {
   radio: Thumbnail.RADIO,
 };
 
-export function getEnqueueButtons(icons: Icons, hass: ExtendedHass): ListItems {
+export function getEnqueueButtons(
+  icons: Icons,
+  hass: UIHass | undefined,
+): ListItems {
   return [
     {
       option: EnqueueOptions.PLAY_NOW,
@@ -59,7 +62,7 @@ export function getEnqueueButtons(icons: Icons, hass: ExtendedHass): ListItems {
 }
 export function getSearchMediaButtons(
   icons: Icons,
-  hass: ExtendedHass,
+  hass: UIHass | undefined,
 ): ListItems {
   return [
     {
@@ -101,7 +104,7 @@ export function getSearchMediaButtons(
 }
 export function getFilterButtons(
   icons: Icons,
-  hass: ExtendedHass,
+  hass: UIHass | undefined,
   config: MediaBrowserConfig,
   cards?: newMediaBrowserItemsConfig | null,
 ): ListItems {

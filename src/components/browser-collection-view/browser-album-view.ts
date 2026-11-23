@@ -17,7 +17,7 @@ export class MassBrowserAlbumView extends BrowserViewBase {
 
   // Ask HA to return the tracks in the album
   public getTracks() {
-    if (!this.hass || !this.collectionData || !this.activePlayer) {
+    if (!this.updatedHass || !this.collectionData || !this.activePlayer) {
       return;
     }
     void this.browserActions
@@ -68,9 +68,12 @@ export class MassBrowserAlbumView extends BrowserViewBase {
   protected renderOverview(): TemplateResult {
     const trackLabel = getTranslation(
       "browser.collections.track_count",
-      this.hass,
+      this.uiHass,
     ) as string;
-    const loadingLabel = getTranslation("browser.loading", this.hass) as string;
+    const loadingLabel = getTranslation(
+      "browser.loading",
+      this.uiHass,
+    ) as string;
     const trackString = this.tracks
       ? `${this.tracks.length.toString()} ${trackLabel}`
       : loadingLabel;

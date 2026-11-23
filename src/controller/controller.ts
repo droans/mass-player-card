@@ -1,29 +1,46 @@
 import { ContextProvider } from "@lit/context";
+import {
+  getUserInfoWSResponseSchema,
+  getUserInfoWSServiceSchema,
+} from "mass-queue-types/packages/mass_queue/ws/get_user_info";
 import { Config } from "../config/config";
-import { ExtendedHass } from "../const/types";
 import {
   actionsControllerContext,
   activePlayerControllerContext,
   activeSectionContext,
   browserControllerContext,
-  hassContext,
+  hassPlayersContext,
+  hassUIContext,
+  hassUpdatedContext,
   queueControllerContext,
 } from "../const/context";
-import { MassCardConfigController } from "./config";
-import { ActivePlayerController } from "./active-player";
 import { Sections } from "../const/enums";
-import { ActionsController } from "./actions";
-import { QueueController } from "./queue";
-import { MediaBrowserController } from "./browser";
-import { jsonMatch } from "../utils/utility";
+import { ExtendedHass } from "../const/types";
 import { getTranslation } from "../utils/translations";
 import {
-  getUserInfoWSResponseSchema,
-  getUserInfoWSServiceSchema,
-} from "mass-queue-types/packages/mass_queue/ws/get_user_info";
+  jsonMatch,
+  playersHaveUpdated,
+  uiConfigUpdated,
+} from "../utils/utility";
+import { ActionsController } from "./actions";
+import { ActivePlayerController } from "./active-player";
+import { MediaBrowserController } from "./browser";
+import { MassCardConfigController } from "./config";
+import { QueueController } from "./queue";
 
 export class MassCardController {
-  private _hass = new ContextProvider(document.body, { context: hassContext });
+  // this._updatedHass is always kept updated.
+  private _updatedHass = new ContextProvider(document.body, {
+    context: hassUpdatedContext,
+  });
+  // this._playersHass is only updated when players have changed.
+  private _playersHass = new ContextProvider(document.body, {
+    context: hassPlayersContext,
+  });
+  // this._hassUI is only updated when UI config options have changed.
+  private _hassUI = new ContextProvider(document.body, {
+    context: hassUIContext,
+  });
   private _host!: HTMLElement;
 
   private configController: MassCardConfigController;
@@ -138,12 +155,20 @@ export class MassCardController {
     if (!hass) {
       return;
     }
-    this._hass.value = hass;
-    this.setupIfReady();
+    this._updatedHass.value = hass;
+    if (
+      playersHaveUpdated(hass, this._playersHass.value, this.config?.entities)
+    ) {
+      this._playersHass.value = hass;
+      this.setupIfReady();
+    }
+    if (uiConfigUpdated(hass, this._hassUI.value)) {
+      this._hassUI.value = hass;
+    }
+    /* eslint-disable @typescript-eslint/no-non-null-assertion */
     if (this.ActivePlayer) {
       this.ActivePlayer.hass = hass;
     }
-    /* eslint-disable @typescript-eslint/no-non-null-assertion */
     this.Actions!.hass = hass;
     this.Queue!.hass = hass;
     /* eslint-enable @typescript-eslint/no-non-null-assertion */
@@ -153,7 +178,7 @@ export class MassCardController {
     }
   }
   public get hass() {
-    return this._hass.value;
+    return this._updatedHass.value;
   }
 
   public set config(config: Config | undefined) {

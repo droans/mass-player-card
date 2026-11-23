@@ -19,6 +19,7 @@ import {
   MediaLibraryItem,
   newMediaBrowserItemsConfig,
   RecommendationSection,
+  UIHass,
 } from "../const/types";
 import { asyncImageURLWithFallback } from "./thumbnails";
 import { getTranslation } from "./translations";
@@ -360,7 +361,7 @@ export interface BrowserChips {
 
 export function getBrowserChips(
   icons: Icons,
-  hass: ExtendedHass,
+  hass: UIHass,
   config: MediaBrowserConfig,
   cards: newMediaBrowserItemsConfig,
 ): BrowserChips {

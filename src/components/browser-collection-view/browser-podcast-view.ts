@@ -1,11 +1,11 @@
 import { CSSResultOrNative, html, TemplateResult } from "lit";
 import { customElement, query, state } from "lit/decorators.js";
-import sharedStyles from "./browser-view-shared-styles";
-import styles from "./browser-podcast-view-styles";
-import { delay } from "../../utils/utility";
-import { BrowserViewBase } from "./browser-view-base";
 import { getPodcastServiceResponse } from "mass-queue-types/packages/mass_queue/actions/get_podcast";
 import { getTranslation } from "../../utils/translations";
+import { delay } from "../../utils/utility";
+import styles from "./browser-podcast-view-styles";
+import { BrowserViewBase } from "./browser-view-base";
+import sharedStyles from "./browser-view-shared-styles";
 
 @customElement("mpc-collection-podcast-view")
 export class MassBrowserPodcastView extends BrowserViewBase {
@@ -16,7 +16,7 @@ export class MassBrowserPodcastView extends BrowserViewBase {
 
   // Ask HA to return the episodes in the podcast
   public getTracks() {
-    if (!this.hass || !this.collectionData || !this.activePlayer) {
+    if (!this.updatedHass || !this.collectionData || !this.activePlayer) {
       return;
     }
     void this.browserActions
@@ -40,7 +40,7 @@ export class MassBrowserPodcastView extends BrowserViewBase {
     void this.getPodcastMetadata();
   }
   public async getPodcastMetadata() {
-    if (!this.hass || !this.collectionData || !this.activePlayer) {
+    if (!this.updatedHass || !this.collectionData || !this.activePlayer) {
       return;
     }
     const metadata = await this.browserActions.actionGetPodcastData(
@@ -76,9 +76,12 @@ export class MassBrowserPodcastView extends BrowserViewBase {
   protected renderOverview(): TemplateResult {
     const episodeLabel = getTranslation(
       "browser.collections.track_count",
-      this.hass,
+      this.uiHass,
     ) as string;
-    const loadingLabel = getTranslation("browser.loading", this.hass) as string;
+    const loadingLabel = getTranslation(
+      "browser.loading",
+      this.uiHass,
+    ) as string;
     const trackString = this.tracks
       ? `${this.tracks.length.toString()} ${episodeLabel}`
       : loadingLabel;

@@ -56,3 +56,23 @@ export const LightModeThumbnails: Record<Thumbnail, string> = {
 };
 
 export const MAX_ACTIVE_LAST_ACTIVE_DURATION = 7_200_000;
+
+export const PLAYER_CHANGE_COMPARE_ATTRIBUTES: readonly string[] = [
+  "active_queue",
+  "app_id",
+  "entity_picture",
+  "entity_picture_local",
+  "group_members",
+  "is_volume_muted",
+  "mass_player_type",
+  "media_album_name",
+  "media_artist",
+  "media_content_id",
+  "media_content_type",
+  "media_duration",
+  "media_position",
+  "media_title",
+  "repeat",
+  "shuffle",
+  "volume_level",
+] as const;

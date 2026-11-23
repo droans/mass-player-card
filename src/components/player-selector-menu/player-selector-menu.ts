@@ -7,14 +7,20 @@ import {
   activePlayerDataContext,
   entitiesConfigContext,
   EntityConfig,
-  hassContext,
+  hassPlayersContext,
+  hassUpdatedContext,
   IconsContext,
   musicPlayerConfigContext,
 } from "../../const/context";
 import { Icons } from "../../const/icons";
-import { ExtendedHass, ListItemData, PlayerData } from "../../const/types";
+import {
+  ExtendedHass,
+  ListItemData,
+  PlayerData,
+  PlayersHass,
+} from "../../const/types";
 import { computeEntityName } from "../../utils/entity-name";
-import { playerIsAvailable } from "../../utils/utility";
+import { playerEntityIsAvailable } from "../../utils/utility";
 import "../menu-button/menu-button";
 import styles from "./player-selector-menu-styles";
 
@@ -32,8 +38,10 @@ export class MassCardPlayerSelector extends LitElement {
   @consume({ context: entitiesConfigContext, subscribe: true })
   private playerEntities!: EntityConfig[];
 
-  @consume({ context: hassContext, subscribe: true })
-  private hass!: ExtendedHass;
+  @consume({ context: hassPlayersContext, subscribe: true })
+  private hassPlayers?: PlayersHass;
+  @consume({ context: hassUpdatedContext, subscribe: true })
+  private hass?: ExtendedHass;
 
   @consume({ context: activePlayerDataContext, subscribe: true })
   @state()
@@ -41,7 +49,7 @@ export class MassCardPlayerSelector extends LitElement {
 
   protected renderPlayerItems() {
     const ents = this.playerEntities.map((item) => {
-      const ent = this.hass.states[item.entity_id];
+      const ent = this.hassPlayers?.states[item.entity_id];
       if (!ent) {
         return;
       }
@@ -61,9 +69,7 @@ export class MassCardPlayerSelector extends LitElement {
           "";
         fallback = ent.attributes.entity_picture ?? "";
       }
-      const disabled = playerIsAvailable(this.hass, ent.entity_id)
-        ? {}
-        : { disabled: true };
+      const disabled = playerEntityIsAvailable(ent) ? {} : { disabled: true };
       const r: ListItemData = {
         option: item.entity_id,
         icon: this.Icons.SPEAKER,

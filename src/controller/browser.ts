@@ -39,11 +39,11 @@ import {
 } from "../utils/media-browser";
 
 export class MediaBrowserController {
-  private hass!: ExtendedHass;
+  public hass!: ExtendedHass;
   private config!: Config;
   public _host!: HTMLElement;
   private browserConfig!: MediaBrowserConfig;
-  private actions!: BrowserActions;
+  public actions!: BrowserActions;
   private _activeEntityId!: string;
   private _items!: ContextProvider<typeof mediaBrowserCardsContext>;
   private _updatingCards = false;

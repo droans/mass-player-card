@@ -1,13 +1,13 @@
 import { CSSResultOrNative, html, TemplateResult } from "lit";
 import { customElement, query, state } from "lit/decorators.js";
-import sharedStyles from "./browser-view-shared-styles";
-import styles from "./browser-playlist-view-styles";
-import { TrackRemovedEventData } from "../../const/events";
-import { delay, formatDuration } from "../../utils/utility";
 import { getPlaylistServiceResponse } from "mass-queue-types/packages/mass_queue/actions/get_playlist";
 import { PlaylistTrack } from "mass-queue-types/packages/mass_queue/actions/get_playlist_tracks";
-import { BrowserViewBase } from "../browser-collection-view/browser-view-base";
+import { TrackRemovedEventData } from "../../const/events";
 import { getTranslation } from "../../utils/translations";
+import { delay, formatDuration } from "../../utils/utility";
+import { BrowserViewBase } from "../browser-collection-view/browser-view-base";
+import styles from "./browser-playlist-view-styles";
+import sharedStyles from "./browser-view-shared-styles";
 
 @customElement("mpc-collection-playlist-view")
 export class MassBrowserPlaylistView extends BrowserViewBase {
@@ -21,7 +21,7 @@ export class MassBrowserPlaylistView extends BrowserViewBase {
 
   // Ask HA to return the tracks in the playlist
   public getTracks() {
-    if (!this.hass || !this.collectionData || !this.activePlayer) {
+    if (!this.updatedHass || !this.collectionData || !this.activePlayer) {
       return;
     }
     void this.browserActions
@@ -41,7 +41,7 @@ export class MassBrowserPlaylistView extends BrowserViewBase {
     void this.getPlaylistMetadata();
   }
   public async getPlaylistMetadata() {
-    if (!this.hass || !this.collectionData || !this.activePlayer) {
+    if (!this.uiHass || !this.collectionData || !this.activePlayer) {
       return;
     }
     const metadata = await this.browserActions.actionGetPlaylistData(
@@ -94,12 +94,15 @@ export class MassBrowserPlaylistView extends BrowserViewBase {
   protected renderOverview(): TemplateResult {
     const trackLabel = getTranslation(
       "browser.collections.track_count",
-      this.hass,
+      this.uiHass,
     ) as string;
-    const loadingLabel = getTranslation("browser.loading", this.hass) as string;
+    const loadingLabel = getTranslation(
+      "browser.loading",
+      this.uiHass,
+    ) as string;
     const unknwonOwnerLabel = getTranslation(
       "browser.collections.playlist.unknown_owner",
-      this.hass,
+      this.uiHass,
     ) as string;
     const trackString = this.tracks
       ? `${this.tracks.length.toString()} ${trackLabel}`

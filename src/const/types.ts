@@ -16,14 +16,14 @@ import {
   getQueueServiceSchema,
 } from "mass-queue-types/packages/music_assistant/actions/get_queue";
 
-import { MediaTypes, RepeatMode, Thumbnail } from "./enums";
+import { queueItem } from "mass-queue-types/packages/mass_queue/actions/get_queue_items";
 import {
   MediaItem,
   QueueItemSchema,
 } from "mass-queue-types/packages/music_assistant/types";
-import { ImageURLWithFallback } from "../utils/thumbnails";
-import { queueItem } from "mass-queue-types/packages/mass_queue/actions/get_queue_items";
 import { QueueConfig } from "../config/player-queue";
+import { ImageURLWithFallback } from "../utils/thumbnails";
+import { MediaTypes, RepeatMode, Thumbnail } from "./enums";
 
 export interface ExtendedHass extends Omit<HomeAssistant, "states"> {
   entities: ExtendedEntitiesBase;
@@ -298,3 +298,10 @@ export interface MediaItemImage {
   provider: string;
   remotely_accessible: boolean;
 }
+
+export type UIHass = Pick<
+  ExtendedHass,
+  "themes" | "language" | "locale" | "connected"
+>;
+
+export type PlayersHass = Pick<ExtendedHass, "states" | "connected">;

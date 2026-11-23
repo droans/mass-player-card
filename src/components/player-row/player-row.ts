@@ -10,13 +10,19 @@ import { VibrationPattern } from "../../const/common";
 import {
   activeEntityConfigContext,
   EntityConfig,
-  hassContext,
+  hassPlayersContext,
+  hassUIContext,
+  hassUpdatedContext,
   IconsContext,
   playersConfigContext,
   playersHiddenElementsConfigContext,
 } from "../../const/context";
 
-import { isActive, jsonMatch, playerIsAvailable } from "../../utils/utility";
+import {
+  isActive,
+  jsonMatch,
+  playerEntityIsAvailable,
+} from "../../utils/utility";
 
 import {
   PlayersConfig,
@@ -29,6 +35,8 @@ import {
   EntityName,
   ExtendedHass,
   ExtendedHassEntity,
+  PlayersHass,
+  UIHass,
 } from "../../const/types";
 import { computeEntityName } from "../../utils/entity-name";
 import { getThumbnail } from "../../utils/thumbnails";
@@ -40,6 +48,11 @@ export class PlayerRow extends LitElement {
   @property({ attribute: "selected", type: Boolean }) selected = false;
   @consume({ context: IconsContext }) private Icons!: Icons;
   @property({ attribute: "can-group", type: Boolean }) canGroup = false;
+
+  @consume({ context: hassPlayersContext, subscribe: true })
+  private hassPlayers?: PlayersHass;
+  @consume({ context: hassUIContext, subscribe: true })
+  private hassUI?: UIHass;
 
   public allowJoin = true;
   public playerName!: EntityName;
@@ -76,7 +89,7 @@ export class PlayerRow extends LitElement {
     return this._entityConfig;
   }
 
-  @consume({ context: hassContext, subscribe: true })
+  @consume({ context: hassUpdatedContext, subscribe: true })
   public set hass(hass: ExtendedHass) {
     this._hass = hass;
   }
@@ -97,7 +110,7 @@ export class PlayerRow extends LitElement {
   private callOnPlayerSelectedService = () => {
     if (
       !this.player_entity?.entity_id ||
-      !playerIsAvailable(this.hass, this.player_entity.entity_id)
+      !playerEntityIsAvailable(this.player_entity)
     ) {
       return;
     }
@@ -122,7 +135,7 @@ export class PlayerRow extends LitElement {
     // eslint-disable-next-line unicorn/prevent-abbreviations
     const ev = event_ as HTMLImageElementEvent;
     const attributes = this.player_entity?.attributes;
-    const fallback = getThumbnail(this.hass, Thumbnail.HEADPHONES);
+    const fallback = getThumbnail(this.hassUI, Thumbnail.HEADPHONES);
     const loc = attributes?.entity_picture_local;
     const pic = attributes?.entity_picture ?? fallback;
     const source = ev.target.src;
@@ -134,7 +147,7 @@ export class PlayerRow extends LitElement {
   };
   private renderThumbnail() {
     const attributes = this.player_entity?.attributes;
-    const fallback = getThumbnail(this.hass, Thumbnail.HEADPHONES);
+    const fallback = getThumbnail(this.hassUI, Thumbnail.HEADPHONES);
     const loc = attributes?.entity_picture_local;
     const pic = attributes?.entity_picture;
     const source = loc ?? pic ?? fallback;
@@ -176,7 +189,7 @@ export class PlayerRow extends LitElement {
       computeEntityName(this.hass, this.player_entity, this.playerName) ||
       "Media Player";
     const activeStyle =
-      isActive(this.hass, this.player_entity, this._entityConfig) &&
+      isActive(this.hassPlayers, this.player_entity, this._entityConfig) &&
       this.player_entity?.state == "playing"
         ? `audio-bars`
         : `audio-bars-inactive`;
@@ -236,10 +249,7 @@ export class PlayerRow extends LitElement {
   render() {
     const active = this.selected ? `active` : ``;
     const entityExists = this.player_entity;
-    const entityAvailable = playerIsAvailable(
-      this.hass,
-      this.player_entity?.entity_id ?? "",
-    );
+    const entityAvailable = playerEntityIsAvailable(this.player_entity);
     const disabled = !entityExists || !entityAvailable;
     return html`
       <ha-list-item-button

@@ -32,7 +32,8 @@ import {
   entitiesConfigContext,
   EntityConfig,
   groupedPlayersContext,
-  hassContext,
+  hassPlayersContext,
+  hassUIContext,
   IconsContext,
   musicPlayerConfigContext,
   musicPlayerHiddenElementsConfigContext,
@@ -49,7 +50,9 @@ import {
   ExtendedHassEntity,
   MediaLibraryItem,
   PlayerData,
+  PlayersHass,
   PlaylistDialogItem,
+  UIHass,
 } from "../const/types";
 
 import styles from "../styles/music-player";
@@ -103,6 +106,10 @@ export class MusicPlayerCard extends LitElement {
   private hiddenElements!: PlayerHiddenElementsConfig;
   @consume({ context: IconsContext, subscribe: true })
   private Icons!: Icons;
+  @consume({ context: hassPlayersContext, subscribe: true })
+  private hassPlayers?: PlayersHass;
+  @consume({ context: hassUIContext, subscribe: true })
+  private hassUI?: UIHass;
 
   private _activeEntityConfig!: EntityConfig;
   private _activeEntity!: ExtendedHassEntity;
@@ -110,7 +117,7 @@ export class MusicPlayerCard extends LitElement {
 
   public selectedPlayerService!: PlayerSelectedService;
   private _hass!: ExtendedHass;
-  private actions!: PlayerActions;
+  private actions?: PlayerActions;
 
   @consume({ context: activeEntityConfigContext, subscribe: true })
   public set activeEntityConfig(entity: EntityConfig) {
@@ -136,16 +143,16 @@ export class MusicPlayerCard extends LitElement {
     return this._activeEntity;
   }
 
-  @consume({ context: hassContext, subscribe: true })
-  public set hass(hass: ExtendedHass | undefined) {
-    if (hass) {
-      this.actions = new PlayerActions(hass);
-      this._hass = hass;
-    }
-  }
-  public get hass() {
-    return this._hass;
-  }
+  // @consume({ context: hassUpdatedContext, subscribe: true })
+  // public set hass(hass: ExtendedHass | undefined) {
+  //   if (hass) {
+  //     this.actions ??= new PlayerActions(hass);
+  //     this._hass = hass;
+  //   }
+  // }
+  // public get hass() {
+  //   return this._hass;
+  // }
 
   @consume({ context: musicPlayerConfigContext, subscribe: true })
   public set config(config: PlayerConfig) {
@@ -299,19 +306,19 @@ export class MusicPlayerCard extends LitElement {
   };
 
   protected onAddToPlaylist = (event_: Event) => {
-    if (!this.activeMediaPlayer || !this.hass) {
+    if (!this.activeMediaPlayer) {
       return;
     }
     const uri = (event_.target as HTMLElement).dataset.uri as string;
-    const ent = this.hass.states[this.activeEntity.entity_id];
-    if (!ent) {
-      return;
-    }
-    const mediaId = ent.attributes.media_content_id;
+    const mediaId = this.activeMediaPlayer.attributes.media_content_id;
     if (!mediaId) {
       return;
     }
-    void this.actions.actionAddToPlaylist(mediaId, uri, this.activeMediaPlayer);
+    void this.actions?.actionAddToPlaylist(
+      mediaId,
+      uri,
+      this.activeMediaPlayer,
+    );
     this.closeAddToPlaylistDialog();
   };
   protected onArtistNameSelect = () => {
@@ -445,7 +452,7 @@ export class MusicPlayerCard extends LitElement {
     }
     const autoplay = this.queueInfo.autoplay_enabled;
     const translationKey = `player.label.autoplay.${autoplay ? `enabled` : `disabled`}`;
-    const translation = getTranslation(translationKey, this.hass);
+    const translation = getTranslation(translationKey, this.hassUI);
     return html`
       <ha-dropdown-item value="autoplay">
         <ha-svg-icon
@@ -463,7 +470,7 @@ export class MusicPlayerCard extends LitElement {
     }
     const crossfade = this.queueInfo.crossfade_enabled;
     const translationKey = `player.label.crossfade.${crossfade ? `enabled` : `disabled`}`;
-    const translation = getTranslation(translationKey, this.hass);
+    const translation = getTranslation(translationKey, this.hassUI);
     return html`
       <ha-dropdown-item value="crossfade">
         <ha-svg-icon
@@ -535,7 +542,13 @@ export class MusicPlayerCard extends LitElement {
     if (this.hiddenElements.track_title) {
       return html``;
     }
-    if (!isActive(this.hass, this.activeMediaPlayer, this.activeEntityConfig)) {
+    if (
+      !isActive(
+        this.hassPlayers,
+        this.activeMediaPlayer,
+        this.activeEntityConfig,
+      )
+    ) {
       return html`
         <button class="hidden player-track-title" @click=${this.onAlbumNameSelect}>
           ${this.controller.translate("player.title.inactive")}
@@ -552,7 +565,13 @@ export class MusicPlayerCard extends LitElement {
     ) {
       return html``;
     }
-    if (!isActive(this.hass, this.activeMediaPlayer, this.activeEntityConfig)) {
+    if (
+      !isActive(
+        this.hassPlayers,
+        this.activeMediaPlayer,
+        this.activeEntityConfig,
+      )
+    ) {
       const msgs: string[] = this.controller.translate(
         "player.messages.inactive",
       ) as string[];
@@ -576,7 +595,7 @@ export class MusicPlayerCard extends LitElement {
       return html``;
     }
     const style = isActive(
-      this.hass,
+      this.hassPlayers,
       this.activeMediaPlayer,
       this.activeEntityConfig,
     )
