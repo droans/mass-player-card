@@ -55,7 +55,6 @@ import {
 import styles from "../styles/music-player";
 
 import { DirectiveResult } from "lit/directive.js";
-import { cache } from "lit/directives/cache.js";
 import { Config } from "../config/config";
 import { PlayerConfig, PlayerHiddenElementsConfig } from "../config/player";
 import {
@@ -634,18 +633,18 @@ export class MusicPlayerCard extends LitElement {
     if (!this.cardConfig) {
       return html``;
     }
-    return cache(
-      this.artworkOnly
-        ? html` <div id="container">${this.renderArtwork()}</div>`
-        : html`
-            <div id="container">
-              ${this.renderHeader()}
-              <div class="artwork">${this.renderArtwork()}</div>
-              <div class="active-track">${this.renderActiveTrack()}</div>
-              <div class="controls">${this.renderControls()}</div>
-            </div>
-          `,
-    );
+    return html` <div id="container">
+      ${this.artworkOnly ? html`` : this.renderHeader()}
+      <div class="artwork">${this.renderArtwork()}</div>
+      ${
+        this.artworkOnly
+          ? html``
+          : html`<div class="active-track">${this.renderActiveTrack()}</div>
+        <div class="controls">${this.renderControls()}</div>
+      </div>
+    `
+      }
+    </div>`;
   }
   private delayedUpdatePlayerData = () => {
     setTimeout(() => {
