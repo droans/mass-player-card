@@ -287,6 +287,7 @@ export class MusicAssistantPlayerCard extends LitElement {
       >
         <mpc-music-player-card
           .selectedPlayerService=${this.playerSelected}
+          ?artwork-only=${!visible}
         ></mpc-music-player-card>
       </wa-tab-panel>
     `;

@@ -7,7 +7,7 @@ import {
   PropertyValues,
   TemplateResult,
 } from "lit";
-import { customElement, query, state } from "lit/decorators.js";
+import { customElement, property, query, state } from "lit/decorators.js";
 import { html } from "lit/static-html.js";
 
 import "../components/grouped-player-menu/grouped-player-menu";
@@ -54,6 +54,8 @@ import {
 
 import styles from "../styles/music-player";
 
+import { DirectiveResult } from "lit/directive.js";
+import { cache } from "lit/directives/cache.js";
 import { Config } from "../config/config";
 import { PlayerConfig, PlayerHiddenElementsConfig } from "../config/player";
 import {
@@ -90,6 +92,8 @@ export class MusicPlayerCard extends LitElement {
   @consume({ context: activeQueueInfoContext, subscribe: true })
   @state()
   private queueInfo!: getQueueInfoWSServiceResponseSchema;
+
+  @property({ attribute: "artwork-only", type: Boolean }) artworkOnly = false;
 
   @query("#dialog-favorites") favoritesDialog?: DialogElement;
 
@@ -626,18 +630,22 @@ export class MusicPlayerCard extends LitElement {
       </div>
     `;
   }
-  protected render(): TemplateResult {
+  protected render(): DirectiveResult {
     if (!this.cardConfig) {
       return html``;
     }
-    return html`
-      <div id="container">
-        ${this.renderHeader()}
-        <div class="artwork">${this.renderArtwork()}</div>
-        <div class="active-track">${this.renderActiveTrack()}</div>
-        <div class="controls">${this.renderControls()}</div>
-      </div>
-    `;
+    return cache(
+      this.artworkOnly
+        ? html` <div id="container">${this.renderArtwork()}</div>`
+        : html`
+            <div id="container">
+              ${this.renderHeader()}
+              <div class="artwork">${this.renderArtwork()}</div>
+              <div class="active-track">${this.renderActiveTrack()}</div>
+              <div class="controls">${this.renderControls()}</div>
+            </div>
+          `,
+    );
   }
   private delayedUpdatePlayerData = () => {
     setTimeout(() => {
