@@ -90,7 +90,6 @@ export class MediaCard extends LitElement {
       return;
     }
     this._config = config;
-    this.updateHiddenElements();
     this.generateCode();
   }
   public get config() {
@@ -104,6 +103,7 @@ export class MediaCard extends LitElement {
     }
     this._sectionConfig = config;
     this.updateHiddenElements();
+    this.generateCode();
   }
   public get sectionConfig() {
     return this._sectionConfig;
@@ -129,6 +129,7 @@ export class MediaCard extends LitElement {
     if (this.hassUI && this.Icons) {
       this._search_buttons = getSearchMediaButtons(this.Icons, this.hassUI);
     }
+    this.generateCode();
   }
   public get entityConfig() {
     return this._entityConfig;
@@ -148,7 +149,6 @@ export class MediaCard extends LitElement {
 
   private updateHiddenElements() {
     this.updateEnqueueButtons();
-    this.generateCode();
   }
   private updateEnqueueButtons() {
     if (!this.hassUI || !this.Icons) {
