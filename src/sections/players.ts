@@ -13,8 +13,6 @@ import { keyed } from "lit/directives/keyed.js";
 import "../components/player-row/active-player-row";
 import "../components/player-row/player-row";
 
-import PlayersActions from "../actions/players-actions";
-
 import "../components/section-header/section-header";
 
 import { Config, EntityConfig } from "../config/config";
@@ -64,7 +62,7 @@ export class PlayersCard extends LitElement {
   private _hassPlayers?: PlayersHass;
   @consume({ context: hassUIServicesContext, subscribe: true })
   private hassUIServices?: UIServicesHass;
-  private actions?: PlayersActions;
+  // private actions?: PlayersActions;
 
   @property({ attribute: false })
   public set config(config: Config | undefined) {
@@ -97,27 +95,29 @@ export class PlayersCard extends LitElement {
   }
 
   private joinPlayers = async (groupMember: string[]) => {
-    if (!this.actions) {
+    if (!this.controller.Actions) {
       return;
     }
-    await this.actions.actionJoinPlayers(
+    await this.controller.Actions.playersActions.actionJoinPlayers(
       this.activePlayerConfig.entity_id,
       groupMember,
     );
     this.controller.ActivePlayer?.setGroupAttributes();
   };
   private unjoinPlayers = async (playerEntity: string[]) => {
-    if (!this.actions) {
+    if (!this.controller.Actions) {
       return;
     }
-    await this.actions.actionUnjoinPlayers(playerEntity);
+    await this.controller.Actions.playersActions.actionUnjoinPlayers(
+      playerEntity,
+    );
     this.controller.ActivePlayer?.setGroupAttributes();
   };
   private transferQueue = async (targetPlayer: string) => {
-    if (!this.actions) {
+    if (!this.controller.Actions) {
       return;
     }
-    await this.actions.actionTransferQueue(
+    await this.controller.Actions.playersActions.actionTransferQueue(
       this.activePlayerConfig.entity_id,
       targetPlayer,
     );
