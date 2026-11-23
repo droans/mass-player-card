@@ -152,9 +152,6 @@ export class QueueCard extends LitElement {
         return QueueConfigErrors.ENTITY_TYPE;
       }
     }
-    if (!this.active_player_entity) {
-      return QueueConfigErrors.MISSING_ENTITY;
-    }
     return QueueConfigErrors.OK;
   }
   private getActiveIndex(): number {
