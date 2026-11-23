@@ -38,7 +38,6 @@ import { ActivePlayerController } from "../controller/active-player";
 import { QueueController } from "../controller/queue";
 import styles from "../styles/player-queue";
 import { getTranslation } from "../utils/translations";
-import { jsonMatch } from "../utils/utility";
 
 @customElement("mpc-queue-card")
 export class QueueCard extends LitElement {
@@ -74,9 +73,6 @@ export class QueueCard extends LitElement {
       if (!this.queue?.length) {
         this._queue = this.processQueue(queue);
         return;
-      }
-      if (!jsonMatch(this.queue, queue)) {
-        this._queue = this.processQueue(queue);
       }
       return;
     }
