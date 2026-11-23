@@ -159,6 +159,9 @@ export class ActivePlayerController {
       newVolEntity,
       true,
     );
+    if (volumePlayerUpdated) {
+      this.volumeMediaPlayer = newVolEntity;
+    }
     if (playerUpdated) {
       const mediaChanged =
         newEntity?.attributes.media_title !=
@@ -169,16 +172,14 @@ export class ActivePlayerController {
       this.setActivePlayer(this.activeEntityID);
       void this.updateActivePlayerData(mediaChanged);
     }
-    if (volumePlayerUpdated) {
-      this.volumeMediaPlayer = newVolEntity;
-    }
     const volumeChanged =
       currentVolEntity?.attributes.volume_level !=
       newVolEntity?.attributes.volume_level;
-    if (volumeChanged) {
-      this.selectivelyUpdateActivePlayerData({
-        updatedVolumePlayer: newVolEntity,
-      });
+    const mutedChanged =
+      currentVolEntity?.attributes.is_volume_muted !=
+      newVolEntity?.attributes.is_volume_muted;
+    if (volumeChanged || mutedChanged) {
+      this.selectivelyUpdateActivePlayerData();
     }
   }
   public get hass() {
@@ -235,10 +236,16 @@ export class ActivePlayerController {
       return;
     }
     if (playerHasUpdated(this.activeMediaPlayer, player, true)) {
+      const updateGroupAttributes =
+        this.activeMediaPlayer?.entity_id != player.entity_id ||
+        this.activeMediaPlayer.attributes.group_members !=
+          player.attributes.group_members;
       this._activeMediaPlayer.setValue(player);
       this.dispatchUpdatedActivePlayer();
-      this.selectivelyUpdateActivePlayerData({ updatedPlayer: player });
-      this.setGroupAttributes();
+      this.selectivelyUpdateActivePlayerData();
+      if (updateGroupAttributes) {
+        this.setGroupAttributes();
+      }
     }
   }
   public get activeMediaPlayer() {
@@ -387,31 +394,28 @@ export class ActivePlayerController {
     }, this._observerDelay);
   };
 
-  public selectivelyUpdateActivePlayerData(data: {
-    updatedPlayer?: ExtendedHassEntity;
-    updatedVolumePlayer?: ExtendedHassEntity;
-  }) {
+  public selectivelyUpdateActivePlayerData() {
+    const updatedPlayer = this.activeMediaPlayer;
+    const updatedVolumePlayer = this.volumeMediaPlayer;
     let anyChanges = false;
-    const updatedPlayer = data.updatedPlayer;
-    const updatedVolumePlayer = data.updatedVolumePlayer;
     if (!this.activePlayerData) {
       void this.updateActivePlayerData(true);
       return;
     }
+    const data = { ...this.activePlayerData };
 
     if (updatedVolumePlayer) {
       const updatedVolume = Math.floor(
         (updatedVolumePlayer.attributes.volume_level ?? 0) * 100,
       );
-      const updatedMute =
-        updatedVolumePlayer.attributes.is_volume_muted ?? true;
-      if (this.activePlayerData.volume != updatedVolume) {
+      const updatedMute = updatedVolumePlayer.attributes.is_volume_muted;
+      if (data.volume != updatedVolume) {
         anyChanges = true;
-        this.activePlayerData.volume = updatedVolume;
+        data.volume = updatedVolume;
       }
-      if (updatedMute && this.activePlayerData.muted != updatedMute) {
+      if (data.muted != updatedMute) {
         anyChanges = true;
-        this.activePlayerData.muted = updatedMute;
+        data.muted = updatedMute ?? false;
       }
     }
 
@@ -419,17 +423,17 @@ export class ActivePlayerController {
       const newAttributes = updatedPlayer.attributes;
 
       const playing = updatedPlayer.state == "playing";
-      if (this.activePlayerData.playing != playing) {
+      if (data.playing != playing) {
         anyChanges = true;
-        this.activePlayerData.playing = playing;
+        data.playing = playing;
       }
-      if (this.activePlayerData.repeat != newAttributes.repeat) {
+      if (data.repeat != newAttributes.repeat) {
         anyChanges = true;
-        this.activePlayerData.repeat = newAttributes.repeat ?? RepeatMode.OFF;
+        data.repeat = newAttributes.repeat ?? RepeatMode.OFF;
       }
-      if (this.activePlayerData.shuffle != newAttributes.shuffle) {
+      if (data.shuffle != newAttributes.shuffle) {
         anyChanges = true;
-        this.activePlayerData.shuffle = newAttributes.shuffle ?? false;
+        data.shuffle = newAttributes.shuffle ?? false;
       }
 
       const updatedAlbum = newAttributes.media_album_name ?? ``;
@@ -438,35 +442,32 @@ export class ActivePlayerController {
       const updatedArtwork =
         newAttributes.entity_picture_local ?? newAttributes.entity_picture;
 
-      if (this.activePlayerData.track_album != updatedAlbum) {
+      if (data.track_album != updatedAlbum) {
         anyChanges = true;
-        this.activePlayerData.track_album = updatedAlbum;
+        data.track_album = updatedAlbum;
       }
-      if (this.activePlayerData.track_artist != updatedArtist) {
+      if (data.track_artist != updatedArtist) {
         anyChanges = true;
-        this.activePlayerData.track_artist = updatedArtist;
-      }
-
-      if (
-        updatedArtwork &&
-        updatedArtwork != this.activePlayerData.track_artwork
-      ) {
-        anyChanges = true;
-        this.activePlayerData.track_artwork = updatedArtwork;
+        data.track_artist = updatedArtist;
       }
 
-      if (this.activePlayerData.track_title != updatedTitle) {
+      if (updatedArtwork && updatedArtwork != data.track_artwork) {
         anyChanges = true;
-        this.activePlayerData.track_title = updatedTitle;
+        data.track_artwork = updatedArtwork;
       }
 
-      if (this.activePlayerData.player_name != this.activePlayerName) {
+      if (data.track_title != updatedTitle) {
         anyChanges = true;
-        this.activePlayerData.player_name = this.activePlayerName;
+        data.track_title = updatedTitle;
+      }
+
+      if (data.player_name != this.activePlayerName) {
+        anyChanges = true;
+        data.player_name = this.activePlayerName;
       }
     }
     if (anyChanges) {
-      this._activePlayerData.setValue(this.activePlayerData);
+      this.activePlayerData = data;
     }
   }
 
