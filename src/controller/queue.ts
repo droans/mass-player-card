@@ -86,7 +86,10 @@ export class QueueController {
   public set hass(hass: ExtendedHass) {
     this._hass = hass;
     if (this.activeMediaPlayer) {
-      this.activeMediaPlayer = hass.states[this.activeMediaPlayer.entity_id];
+      const updatedPlayer = hass.states[this.activeMediaPlayer.entity_id];
+      if (playerHasUpdated(this.activeMediaPlayer, updatedPlayer, true)) {
+        this.activeMediaPlayer = updatedPlayer;
+      }
     }
   }
   public get hass() {

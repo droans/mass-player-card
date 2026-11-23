@@ -159,8 +159,8 @@ export class ActivePlayerController {
     this.volumeMediaPlayer =
       hass.states[this.activeEntityConfig.volume_entity_id];
     if (
-      playerHasUpdated(currentEntity, newEntity) ||
-      playerHasUpdated(currentVolEntity, newVolEntity)
+      playerHasUpdated(currentEntity, newEntity, true) ||
+      playerHasUpdated(currentVolEntity, newVolEntity, true)
     ) {
       void this.updateActivePlayerData(true);
     }
@@ -218,7 +218,7 @@ export class ActivePlayerController {
     if (!player) {
       return;
     }
-    if (playerHasUpdated(this.activeMediaPlayer, player)) {
+    if (playerHasUpdated(this.activeMediaPlayer, player, true)) {
       this._activeMediaPlayer.setValue(player);
       this.dispatchUpdatedActivePlayer();
       void this.updateActivePlayerData();
@@ -445,7 +445,7 @@ export class ActivePlayerController {
     const playerConfig = entitiesConfig.find((item) => {
       return item.entity_id == entityId;
     });
-    if (playerConfig) {
+    if (playerConfig && this.activeEntityConfig != playerConfig) {
       this.activeEntityConfig = playerConfig;
     }
   }
