@@ -432,34 +432,32 @@ export class ActivePlayerController {
         this.activePlayerData.shuffle = newAttributes.shuffle ?? false;
       }
 
-      if (
-        newAttributes.media_album_name &&
-        this.activePlayerData.track_album != newAttributes.media_album_name
-      ) {
-        anyChanges = true;
-        this.activePlayerData.track_album = newAttributes.media_album_name;
-      }
-      if (
-        newAttributes.media_artist &&
-        this.activePlayerData.track_artist != newAttributes.media_artist
-      ) {
-        anyChanges = true;
-        this.activePlayerData.track_artist = newAttributes.media_artist;
-      }
-
-      const newArtwork =
+      const updatedAlbum = newAttributes.media_album_name ?? ``;
+      const updatedArtist = newAttributes.media_artist ?? ``;
+      const updatedTitle = newAttributes.media_title ?? ``;
+      const updatedArtwork =
         newAttributes.entity_picture_local ?? newAttributes.entity_picture;
-      if (newArtwork && newArtwork != this.activePlayerData.track_artwork) {
+
+      if (this.activePlayerData.track_album != updatedAlbum) {
         anyChanges = true;
-        this.activePlayerData.track_artwork = newArtwork;
+        this.activePlayerData.track_album = updatedAlbum;
+      }
+      if (this.activePlayerData.track_artist != updatedArtist) {
+        anyChanges = true;
+        this.activePlayerData.track_artist = updatedArtist;
       }
 
       if (
-        newAttributes.media_title &&
-        this.activePlayerData.track_title != newAttributes.media_title
+        updatedArtwork &&
+        updatedArtwork != this.activePlayerData.track_artwork
       ) {
         anyChanges = true;
-        this.activePlayerData.track_title = newAttributes.media_title;
+        this.activePlayerData.track_artwork = updatedArtwork;
+      }
+
+      if (this.activePlayerData.track_title != updatedTitle) {
+        anyChanges = true;
+        this.activePlayerData.track_title = updatedTitle;
       }
 
       if (this.activePlayerData.player_name != this.activePlayerName) {
