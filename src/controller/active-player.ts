@@ -391,6 +391,7 @@ export class ActivePlayerController {
     updatedPlayer?: ExtendedHassEntity;
     updatedVolumePlayer?: ExtendedHassEntity;
   }) {
+    let anyChanges = false;
     const updatedPlayer = data.updatedPlayer;
     const updatedVolumePlayer = data.updatedVolumePlayer;
     if (!this.activePlayerData) {
@@ -403,6 +404,7 @@ export class ActivePlayerController {
         (updatedVolumePlayer.attributes.volume_level ?? 0) * 100,
       );
       if (this.activePlayerData.volume != updatedVolume) {
+        anyChanges = true;
         this.activePlayerData.volume = updatedVolume;
       }
     }
@@ -414,12 +416,15 @@ export class ActivePlayerController {
 
     const playing = updatedPlayer.state == "playing";
     if (this.activePlayerData.playing != playing) {
+      anyChanges = true;
       this.activePlayerData.playing = playing;
     }
     if (this.activePlayerData.repeat != newAttributes.repeat) {
+      anyChanges = true;
       this.activePlayerData.repeat = newAttributes.repeat ?? RepeatMode.OFF;
     }
     if (this.activePlayerData.shuffle != newAttributes.shuffle) {
+      anyChanges = true;
       this.activePlayerData.shuffle = newAttributes.shuffle ?? false;
     }
 
@@ -427,18 +432,21 @@ export class ActivePlayerController {
       newAttributes.media_album_name &&
       this.activePlayerData.track_album != newAttributes.media_album_name
     ) {
+      anyChanges = true;
       this.activePlayerData.track_album = newAttributes.media_album_name;
     }
     if (
       newAttributes.media_artist &&
       this.activePlayerData.track_artist != newAttributes.media_artist
     ) {
+      anyChanges = true;
       this.activePlayerData.track_artist = newAttributes.media_artist;
     }
 
     const newArtwork =
       newAttributes.entity_picture_local ?? newAttributes.entity_picture;
     if (newArtwork && newArtwork != this.activePlayerData.track_artwork) {
+      anyChanges = true;
       this.activePlayerData.track_artwork = newArtwork;
     }
 
@@ -446,6 +454,7 @@ export class ActivePlayerController {
       newAttributes.media_title &&
       this.activePlayerData.track_title != newAttributes.media_title
     ) {
+      anyChanges = true;
       this.activePlayerData.track_title = newAttributes.media_title;
     }
 
@@ -453,7 +462,11 @@ export class ActivePlayerController {
       this.activePlayerData.muted = newAttributes.is_volume_muted ?? false;
     }
     if (this.activePlayerData.player_name != this.activePlayerName) {
+      anyChanges = true;
       this.activePlayerData.player_name = this.activePlayerName;
+    }
+    if (anyChanges) {
+      this._activePlayerData.setValue(this.activePlayerData);
     }
   }
 
