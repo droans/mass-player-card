@@ -153,15 +153,19 @@ export class ActivePlayerController {
     const newEntity = hass.states[this.activeEntityID];
     const currentVolEntity = this.volumeMediaPlayer;
     const newVolEntity = hass.states[this.volumeEntityId];
-    if (playerHasUpdated(currentEntity, newEntity)) {
+    const playerUpdated = playerHasUpdated(currentEntity, newEntity);
+    const volumePlayerUpdated = playerHasUpdated(
+      currentVolEntity,
+      newVolEntity,
+    );
+    if (playerUpdated) {
       this.setActivePlayer(this.activeEntityID);
+      this.activeMediaPlayer = newEntity;
     }
-    this.volumeMediaPlayer =
-      hass.states[this.activeEntityConfig.volume_entity_id];
-    if (
-      playerHasUpdated(currentEntity, newEntity, true) ||
-      playerHasUpdated(currentVolEntity, newVolEntity, true)
-    ) {
+    if (volumePlayerUpdated) {
+      this.volumeMediaPlayer = newVolEntity;
+    }
+    if (playerUpdated || volumePlayerUpdated) {
       void this.updateActivePlayerData(true);
     }
   }
