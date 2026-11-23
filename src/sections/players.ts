@@ -61,9 +61,7 @@ export class PlayersCard extends LitElement {
   @provide({ context: playersConfigContext })
   private _sectionConfig!: PlayersConfig;
   public selectedPlayerService!: PlayerSelectedService;
-
-  @consume({ context: hassPlayersContext, subscribe: true })
-  private hassPlayers?: PlayersHass;
+  private _hassPlayers?: PlayersHass;
   @consume({ context: hassUIServicesContext, subscribe: true })
   private hassUIServices?: UIServicesHass;
   private actions?: PlayersActions;
@@ -84,6 +82,18 @@ export class PlayersCard extends LitElement {
   }
   public get config() {
     return this._config;
+  }
+
+  @consume({ context: hassPlayersContext, subscribe: true })
+  public set hassPlayers(hass: PlayersHass | undefined) {
+    if (!hass) {
+      return;
+    }
+    this._hassPlayers = hass;
+    this.setEntities(hass);
+  }
+  public get hassPlayers() {
+    return this._hassPlayers;
   }
 
   private joinPlayers = async (groupMember: string[]) => {
