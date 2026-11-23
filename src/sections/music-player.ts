@@ -19,8 +19,6 @@ import "../components/player-selector-menu/player-selector-menu";
 import "../components/section-header/section-header";
 import "../components/volume-row/volume-row";
 
-import PlayerActions from "../actions/player-actions";
-
 import {
   activeEntityConfigContext,
   activeMediaPlayerContext,
@@ -115,7 +113,6 @@ export class MusicPlayerCard extends LitElement {
   private _config!: PlayerConfig;
 
   public selectedPlayerService!: PlayerSelectedService;
-  private actions?: PlayerActions;
 
   @consume({ context: activeEntityConfigContext, subscribe: true })
   public set activeEntityConfig(entity: EntityConfig) {
@@ -301,7 +298,7 @@ export class MusicPlayerCard extends LitElement {
     if (!mediaId) {
       return;
     }
-    void this.actions?.actionAddToPlaylist(
+    void this.controller.Actions?.PlayerActions.actionAddToPlaylist(
       mediaId,
       uri,
       this.activeMediaPlayer,
