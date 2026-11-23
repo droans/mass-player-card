@@ -15,6 +15,7 @@ export default {
   "browser.enqueue.queue": "Add to Queue",
   "browser.enqueue.radio": "Play Radio",
   "browser.label.favorites": "Your Favorites",
+  "browser.label.library": "Your Library",
   "browser.label.recents": "Recently Played",
   "browser.loading": "Loading...",
   "browser.search.placeholder": "Search Music Assistant",
