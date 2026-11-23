@@ -1,6 +1,10 @@
 import { consume } from "@lit/context";
+import { HassEntity } from "home-assistant-js-websocket";
 import { html, LitElement, PropertyValues, TemplateResult } from "lit";
 import { customElement, property, state } from "lit/decorators.js";
+import { DirectiveResult } from "lit/directive.js";
+import { Config } from "../../config/config";
+import { PlayerJoinService, PlayerUnjoinService } from "../../const/actions";
 import {
   activeEntityConfigContext,
   activeMediaPlayerContext,
@@ -15,31 +19,27 @@ import {
   IconsContext,
   volumeMediaPlayerContext,
 } from "../../const/context";
-import { ActivePlayerController } from "../../controller/active-player";
-import {
-  ExtendedHass,
-  ExtendedHassEntity,
-  PlayerData,
-} from "../../const/types";
-import { getThumbnail } from "../../utils/thumbnails";
 import { PlayerSupportedFeatures, Thumbnail } from "../../const/enums";
 import {
   HaCheckboxDropdownEventData,
   HTMLImageElementEvent,
 } from "../../const/events";
+import { Icons } from "../../const/icons";
+import {
+  ExtendedHass,
+  ExtendedHassEntity,
+  PlayerData,
+} from "../../const/types";
+import { ActivePlayerController } from "../../controller/active-player";
+import { computeEntityName } from "../../utils/entity-name";
+import { getThumbnail } from "../../utils/thumbnails";
+import { getTranslation } from "../../utils/translations";
 import {
   isActive,
   playerIsAvailable,
   playerSupportsFeature,
 } from "../../utils/utility";
 import styles from "./active-player-row-styles";
-import { getTranslation } from "../../utils/translations";
-import { computeEntityName } from "../../utils/entity-name";
-import { HassEntity } from "home-assistant-js-websocket";
-import { Config } from "../../config/config";
-import { Icons } from "../../const/icons";
-import { PlayerJoinService, PlayerUnjoinService } from "../../const/actions";
-import { DirectiveResult } from "lit/directive.js";
 
 @customElement("mpc-active-player-row")
 export class ActivePlayerRow extends LitElement {
@@ -233,9 +233,22 @@ export class ActivePlayerRow extends LitElement {
       />
     `;
   }
-  protected renderPlayerInfo(): TemplateResult {
+  protected renderPlayerStatus(): TemplateResult {
     const activeTrack = this.playerData?.track_title;
-    const playLabel = this.playerData?.playing ? `Playing` : `Paused`;
+    const playerIsActive =
+      this.playerConfig &&
+      isActive(this.hass, this.playerEntity, this.playerConfig);
+    const playLabel = playerIsActive
+      ? this.playerData?.playing
+        ? `Playing •`
+        : `Paused •`
+      : `Idle`;
+    return html` <div class="player-track-status">
+      ${playLabel}
+      <div class="track">${activeTrack}</div>
+    </div>`;
+  }
+  protected renderPlayerInfo(): TemplateResult {
     const controlLabel = getTranslation("players.label.controlling", this.hass);
     return html`
       <div class="controlling">${controlLabel}</div>
@@ -243,10 +256,7 @@ export class ActivePlayerRow extends LitElement {
         <div class="player-name">${this.playerName}</div>
         <div class="audio-bars-div">${this.renderAudioBars()}</div>
       </div>
-      <div class="player-track-status">
-        ${playLabel} •
-        <div class="track">${activeTrack}</div>
-      </div>
+      ${this.renderPlayerStatus()}
     `;
   }
   protected renderAudioBars(): TemplateResult {
