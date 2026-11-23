@@ -160,13 +160,13 @@ export class ActivePlayerController {
       true,
     );
     if (playerUpdated) {
-      this.setActivePlayer(this.activeEntityID);
-      this.activeMediaPlayer = newEntity;
       const mediaChanged =
         newEntity?.attributes.media_title !=
           this.activePlayerData?.track_title ||
         newEntity?.attributes.media_artist !=
           this.activePlayerData?.track_artist;
+      this.activeMediaPlayer = newEntity;
+      this.setActivePlayer(this.activeEntityID);
       void this.updateActivePlayerData(mediaChanged);
     }
     if (volumePlayerUpdated) {
