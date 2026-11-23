@@ -14,14 +14,13 @@ import {
   activeEntityConfigContext,
   configContext,
   EntityConfig,
-  hassUIContext,
-  hassUpdatedContext,
+  hassUIServicesContext,
   IconsContext,
   playerQueueConfigContext,
   playerQueueHiddenElementsConfigContext,
 } from "../../const/context";
 import { Thumbnail } from "../../const/enums";
-import { ExtendedHass, QueueItem, UIHass } from "../../const/types";
+import { QueueItem, UIServicesHass } from "../../const/types";
 
 import styles from "./media-row-styles";
 
@@ -73,13 +72,12 @@ export class MediaRow extends LitElement {
   private _media_item!: QueueItem;
   private _config!: QueueConfig;
   private _entityConfig!: EntityConfig;
-  private _hass!: ExtendedHass;
   private imagesExhausted = false;
   private imgElemErrorCount = 0;
   private maxImgElemErrorCount = 5;
   private actionButtonsDisplayed = false;
-  @consume({ context: hassUIContext, subscribe: false })
-  private hassUI?: UIHass;
+  @consume({ context: hassUIServicesContext, subscribe: false })
+  private hassUIServices?: UIServicesHass;
 
   @consume({ context: playerQueueConfigContext, subscribe: true })
   public set config(config: QueueConfig | undefined) {
@@ -103,15 +101,6 @@ export class MediaRow extends LitElement {
     return this._entityConfig;
   }
 
-  @consume({ context: hassUpdatedContext, subscribe: true })
-  public set hass(hass: ExtendedHass) {
-    this._hass = hass;
-    void this.getTrackImage();
-  }
-  public get hass() {
-    return this._hass;
-  }
-
   @property({ attribute: false })
   public set media_item(mediaItem: QueueItem | undefined) {
     if (!mediaItem) {
@@ -125,8 +114,7 @@ export class MediaRow extends LitElement {
   }
 
   protected async getTrackImage() {
-    // eslint-disable-next-line @typescript-eslint/no-unnecessary-condition
-    if (!this.hass || !this.media_item) {
+    if (!this.hassUIServices || !this.media_item) {
       return;
     }
     const track = this.media_item;
@@ -136,7 +124,7 @@ export class MediaRow extends LitElement {
       ? track.local_image_encoded
       : mediaImg;
     const imgs = await asyncImageURLWithFallback(
-      this.hass,
+      this.hassUIServices,
       locImg,
       mediaImg,
       this.cardConfig.download_local,
@@ -235,9 +223,12 @@ export class MediaRow extends LitElement {
 
   private _renderThumbnailFallback = (event_: Event) => {
     this.imgElemErrorCount++;
+    if (!this.hassUIServices) {
+      return;
+    }
     const currentSource = this.thumbnailElement.src;
     const thumb = getTrackFallbackImg(
-      this.hass,
+      this.hassUIServices,
       currentSource,
       this.defaultImageURL ?? ``,
       this.fallbackImageURL,
@@ -249,7 +240,7 @@ export class MediaRow extends LitElement {
     ) {
       this.imagesExhausted = true;
       this.thumbnailElement.src =
-        getThumbnail(this.hassUI, Thumbnail.CLEFT) ?? "";
+        getThumbnail(this.hassUIServices, Thumbnail.CLEFT) ?? "";
       return;
     }
     this.thumbnailElement.src = thumb;
@@ -271,14 +262,14 @@ export class MediaRow extends LitElement {
       ? this.defaultImageURL
       : this.fallbackImageURL?.length
         ? this.fallbackImageURL
-        : getThumbnail(this.hassUI, Thumbnail.CLEFT);
+        : getThumbnail(this.hassUIServices, Thumbnail.CLEFT);
     const played =
       !this.media_item.show_action_buttons && !this.media_item?.playing;
     /* eslint-enable
           @typescript-eslint/no-unnecessary-condition
     */
     if (this.imagesExhausted) {
-      const fallbackImage = getThumbnail(this.hassUI, Thumbnail.CLEFT);
+      const fallbackImage = getThumbnail(this.hassUIServices, Thumbnail.CLEFT);
       return html`
         <img
           class="thumbnail ${played ? "disabled" : ""}"

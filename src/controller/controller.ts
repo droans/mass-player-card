@@ -10,7 +10,7 @@ import {
   activeSectionContext,
   browserControllerContext,
   hassPlayersContext,
-  hassUIContext,
+  hassUIServicesContext,
   hassUpdatedContext,
   queueControllerContext,
 } from "../const/context";
@@ -39,7 +39,7 @@ export class MassCardController {
   });
   // this._hassUI is only updated when UI config options have changed.
   private _hassUI = new ContextProvider(document.body, {
-    context: hassUIContext,
+    context: hassUIServicesContext,
   });
   private _host!: HTMLElement;
 

@@ -17,7 +17,7 @@ import {
   activeSectionContext,
   configContext,
   EntityConfig,
-  hassUIContext,
+  hassUIServicesContext,
   IconsContext,
   mediaBrowserConfigContext,
   mediaBrowserHiddenElementsConfigContext,
@@ -32,7 +32,7 @@ import {
   ListItems,
   mediaCardCollectionData,
   MediaCardItem,
-  UIHass,
+  UIServicesHass,
 } from "../../const/types";
 
 import styles from "./media-card-styles";
@@ -61,8 +61,8 @@ export class MediaCard extends LitElement {
 
   @state() code!: TemplateResult;
 
-  @consume({ context: hassUIContext, subscribe: true })
-  public hassUI?: UIHass;
+  @consume({ context: hassUIServicesContext, subscribe: true })
+  public hassUI?: UIServicesHass;
   @consume({
     context: mediaBrowserHiddenElementsConfigContext,
     subscribe: true,

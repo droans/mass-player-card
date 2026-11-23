@@ -33,7 +33,7 @@ import {
   EntityConfig,
   groupedPlayersContext,
   hassPlayersContext,
-  hassUIContext,
+  hassUIServicesContext,
   IconsContext,
   musicPlayerConfigContext,
   musicPlayerHiddenElementsConfigContext,
@@ -46,13 +46,12 @@ import {
 } from "../const/enums";
 import { PLAYLIST_DIALOG_MAX_ITEMS } from "../const/music-player";
 import {
-  ExtendedHass,
   ExtendedHassEntity,
   MediaLibraryItem,
   PlayerData,
   PlayersHass,
   PlaylistDialogItem,
-  UIHass,
+  UIServicesHass,
 } from "../const/types";
 
 import styles from "../styles/music-player";
@@ -108,15 +107,14 @@ export class MusicPlayerCard extends LitElement {
   private Icons!: Icons;
   @consume({ context: hassPlayersContext, subscribe: true })
   private hassPlayers?: PlayersHass;
-  @consume({ context: hassUIContext, subscribe: true })
-  private hassUI?: UIHass;
+  @consume({ context: hassUIServicesContext, subscribe: true })
+  private hassUI?: UIServicesHass;
 
   private _activeEntityConfig!: EntityConfig;
   private _activeEntity!: ExtendedHassEntity;
   private _config!: PlayerConfig;
 
   public selectedPlayerService!: PlayerSelectedService;
-  private _hass!: ExtendedHass;
   private actions?: PlayerActions;
 
   @consume({ context: activeEntityConfigContext, subscribe: true })
@@ -142,17 +140,6 @@ export class MusicPlayerCard extends LitElement {
   public get activeEntity() {
     return this._activeEntity;
   }
-
-  // @consume({ context: hassUpdatedContext, subscribe: true })
-  // public set hass(hass: ExtendedHass | undefined) {
-  //   if (hass) {
-  //     this.actions ??= new PlayerActions(hass);
-  //     this._hass = hass;
-  //   }
-  // }
-  // public get hass() {
-  //   return this._hass;
-  // }
 
   @consume({ context: musicPlayerConfigContext, subscribe: true })
   public set config(config: PlayerConfig) {

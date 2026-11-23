@@ -35,7 +35,7 @@ import {
   activeEntityConfigContext,
   browserControllerContext,
   EntityConfig,
-  hassUIContext,
+  hassUIServicesContext,
   IconsContext,
   mediaBrowserCardsContext,
   mediaBrowserConfigContext,
@@ -45,7 +45,6 @@ import { EnqueueOptions, MediaTypes } from "../const/enums";
 import { TargetValueEventData } from "../const/events";
 import { Icons } from "../const/icons";
 import {
-  ExtendedHass,
   mediaCardAlbumData,
   mediaCardArtistData,
   mediaCardCollectionType,
@@ -57,7 +56,7 @@ import {
   mediaCardServiceData,
   MediaRecommendationSection,
   newMediaBrowserItemsConfig,
-  UIHass,
+  UIServicesHass,
 } from "../const/types";
 import { MediaBrowserController } from "../controller/browser";
 import styles from "../styles/new-media-browser";
@@ -121,15 +120,14 @@ export class MediaBrowser extends LitElement {
 
   @consume({ context: IconsContext }) private Icons!: Icons;
 
-  private _hass?: ExtendedHass;
   private _browserController?: MediaBrowserController;
   private searchTerm = "";
   private _searchTimeout!: number;
   private previousSections: MediaBrowserSection[] = [];
   private previousSubSections: MediaBrowserSubsection[] = [];
   private _cardsJSON = "{}";
-  @consume({ context: hassUIContext, subscribe: true })
-  private hassUI?: UIHass;
+  @consume({ context: hassUIServicesContext, subscribe: true })
+  private hassUI?: UIServicesHass;
 
   protected onCardsUpdated = () => {
     this.createChips();

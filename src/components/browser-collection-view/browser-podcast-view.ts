@@ -16,7 +16,7 @@ export class MassBrowserPodcastView extends BrowserViewBase {
 
   // Ask HA to return the episodes in the podcast
   public getTracks() {
-    if (!this.updatedHass || !this.collectionData || !this.activePlayer) {
+    if (!this.browserActions || !this.collectionData || !this.activePlayer) {
       return;
     }
     void this.browserActions
@@ -40,7 +40,7 @@ export class MassBrowserPodcastView extends BrowserViewBase {
     void this.getPodcastMetadata();
   }
   public async getPodcastMetadata() {
-    if (!this.updatedHass || !this.collectionData || !this.activePlayer) {
+    if (!this.browserActions || !this.collectionData || !this.activePlayer) {
       return;
     }
     const metadata = await this.browserActions.actionGetPodcastData(
@@ -76,11 +76,11 @@ export class MassBrowserPodcastView extends BrowserViewBase {
   protected renderOverview(): TemplateResult {
     const episodeLabel = getTranslation(
       "browser.collections.track_count",
-      this.uiHass,
+      this.hassUIServices,
     ) as string;
     const loadingLabel = getTranslation(
       "browser.loading",
-      this.uiHass,
+      this.hassUIServices,
     ) as string;
     const trackString = this.tracks
       ? `${this.tracks.length.toString()} ${episodeLabel}`

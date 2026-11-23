@@ -22,14 +22,14 @@ import {
 import {
   activeEntityIDContext,
   activePlayerControllerContext,
-  hassUIContext,
+  hassUIServicesContext,
   IconsContext,
   playerQueueConfigContext,
   playerQueueHiddenElementsConfigContext,
   queueContext,
   queueControllerContext,
 } from "../const/context";
-import { QueueItem, QueueItems, UIHass } from "../const/types";
+import { QueueItem, QueueItems, UIServicesHass } from "../const/types";
 
 import { PlayerRow } from "../components/player-row/player-row";
 import { Sections } from "../const/enums";
@@ -102,20 +102,9 @@ export class QueueCard extends LitElement {
 
   private _active_player_entity!: string;
 
-  @consume({ context: hassUIContext, subscribe: true })
-  private hassUI?: UIHass;
+  @consume({ context: hassUIServicesContext, subscribe: true })
+  private hassUI?: UIServicesHass;
   private error?: TemplateResult;
-
-  // @consume({ context: hassPlayersContext, subscribe: true })
-  // public set hass(hass: ExtendedHass | undefined) {
-  //   if (!hass) {
-  //     return;
-  //   }
-  //   this._hass = hass;
-  // }
-  // public get hass() {
-  //   return this._hass;
-  // }
 
   @consume({ context: activeEntityIDContext, subscribe: true })
   @property({ attribute: false })

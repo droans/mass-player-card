@@ -11,7 +11,7 @@ import {
   type PlayersHass,
   type QueueItem,
   type QueueItems,
-  type UIHass,
+  type UIServicesHass,
 } from "./types";
 
 import { DynamicScheme } from "@ktibow/material-color-utilities-nightly";
@@ -43,7 +43,7 @@ import { MediaBrowserSection } from "./media-browser";
 export type { EntityConfig } from "../config/config";
 
 export const hassPlayersContext = createContext<PlayersHass>(uuid4());
-export const hassUIContext = createContext<UIHass>(uuid4());
+export const hassUIServicesContext = createContext<UIServicesHass>(uuid4());
 export const hassUpdatedContext = createContext<ExtendedHass>(uuid4());
 export const activeEntityConfigContext = createContext<EntityConfig>(uuid4());
 export const activeEntityIDContext = createContext<string>(uuid4());

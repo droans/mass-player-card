@@ -1,9 +1,9 @@
 import { HassEntity } from "home-assistant-js-websocket";
 
-import { EntityName, ExtendedHass } from "../const/types";
+import { EntityName, UIServicesHass } from "../const/types";
 
-type HassWithEntityNames = ExtendedHass & {
-  formatEntityName: NonNullable<ExtendedHass["formatEntityName"]>;
+type HassWithEntityNames = UIServicesHass & {
+  formatEntityName: NonNullable<UIServicesHass["formatEntityName"]>;
 };
 
 /**
@@ -14,7 +14,7 @@ type HassWithEntityNames = ExtendedHass & {
  * at all (during startup, or in a test harness), so both checks are.
  */
 export function supportsEntityNames(
-  hass: ExtendedHass | undefined,
+  hass: UIServicesHass | undefined,
 ): hass is HassWithEntityNames {
   if (typeof hass?.formatEntityName !== "function") {
     return false;
@@ -29,7 +29,7 @@ export function supportsEntityNames(
  * Home Assistant versions, which cannot resolve a structured name.
  */
 export function computeEntityName(
-  hass: ExtendedHass | undefined,
+  hass: UIServicesHass | undefined,
   stateObject: HassEntity | undefined,
   name?: EntityName,
 ): string {

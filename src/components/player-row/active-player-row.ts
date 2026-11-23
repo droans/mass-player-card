@@ -1,5 +1,4 @@
 import { consume } from "@lit/context";
-import { HassEntity } from "home-assistant-js-websocket";
 import { html, LitElement, PropertyValues, TemplateResult } from "lit";
 import { customElement, property, state } from "lit/decorators.js";
 import { DirectiveResult } from "lit/directive.js";
@@ -16,8 +15,7 @@ import {
   EntityConfig,
   groupedPlayersContext,
   hassPlayersContext,
-  hassUIContext,
-  hassUpdatedContext,
+  hassUIServicesContext,
   IconsContext,
   volumeMediaPlayerContext,
 } from "../../const/context";
@@ -28,11 +26,10 @@ import {
 } from "../../const/events";
 import { Icons } from "../../const/icons";
 import {
-  ExtendedHass,
   ExtendedHassEntity,
   PlayerData,
   PlayersHass,
-  UIHass,
+  UIServicesHass,
 } from "../../const/types";
 import { ActivePlayerController } from "../../controller/active-player";
 import { computeEntityName } from "../../utils/entity-name";
@@ -73,25 +70,13 @@ export class ActivePlayerRow extends LitElement {
   private Icons!: Icons;
   @consume({ context: hassPlayersContext, subscribe: true })
   private hassPlayers?: PlayersHass;
-  @consume({ context: hassUIContext, subscribe: true })
-  private hassUI?: UIHass;
+  @consume({ context: hassUIServicesContext, subscribe: true })
+  private hassUIServices?: UIServicesHass;
 
   @property({ attribute: false }) joinService!: PlayerJoinService;
   @property({ attribute: false }) unJoinService!: PlayerUnjoinService;
 
   private _activePlayerController?: ActivePlayerController;
-  private _hass?: ExtendedHass;
-
-  @consume({ context: hassUpdatedContext, subscribe: true })
-  public set hass(hass: ExtendedHass | undefined) {
-    if (!hass) {
-      return;
-    }
-    this._hass = hass;
-  }
-  public get hass() {
-    return this._hass;
-  }
 
   @consume({ context: activePlayerControllerContext, subscribe: true })
   public set activePlayerController(
@@ -134,13 +119,13 @@ export class ActivePlayerRow extends LitElement {
     if (!this.config) {
       return html``;
     }
-    const entity = this.hass?.entities[entityId];
+    const entity = this.hassPlayers?.states[entityId];
     const configEntity = this.config.entities.find((entityConfig) => {
       return entityConfig.entity_id == entityId;
     });
     const entityName = computeEntityName(
-      this.hass,
-      entity as HassEntity | undefined,
+      this.hassUIServices,
+      entity,
       configEntity?.name,
     );
     const grouped = this.groupedPlayers?.includes(entityId);
@@ -166,7 +151,7 @@ export class ActivePlayerRow extends LitElement {
     });
   }
   protected renderGroupTriggerButton(): TemplateResult {
-    const label = getTranslation("players.label.group", this.hassUI);
+    const label = getTranslation("players.label.group", this.hassUIServices);
     return html`
       <mpc-button
         slot="trigger"
@@ -215,7 +200,7 @@ export class ActivePlayerRow extends LitElement {
     // eslint-disable-next-line unicorn/prevent-abbreviations
     const ev = event_ as HTMLImageElementEvent;
     const attributes = this.playerEntity?.attributes;
-    const fallback = getThumbnail(this.hassUI, Thumbnail.HEADPHONES);
+    const fallback = getThumbnail(this.hassUIServices, Thumbnail.HEADPHONES);
     const loc = attributes?.entity_picture_local;
     const pic = attributes?.entity_picture ?? fallback;
     const source = ev.target.src;
@@ -227,7 +212,7 @@ export class ActivePlayerRow extends LitElement {
   };
   protected renderThumbnail(): TemplateResult {
     const attributes = this.playerEntity?.attributes;
-    const fallback = getThumbnail(this.hassUI, Thumbnail.HEADPHONES);
+    const fallback = getThumbnail(this.hassUIServices, Thumbnail.HEADPHONES);
     const loc = attributes?.entity_picture_local;
     const pic = attributes?.entity_picture;
     const source = loc ?? pic ?? fallback;
@@ -260,7 +245,7 @@ export class ActivePlayerRow extends LitElement {
   protected renderPlayerInfo(): TemplateResult {
     const controlLabel = getTranslation(
       "players.label.controlling",
-      this.hassUI,
+      this.hassUIServices,
     );
     return html`
       <div class="controlling">${controlLabel}</div>

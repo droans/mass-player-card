@@ -299,9 +299,17 @@ export interface MediaItemImage {
   remotely_accessible: boolean;
 }
 
-export type UIHass = Pick<
+export type UIServicesHass = Pick<
   ExtendedHass,
-  "themes" | "language" | "locale" | "connected"
+  | "themes"
+  | "language"
+  | "locale"
+  | "connected"
+  | "callService"
+  | "callWS"
+  | "sendWS"
+  | "formatEntityName"
+  | "config"
 >;
 
 export type PlayersHass = Pick<ExtendedHass, "states" | "connected">;

@@ -11,13 +11,13 @@ import { Config } from "../../config/config";
 import {
   activeSectionContext,
   controllerContext,
-  hassUIContext,
+  hassUIServicesContext,
   IconsContext,
 } from "../../const/context";
 import { WaAnimation } from "../../const/elements";
 import { Sections } from "../../const/enums";
 import { Icons } from "../../const/icons";
-import { UIHass } from "../../const/types";
+import { UIServicesHass } from "../../const/types";
 import { MassCardController } from "../../controller/controller";
 import { MediaBrowser } from "../../sections/new-media-browser";
 import { QueueCard } from "../../sections/player-queue";
@@ -54,8 +54,8 @@ export class MassNavBar extends LitElement {
   private previousSection?: Sections;
   private sections: Sections[] = [];
 
-  @consume({ context: hassUIContext, subscribe: true })
-  hassUI!: UIHass;
+  @consume({ context: hassUIServicesContext, subscribe: true })
+  hassUI!: UIServicesHass;
 
   @consume({ context: activeSectionContext, subscribe: true })
   @state()

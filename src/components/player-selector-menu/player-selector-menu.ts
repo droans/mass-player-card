@@ -8,16 +8,16 @@ import {
   entitiesConfigContext,
   EntityConfig,
   hassPlayersContext,
-  hassUpdatedContext,
+  hassUIServicesContext,
   IconsContext,
   musicPlayerConfigContext,
 } from "../../const/context";
 import { Icons } from "../../const/icons";
 import {
-  ExtendedHass,
   ListItemData,
   PlayerData,
   PlayersHass,
+  UIServicesHass,
 } from "../../const/types";
 import { computeEntityName } from "../../utils/entity-name";
 import { playerEntityIsAvailable } from "../../utils/utility";
@@ -40,8 +40,8 @@ export class MassCardPlayerSelector extends LitElement {
 
   @consume({ context: hassPlayersContext, subscribe: true })
   private hassPlayers?: PlayersHass;
-  @consume({ context: hassUpdatedContext, subscribe: true })
-  private hass?: ExtendedHass;
+  @consume({ context: hassUIServicesContext, subscribe: true })
+  private hassUIServices?: UIServicesHass;
 
   @consume({ context: activePlayerDataContext, subscribe: true })
   @state()
@@ -54,7 +54,7 @@ export class MassCardPlayerSelector extends LitElement {
         return;
       }
       const name =
-        computeEntityName(this.hass, ent, item.name) ||
+        computeEntityName(this.hassUIServices, ent, item.name) ||
         `Missing- ${item.entity_id}`;
       let url: string;
       let fallback: string;

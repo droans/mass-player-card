@@ -3,7 +3,7 @@ import { DarkModeThumbnails, LightModeThumbnails } from "../const/common";
 import { Thumbnail } from "../const/enums";
 import { Icons } from "../const/icons";
 import { getSearchMediaButtons } from "../const/media-browser";
-import { ExtendedHass, UIHass } from "../const/types";
+import { UIServicesHass } from "../const/types";
 import { CheckURLResult, getUrlAccessibility } from "./url";
 
 export interface ImageURLWithFallback {
@@ -12,7 +12,7 @@ export interface ImageURLWithFallback {
 }
 
 export async function asyncImageURLWithFallback(
-  hass: ExtendedHass,
+  hass: UIServicesHass,
   imageURL: string,
   fallback: string,
   downloadLocal = true,
@@ -31,7 +31,7 @@ export async function asyncImageURLWithFallback(
 }
 
 export function getThumbnail(
-  hass: UIHass | undefined,
+  hass: UIServicesHass | undefined,
   thumbnail: Thumbnail,
 ): string | undefined {
   if (!hass) {
@@ -45,7 +45,7 @@ export function getThumbnail(
 export function getMediaTypeSvg(
   mediaType: MediaTypes,
   icons: Icons,
-  hass: ExtendedHass,
+  hass: UIServicesHass,
 ) {
   const data = getSearchMediaButtons(icons, hass);
   const result = data.find((item) => {
@@ -55,7 +55,7 @@ export function getMediaTypeSvg(
 }
 
 export async function encodeImageIfLocal(
-  hass: ExtendedHass,
+  hass: UIServicesHass,
   imageURL: string,
   proxyAll: boolean,
 ): Promise<string> {
@@ -71,7 +71,10 @@ export async function encodeImageIfLocal(
   return await getLocalImage(hass, imageURL);
 }
 
-async function getLocalImage(hass: ExtendedHass, url: string): Promise<string> {
+async function getLocalImage(
+  hass: UIServicesHass,
+  url: string,
+): Promise<string> {
   if (typeof url != "string") {
     return "";
   }
@@ -89,7 +92,7 @@ async function getLocalImage(hass: ExtendedHass, url: string): Promise<string> {
 }
 
 export function getTrackFallbackImg(
-  hass: ExtendedHass,
+  hass: UIServicesHass,
   currentURL: string,
   defaultImgURL: string,
   fallbackImg?: string,

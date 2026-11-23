@@ -15,7 +15,7 @@ import {
   groupedPlayersContext,
   groupVolumeContext,
   hassPlayersContext,
-  hassUIContext,
+  hassUIServicesContext,
   IconsContext,
   useVibrantContext,
 } from "../../const/context";
@@ -26,7 +26,7 @@ import {
   JoinUnjoinEventData,
 } from "../../const/events";
 import { Icons } from "../../const/icons";
-import { PlayersHass, UIHass } from "../../const/types";
+import { PlayersHass, UIServicesHass } from "../../const/types";
 import { MassCardController } from "../../controller/controller";
 import { computeEntityName } from "../../utils/entity-name";
 import { getThumbnail } from "../../utils/thumbnails";
@@ -49,8 +49,8 @@ export class MassCardPlayerSelector extends LitElement {
 
   @consume({ context: hassPlayersContext, subscribe: true })
   private playersHass!: PlayersHass;
-  @consume({ context: hassUIContext, subscribe: true })
-  private uiHass!: UIHass;
+  @consume({ context: hassUIServicesContext, subscribe: true })
+  private uiHass!: UIServicesHass;
 
   @state()
   @consume({ context: groupVolumeContext, subscribe: true })

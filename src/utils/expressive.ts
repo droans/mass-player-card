@@ -15,7 +15,7 @@ import {
   sourceColorFromImage,
 } from "@ktibow/material-color-utilities-nightly";
 import { ExpressiveScheme } from "../config/config";
-import { ExtendedHass } from "../const/types";
+import { UIServicesHass } from "../const/types";
 import { tryPrefetchImageWithFallbacks } from "./utility";
 import { CheckURLResult, getUrlAccessibility } from "./url";
 import localForage from "localforage";
@@ -109,7 +109,7 @@ export function generateDefaultExpressiveSchemeColor(): number {
 
 export async function generateImageElement(
   img: string,
-  hass: ExtendedHass,
+  hass: UIServicesHass,
   fallbacks: string[] = [],
 ): Promise<HTMLImageElement | false> {
   return (await tryPrefetchImageWithFallbacks(img, fallbacks, hass, true)) as
@@ -118,7 +118,7 @@ export async function generateImageElement(
 
 export async function generateExpressiveSourceColorFromImage(
   img: string,
-  hass: ExtendedHass,
+  hass: UIServicesHass,
   fallbacks: string[] = [],
 ): Promise<number> {
   try {

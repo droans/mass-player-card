@@ -5,7 +5,7 @@ import {
 import { getTranslation } from "../utils/translations";
 import { EnqueueOptions, MediaTypes, Thumbnail } from "./enums";
 import { Icons } from "./icons";
-import { ListItems, newMediaBrowserItemsConfig, UIHass } from "./types";
+import { ListItems, newMediaBrowserItemsConfig, UIServicesHass } from "./types";
 
 export type MediaBrowserSection =
   "favorites" | "recents" | "recommendations" | "search" | "search-collection";
@@ -25,7 +25,7 @@ export const MediaTypeThumbnails = {
 
 export function getEnqueueButtons(
   icons: Icons,
-  hass: UIHass | undefined,
+  hass: UIServicesHass | undefined,
 ): ListItems {
   return [
     {
@@ -62,7 +62,7 @@ export function getEnqueueButtons(
 }
 export function getSearchMediaButtons(
   icons: Icons,
-  hass: UIHass | undefined,
+  hass: UIServicesHass | undefined,
 ): ListItems {
   return [
     {
@@ -104,7 +104,7 @@ export function getSearchMediaButtons(
 }
 export function getFilterButtons(
   icons: Icons,
-  hass: UIHass | undefined,
+  hass: UIServicesHass | undefined,
   config: MediaBrowserConfig,
   cards?: newMediaBrowserItemsConfig | null,
 ): ListItems {

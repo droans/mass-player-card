@@ -7,11 +7,10 @@ import {
 import { PlayerSupportedFeatures, Sections, Thumbnail } from "../const/enums";
 import { MUSIC_ASSISTANT_APP_NAME } from "../const/player-queue";
 import {
-  type ExtendedHass,
   type ExtendedHassEntity,
   type PlayersHass,
   type QueueItem,
-  type UIHass,
+  type UIServicesHass,
 } from "../const/types";
 import { getThumbnail } from "./thumbnails";
 
@@ -115,8 +114,8 @@ export function playersHaveUpdated(
   return anyChanged.length > 0;
 }
 export function uiConfigUpdated(
-  newHass: UIHass | undefined,
-  oldHass: UIHass | undefined,
+  newHass: UIServicesHass | undefined,
+  oldHass: UIServicesHass | undefined,
 ): boolean {
   if (!newHass) {
     return false;
@@ -128,7 +127,10 @@ export function uiConfigUpdated(
   const languageUpdated = oldHass.language != newHass.language;
   const connectedUpdated =
     !oldHass.connected || oldHass.connected != newHass.connected;
-  return darkModeUpdated || languageUpdated || connectedUpdated;
+  const hassVersionUpdated = oldHass.config.version != newHass.config.version;
+  return (
+    darkModeUpdated || languageUpdated || connectedUpdated || hassVersionUpdated
+  );
 }
 
 export function queueItemhasUpdated(
@@ -177,7 +179,7 @@ export function jsonMatch(objectA: any, objectB: any): boolean {
   return jsonA == jsonB;
 }
 
-export function ensureThumbnail(img: string, hass: ExtendedHass): string {
+export function ensureThumbnail(img: string, hass: UIServicesHass): string {
   // Returns a URL encodable image
   // If `img` is a Thumbnail enum, returns the image related to the enum.
   // Otherwise, returns `img`
@@ -191,7 +193,7 @@ export function ensureThumbnail(img: string, hass: ExtendedHass): string {
 export async function tryPrefetchImageWithFallbacks(
   imgUrl: string,
   fallbacks: string[],
-  hass: ExtendedHass,
+  hass: UIServicesHass,
   returnElement = false,
 ): Promise<string | HTMLImageElement | false> {
   const imgs = [imgUrl, ...fallbacks];
@@ -201,7 +203,7 @@ export async function tryPrefetchImageWithFallbacks(
 
 function findFirstAccessibleImage(
   urls: string[],
-  hass: ExtendedHass,
+  hass: UIServicesHass,
   returnElement = false,
 ): Promise<string | HTMLImageElement | false> {
   return new Promise((resolve) => {

@@ -11,8 +11,7 @@ import {
   activeEntityConfigContext,
   EntityConfig,
   hassPlayersContext,
-  hassUIContext,
-  hassUpdatedContext,
+  hassUIServicesContext,
   IconsContext,
   playersConfigContext,
   playersHiddenElementsConfigContext,
@@ -33,10 +32,9 @@ import { HTMLImageElementEvent } from "../../const/events";
 import { Icons } from "../../const/icons";
 import {
   EntityName,
-  ExtendedHass,
   ExtendedHassEntity,
   PlayersHass,
-  UIHass,
+  UIServicesHass,
 } from "../../const/types";
 import { computeEntityName } from "../../utils/entity-name";
 import { getThumbnail } from "../../utils/thumbnails";
@@ -51,8 +49,8 @@ export class PlayerRow extends LitElement {
 
   @consume({ context: hassPlayersContext, subscribe: true })
   private hassPlayers?: PlayersHass;
-  @consume({ context: hassUIContext, subscribe: true })
-  private hassUI?: UIHass;
+  @consume({ context: hassUIServicesContext, subscribe: true })
+  private hassUI?: UIServicesHass;
 
   public allowJoin = true;
   public playerName!: EntityName;
@@ -63,7 +61,6 @@ export class PlayerRow extends LitElement {
 
   private _config!: PlayersConfig;
   private _entityConfig!: EntityConfig;
-  private _hass!: ExtendedHass;
 
   @consume({ context: playersHiddenElementsConfigContext, subscribe: true })
   private hide!: PlayersHiddenElementsConfig;
@@ -87,14 +84,6 @@ export class PlayerRow extends LitElement {
   }
   public get entityConfig() {
     return this._entityConfig;
-  }
-
-  @consume({ context: hassUpdatedContext, subscribe: true })
-  public set hass(hass: ExtendedHass) {
-    this._hass = hass;
-  }
-  public get hass() {
-    return this._hass;
   }
 
   @property({ attribute: false })
@@ -186,7 +175,7 @@ export class PlayerRow extends LitElement {
   }
   private renderTitle() {
     const title =
-      computeEntityName(this.hass, this.player_entity, this.playerName) ||
+      computeEntityName(this.hassUI, this.player_entity, this.playerName) ||
       "Media Player";
     const activeStyle =
       isActive(this.hassPlayers, this.player_entity, this._entityConfig) &&

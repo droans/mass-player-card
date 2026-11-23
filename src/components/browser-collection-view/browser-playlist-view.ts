@@ -21,7 +21,7 @@ export class MassBrowserPlaylistView extends BrowserViewBase {
 
   // Ask HA to return the tracks in the playlist
   public getTracks() {
-    if (!this.updatedHass || !this.collectionData || !this.activePlayer) {
+    if (!this.browserActions || !this.collectionData || !this.activePlayer) {
       return;
     }
     void this.browserActions
@@ -41,7 +41,7 @@ export class MassBrowserPlaylistView extends BrowserViewBase {
     void this.getPlaylistMetadata();
   }
   public async getPlaylistMetadata() {
-    if (!this.uiHass || !this.collectionData || !this.activePlayer) {
+    if (!this.browserActions || !this.collectionData || !this.activePlayer) {
       return;
     }
     const metadata = await this.browserActions.actionGetPlaylistData(
@@ -94,15 +94,15 @@ export class MassBrowserPlaylistView extends BrowserViewBase {
   protected renderOverview(): TemplateResult {
     const trackLabel = getTranslation(
       "browser.collections.track_count",
-      this.uiHass,
+      this.hassUIServices,
     ) as string;
     const loadingLabel = getTranslation(
       "browser.loading",
-      this.uiHass,
+      this.hassUIServices,
     ) as string;
     const unknwonOwnerLabel = getTranslation(
       "browser.collections.playlist.unknown_owner",
-      this.uiHass,
+      this.hassUIServices,
     ) as string;
     const trackString = this.tracks
       ? `${this.tracks.length.toString()} ${trackLabel}`
