@@ -414,58 +414,57 @@ export class ActivePlayerController {
       }
     }
 
-    if (!updatedPlayer) {
-      return;
-    }
-    const newAttributes = updatedPlayer.attributes;
+    if (updatedPlayer) {
+      const newAttributes = updatedPlayer.attributes;
 
-    const playing = updatedPlayer.state == "playing";
-    if (this.activePlayerData.playing != playing) {
-      anyChanges = true;
-      this.activePlayerData.playing = playing;
-    }
-    if (this.activePlayerData.repeat != newAttributes.repeat) {
-      anyChanges = true;
-      this.activePlayerData.repeat = newAttributes.repeat ?? RepeatMode.OFF;
-    }
-    if (this.activePlayerData.shuffle != newAttributes.shuffle) {
-      anyChanges = true;
-      this.activePlayerData.shuffle = newAttributes.shuffle ?? false;
-    }
+      const playing = updatedPlayer.state == "playing";
+      if (this.activePlayerData.playing != playing) {
+        anyChanges = true;
+        this.activePlayerData.playing = playing;
+      }
+      if (this.activePlayerData.repeat != newAttributes.repeat) {
+        anyChanges = true;
+        this.activePlayerData.repeat = newAttributes.repeat ?? RepeatMode.OFF;
+      }
+      if (this.activePlayerData.shuffle != newAttributes.shuffle) {
+        anyChanges = true;
+        this.activePlayerData.shuffle = newAttributes.shuffle ?? false;
+      }
 
-    if (
-      newAttributes.media_album_name &&
-      this.activePlayerData.track_album != newAttributes.media_album_name
-    ) {
-      anyChanges = true;
-      this.activePlayerData.track_album = newAttributes.media_album_name;
-    }
-    if (
-      newAttributes.media_artist &&
-      this.activePlayerData.track_artist != newAttributes.media_artist
-    ) {
-      anyChanges = true;
-      this.activePlayerData.track_artist = newAttributes.media_artist;
-    }
+      if (
+        newAttributes.media_album_name &&
+        this.activePlayerData.track_album != newAttributes.media_album_name
+      ) {
+        anyChanges = true;
+        this.activePlayerData.track_album = newAttributes.media_album_name;
+      }
+      if (
+        newAttributes.media_artist &&
+        this.activePlayerData.track_artist != newAttributes.media_artist
+      ) {
+        anyChanges = true;
+        this.activePlayerData.track_artist = newAttributes.media_artist;
+      }
 
-    const newArtwork =
-      newAttributes.entity_picture_local ?? newAttributes.entity_picture;
-    if (newArtwork && newArtwork != this.activePlayerData.track_artwork) {
-      anyChanges = true;
-      this.activePlayerData.track_artwork = newArtwork;
-    }
+      const newArtwork =
+        newAttributes.entity_picture_local ?? newAttributes.entity_picture;
+      if (newArtwork && newArtwork != this.activePlayerData.track_artwork) {
+        anyChanges = true;
+        this.activePlayerData.track_artwork = newArtwork;
+      }
 
-    if (
-      newAttributes.media_title &&
-      this.activePlayerData.track_title != newAttributes.media_title
-    ) {
-      anyChanges = true;
-      this.activePlayerData.track_title = newAttributes.media_title;
-    }
+      if (
+        newAttributes.media_title &&
+        this.activePlayerData.track_title != newAttributes.media_title
+      ) {
+        anyChanges = true;
+        this.activePlayerData.track_title = newAttributes.media_title;
+      }
 
-    if (this.activePlayerData.player_name != this.activePlayerName) {
-      anyChanges = true;
-      this.activePlayerData.player_name = this.activePlayerName;
+      if (this.activePlayerData.player_name != this.activePlayerName) {
+        anyChanges = true;
+        this.activePlayerData.player_name = this.activePlayerName;
+      }
     }
     if (anyChanges) {
       this._activePlayerData.setValue(this.activePlayerData);
