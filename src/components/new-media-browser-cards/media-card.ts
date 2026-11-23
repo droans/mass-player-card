@@ -57,6 +57,7 @@ export class MediaCard extends LitElement {
   @property({ attribute: false }) onEnqueueAction!: CardEnqueueService;
 
   @state() code!: TemplateResult;
+  @state() renderDropdown = false;
 
   @consume({ context: hassUIServicesContext, subscribe: true })
   public hassUI?: UIServicesHass;
@@ -66,7 +67,7 @@ export class MediaCard extends LitElement {
   })
   private hide!: MediaBrowserHiddenElementsConfig;
 
-  @query("#enqueue-dropdown") dropdownElement!: HaDropdownMenuElement;
+  @query("#enqueue-dropdown") dropdownElement?: HaDropdownMenuElement;
 
   public onSelectAction!: CardSelectedService;
 
@@ -173,18 +174,32 @@ export class MediaCard extends LitElement {
     this.onEnqueueAction(this._config.data, value);
   };
   private onHold = () => {
-    this.dropdownElement.open = true;
+    if (this.dropdownElement) {
+      this.dropdownElement.open = true;
+      return;
+    }
+    this.renderDropdown = true;
+    this.generateCode();
+  };
+  private onPointerOut = () => {
+    this.removePointerEvents();
+    if (this.timeout) {
+      clearTimeout(this.timeout);
+      this.timeout = undefined;
+    }
   };
   private onPointerDown = (event_: PointerEvent) => {
     event_.stopImmediatePropagation();
     if (event_.button != 0) {
       return;
     }
+    this.addPointerEvents();
     this.timeout = window.setTimeout(() => {
       if (!this.timeout) {
         return;
       }
       this.timeout = undefined;
+      this.removePointerEvents();
       this.onHold();
     }, this.holdDelayMs);
   };
@@ -208,6 +223,14 @@ export class MediaCard extends LitElement {
     }
     this.onSelectAction(this._config.data, this);
   };
+  private addPointerEvents() {
+    addEventListener("pointerup", this.onPointerUp);
+    addEventListener("pointerout", this.onPointerOut);
+  }
+  private removePointerEvents() {
+    removeEventListener("pointerup", this.onPointerUp);
+    removeEventListener("pointerout", this.onPointerOut);
+  }
   protected renderEnqueueButton(button: ListItemData): TemplateResult {
     return html`
       <ha-dropdown-item class="enqueue" value=${button.option}>
@@ -221,7 +244,7 @@ export class MediaCard extends LitElement {
     `;
   }
   protected renderEnqueueMenu(): TemplateResult {
-    if (!this._enqueueButtons?.length) {
+    if (!this._enqueueButtons?.length || !this.renderDropdown) {
       return html``;
     }
     const dropdownHtml = this._enqueueButtons.map((button) => {
@@ -232,6 +255,7 @@ export class MediaCard extends LitElement {
         id="enqueue-dropdown"
         @wa-select=${this.onEnqueueSelect}
         placement="bottom"
+        open
       >
         <button class="hidden" slot="trigger"></button>
         ${dropdownHtml}
@@ -293,7 +317,6 @@ export class MediaCard extends LitElement {
       <wa-card
         class="media-card"
         @pointerdown=${this.onPointerDown}
-        @pointerup=${this.onPointerUp}
         slot="trigger"
       >
         <div slot="media" id="media">${this.renderThumbnail()}</div>
