@@ -276,17 +276,20 @@ export class MusicAssistantPlayerCard extends LitElement {
     );
   }
   protected renderMusicPlayer() {
-    return cache(
-      this.config.player.enabled && this.active_section == Sections.MUSIC_PLAYER
-        ? html`
-            <wa-tab-panel name="${Sections.MUSIC_PLAYER}" class="section">
-              <mpc-music-player-card
-                .selectedPlayerService=${this.playerSelected}
-              ></mpc-music-player-card>
-            </wa-tab-panel>
-          `
-        : html``,
-    );
+    const visible =
+      this.config.player.enabled &&
+      this.active_section == Sections.MUSIC_PLAYER;
+    return html`
+      <wa-tab-panel
+        name="${Sections.MUSIC_PLAYER}"
+        class="section"
+        style="${visible ? `` : `display: none;`}"
+      >
+        <mpc-music-player-card
+          .selectedPlayerService=${this.playerSelected}
+        ></mpc-music-player-card>
+      </wa-tab-panel>
+    `;
   }
   protected renderPlayerQueue() {
     return cache(
