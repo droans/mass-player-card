@@ -403,9 +403,14 @@ export class ActivePlayerController {
       const updatedVolume = Math.floor(
         (updatedVolumePlayer.attributes.volume_level ?? 0) * 100,
       );
+      const updatedMute = updatedVolumePlayer.attributes.is_volume_muted;
       if (this.activePlayerData.volume != updatedVolume) {
         anyChanges = true;
         this.activePlayerData.volume = updatedVolume;
+      }
+      if (updatedMute && this.activePlayerData.muted != updatedMute) {
+        anyChanges = true;
+        this.activePlayerData.muted = updatedMute;
       }
     }
 
@@ -458,9 +463,6 @@ export class ActivePlayerController {
       this.activePlayerData.track_title = newAttributes.media_title;
     }
 
-    if (this.activePlayerData.muted != newAttributes.is_volume_muted) {
-      this.activePlayerData.muted = newAttributes.is_volume_muted ?? false;
-    }
     if (this.activePlayerData.player_name != this.activePlayerName) {
       anyChanges = true;
       this.activePlayerData.player_name = this.activePlayerName;
