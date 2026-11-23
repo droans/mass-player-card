@@ -125,7 +125,6 @@ export class MediaBrowser extends LitElement {
   private _searchTimeout!: number;
   private previousSections: MediaBrowserSection[] = [];
   private previousSubSections: MediaBrowserSubsection[] = [];
-  private _cardsJSON = "{}";
   @consume({ context: hassUIServicesContext, subscribe: true })
   private hassUI?: UIServicesHass;
 
@@ -135,13 +134,10 @@ export class MediaBrowser extends LitElement {
 
   @consume({ context: mediaBrowserCardsContext, subscribe: true })
   public set cards(cards: newMediaBrowserItemsConfig | undefined) {
-    const newCardsJson = JSON.stringify(cards);
-    const oldCardsJson = this._cardsJSON;
-    if (newCardsJson == oldCardsJson) {
+    if (cards === this._cards) {
       return;
     }
     this._cards = cards;
-    this._cardsJSON = JSON.stringify(this._cards);
     this.createChips();
     this.setActiveCards();
   }
@@ -177,7 +173,7 @@ export class MediaBrowser extends LitElement {
 
   public set chips(chips: BrowserChips) {
     // eslint-disable-next-line @typescript-eslint/no-unnecessary-condition
-    if (!chips || jsonMatch(chips, this._chips)) {
+    if (!chips) {
       return;
     }
     this._chips = chips;
