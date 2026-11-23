@@ -76,8 +76,19 @@ export class MediaRow extends LitElement {
   private imgElemErrorCount = 0;
   private maxImgElemErrorCount = 5;
   private actionButtonsDisplayed = false;
+  private _hassUIServices?: UIServicesHass;
+
   @consume({ context: hassUIServicesContext, subscribe: false })
-  private hassUIServices?: UIServicesHass;
+  private set hassUIServices(hass: UIServicesHass | undefined) {
+    if (!hass) {
+      return;
+    }
+    this._hassUIServices = hass;
+    void this.getTrackImage();
+  }
+  private get hassUIServices() {
+    return this._hassUIServices;
+  }
 
   @consume({ context: playerQueueConfigContext, subscribe: true })
   public set config(config: QueueConfig | undefined) {
@@ -190,7 +201,10 @@ export class MediaRow extends LitElement {
     this.removeService(this.media_item.queue_item_id);
     this.changeActionButtonVisibility(false);
   };
-  private callOnQueueItemSelectedService = () => {
+  private callOnQueueItemSelectedService = (event_: PointerEvent) => {
+    if (event_.button != 0) {
+      return;
+    }
     if (!this.media_item) {
       return;
     }
