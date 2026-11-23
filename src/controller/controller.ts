@@ -18,6 +18,7 @@ import { Sections } from "../const/enums";
 import { ExtendedHass } from "../const/types";
 import { getTranslation } from "../utils/translations";
 import {
+  delay,
   jsonMatch,
   playersHaveUpdated,
   uiConfigUpdated,
@@ -296,7 +297,7 @@ export class MassCardController {
   public translate(key: string) {
     return getTranslation(key, this.hass);
   }
-  private async setMassUser() {
+  private async setMassUser(retry = 0) {
     if (this.massUser || this.massUser === null) {
       return;
     }
@@ -312,8 +313,13 @@ export class MassCardController {
     try {
       const userInfo = await this.getMassUserInfo(this.hass, massUser);
       this.massUserInfo = userInfo;
-    } catch {
-      this._throwMAUserError();
+    } catch (error) {
+      if (retry >= 5) {
+        this._throwMAUserError();
+        throw error;
+      }
+      await delay(250 * retry);
+      await this.setMassUser(retry + 1);
     }
   }
   private _throwMAUserError() {
