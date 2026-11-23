@@ -3,7 +3,6 @@ import {
   HassEntity,
   HassEntityAttributeBase,
 } from "home-assistant-js-websocket";
-import { TemplateResult } from "lit";
 import {
   getRecommendationsServiceResponse,
   recommendationItem,
@@ -221,7 +220,6 @@ export interface MediaCardItem {
   thumbnail: string;
   fallback: Thumbnail;
   data: mediaCardData;
-  background?: TemplateResult;
 }
 
 export type MediaLibraryItem = MediaItem;

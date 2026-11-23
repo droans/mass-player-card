@@ -269,9 +269,6 @@ export class MediaCard extends LitElement {
       </ha-dropdown>
     `;
   }
-  protected renderThumbnailFromBackground() {
-    return html` ${this.config?.background} `;
-  }
   private _renderImageFallback = (event_: Event) => {
     const fallback = getThumbnail(
       this.hassUI,
@@ -285,7 +282,7 @@ export class MediaCard extends LitElement {
     ev.target.src = fallback as string;
     ev.target.removeEventListener("error", this._renderImageFallback);
   };
-  protected renderThumbnailFromThumbnail() {
+  protected renderThumbnail() {
     const img = this.config?.thumbnail;
     return html`
       <img
@@ -297,12 +294,6 @@ export class MediaCard extends LitElement {
         loading="lazy"
       />
     `;
-  }
-  protected renderThumbnail() {
-    if (this.config?.background) {
-      return this.renderThumbnailFromBackground();
-    }
-    return this.renderThumbnailFromThumbnail();
   }
   protected renderTitle() {
     if (this.hide.titles) {

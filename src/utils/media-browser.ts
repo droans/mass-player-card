@@ -1,4 +1,3 @@
-import { html, TemplateResult } from "lit";
 import {
   Album,
   Artist,
@@ -20,7 +19,6 @@ import {
   RecommendationSection,
   UIServicesHass,
 } from "../const/types";
-import { asyncImageURLWithFallback } from "./thumbnails";
 import { getTranslation } from "./translations";
 
 type viewCardFunction = (
@@ -38,84 +36,15 @@ const funcs: viewCardFunctionMap = {
   artist: generateArtistCard,
   podcast: generatePodcastCard,
 };
-async function generateSectionBackgroundPart(
-  hass: UIServicesHass,
-  thumbnail: string,
-  fallback: Thumbnail | string = Thumbnail.DISC,
-  downloadLocal: boolean,
-  proxyAll: boolean,
-): Promise<TemplateResult> {
-  const imgs = await asyncImageURLWithFallback(
-    hass,
-    thumbnail,
-    fallback,
-    downloadLocal,
-    proxyAll,
-  );
-  return html`
-    <img
-      class="thumbnail-section"
-      src="${imgs.image_url}"
-      loading="lazy"
-      onerror="this.src = '${imgs.fallback_url}'"
-    />
-  `;
-}
-async function generateSectionBackground(
-  hass: UIServicesHass,
-  cards: MediaCardItem[],
-  fallback: Thumbnail,
-  downloadLocal: boolean,
-  proxyAll: boolean,
-): Promise<TemplateResult> {
-  const rng = [...Array(4).keys()];
-  const promiseThumbnails: Promise<TemplateResult>[] = [];
-
-  rng.forEach((i) => {
-    const idx = i % cards.length;
-    promiseThumbnails.push(
-      generateSectionBackgroundPart(
-        hass,
-        cards[idx]?.thumbnail ?? fallback,
-        fallback,
-        downloadLocal,
-        proxyAll,
-      ),
-    );
-  });
-  const thumbnails = await Promise.all(promiseThumbnails);
-  let thumbnailHtml = html``;
-  thumbnails.forEach((thumbnail) => {
-    thumbnailHtml = html` ${thumbnailHtml} ${thumbnail} `;
-  });
-  return html`
-    <div
-      class="thumbnail"
-      style="display: grid; grid-template-columns: 1fr 1fr; padding-bottom: 0%; height: unset; width: unset; padding-left: unset; padding-right: unset;"
-    >
-      ${thumbnailHtml}
-    </div>
-  `;
-}
-export async function generateFavoriteCard(
+export function generateFavoriteCard(
   hass: UIServicesHass,
   mediaType: MediaTypes,
-  cards: MediaCardItem[],
-  downloadLocal: boolean,
-  proxyAll: boolean,
-): Promise<MediaCardItem> {
+): MediaCardItem {
   const thumbnail: Thumbnail = MediaTypeThumbnails[mediaType];
   const translateKey = `browser.sections.${mediaType}`;
-  const title = getTranslation(translateKey, hass);
+  const title = getTranslation(translateKey, hass) as string;
   return {
-    title: title as string,
-    background: await generateSectionBackground(
-      hass,
-      cards,
-      thumbnail,
-      downloadLocal,
-      proxyAll,
-    ),
+    title,
     thumbnail,
     fallback: thumbnail,
     data: {
@@ -125,25 +54,15 @@ export async function generateFavoriteCard(
     },
   };
 }
-export async function generateRecentsCard(
+export function generateRecentsCard(
   hass: UIServicesHass,
   mediaType: MediaTypes,
-  cards: MediaCardItem[],
-  downloadLocal: boolean,
-  proxyAll: boolean,
-): Promise<MediaCardItem> {
+): MediaCardItem {
   const thumbnail: Thumbnail = MediaTypeThumbnails[mediaType];
   const translateKey = `browser.sections.${mediaType}`;
   const title = getTranslation(translateKey, hass);
   return {
     title: title as string,
-    background: await generateSectionBackground(
-      hass,
-      cards,
-      thumbnail,
-      downloadLocal,
-      proxyAll,
-    ),
     thumbnail,
     fallback: thumbnail,
     data: {
@@ -153,23 +72,12 @@ export async function generateRecentsCard(
     },
   };
 }
-export async function generateRecommendationsCard(
-  hass: UIServicesHass,
+export function generateRecommendationsCard(
   section: RecommendationSection,
-  cards: MediaCardItem[],
-  downloadLocal: boolean,
-  proxyAll: boolean,
-): Promise<MediaCardItem> {
+): MediaCardItem {
   const thumbnail: Thumbnail = Thumbnail.CLEFT;
   return {
     title: section.name,
-    background: await generateSectionBackground(
-      hass,
-      cards,
-      thumbnail,
-      downloadLocal,
-      proxyAll,
-    ),
     thumbnail,
     fallback: thumbnail,
     data: {

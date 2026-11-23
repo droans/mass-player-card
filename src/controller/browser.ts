@@ -285,57 +285,41 @@ export class MediaBrowserController {
   // Favorites
   private async generateAllFavorites() {
     const favorites = this.browserConfig.favorites;
-    const downloadLocal = this.config.download_local;
-    const proxyAll = this.config.proxy_all_artwork;
     const promises = [
       this.generateFavoriteData(
         favorites.albums,
         MediaTypes.ALBUM,
         favorites.albums.favorites_only,
-        downloadLocal,
-        proxyAll,
       ),
       this.generateFavoriteData(
         favorites.artists,
         MediaTypes.ARTIST,
         favorites.artists.favorites_only,
-        downloadLocal,
-        proxyAll,
       ),
       this.generateFavoriteData(
         favorites.audiobooks,
         MediaTypes.AUDIOBOOK,
         favorites.audiobooks.favorites_only,
-        downloadLocal,
-        proxyAll,
       ),
       this.generateFavoriteData(
         favorites.playlists,
         MediaTypes.PLAYLIST,
         favorites.playlists.favorites_only,
-        downloadLocal,
-        proxyAll,
       ),
       this.generateFavoriteData(
         favorites.podcasts,
         MediaTypes.PODCAST,
         favorites.podcasts.favorites_only,
-        downloadLocal,
-        proxyAll,
       ),
       this.generateFavoriteData(
         favorites.radios,
         MediaTypes.RADIO,
         favorites.radios.favorites_only,
-        downloadLocal,
-        proxyAll,
       ),
       this.generateFavoriteData(
         favorites.tracks,
         MediaTypes.TRACK,
         favorites.tracks.favorites_only,
-        downloadLocal,
-        proxyAll,
       ),
     ];
     await Promise.all(promises);
@@ -377,8 +361,6 @@ export class MediaBrowserController {
     config: FavoriteItemConfig,
     mediaType: MediaTypes,
     favoritesOnly = DEFAULT_FAVORITES_ONLY,
-    downloadLocal: boolean,
-    proxyAll: boolean,
   ) {
     if (
       // eslint-disable-next-line @typescript-eslint/prefer-optional-chain, @typescript-eslint/no-unnecessary-condition
@@ -397,13 +379,7 @@ export class MediaBrowserController {
     }
     const i = { ...this.items };
     i.favorites[mediaType] = items;
-    const card = await generateFavoriteCard(
-      this.hass,
-      mediaType,
-      items,
-      downloadLocal,
-      proxyAll,
-    );
+    const card = generateFavoriteCard(this.hass, mediaType);
     i.favorites.main.push(card);
     this.items = { ...i };
   }
@@ -460,13 +436,7 @@ export class MediaBrowserController {
 
     const items = await this.getRecentSection(config, mediaType);
     if (items.length > 0) {
-      const card = await generateRecentsCard(
-        this.hass,
-        mediaType,
-        items,
-        this.config.download_local,
-        this.config.proxy_all_artwork,
-      );
+      const card = generateRecentsCard(this.hass, mediaType);
       const i = { ...this.items };
       i.recents.main.push(card);
       i.recents[mediaType] = items;
@@ -475,7 +445,7 @@ export class MediaBrowserController {
   }
 
   //Recommendations
-  private async generateRecommendationSection(section: RecommendationSection) {
+  private generateRecommendationSection(section: RecommendationSection) {
     // eslint-disable-next-line @typescript-eslint/no-unnecessary-condition
     if (this.items.recommendations[section.name]) {
       return;
@@ -485,13 +455,7 @@ export class MediaBrowserController {
       this.browserConfig.recommendations.show_collection_view,
     );
     if (items.length > 0) {
-      const card = await generateRecommendationsCard(
-        this.hass,
-        section,
-        items,
-        this.config.download_local,
-        this.config.proxy_all_artwork,
-      );
+      const card = generateRecommendationsCard(section);
       const i = { ...this.items };
       i.recommendations.main.push(card);
       i.recommendations[section.name] = items;
@@ -530,12 +494,10 @@ export class MediaBrowserController {
       providers,
     );
     const resp = data.response.response;
-    const allItems: Promise<void>[] = [];
 
     resp.forEach((item) => {
-      allItems.push(this.generateRecommendationSection(item));
+      this.generateRecommendationSection(item);
     });
-    await Promise.all(allItems);
     const detail: CardsUpdatedEventDetail = {
       section: "recommendations",
       cards: this.items.recommendations,
