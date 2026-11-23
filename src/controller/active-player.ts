@@ -319,8 +319,13 @@ export class ActivePlayerController {
     if (!data) {
       return;
     }
+    const artistChanged =
+      this.activePlayerData?.track_artist != data.track_artist;
+    const albumChanged = this.activePlayerData?.track_album != data.track_album;
     this._activePlayerData.setValue(data);
-    void this.setActiveArtistAndAlbum();
+    if (artistChanged || albumChanged) {
+      void this.setActiveArtistAndAlbum();
+    }
   }
   public get activePlayerData() {
     return this._activePlayerData.value;

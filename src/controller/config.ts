@@ -6,6 +6,22 @@ import {
   processConfig,
 } from "../config/config";
 import {
+  DEFAULT_MEDIA_BROWSER_HIDDEN_ELEMENTS_CONFIG,
+  MediaBrowserHiddenElementsConfig,
+} from "../config/media-browser";
+import {
+  DEFAULT_PLAYER_HIDDEN_ELEMENTS_CONFIG,
+  PlayerHiddenElementsConfig,
+} from "../config/player";
+import {
+  DEFAULT_PLAYER_QUEUE_HIDDEN_ELEMENTS_CONFIG,
+  PlayerQueueHiddenElementsConfig,
+} from "../config/player-queue";
+import {
+  DEFAULT_PLAYERS_HIDDEN_ELEMENTS_CONFIG,
+  PlayersHiddenElementsConfig,
+} from "../config/players";
+import {
   entitiesConfigContext,
   hiddenElementsConfigContext,
   IconsContext,
@@ -19,24 +35,8 @@ import {
   playersHiddenElementsConfigContext,
 } from "../const/context";
 import { getIcons, Icons } from "../const/icons";
+import { getHiddenElements, hiddenElementsChanged } from "../utils/config";
 import { jsonMatch } from "../utils/utility";
-import {
-  DEFAULT_PLAYER_HIDDEN_ELEMENTS_CONFIG,
-  PlayerHiddenElementsConfig,
-} from "../config/player";
-import {
-  DEFAULT_PLAYER_QUEUE_HIDDEN_ELEMENTS_CONFIG,
-  PlayerQueueHiddenElementsConfig,
-} from "../config/player-queue";
-import {
-  DEFAULT_MEDIA_BROWSER_HIDDEN_ELEMENTS_CONFIG,
-  MediaBrowserHiddenElementsConfig,
-} from "../config/media-browser";
-import {
-  DEFAULT_PLAYERS_HIDDEN_ELEMENTS_CONFIG,
-  PlayersHiddenElementsConfig,
-} from "../config/players";
-import { getHiddenElements } from "../utils/config";
 
 export class MassCardConfigController {
   private _config?: Config;
@@ -130,7 +130,18 @@ export class MassCardConfigController {
     return this._activeEntityConfig as EntityConfig;
   }
 
-  private set MusicPlayerHiddenElements(elements: PlayerHiddenElementsConfig) {
+  private set MusicPlayerHiddenElements(
+    elements: PlayerHiddenElementsConfig | undefined,
+  ) {
+    if (!elements) {
+      return;
+    }
+    if (
+      this.MusicPlayerHiddenElements &&
+      !hiddenElementsChanged(this.MusicPlayerHiddenElements, elements)
+    ) {
+      return;
+    }
     this._musicPlayerHiddenElementsConfig.setValue(elements);
   }
   public get MusicPlayerHiddenElements() {
@@ -138,22 +149,51 @@ export class MassCardConfigController {
   }
 
   private set PlayerQueueHiddenElements(
-    elements: PlayerQueueHiddenElementsConfig,
+    elements: PlayerQueueHiddenElementsConfig | undefined,
   ) {
+    if (!elements) {
+      return;
+    }
+    if (
+      this.PlayerQueueHiddenElements &&
+      !hiddenElementsChanged(this.PlayerQueueHiddenElements, elements)
+    ) {
+      return;
+    }
     this._playerQueueHiddenElementsConfig.setValue(elements);
   }
   public get PlayerQueueHiddenElements() {
     return this._playerQueueHiddenElementsConfig.value;
   }
   private set MediaBrowserHiddenElements(
-    elements: MediaBrowserHiddenElementsConfig,
+    elements: MediaBrowserHiddenElementsConfig | undefined,
   ) {
+    if (!elements) {
+      return;
+    }
+    if (
+      this.MediaBrowserHiddenElements &&
+      !hiddenElementsChanged(this.MediaBrowserHiddenElements, elements)
+    ) {
+      return;
+    }
     this._mediaBrowserHiddenElementsConfig.setValue(elements);
   }
   public get MediaBrowserHiddenElements() {
     return this._mediaBrowserHiddenElementsConfig.value;
   }
-  private set PlayersHiddenElements(elements: PlayersHiddenElementsConfig) {
+  private set PlayersHiddenElements(
+    elements: PlayersHiddenElementsConfig | undefined,
+  ) {
+    if (!elements) {
+      return;
+    }
+    if (
+      this.PlayersHiddenElements &&
+      !hiddenElementsChanged(this.PlayersHiddenElements, elements)
+    ) {
+      return;
+    }
     this._playersHiddenElementsConfig.setValue(elements);
   }
   public get PlayersHiddenElements() {

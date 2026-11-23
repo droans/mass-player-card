@@ -57,3 +57,13 @@ export function getHiddenElements(
 
   return result as hiddenElementConfigType;
 }
+
+export function hiddenElementsChanged(
+  currentHiddenElements: hiddenElementConfigType,
+  updatedHiddenElements: hiddenElementConfigType,
+): boolean {
+  const keys = Object.keys(currentHiddenElements);
+  return keys.some((key) => {
+    return currentHiddenElements[key] != updatedHiddenElements[key];
+  });
+}

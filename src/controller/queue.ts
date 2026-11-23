@@ -1,17 +1,17 @@
 import { ContextProvider } from "@lit/context";
+import QueueActions from "../actions/queue-actions";
+import { Config } from "../config/config";
 import {
   currentQueueItemContext,
   nextQueueItemContext,
   previousQueueItemContext,
   queueContext,
 } from "../const/context";
+import { MassQueueEvent } from "../const/events";
 import {
   MAX_GET_QUEUE_FAILURES,
   TIMED_LISTENER_DELAY_MS,
 } from "../const/player-queue";
-import { Config } from "../config/config";
-import QueueActions from "../actions/queue-actions";
-import { isActive, jsonMatch, playerHasUpdated } from "../utils/utility";
 import {
   ExtendedHass,
   ExtendedHassEntity,
@@ -19,7 +19,7 @@ import {
   QueueItems,
   SubscriptionUnsubscribe,
 } from "../const/types";
-import { MassQueueEvent } from "../const/events";
+import { isActive, jsonMatch, playerHasUpdated } from "../utils/utility";
 
 export class QueueController {
   public _host!: HTMLElement;
@@ -98,7 +98,10 @@ export class QueueController {
 
   private set activeMediaPlayer(player: ExtendedHassEntity | undefined) {
     if (this._activeMediaPlayer) {
-      const updated = playerHasUpdated(player, this._activeMediaPlayer);
+      const updated = playerHasUpdated(player, this._activeMediaPlayer, true, [
+        "media_content_id",
+        "active_queue",
+      ]);
       if (!updated) {
         return;
       }
@@ -159,6 +162,9 @@ export class QueueController {
   }
 
   public setActiveEntityId(entityId: string) {
+    if (entityId == this.activeMediaPlayer?.entity_id) {
+      return;
+    }
     this.activeMediaPlayer = this.hass.states[entityId];
   }
   private raiseQueueFailure() {
