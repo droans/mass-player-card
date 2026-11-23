@@ -162,12 +162,23 @@ export class ActivePlayerController {
     if (playerUpdated) {
       this.setActivePlayer(this.activeEntityID);
       this.activeMediaPlayer = newEntity;
+      const mediaChanged =
+        newEntity?.attributes.media_title !=
+          this.activePlayerData?.track_title ||
+        newEntity?.attributes.media_artist !=
+          this.activePlayerData?.track_artist;
+      void this.updateActivePlayerData(mediaChanged);
     }
     if (volumePlayerUpdated) {
       this.volumeMediaPlayer = newVolEntity;
     }
-    if (playerUpdated || volumePlayerUpdated) {
-      void this.updateActivePlayerData(true);
+    const volumeChanged =
+      currentVolEntity?.attributes.volume_level !=
+      newVolEntity?.attributes.volume_level;
+    if (volumeChanged) {
+      this.selectivelyUpdateActivePlayerData({
+        updatedVolumePlayer: newVolEntity,
+      });
     }
   }
   public get hass() {
@@ -226,7 +237,7 @@ export class ActivePlayerController {
     if (playerHasUpdated(this.activeMediaPlayer, player, true)) {
       this._activeMediaPlayer.setValue(player);
       this.dispatchUpdatedActivePlayer();
-      void this.updateActivePlayerData();
+      this.selectivelyUpdateActivePlayerData({ updatedPlayer: player });
       this.setGroupAttributes();
     }
   }
@@ -297,7 +308,10 @@ export class ActivePlayerController {
     return this._expressiveScheme.value;
   }
 
-  private set activePlayerData(data: PlayerData) {
+  private set activePlayerData(data: PlayerData | undefined) {
+    if (!data) {
+      return;
+    }
     this._activePlayerData.setValue(data);
     void this.setActiveArtistAndAlbum();
   }
@@ -372,6 +386,76 @@ export class ActivePlayerController {
       this.createAndApplyExpressiveScheme();
     }, this._observerDelay);
   };
+
+  public selectivelyUpdateActivePlayerData(data: {
+    updatedPlayer?: ExtendedHassEntity;
+    updatedVolumePlayer?: ExtendedHassEntity;
+  }) {
+    const updatedPlayer = data.updatedPlayer;
+    const updatedVolumePlayer = data.updatedVolumePlayer;
+    if (!this.activePlayerData) {
+      void this.updateActivePlayerData(true);
+      return;
+    }
+
+    if (updatedVolumePlayer) {
+      const updatedVolume = Math.floor(
+        (updatedVolumePlayer.attributes.volume_level ?? 0) * 100,
+      );
+      if (this.activePlayerData.volume != updatedVolume) {
+        this.activePlayerData.volume = updatedVolume;
+      }
+    }
+
+    if (!updatedPlayer) {
+      return;
+    }
+    const newAttributes = updatedPlayer.attributes;
+
+    const playing = updatedPlayer.state == "playing";
+    if (this.activePlayerData.playing != playing) {
+      this.activePlayerData.playing = playing;
+    }
+    if (this.activePlayerData.repeat != newAttributes.repeat) {
+      this.activePlayerData.repeat = newAttributes.repeat ?? RepeatMode.OFF;
+    }
+    if (this.activePlayerData.shuffle != newAttributes.shuffle) {
+      this.activePlayerData.shuffle = newAttributes.shuffle ?? false;
+    }
+
+    if (
+      newAttributes.media_album_name &&
+      this.activePlayerData.track_album != newAttributes.media_album_name
+    ) {
+      this.activePlayerData.track_album = newAttributes.media_album_name;
+    }
+    if (
+      newAttributes.media_artist &&
+      this.activePlayerData.track_artist != newAttributes.media_artist
+    ) {
+      this.activePlayerData.track_artist = newAttributes.media_artist;
+    }
+
+    const newArtwork =
+      newAttributes.entity_picture_local ?? newAttributes.entity_picture;
+    if (newArtwork && newArtwork != this.activePlayerData.track_artwork) {
+      this.activePlayerData.track_artwork = newArtwork;
+    }
+
+    if (
+      newAttributes.media_title &&
+      this.activePlayerData.track_title != newAttributes.media_title
+    ) {
+      this.activePlayerData.track_title = newAttributes.media_title;
+    }
+
+    if (this.activePlayerData.muted != newAttributes.is_volume_muted) {
+      this.activePlayerData.muted = newAttributes.is_volume_muted ?? false;
+    }
+    if (this.activePlayerData.player_name != this.activePlayerName) {
+      this.activePlayerData.player_name = this.activePlayerName;
+    }
+  }
 
   public async updateActivePlayerData(forceUpdate = false) {
     const badStates = ["unavailable", "unknown"];
@@ -458,11 +542,15 @@ export class ActivePlayerController {
   public async getactivePlayerData(forceUpdate = false): Promise<PlayerData> {
     const player = this.activeMediaPlayer;
     const volumePlayer = this.volumeMediaPlayer;
-    const currentQueue =
-      forceUpdate || !this._playerData
-        ? await this.actionGetCurrentQueue()
-        : this._playerData;
-    const currentItem = currentQueue.current_item;
+    const updateQueue = forceUpdate || !this._playerData;
+    const currentQueue = updateQueue
+      ? await this.actionGetCurrentQueue()
+      : this._playerData;
+    const currentItem = currentQueue?.current_item;
+    const favorite =
+      currentItem?.media_item?.favorite ??
+      this.activePlayerData?.favorite ??
+      false;
 
     return {
       playing: player?.state == "playing",
@@ -478,7 +566,7 @@ export class ActivePlayerController {
       muted: volumePlayer?.attributes.is_volume_muted ?? true,
       volume: Math.floor((volumePlayer?.attributes.volume_level ?? 0) * 100),
       player_name: this.activePlayerName,
-      favorite: currentItem?.media_item?.favorite ?? false,
+      favorite,
     };
   }
   public async getPlayerProgress(): Promise<number> {

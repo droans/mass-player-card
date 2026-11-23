@@ -244,6 +244,19 @@ export interface PlayerData {
   volume: number;
   favorite: boolean;
 }
+export interface OptionalPlayerData {
+  playing?: boolean;
+  muted?: boolean;
+  track_title?: string;
+  track_artist?: string;
+  track_album?: string;
+  track_artwork?: string;
+  shuffle?: boolean;
+  repeat?: RepeatMode;
+  player_name?: string;
+  volume?: number;
+  favorite?: boolean;
+}
 
 export interface PlaylistDialogItem {
   image: ImageURLWithFallback;

@@ -651,7 +651,9 @@ export class MusicPlayerCard extends LitElement {
       if (!this.activePlayerController) {
         return;
       }
-      void this.activePlayerController.updateActivePlayerData();
+      this.activePlayerController.selectivelyUpdateActivePlayerData({
+        updatedPlayer: this.activeMediaPlayer,
+      });
     }, 2000);
   };
   private openPlaylistDialogOnEvent = () => {
@@ -667,20 +669,10 @@ export class MusicPlayerCard extends LitElement {
       this.onForceLoadEvent,
     );
     this.controller.host.addEventListener(
-      "active-player-updated",
-      this.onActivePlayerUpdated,
-    );
-    this.controller.host.addEventListener(
       "open-add-to-playlist-dialog",
       this.openPlaylistDialogOnEvent,
     );
   }
-  protected onActivePlayerUpdated = () => {
-    if (!this.activePlayerController) {
-      return;
-    }
-    void this.activePlayerController.updateActivePlayerData();
-  };
   protected updated(): void {
     const favoritesDialog = this.favoritesDialog;
     if (!favoritesDialog) {
@@ -715,10 +707,6 @@ export class MusicPlayerCard extends LitElement {
       this.onForceLoadEvent,
     );
     this.controller.host.removeEventListener(
-      "active-player-updated",
-      this.onActivePlayerUpdated,
-    );
-    this.controller.host.removeEventListener(
       "open-add-to-playlist-dialog",
       this.openPlaylistDialogOnEvent,
     );
@@ -734,10 +722,6 @@ export class MusicPlayerCard extends LitElement {
       this.controller.host.addEventListener(
         "force-update-player",
         this.onForceLoadEvent,
-      );
-      this.controller.host.addEventListener(
-        "active-player-updated",
-        this.onActivePlayerUpdated,
       );
       this.controller.host.addEventListener(
         "open-add-to-playlist-dialog",
