@@ -12,6 +12,7 @@ import {
   activeAlbumCollectionContext,
   activeArtistCollectionContext,
   mediaBrowserCardsContext,
+  tracksCollectionContext,
 } from "../const/context";
 import { MediaTypes } from "../const/enums";
 import { CardsUpdatedEventDetail } from "../const/events";
@@ -23,6 +24,7 @@ import {
   mediaCardAlbumData,
   mediaCardArtistData,
   MediaCardItem,
+  mediaCardTracksData,
   MediaLibraryItem,
   MediaRecommendationSection,
   newMediaBrowserItemsConfig,
@@ -53,6 +55,9 @@ export class MediaBrowserController {
   private _activeArtistCollectionData: ContextProvider<
     typeof activeArtistCollectionContext
   >;
+  private _activeTracksCollectionData: ContextProvider<
+    typeof tracksCollectionContext
+  >;
   constructor(
     hass: ExtendedHass,
     config: Config,
@@ -77,6 +82,9 @@ export class MediaBrowserController {
     });
     this._activeArtistCollectionData = new ContextProvider(host, {
       context: activeArtistCollectionContext,
+    });
+    this._activeTracksCollectionData = new ContextProvider(host, {
+      context: tracksCollectionContext,
     });
     this.actions = new BrowserActions(hass);
     this.browserConfig = config.media_browser;
@@ -134,6 +142,14 @@ export class MediaBrowserController {
   }
   public get activeArtistCollectionData() {
     return this._activeArtistCollectionData.value;
+  }
+  public set activeTracksCollectionData(
+    collectionData: mediaCardTracksData | undefined,
+  ) {
+    this._activeTracksCollectionData.setValue(collectionData);
+  }
+  public get activeTracksCollectionData() {
+    return this._activeTracksCollectionData.value;
   }
 
   private resetAndGenerateSections() {

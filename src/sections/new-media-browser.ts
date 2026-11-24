@@ -25,6 +25,7 @@ import "../components/browser-collection-view/browser-album-view";
 import "../components/browser-collection-view/browser-artist-view";
 import "../components/browser-collection-view/browser-playlist-view";
 import "../components/browser-collection-view/browser-podcast-view";
+import "../components/browser-collection-view/browser-tracks-view";
 import "../components/section-header/section-header";
 
 import { DirectiveResult } from "lit/directive.js";
@@ -40,6 +41,7 @@ import {
   mediaBrowserCardsContext,
   mediaBrowserConfigContext,
   mediaBrowserHiddenElementsConfigContext,
+  tracksCollectionContext,
 } from "../const/context";
 import { EnqueueOptions, MediaTypes } from "../const/enums";
 import { TargetValueEventData } from "../const/events";
@@ -53,8 +55,8 @@ import {
   MediaCardItem,
   mediaCardItemData,
   mediaCardPlaylistData,
-  mediaCardPodcastData,
   mediaCardServiceData,
+  mediaCardTracksData,
   MediaRecommendationSection,
   newMediaBrowserItemsConfig,
   UIServicesHass,
@@ -193,6 +195,15 @@ export class MediaBrowser extends LitElement {
     return this._activeEntityConfig;
   }
 
+  @consume({ context: tracksCollectionContext, subscribe: true })
+  private set activeSimilarTracksCollection(
+    collectionData: mediaCardTracksData | undefined,
+  ) {
+    if (!collectionData) {
+      return;
+    }
+    this.loadCollection(collectionData);
+  }
   @consume({ context: activeAlbumCollectionContext, subscribe: true })
   private set activeAlbumCollection(
     collectionData: mediaCardAlbumData | undefined,
@@ -300,14 +311,7 @@ export class MediaBrowser extends LitElement {
     }
   }
 
-  public loadCollection(
-    collectionData:
-      | mediaCardPlaylistData
-      | mediaCardAlbumData
-      | mediaCardArtistData
-      | mediaCardPodcastData
-      | undefined,
-  ) {
+  public loadCollection(collectionData: mediaCardCollectionType | undefined) {
     if (!collectionData) {
       return;
     }
@@ -402,6 +406,22 @@ export class MediaBrowser extends LitElement {
       this.activeEntityConfig.entity_id,
       contentId,
       contentType,
+      enqueue,
+      user,
+    );
+  };
+  private onSimilarTracksEnqueue = (
+    contentIds: string[],
+    enqueue: EnqueueOptions,
+  ) => {
+    if (!this.browserController?.actions) {
+      return;
+    }
+    const user = this.browserController.massUser;
+    void this.browserController.actions.actionEnqueueMedia(
+      this.activeEntityConfig.entity_id,
+      contentIds,
+      "track",
       enqueue,
       user,
     );
@@ -690,6 +710,16 @@ export class MediaBrowser extends LitElement {
       </div>
     `;
   }
+  protected renderTracksView = (): TemplateResult => {
+    return html`
+      <mpc-collection-tracks-view
+        class="collection-view"
+        .collectionData=${this.activeCollectionData}
+        .onEnqueueAction=${this.onPlaylistEnqueue}
+        .onTracksEnqueueAction=${this.onSimilarTracksEnqueue}
+      ></mpc-collection-tracks-view>
+    `;
+  };
   protected renderAlbumView = (): TemplateResult => {
     return html`
       <mpc-collection-album-view
@@ -736,6 +766,7 @@ export class MediaBrowser extends LitElement {
         artist: this.renderArtistView,
         playlist: this.renderPlaylistView,
         podcast: this.renderPodcastView,
+        tracks: this.renderTracksView,
       }[collectionType](),
     );
   }

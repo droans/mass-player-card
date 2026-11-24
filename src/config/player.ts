@@ -33,6 +33,8 @@ export interface PlayerHiddenElementsConfig extends PlayerControlsHiddenElements
   autoplay_button: boolean;
   go_to_artist_button: boolean;
   go_to_album_button: boolean;
+  go_to_similar_tracks_button: boolean;
+  go_to_dynamic_playlist_button: boolean;
 }
 
 export const DEFAULT_PLAYER_HIDDEN_ELEMENTS_CONFIG: PlayerHiddenElementsConfig =
@@ -57,6 +59,10 @@ export const DEFAULT_PLAYER_HIDDEN_ELEMENTS_CONFIG: PlayerHiddenElementsConfig =
     autoplay_button: false,
     skip_backwards_button: false,
     skip_forward_button: false,
+    go_to_album_button: false,
+    go_to_artist_button: false,
+    go_to_similar_tracks_button: false,
+    go_to_dynamic_playlist_button: false,
   };
 export const DEFAULT_PLAYER_CONFIG: PlayerConfig = {
   enabled: true,
@@ -86,6 +92,10 @@ const PLAYER_HIDDEN_ITEMS = [
   "player_selector",
   "group_selector",
   "menu",
+  "go_to_artist_button",
+  "go_to_album_button",
+  "go_to_similar_tracks_button",
+  "go_to_dynamic_playlist_button",
 ];
 
 export function playerConfigForm() {

@@ -8,6 +8,8 @@ export default {
   "browser.collections.label.artist_tracks": "Tracks",
   "browser.collections.label.no_tracks": "No tracks were found!",
   "browser.collections.label.similar_artists": "Similar Artists",
+  "browser.collections.header.similar_tracks": "Tracks similar to...",
+  "browser.collections.header.dynamic_playlist_suffix": "Mix",
   "browser.enqueue.play": "Play Now",
   "browser.enqueue.next": "Play Next",
   "browser.enqueue.play_clear": "Play Now & Clear Queue",
@@ -56,6 +58,8 @@ export default {
   "player.label.autoplay.disabled": "Autoplay Disabled",
   "player.label.go_to_artist": "View Artist",
   "player.label.go_to_album": "View Album",
+  "player.label.go_to_similar_tracks": "View Similar Tracks",
+  "player.label.go_to_dynamic_playlist": "View Dynamic Playlist",
 
   "players.header": "Players",
   "players.label.controlling": "CONTROLLING",

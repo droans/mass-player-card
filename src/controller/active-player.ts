@@ -42,6 +42,7 @@ import {
   MassGetQueueServiceResponseSchema,
   mediaCardAlbumData,
   mediaCardArtistData,
+  mediaCardTracksData,
   MediaItemImage,
   PlayerData,
 } from "../const/types";
@@ -80,6 +81,7 @@ export class ActivePlayerController {
   private _browserActions!: BrowserActions;
   public albumCollectionData?: mediaCardAlbumData;
   public artistCollectionData?: mediaCardArtistData;
+  public tracksCollectionData?: mediaCardTracksData;
 
   private _hass!: ExtendedHass;
   private _config!: Config;
@@ -323,7 +325,7 @@ export class ActivePlayerController {
     const albumChanged = this.activePlayerData?.track_album != data.track_album;
     this._activePlayerData.setValue(data);
     if (artistChanged || albumChanged) {
-      void this.setActiveArtistAndAlbum();
+      this.setActiveArtistAndAlbum();
     }
   }
   public get activePlayerData() {
@@ -861,7 +863,7 @@ export class ActivePlayerController {
       void this.actionGetCurrentQueue();
     }, this._maxPlayerDataUpdateTimestampDelta);
   }
-  private async setActiveArtistAndAlbum() {
+  private setActiveArtistAndAlbum() {
     if (!this.activeEntityID) {
       return;
     }
@@ -872,58 +874,81 @@ export class ActivePlayerController {
     const albumUri = activeItem.album?.uri;
     const artists = activeItem.artists;
     if (albumUri) {
-      const albumData = await this._browserActions.actionGetAlbumData(
-        albumUri,
-        this.activeEntityID,
-      );
-      const artistNames = albumData.response.artists.map((artist) => {
-        return artist.name;
-      });
-      const usedArtistNames =
-        artistNames.length > 0 ? artistNames.join(", ") : "Unknown Artists";
-      const images = albumData.response.metadata.images as
-        MediaItemImage | MediaItemImage[] | null;
-      let albumImageUrl = "";
-      if (images) {
-        // eslint-disable-next-line @typescript-eslint/no-unnecessary-condition
-        if ((images as unknown as MediaItemImage[])?.length) {
-          const usedImage = (images as MediaItemImage[])[0];
-          albumImageUrl = usedImage.path;
-        } else {
-          albumImageUrl = (images as MediaItemImage).path;
-        }
-      }
-      this.albumCollectionData = {
-        type: "album",
-        media_artist: usedArtistNames,
-        media_content_id: albumUri,
-        media_image: albumImageUrl,
-        media_title: albumData.response.name,
-      };
+      void this.setActiveAlbum(albumUri);
     }
-    if (artists) {
-      const artistData = await this._browserActions.actionGetArtistData(
-        artists[0].uri,
-        this.activeEntityID,
-      );
-      const images = artistData.response.metadata.images;
-      let artistImageUrl = "";
-      if (images) {
-        // eslint-disable-next-line @typescript-eslint/no-unnecessary-condition
-        if ((images as unknown as MediaItemImage[])?.length) {
-          const usedImage = (images as unknown as MediaItemImage[])[0];
-          artistImageUrl = usedImage.path;
-        } else {
-          artistImageUrl = images.path;
-        }
-      }
-      this.artistCollectionData = {
-        type: "artist",
-        media_content_id: artists[0].uri,
-        media_image: artistImageUrl,
-        media_title: artists[0].name,
-        media_artist: artists[0].name,
-      };
+    if (artists?.length) {
+      void this.setActiveArtist(artists[0].uri, artists[0].name);
     }
+    this.setSimilarTracks();
+  }
+  private async setActiveAlbum(albumUri: string) {
+    const albumData = await this._browserActions.actionGetAlbumData(
+      albumUri,
+      this.activeEntityID,
+    );
+    const artistNames = albumData.response.artists.map((artist) => {
+      return artist.name;
+    });
+    const usedArtistNames =
+      artistNames.length > 0 ? artistNames.join(", ") : "Unknown Artists";
+    const images = albumData.response.metadata.images as
+      MediaItemImage | MediaItemImage[] | null;
+    let albumImageUrl = "";
+    if (images) {
+      // eslint-disable-next-line @typescript-eslint/no-unnecessary-condition
+      if ((images as unknown as MediaItemImage[])?.length) {
+        const usedImage = (images as MediaItemImage[])[0];
+        albumImageUrl = usedImage.path;
+      } else {
+        albumImageUrl = (images as MediaItemImage).path;
+      }
+    }
+    this.albumCollectionData = {
+      type: "album",
+      media_artist: usedArtistNames,
+      media_content_id: albumUri,
+      media_image: albumImageUrl,
+      media_title: albumData.response.name,
+    };
+  }
+  private async setActiveArtist(artistUri: string, artistName: string) {
+    const artistData = await this._browserActions.actionGetArtistData(
+      artistUri,
+      this.activeEntityID,
+    );
+    const images = artistData.response.metadata.images;
+    let artistImageUrl = "";
+    if (images) {
+      // eslint-disable-next-line @typescript-eslint/no-unnecessary-condition
+      if ((images as unknown as MediaItemImage[])?.length) {
+        const usedImage = (images as unknown as MediaItemImage[])[0];
+        artistImageUrl = usedImage.path;
+      } else {
+        artistImageUrl = images.path;
+      }
+    }
+    this.artistCollectionData = {
+      type: "artist",
+      media_content_id: artistUri,
+      media_image: artistImageUrl,
+      media_title: artistName,
+      media_artist: artistName,
+    };
+  }
+  private setSimilarTracks() {
+    const attributes = this.activeMediaPlayer?.attributes;
+    const contentId = attributes?.media_content_id;
+    const mediaImage =
+      attributes?.entity_picture_local ?? attributes?.entity_picture;
+    const mediaTitle = attributes?.media_title;
+    if (!contentId || !mediaTitle) {
+      return;
+    }
+    this.tracksCollectionData = {
+      type: "tracks",
+      media_content_id: contentId,
+      media_image: mediaImage ?? ``,
+      media_title: mediaTitle,
+    };
   }
 }

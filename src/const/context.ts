@@ -3,6 +3,7 @@ import { createContext } from "@lit/context";
 import {
   mediaCardAlbumData,
   mediaCardArtistData,
+  mediaCardTracksData,
   type ExtendedHass,
   type ExtendedHassEntity,
   type MediaCardItem,
@@ -113,6 +114,9 @@ export const activeAlbumCollectionContext = createContext<
 >(uuid4());
 export const activeArtistCollectionContext = createContext<
   mediaCardArtistData | undefined
+>(uuid4());
+export const tracksCollectionContext = createContext<
+  mediaCardTracksData | undefined
 >(uuid4());
 
 export const canGroupWithContext = createContext<string[]>(uuid4());
