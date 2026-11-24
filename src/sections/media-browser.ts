@@ -71,9 +71,9 @@ import {
 import { getTranslation } from "../utils/translations";
 import { jsonMatch } from "../utils/utility";
 // eslint-disable-next-line import/no-duplicates
-import { SectionType } from "../components/new-media-browser-cards/media-browser-cards";
+import { SectionType } from "../components/media-browser-cards/media-browser-cards";
 // eslint-disable-next-line import/no-duplicates
-import "../components/new-media-browser-cards/media-browser-cards";
+import "../components/media-browser-cards/media-browser-cards";
 
 const MEDIA_TYPE_TRANSLATION_KEYS: Record<ConfigMediaTypes, string> = {
   album: "browser.sections.album",
