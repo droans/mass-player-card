@@ -69,11 +69,7 @@ export class QueueCard extends LitElement {
   @consume({ context: queueContext, subscribe: true })
   public set queue(queue: QueueItems | null) {
     if (queue) {
-      if (!this.queue?.length) {
-        this._queue = this.processQueue(queue);
-        return;
-      }
-      return;
+      this._queue = this.processQueue(queue);
     }
   }
   public get queue() {
