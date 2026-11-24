@@ -52,6 +52,8 @@ import {
   getArtistAlbumsServiceResponse,
   getArtistAlbumsServiceSchema,
   getArtistTopTracksServiceSchema,
+  getDynamicPlaylistServiceSchema,
+  getDynamicPlaylistTracksServiceSchema,
   getSimilarArtistsServiceResponse,
   getSimilarArtistsServiceSchema,
   getSimilarTracksServiceSchema,
@@ -101,7 +103,7 @@ export default class BrowserActions {
   }
   async actionEnqueueMedia(
     entityId: string,
-    contentId: string,
+    contentId: string | string[],
     contentType: string,
     enqueue: EnqueueOptions,
     userId: string | null = null,
@@ -312,6 +314,25 @@ export default class BrowserActions {
     };
     return await this.hass.callWS(data);
   }
+  async actionGetDynamicPlaylistTracks(
+    entityIdOrConfigEntryId: string,
+    mediaUri: string,
+  ): Promise<getPlaylistTracksServiceResponse> {
+    const configEntry = entityIdOrConfigEntryId.includes(".")
+      ? await this.getPlayerMassQueueConfigEntry(entityIdOrConfigEntryId)
+      : entityIdOrConfigEntryId;
+    const data: getDynamicPlaylistTracksServiceSchema = {
+      type: "call_service",
+      domain: "mass_queue",
+      service: "get_dynamic_playlist_tracks",
+      service_data: {
+        uri: mediaUri,
+        config_entry_id: configEntry,
+      },
+      return_response: true,
+    };
+    return await this.hass.callWS(data);
+  }
   async actionGetAlbumTracks(
     playlistUri: string,
     entityIdOrConfigEntryId: string,
@@ -399,6 +420,25 @@ export default class BrowserActions {
       type: "call_service",
       domain: "mass_queue",
       service: "get_playlist",
+      service_data: {
+        uri: playlistUri,
+        config_entry_id: configEntry,
+      },
+      return_response: true,
+    };
+    return await this.hass.callWS(data);
+  }
+  async actionGetDynamicPlaylistData(
+    playlistUri: string,
+    entityIdOrConfigEntryId: string,
+  ): Promise<getPlaylistServiceResponse> {
+    const configEntry = entityIdOrConfigEntryId.includes(".")
+      ? await this.getPlayerMassQueueConfigEntry(entityIdOrConfigEntryId)
+      : entityIdOrConfigEntryId;
+    const data: getDynamicPlaylistServiceSchema = {
+      type: "call_service",
+      domain: "mass_queue",
+      service: "get_dynamic_playlist",
       service_data: {
         uri: playlistUri,
         config_entry_id: configEntry,

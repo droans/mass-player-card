@@ -8,6 +8,8 @@ export default {
   "browser.collections.label.artist_tracks": "Tracks",
   "browser.collections.label.no_tracks": "No tracks were found!",
   "browser.collections.label.similar_artists": "Similar Artists",
+  "browser.collections.header.similar_tracks": "Tracks similar to...",
+  "browser.collections.header.dynamic_playlist_suffix": "Mix",
   "browser.enqueue.play": "Play Now",
   "browser.enqueue.next": "Play Next",
   "browser.enqueue.play_clear": "Play Now & Clear Queue",

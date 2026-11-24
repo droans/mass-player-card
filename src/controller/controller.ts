@@ -233,6 +233,7 @@ export class MassCardController {
       if (section != Sections.MEDIA_BROWSER && this.Browser) {
         this.Browser.activeAlbumCollectionData = undefined;
         this.Browser.activeArtistCollectionData = undefined;
+        this.Browser.activeTracksCollectionData = undefined;
       }
     }
   }

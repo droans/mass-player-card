@@ -10,6 +10,8 @@ import {
 } from "mass-queue-types/packages/mass_queue/utils";
 import { EnqueueOptions } from "./enums";
 import { mediaCardData } from "./types";
+import { getPlaylistTracksServiceData } from "mass-queue-types/packages/mass_queue/actions/get_playlist_tracks";
+import { getPlaylistServiceData } from "mass-queue-types/packages/mass_queue/actions/get_playlist";
 
 export type QueueService = (queue_item_id: string) => void;
 export type QueueItemSelectedService = (queue_item_id: string) => void;
@@ -34,6 +36,10 @@ export type CardSelectedService = (
 
 export type CardEnqueueService = (
   data: mediaCardData,
+  enqueue: EnqueueOptions,
+) => void;
+export type SimilarTracksEnqueueService = (
+  contentIds: string | string[],
   enqueue: EnqueueOptions,
 ) => void;
 
@@ -72,6 +78,15 @@ export interface setAutoplayServiceSchema extends baseMassQueueServiceSchema {
 export interface skipServiceSchema extends baseMassQueueServiceSchema {
   service: "skip";
   service_data: skipServiceData;
+}
+export interface getDynamicPlaylistTracksServiceSchema extends baseMassQueueServiceWithResponseSchema {
+  service: "get_dynamic_playlist_tracks";
+  service_data: getPlaylistTracksServiceData;
+}
+
+export interface getDynamicPlaylistServiceSchema extends baseMassQueueServiceWithResponseSchema {
+  service: "get_dynamic_playlist";
+  service_data: getPlaylistServiceData;
 }
 
 export interface getSimilarArtistsServiceSchema extends baseMassQueueServiceWithResponseSchema {

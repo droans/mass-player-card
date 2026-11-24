@@ -2,7 +2,10 @@ import { consume } from "@lit/context";
 import { html, LitElement, PropertyValues, TemplateResult } from "lit";
 import { property, query, state } from "lit/decorators.js";
 import { cache } from "lit/directives/cache.js";
-import { PodcastEpisode } from "mass-queue-types/packages/mass_queue/types/media-items";
+import {
+  Playlist,
+  PodcastEpisode,
+} from "mass-queue-types/packages/mass_queue/types/media-items";
 import { Track, Tracks } from "mass-queue-types/packages/mass_queue/utils";
 import { Config, EntityConfig } from "../../config/config";
 import {
@@ -10,7 +13,10 @@ import {
   MediaBrowserConfig,
   MediaBrowserHiddenElementsConfig,
 } from "../../config/media-browser";
-import { CardEnqueueService } from "../../const/actions";
+import {
+  CardEnqueueService,
+  SimilarTracksEnqueueService,
+} from "../../const/actions";
 import {
   actionsControllerContext,
   activeEntityConfigContext,
@@ -30,11 +36,7 @@ import { getEnqueueButtons } from "../../const/media-browser";
 import {
   ExtendedHassEntity,
   ListItems,
-  mediaCardAlbumData,
-  mediaCardArtistData,
   mediaCardCollectionType,
-  mediaCardPlaylistData,
-  mediaCardPodcastData,
   PlayersHass,
   UIServicesHass,
 } from "../../const/types";
@@ -82,6 +84,7 @@ export class BrowserViewBase extends LitElement {
   protected hassUIServices?: UIServicesHass;
 
   public onEnqueueAction!: CardEnqueueService;
+  public onTracksEnqueueAction?: SimilarTracksEnqueueService;
 
   // Used to get hidden elements, etc.
   @consume({ context: mediaBrowserConfigContext, subscribe: true })
@@ -109,6 +112,7 @@ export class BrowserViewBase extends LitElement {
   }
 
   @state() public tracks?: Tracks | PodcastEpisode[];
+  protected dynamicPlaylistMetadata?: Playlist;
 
   @consume({ context: useVibrantContext })
   protected useVibrant!: boolean;
@@ -144,14 +148,7 @@ export class BrowserViewBase extends LitElement {
   }
 
   @property({ attribute: false })
-  public set collectionData(
-    data:
-      | mediaCardPlaylistData
-      | mediaCardAlbumData
-      | mediaCardArtistData
-      | mediaCardPodcastData
-      | undefined,
-  ) {
+  public set collectionData(data: mediaCardCollectionType | undefined) {
     this._collectionData = data;
     this.collectionImageURL = data?.media_image ?? ``;
     this.getTracks();
@@ -281,6 +278,27 @@ export class BrowserViewBase extends LitElement {
     this.addScrollAnimation(imgDivKf, this.imageDivElement as HTMLElement);
   }
 
+  protected enqueueTracks(enqueue: EnqueueOptions) {
+    if (
+      !this.tracks ||
+      !this.onTracksEnqueueAction ||
+      this.collectionData?.type != "tracks"
+    ) {
+      return;
+    }
+    const contentIds = (this.tracks as Tracks).map((track) => {
+      return track.media_content_id;
+    });
+    if (this.collectionData.dynamic) {
+      if (!this.dynamicPlaylistMetadata?.uri) {
+        throw new Error(`No dynamic playlist data found!`);
+      }
+      this.onTracksEnqueueAction(this.dynamicPlaylistMetadata.uri, enqueue);
+      return;
+    }
+    this.onTracksEnqueueAction(contentIds, enqueue);
+  }
+
   protected onEnqueue = (event_: MenuButtonEventData) => {
     if (!this.collectionData) {
       return;
@@ -288,6 +306,10 @@ export class BrowserViewBase extends LitElement {
     event_.stopPropagation();
     const target = event_.detail;
     const value = target.option as EnqueueOptions;
+    if (this.collectionData.type == "tracks" && value != EnqueueOptions.RADIO) {
+      this.enqueueTracks(value);
+      return;
+    }
     this.onEnqueueAction(this.collectionData, value);
   };
 
