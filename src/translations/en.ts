@@ -58,6 +58,8 @@ export default {
   "player.label.autoplay.disabled": "Autoplay Disabled",
   "player.label.go_to_artist": "View Artist",
   "player.label.go_to_album": "View Album",
+  "player.label.go_to_similar_tracks": "View Similar Tracks",
+  "player.label.go_to_dynamic_playlist": "View Dynamic Playlist",
 
   "players.header": "Players",
   "players.label.controlling": "CONTROLLING",

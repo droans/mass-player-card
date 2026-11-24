@@ -45,6 +45,7 @@ import {
 import { PLAYLIST_DIALOG_MAX_ITEMS } from "../const/music-player";
 import {
   ExtendedHassEntity,
+  mediaCardTracksData,
   MediaLibraryItem,
   PlayerData,
   PlayersHass,
@@ -267,6 +268,31 @@ export class MusicPlayerCard extends LitElement {
       this.activePlayerController.artistCollectionData;
     this.controller.activeSection = Sections.MEDIA_BROWSER;
   }
+  public openDynamicTracksView() {
+    if (
+      !this.activePlayerController?.tracksCollectionData ||
+      !this.controller.Browser
+    ) {
+      return;
+    }
+    const collData: mediaCardTracksData = {
+      ...this.activePlayerController.tracksCollectionData,
+      dynamic: true,
+    };
+    this.controller.Browser.activeTracksCollectionData = collData;
+    this.controller.activeSection = Sections.MEDIA_BROWSER;
+  }
+  public openSimilarTracksView() {
+    if (
+      !this.activePlayerController?.tracksCollectionData ||
+      !this.controller.Browser
+    ) {
+      return;
+    }
+    this.controller.Browser.activeTracksCollectionData =
+      this.activePlayerController.tracksCollectionData;
+    this.controller.activeSection = Sections.MEDIA_BROWSER;
+  }
 
   private onForceLoadEvent = (event_: Event) => {
     const coaxedEvent = event_ as ForceUpdatePlayerDataEvent;
@@ -331,6 +357,14 @@ export class MusicPlayerCard extends LitElement {
     }
     if (selection == "go_to_album") {
       this.openActiveAlbumView();
+      return;
+    }
+    if (selection == "go_to_similar_tracks") {
+      this.openSimilarTracksView();
+      return;
+    }
+    if (selection == "go_to_dynamic_playlist") {
+      this.openDynamicTracksView();
       return;
     }
   };
@@ -418,6 +452,8 @@ export class MusicPlayerCard extends LitElement {
       this.renderCrossfadeMenuItem(),
       this.renderGoToAlbumMenuItem(),
       this.renderGoToArtistMenuItem(),
+      this.renderGoToSimilarTracksMenuItem(),
+      this.renderGoToDynamicPlaylistMenuItem(),
     ];
   }
   protected renderPlayerMenu(): TemplateResult {
@@ -447,6 +483,44 @@ export class MusicPlayerCard extends LitElement {
           ${this.renderPlayerMenuOptions()}
         </ha-dropdown>
       </div>
+    `;
+  }
+  protected renderGoToDynamicPlaylistMenuItem(): TemplateResult {
+    if (this.hiddenElements.go_to_dynamic_playlist_button) {
+      return html``;
+    }
+    const translation = getTranslation(
+      `player.label.go_to_dynamic_playlist`,
+      this.hassUI,
+    );
+    return html`
+      <ha-dropdown-item value="go_to_dynamic_playlist">
+        <ha-svg-icon
+          class="player-menu-icon go_to_similar_tracks"
+          .path=${this.Icons.PLAYLIST}
+          slot="icon"
+        ></ha-svg-icon>
+        ${translation}
+      </ha-dropdown-item>
+    `;
+  }
+  protected renderGoToSimilarTracksMenuItem(): TemplateResult {
+    if (this.hiddenElements.go_to_artist_button) {
+      return html``;
+    }
+    const translation = getTranslation(
+      `player.label.go_to_similar_tracks`,
+      this.hassUI,
+    );
+    return html`
+      <ha-dropdown-item value="go_to_similar_tracks">
+        <ha-svg-icon
+          class="player-menu-icon go_to_similar_tracks"
+          .path=${this.Icons.MUSIC}
+          slot="icon"
+        ></ha-svg-icon>
+        ${translation}
+      </ha-dropdown-item>
     `;
   }
   protected renderGoToArtistMenuItem(): TemplateResult {

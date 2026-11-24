@@ -547,30 +547,32 @@ Certain elements across the different sections can be hidden or displayed depend
 #### Music Player Hidden Elements Config
 Multiple elements on the Music Player tab can be hidden. By default, all elements are visible
 
-| Parameter             | Type | Required | Default     | Description                                   |
-|-----------------------|------|----------|-------------|-----------------------------------------------|
-| header                | bool  | No       | false       | Hides the entire header                      |
-| player_selector       | bool  | No       | false       | Hides the player selector button             |
-| group_selector        | bool  | No       | false       | Hides the grouped player volume menu         |
-| player_name           | bool  | No       | false       | Hides the player name                        |
-| track_title           | bool  | No       | false       | Hides the track title                        |
-| track_album           | bool  | No       | false       | Hides the track artist                       |
-| track_artist          | bool  | No       | false       | Hides the track artist                       |
-| track_progress_time   | bool  | No       | false       | Hides the track progress time                |
-| track_progress_bar    | bool  | No       | false       | Hides the track progress bar                 |
-| power_button          | bool  | No       | false       | Hides the power button                       |
-| repeat_button         | bool  | No       | false       | Hides the repeat button                      |
-| shuffle_button        | bool  | No       | false       | Hides the shuffle button                     |
-| favorite_button       | bool  | No       | false       | Hides the favorite button                    |
-| volume                | bool  | No       | false       | Hides the volume button                      |
-| mute_button           | bool  | No       | false       | Hides the mute button                        |
-| menu                  | bool  | No       | false       | Hides the menu for crossfade/autoplay        |
-| crossfade_button      | bool  | No       | false       | Hides the crossfade button                   |
-| autoplay_button       | bool  | No       | false       | Hides the autoplay button                    |
-| skip_forward_button   | bool  | No       | false       | Hides the skip forward button                |
-| skip_backwards_button | bool  | No       | false       | Hides the skip backwards button              |
-| go_to_artist_button   | bool  | No       | false       | Hides the skip backwards button              |
-| go_to_album_button    | bool  | No       | false       | Hides the skip backwards button              |
+| Parameter                     | Type | Required | Default     | Description                                   |
+|-------------------------------|------|----------|-------------|-----------------------------------------------|
+| header                        | bool  | No       | false       | Hides the entire header                      |
+| player_selector               | bool  | No       | false       | Hides the player selector button             |
+| group_selector                | bool  | No       | false       | Hides the grouped player volume menu         |
+| player_name                   | bool  | No       | false       | Hides the player name                        |
+| track_title                   | bool  | No       | false       | Hides the track title                        |
+| track_album                   | bool  | No       | false       | Hides the track artist                       |
+| track_artist                  | bool  | No       | false       | Hides the track artist                       |
+| track_progress_time           | bool  | No       | false       | Hides the track progress time                |
+| track_progress_bar            | bool  | No       | false       | Hides the track progress bar                 |
+| power_button                  | bool  | No       | false       | Hides the power button                       |
+| repeat_button                 | bool  | No       | false       | Hides the repeat button                      |
+| shuffle_button                | bool  | No       | false       | Hides the shuffle button                     |
+| favorite_button               | bool  | No       | false       | Hides the favorite button                    |
+| volume                        | bool  | No       | false       | Hides the volume button                      |
+| mute_button                   | bool  | No       | false       | Hides the mute button                        |
+| menu                          | bool  | No       | false       | Hides the menu for crossfade/autoplay        |
+| crossfade_button              | bool  | No       | false       | Hides the crossfade button                   |
+| autoplay_button               | bool  | No       | false       | Hides the autoplay button                    |
+| skip_forward_button           | bool  | No       | false       | Hides the skip forward button                |
+| skip_backwards_button         | bool  | No       | false       | Hides the skip backwards button              |
+| go_to_artist_button           | bool  | No       | false       | Hides the skip backwards button              |
+| go_to_album_button            | bool  | No       | false       | Hides the skip backwards button              |
+| go_to_similar_tracks_button   | bool  | No       | false       | Hides the skip backwards button              |
+| go_to_dynamic_playlist_button | bool  | No       | false       | Hides the skip backwards button              |
 
 </detail>
 
