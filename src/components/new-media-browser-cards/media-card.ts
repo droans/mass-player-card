@@ -178,15 +178,12 @@ export class MediaCard extends LitElement {
       this.dropdownElement.open = true;
       return;
     }
+    this.removePointerEvents();
     this.renderDropdown = true;
     this.generateCode();
   };
-  private onPointerOut = () => {
-    this.removePointerEvents();
-    if (this.timeout) {
-      clearTimeout(this.timeout);
-      this.timeout = undefined;
-    }
+  private onPointerMove = () => {
+    this.timeout = undefined;
   };
   private onPointerDown = (event_: PointerEvent) => {
     event_.stopImmediatePropagation();
@@ -199,12 +196,12 @@ export class MediaCard extends LitElement {
         return;
       }
       this.timeout = undefined;
-      this.removePointerEvents();
       this.onHold();
     }, this.holdDelayMs);
   };
   private onPointerUp = (event_: PointerEvent) => {
     event_.stopImmediatePropagation();
+    this.removePointerEvents();
     if (event_.button != 0) {
       return;
     }
@@ -224,14 +221,12 @@ export class MediaCard extends LitElement {
     this.onSelectAction(this._config.data, this);
   };
   private removePointerEvents() {
-    this.removeEventListener("pointerup", this.onPointerUp);
-    this.removeEventListener("pointerout", this.onPointerOut);
+    document.body.removeEventListener("pointerup", this.onPointerUp);
+    document.body.removeEventListener("pointermove", this.onPointerMove);
   }
   private addPointerEvents() {
-    /* eslint-disable listeners/no-missing-remove-event-listener */
-    this.addEventListener("pointerup", this.onPointerUp);
-    this.addEventListener("pointerout", this.onPointerOut);
-    /* eslint-enable listeners/no-missing-remove-event-listener */
+    document.body.addEventListener("pointerup", this.onPointerUp);
+    document.body.addEventListener("pointermove", this.onPointerMove);
   }
   protected renderEnqueueButton(button: ListItemData): TemplateResult {
     return html`
