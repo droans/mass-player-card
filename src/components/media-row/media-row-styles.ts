@@ -148,7 +148,7 @@ export default css`
   }
 
   .chevron-div {
-    width: 56px;
+    width: 5rem;
   }
   .chevron-icon {
     height: 30px;
