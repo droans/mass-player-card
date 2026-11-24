@@ -14,7 +14,6 @@ import "./sections/new-media-browser";
 import "./sections/player-queue";
 import "./sections/players";
 
-// import "./components/navigation-bar/navigation-bar";
 import "./components/navigation-bar/navigation-bar-expressive";
 
 import { Config, createConfigForm, createStubConfig } from "./config/config";

@@ -62,7 +62,6 @@ export class PlayersCard extends LitElement {
   private _hassPlayers?: PlayersHass;
   @consume({ context: hassUIServicesContext, subscribe: true })
   private hassUIServices?: UIServicesHass;
-  // private actions?: PlayersActions;
 
   @property({ attribute: false })
   public set config(config: Config | undefined) {

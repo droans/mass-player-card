@@ -47,7 +47,6 @@ export default css`
 
   .start {
     display: block;
-    /* position: absolute; */
     left: 1em;
     top: 0.5em;
     z-index: 1;

@@ -325,6 +325,14 @@ export class MusicPlayerCard extends LitElement {
       void this.activePlayerController?.toggleCrossfade();
       return;
     }
+    if (selection == "go_to_artist") {
+      this.openActiveArtistView();
+      return;
+    }
+    if (selection == "go_to_album") {
+      this.openActiveAlbumView();
+      return;
+    }
   };
 
   protected hideSectionHeader(): boolean {
@@ -404,6 +412,14 @@ export class MusicPlayerCard extends LitElement {
       </div>
     `;
   }
+  protected renderPlayerMenuOptions(): TemplateResult[] {
+    return [
+      this.renderAutoplayMenuItem(),
+      this.renderCrossfadeMenuItem(),
+      this.renderGoToAlbumMenuItem(),
+      this.renderGoToArtistMenuItem(),
+    ];
+  }
   protected renderPlayerMenu(): TemplateResult {
     if (this.hiddenElements.menu) {
       return html``;
@@ -428,9 +444,44 @@ export class MusicPlayerCard extends LitElement {
               .path=${this.Icons.MENU}
             ></ha-svg-icon>
           </mpc-button>
-          ${this.renderAutoplayMenuItem()} ${this.renderCrossfadeMenuItem()}
+          ${this.renderPlayerMenuOptions()}
         </ha-dropdown>
       </div>
+    `;
+  }
+  protected renderGoToArtistMenuItem(): TemplateResult {
+    if (this.hiddenElements.go_to_artist_button) {
+      return html``;
+    }
+    const translation = getTranslation(
+      `player.label.go_to_artist`,
+      this.hassUI,
+    );
+    return html`
+      <ha-dropdown-item value="go_to_artist">
+        <ha-svg-icon
+          class="player-menu-icon go_to_artist"
+          .path=${this.Icons.ARTIST}
+          slot="icon"
+        ></ha-svg-icon>
+        ${translation}
+      </ha-dropdown-item>
+    `;
+  }
+  protected renderGoToAlbumMenuItem(): TemplateResult {
+    if (this.hiddenElements.go_to_artist_button) {
+      return html``;
+    }
+    const translation = getTranslation(`player.label.go_to_album`, this.hassUI);
+    return html`
+      <ha-dropdown-item value="go_to_album">
+        <ha-svg-icon
+          class="player-menu-icon go_to_album"
+          .path=${this.Icons.ALBUM}
+          slot="icon"
+        ></ha-svg-icon>
+        ${translation}
+      </ha-dropdown-item>
     `;
   }
   protected renderAutoplayMenuItem(): TemplateResult {

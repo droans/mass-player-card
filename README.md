@@ -569,6 +569,8 @@ Multiple elements on the Music Player tab can be hidden. By default, all element
 | autoplay_button       | bool  | No       | false       | Hides the autoplay button                    |
 | skip_forward_button   | bool  | No       | false       | Hides the skip forward button                |
 | skip_backwards_button | bool  | No       | false       | Hides the skip backwards button              |
+| go_to_artist_button   | bool  | No       | false       | Hides the skip backwards button              |
+| go_to_album_button    | bool  | No       | false       | Hides the skip backwards button              |
 
 </detail>
 

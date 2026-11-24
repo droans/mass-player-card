@@ -78,7 +78,6 @@ export default css`
     font-stretch: 50%;
     font-weight: 600;
     font-variation-settings: "ROND" 100;
-    /* flex-basis: 200%; */
     color: var(--tab-active-icon-color);
     width: var(--tab-width);
   }
@@ -89,7 +88,6 @@ export default css`
   }
   #navigation a:not(.active) {
     background-color: var(--md-sys-color-surface);
-    /* flex-basis: 100%; */
     width: calc(var(--tab-width) - 0.25rem);
   }
   #navigation a:not(.active) .label-div {

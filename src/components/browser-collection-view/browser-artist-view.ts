@@ -113,7 +113,6 @@ export class MassBrowserArtistView extends BrowserViewBase {
     this.animateHeaderEnqueue();
   }
   private onItemSelected = (data: mediaCardData, target: HTMLElement) => {
-    // this.resetScroll();
     this.onCollectionSelectAction(data, target);
   };
   private onDrill = () => {

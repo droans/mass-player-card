@@ -60,7 +60,6 @@ export class MediaBrowserCards extends LitElement {
   }
 
   private onItemSelected = (data: mediaCardData, target: HTMLElement) => {
-    // this.resetScroll();
     this.onSelectAction(data, target);
   };
   private onEnqueue = (data: mediaCardData, enqueue: EnqueueOptions) => {

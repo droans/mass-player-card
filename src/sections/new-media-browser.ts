@@ -453,7 +453,6 @@ export class MediaBrowser extends LitElement {
   };
   private onSelect = (data: mediaCardData) => {
     const funcs = {
-      // section: this.onSectionSelect,
       item: this.onItemSelect,
       service: this.onServiceSelect,
       playlist: this.onCollectionSelect,
