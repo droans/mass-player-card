@@ -19,7 +19,7 @@ import { Sections } from "../../const/enums";
 import { Icons } from "../../const/icons";
 import { UIServicesHass } from "../../const/types";
 import { MassCardController } from "../../controller/controller";
-import { MediaBrowser } from "../../sections/new-media-browser";
+import { MediaBrowser } from "../../sections/media-browser";
 import { QueueCard } from "../../sections/player-queue";
 import { getTranslation } from "../../utils/translations";
 import styles from "./navigation-bar-styles";
