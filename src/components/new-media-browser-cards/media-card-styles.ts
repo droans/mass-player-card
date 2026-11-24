@@ -94,7 +94,6 @@ export default css`
 
   #title-div {
     text-transform: capitalize;
-    /* position: absolute; */
     width: 100%;
     line-height: 160%;
     bottom: 0;

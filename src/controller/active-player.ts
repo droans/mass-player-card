@@ -92,7 +92,6 @@ export class ActivePlayerController {
   private _timeout?: number;
   private _observerDelay = 300;
   private _canGroupWith: ContextProvider<typeof canGroupWithContext>;
-  // private _canGroupWith: string[] = [];
   private volumeEntityId!: string;
 
   constructor(

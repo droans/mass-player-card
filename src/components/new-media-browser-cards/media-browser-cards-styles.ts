@@ -48,7 +48,6 @@ export default css`
     max-height: 100%;
     aspect-ratio: 1;
     height: 100%;
-    /* width: 100%; */
     justify-content: center;
     padding-inline: 4px;
   }

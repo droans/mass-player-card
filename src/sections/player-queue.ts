@@ -57,7 +57,6 @@ export class QueueCard extends LitElement {
   public _config!: QueueConfig;
 
   private _queueController?: QueueController;
-  // private reconnected = false;
 
   @consume({ context: queueControllerContext, subscribe: true })
   public set queueController(controller: QueueController | undefined) {
@@ -195,7 +194,6 @@ export class QueueCard extends LitElement {
   private onTabSwitch = (event_: Event) => {
     if ((event_ as CustomEvent).detail == Sections.QUEUE) {
       this._tabSwitchFirstUpdate = true;
-      // this.scrollToActive();
     }
   };
   private hideSectionHeader(): boolean {

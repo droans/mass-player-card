@@ -535,21 +535,7 @@ export class MediaBrowserController {
   }
   private x = generateCustomSectionCards;
   private generateCustomSectionData(config: customSection): MediaCardItem[] {
-    // const sectionCard: MediaCardItem = {
-    //   title: config.name,
-    //   thumbnail: config.image,
-    //   fallback: Thumbnail.CLEFT,
-    //   data: {
-    //     type: "section",
-    //     subtype: "favorites",
-    //     section: `custom-${config.name}`,
-    //   },
-    // };
     return generateCustomSectionCards(config.items);
-    // const i = { ...this.items };
-    // i.favorites[`custom-${config.name}`] = cards;
-    // i.favorites.main.push(sectionCard);
-    // this.items = { ...i };
   }
   public getCustomSectionForMedia(
     mediaType: MediaTypes,
@@ -557,25 +543,6 @@ export class MediaBrowserController {
     return this.items.custom.filter((section) => {
       return section.mediaType == mediaType;
     });
-    // const customSections = Object.entries(this.items.custom).filter((rec) => {
-    //   return rec[0] != "main";
-    // });
-    // const filteredCustom: MediaRecommendationSection[] = customSections
-    //   .map((customItem) => {
-    //     const title = customItem[0];
-    //     const customItems = customItem[1];
-    //     const filteredCustomItemsItems = customItems.filter((recItem) => {
-    //       return (recItem.data.type as MediaTypes) == mediaType;
-    //     });
-    //     return {
-    //       title,
-    //       items: filteredCustomItemsItems,
-    //     };
-    //   })
-    //   .filter((custom) => {
-    //     return custom.items.length > 0;
-    //   });
-    // return filteredCustom;
   }
   public getRecommendationsForMedia(
     mediaType: MediaTypes,

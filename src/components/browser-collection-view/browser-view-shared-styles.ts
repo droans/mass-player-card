@@ -165,7 +165,6 @@ export default css`
     padding-right: 4px;
   }
   #tracks {
-    /* position: relative; */
     scrollbar-width: none;
     height: 98%;
   }
