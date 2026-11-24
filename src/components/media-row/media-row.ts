@@ -37,11 +37,7 @@ import {
   getThumbnail,
   getTrackFallbackImg,
 } from "../../utils/thumbnails";
-import {
-  jsonMatch,
-  queueItemhasUpdated,
-  stopEventPropagation,
-} from "../../utils/utility";
+import { jsonMatch, queueItemhasUpdated } from "../../utils/utility";
 
 @customElement("mpc-queue-media-row")
 export class MediaRow extends LitElement {
@@ -76,6 +72,7 @@ export class MediaRow extends LitElement {
   private imgElemErrorCount = 0;
   private maxImgElemErrorCount = 5;
   private actionButtonsDisplayed = false;
+  private actionButtonsFirstDisplayed = false;
   private _hassUIServices?: UIServicesHass;
 
   @consume({ context: hassUIServicesContext, subscribe: false })
@@ -225,6 +222,9 @@ export class MediaRow extends LitElement {
   private onChevronSelected = () => {
     this.changeActionButtonVisibility(!this.actionButtonsExpanded);
     this.actionButtonsDisplayed = true;
+    if (!this.actionsButtonDiv) {
+      this.actionButtonsFirstDisplayed = true;
+    }
   };
 
   protected shouldUpdate(_changedProperties: PropertyValues<this>): boolean {
@@ -341,11 +341,11 @@ export class MediaRow extends LitElement {
       ? this.Icons.CARET_UP
       : this.Icons.CARET_DOWN;
     return html`
-      <div
+      <span
         class="chevron-div"
         slot="end"
         @click=${(event_: Event) => {
-          event_.stopPropagation();
+          event_.stopImmediatePropagation();
         }}
       >
         <mpc-button
@@ -357,7 +357,7 @@ export class MediaRow extends LitElement {
         >
           <ha-svg-icon class="chevron-icon" .path=${icon}></ha-svg-icon>
         </mpc-button>
-      </div>
+      </span>
     `;
   }
   private renderActionButtons(): TemplateResult {
@@ -368,9 +368,15 @@ export class MediaRow extends LitElement {
       return html``;
     }
     return html`
-      <div id="action-buttons-div" class="open" @click=${stopEventPropagation}>
+      <div
+        id="action-buttons-div"
+        class="closed"
+        @click=${(event_: Event) => {
+          event_.stopPropagation();
+        }}
+      >
         <ha-list-item-base class="action-buttons-row" id="action-buttons-row">
-          <div slot="headline" id="action-buttons-headline" class="open">
+          <div slot="headline" id="action-buttons-headline" class="closed">
             ${this.renderMoveNextButton()} ${this.renderMoveUpButton()}
             ${this.renderMoveDownButton()} ${this.renderRemoveButton()}
           </div>
@@ -469,7 +475,7 @@ export class MediaRow extends LitElement {
     return html`
       <ha-list-item-button
         class="button ${playing} ${hideCovers}"
-        @pointerup=${this.callOnQueueItemSelectedService}
+        @click=${this.callOnQueueItemSelectedService}
         type="button"
       >
         ${this.renderThumbnail()}
@@ -491,6 +497,12 @@ export class MediaRow extends LitElement {
         this.scrollIntoView({ block: "start", behavior: "auto" });
       }, 25);
       this.reconnected = false;
+    }
+    if (this.actionButtonsDisplayed && this.actionButtonsFirstDisplayed) {
+      this.actionButtonsFirstDisplayed = false;
+      setTimeout(() => {
+        this.changeActionButtonVisibility(true);
+      }, 50);
     }
   }
   disconnectedCallback(): void {
