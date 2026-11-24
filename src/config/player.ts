@@ -31,6 +31,8 @@ export interface PlayerHiddenElementsConfig extends PlayerControlsHiddenElements
   menu: boolean;
   crossfade_button: boolean;
   autoplay_button: boolean;
+  go_to_artist_button: boolean;
+  go_to_album_button: boolean;
 }
 
 export const DEFAULT_PLAYER_HIDDEN_ELEMENTS_CONFIG: PlayerHiddenElementsConfig =

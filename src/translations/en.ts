@@ -54,6 +54,8 @@ export default {
   "player.label.crossfade.disabled": "Crossfade Disabled",
   "player.label.autoplay.enabled": "Autoplay Enabled",
   "player.label.autoplay.disabled": "Autoplay Disabled",
+  "player.label.go_to_artist": "View Artist",
+  "player.label.go_to_album": "View Album",
 
   "players.header": "Players",
   "players.label.controlling": "CONTROLLING",
